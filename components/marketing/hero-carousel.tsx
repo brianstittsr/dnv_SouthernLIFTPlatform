@@ -29,6 +29,18 @@ export interface HeroSlide {
 // Default slides - in production these would come from a database
 const defaultSlides: HeroSlide[] = [
   {
+    id: "0",
+    badge: "Strategic Partnership Announcement",
+    headline: "Strategic Value+ &",
+    highlightedText: "KDM Associates",
+    subheadline: "Two industry leaders unite to deliver unparalleled support for minority-owned businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
+    benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
+    primaryCta: { text: "Discover the Partnership", href: "/about" },
+    secondaryCta: { text: "Get Started", href: "/contact" },
+    isPublished: true,
+    order: 0,
+  },
+  {
     id: "1",
     badge: "MBDA Federal Procurement Center",
     headline: "Powering Growth for",
