@@ -573,5 +573,79 @@ service cloud.firestore {
       allow update: if true;
       allow delete: if true;
     }
+
+    // =========================================================================
+    // KDM Consortium Collections
+    // =========================================================================
+
+    // Memberships - users can read their own, admins can manage all
+    match /memberships/{membershipId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() ||
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAdmin() || resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // Pursuit Briefs - members can read published, admins can manage
+    match /pursuitBriefs/{pursuitId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isTeamMember();
+      allow update: if isAdmin() || isTeamMember();
+      allow delete: if isAdmin();
+    }
+
+    // Sponsors - public read for marketing, admin write
+    match /sponsors/{sponsorId} {
+      allow read: if true;
+      allow create: if isAdmin() || isTeamMember();
+      allow update: if isAdmin() || isTeamMember();
+      allow delete: if isAdmin();
+    }
+
+    // Events - public read for marketing, admin/team write
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if isAdmin() || isTeamMember();
+      allow update: if isAdmin() || isTeamMember();
+      allow delete: if isAdmin();
+    }
+
+    // Tickets - users can read their own, admins can manage all
+    match /tickets/{ticketId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() ||
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Settlements - admin only
+    match /settlements/{settlementId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Promo Codes - admin only for management, validate endpoint for users
+    match /promoCodes/{codeId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Resources - members can read based on tier, admins can manage
+    match /resources/{resourceId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() || isTeamMember();
+      allow update: if isAdmin() || isTeamMember();
+      allow delete: if isAdmin();
+    }
   }
 }

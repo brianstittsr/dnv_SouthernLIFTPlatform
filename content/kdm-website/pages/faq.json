@@ -1,0 +1,47 @@
+{
+  "pageId": "faq",
+  "title": "FAQ | KDM & Associates",
+  "slug": "/faq",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "page-header",
+      "content": {
+        "title": "Frequently Asked Questions",
+        "breadcrumb": [
+          { "label": "Home", "href": "/" },
+          { "label": "FAQ", "href": "/faq" }
+        ]
+      }
+    },
+    {
+      "id": "customer-support",
+      "type": "faq-section",
+      "content": {
+        "title": "Customer Support",
+        "faqs": [
+          {
+            "question": "How do I get QmeLocal for my community?",
+            "answer": "Engage us by reaching out to us through our contact information and we will work with your community stakeholders to create a community portal that is customized for your target community."
+          },
+          {
+            "question": "Why community stakeholders need a community portal?",
+            "answer": "Our desire is to work with community stakeholders that are prepared to make a commitment to support their community through the community portal and the programs that Qme incorporates into the community portal. Community stakeholders will be required to sign documents that underscore their commitment, of which will include, but not be limited to, the following: a service level agreement (SLA), an operations contract, and a licensing agreement. Community stakeholders will also be responsible for advising what kind of content should be on the community portal, providing relevant information for the community portal, working with Qme to bring in individuals and organizations that are part of the community to which the community portal represents, and the costs associated with the creation and upkeep of the community portal."
+          },
+          {
+            "question": "What is the difference between QmeLocal and a community portal?",
+            "answer": "Community portals are powered by QmeLocal. A good analogy is to think of QmeLocal as the foundation or central hub that connects all community portals to itself and to each other – QmeLocal \"powers the rails\" for all community portals within the QmeLocal ecosystem. When you access a community portal, you are accessing a specifically curated community environment that is powered by QmeLocal and QmeLocal serves up and aggregates relevant information that has been created in the QmeLocal ecosystem for each community automatically as that relevant content is created by users within the QmeLocal ecosystem."
+          },
+          {
+            "question": "What support does Qme provide for community portals?",
+            "answer": "When you hire us, we work with your community to develop the entire solution for your community. Qme does all of the \"behind the scenes\" work for each portal and all the support for each community portal will come from Qme. This includes the build design, management, implementation, connection of resources, and deployment of the community portal. Other support provided by includes marketing, launch communications outreach, promotion and media content production, system content uploading, business support profile uploading, and relevant community support media, videos, photographs, stories, and articles. Year-one member onboarding, system maintenance, and hosting are also included."
+          },
+          {
+            "question": "What things are covered in QmeLocal support?",
+            "answer": "In brief, we are responsible for the features that are advertised in the theme. So we will do the following: – Solve bugs if there is any (bug means if any feature is not working as it should) – If you have any question we will answer it – After your installation if you face any issues/bugs, we can look into your website or server, but we don't guarantee any solution or custom works there."
+          }
+        ]
+      }
+    }
+  ]
+}

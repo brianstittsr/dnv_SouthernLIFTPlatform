@@ -1,0 +1,112 @@
+{
+  "pageId": "home",
+  "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+  "slug": "/",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "content": {
+        "headline": "Powering Growth for Emerging Businesses",
+        "subheadline": "KDM & Associates",
+        "description": "The KDM & Associates team focuses on best practices in government contracting. We call it, \"What Works\" because it drives greater success for Small Businesses. Our team offers a range of free and premium services to help scale success for MBEs once they join as KDM Members through our digital hub.",
+        "features": [
+          "Federal Contract Opportunity Identification",
+          "Strategic Teaming & Sub-Contracting Partnerships",
+          "Introductions to Government & Military Contracting Officers"
+        ],
+        "cta": {
+          "label": "Learn More",
+          "href": "/about"
+        }
+      }
+    },
+    {
+      "id": "about-intro",
+      "type": "content-block",
+      "content": {
+        "title": "About Us",
+        "body": "In an exciting development for the large Prime Government Contractors community, the Minority Business Development Agency (MBDA) network, and small, emerging, and Minority Business Enterprises (MBEs) across the country, the MBDA Federal Procurement Center (FPC) is officially transitioning its operations to KDM & Associates, LLC. This transition marks a strategic realignment, bringing new leadership, fresh initiatives, and stronger partnerships to better support the escalating demand for shovel-ready, small and emerging businesses to address the Nation's supply chain requirements. Historical data confirms that small and minority owned businesses have consistently faced barriers to entry in the Federal acquisition sector. As such, the Federal Procurement Center's suite of Government contracting support services will remain accessible, but with an even greater focus on empowering – through intense capacity building, mentorship, and defined support services to achieve sustainable success."
+      }
+    },
+    {
+      "id": "services",
+      "type": "services-grid",
+      "title": "Driving Next Level Results",
+      "subtitle": "With Accredited Subject Matter Experts",
+      "services": [
+        {
+          "id": "digital-solutions",
+          "title": "Digital Solutions",
+          "icon": "monitor",
+          "items": ["Websites", "Digital Ecosystems", "E-commerce"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        },
+        {
+          "id": "technology-solutions",
+          "title": "Technology Solutions",
+          "icon": "cpu",
+          "items": ["Blockchain", "CRM & AI Integration", "Cybersecurity"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        },
+        {
+          "id": "grants-nofo-rfps",
+          "title": "Grants-NOFO-RFPs",
+          "icon": "file-text",
+          "items": ["Quick Bid/No Bid", "Proposal Management", "Proposal & Grant writing"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        },
+        {
+          "id": "marketing-solutions",
+          "title": "Marketing Solutions",
+          "icon": "megaphone",
+          "items": ["Import & Export", "Content Creation", "PR/News Distribution"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        },
+        {
+          "id": "operations-performance",
+          "title": "Operations/Performance",
+          "icon": "bar-chart",
+          "items": ["Business Assessments", "Capital Readiness", "Strategic Business Plans"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        },
+        {
+          "id": "contracting-vehicles",
+          "title": "Contracting Vehicles",
+          "icon": "briefcase",
+          "items": ["Certifications", "Mentor-Protégé & JVs", "SBA Programs"],
+          "cta": { "label": "Get Started", "href": "/contact" }
+        }
+      ]
+    },
+    {
+      "id": "stats",
+      "type": "stats",
+      "title": "Our Performance",
+      "subtitle": "Built on a track record of \"What Works\"",
+      "stats": [
+        { "value": "300+", "label": "Minority Business Clients" },
+        { "value": "14+", "label": "Shared Outcome Agreements" },
+        { "value": "$50B+", "label": "Contract Awarded Transactions" },
+        { "value": "100+", "label": "Services/Resource Partners" }
+      ]
+    },
+    {
+      "id": "cta-session",
+      "type": "cta-banner",
+      "content": {
+        "title": "Schedule an MBE Introductory Session",
+        "cta": { "label": "Join to get started", "href": "/contact" }
+      }
+    },
+    {
+      "id": "cta-provider",
+      "type": "cta-banner",
+      "content": {
+        "title": "Become a KDM & Associates \"What Works\" Solution Provider",
+        "description": "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support MBEs on their journey to sustainability and success.",
+        "cta": { "label": "Click here to get started", "href": "/register" }
+      }
+    }
+  ]
+}

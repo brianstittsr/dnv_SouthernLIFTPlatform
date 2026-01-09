@@ -75,6 +75,7 @@ import {
   Eye,
   EyeOff,
   UserCheck,
+  Mail,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -93,6 +94,12 @@ const mainNavItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "Pursuit Board",
+    href: "/portal/pursuits",
+    icon: Target,
+    badge: "KDM",
+  },
+  {
     title: "Opportunities",
     href: "/portal/opportunities",
     icon: Target,
@@ -103,6 +110,12 @@ const mainNavItems = [
     href: "/portal/projects",
     icon: FolderKanban,
     badge: "3",
+  },
+  {
+    title: "Member Directory",
+    href: "/portal/members",
+    icon: Users,
+    badge: "KDM",
   },
   {
     title: "Affiliates",
@@ -117,6 +130,18 @@ const mainNavItems = [
 ];
 
 const workItems = [
+  {
+    title: "Resource Library",
+    href: "/portal/resources",
+    icon: FileText,
+    badge: "KDM",
+  },
+  {
+    title: "My Membership",
+    href: "/portal/membership",
+    icon: UserCheck,
+    badge: "KDM",
+  },
   {
     title: "Apollo Search",
     href: "/portal/apollo-search",
@@ -209,6 +234,24 @@ const workItems = [
 
 const adminItems = [
   {
+    title: "KDM Dashboard",
+    href: "/portal/admin/kdm-dashboard",
+    icon: LayoutDashboard,
+    badge: "KDM",
+  },
+  {
+    title: "Memberships",
+    href: "/portal/admin/memberships",
+    icon: Users,
+    badge: "KDM",
+  },
+  {
+    title: "Settlements",
+    href: "/portal/admin/settlements",
+    icon: DollarSign,
+    badge: "KDM",
+  },
+  {
     title: "Team Members",
     href: "/portal/admin/team-members",
     icon: UserCog,
@@ -232,6 +275,12 @@ const adminItems = [
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,
+  },
+  {
+    title: "MailChimp",
+    href: "/portal/admin/mailchimp",
+    icon: Mail,
+    badge: "Email",
   },
 ];
 
@@ -371,18 +420,14 @@ export function PortalSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border">
-        <Link href="/portal" className="flex items-center gap-2 px-2 py-4">
+        <Link href="/portal" className="flex items-center px-2 py-4">
           <NextImage
-            src="/VPlus_logo.webp"
-            alt="Strategic Value+ Logo"
-            width={40}
+            src="/kdm-logo.png"
+            alt="KDM & Associates Logo"
+            width={160}
             height={40}
-            style={{ width: 'auto', height: 'auto' }}
+            style={{ width: 'auto', height: '40px' }}
           />
-          <div className="flex flex-col">
-            <span className="text-lg font-bold leading-none">Strategic Value+</span>
-            <span className="text-xs text-sidebar-foreground/60">Business Portal</span>
-          </div>
         </Link>
       </SidebarHeader>
 

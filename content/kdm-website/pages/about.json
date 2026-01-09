@@ -1,0 +1,138 @@
+{
+  "pageId": "about",
+  "title": "About Us | KDM & Associates",
+  "slug": "/about",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "page-header",
+      "content": {
+        "title": "About Us",
+        "breadcrumb": [
+          { "label": "Home", "href": "/" },
+          { "label": "About Us", "href": "/about" }
+        ]
+      }
+    },
+    {
+      "id": "mission",
+      "type": "content-block",
+      "content": {
+        "title": "Fueling What Works Through Aggregated Resources",
+        "subtitle": "Propelling the next generation of minority government contractors",
+        "body": [
+          "In an exciting development for the large Prime Government Contractors community, the Minority Business Development Agency (MBDA) network, and small, emerging, and Minority Business Enterprises (MBEs) across the country, the MBDA Federal Procurement Center (FPC) is officially transitioning its operations to KDM & Associates, LLC.",
+          "This transition marks a strategic realignment, bringing new leadership, fresh initiatives, and stronger partnerships to better support the escalating demand for shovel-ready, small and emerging businesses to address the Nation's supply chain requirements. Historical data confirms that small and minority owned businesses have consistently faced barriers to entry in the Federal acquisition sector. As such, the Federal Procurement Center's suite of Government contracting support services will remain accessible, but with an even greater focus on empowering – through intense capacity building, mentorship, and defined support services to achieve sustainable success.",
+          "KDM & Associates, LLC is a business development, government affairs, and public relations firm focused on helping our clients navigate the government procurement process and win government contracts. KDM is renowned for providing strategic teaming, and building capacity for small and mid sized businesses. We help our clients not only win more contracts, but help firms provide more effective and efficient solutions to their clients and customers."
+        ]
+      }
+    },
+    {
+      "id": "services-list",
+      "type": "feature-list",
+      "content": {
+        "title": "Build, Grow & Scale",
+        "subtitle": "Your Government Contract Revenues",
+        "items": [
+          "Federal contract opportunity identification",
+          "Advice on how to bid set-aside contracts – 8(a), WOSB, SDVOSB, HUBZone",
+          "Introductions to Government & Military contracting officers",
+          "Introductions to/advocacy with Government & Defense Small Business program directors",
+          "Help in putting together strategic teaming partnerships - With larger Prime contractors and with other FPC MBE Clients",
+          "Explanation of Federal Mentor-Protégé Program advantages",
+          "Boosting participation in Export & Overseas Project opportunities",
+          "Business Development coaching advice",
+          "Guidance on Government contracting portal registrations",
+          "Recommendations on certifications",
+          "Pointers on integrating technology in business operations",
+          "Alerts about upcoming conferences, industry outreach days, webinars, education & networking"
+        ],
+        "cta": {
+          "label": "Become a KDM & Associates Client",
+          "href": "/contact"
+        }
+      }
+    },
+    {
+      "id": "team",
+      "type": "team-grid",
+      "content": {
+        "title": "KDM & Associates Management",
+        "members": [
+          {
+            "id": "keith-moore",
+            "name": "Keith Moore",
+            "title": "KDM & Associates CEO",
+            "profileUrl": "/team/keith-moore"
+          },
+          {
+            "id": "charles-sills",
+            "name": "Charles Sills",
+            "title": "COO",
+            "profileUrl": "/team/charles-sills"
+          },
+          {
+            "id": "oscar-frazier",
+            "name": "Oscar Frazier",
+            "title": "Consultant",
+            "profileUrl": "/team/oscar-frazier"
+          },
+          {
+            "id": "pamela-ramos-brown",
+            "name": "Pamela Ramos-Brown",
+            "title": "KDM Consultant",
+            "profileUrl": "/team/pamela-ramos-brown"
+          },
+          {
+            "id": "calvin-minor",
+            "name": "Calvin Minor",
+            "title": "Operations Support Manager",
+            "profileUrl": "/team/calvin-minor"
+          },
+          {
+            "id": "manpreet-hundal",
+            "name": "Manpreet Hundal",
+            "title": "Compliance and Data Specialist",
+            "profileUrl": "/team/manpreet-hundal"
+          },
+          {
+            "id": "timothy-webster",
+            "name": "Timothy Maurice Webster",
+            "title": "Director of International Communications",
+            "profileUrl": "/team/timothy-webster"
+          },
+          {
+            "id": "walter-cotton",
+            "name": "Walter Cotton III",
+            "title": "Veteran Business Liaison",
+            "profileUrl": "/team/walter-cotton"
+          },
+          {
+            "id": "jose-nino",
+            "name": "Jose F. Nin'o",
+            "title": "Director of Hispanic Affairs",
+            "profileUrl": "/team/jose-nino"
+          },
+          {
+            "id": "gaylord-neal",
+            "name": "Gaylord Neal",
+            "title": "Digital Solutions and Innovation Consultant",
+            "profileUrl": "/team/gaylord-neal"
+          },
+          {
+            "id": "bentley-charlemagne",
+            "name": "Bentley Charlemagne",
+            "title": "Digital Innovation Chief Consultant",
+            "profileUrl": "/team/bentley-charlemagne"
+          },
+          {
+            "id": "candida-mobley",
+            "name": "Candida Mobley",
+            "title": "KDM Consultant",
+            "profileUrl": null
+          }
+        ]
+      }
+    }
+  ]
+}

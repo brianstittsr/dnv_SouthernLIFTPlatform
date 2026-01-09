@@ -9,42 +9,42 @@ import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "Strategic Value+ helped us achieve ISO 9001 certification in just 90 days. We've since won three major OEM contracts worth over $2M annually.",
-    author: "Michael Chen",
+      "KDM & Associates helped us navigate the 8(a) certification process and connected us with prime contractors. We've since won three federal contracts worth over $2M annually.",
+    author: "Marcus Johnson",
     title: "CEO",
-    company: "Precision Components Inc.",
-    industry: "Automotive",
-    employees: "85 employees",
+    company: "Johnson Tech Solutions",
+    industry: "IT Services",
+    employees: "MBE Client",
     initials: "MJ",
   },
   {
     quote:
-      "The V+ EDGE platform transformed our operations. We reduced cycle time by 40% and improved quality metrics across the board. The ROI was evident within the first quarter.",
-    author: "Sarah Williams",
-    title: "VP Operations",
-    company: "Advanced Manufacturing Solutions",
-    industry: "Aerospace",
-    employees: "150 employees",
+      "The strategic teaming partnerships KDM facilitated transformed our business. We went from subcontractor to prime contractor status within 18 months.",
+    author: "Sandra Williams",
+    title: "President",
+    company: "Williams Consulting Group",
+    industry: "Professional Services",
+    employees: "MBE Client",
     initials: "SW",
   },
   {
     quote:
-      "Their supplier readiness program was exactly what we needed to break into the OEM market. The team's expertise and hands-on approach made all the difference.",
-    author: "Robert Martinez",
-    title: "President",
-    company: "Martinez Metal Works",
-    industry: "Industrial Equipment",
-    employees: "45 employees",
+      "Their What Works approach was exactly what we needed to break into federal contracting. The team's expertise and hands-on mentorship made all the difference.",
+    author: "Roberto Martinez",
+    title: "Owner",
+    company: "Martinez Construction LLC",
+    industry: "Construction",
+    employees: "MBE Client",
     initials: "RM",
   },
   {
     quote:
-      "We were struggling with digital transformation until SVP came in. Their modular approach let us start small and scale. Now we're fully Industry 4.0 ready.",
+      "KDM's proposal support and grant writing services helped us win our first NOFO award. Their guidance through the federal procurement process was invaluable.",
     author: "Jennifer Park",
-    title: "COO",
-    company: "TechForm Industries",
-    industry: "Electronics",
-    employees: "200 employees",
+    title: "CEO",
+    company: "Park Digital Services",
+    industry: "Technology",
+    employees: "MBE Client",
     initials: "JP",
   },
 ];
@@ -69,7 +69,7 @@ export function Testimonials() {
             What Our Clients Say
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real results from real manufacturers who transformed their operations with Strategic Value+.
+            Real results from MBEs who transformed their government contracting business with KDM & Associates.
           </p>
         </div>
 

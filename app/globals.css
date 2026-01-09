@@ -45,39 +45,39 @@
 
 :root {
   --radius: 0.625rem;
-  /* SVP Brand Colors */
-  --background: #f3f0ec;
+  /* KDM Brand Colors - Blue theme */
+  --background: #f8fafc;
   --foreground: #000000;
   --card: #ffffff;
   --card-foreground: #000000;
   --popover: #ffffff;
   --popover-foreground: #000000;
-  --primary: #FFC72C;
-  --primary-foreground: #000000;
-  --secondary: #188bf6;
+  --primary: #1565C0;
+  --primary-foreground: #ffffff;
+  --secondary: #0D47A1;
   --secondary-foreground: #ffffff;
-  --muted: #d6ddd3;
-  --muted-foreground: #596654;
-  --accent: #FFC72C;
-  --accent-foreground: #000000;
+  --muted: #e2e8f0;
+  --muted-foreground: #64748b;
+  --accent: #1565C0;
+  --accent-foreground: #ffffff;
   --destructive: #e93d3d;
   --destructive-foreground: #ffffff;
   --border: #cbd5e0;
   --input: #cbd5e0;
-  --ring: #FFC72C;
-  --chart-1: #FFC72C;
-  --chart-2: #188bf6;
-  --chart-3: #FFC72C;
-  --chart-4: #596654;
+  --ring: #1565C0;
+  --chart-1: #1565C0;
+  --chart-2: #0D47A1;
+  --chart-3: #1976D2;
+  --chart-4: #64748b;
   --chart-5: #e93d3d;
-  --sidebar: #000000;
+  --sidebar: #0D47A1;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #FFC72C;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #1a1a1a;
+  --sidebar-primary: #1565C0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1565C0;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #333333;
-  --sidebar-ring: #FFC72C;
+  --sidebar-border: #1976D2;
+  --sidebar-ring: #1565C0;
 }
 
 .dark {
@@ -87,32 +87,32 @@
   --card-foreground: #ffffff;
   --popover: #1a1a1a;
   --popover-foreground: #ffffff;
-  --primary: #FFC72C;
+  --primary: #42A5F5;
   --primary-foreground: #000000;
-  --secondary: #188bf6;
+  --secondary: #1976D2;
   --secondary-foreground: #ffffff;
   --muted: #2a2a2a;
   --muted-foreground: #a0a0a0;
-  --accent: #FFC72C;
+  --accent: #42A5F5;
   --accent-foreground: #000000;
   --destructive: #e93d3d;
   --destructive-foreground: #ffffff;
   --border: #333333;
   --input: #333333;
-  --ring: #FFC72C;
-  --chart-1: #FFC72C;
-  --chart-2: #188bf6;
-  --chart-3: #FFC72C;
-  --chart-4: #596654;
+  --ring: #42A5F5;
+  --chart-1: #42A5F5;
+  --chart-2: #1976D2;
+  --chart-3: #1565C0;
+  --chart-4: #64748b;
   --chart-5: #e93d3d;
-  --sidebar: #0a0a0a;
+  --sidebar: #0D47A1;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #FFC72C;
+  --sidebar-primary: #42A5F5;
   --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #1a1a1a;
+  --sidebar-accent: #1565C0;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #333333;
-  --sidebar-ring: #FFC72C;
+  --sidebar-border: #1976D2;
+  --sidebar-ring: #42A5F5;
 }
 
 @layer base {

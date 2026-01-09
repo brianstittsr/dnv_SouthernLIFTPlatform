@@ -1,0 +1,6 @@
+# KDM Assets Directory
+
+This directory is for storing downloaded assets from the KDM Associates website.
+
+Run the download script to populate:
+npx ts-node scripts/download-kdm-assets.ts

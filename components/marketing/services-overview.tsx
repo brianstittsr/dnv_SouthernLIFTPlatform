@@ -4,55 +4,55 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Wrench, Cpu, Brain, CheckCircle } from "lucide-react";
+import { ArrowRight, Globe, Cpu, FileText, Megaphone, BarChart3, Briefcase, CheckCircle } from "lucide-react";
 
 const services = [
   {
-    title: "V+ EDGE™",
-    tagline: "Start Smart. Build Fast.",
+    title: "Digital Solutions",
+    tagline: "Modernize your business presence.",
     description:
-      "Your entry point to transformation. Modular platform covering lean, automation, sustainability, quality, and workforce strategy.",
-    icon: Wrench,
+      "Comprehensive digital transformation services including websites, digital ecosystems, and e-commerce solutions for government contractors.",
+    icon: Globe,
     color: "text-primary",
     bgColor: "bg-primary/10",
-    href: "/v-edge",
+    href: "/services#digital",
     features: [
-      "Hands-on implementation with real-time KPIs",
-      "Modular design for immediate impact",
-      "Ideal for companies with 25–500 employees",
-      "No ERP overhaul required",
+      "Professional website design and development",
+      "Integrated digital platforms",
+      "E-commerce for B2B and B2G transactions",
+      "Mobile-responsive solutions",
     ],
   },
   {
-    title: "TwinEDGE™",
-    tagline: "Simulate. Optimize. Reshore with Confidence.",
+    title: "Technology Solutions",
+    tagline: "Gain a competitive edge.",
     description:
-      "Digital twin technology for workflow modeling, scenario testing, and supply chain redesign before making costly changes.",
+      "Cutting-edge technology implementations including blockchain, CRM & AI integration, and cybersecurity solutions.",
     icon: Cpu,
     color: "text-secondary",
     bgColor: "bg-secondary/10",
-    href: "/twinedge",
+    href: "/services#technology",
     features: [
-      "Predictive simulations & ROI modeling",
-      "Smart reshoring and supply chain reengineering",
-      "Factory layout and flow optimization",
-      "Machine maintenance prediction",
+      "Blockchain for supply chain transparency",
+      "CRM enhanced with AI capabilities",
+      "Federal compliance cybersecurity",
+      "Technology integration consulting",
     ],
   },
   {
-    title: "IntellEDGE™",
-    tagline: "Decide Smarter. Lead Stronger.",
+    title: "Grants & RFPs",
+    tagline: "Win more contracts.",
     description:
-      "Executive-grade decision-making tools with predictive analytics and AI-powered insights for leadership teams.",
-    icon: Brain,
+      "Expert assistance navigating government funding opportunities with proposal management and grant writing services.",
+    icon: FileText,
     color: "text-accent",
     bgColor: "bg-accent/10",
-    href: "/intelledge",
+    href: "/services#grants",
     features: [
-      "Data-driven real-time dashboards",
-      "Prescriptive decision tools",
-      "Scenario modeling for executive strategy",
-      "Enhanced visibility and long-term planning",
+      "Quick Bid/No Bid assessments",
+      "End-to-end proposal management",
+      "Professional grant writing",
+      "Compliance review and submission",
     ],
   },
 ];
@@ -64,14 +64,13 @@ export function ServicesOverview() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <Badge variant="outline" className="mb-4">
-            Modular Industry 4.0/5.0 for Manufacturers
+            Driving Next Level Results
           </Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            The EDGE™ Platform
+            With Accredited Subject Matter Experts
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            We help small- and mid-sized manufacturers drive real, scalable progress. 
-            Start where you need it most — then expand with purpose, precision, and measurable results.
+            Our team offers a range of services to help scale success for MBEs through our digital hub and expert network.
           </p>
         </div>
 
@@ -101,7 +100,7 @@ export function ServicesOverview() {
                 </ul>
                 <Button variant="ghost" className="group/btn p-0 h-auto" asChild>
                   <Link href={service.href}>
-                    Learn more
+                    Get Started
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                   </Link>
                 </Button>
@@ -113,11 +112,11 @@ export function ServicesOverview() {
         {/* CTA */}
         <div className="mt-16 text-center">
           <p className="text-muted-foreground mb-4">
-            Not sure which solution is right for you?
+            Ready to grow your government contracting business?
           </p>
           <Button size="lg" asChild>
             <Link href="/contact">
-              Schedule a Discovery Call
+              Schedule an MBE Introductory Session
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

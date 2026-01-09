@@ -15,69 +15,66 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Menu,
-  ChevronDown,
-  Factory,
-  Cpu,
-  Brain,
-  FileCheck,
-  Users,
-  Wrench,
-  BarChart3,
   Globe,
-  Zap,
+  Users,
+  FileText,
+  Briefcase,
+  BarChart3,
+  Cpu,
+  Megaphone,
+  Calendar,
+  Building2,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const services = [
   {
-    title: "V+ EDGE™",
-    href: "/v-edge",
-    description: "Modular Industry 4.0 transformation platform",
-    icon: Wrench,
+    title: "Digital Solutions",
+    href: "/services",
+    description: "Websites, Digital Ecosystems, E-commerce",
+    icon: Globe,
     items: [
-      { title: "Lean Manufacturing", href: "/v-edge/lean" },
-      { title: "Automation", href: "/v-edge/automation" },
-      { title: "Quality & ISO", href: "/v-edge/quality" },
-      { title: "Digital Transformation", href: "/v-edge/digital" },
-      { title: "Workforce Development", href: "/v-edge/workforce" },
-      { title: "Reshoring", href: "/v-edge/reshore" },
+      { title: "Websites", href: "/services#digital" },
+      { title: "Digital Ecosystems", href: "/services#digital" },
+      { title: "E-commerce", href: "/services#digital" },
     ],
   },
   {
-    title: "TwinEDGE™",
-    href: "/twinedge",
-    description: "Digital twin technology for simulation and optimization",
+    title: "Technology Solutions",
+    href: "/services",
+    description: "Blockchain, CRM & AI Integration, Cybersecurity",
     icon: Cpu,
     items: [
-      { title: "Process Simulation", href: "/twinedge/process" },
-      { title: "Supply Chain Modeling", href: "/twinedge/supply-chain" },
-      { title: "Predictive Maintenance", href: "/twinedge/maintenance" },
+      { title: "Blockchain", href: "/services#technology" },
+      { title: "CRM & AI Integration", href: "/services#technology" },
+      { title: "Cybersecurity", href: "/services#technology" },
     ],
   },
   {
-    title: "IntellEDGE™",
-    href: "/intelledge",
-    description: "Executive decision intelligence and AI-powered insights",
-    icon: Brain,
+    title: "Grants & RFPs",
+    href: "/services",
+    description: "Proposal Management, Grant Writing",
+    icon: FileText,
     items: [
-      { title: "Command Center", href: "/intelledge/command" },
-      { title: "Analytics Dashboard", href: "/intelledge/analytics" },
-      { title: "Ask IntellEDGE", href: "/intelledge/ask" },
+      { title: "Quick Bid/No Bid", href: "/services#grants" },
+      { title: "Proposal Management", href: "/services#grants" },
+      { title: "Grant Writing", href: "/services#grants" },
     ],
   },
 ];
 
 const resources = [
-  { title: "Case Studies", href: "/case-studies", icon: FileCheck },
-  { title: "Resources", href: "/resources", icon: BarChart3 },
-  { title: "Events", href: "/events", icon: Globe },
-  { title: "FAQ", href: "/faq", icon: Zap },
+  { title: "FAQ", href: "/faq", icon: FileText },
+  { title: "Events", href: "/events", icon: Calendar },
+  { title: "Membership", href: "/membership", icon: Users },
 ];
 
 const companyLinks = [
   { title: "About Us", href: "/about", icon: Globe },
-  { title: "Leadership Team", href: "/leadership", icon: Users },
-  { title: "Core Team", href: "/company", icon: Users },
+  { title: "KDM Team", href: "/team", icon: Users },
+  { title: "Our Work", href: "/our-work", icon: Building2 },
+  { title: "Partners", href: "/partners", icon: Users },
 ];
 
 export function Navbar() {
@@ -87,19 +84,15 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/VPlus_logo.webp"
-            alt="Strategic Value+ Logo"
-            width={48}
+            src="/kdm-logo.png"
+            alt="KDM & Associates Logo"
+            width={180}
             height={48}
             className="h-12 w-auto"
             priority
           />
-          <div className="flex flex-col">
-            <span className="text-lg font-bold leading-none">Strategic Value+</span>
-            <span className="text-xs text-muted-foreground">Transforming U.S. Manufacturing</span>
-          </div>
         </Link>
 
         {/* Desktop Navigation */}
@@ -193,10 +186,10 @@ export function Navbar() {
             <Link href="/sign-in">Sign In</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/sign-up">Sign Up</Link>
+            <Link href="/sign-up">Join KDM</Link>
           </Button>
           <Button asChild>
-            <Link href="/contact">Get Assessment</Link>
+            <Link href="/contact">Schedule Session</Link>
           </Button>
         </div>
 
@@ -274,12 +267,12 @@ export function Navbar() {
                 </Button>
                 <Button variant="secondary" className="w-full" asChild>
                   <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
-                    Sign Up
+                    Join KDM
                   </Link>
                 </Button>
                 <Button className="w-full" asChild>
                   <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                    Get Assessment
+                    Schedule Session
                   </Link>
                 </Button>
               </div>

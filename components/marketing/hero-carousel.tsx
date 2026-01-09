@@ -30,63 +30,51 @@ export interface HeroSlide {
 const defaultSlides: HeroSlide[] = [
   {
     id: "1",
-    badge: "Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence",
-    headline: "Win OEM Contracts.",
-    highlightedText: "Transform",
-    subheadline: "We help small- and mid-sized U.S. manufacturers become qualified suppliers through ISO certification, operational readiness, and supplier development.",
-    benefits: ["OEM Supplier Qualification", "ISO/QMS Certification", "Industry 4.0 Ready"],
-    primaryCta: { text: "Get Your Free Assessment", href: "/contact" },
-    secondaryCta: { text: "See Success Stories", href: "/case-studies" },
+    badge: "MBDA Federal Procurement Center",
+    headline: "Powering Growth for",
+    highlightedText: "Emerging",
+    subheadline: "KDM & Associates focuses on best practices in government contracting. We call it \"What Works\" because it drives greater success for Small Businesses.",
+    benefits: ["Federal Contract Opportunities", "Strategic Teaming", "Government Introductions"],
+    primaryCta: { text: "Schedule MBE Session", href: "/contact" },
+    secondaryCta: { text: "Learn More", href: "/about" },
     isPublished: true,
     order: 1,
   },
   {
     id: "2",
-    badge: "V+ TwinEDGE™ — Digital Twin Solutions",
-    headline: "Visualize Your Factory.",
-    highlightedText: "Optimize",
-    subheadline: "Create digital replicas of your manufacturing processes to simulate, analyze, and improve operations before making costly physical changes.",
-    benefits: ["Real-time Monitoring", "Predictive Analytics", "Process Simulation"],
-    primaryCta: { text: "Explore Digital Twins", href: "/services/twinedge" },
-    secondaryCta: { text: "Watch Demo", href: "/demo" },
+    badge: "Government Contracting Services",
+    headline: "Build, Grow &",
+    highlightedText: "Scale",
+    subheadline: "We help minority-owned businesses navigate the government procurement process and win government contracts through strategic teaming and capacity building.",
+    benefits: ["8(a) & WOSB Guidance", "Mentor-Protégé Programs", "SBA Certifications"],
+    primaryCta: { text: "Get Started", href: "/contact" },
+    secondaryCta: { text: "View Services", href: "/services" },
     isPublished: true,
     order: 2,
   },
   {
     id: "3",
-    badge: "V+ IntellEDGE™ — AI-Powered Insights",
-    headline: "Make Smarter Decisions.",
-    highlightedText: "Faster",
-    subheadline: "Leverage artificial intelligence to gain actionable insights from your manufacturing data, predict maintenance needs, and optimize production schedules.",
-    benefits: ["AI-Driven Analytics", "Predictive Maintenance", "Smart Scheduling"],
-    primaryCta: { text: "Discover AI Solutions", href: "/services/intelledge" },
-    secondaryCta: { text: "Learn More", href: "/about" },
+    badge: "What Works Solutions",
+    headline: "Drive Next Level",
+    highlightedText: "Results",
+    subheadline: "Our team offers a range of free and premium services to help scale success for MBEs once they join as KDM Members through our digital hub.",
+    benefits: ["Digital Solutions", "Technology Integration", "Proposal Support"],
+    primaryCta: { text: "Become a Member", href: "/sign-up" },
+    secondaryCta: { text: "Explore Services", href: "/services" },
     isPublished: true,
     order: 3,
   },
   {
     id: "4",
-    badge: "Reshoring Initiative Partner",
-    headline: "Bring Manufacturing",
-    highlightedText: "Home",
-    subheadline: "Join the reshoring movement. We help companies navigate the complexities of bringing manufacturing back to the United States with comprehensive support.",
-    benefits: ["Supply Chain Security", "Quality Control", "Job Creation"],
-    primaryCta: { text: "Start Reshoring", href: "/services/reshoring" },
-    secondaryCta: { text: "View Case Studies", href: "/case-studies" },
+    badge: "Solution Provider Network",
+    headline: "Join Our",
+    highlightedText: "Community",
+    subheadline: "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support MBEs on their journey to sustainability and success.",
+    benefits: ["Partner Network", "Resource Sharing", "Collaborative Growth"],
+    primaryCta: { text: "Become a Provider", href: "/partners" },
+    secondaryCta: { text: "Contact Us", href: "/contact" },
     isPublished: true,
     order: 4,
-  },
-  {
-    id: "5",
-    badge: "NEW — AntiFragile Supply Chain Analysis",
-    headline: "Build Resilient",
-    highlightedText: "Supply Chains",
-    subheadline: "Go beyond risk mitigation. Our AntiFragile methodology helps your supply chain actually grow stronger from disruptions, volatility, and uncertainty.",
-    benefits: ["Stress Testing", "Redundancy Mapping", "Adaptive Strategies"],
-    primaryCta: { text: "Schedule Discovery Call", href: "/antifragile" },
-    secondaryCta: { text: "Learn More", href: "/antifragile" },
-    isPublished: true,
-    order: 5,
   },
 ];
 
@@ -145,7 +133,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
             {/* Headline */}
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               {currentSlide.headline}{" "}
-              <span className="text-primary">{currentSlide.highlightedText}</span> Your Manufacturing.
+              <span className="text-primary">{currentSlide.highlightedText}</span> Businesses.
             </h1>
 
             {/* Subheadline */}
@@ -216,27 +204,27 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
 
           {/* Trust Indicators */}
           <div className="mt-16 pt-8 border-t border-white/10">
-            <p className="text-sm text-gray-400 mb-6">Certifications & Partnerships</p>
+            <p className="text-sm text-gray-400 mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">ISO 9001</span>
-                <span className="text-xs text-gray-400">Certified</span>
+                <span className="text-lg font-bold text-white">300+</span>
+                <span className="text-xs text-gray-400">MBE Clients</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">IATF 16949</span>
-                <span className="text-xs text-gray-400">Automotive</span>
+                <span className="text-lg font-bold text-white">14+</span>
+                <span className="text-xs text-gray-400">Shared Outcome Agreements</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">MEP</span>
-                <span className="text-xs text-gray-400">Network Partner</span>
+                <span className="text-lg font-bold text-white">$50B+</span>
+                <span className="text-xs text-gray-400">Contract Transactions</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">Reshoring</span>
-                <span className="text-xs text-gray-400">Initiative</span>
+                <span className="text-lg font-bold text-white">100+</span>
+                <span className="text-xs text-gray-400">Resource Partners</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">NIST</span>
-                <span className="text-xs text-gray-400">Aligned</span>
+                <span className="text-lg font-bold text-white">MBDA</span>
+                <span className="text-xs text-gray-400">Federal Procurement Center</span>
               </div>
             </div>
           </div>

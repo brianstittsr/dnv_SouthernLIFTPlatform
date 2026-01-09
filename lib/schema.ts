@@ -739,31 +739,45 @@ export interface NDADocumentDoc {
 export interface EventDoc {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   shortDescription?: string;
   // Date/Time
   startDate: Timestamp;
-  endDate?: Timestamp;
+  startTime?: string;
+  endDate: Timestamp;
+  endTime?: string;
   timezone?: string;
   isAllDay?: boolean;
   // Location
   locationType: "virtual" | "in-person" | "hybrid";
-  location?: string;
+  location: string;
   virtualLink?: string;
   // Registration
   registrationUrl?: string;
   registrationDeadline?: Timestamp;
   maxAttendees?: number;
-  currentAttendees?: number;
+  currentAttendees: number;
   // Display
   imageUrl?: string;
-  category?: "webinar" | "workshop" | "conference" | "networking" | "training" | "other";
-  tags?: string[];
+  category: "webinar" | "workshop" | "conference" | "networking" | "training" | "briefing" | "showcase" | "other";
+  tags: string[];
   // Status
   status: "draft" | "published" | "cancelled" | "completed";
-  isFeatured?: boolean;
+  isFeatured: boolean;
+  // KDM Ticketing Extensions
+  isTicketed?: boolean;
+  ticketTypes?: {
+    name: string;
+    price: number;
+    description?: string;
+    maxQuantity?: number;
+    soldCount: number;
+  }[];
+  sponsorIds?: string[];
+  speakerIds?: string[];
+  recordingUrl?: string;
   // Metadata
-  createdBy?: string;
+  createdBy: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -1470,11 +1484,46 @@ export const COLLECTIONS = {
   DOCUMENTS: "documents",
   SERVICES: "services",
   CERTIFICATIONS: "certifications",
+  CAPABILITIES: "capabilities",
   ACTIVITIES: "activities",
   NOTES: "notes",
   MILESTONES: "milestones",
   ROCK_MILESTONES: "rockMilestones",
-  CAPABILITIES: "capabilities",
+  TEAM_MEMBERS: "teamMembers",
+  TRACTION_SCORECARD_METRICS: "tractionScorecardMetrics",
+  TRACTION_ISSUES: "tractionIssues",
+  TRACTION_TODOS: "tractionTodos",
+  TRACTION_MEETINGS: "tractionMeetings",
+  CALENDAR_EVENTS: "calendarEvents",
+  BOOK_CALL_LEADS: "bookCallLeads",
+  CONTACT_MESSAGES: "contactMessages",
+  INTEGRATIONS: "integrations",
+  SETTINGS: "settings",
+  HERO_SLIDES: "heroSlides",
+  POPUP_CONFIG: "popupConfig",
+  SOFTWARE_KEYS: "softwareKeys",
+  WHITE_LABEL_CONFIG: "whiteLabelConfig",
+  NDA_TEMPLATES: "ndaTemplates",
+  NDA_AGREEMENTS: "ndaAgreements",
+  LINKEDIN_POSTS: "linkedinPosts",
+  BUG_REPORTS: "bugReports",
+  AI_WORKFORCE_AGENTS: "aiWorkforceAgents",
+  SUPPLIER_PROFILES: "supplierProfiles",
+  AFFILIATE_PROFILES: "affiliateProfiles",
+  EOS_L10_MEETING_TEMPLATES: "eosL10MeetingTemplates",
+  EOS_L10_MEETING_INSTANCES: "eosL10MeetingInstances",
+  EOS_VTO: "eosVTO", // Vision, Traction, Organization
+  EOS_PEOPLE_ANALYSIS: "eosPeopleAnalysis",
+  EOS_GWC_SCORES: "eosGWCscores", // Gets it, Wants it, Capacity to do it
+  EOS_CORE_VALUES: "eosCoreValues",
+  // KDM Consortium Platform Collections
+  MEMBERSHIPS: "memberships",
+  TICKETS: "tickets",
+  PROMO_CODES: "promoCodes",
+  SPONSORS: "sponsors",
+  PURSUIT_BRIEFS: "pursuitBriefs",
+  BUYERS: "buyers",
+  SETTLEMENTS: "settlements",
   // Affiliate Networking Collections
   AFFILIATE_BIOGRAPHIES: "affiliateBiographies",
   GAINS_PROFILES: "gainsProfiles",
@@ -1486,10 +1535,6 @@ export const COLLECTIONS = {
   AI_MATCH_SUGGESTIONS: "aiMatchSuggestions",
   // Strategic Partners
   STRATEGIC_PARTNERS: "strategicPartners",
-  // Team Members
-  TEAM_MEMBERS: "teamMembers",
-  // Platform Settings
-  PLATFORM_SETTINGS: "platformSettings",
   // Apollo Purchased Contacts
   APOLLO_PURCHASED_CONTACTS: "apolloPurchasedContacts",
   // Apollo Saved Lists
@@ -1500,27 +1545,20 @@ export const COLLECTIONS = {
   THOMASNET_SAVED_LISTS: "thomasnetSavedLists",
   // TBMNC Supplier Readiness
   TBMNC_SUPPLIERS: "tbmncSuppliers",
-  // Traction/EOS Collections
+  // Traction/EOS Collections (already defined above, removed duplicates)
   TRACTION_ROCKS: "tractionRocks",
-  TRACTION_SCORECARD_METRICS: "tractionScorecardMetrics",
-  TRACTION_ISSUES: "tractionIssues",
-  TRACTION_TODOS: "tractionTodos",
-  TRACTION_MEETINGS: "tractionMeetings",
   TRACTION_TEAM_MEMBERS: "tractionTeamMembers",
   // GoHighLevel Integration Collections
   GHL_INTEGRATIONS: "gohighlevelIntegrations",
   GHL_SYNC_LOGS: "gohighlevelSyncLogs",
   GHL_WORKFLOWS: "ghlWorkflows",
   GHL_IMPORTED_WORKFLOWS: "ghlImportedWorkflows",
-  // Calendar Events (built-in calendar)
-  CALENDAR_EVENTS: "calendarEvents",
   // 1-to-1 Scheduling Queue
   ONE_TO_ONE_QUEUE: "oneToOneQueue",
   // Team Member Availability & Bookings
   TEAM_MEMBER_AVAILABILITY: "teamMemberAvailability",
   BOOKINGS: "bookings",
-  // Software License Keys
-  SOFTWARE_KEYS: "softwareKeys",
+  // Software License Keys (already defined above, removed duplicate)
   KEY_ACTIVATIONS: "keyActivations",
   // White-Label Deployments
   WHITE_LABEL_DEPLOYMENTS: "whiteLabelDeployments",
@@ -1529,13 +1567,12 @@ export const COLLECTIONS = {
   // Mattermost Playbooks
   MATTERMOST_PLAYBOOKS: "mattermostPlaybooks",
   MATTERMOST_PLAYBOOK_RUNS: "mattermostPlaybookRuns",
-  // Book a Call Leads
-  BOOK_CALL_LEADS: "bookCallLeads",
   // Events
   EVENTS: "events",
-  // NDA Management
-  NDA_TEMPLATES: "ndaTemplates",
+  // NDA Management (NDA_TEMPLATES already defined above, removed duplicate)
   NDA_DOCUMENTS: "ndaDocuments",
+  // Platform Settings
+  PLATFORM_SETTINGS: "platformSettings",
 } as const;
 
 // ============================================================================
@@ -1741,4 +1778,190 @@ export const generateId = (collectionName: string): string | null => {
  * - activities: entityType + entityId + createdAt (composite)
  * - actionItems: assigneeId + status + dueDate (composite)
  * - rocks: ownerId + quarter (composite)
+ * - memberships: userId + status (composite)
+ * - tickets: eventId + status (composite)
+ * - pursuits: status + publishedAt (composite)
  */
+
+// ============================================================================
+// KDM CONSORTIUM PLATFORM EXTENSIONS
+// ============================================================================
+
+/** Membership document for KDM Consortium */
+export interface MembershipDoc extends BaseDocument {
+  userId: string;
+  tier: "core-capture" | "pursuit-pack" | "custom";
+  status: "active" | "past_due" | "cancelled" | "trialing";
+  billingCycle: "monthly" | "annual";
+  amount: number;
+  stripeSubscriptionId: string;
+  stripeCustomerId: string;
+  currentPeriodStart: Timestamp;
+  currentPeriodEnd: Timestamp;
+  cancelAtPeriodEnd: boolean;
+  trialEnd?: Timestamp;
+  metadata: {
+    pursuitPackCredits?: number;
+    conciergeHoursUsed?: number;
+    conciergeHoursLimit?: number;
+  };
+}
+
+/** Event ticket document for KDM events */
+export interface TicketDoc extends BaseDocument {
+  eventId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  ticketType: string;
+  price: number;
+  status: "pending" | "paid" | "cancelled" | "refunded";
+  stripePaymentIntentId: string;
+  qrCode: string;
+  checkedIn: boolean;
+  checkedInAt?: Timestamp;
+  checkedInBy?: string;
+  promoCode?: string;
+  discount?: number;
+  attendeeInfo?: {
+    company?: string;
+    title?: string;
+    phone?: string;
+    dietaryRestrictions?: string;
+    specialNeeds?: string;
+  };
+}
+
+/** Promo code document */
+export interface PromoCodeDoc extends BaseDocument {
+  code: string;
+  description: string;
+  discountType: "percentage" | "fixed";
+  discountValue: number;
+  maxUses?: number;
+  usedCount: number;
+  validFrom: Timestamp;
+  validUntil: Timestamp;
+  applicableTo: "all" | "events" | "memberships";
+  eventIds?: string[];
+  isActive: boolean;
+}
+
+/** Sponsor document for KDM events and platform */
+export interface SponsorDoc extends BaseDocument {
+  companyName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  tier: "platinum" | "gold" | "silver" | "bronze" | "custom";
+  amount: number;
+  status: "prospect" | "committed" | "paid" | "fulfilled" | "inactive";
+  benefits: string[];
+  benefitsFulfilled: string[];
+  logoUrl: string;
+  websiteUrl: string;
+  description: string;
+  eventIds: string[];
+  invoiceUrl?: string;
+  stripeInvoiceId?: string;
+  paidAt?: Timestamp;
+  sponsorshipPeriodStart: Timestamp;
+  sponsorshipPeriodEnd: Timestamp;
+  analytics?: {
+    impressions: number;
+    clicks: number;
+    leads: number;
+  };
+}
+
+/** Pursuit brief document for opportunity matching */
+export interface PursuitBriefDoc extends BaseDocument {
+  opportunityId?: string;
+  title: string;
+  description: string;
+  agency: string;
+  naicsCode: string;
+  setAside?: string;
+  estimatedValue: number;
+  dueDate: Timestamp;
+  requiredCapabilities: string[];
+  requiredCompliance: string[];
+  geographicPreference?: string;
+  status: "published" | "team-forming" | "proposal-active" | "submitted" | "won" | "lost" | "archived";
+  teamMembers: string[];
+  interestedMembers: string[];
+  publishedAt: Timestamp;
+  publishedBy: string;
+  solicitation?: {
+    number: string;
+    url?: string;
+    type: string;
+  };
+}
+
+/** Buyer contact document for CRM */
+export interface BuyerDoc extends BaseDocument {
+  name: string;
+  title: string;
+  organization: string;
+  organizationType: "federal" | "state" | "local" | "prime" | "commercial";
+  email: string;
+  phone?: string;
+  office?: string;
+  agency?: string;
+  focus: string[];
+  lastContactDate?: Timestamp;
+  nextFollowUpDate?: Timestamp;
+  relationshipStrength: "cold" | "warm" | "hot";
+  briefingsAttended: number;
+  meetingsHeld: number;
+  opportunitiesShared: number;
+  notes?: string;
+}
+
+/** Settlement statement document for revenue tracking */
+export interface SettlementDoc extends BaseDocument {
+  periodStart: Timestamp;
+  periodEnd: Timestamp;
+  programRevenues: {
+    membershipDues: number;
+    eventTickets: number;
+    sponsorFees: number;
+    pursuitPacks: number;
+    other: number;
+    total: number;
+  };
+  directProgramCosts: {
+    processorFees: number;
+    chargebacks: number;
+    refunds: number;
+    fraudLosses: number;
+    thirdPartyCosts: number;
+    total: number;
+  };
+  platformRunCostAllowance: number;
+  costRecoveryPool: number;
+  netProgramRevenue: number;
+  kdmShare: number;
+  vplusShare: number;
+  status: "draft" | "pending" | "approved" | "paid";
+  pdfUrl?: string;
+  notes?: string;
+}
+
+/** Extended Event fields for KDM ticketing (merged into EventDoc above) */
+export interface EventDocKDMExtensions {
+  startTime?: string;
+  endTime?: string;
+  isTicketed?: boolean;
+  ticketTypes?: {
+    name: string;
+    price: number;
+    description?: string;
+    maxQuantity?: number;
+    soldCount: number;
+  }[];
+  sponsorIds?: string[];
+  speakerIds?: string[];
+  recordingUrl?: string;
+}

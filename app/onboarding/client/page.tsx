@@ -284,15 +284,15 @@ export default function ClientOnboardingPage() {
         <div className="container flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/VPlus_logo.webp"
-              alt="Strategic Value+ Logo"
+              src="/kdm-logo.png"
+              alt="KDM & Associates Logo"
               width={40}
               height={40}
               className="h-10 w-auto"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-bold leading-none">Strategic Value+</span>
-              <span className="text-xs text-muted-foreground">Client Onboarding</span>
+              <span className="text-lg font-bold leading-none">KDM & Associates</span>
+              <span className="text-xs text-muted-foreground">Member Onboarding</span>
             </div>
           </Link>
           <div className="flex items-center gap-4">

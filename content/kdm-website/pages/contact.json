@@ -1,0 +1,43 @@
+{
+  "pageId": "contact",
+  "title": "Contact Us | KDM & Associates",
+  "slug": "/contact",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "page-header",
+      "content": {
+        "title": "Contact Us",
+        "breadcrumb": [
+          { "label": "Home", "href": "/" },
+          { "label": "Contact Us", "href": "/contact" }
+        ]
+      }
+    },
+    {
+      "id": "contact-info",
+      "type": "contact-details",
+      "content": {
+        "companyName": "KDM & Associates",
+        "address": "300 New Jersey Avenue Northwest, Washington, District of Columbia 20001, United States",
+        "phone": "202-469-3423",
+        "email": "info@kdm-assoc.com"
+      }
+    },
+    {
+      "id": "contact-form",
+      "type": "form",
+      "content": {
+        "title": "Leave a Message",
+        "submitLabel": "Send Message",
+        "fields": [
+          { "name": "name", "type": "text", "label": "Name", "required": true },
+          { "name": "email", "type": "email", "label": "Email", "required": true },
+          { "name": "phone", "type": "tel", "label": "Phone", "required": false },
+          { "name": "subject", "type": "text", "label": "Subject", "required": true },
+          { "name": "message", "type": "textarea", "label": "Message", "required": true }
+        ]
+      }
+    }
+  ]
+}

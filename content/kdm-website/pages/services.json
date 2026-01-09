@@ -1,0 +1,141 @@
+{
+  "pageId": "services",
+  "title": "Services | KDM & Associates",
+  "slug": "/services",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "page-header",
+      "content": {
+        "title": "Our Services",
+        "subtitle": "Driving Next Level Results with Accredited Subject Matter Experts"
+      }
+    },
+    {
+      "id": "services-detail",
+      "type": "services-detail",
+      "services": [
+        {
+          "id": "digital-solutions",
+          "title": "Digital Solutions",
+          "icon": "monitor",
+          "description": "Comprehensive digital transformation services to modernize your business presence and operations.",
+          "offerings": [
+            {
+              "name": "Websites",
+              "description": "Professional website design and development tailored for government contractors"
+            },
+            {
+              "name": "Digital Ecosystems",
+              "description": "Integrated digital platforms connecting your business operations"
+            },
+            {
+              "name": "E-commerce",
+              "description": "Online commerce solutions for B2B and B2G transactions"
+            }
+          ]
+        },
+        {
+          "id": "technology-solutions",
+          "title": "Technology Solutions",
+          "icon": "cpu",
+          "description": "Cutting-edge technology implementations to give your business a competitive edge.",
+          "offerings": [
+            {
+              "name": "Blockchain",
+              "description": "Secure, transparent blockchain solutions for supply chain and contracts"
+            },
+            {
+              "name": "CRM & AI Integration",
+              "description": "Customer relationship management enhanced with artificial intelligence"
+            },
+            {
+              "name": "Cybersecurity",
+              "description": "Comprehensive security solutions meeting federal compliance requirements"
+            }
+          ]
+        },
+        {
+          "id": "grants-nofo-rfps",
+          "title": "Grants-NOFO-RFPs",
+          "icon": "file-text",
+          "description": "Expert assistance navigating the complex world of government funding opportunities.",
+          "offerings": [
+            {
+              "name": "Quick Bid/No Bid",
+              "description": "Rapid assessment of opportunity fit and win probability"
+            },
+            {
+              "name": "Proposal Management",
+              "description": "End-to-end proposal development and submission management"
+            },
+            {
+              "name": "Proposal & Grant Writing",
+              "description": "Professional writing services for winning proposals and grant applications"
+            }
+          ]
+        },
+        {
+          "id": "marketing-solutions",
+          "title": "Marketing Solutions",
+          "icon": "megaphone",
+          "description": "Strategic marketing services to increase your visibility and market reach.",
+          "offerings": [
+            {
+              "name": "Import & Export",
+              "description": "International trade marketing and market entry strategies"
+            },
+            {
+              "name": "Content Creation",
+              "description": "Professional content development for all marketing channels"
+            },
+            {
+              "name": "PR/News Distribution",
+              "description": "Public relations and media outreach services"
+            }
+          ]
+        },
+        {
+          "id": "operations-performance",
+          "title": "Operations/Performance",
+          "icon": "bar-chart",
+          "description": "Optimize your business operations for peak performance and growth.",
+          "offerings": [
+            {
+              "name": "Business Assessments",
+              "description": "Comprehensive evaluation of your business capabilities and readiness"
+            },
+            {
+              "name": "Capital Readiness",
+              "description": "Financial preparation and access to capital resources"
+            },
+            {
+              "name": "Strategic Business Plans",
+              "description": "Development of actionable strategic plans for growth"
+            }
+          ]
+        },
+        {
+          "id": "contracting-vehicles",
+          "title": "Contracting Vehicles",
+          "icon": "briefcase",
+          "description": "Navigate government contracting pathways and certification requirements.",
+          "offerings": [
+            {
+              "name": "Certifications",
+              "description": "Guidance on obtaining 8(a), WOSB, SDVOSB, HUBZone and other certifications"
+            },
+            {
+              "name": "Mentor-Protégé & JVs",
+              "description": "Strategic partnership development and joint venture formation"
+            },
+            {
+              "name": "SBA Programs",
+              "description": "Navigation of Small Business Administration programs and benefits"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

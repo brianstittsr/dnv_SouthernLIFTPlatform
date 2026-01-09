@@ -1,0 +1,22 @@
+{
+  "downloadedAt": "2026-01-09T20:21:29.183Z",
+  "baseUrl": "https://kdm-assoc.com",
+  "outputDir": "C:\\Users\\Buyer\\Documents\\CascadeProjects\\KDMAssociates\\svp-platform\\public\\kdm-assets",
+  "results": [
+    {
+      "url": "https://kdm-assoc.com/images/logo.png",
+      "success": false,
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://kdm-assoc.com/images/logo-white.png",
+      "success": false,
+      "error": "HTTP 404"
+    },
+    {
+      "url": "https://kdm-assoc.com/images/favicon.ico",
+      "success": false,
+      "error": "HTTP 404"
+    }
+  ]
+}

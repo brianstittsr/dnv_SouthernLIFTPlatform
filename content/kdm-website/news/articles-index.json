@@ -1,0 +1,98 @@
+{
+  "category": "news",
+  "title": "Latest News",
+  "description": "Stay updated with the latest news and insights from KDM & Associates",
+  "articles": [
+    {
+      "id": "breaking-barriers-emerging-technologies",
+      "title": "Breaking Barriers: How Emerging Technologies Are Empowering Minority-Owned Businesses in Government Contracting",
+      "slug": "breaking-barriers-how-emerging-technologies-are-empowering-minority-owned-businesses-in-government-contracting",
+      "sourceUrl": "https://kdm-assoc.com/detail/breaking-barriers-how-emerging-technologies-are-empowering-minority-owned-businesses-in-government-contracting",
+      "category": "news-blog"
+    },
+    {
+      "id": "unlocking-opportunities-drone-industry",
+      "title": "Unlocking Opportunities for Minority-Owned Businesses in Drone Industry with DWS Drone School",
+      "slug": "unlocking-opportunities-for-minority-owned-businesses-in-drone-industry-with-dws-drone-school",
+      "sourceUrl": "https://kdm-assoc.com/detail/unlocking-opportunities-for-minority-owned-businesses-in-drone-industry-with-dws-drone-school",
+      "category": "news-blog"
+    },
+    {
+      "id": "cyber-threat-preparedness",
+      "title": "Is Your Business Prepared for the Next Cyber Threat?",
+      "slug": "is-your-business-prepared-for-the-next-cyber-threat",
+      "sourceUrl": "https://kdm-assoc.com/detail/is-your-business-prepared-for-the-next-cyber-threat",
+      "category": "news-blog"
+    },
+    {
+      "id": "newsletter-april-2023",
+      "title": "What Works News U Can Use Newsletter - April 2023",
+      "slug": "what-works-news-u-can-use-newsletter-april-2023",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-april-2023",
+      "category": "what_works"
+    },
+    {
+      "id": "newsletter-march-2023",
+      "title": "What Works News U Can Use Newsletter March 2023",
+      "slug": "what-works-news-u-can-use-newsletter-march-2023",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-march-2023",
+      "category": "what_works"
+    },
+    {
+      "id": "inclusive-growth-cybersecurity",
+      "title": "Inclusive Growth: Empowering Minority-Owned Businesses to Succeed in Cybersecurity and Beyond",
+      "slug": "inclusive-growth-empowering-minority-owned-businesses-to-succeed-in-cybersecurity-and-beyond",
+      "sourceUrl": "https://kdm-assoc.com/detail/inclusive-growth-empowering-minority-owned-businesses-to-succeed-in-cybersecurity-and-beyond",
+      "category": "news-blog"
+    },
+    {
+      "id": "tdp-trends-reports",
+      "title": "What Works - TDP Trends Reports",
+      "slug": "what-works-tdp-trends-reports",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-tdp-trends-reports",
+      "category": "what_works"
+    },
+    {
+      "id": "tdp-ecosystem-maps",
+      "title": "What Works - TDP Generate Ecosystem Maps",
+      "slug": "what-works-tdp-generate-ecosystem-maps",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-tdp-generate-ecosystem-maps",
+      "category": "what_works"
+    },
+    {
+      "id": "tdp-ml-tool-demo",
+      "title": "What Works - TDP ML Tool Demo",
+      "slug": "what-works-tdp-ml-tool-demo",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-tdp-ml-tool-demo",
+      "category": "what_works"
+    },
+    {
+      "id": "tdp-generate-solutions",
+      "title": "What Works - TDP Generate Solutions",
+      "slug": "what-works-tdp-generate-solutions",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-tdp-generate-solutions",
+      "category": "what_works"
+    },
+    {
+      "id": "tdp-closing-gaps",
+      "title": "What Works - TDP Closing Gaps",
+      "slug": "what-works-tdp-closing-gaps",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-tdp-closing-gaps",
+      "category": "what_works"
+    },
+    {
+      "id": "mentor-protege-discussion",
+      "title": "What Works - Mentor Protégé Discussion: Defense Leadership Forum",
+      "slug": "what-works-mentor-protege-discussion-defense-leadership-forum",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-mentor-prot%C3%A9g%C3%A9-discussion-defense-leadership-forum",
+      "category": "what_works"
+    },
+    {
+      "id": "client-meeting-tips",
+      "title": "What Works - Client Meeting Tips - Defense Leadership Forum",
+      "slug": "what-works-client-meeting-tips-defense-leadership-forum",
+      "sourceUrl": "https://kdm-assoc.com/detail/what-works-client-meeting-tips-defense-leadership-forum",
+      "category": "what_works"
+    }
+  ]
+}

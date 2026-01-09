@@ -1,40 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Factory, Users, Award, TrendingUp } from "lucide-react";
+import { Building2, Users, DollarSign, Handshake } from "lucide-react";
 
 const stats = [
   {
-    label: "Years Experience",
+    label: "MBE Clients",
+    value: 300,
+    suffix: "+",
+    icon: Building2,
+    description: "Minority Business Enterprises served",
+  },
+  {
+    label: "Shared Outcome Agreements",
+    value: 14,
+    suffix: "+",
+    icon: Handshake,
+    description: "Strategic partnerships established",
+  },
+  {
+    label: "Contract Transactions",
     value: 50,
-    suffix: "+",
-    icon: Award,
-    description: "Combined team expertise in manufacturing",
+    suffix: "B+",
+    prefix: "$",
+    icon: DollarSign,
+    description: "In awarded contract value",
   },
   {
-    label: "Industry Sectors",
-    value: 12,
-    suffix: "+",
-    icon: Factory,
-    description: "Automotive, aerospace, medical & more",
-  },
-  {
-    label: "Expert Affiliates",
-    value: 25,
+    label: "Resource Partners",
+    value: 100,
     suffix: "+",
     icon: Users,
-    description: "Nationwide network of specialists",
-  },
-  {
-    label: "Certifications",
-    value: 15,
-    suffix: "+",
-    icon: TrendingUp,
-    description: "ISO, IATF, AS9100 & more",
+    description: "Services and resource network",
   },
 ];
 
-function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: string; prefix?: string }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 
   return (
     <span>
-      {count.toLocaleString()}
+      {prefix}{count.toLocaleString()}
       {suffix}
     </span>
   );
@@ -75,7 +76,7 @@ export function StatsSection() {
                 <stat.icon className="h-6 w-6 text-primary" />
               </div>
               <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={(stat as { prefix?: string }).prefix} />
               </div>
               <div className="font-semibold mb-1">{stat.label}</div>
               <div className="text-sm text-gray-400">{stat.description}</div>

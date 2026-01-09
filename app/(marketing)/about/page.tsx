@@ -9,7 +9,7 @@ import {
   Heart,
   Users,
   Award,
-  Factory,
+  Building2,
   ArrowRight,
 } from "lucide-react";
 import { LeadershipTeam } from "@/components/marketing/leadership-team";
@@ -17,7 +17,7 @@ import { LeadershipTeam } from "@/components/marketing/leadership-team";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about Strategic Value+ and our mission to transform U.S. manufacturing through supplier qualification, ISO certification, and operational excellence.",
+    "Learn about KDM & Associates and our mission to help minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
 };
 
 const values = [
@@ -25,25 +25,25 @@ const values = [
     icon: Target,
     title: "Results-Driven",
     description:
-      "We measure success by your success. Every engagement is focused on delivering measurable ROI and tangible business outcomes.",
+      "We measure success by your success. Every engagement is focused on delivering measurable outcomes and contract wins.",
   },
   {
     icon: Users,
-    title: "Network Empowerment",
+    title: "Strategic Teaming",
     description:
-      "We leverage our affiliate ecosystem to bring the right expertise to every project, maximizing value for our clients.",
+      "We leverage our partner network to bring the right expertise and teaming opportunities to every MBE client.",
   },
   {
     icon: Heart,
     title: "Partnership Mindset",
     description:
-      "We're not just consultants—we're partners invested in your long-term success and growth.",
+      "We're not just consultants—we're partners invested in your long-term success and sustainable growth.",
   },
   {
     icon: Award,
     title: "Excellence in Execution",
     description:
-      "We combine deep industry expertise with hands-on implementation to ensure every project succeeds.",
+      "We combine deep government contracting expertise with hands-on support to ensure every client succeeds.",
   },
 ];
 
@@ -56,15 +56,15 @@ export default function AboutPage() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="outline" className="mb-6 border-primary/50 text-primary">
-              About Strategic Value+
+              About KDM & Associates
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Transforming U.S. Manufacturing,{" "}
-              <span className="text-primary">One Supplier at a Time</span>
+              Fueling What Works Through{" "}
+              <span className="text-primary">Aggregated Resources</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              We're on a mission to strengthen American manufacturing by helping small 
-              and mid-sized companies become world-class OEM suppliers.
+              Propelling the next generation of minority government contractors through 
+              capacity building, mentorship, and strategic teaming partnerships.
             </p>
           </div>
         </div>
@@ -81,10 +81,10 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
-                  To empower small and mid-sized U.S. manufacturers to compete and win 
-                  in the global marketplace by providing accessible, results-driven 
-                  transformation services that bridge the gap between current capabilities 
-                  and OEM requirements.
+                  To empower small, emerging, and Minority Business Enterprises (MBEs) 
+                  to compete and win government contracts by providing accessible, results-driven 
+                  support services that bridge the gap between current capabilities 
+                  and federal procurement requirements.
                 </p>
               </CardContent>
             </Card>
@@ -96,8 +96,8 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
                 <p className="text-muted-foreground">
-                  A thriving American manufacturing sector where every capable company 
-                  has the opportunity to become a qualified supplier, creating jobs, 
+                  A thriving ecosystem where every capable minority-owned business 
+                  has the opportunity to become a qualified government contractor, creating jobs, 
                   strengthening supply chains, and driving economic growth across the nation.
                 </p>
               </CardContent>
@@ -115,23 +115,23 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg max-w-none">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Strategic Value+ was founded with a simple observation: too many capable 
-                American manufacturers were being left behind. While large enterprises had 
-                access to world-class consulting and transformation resources, small and 
-                mid-sized manufacturers—the backbone of American industry—often struggled 
-                to meet the increasingly complex requirements of OEM customers.
+                In an exciting development for the large Prime Government Contractors community, 
+                the Minority Business Development Agency (MBDA) network, and small, emerging, 
+                and Minority Business Enterprises (MBEs) across the country, the MBDA Federal 
+                Procurement Center (FPC) is officially transitioning its operations to KDM & Associates, LLC.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                We built Strategic Value+ to change that. By creating a modular, accessible 
-                approach to manufacturing transformation and leveraging a network of expert 
-                affiliates, we've made enterprise-grade capabilities available to companies 
-                with 25 to 500 employees.
+                This transition marks a strategic realignment, bringing new leadership, fresh 
+                initiatives, and stronger partnerships to better support the escalating demand 
+                for shovel-ready, small and emerging businesses to address the Nation&apos;s supply 
+                chain requirements. Historical data confirms that small and minority owned 
+                businesses have consistently faced barriers to entry in the Federal acquisition sector.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                Today, we've helped over 150 manufacturers achieve supplier qualification, 
-                win OEM contracts, and transform their operations. But we're just getting 
-                started. Our vision is to be the catalyst for a new era of American 
-                manufacturing excellence.
+                KDM & Associates, LLC is a business development, government affairs, and public 
+                relations firm focused on helping our clients navigate the government procurement 
+                process and win government contracts. We help our clients not only win more contracts, 
+                but help firms provide more effective and efficient solutions to their clients and customers.
               </p>
             </div>
           </div>
@@ -181,13 +181,13 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="py-20 md:py-28 bg-primary text-primary-foreground">
         <div className="container text-center">
-          <Factory className="h-16 w-16 mx-auto mb-6 opacity-80" />
+          <Building2 className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Transform Your Manufacturing?
+            Ready to Win Government Contracts?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the growing community of manufacturers who've partnered with 
-            Strategic Value+ to achieve their goals.
+            Join the growing community of MBEs who&apos;ve partnered with 
+            KDM & Associates to achieve their goals.
           </p>
           <Button
             size="lg"
@@ -196,7 +196,7 @@ export default function AboutPage() {
             asChild
           >
             <Link href="/contact">
-              Get Started Today
+              Schedule MBE Session
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

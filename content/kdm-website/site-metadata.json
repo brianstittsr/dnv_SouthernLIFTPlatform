@@ -1,0 +1,68 @@
+{
+  "siteName": "KDM & Associates",
+  "siteTitle": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+  "siteDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+  "sourceUrl": "https://kdm-assoc.com",
+  "scrapedDate": "2026-01-09",
+  "contact": {
+    "address": "300 New Jersey Avenue Northwest, Washington, District of Columbia 20001, United States",
+    "phone": "202-469-3423",
+    "email": "info@kdm-assoc.com"
+  },
+  "socialMedia": {
+    "instagram": "https://www.instagram.com/mbdafpcenter",
+    "twitter": "https://www.twitter.com/mbdafpcenter",
+    "facebook": "https://www.facebook.com/mbdafpcenter/",
+    "linkedin": "https://www.linkedin.com/company/mbdafpcenter"
+  },
+  "navigation": {
+    "main": [
+      { "label": "Home", "href": "/" },
+      { "label": "Services", "href": "/services" },
+      { "label": "About", "href": "/about", "children": [
+        { "label": "About Us", "href": "/about" },
+        { "label": "KDM Team", "href": "/team" },
+        { "label": "Contact", "href": "/contact" },
+        { "label": "Ask an Expert", "href": "/contact" },
+        { "label": "Our Work", "href": "/our-work" }
+      ]},
+      { "label": "News/Media", "href": "/news", "children": [
+        { "label": "Media", "href": "/news" },
+        { "label": "What Works", "href": "/what-works" },
+        { "label": "PR", "href": "/pr" },
+        { "label": "Spotlights", "href": "/spotlights" },
+        { "label": "KDM Opp. Center", "href": "/opportunity-center" }
+      ]},
+      { "label": "Events", "href": "/events", "children": [
+        { "label": "View Upcoming Events", "href": "/events/upcoming" },
+        { "label": "View Past Events", "href": "/events/past" }
+      ]},
+      { "label": "Opportunity Center", "href": "/opportunity-center" }
+    ],
+    "footer": {
+      "quickLinks": [
+        { "label": "Home", "href": "/" },
+        { "label": "Services", "href": "/services" },
+        { "label": "News/Media", "href": "/news" },
+        { "label": "Partners", "href": "/partners" },
+        { "label": "Events", "href": "/events" }
+      ],
+      "aboutUs": [
+        { "label": "About Us", "href": "/about" },
+        { "label": "KDM Team", "href": "/team" },
+        { "label": "Contact Us", "href": "/contact" },
+        { "label": "Ask an Expert", "href": "/contact" }
+      ],
+      "legal": [
+        { "label": "Privacy Policy", "href": "/privacy-policy" },
+        { "label": "FAQs", "href": "/faq" },
+        { "label": "Terms of Service", "href": "/terms-of-service" }
+      ]
+    }
+  },
+  "branding": {
+    "tagline": "Powering Growth for Emerging Businesses",
+    "subTagline": "Driving Next Level Results",
+    "copyright": "© 2026 MBDA Federal Procurement Center. All rights reserved"
+  }
+}

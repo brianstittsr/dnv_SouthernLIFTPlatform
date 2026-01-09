@@ -5,55 +5,61 @@ export function OrganizationJsonLd() {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Strategic Value+ Solutions",
-    alternateName: "Strategic Value Plus",
-    url: "https://strategicvalueplus.com",
-    logo: "https://strategicvalueplus.com/logo.png",
+    name: "KDM & Associates",
+    alternateName: "MBDA Federal Procurement Center",
+    url: "https://kdm-assoc.com",
+    logo: "https://kdm-assoc.com/kdm-logo.png",
     description:
-      "We help small- and mid-sized U.S. manufacturers win OEM contracts through supplier qualification, ISO certification, and operational readiness.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     foundingDate: "2020",
     founders: [
       {
         "@type": "Person",
-        name: "Nel Varenas",
+        name: "Keith Moore",
         jobTitle: "CEO",
       },
     ],
     address: {
       "@type": "PostalAddress",
+      streetAddress: "300 New Jersey Avenue Northwest",
+      addressLocality: "Washington",
+      addressRegion: "DC",
+      postalCode: "20001",
       addressCountry: "US",
     },
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "+1-555-123-4567",
+        telephone: "+1-202-469-3423",
         contactType: "sales",
         availableLanguage: ["English"],
       },
       {
         "@type": "ContactPoint",
-        email: "info@strategicvalueplus.com",
+        email: "info@kdm-assoc.com",
         contactType: "customer service",
       },
     ],
     sameAs: [
-      "https://www.linkedin.com/company/strategicvalueplus",
-      "https://twitter.com/strategicvalueplus",
-      "https://www.youtube.com/@strategicvalueplus",
+      "https://www.linkedin.com/company/mbdafpcenter",
+      "https://twitter.com/mbdafpcenter",
+      "https://www.facebook.com/mbdafpcenter/",
+      "https://www.instagram.com/mbdafpcenter",
     ],
     areaServed: {
       "@type": "Country",
       name: "United States",
     },
     knowsAbout: [
-      "Manufacturing Consulting",
-      "ISO Certification",
-      "IATF 16949",
-      "Lean Manufacturing",
-      "Industry 4.0",
-      "Digital Transformation",
-      "Supply Chain Optimization",
-      "OEM Supplier Qualification",
+      "Government Contracting",
+      "Minority Business Enterprise",
+      "Federal Procurement",
+      "8(a) Certification",
+      "WOSB",
+      "SDVOSB",
+      "HUBZone",
+      "SBA Programs",
+      "Mentor-Protégé Programs",
     ],
   };
 
@@ -71,20 +77,24 @@ export function LocalBusinessJsonLd() {
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "Strategic Value+ Solutions",
-    image: "https://strategicvalueplus.com/logo.png",
-    url: "https://strategicvalueplus.com",
-    telephone: "+1-555-123-4567",
-    email: "info@strategicvalueplus.com",
-    priceRange: "$$$$",
+    name: "KDM & Associates",
+    image: "https://kdm-assoc.com/kdm-logo.png",
+    url: "https://kdm-assoc.com",
+    telephone: "+1-202-469-3423",
+    email: "info@kdm-assoc.com",
+    priceRange: "$$$",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "300 New Jersey Avenue Northwest",
+      addressLocality: "Washington",
+      addressRegion: "DC",
+      postalCode: "20001",
       addressCountry: "US",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 35.7796,
-      longitude: -78.6382,
+      latitude: 38.8951,
+      longitude: -77.0364,
     },
     openingHoursSpecification: [
       {
@@ -97,7 +107,7 @@ export function LocalBusinessJsonLd() {
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.9",
-      reviewCount: "47",
+      reviewCount: "300",
     },
   };
 
@@ -123,7 +133,7 @@ export function ServiceJsonLd({
   name,
   description,
   url,
-  provider = "Strategic Value+ Solutions",
+  provider = "KDM & Associates",
   areaServed = "United States",
 }: ServiceJsonLdProps) {
   const serviceSchema = {
@@ -135,13 +145,13 @@ export function ServiceJsonLd({
     provider: {
       "@type": "Organization",
       name: provider,
-      url: "https://strategicvalueplus.com",
+      url: "https://kdm-assoc.com",
     },
     areaServed: {
       "@type": "Country",
       name: areaServed,
     },
-    serviceType: "Manufacturing Consulting",
+    serviceType: "Government Contracting Consulting",
   };
 
   return (
@@ -252,10 +262,10 @@ export function ArticleJsonLd({
     },
     publisher: {
       "@type": "Organization",
-      name: "Strategic Value+ Solutions",
+      name: "KDM & Associates",
       logo: {
         "@type": "ImageObject",
-        url: "https://strategicvalueplus.com/logo.png",
+        url: "https://kdm-assoc.com/kdm-logo.png",
       },
     },
     mainEntityOfPage: {
@@ -278,14 +288,14 @@ export function WebsiteJsonLd() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Strategic Value+",
-    alternateName: "Strategic Value Plus Solutions",
-    url: "https://strategicvalueplus.com",
+    name: "KDM & Associates",
+    alternateName: "MBDA Federal Procurement Center",
+    url: "https://kdm-assoc.com",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://strategicvalueplus.com/search?q={search_term_string}",
+        urlTemplate: "https://kdm-assoc.com/search?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },

@@ -1,0 +1,99 @@
+{
+  "pageId": "terms-of-service",
+  "title": "Terms of Service | KDM & Associates",
+  "slug": "/terms-of-service",
+  "effectiveDate": "2020-01-01",
+  "sections": [
+    {
+      "id": "hero",
+      "type": "page-header",
+      "content": {
+        "title": "International ToS Agreement",
+        "breadcrumb": [
+          { "label": "Home", "href": "/" },
+          { "label": "Terms of Service", "href": "/terms-of-service" }
+        ]
+      }
+    },
+    {
+      "id": "service-changes",
+      "type": "legal-section",
+      "content": {
+        "title": "Service Changes and Usage",
+        "body": "Our Services evolve constantly. As such, the Services may change from time to time, at our discretion. We may stop (permanently or temporarily) providing the Services or any features within the Services to you or to users generally. We also retain the right to create limits on use and storage at our sole discretion at any time. We may also remove or refuse to distribute any Content on the Services, suspend or terminate users, and reclaim usernames without liability to you."
+      }
+    },
+    {
+      "id": "advertising",
+      "type": "legal-section",
+      "content": {
+        "title": "Advertising",
+        "body": "In consideration for QmeLocal granting you access to and use of the Services, you agree that QmeLocal and its third-party providers and partners may place advertising on the Services or in connection with the display of Content or information from the Services whether submitted by you or others."
+      }
+    },
+    {
+      "id": "prohibited-activities",
+      "type": "legal-section",
+      "content": {
+        "title": "Prohibited Activities",
+        "body": "You agree not to misuse our Services, for example, by interfering with them or accessing them using a method other than the interface and the instructions that we provide.",
+        "prohibitedItems": [
+          "Access, tamper with, or use non-public areas of the Services, QmeLocal's computer systems, or the technical delivery systems of QmeLocal's providers",
+          "Probe, scan, or test the vulnerability of any system or network or breach or circumvent any security or authentication measures",
+          "Access or search or attempt to access or search the Services by any means (automated or otherwise) other than through our currently available, published interfaces that are provided by QmeLocal (and only pursuant to the applicable terms and conditions), unless you have been specifically allowed to do so in a separate agreement with QmeLocal",
+          "Scraping the Services without the prior consent of QmeLocal is expressly prohibited",
+          "Forge any TCP/IP packet header or any part of the header information in any email or posting, or in any way use the Services to send altered, deceptive or false source-identifying information",
+          "Interfere with, or disrupt, (or attempt to do so), the access of any user, host or network, including, without limitation, sending a virus, overloading, flooding, spamming, mail-bombing the Services, or by scripting the creation of Content in such a manner as to interfere with or create an undue burden on the Services"
+        ]
+      }
+    },
+    {
+      "id": "account",
+      "type": "legal-section",
+      "content": {
+        "title": "Your Account",
+        "body": "You may need to create an account to use some of our Services. You are responsible for safeguarding your account, so use a strong password and limit its use to this account. We cannot and will not be liable for any loss or damage arising from your failure to comply with the above. You can control most communications from the Services. We may need to provide you with certain communications, such as service announcements and administrative messages. These communications are considered part of the Services and your account, and you may not be able to opt-out from receiving them. If you added your phone number to your account and you later change or deactivate that phone number, you must update your account information to help prevent us from communicating with anyone who acquires your old number."
+      }
+    },
+    {
+      "id": "license",
+      "type": "legal-section",
+      "content": {
+        "title": "Your License to Use the Services",
+        "body": "QmeLocal gives you a personal, worldwide, royalty-free, non-assignable and non-exclusive license to use the software provided to you as part of the Services. This license has the sole purpose of enabling you to use and enjoy the benefit of the Services as provided by QmeLocal in the manner permitted by these Terms."
+      }
+    },
+    {
+      "id": "intellectual-property",
+      "type": "legal-section",
+      "content": {
+        "title": "Intellectual Property",
+        "body": "The Services are protected by copyright, trademark, and other laws of both the United States and foreign countries. Nothing in the Terms gives you a right to use the QmeLocal name or any of the QmeLocal trademarks, logos, domain names, and other distinctive brand features. All right, title, and interest in and to the Services (excluding Content provided by users) are and will remain the exclusive property of QmeLocal and its licensors. Any feedback, comments, or suggestions you may provide regarding QmeLocal, or the Services is entirely voluntary and we will be free to use such feedback, comments or suggestions as we see fit and without any obligation to you."
+      }
+    },
+    {
+      "id": "termination",
+      "type": "legal-section",
+      "content": {
+        "title": "Ending These Terms",
+        "body": "You may end your legal agreement with QmeLocal at any time by deactivating your accounts and discontinuing your use of the Services. We may suspend or terminate your account or cease providing you with all or part of the Services at any time for any or no reason, including, but not limited to, if we reasonably believe: (i) you have violated these Terms or the QmeLocal Rules, (ii) you create risk or possible legal exposure for us; (iii) your account should be removed due to unlawful conduct, (iv) your account should be removed due to prolonged inactivity; or (v) our provision of the Services to you is no longer commercially viable. We will make reasonable efforts to notify you via the email address associated with your account or the next time you attempt to access your account, depending on the circumstances."
+      }
+    },
+    {
+      "id": "liability",
+      "type": "legal-section",
+      "content": {
+        "title": "Using the Service",
+        "body": "By using the Services you agree that QmeLocal, its parents, affiliates, related companies, officers, directors, employees, agents, representatives, partners and licensors liability is limited to the maximum extent permissible in your country of residence."
+      }
+    },
+    {
+      "id": "general",
+      "type": "legal-section",
+      "content": {
+        "title": "General",
+        "body": "We may revise these Terms from time to time. The changes will not be retroactive, and the most current version of the Terms will govern our relationship with you. Other than for changes addressing new functions or made for legal reasons, we will notify you 30 days in advance of making effective changes to these Terms that impact the rights or obligations of any party to these Terms, for example via a service notification or an email to the email associated with your account. By continuing to access or use the Services after those revisions become effective, you agree to be bound by the revised Terms. In the event that any provision of these Terms is held to be invalid or unenforceable, then that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions of these Terms will remain in full force and effect. QmeLocal's failure to enforce any right or provision of these Terms will not be deemed a waiver of such right or provision."
+      }
+    }
+  ]
+}

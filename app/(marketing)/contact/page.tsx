@@ -35,21 +35,24 @@ import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 
 const services = [
-  "Supplier Readiness & OEM Qualification",
-  "ISO/QMS Certification",
-  "Lean Manufacturing",
-  "Digital Transformation",
-  "Reshoring Advisory",
-  "Workforce Development",
+  "Digital Solutions",
+  "Technology Solutions",
+  "Grants & RFPs",
+  "Marketing Solutions",
+  "Operations/Performance",
+  "Contracting Vehicles & Certifications",
+  "Strategic Teaming",
   "Other",
 ];
 
-const companySizes = [
-  "1-25 employees",
-  "25-100 employees",
-  "100-250 employees",
-  "250-500 employees",
-  "500+ employees",
+const businessTypes = [
+  "8(a) Certified",
+  "WOSB/EDWOSB",
+  "SDVOSB",
+  "HUBZone",
+  "MBE (Not yet certified)",
+  "Small Business",
+  "Other",
 ];
 
 export default function ContactPage() {
@@ -145,11 +148,11 @@ export default function ContactPage() {
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               Let's Start Your{" "}
-              <span className="text-primary">Transformation</span>
+              <span className="text-primary">Journey</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Ready to become an OEM-qualified supplier? Schedule a free assessment 
-              or reach out to discuss how we can help your manufacturing business grow.
+              Ready to win government contracts? Schedule an MBE introductory session 
+              or reach out to discuss how KDM & Associates can help your business grow.
             </p>
           </div>
         </div>
@@ -163,9 +166,9 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-2xl">Request a Free Assessment</CardTitle>
+                  <CardTitle className="text-2xl">Schedule an MBE Session</CardTitle>
                   <CardDescription>
-                    Fill out the form below and one of our experts will contact you within 24 hours.
+                    Fill out the form below and one of our government contracting experts will contact you within 24 hours.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -205,23 +208,23 @@ export default function ContactPage() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="size">Company Size *</Label>
+                        <Label htmlFor="businessType">Business Type *</Label>
                         <Select required>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select company size" />
+                            <SelectValue placeholder="Select business type" />
                           </SelectTrigger>
                           <SelectContent>
-                            {companySizes.map((size) => (
-                              <SelectItem key={size} value={size}>
-                                {size}
+                            {businessTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="industry">Industry</Label>
-                        <Input id="industry" placeholder="e.g., Automotive, Aerospace" />
+                        <Label htmlFor="industry">Industry/NAICS</Label>
+                        <Input id="industry" placeholder="e.g., IT Services, Construction" />
                       </div>
                     </div>
 
@@ -253,7 +256,7 @@ export default function ContactPage() {
                     <div className="flex items-start space-x-2">
                       <Checkbox id="newsletter" />
                       <Label htmlFor="newsletter" className="text-sm font-normal">
-                        Subscribe to our newsletter for manufacturing insights and industry updates
+                        Subscribe to our newsletter for government contracting insights and updates
                       </Label>
                     </div>
 
@@ -262,7 +265,7 @@ export default function ContactPage() {
                         "Submitting..."
                       ) : (
                         <>
-                          Request Free Assessment
+                          Schedule MBE Session
                           <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}
@@ -285,10 +288,10 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium">Email</p>
                       <Link
-                        href="mailto:info@strategicvalueplus.com"
+                        href="mailto:info@kdm-assoc.com"
                         className="text-muted-foreground hover:text-primary"
                       >
-                        info@strategicvalueplus.com
+                        info@kdm-assoc.com
                       </Link>
                     </div>
                   </div>
@@ -297,10 +300,10 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium">Phone</p>
                       <Link
-                        href="tel:+1-555-123-4567"
+                        href="tel:+1-202-469-3423"
                         className="text-muted-foreground hover:text-primary"
                       >
-                        (555) 123-4567
+                        (202) 469-3423
                       </Link>
                     </div>
                   </div>
@@ -308,7 +311,7 @@ export default function ContactPage() {
                     <MapPin className="h-5 w-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Location</p>
-                      <p className="text-muted-foreground">United States</p>
+                      <p className="text-muted-foreground">300 New Jersey Ave NW<br />Washington, DC 20001</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">

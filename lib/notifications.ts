@@ -209,7 +209,7 @@ export async function showBrowserNotification(
   
   new Notification(`${icon} ${title}`, {
     body: message,
-    icon: "/VPlus_logo.webp",
+    icon: "/kdm-logo.png",
     tag: eventType,
   });
   

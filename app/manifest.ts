@@ -2,14 +2,14 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Strategic Value+ | Transforming U.S. Manufacturing",
-    short_name: "Strategic Value+",
+    name: "KDM & Associates | MBDA Federal Procurement Center",
+    short_name: "KDM & Associates",
     description:
-      "We help small- and mid-sized U.S. manufacturers win OEM contracts through supplier qualification, ISO certification, and operational readiness.",
+      "KDM & Associates helps minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     start_url: "/",
     display: "standalone",
     background_color: "#000000",
-    theme_color: "#37ca37",
+    theme_color: "#1e40af",
     orientation: "portrait-primary",
     icons: [
       {
@@ -25,9 +25,9 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
       {
-        src: "/VPlus_logo.webp",
+        src: "/kdm-logo.png",
         sizes: "any",
-        type: "image/webp",
+        type: "image/png",
       },
     ],
     categories: ["business", "productivity"],
