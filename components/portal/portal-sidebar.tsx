@@ -240,6 +240,12 @@ const adminItems = [
     badge: "KDM",
   },
   {
+    title: "Financial Dashboard",
+    href: "/portal/admin/payments",
+    icon: DollarSign,
+    badge: "New",
+  },
+  {
     title: "Memberships",
     href: "/portal/admin/memberships",
     icon: Users,
@@ -275,6 +281,12 @@ const adminItems = [
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,
+  },
+  {
+    title: "Event Manager",
+    href: "/portal/admin/event-manager",
+    icon: CalendarClock,
+    badge: "New",
   },
   {
     title: "MailChimp",

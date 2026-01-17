@@ -66,11 +66,10 @@ export default function EventRegisterPage({ params }: PageProps) {
     specialNeeds: '',
   });
 
-  useEffect(() => {
-    fetchEvent();
-  }, [id]);
+  const [isPartialPayment, setIsPartialPayment] = useState(false);
+  const [partialAmount, setPartialAmount] = useState<number>(0);
 
-  const fetchEvent = async () => {
+  async function fetchEvent() {
     if (!db || !id) return;
 
     try {
@@ -88,11 +87,23 @@ export default function EventRegisterPage({ params }: PageProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    fetchEvent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const selectedTicket = event?.ticketTypes?.find(t => t.name === ticketParam);
   const ticketPrice = selectedTicket?.price || 0;
   const finalPrice = Math.max(0, ticketPrice - discount);
+
+  useEffect(() => {
+    if (event?.isTicketed && ticketPrice > 0) {
+      // Set default partial amount to 50% or a minimum deposit
+      setPartialAmount(Math.round(finalPrice / 2));
+    }
+  }, [finalPrice, event, ticketPrice]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -139,6 +150,9 @@ export default function EventRegisterPage({ params }: PageProps) {
           ticketType: ticketParam || 'General Admission',
           price: ticketPrice,
           promoCode: promoApplied ? promoCode : undefined,
+          isPartial: isPartialPayment,
+          paymentAmount: isPartialPayment ? partialAmount : finalPrice,
+          eventDate: event?.startDate ? format(event.startDate.toDate(), "yyyy-MM-dd") : undefined,
           attendeeInfo: {
             company: formData.company,
             title: formData.title,
@@ -160,9 +174,10 @@ export default function EventRegisterPage({ params }: PageProps) {
       } else {
         throw new Error(data.error || 'Failed to create ticket');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error registering:', error);
-      alert(error.message || 'Failed to complete registration');
+      const message = error instanceof Error ? error.message : 'Failed to complete registration';
+      alert(message);
     } finally {
       setSubmitting(false);
     }
@@ -279,6 +294,46 @@ export default function EventRegisterPage({ params }: PageProps) {
                       />
                     </div>
                   </div>
+
+                  {event.isTicketed && ticketPrice > 0 && (
+                    <>
+                      <Separator />
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label className="text-base font-medium">Partial Payment</Label>
+                            <p className="text-sm text-muted-foreground">
+                              Pay a deposit now and the rest later
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant={isPartialPayment ? "default" : "outline"}
+                            onClick={() => setIsPartialPayment(!isPartialPayment)}
+                          >
+                            {isPartialPayment ? "Enabled" : "Enable"}
+                          </Button>
+                        </div>
+
+                        {isPartialPayment && (
+                          <div className="space-y-2">
+                            <Label htmlFor="partialAmount">Payment Amount ($)</Label>
+                            <Input
+                              id="partialAmount"
+                              type="number"
+                              min={1}
+                              max={finalPrice / 100}
+                              value={partialAmount / 100}
+                              onChange={(e) => setPartialAmount(Math.round(parseFloat(e.target.value) * 100))}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Minimum payment: $1.00. Remaining balance will be tracked in your portal.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
 
                   <Separator />
 

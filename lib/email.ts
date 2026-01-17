@@ -352,6 +352,33 @@ export const emailTemplates = {
     `,
     text: `Your membership renews on ${params.renewalDate} for $${(params.amount / 100).toFixed(2)}. Update payment at: ${params.updatePaymentUrl}`,
   }),
+
+  /**
+   * Payment reminder for remaining balance
+   */
+  paymentReminder: (params: { 
+    name: string; 
+    entityName: string; 
+    remainingBalance: number; 
+    dueDate: string; 
+    paymentUrl: string; 
+  }) => ({
+    subject: `Action Required: Payment Reminder for ${params.entityName}`,
+    html: `
+      <h1>Payment Reminder</h1>
+      <p>Hi ${params.name},</p>
+      <p>This is a reminder regarding your remaining balance for <strong>${params.entityName}</strong>.</p>
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0;"><strong>Remaining Balance:</strong> $${params.remainingBalance.toFixed(2)}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Due Date:</strong> ${params.dueDate}</p>
+      </div>
+      <p>To ensure everything is ready for the upcoming event, please settle your remaining balance using the link below:</p>
+      <p><a href="${params.paymentUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Make a Payment</a></p>
+      <p>If you have already made this payment, please disregard this message.</p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Reminder: You have a remaining balance of $${params.remainingBalance.toFixed(2)} for ${params.entityName} due on ${params.dueDate}. Pay now at: ${params.paymentUrl}`,
+  }),
 };
 
 /**

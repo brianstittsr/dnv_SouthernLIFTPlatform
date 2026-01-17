@@ -1469,6 +1469,66 @@ export interface MattermostPlaybookRunDoc {
   updatedAt: Timestamp;
 }
 
+/** Transaction document for tracking all payments */
+export interface TransactionDoc extends BaseDocument {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  amount: number;
+  currency: string;
+  status: "pending" | "succeeded" | "failed" | "refunded";
+  stripePaymentIntentId: string;
+  stripeCustomerId?: string;
+  
+  // Categorization and Tagging
+  type: "membership" | "event_ticket" | "sponsorship" | "pursuit_pack" | "partial_payment" | "other";
+  tags: string[];
+  
+  // Linkages
+  entityType: "membership" | "event" | "sponsorship" | "pursuit" | "organization";
+  entityId: string;
+  entityName?: string;
+  
+  // Balance tracking for partial payments
+  isPartial: boolean;
+  paymentPlanId?: string;
+  
+  metadata?: Record<string, unknown>;
+  createdAt: Timestamp;
+}
+
+/** Payment Plan document for tracking balances and installments */
+export interface PaymentPlanDoc extends BaseDocument {
+  userId: string;
+  entityType: "event" | "sponsorship" | "membership" | "other";
+  entityId: string;
+  entityName: string;
+  
+  totalAmount: number;
+  paidAmount: number;
+  remainingBalance: number;
+  currency: string;
+  
+  status: "active" | "completed" | "overdue" | "cancelled";
+  
+  // Schedule and Reminders
+  dueDate: Timestamp; // Final due date (e.g., event date)
+  nextReminderDate?: Timestamp;
+  reminderFrequency: "none" | "daily" | "weekly" | "biweekly" | "monthly";
+  
+  installments: Array<{
+    id: string;
+    amount: number;
+    status: "pending" | "paid" | "overdue";
+    dueDate: Timestamp;
+    paidAt?: Timestamp;
+    transactionId?: string;
+  }>;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 // ============================================================================
 // Collection Names
 // ============================================================================
@@ -1569,11 +1629,29 @@ export const COLLECTIONS = {
   MATTERMOST_PLAYBOOK_RUNS: "mattermostPlaybookRuns",
   // Events
   EVENTS: "events",
+  EVENT_SPEAKERS: "eventSpeakers",
+  EVENT_DAYS: "eventDays",
+  EVENT_SESSIONS: "eventSessions",
+  EVENT_TICKET_TYPES: "eventTicketTypes",
+  EVENT_SPONSORSHIP_PACKAGES: "eventSponsorshipPackages",
+  EVENT_SPONSORS: "eventSponsors",
+  EVENT_REGISTRATIONS: "eventRegistrations",
+  EVENT_NEWS: "eventNews",
   // NDA Management (NDA_TEMPLATES already defined above, removed duplicate)
   NDA_DOCUMENTS: "ndaDocuments",
   // Platform Settings
   PLATFORM_SETTINGS: "platformSettings",
+  // Financial Tracking
+  TRANSACTIONS: "transactions",
+  PAYMENT_PLANS: "paymentPlans",
 } as const;
+
+// ... existing code ...
+
+// Financial Tracking references
+export const transactionsCollection = () => getCollection<TransactionDoc>(COLLECTIONS.TRANSACTIONS);
+export const paymentPlansCollection = () => getCollection<PaymentPlanDoc>(COLLECTIONS.PAYMENT_PLANS);
+
 
 // ============================================================================
 // Collection References

@@ -1,0 +1,448 @@
+{
+  "siteName": "IAEOZ Summit",
+  "siteTitle": "IAEOZ Summit 2025 Puerto Rico",
+  "siteDescription": "Prepare for the IAEOZ Summit 2025 Puerto Rico! Join us for three days of engaging sessions focusing on Agriculture and Energy sectors. KDM & Associates will host the 6th annual IAEOZ Summit on October 13-14, 2025 in San Juan, Puerto Rico.",
+  "sourceUrl": "https://iaeozsummit.com/",
+  "scrapedDate": "2026-01-12",
+  "event": {
+    "name": "IAEOZ Summit 2025",
+    "tagline": "Powering Agriculture & Energy Innovation",
+    "dates": {
+      "start": "2025-10-12",
+      "end": "2025-10-14"
+    },
+    "location": {
+      "venue": "Caribe Hilton Hotel",
+      "city": "San Juan",
+      "state": "Puerto Rico",
+      "country": "USA"
+    },
+    "organizer": {
+      "name": "KDM & Associates, LLC",
+      "role": "Event Producer"
+    },
+    "format": "Hybrid (In-person + Virtual Livestream)",
+    "virtualEventUrl": "https://iaeozvirtual.com/",
+    "hotelBookingUrl": "https://book.passkey.com/e/51065756"
+  },
+  "about": {
+    "description": "KDM & Associates will host the 6th annual IAEOZ Summit on October 13-14, 2025 in San Juan, Puerto Rico. The conference will be held in-person and livestreamed to a national and global audience.",
+    "focus": [
+      "Agriculture and Energy sectors",
+      "Smart farming and renewable energy",
+      "Federal contracting opportunities for MBEs",
+      "Sustainable community development",
+      "Opportunity Zone investments"
+    ],
+    "highlights": [
+      "Local Puerto Rican business and government leaders",
+      "U.S. Federal officials and international experts",
+      "Energy and agriculture, commerce, technology, and capital investment discussions",
+      "U.S. Government contracting opportunities for local MBEs",
+      "Puerto Rico as geographic and cultural crossroads",
+      "Opportunity Zone tax incentives exploration"
+    ],
+    "supportingAgencies": [
+      "U.S. Dept. of Energy",
+      "Dept. of Agriculture",
+      "National Science Foundation",
+      "HUD",
+      "NASA",
+      "Dept. of Defense"
+    ]
+  },
+  "schedule": {
+    "days": [
+      {
+        "date": "2025-10-12",
+        "dayName": "Sunday",
+        "theme": "Arrival & Welcome Activities",
+        "sessions": [
+          {
+            "title": "Welcome & Check-in",
+            "description": "Stop by our welcome desk for your badge and check in. Follow Hotel Signage to our welcome booth.",
+            "type": "registration"
+          },
+          {
+            "title": "Opening Showcase",
+            "description": "Live Puerto Rican Music, Cultural Dance Performances and Refreshments",
+            "type": "entertainment"
+          }
+        ]
+      },
+      {
+        "date": "2025-10-13",
+        "dayName": "Monday",
+        "theme": "Summit Kickoff - Infrastructure, Energy & Agriculture",
+        "sessions": [
+          {
+            "title": "Opening Remarks",
+            "speakers": ["Keith Moore"],
+            "type": "keynote"
+          },
+          {
+            "title": "Infrastructure, Energy & Agriculture Panel",
+            "speakers": ["Blake Christian", "Sebastián Negrón Reichard", "José L. Pérez"],
+            "moderators": ["Dr. Sidni L. Shorter", "Jose F. Nino"],
+            "type": "panel"
+          },
+          {
+            "title": "Global Supply Chain Strategy",
+            "speakers": ["David Canada"],
+            "type": "presentation"
+          },
+          {
+            "title": "Workforce Development in Puerto Rico",
+            "speakers": ["Dr. Zach Johnson", "Carmen G. Cosme Pitre"],
+            "type": "panel"
+          },
+          {
+            "title": "Agricultural Innovation Panel",
+            "speakers": ["Ricardo I. Fernández", "Francisco Santana Montalvo", "Luis Armando Torres Perez", "Wilfredo Méndez", "Marilyn Torres Encarnación"],
+            "type": "panel"
+          },
+          {
+            "title": "Lunch",
+            "sponsor": "Bio Friendly / El Nino Group",
+            "type": "meal"
+          },
+          {
+            "title": "Government Contracting Panel",
+            "speakers": ["Frank Dixon", "Natalie Davis", "Shehan Goonewardene"],
+            "moderators": ["Dr. Sidni L. Shorter"],
+            "type": "panel"
+          },
+          {
+            "title": "Technology & Connectivity Panel",
+            "speakers": ["Felipe J. Hernández", "Camila E. Calderón Ferrer", "Manuel A.J. Laboy-Rivera", "Dr. Jalaal A. Hayes"],
+            "moderators": ["Scott D. Woods"],
+            "type": "panel"
+          },
+          {
+            "title": "Evening Mixer: Local Bites & Beats",
+            "location": "Las Olas Terrace",
+            "type": "networking"
+          }
+        ]
+      },
+      {
+        "date": "2025-10-14",
+        "dayName": "Tuesday",
+        "theme": "Growth, Inclusion & Capital",
+        "sessions": [
+          {
+            "title": "Clean Energy Panel",
+            "speakers": ["Tawana Bain", "Chelsea Roberts", "Javier Rúa Jovet"],
+            "moderators": ["Dr. Sidni L. Shorter", "José L. Pérez"],
+            "type": "panel"
+          },
+          {
+            "title": "Wealth Building & Investment",
+            "speakers": ["Jose F. Nino", "Pam Ramos", "Gaylord C. Neal III, Ph.D."],
+            "type": "panel"
+          },
+          {
+            "title": "Keynote Address",
+            "speakers": ["Don Cravins Jr."],
+            "description": "Interim CEO, National Minority Supplier Development Council (NMSDC)",
+            "type": "keynote"
+          },
+          {
+            "title": "Capital & Investment Panel",
+            "speakers": ["Dr. Ernesto Villarini", "Connie Rathbone"],
+            "type": "panel"
+          },
+          {
+            "title": "HUBZone Opportunities",
+            "speakers": ["Shirley D. Bailey", "Kindra Dionne"],
+            "type": "panel"
+          },
+          {
+            "title": "Closing Remarks",
+            "speakers": ["Keith Moore"],
+            "type": "closing"
+          }
+        ]
+      }
+    ]
+  },
+  "speakers": [
+    {
+      "id": "don-cravins",
+      "name": "Don Cravins Jr.",
+      "title": "President and CEO",
+      "organization": "National Minority Supplier Development Council (NMSDC)",
+      "role": "Keynote Speaker",
+      "bio": "The Honorable Donald 'Don' R. Cravins, Jr. is the Interim President and CEO of the National Minority Supplier Development Council (NMSDC). A nationally recognized leader in public service, business development, and advocacy, he was named to the inaugural ForbesBLK 50 list for his impact and accomplishments. Previously served as the nation's first Under Secretary of Commerce for Minority Business Development."
+    },
+    {
+      "id": "jose-nino",
+      "name": "Jose F. Nino",
+      "title": "Chairman, Biofriendly / CEO",
+      "organization": "El Niño Group, LLC",
+      "role": "Speaker/Moderator",
+      "bio": "José F. Niño is a seasoned leader in national and international business development with over 30 years of experience advancing Hispanic-owned enterprises. Former President and founding member of the U.S. Hispanic Chamber of Commerce (USHCC)."
+    },
+    {
+      "id": "keith-moore",
+      "name": "Keith Moore",
+      "title": "Founder/CEO",
+      "organization": "KDM & Associates, LLC",
+      "role": "Event Producer"
+    },
+    {
+      "id": "frank-dixon",
+      "name": "Frank Dixon",
+      "title": "President of NAPEX / APEX, Program Director",
+      "organization": "University of the Virgin Islands (UVI)",
+      "role": "Speaker"
+    },
+    {
+      "id": "dr-sidni-shorter",
+      "name": "Dr. Sidni L. Shorter",
+      "title": "President & CEO",
+      "organization": "Utah Black Chamber of Commerce",
+      "role": "Moderator"
+    },
+    {
+      "id": "scott-woods",
+      "name": "Scott D. Woods",
+      "title": "President of Public-Private Partnerships",
+      "organization": "Ready.net",
+      "role": "Moderator"
+    },
+    {
+      "id": "chelsea-roberts",
+      "name": "Chelsea Roberts",
+      "title": "Founder/CEO",
+      "organization": "Collaborative Compositions",
+      "role": "Speaker"
+    },
+    {
+      "id": "camila-calderon",
+      "name": "Camila E. Calderón Ferrer",
+      "title": "Project Manager - Connectivity and Expansion",
+      "organization": "VPNET",
+      "role": "Speaker"
+    },
+    {
+      "id": "shehan-goonewardene",
+      "name": "Shehan Goonewardene",
+      "title": "Director of Mentor-Protégé Program",
+      "organization": "Global Resource Solutions, Inc.",
+      "role": "Speaker"
+    },
+    {
+      "id": "oscar-frazier",
+      "name": "Oscar Frazier",
+      "title": "Government Contracting Expert",
+      "organization": "KDM & Associates",
+      "role": "Speaker"
+    },
+    {
+      "id": "charles-sills",
+      "name": "Charles Sills",
+      "title": "COO",
+      "organization": "KDM & Associates",
+      "role": "Speaker"
+    },
+    {
+      "id": "timothy-webster",
+      "name": "Timothy Maurice Webster",
+      "title": "Director of International Communications",
+      "organization": "KDM & Associates",
+      "role": "Speaker"
+    },
+    {
+      "id": "david-canada",
+      "name": "David Canada",
+      "title": "Director of Strategic Sourcing & Partnerships",
+      "organization": "Boeing Defense Space & Security",
+      "role": "Speaker"
+    },
+    {
+      "id": "gaylord-neal",
+      "name": "Gaylord C. Neal III, Ph.D.",
+      "title": "Managing Partner",
+      "organization": "Qme Spotlight Ecosystem",
+      "role": "Speaker"
+    },
+    {
+      "id": "ramiro-cavazos",
+      "name": "Ramiro A. Cavazos",
+      "title": "President & CEO",
+      "organization": "United States Hispanic Chamber of Commerce",
+      "role": "Speaker (Pre-recorded)"
+    },
+    {
+      "id": "pam-ramos",
+      "name": "Pam Ramos",
+      "title": "CEO",
+      "organization": "Be Wealthy With Pamela",
+      "role": "Speaker"
+    },
+    {
+      "id": "dr-zach-johnson",
+      "name": "Dr. Zach Johnson",
+      "title": "CEO & Founder",
+      "organization": "The H.A.B.I.T.S Group",
+      "role": "Speaker/Moderator"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "virtual",
+      "name": "Virtual Event Registration",
+      "price": 125,
+      "currency": "USD",
+      "description": "Limited Virtual Space Available - Innovation in Agriculture & Energy Opportunity Zone (IAEOZ) Summit",
+      "purchaseUrl": "https://iaeozvirtual.com/"
+    },
+    {
+      "id": "hotel",
+      "name": "Hotel Reservation",
+      "price": 280,
+      "currency": "USD",
+      "description": "Reserve a hotel room for your event at a special rate! Last day to book at group rate: September 13, 2025",
+      "purchaseUrl": "https://book.passkey.com/e/51065756"
+    }
+  ],
+  "sponsorshipPackages": [
+    {
+      "id": "titanium",
+      "name": "Titanium Partnership Level",
+      "price": 50000,
+      "currency": "USD",
+      "tagline": "Elite Visibility — Lead. Influence. Impact.",
+      "description": "Position your brand as a national leader at the forefront of government contracting, innovation, and economic opportunity.",
+      "benefits": [
+        "Brand Visibility Across All Platforms",
+        "Live Event & Program Recognition",
+        "Sponsor 20 small businesses in Humanizing Government Contracting Program",
+        "30-minute spotlight session + fireside chat",
+        "Final verified attendee database",
+        "Premium Video Podcast Feature with Timothy Maurice Webster",
+        "Featured in whitepapers and research reports",
+        "Full-page ad in newsletters",
+        "30 All-Access Passes, 30 VIP Networking Passes, 30 Reserved Seats",
+        "Large Exhibit Booth (Three 6-ft Tables)",
+        "Premium VIP matchmaking sessions"
+      ],
+      "purchaseUrl": "https://www.paypal.com/ncp/payment/CFG27MBLY4V7J"
+    },
+    {
+      "id": "platinum",
+      "name": "Platinum Partnership Level",
+      "price": 25000,
+      "currency": "USD",
+      "tagline": "Lead with Authority — Elevate Your Brand Presence",
+      "description": "Partner at a premier level to increase visibility, showcase thought leadership, and support economic development.",
+      "benefits": [
+        "Brand Recognition Across Platforms",
+        "Hybrid Event Presence",
+        "Sponsor 20 small businesses",
+        "Public acknowledgment from Keith Moore",
+        "Exclusive Data Access",
+        "Branded Thought Leadership Podcast",
+        "15-minute featured session + fireside chat",
+        "Strategic Media Exposure",
+        "Newsletter and Social Media Placement",
+        "20 all-access passes, 20 VIP networking passes, 20 reserved seats",
+        "Large exhibit space (three 6-foot tables)",
+        "VIP Matchmaking Opportunities"
+      ],
+      "purchaseUrl": "https://www.paypal.com/ncp/payment/UN6QQJAGPVGZW"
+    },
+    {
+      "id": "gold",
+      "name": "Gold Partnership Level",
+      "price": 15000,
+      "currency": "USD",
+      "tagline": "Partner in Progress — Showcase. Engage. Lead.",
+      "description": "Position your organization as a key supporter of small business growth and innovation.",
+      "benefits": [
+        "Brand Visibility Across All Marketing",
+        "Event Recognition",
+        "On-Stage Acknowledgment",
+        "30-minute featured session",
+        "Thought Leadership Placement",
+        "Small Business Empowerment Session",
+        "10 all-access passes, 10 VIP networking passes, 10 reserved seats",
+        "One 6-foot exhibit table"
+      ],
+      "purchaseUrl": "https://www.paypal.com/ncp/payment/9J8SJFXYE64HQ"
+    },
+    {
+      "id": "bronze",
+      "name": "Bronze Partnership Level",
+      "price": 5000,
+      "currency": "USD",
+      "tagline": "Support & Showcase — Engage the Right Way",
+      "description": "A solid entry point for companies ready to participate, promote, and support small business development.",
+      "benefits": [
+        "Branded Sponsor Recognition",
+        "Event Presence and Program Visibility",
+        "Small Business Workshop Sponsor",
+        "4 all-access passes, 4 VIP networking passes, 4 reserved seats",
+        "One 6-foot exhibit table",
+        "$500 off Humanizing Government Contracting Program enrollment"
+      ],
+      "purchaseUrl": "https://www.paypal.com/ncp/payment/VACWA4KQNNS9Q"
+    },
+    {
+      "id": "silver",
+      "name": "Silver Partnership Level",
+      "price": 1000,
+      "currency": "USD",
+      "tagline": "Support with Purpose — Align, Contribute, Empower",
+      "description": "A strategic opportunity for emerging sponsors to engage directly with small businesses.",
+      "benefits": [
+        "Thought Leadership Placement",
+        "Brand featured in whitepapers and research reports"
+      ],
+      "purchaseUrl": "https://www.paypal.com/ncp/payment/VGHJDJKK4K83G"
+    }
+  ],
+  "relatedNews": [
+    {
+      "title": "Puerto Rico's Strategic Role: Federal Opportunities Emerging from Counter-Cartel Operations",
+      "url": "https://kdm-assoc.com/event_news/puerto-ricos-strategic-role-federal-opportunities-emerging-from-counter-cartel-operations-event-780"
+    },
+    {
+      "title": "Puerto Rico's Agricultural Sector in 2025: A Strategic Pivot Toward Resilience and Innovation",
+      "url": "https://kdm-assoc.com/event_news/puerto-ricos-agricultural-sector-in-2025-a-strategic-pivot-toward-resilience-and-innovation-event-780"
+    },
+    {
+      "title": "Puerto Rico's Energy Crossroads: How Leadership and the IAEOZ Summit 2025 Can Power a Sustainable Future",
+      "url": "https://kdm-assoc.com/event_news/puerto-ricos-energy-crossroads-how-leadership-and-the-iaeoz-summit-2025-can-power-a-sustainable-future-event-780"
+    },
+    {
+      "title": "Why Engaging, Educating & Empowering Stakeholders Is Vital for Puerto Rico's Energy & Environmental Future",
+      "url": "https://kdm-assoc.com/event_news/why-engaging-educating-empowering-stakeholders-is-vital-for-puerto-ricos-energy-environmental-future-event-780"
+    },
+    {
+      "title": "U.S. Manufacturing & Environmental Progress: A New Era of Innovation and Sustainability",
+      "url": "https://kdm-assoc.com/event_news/us-manufacturing-environmental-progress-a-new-era-of-innovation-and-sustainability-event-780"
+    },
+    {
+      "title": "IAEOZ Summit 2024 Africa Overview From Founder & CEO Keith Moore",
+      "url": "https://kdm-assoc.com/event_news/iaeoz-summit-2024-africa-overview-from-founder-ceo-keith-moore-event-780"
+    },
+    {
+      "title": "American Defense Alliance and KDM & Associates Collaborate to Promote Small Business Access to Government/Defense Contracting",
+      "url": "https://kdm-assoc.com/event_news/american-defense-alliance-and-kdm-associates-collaborate-to-promote-small-business-access-to-governmentdefense-contracting-event-780"
+    },
+    {
+      "title": "Advancing the Dream: Federal Initiatives Empowering Businesses in 2025",
+      "url": "https://kdm-assoc.com/event_news/advancing-the-dream-federal-initiatives-empowering-businesses-in-2025-event-780"
+    },
+    {
+      "title": "The Future is Now: How AI is Shaping Minority-Owned Businesses",
+      "url": "https://kdm-assoc.com/event_news/the-future-is-now-how-ai-is-shaping-minority-owned-businesses-event-780"
+    }
+  ],
+  "contact": {
+    "phone": "877-403-3286",
+    "address": "1201 N. Orange Street, Suite 814 Wilmington, DE 19801"
+  }
+}

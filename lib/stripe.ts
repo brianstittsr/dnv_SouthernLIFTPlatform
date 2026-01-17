@@ -316,6 +316,59 @@ export async function createTicketCheckoutSession(params: {
 }
 
 /**
+ * Create a checkout session for partial payments/installments
+ */
+export async function createPartialPaymentCheckoutSession(params: {
+  customerId?: string;
+  customerEmail: string;
+  entityType: "event" | "sponsorship" | "membership" | "other";
+  entityId: string;
+  entityName: string;
+  totalAmount: number; // total cost in cents
+  paymentAmount: number; // amount to pay now in cents
+  successUrl: string;
+  cancelUrl: string;
+  paymentPlanId?: string; // link to existing plan if this is a subsequent payment
+  metadata?: Record<string, string>;
+}): Promise<Stripe.Checkout.Session> {
+  const session = await getStripe().checkout.sessions.create({
+    customer: params.customerId,
+    customer_email: params.customerId ? undefined : params.customerEmail,
+    mode: 'payment',
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          unit_amount: params.paymentAmount,
+          product_data: {
+            name: `Partial Payment - ${params.entityName}`,
+            description: `Total amount: $${(params.totalAmount / 100).toFixed(2)}. This payment: $${(params.paymentAmount / 100).toFixed(2)}`,
+            metadata: {
+              entityType: params.entityType,
+              entityId: params.entityId,
+            },
+          },
+        },
+        quantity: 1,
+      },
+    ],
+    success_url: params.successUrl,
+    cancel_url: params.cancelUrl,
+    metadata: {
+      ...params.metadata,
+      entityType: params.entityType,
+      entityId: params.entityId,
+      totalAmount: params.totalAmount.toString(),
+      paymentAmount: params.paymentAmount.toString(),
+      paymentPlanId: params.paymentPlanId || '',
+      isPartial: 'true',
+    },
+  });
+
+  return session;
+}
+
+/**
  * Verify webhook signature
  */
 export function verifyWebhookSignature(

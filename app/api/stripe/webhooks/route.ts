@@ -1,9 +1,3 @@
-/**
- * Stripe Webhooks API Route
- * 
- * Handles all Stripe webhook events for memberships, payments, and subscriptions
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { db } from '@/lib/firebase';
@@ -14,9 +8,11 @@ import {
   updateDoc, 
   query, 
   where,
+  addDoc,
+  getDoc,
   Timestamp 
 } from 'firebase/firestore';
-import { COLLECTIONS } from '@/lib/schema';
+import { COLLECTIONS, type TransactionDoc, type PaymentPlanDoc } from '@/lib/schema';
 import { verifyWebhookSignature } from '@/lib/stripe';
 import { sendTemplatedEmail } from '@/lib/email';
 import Stripe from 'stripe';
@@ -104,6 +100,107 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Record a transaction in Firestore
+ */
+async function recordTransaction(session: Stripe.Checkout.Session | Stripe.PaymentIntent | Stripe.Invoice, metadata: any) {
+  if (!db) return null;
+
+  const amount = 'amount_total' in session ? session.amount_total : 'amount_received' in session ? session.amount_received : 'amount_paid' in session ? session.amount_paid : 0;
+  const currency = 'currency' in session ? session.currency : 'usd';
+  const customerId = typeof session.customer === 'string' ? session.customer : (session.customer as Stripe.Customer | Stripe.DeletedCustomer)?.id;
+  const paymentIntentId = 'payment_intent' in session ? (typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id) : undefined;
+
+  const transaction: Partial<TransactionDoc> = {
+    userId: metadata.userId || '',
+    userName: metadata.userName || (session as Stripe.Checkout.Session).customer_details?.name || '',
+    userEmail: metadata.userEmail || (session as Stripe.Checkout.Session).customer_details?.email || '',
+    amount: (amount || 0) / 100,
+    currency: (currency || 'usd').toUpperCase(),
+    status: 'succeeded',
+    stripePaymentIntentId: paymentIntentId || '',
+    stripeCustomerId: customerId || '',
+    type: metadata.type || (metadata.isPartial === 'true' ? 'partial_payment' : 'other'),
+    tags: metadata.tags ? metadata.tags.split(',') : [],
+    entityType: metadata.entityType || 'other',
+    entityId: metadata.entityId || '',
+    entityName: metadata.entityName || '',
+    isPartial: metadata.isPartial === 'true',
+    paymentPlanId: metadata.paymentPlanId || '',
+    createdAt: Timestamp.now(),
+  };
+
+  const docRef = await addDoc(collection(db, COLLECTIONS.TRANSACTIONS), transaction);
+  return { id: docRef.id, ...transaction };
+}
+
+/**
+ * Handle or create a payment plan
+ */
+async function handlePaymentPlan(transaction: any, metadata: any) {
+  if (!db || !transaction.isPartial) return;
+
+  let planId = metadata.paymentPlanId;
+  const plansRef = collection(db, COLLECTIONS.PAYMENT_PLANS);
+
+  if (planId) {
+    // Update existing plan
+    const planRef = doc(db, COLLECTIONS.PAYMENT_PLANS, planId);
+    const planSnap = await getDoc(planRef);
+    
+    if (planSnap.exists()) {
+      const planData = planSnap.data() as PaymentPlanDoc;
+      const newPaidAmount = planData.paidAmount + transaction.amount;
+      const newRemainingBalance = planData.totalAmount - newPaidAmount;
+      
+      await updateDoc(planRef, {
+        paidAmount: newPaidAmount,
+        remainingBalance: newRemainingBalance,
+        status: newRemainingBalance <= 0 ? 'completed' : 'active',
+        updatedAt: Timestamp.now(),
+        // Update installment status if matched
+        installments: planData.installments.map((inst: any) => {
+          if (inst.status === 'pending' && inst.amount === transaction.amount) {
+            return { ...inst, status: 'paid', paidAt: Timestamp.now(), transactionId: transaction.id };
+          }
+          return inst;
+        })
+      });
+      return;
+    }
+  }
+
+  // Create new plan if none exists
+  const totalAmount = parseFloat(metadata.totalAmount || '0') / 100;
+  const plan: Partial<PaymentPlanDoc> = {
+    userId: transaction.userId,
+    entityType: metadata.entityType,
+    entityId: metadata.entityId,
+    entityName: metadata.entityName,
+    totalAmount: totalAmount,
+    paidAmount: transaction.amount,
+    remainingBalance: totalAmount - transaction.amount,
+    currency: transaction.currency,
+    status: (totalAmount - transaction.amount) <= 0 ? 'completed' : 'active',
+    dueDate: metadata.eventDate ? Timestamp.fromDate(new Date(metadata.eventDate)) : Timestamp.now(),
+    reminderFrequency: 'weekly',
+    installments: [
+      {
+        id: crypto.randomUUID(),
+        amount: transaction.amount,
+        status: 'paid',
+        dueDate: Timestamp.now(),
+        paidAt: Timestamp.now(),
+        transactionId: transaction.id
+      }
+    ],
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  };
+
+  await addDoc(plansRef, plan);
 }
 
 /**
@@ -207,7 +304,6 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   if (!db) return;
 
   const customerId = invoice.customer as string;
-  const subscriptionId = (invoice as any).subscription as string;
 
   // Find membership
   const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
@@ -222,8 +318,6 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   // Send payment confirmation email
   if (invoice.customer_email && membershipData.userId) {
     try {
-      // Get user name from users collection
-      const userRef = doc(db, COLLECTIONS.USERS, membershipData.userId);
       const userSnap = await getDocs(query(collection(db, COLLECTIONS.USERS), where('id', '==', membershipData.userId)));
       const userName = userSnap.docs[0]?.data()?.name || 'Member';
 
@@ -328,6 +422,17 @@ async function handleChargeRefunded(charge: Stripe.Charge) {
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   if (!db) return;
 
+  const metadata = session.metadata || {};
+  
+  // 1. Record the transaction
+  const transaction = await recordTransaction(session, metadata);
+
+  // 2. Handle payment plan if partial
+  if (metadata.isPartial === 'true' && transaction) {
+    await handlePaymentPlan(transaction, metadata);
+  }
+
+  // 3. Original membership logic
   const customerId = session.customer as string;
   const subscriptionId = session.subscription as string;
 
@@ -340,7 +445,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     if (!snapshot.empty) {
       const membershipDoc = snapshot.docs[0];
       const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
-      const membershipData = membershipDoc.data();
 
       await updateDoc(membershipRef, {
         stripeSubscriptionId: subscriptionId,

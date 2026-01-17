@@ -44,7 +44,8 @@ export function Footer() {
                 alt="KDM & Associates Logo"
                 width={160}
                 height={40}
-                className="h-10 w-auto"
+                className="h-10"
+                style={{ width: 'auto' }}
               />
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">

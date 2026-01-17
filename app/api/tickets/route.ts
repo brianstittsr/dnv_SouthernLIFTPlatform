@@ -20,7 +20,7 @@ import {
 } from 'firebase/firestore';
 import { COLLECTIONS, TicketDoc } from '@/lib/schema';
 import { createTicketCheckoutSession } from '@/lib/stripe';
-import { sendTemplatedEmail } from '@/lib/email';
+// import { sendTemplatedEmail } from '@/lib/email';
 
 /**
  * Generate a unique ticket ID using timestamp and random string
@@ -83,10 +83,10 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({ tickets });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching tickets:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch tickets' },
+      { error: error instanceof Error ? error.message : 'Failed to fetch tickets' },
       { status: 500 }
     );
   }
@@ -110,7 +110,10 @@ export async function POST(request: NextRequest) {
       promoCode,
       attendeeInfo,
       successUrl,
-      cancelUrl 
+      cancelUrl,
+      isPartial,
+      paymentAmount,
+      eventDate
     } = body;
 
     if (!eventId || !userEmail || !ticketType || price === undefined) {
@@ -199,16 +202,41 @@ export async function POST(request: NextRequest) {
 
     // Create Stripe checkout session
     const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000';
-    const session = await createTicketCheckoutSession({
-      customerEmail: userEmail,
-      eventId,
-      ticketType,
-      price: finalPrice,
-      quantity,
-      successUrl: successUrl || `${baseUrl}/events/${eventId}/confirmation?ticket_id=${ticketId}`,
-      cancelUrl: cancelUrl || `${baseUrl}/events/${eventId}`,
-      promoCode: promoCode?.toUpperCase(),
-    });
+    let session;
+
+    if (isPartial && paymentAmount) {
+      const { createPartialPaymentCheckoutSession } = await import('@/lib/stripe');
+      session = await createPartialPaymentCheckoutSession({
+        customerEmail: userEmail,
+        entityType: "event",
+        entityId: eventId,
+        entityName: eventData.title,
+        totalAmount: finalPrice,
+        paymentAmount: paymentAmount,
+        successUrl: successUrl || `${baseUrl}/events/${eventId}/confirmation?ticket_id=${ticketId}`,
+        cancelUrl: cancelUrl || `${baseUrl}/events/${eventId}`,
+        metadata: {
+          userId: userId || "",
+          userName: userName || "",
+          userEmail: userEmail,
+          eventId: eventId,
+          ticketType: ticketType,
+          eventDate: eventDate || "",
+          type: "event_ticket"
+        }
+      });
+    } else {
+      session = await createTicketCheckoutSession({
+        customerEmail: userEmail,
+        eventId,
+        ticketType,
+        price: finalPrice,
+        quantity,
+        successUrl: successUrl || `${baseUrl}/events/${eventId}/confirmation?ticket_id=${ticketId}`,
+        cancelUrl: cancelUrl || `${baseUrl}/events/${eventId}`,
+        promoCode: promoCode?.toUpperCase(),
+      });
+    }
 
     // Create pending ticket record
     const ticketData: Omit<TicketDoc, 'id'> = {
@@ -239,10 +267,10 @@ export async function POST(request: NextRequest) {
       finalPrice,
       discount,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating ticket:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create ticket' },
+      { error: error instanceof Error ? error.message : 'Failed to create ticket' },
       { status: 500 }
     );
   }
@@ -340,10 +368,10 @@ export async function PATCH(request: NextRequest) {
       ticketId,
       action 
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating ticket:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to update ticket' },
+      { error: error instanceof Error ? error.message : 'Failed to update ticket' },
       { status: 500 }
     );
   }
