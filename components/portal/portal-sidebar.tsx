@@ -1359,7 +1359,9 @@ export function PortalSidebar() {
                   <div className="flex flex-col items-start text-sm">
                     <span className="font-medium">{getDisplayName()}</span>
                     <span className="text-xs text-sidebar-foreground/60 capitalize">
-                      {previewRole ? `${profile.role.replace("_", " ")} (viewing as ${previewRole.replace("_", " ")})` : profile.role.replace("_", " ")}
+                      {previewRole 
+                        ? `${(profile.svpRole || profile.role).replace("_", " ")} (viewing as ${previewRole.replace("_", " ")})` 
+                        : (profile.svpRole || profile.role).replace("_", " ")}
                     </span>
                   </div>
                   <ChevronUp className="ml-auto h-4 w-4" />
