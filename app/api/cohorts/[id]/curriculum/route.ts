@@ -8,7 +8,7 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -29,7 +29,8 @@ export async function PUT(
       );
     }
 
-    const cohortRef = db.collection("cohorts").doc(params.id);
+    const { id } = await params;
+    const cohortRef = db.collection("cohorts").doc(id);
     const cohortDoc = await cohortRef.get();
 
     if (!cohortDoc.exists) {
@@ -92,7 +93,7 @@ export async function PUT(
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -113,7 +114,8 @@ export async function POST(
       );
     }
 
-    const cohortRef = db.collection("cohorts").doc(params.id);
+    const { id } = await params;
+    const cohortRef = db.collection("cohorts").doc(id);
     const cohortDoc = await cohortRef.get();
 
     if (!cohortDoc.exists) {
@@ -150,7 +152,7 @@ export async function POST(
             <h2>New Content Available!</h2>
             <p>Week ${week} materials for ${cohortData?.title} are now available.</p>
             <p><strong>Module:</strong> ${curriculum[weekIndex].title}</p>
-            <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/cohorts/${params.id}">Access Content</a></p>
+            <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/cohorts/${id}">Access Content</a></p>
           `,
           createdAt: Timestamp.now(),
           status: "pending",
