@@ -143,20 +143,8 @@ export default function SubscriptionPage() {
         return;
       }
 
-      // For paid tiers, redirect to Stripe checkout
-      const response = await fetch("/api/subscription/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ tier: tierId }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create checkout session");
-
-      const { checkoutUrl } = await response.json();
-      window.location.href = checkoutUrl;
+      // For paid tiers, navigate to custom checkout page
+      router.push(`/portal/subscription/checkout?tier=${tierId}`);
     } catch (err: any) {
       setError(err.message || "Failed to update subscription");
     } finally {
