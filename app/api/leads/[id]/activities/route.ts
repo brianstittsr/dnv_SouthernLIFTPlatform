@@ -8,9 +8,11 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,12 +45,12 @@ export async function POST(
 
     const activityRef = await db
       .collection("leads")
-      .doc(params.id)
+      .doc(id)
       .collection("activities")
       .add(activityData);
 
     // Update lead's last activity timestamp
-    await db.collection("leads").doc(params.id).update({
+    await db.collection("leads").doc(id).update({
       lastActivityAt: activityData.activityDate,
       updatedAt: Timestamp.now(),
     });
@@ -58,7 +60,7 @@ export async function POST(
       userId: decodedToken.uid,
       action: "lead_activity_logged",
       resource: "lead",
-      resourceId: params.id,
+      resourceId: id,
       details: { activityType, activityId: activityRef.id },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
@@ -83,9 +85,11 @@ export async function POST(
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -99,7 +103,7 @@ export async function GET(
 
     let query = db
       .collection("leads")
-      .doc(params.id)
+      .doc(id)
       .collection("activities")
       .orderBy("activityDate", "desc");
 
