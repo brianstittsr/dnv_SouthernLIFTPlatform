@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
-import { USER_ROLES, UserRole, Permission, ROLE_PERMISSIONS } from "@/lib/rbac";
+import { USER_ROLES, UserRole, Permission, ROLE_PERMISSIONS } from "@/lib/rbac-types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
