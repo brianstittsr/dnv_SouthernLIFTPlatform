@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,8 @@ interface Activity {
   loggedBy: string;
 }
 
-export default function LeadDetailPage({ params }: { params: { id: string } }) {
+export default function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -56,7 +57,7 @@ export default function LeadDetailPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchLead();
-  }, [params.id]);
+  }, [id]);
 
   const fetchLead = async () => {
     try {
@@ -71,7 +72,7 @@ export default function LeadDetailPage({ params }: { params: { id: string } }) {
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/leads/${params.id}`, {
+      const response = await fetch(`/api/leads/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -106,7 +107,7 @@ export default function LeadDetailPage({ params }: { params: { id: string } }) {
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/leads/${params.id}`, {
+      const response = await fetch(`/api/leads/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +146,7 @@ export default function LeadDetailPage({ params }: { params: { id: string } }) {
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/leads/${params.id}/activities`, {
+      const response = await fetch(`/api/leads/${id}/activities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
