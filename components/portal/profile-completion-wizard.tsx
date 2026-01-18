@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { auth, db } from "@/lib/firebase";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   User,
   Building,
@@ -26,7 +28,9 @@ import {
   CheckCircle,
   ChevronRight,
   ChevronLeft,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 // Circular progress component
 function CircularProgress({ percentage, size = 120, strokeWidth = 10 }: { percentage: number; size?: number; strokeWidth?: number }) {
@@ -77,16 +81,33 @@ const steps = [
 export function ProfileCompletionWizard() {
   const { profile, updateProfile, profileCompletion, showProfileWizard, setShowProfileWizard } = useUserProfile();
   const [currentStep, setCurrentStep] = useState(1);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: profile.firstName || "",
-    lastName: profile.lastName || "",
-    email: profile.email || "",
-    phone: profile.phone || "",
-    company: profile.company || "",
-    jobTitle: profile.jobTitle || "",
-    location: profile.location || "",
-    bio: profile.bio || "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    jobTitle: "",
+    location: "",
+    bio: "",
   });
+
+  // Initialize form data from profile when wizard opens
+  useEffect(() => {
+    if (showProfileWizard && profile.id) {
+      setFormData({
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        company: profile.company || "",
+        jobTitle: profile.jobTitle || "",
+        location: profile.location || "",
+        bio: profile.bio || "",
+      });
+    }
+  }, [showProfileWizard, profile]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -104,18 +125,78 @@ export function ProfileCompletionWizard() {
     }
   };
 
-  const handleComplete = () => {
-    updateProfile({
-      ...formData,
-      profileCompletedAt: new Date().toISOString(),
-    });
-    setShowProfileWizard(false);
+  const handleComplete = async () => {
+    if (!auth?.currentUser || !db) {
+      toast.error("Authentication required");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        company: formData.company,
+        jobTitle: formData.jobTitle,
+        location: formData.location,
+        bio: formData.bio,
+        profileCompletedAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+
+      // Update local profile context
+      updateProfile({
+        ...formData,
+        profileCompletedAt: new Date().toISOString(),
+      });
+
+      toast.success("Profile completed successfully!");
+      setShowProfileWizard(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleSkip = () => {
-    // Save what we have so far
-    updateProfile(formData);
-    setShowProfileWizard(false);
+  const handleSkip = async () => {
+    if (!auth?.currentUser || !db) {
+      setShowProfileWizard(false);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      // Save partial progress to Firebase
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const updates: any = {
+        updatedAt: Timestamp.now(),
+      };
+
+      // Only update fields that have values
+      if (formData.firstName) updates.firstName = formData.firstName;
+      if (formData.lastName) updates.lastName = formData.lastName;
+      if (formData.phone) updates.phone = formData.phone;
+      if (formData.company) updates.company = formData.company;
+      if (formData.jobTitle) updates.jobTitle = formData.jobTitle;
+      if (formData.location) updates.location = formData.location;
+      if (formData.bio) updates.bio = formData.bio;
+
+      await updateDoc(userRef, updates);
+
+      // Update local profile context
+      updateProfile(formData);
+
+      setShowProfileWizard(false);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      setShowProfileWizard(false);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const isStepValid = () => {
@@ -123,7 +204,7 @@ export function ProfileCompletionWizard() {
       case 1:
         return formData.firstName.trim() !== "" && formData.lastName.trim() !== "";
       case 2:
-        return formData.email.trim() !== "" && formData.phone.trim() !== "";
+        return formData.phone.trim() !== "";
       case 3:
         return formData.company.trim() !== "" && formData.jobTitle.trim() !== "";
       case 4:
@@ -131,6 +212,11 @@ export function ProfileCompletionWizard() {
       default:
         return true;
     }
+  };
+
+  const getStepProgress = () => {
+    const totalSteps = steps.length;
+    return Math.round((currentStep / totalSteps) * 100);
   };
 
   return (
@@ -217,18 +303,19 @@ export function ProfileCompletionWizard() {
             {currentStep === 2 && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address *</Label>
+                  <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      disabled
                       placeholder="you@company.com"
-                      className="pl-10"
+                      className="pl-10 bg-muted"
                     />
                   </div>
+                  <p className="text-xs text-muted-foreground">Email cannot be changed here. Contact support if needed.</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number *</Label>
@@ -309,25 +396,34 @@ export function ProfileCompletionWizard() {
         </div>
 
         <DialogFooter className="flex items-center justify-between">
-          <Button variant="ghost" onClick={handleSkip}>
+          <Button variant="ghost" onClick={handleSkip} disabled={saving}>
             Skip for now
           </Button>
           <div className="flex gap-2">
             {currentStep > 1 && (
-              <Button variant="outline" onClick={handleBack}>
+              <Button variant="outline" onClick={handleBack} disabled={saving}>
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
             )}
             {currentStep < steps.length ? (
-              <Button onClick={handleNext} disabled={!isStepValid()}>
+              <Button onClick={handleNext} disabled={!isStepValid() || saving}>
                 Next
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
-              <Button onClick={handleComplete} disabled={!isStepValid()}>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Complete Profile
+              <Button onClick={handleComplete} disabled={!isStepValid() || saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Complete Profile
+                  </>
+                )}
               </Button>
             )}
           </div>
