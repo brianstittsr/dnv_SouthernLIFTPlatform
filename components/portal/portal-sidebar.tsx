@@ -297,6 +297,11 @@ const adminItems = [
     badge: "AI",
   },
   {
+    title: "Image Manager",
+    href: "/portal/admin/images",
+    icon: ImageIcon,
+  },
+  {
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,

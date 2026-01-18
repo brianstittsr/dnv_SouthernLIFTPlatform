@@ -8,7 +8,7 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -22,7 +22,8 @@ export async function POST(
     const body = await req.json();
     const { paymentType, stripeSessionId } = body;
 
-    const cohortRef = db.collection("cohorts").doc(params.id);
+    const { id } = await params;
+    const cohortRef = db.collection("cohorts").doc(id);
     const cohortDoc = await cohortRef.get();
 
     if (!cohortDoc.exists) {
@@ -52,7 +53,7 @@ export async function POST(
 
     // Create enrollment record
     const enrollmentData = {
-      cohortId: params.id,
+      cohortId: id,
       userId: decodedToken.uid,
       paymentType: paymentType || "full",
       stripeSessionId: stripeSessionId || null,
@@ -91,7 +92,7 @@ export async function POST(
         <p><strong>Start Date:</strong> ${cohortData?.startDate?.toDate().toLocaleDateString()}</p>
         <p><strong>Duration:</strong> ${cohortData?.duration} weeks</p>
         <p>You will receive notifications when new curriculum materials are released.</p>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/cohorts/${params.id}">Access Cohort Dashboard</a></p>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/cohorts/${id}">Access Cohort Dashboard</a></p>
       `,
       createdAt: Timestamp.now(),
       status: "pending",
@@ -102,7 +103,7 @@ export async function POST(
       userId: decodedToken.uid,
       action: "cohort_enrolled",
       resource: "cohort",
-      resourceId: params.id,
+      resourceId: id,
       details: { cohortTitle: cohortData?.title },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),

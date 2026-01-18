@@ -52,6 +52,7 @@ import {
   BarChart3,
   Award,
   TrendingUp,
+  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -78,6 +79,7 @@ import {
   type UXReview,
   type SectionType,
 } from "@/lib/firebase-page-designer";
+import { PageDesignerImageManager, type PageImage } from "@/components/admin/page-designer-image-manager";
 
 // ============================================================================
 // Main Component
@@ -85,11 +87,12 @@ import {
 
 export default function PageDesignerPage() {
   const { profile } = useUserProfile();
-  const [activeTab, setActiveTab] = useState<"wizard" | "chat" | "templates" | "review">("wizard");
+  const [activeTab, setActiveTab] = useState<"wizard" | "chat" | "templates" | "review" | "images">("wizard");
   const [selectedPage, setSelectedPage] = useState<PublicPage | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [currentDesign, setCurrentDesign] = useState<PageDesign | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [pageImages, setPageImages] = useState<Record<string, any[]>>({});
 
   // Wizard state
   const [wizardStep, setWizardStep] = useState(1);
@@ -568,7 +571,7 @@ export default function PageDesignerPage() {
       {/* Main Content - Only show if page is selected */}
       {selectedPage && (
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="wizard">
               <Sparkles className="h-4 w-4 mr-2" />
               Wizard
@@ -576,6 +579,10 @@ export default function PageDesignerPage() {
             <TabsTrigger value="chat">
               <MessageSquare className="h-4 w-4 mr-2" />
               AI Chat
+            </TabsTrigger>
+            <TabsTrigger value="images">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Images
             </TabsTrigger>
             <TabsTrigger value="templates">
               <Layout className="h-4 w-4 mr-2" />
@@ -615,6 +622,15 @@ export default function PageDesignerPage() {
               onSectionChange={setSelectedSection}
               onSend={handleChatSend}
               chatEndRef={chatEndRef}
+            />
+          </TabsContent>
+
+          {/* Images Tab */}
+          <TabsContent value="images" className="space-y-4">
+            <ImagesContent
+              selectedPage={selectedPage}
+              pageImages={pageImages}
+              onImagesChange={setPageImages}
             />
           </TabsContent>
 
@@ -1558,6 +1574,69 @@ function UXReviewContent({ review, isLoading, onRunReview, currentDesign }: UXRe
             </CardContent>
           </Card>
         </>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// Images Content Component
+// ============================================================================
+
+interface ImagesContentProps {
+  selectedPage: PublicPage;
+  pageImages: Record<string, PageImage[]>;
+  onImagesChange: (images: Record<string, PageImage[]>) => void;
+}
+
+function ImagesContent({
+  selectedPage,
+  pageImages,
+  onImagesChange,
+}: ImagesContentProps) {
+  function handleSectionImagesChange(sectionId: string, images: PageImage[]) {
+    onImagesChange({
+      ...pageImages,
+      [sectionId]: images,
+    });
+  }
+
+  const editableSections = selectedPage.sections.filter(s => s.isEditable);
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Page Images</CardTitle>
+          <CardDescription>
+            Manage images for each section of your page. Upload, position, and resize images for optimal display.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {editableSections.length === 0 ? (
+        <Card className="p-12">
+          <div className="text-center space-y-4">
+            <ImageIcon className="h-16 w-16 mx-auto text-muted-foreground" />
+            <h3 className="text-xl font-semibold">No Editable Sections</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              This page has no editable sections that support images.
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {editableSections.map((section) => (
+            <PageDesignerImageManager
+              key={section.id}
+              sectionId={section.id}
+              sectionName={section.name}
+              images={pageImages[section.id] || []}
+              onImagesChange={(images) => handleSectionImagesChange(section.id, images)}
+              maxImages={section.type === "hero" ? 1 : section.type === "team" ? 20 : undefined}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
