@@ -8,9 +8,11 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,7 +31,7 @@ export async function POST(
       );
     }
 
-    const introRef = db.collection("introductions").doc(params.id);
+    const introRef = db.collection("introductions").doc(id);
     const introDoc = await introRef.get();
 
     if (!introDoc.exists) {
@@ -87,7 +89,7 @@ export async function POST(
           <p>${introData.smeCompany} has accepted your introduction request.</p>
           <p><strong>Next Steps:</strong> Schedule a meeting to discuss your project.</p>
           <p><strong>SME Contact:</strong> ${userData?.email}</p>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/buyer/introductions/${params.id}">Schedule Meeting</a></p>
+          <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/buyer/introductions/${id}">Schedule Meeting</a></p>
         `,
         createdAt: Timestamp.now(),
         status: "pending",
@@ -113,7 +115,7 @@ export async function POST(
       userId: decodedToken.uid,
       action: `introduction_${action}ed`,
       resource: "introduction",
-      resourceId: params.id,
+      resourceId: id,
       details: { buyerCompany: introData.buyerCompany },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
