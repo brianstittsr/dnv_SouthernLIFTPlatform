@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Plus, FileText, TrendingUp, AlertCircle, CheckCircle } from "lucide-react";
+import { DataModeToggle } from "@/components/svp/data-mode-toggle";
 
 interface ProofPack {
   id: string;
@@ -23,16 +24,82 @@ interface ProofPack {
   updatedAt: any;
 }
 
+const MOCK_PROOF_PACKS: ProofPack[] = [
+  {
+    id: "mock-1",
+    title: "DoD Manufacturing Capabilities 2024",
+    description: "Comprehensive proof pack for DoD precision manufacturing contracts, including ISO 9001:2015, AS9100D, and CMMC Level 2 certifications.",
+    status: "approved",
+    documentCount: 12,
+    packHealth: {
+      overallScore: 85,
+      isEligibleForIntroductions: true,
+    },
+    updatedAt: new Date("2024-01-15"),
+  },
+  {
+    id: "mock-2",
+    title: "Battery Manufacturing - Commercial OEM",
+    description: "Commercial lane proof pack targeting Battery/EV OEMs with UL certifications, customer references, and technical specifications.",
+    status: "submitted",
+    documentCount: 8,
+    packHealth: {
+      overallScore: 72,
+      isEligibleForIntroductions: true,
+    },
+    updatedAt: new Date("2024-01-10"),
+  },
+  {
+    id: "mock-3",
+    title: "Critical Minerals Supply Chain",
+    description: "Government lane pack for critical minerals procurement with past performance, financial documentation, and compliance certifications.",
+    status: "draft",
+    documentCount: 5,
+    packHealth: {
+      overallScore: 58,
+      isEligibleForIntroductions: false,
+    },
+    updatedAt: new Date("2024-01-08"),
+  },
+  {
+    id: "mock-4",
+    title: "Biopharma Quality Assurance Services",
+    description: "Commercial lane pack for biopharma industry with ISO 13485, FDA compliance, and extensive case studies.",
+    status: "approved",
+    documentCount: 15,
+    packHealth: {
+      overallScore: 92,
+      isEligibleForIntroductions: true,
+    },
+    updatedAt: new Date("2024-01-12"),
+  },
+];
+
 export default function ProofPacksPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [proofPacks, setProofPacks] = useState<ProofPack[]>([]);
   const [subscriptionTier, setSubscriptionTier] = useState("free");
+  const [useMockData, setUseMockData] = useState(true);
 
   useEffect(() => {
-    fetchProofPacks();
-  }, []);
+    if (useMockData) {
+      loadMockData();
+    } else {
+      fetchProofPacks();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setProofPacks(MOCK_PROOF_PACKS);
+      setSubscriptionTier("diy");
+      setLoading(false);
+      setError(null);
+    }, 500);
+  };
 
   const fetchProofPacks = async () => {
     try {
@@ -111,10 +178,16 @@ export default function ProofPacksPage() {
             Organize and manage your compliance documents
           </p>
         </div>
-        <Button onClick={handleCreateProofPack}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create New Proof Pack
-        </Button>
+        <div className="flex items-center gap-4">
+          <DataModeToggle
+            useMockData={useMockData}
+            onToggle={() => setUseMockData(!useMockData)}
+          />
+          <Button onClick={handleCreateProofPack}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Proof Pack
+          </Button>
+        </div>
       </div>
 
       {error && (
