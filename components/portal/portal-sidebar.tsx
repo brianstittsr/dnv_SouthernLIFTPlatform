@@ -744,6 +744,7 @@ export function PortalSidebar() {
             alt="KDM & Associates Logo"
             width={160}
             height={40}
+            priority
             style={{ width: 'auto', height: '40px' }}
           />
         </Link>
