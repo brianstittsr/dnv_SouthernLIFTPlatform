@@ -357,6 +357,14 @@
       ]
     },
     {
+      "collectionGroup": "cmmcCohorts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "startDate", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "proofPacks",
       "queryScope": "COLLECTION",
       "fields": [
