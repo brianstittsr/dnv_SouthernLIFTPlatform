@@ -291,17 +291,6 @@ const adminItems = [
     icon: MessageSquare,
   },
   {
-    title: "Page Designer",
-    href: "/portal/admin/page-designer",
-    icon: Wand2,
-    badge: "AI",
-  },
-  {
-    title: "Image Manager",
-    href: "/portal/admin/images",
-    icon: ImageIcon,
-  },
-  {
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,
@@ -544,6 +533,17 @@ const svpAdminItems = [
     title: "All Cohorts",
     href: "/portal/admin/cohorts",
     icon: GraduationCap,
+  },
+  {
+    title: "Page Designer",
+    href: "/portal/admin/page-designer",
+    icon: Wand2,
+    badge: "AI",
+  },
+  {
+    title: "Image Manager",
+    href: "/portal/admin/images",
+    icon: ImageIcon,
   },
   {
     title: "System Health",
