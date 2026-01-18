@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Download, Building2, CheckCircle, Shield } from "lucide-react";
 
-export default function SharedProofPackPage({ params }: { params: { token: string } }) {
+export default function SharedProofPackPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
 
   useEffect(() => {
     fetchProofPackInfo();
-  }, [params.token]);
+  }, [token]);
 
   useEffect(() => {
     if (auth?.currentUser) {
@@ -39,7 +40,7 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/share/${params.token}`);
+      const response = await fetch(`/api/share/${token}`);
 
       if (!response.ok) {
         const data = await response.json();
@@ -60,10 +61,10 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
       const currentUser = auth?.currentUser;
       if (!currentUser) return;
 
-      const token = await currentUser.getIdToken();
+      const idToken = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/share/${params.token}/nda`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`/api/share/${token}/nda`, {
+        headers: { Authorization: `Bearer ${idToken}` },
       });
 
       if (response.ok) {
@@ -88,17 +89,17 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
 
       const currentUser = auth?.currentUser;
       if (!currentUser) {
-        router.push(`/sign-in?redirect=/share/${params.token}`);
+        router.push(`/sign-in?redirect=/share/${token}`);
         return;
       }
 
-      const token = await currentUser.getIdToken();
+      const idToken = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/share/${params.token}/nda`, {
+      const response = await fetch(`/api/share/${token}/nda`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({ accepted: true }),
       });
@@ -123,10 +124,10 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
       const currentUser = auth?.currentUser;
       if (!currentUser) return;
 
-      const token = await currentUser.getIdToken();
+      const idToken = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/share/${params.token}/view`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`/api/share/${token}/view`, {
+        headers: { Authorization: `Bearer ${idToken}` },
       });
 
       if (!response.ok) {
@@ -146,14 +147,14 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
       const currentUser = auth?.currentUser;
       if (!currentUser) return;
 
-      const token = await currentUser.getIdToken();
+      const idToken = await currentUser.getIdToken();
 
       // Log download
-      await fetch(`/api/share/${params.token}/view`, {
+      await fetch(`/api/share/${token}/view`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           documentId: doc.id,
@@ -243,7 +244,7 @@ export default function SharedProofPackPage({ params }: { params: { token: strin
               className="w-full"
               onClick={() => {
                 if (!auth?.currentUser) {
-                  router.push(`/sign-in?redirect=/share/${params.token}`);
+                  router.push(`/sign-in?redirect=/share/${token}`);
                 } else {
                   setStep("nda");
                 }
