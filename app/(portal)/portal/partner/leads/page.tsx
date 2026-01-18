@@ -13,6 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, TrendingUp, Phone, Mail, Calendar, Search } from "lucide-react";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockLeads } from "@/lib/mock-data/partner-mock-data";
 
 interface Lead {
   id: string;
@@ -33,15 +35,21 @@ export default function PartnerLeadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [useMockData, setUseMockData] = useState(false);
   
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [industryFilter, setIndustryFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchLeads();
-    setupRealtimeListener();
-  }, [statusFilter]);
+    if (useMockData) {
+      setLeads(mockLeads as Lead[]);
+      setLoading(false);
+    } else {
+      fetchLeads();
+      setupRealtimeListener();
+    }
+  }, [statusFilter, useMockData]);
 
   const fetchLeads = async () => {
     try {
@@ -132,11 +140,14 @@ export default function PartnerLeadsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Lead Management</h1>
-        <p className="text-muted-foreground mt-1">
-          Manage your assigned SME clients and track your pipeline
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Lead Management</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage your assigned SME clients and track your pipeline
+          </p>
+        </div>
+        <DataToggle onToggle={setUseMockData} defaultValue={false} />
       </div>
 
       {error && (
