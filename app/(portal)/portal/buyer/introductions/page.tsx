@@ -8,15 +8,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockBuyerIntroductions } from "@/lib/mock-data/buyer-mock-data";
 
 export default function MyIntroductionsPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<any[]>([]);
+  const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, [profile.id]);
+    if (useMockData) {
+      setItems(mockBuyerIntroductions as any[]);
+      setLoading(false);
+    } else {
+      loadData();
+    }
+  }, [profile.id, useMockData]);
 
   const loadData = async () => {
     if (!db) return;
@@ -44,15 +52,14 @@ export default function MyIntroductionsPage() {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">My Introductions</h1>
-          <p className="text-muted-foreground">Manage your my introductions</p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold">My Introductions</h1>
+            <p className="text-muted-foreground">Track your SME introduction requests</p>
+          </div>
+          <DataToggle onToggle={setUseMockData} defaultValue={false} />
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New
-        </Button>
       </div>
 
       <Card>

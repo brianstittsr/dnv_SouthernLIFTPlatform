@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Building2, Search, Star, CheckCircle, TrendingUp } from "lucide-react";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockSMEProfiles } from "@/lib/mock-data/buyer-mock-data";
 
 interface SME {
   id: string;
@@ -36,6 +38,7 @@ export default function BuyerDirectoryPage() {
   const [smes, setSmes] = useState<SME[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [useMockData, setUseMockData] = useState(false);
   
   const [industryFilter, setIndustryFilter] = useState("all");
   const [certificationFilter, setCertificationFilter] = useState("all");
@@ -51,8 +54,20 @@ export default function BuyerDirectoryPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchDirectory();
-  }, [page, industryFilter, certificationFilter, minScore]);
+    if (useMockData) {
+      setSmes(mockSMEProfiles.map(sme => ({
+        ...sme,
+        smeId: sme.id,
+        description: sme.serviceOfferings.join(", "),
+        capabilities: sme.serviceOfferings,
+        packHealth: { overallScore: sme.rating * 20 },
+        proofPackId: `pack-${sme.id}`,
+      })) as SME[]);
+      setLoading(false);
+    } else {
+      fetchDirectory();
+    }
+  }, [page, industryFilter, certificationFilter, minScore, useMockData]);
 
   const fetchDirectory = async () => {
     try {
@@ -165,11 +180,14 @@ export default function BuyerDirectoryPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">SME Directory</h1>
-        <p className="text-muted-foreground mt-1">
-          Discover vetted SMEs with Pack Health ≥70
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">SME Directory</h1>
+          <p className="text-muted-foreground mt-1">
+            Discover vetted SMEs with Pack Health ≥70
+          </p>
+        </div>
+        <DataToggle onToggle={setUseMockData} defaultValue={false} />
       </div>
 
       {error && (
