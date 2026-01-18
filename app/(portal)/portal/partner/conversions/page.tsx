@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Loader2, TrendingUp, Users, CheckCircle, Clock, XCircle, Target, DollarSign, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockIntroductions } from "@/lib/mock-data/partner-mock-data";
 
 interface Introduction {
   id: string;
@@ -49,24 +51,36 @@ export default function ConversionTrackingPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [introductions, setIntroductions] = useState<Introduction[]>([]);
+  const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
     if (profile?.id) {
       loadData();
     }
-  }, [profile?.id]);
+  }, [profile?.id, useMockData]);
 
   const loadData = async () => {
-    if (!db || !profile?.id) return;
+    if (!profile?.id) return;
     
+    setLoading(true);
     try {
-      const q = query(
-        collection(db, "introductions"),
-        where("partnerId", "==", profile.id)
-      );
-      const snapshot = await getDocs(q);
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Introduction));
-      setIntroductions(data);
+      if (useMockData) {
+        // Use mock data
+        setIntroductions(mockIntroductions as Introduction[]);
+      } else {
+        // Load live data from Firestore
+        if (!db) {
+          toast.error("Firebase not initialized");
+          return;
+        }
+        const q = query(
+          collection(db, "introductions"),
+          where("partnerId", "==", profile.id)
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Introduction));
+        setIntroductions(data);
+      }
     } catch (error) {
       console.error("Error loading conversion data:", error);
       toast.error("Failed to load conversion data");
@@ -112,9 +126,12 @@ export default function ConversionTrackingPage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Conversion Tracking</h1>
-        <p className="text-muted-foreground">Track your introduction funnel and conversion metrics</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Conversion Tracking</h1>
+          <p className="text-muted-foreground">Track your introduction funnel and conversion metrics</p>
+        </div>
+        <DataToggle onToggle={setUseMockData} defaultValue={false} />
       </div>
 
       {/* Summary Cards */}

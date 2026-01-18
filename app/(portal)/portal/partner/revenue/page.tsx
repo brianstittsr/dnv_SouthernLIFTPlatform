@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockAttributionEvents, mockSettlements } from "@/lib/mock-data/partner-mock-data";
 import {
   Dialog,
   DialogContent,
@@ -70,6 +72,7 @@ export default function RevenueDashboardPage() {
   const [settlements, setSettlements] = useState<RevenueSettlement[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useMockData, setUseMockData] = useState(false);
 
   const [formData, setFormData] = useState({
     eventType: "lead_generated" as const,
@@ -86,31 +89,43 @@ export default function RevenueDashboardPage() {
     if (profile?.id) {
       loadData();
     }
-  }, [profile?.id]);
+  }, [profile?.id, useMockData]);
 
   const loadData = async () => {
-    if (!db || !profile?.id) return;
+    if (!profile?.id) return;
     
+    setLoading(true);
     try {
-      // Load attribution events
-      const eventsQuery = query(
-        collection(db, "attributionEvents"),
-        where("partnerId", "==", profile.id),
-        orderBy("createdAt", "desc")
-      );
-      const eventsSnapshot = await getDocs(eventsQuery);
-      const events = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AttributionEvent));
-      setAttributionEvents(events);
+      if (useMockData) {
+        // Use mock data
+        setAttributionEvents(mockAttributionEvents as AttributionEvent[]);
+        setSettlements(mockSettlements as RevenueSettlement[]);
+      } else {
+        // Load live data from Firestore
+        if (!db) {
+          toast.error("Firebase not initialized");
+          return;
+        }
+        // Load attribution events
+        const eventsQuery = query(
+          collection(db, "attributionEvents"),
+          where("partnerId", "==", profile.id),
+          orderBy("createdAt", "desc")
+        );
+        const eventsSnapshot = await getDocs(eventsQuery);
+        const events = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AttributionEvent));
+        setAttributionEvents(events);
 
-      // Load settlements
-      const settlementsQuery = query(
-        collection(db, "revenueSettlements"),
-        where("partnerId", "==", profile.id),
-        orderBy("createdAt", "desc")
-      );
-      const settlementsSnapshot = await getDocs(settlementsQuery);
-      const setts = settlementsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RevenueSettlement));
-      setSettlements(setts);
+        // Load settlements
+        const settlementsQuery = query(
+          collection(db, "revenueSettlements"),
+          where("partnerId", "==", profile.id),
+          orderBy("createdAt", "desc")
+        );
+        const settlementsSnapshot = await getDocs(settlementsQuery);
+        const setts = settlementsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RevenueSettlement));
+        setSettlements(setts);
+      }
     } catch (error) {
       console.error("Error loading revenue data:", error);
       toast.error("Failed to load revenue data");
@@ -193,10 +208,13 @@ export default function RevenueDashboardPage() {
           <h1 className="text-3xl font-bold">Revenue Dashboard</h1>
           <p className="text-muted-foreground">Track your revenue, attribution events, and settlements</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New
-        </Button>
+        <div className="flex items-center gap-3">
+          <DataToggle onToggle={setUseMockData} defaultValue={false} />
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add New
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
