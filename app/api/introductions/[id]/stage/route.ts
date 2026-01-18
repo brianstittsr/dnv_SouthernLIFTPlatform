@@ -8,9 +8,11 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,7 +40,7 @@ export async function PUT(
       );
     }
 
-    const introRef = db.collection("introductions").doc(params.id);
+    const introRef = db.collection("introductions").doc(id);
     const introDoc = await introRef.get();
 
     if (!introDoc.exists) {
@@ -77,7 +79,7 @@ export async function PUT(
       userId: decodedToken.uid,
       action: "introduction_stage_updated",
       resource: "introduction",
-      resourceId: params.id,
+      resourceId: id,
       details: { stage, notes },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
@@ -86,7 +88,7 @@ export async function PUT(
     // Trigger revenue attribution event if award stage
     if (stage === "award" && estimatedValue) {
       await db.collection("revenueEvents").add({
-        introductionId: params.id,
+        introductionId: id,
         smeId: introDoc.data()?.smeId,
         partnerId: introDoc.data()?.partnerId,
         buyerId: introDoc.data()?.buyerId,
