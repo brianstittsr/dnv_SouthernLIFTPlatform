@@ -1644,6 +1644,15 @@ export const COLLECTIONS = {
   // Financial Tracking
   TRANSACTIONS: "transactions",
   PAYMENT_PLANS: "paymentPlans",
+  // SVP Platform New Features (Story 0.1)
+  PROOF_PACKS: "proofPacks",
+  LEADS: "leads",
+  INTRODUCTIONS: "introductions",
+  COHORTS: "cohorts",
+  CONTENT: "content",
+  REVENUE_ATTRIBUTION: "revenueAttribution",
+  ROUTING_RULES: "routingRules",
+  ATTRIBUTION_EVENTS: "attributionEvents",
 } as const;
 
 // ... existing code ...
@@ -1651,6 +1660,16 @@ export const COLLECTIONS = {
 // Financial Tracking references
 export const transactionsCollection = () => getCollection<TransactionDoc>(COLLECTIONS.TRANSACTIONS);
 export const paymentPlansCollection = () => getCollection<PaymentPlanDoc>(COLLECTIONS.PAYMENT_PLANS);
+
+// SVP Platform New Features collection references (Story 0.1)
+export const proofPacksCollection = () => getCollection<ProofPackDoc>(COLLECTIONS.PROOF_PACKS);
+export const leadsCollection = () => getCollection<LeadDoc>(COLLECTIONS.LEADS);
+export const introductionsCollection = () => getCollection<IntroductionDoc>(COLLECTIONS.INTRODUCTIONS);
+export const cohortsCollection = () => getCollection<CohortDoc>(COLLECTIONS.COHORTS);
+export const contentCollection = () => getCollection<ContentDoc>(COLLECTIONS.CONTENT);
+export const revenueAttributionCollection = () => getCollection<RevenueAttributionDoc>(COLLECTIONS.REVENUE_ATTRIBUTION);
+export const routingRulesCollection = () => getCollection<RoutingRuleDoc>(COLLECTIONS.ROUTING_RULES);
+export const attributionEventsCollection = () => getCollection<AttributionEventDoc>(COLLECTIONS.ATTRIBUTION_EVENTS);
 
 
 // ============================================================================
@@ -2025,6 +2044,369 @@ export interface SettlementDoc extends BaseDocument {
   status: "draft" | "pending" | "approved" | "paid";
   pdfUrl?: string;
   notes?: string;
+}
+
+// ============================================================================
+// SVP PLATFORM NEW FEATURES (Story 0.1)
+// ============================================================================
+
+/** Proof Pack document for SME compliance documentation */
+export interface ProofPackDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId?: string;
+  smeId: string;
+  
+  // Basic information
+  title: string;
+  description?: string;
+  
+  // Status and workflow
+  status: "draft" | "submitted" | "approved" | "rejected";
+  
+  // Pack Health scoring
+  packHealthScore: number; // 0-100
+  packHealthBreakdown?: {
+    completeness: number; // 40% weight
+    expirationStatus: number; // 30% weight
+    documentQuality: number; // 20% weight
+    gapRemediation: number; // 10% weight
+  };
+  
+  // Documents (stored as base64 in subcollection or chunked documents)
+  documentCount: number;
+  categories: string[]; // Certifications, Financial, Past Performance, etc.
+  
+  // QA Review
+  submittedAt?: Timestamp;
+  reviewedAt?: Timestamp;
+  reviewedBy?: string;
+  reviewComments?: string;
+  
+  // Sharing
+  isPublished: boolean;
+  publishedAt?: Timestamp;
+  shareLinks?: Array<{
+    token: string;
+    expiresAt?: Timestamp;
+    createdAt: Timestamp;
+  }>;
+  
+  // Visibility
+  visibility: "private" | "partner-only" | "buyer-ready";
+  
+  // Version tracking
+  version: number;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Lead document for CRM and routing */
+export interface LeadDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId?: string;
+  smeId?: string;
+  
+  // Contact information
+  name: string;
+  email: string;
+  phone?: string;
+  company: string;
+  
+  // Lead details
+  industry: string;
+  serviceType: string;
+  source: "website" | "event" | "external-api" | "manual";
+  
+  // Routing and assignment
+  status: "new" | "contacted" | "qualified" | "converted";
+  assignedTo?: string; // Partner or team member ID
+  routingReason?: string;
+  
+  // Pipeline tracking
+  capturedAt: Timestamp;
+  lastContactedAt?: Timestamp;
+  convertedAt?: Timestamp;
+  
+  // Activity tracking
+  contactAttempts: number;
+  notes?: string;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Introduction request document for buyer-SME matching */
+export interface IntroductionDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId?: string;
+  smeId: string;
+  buyerId: string;
+  
+  // Introduction details
+  proofPackId: string;
+  projectDescription: string;
+  timeline?: string;
+  budgetRange?: string;
+  preferredContactMethod: "email" | "phone" | "video-call";
+  
+  // Status tracking
+  status: "pending" | "accepted" | "declined" | "meeting_scheduled" | "meeting_held" | "RFQ_sent" | "proposal_submitted" | "award";
+  
+  // Introduction brief
+  briefGenerated: boolean;
+  briefUrl?: string;
+  
+  // SME response
+  respondedAt?: Timestamp;
+  responseNotes?: string;
+  
+  // Meeting scheduling
+  meetingScheduledAt?: Timestamp;
+  meetingDate?: Timestamp;
+  calendlyLink?: string;
+  
+  // Conversion tracking
+  conversionStage?: string;
+  estimatedDealValue?: number;
+  
+  // Feedback
+  buyerFeedback?: {
+    qualityRating: number; // 1-5
+    relevanceRating: number; // 1-5
+    comments?: string;
+    willPursue: boolean;
+  };
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** CMMC Cohort document for training programs */
+export interface CohortDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId?: string;
+  instructorId: string;
+  
+  // Cohort details
+  title: string;
+  description: string;
+  
+  // Schedule
+  startDate: Timestamp;
+  duration: number; // weeks (typically 12)
+  
+  // Enrollment
+  maxParticipants: number;
+  currentParticipants: number;
+  enrolledSmeIds: string[];
+  
+  // Pricing
+  price: number;
+  currency: string;
+  allowPartialPayment: boolean;
+  
+  // Curriculum
+  weeklyModules: Array<{
+    weekNumber: number;
+    title: string;
+    description?: string;
+    releaseDate: Timestamp;
+    status: "locked" | "available" | "completed";
+    materialsCount: number;
+  }>;
+  
+  // Status
+  status: "draft" | "published" | "in-progress" | "completed" | "archived";
+  
+  // Syllabus
+  syllabusUrl?: string;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Content document for marketing and educational resources */
+export interface ContentDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId?: string;
+  
+  // Content details
+  title: string;
+  body: string;
+  contentType: "blog-post" | "landing-page" | "social-media" | "email" | "resource";
+  
+  // SEO and metadata
+  slug?: string;
+  metaDescription?: string;
+  keywords?: string[];
+  
+  // Media
+  featuredImageUrl?: string;
+  mediaIds?: string[];
+  
+  // Publishing
+  status: "draft" | "scheduled" | "published" | "archived";
+  publishedAt?: Timestamp;
+  scheduledFor?: Timestamp;
+  
+  // Multi-channel distribution
+  channels: Array<{
+    channel: "website" | "linkedin" | "twitter" | "email";
+    scheduledAt?: Timestamp;
+    publishedAt?: Timestamp;
+    status: "pending" | "published" | "failed";
+  }>;
+  
+  // Co-branding
+  isCoBranded: boolean;
+  coBrandingPartnerId?: string;
+  
+  // Analytics
+  views: number;
+  clicks: number;
+  shares: number;
+  conversions: number;
+  
+  // Categorization
+  category?: string;
+  tags: string[];
+  
+  // Author
+  authorId: string;
+  authorName: string;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Revenue Attribution document for financial tracking */
+export interface RevenueAttributionDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId: string;
+  smeId?: string;
+  buyerId?: string;
+  
+  // Settlement period
+  periodStart: Timestamp;
+  periodEnd: Timestamp;
+  
+  // Revenue breakdown
+  totalRevenue: number;
+  platformFee: number; // 10% default
+  platformFeePercentage: number;
+  netRevenue: number;
+  
+  // Attribution by type
+  revenueByType: {
+    leadGeneration: number;
+    serviceDelivery: number;
+    introductions: number;
+    other: number;
+  };
+  
+  // Partner distribution
+  partnerShare: number;
+  partnerSharePercentage: number;
+  
+  // Settlement status
+  status: "pending" | "calculated" | "approved" | "paid" | "disputed";
+  
+  // Dispute handling
+  disputeReason?: string;
+  disputeResolvedAt?: Timestamp;
+  disputeResolution?: string;
+  
+  // Payment tracking
+  paidAt?: Timestamp;
+  paymentMethod?: string;
+  transactionId?: string;
+  
+  // Event references
+  attributionEventIds: string[];
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Routing Rule document for lead assignment configuration */
+export interface RoutingRuleDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  
+  // Rule details
+  name: string;
+  description?: string;
+  
+  // Matching criteria
+  industry?: string[];
+  serviceType?: string[];
+  verticalExpertise?: string[];
+  
+  // Partner assignment
+  partnerId: string;
+  partnerName: string;
+  
+  // Priority and capacity
+  priority: number; // Higher number = higher priority
+  isActive: boolean;
+  maxCapacity?: number; // Max leads per period
+  currentLoad: number;
+  
+  // Conditions
+  conditions?: {
+    minPackHealth?: number;
+    requiredCertifications?: string[];
+    geographicRestrictions?: string[];
+  };
+  
+  // Fallback
+  fallbackPartnerId?: string;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Attribution Event document for revenue tracking events */
+export interface AttributionEventDoc extends BaseDocument {
+  // Multi-tenant isolation
+  tenantId: string;
+  partnerId: string;
+  smeId?: string;
+  buyerId?: string;
+  
+  // Event details
+  eventType: "lead_generated" | "service_delivered" | "introduction_facilitated" | "conversion_completed";
+  
+  // Revenue information
+  revenueAmount: number;
+  attributionPercentage: number; // Partner's share of this event
+  
+  // Source tracking
+  source: string;
+  dealId?: string;
+  introductionId?: string;
+  leadId?: string;
+  
+  // Metadata
+  notes?: string;
+  metadata?: Record<string, unknown>;
+  
+  // Immutability flag
+  isImmutable: boolean;
+  
+  // Settlement tracking
+  settlementId?: string;
+  isSettled: boolean;
+  settledAt?: Timestamp;
+  
+  createdAt: Timestamp;
 }
 
 /** Extended Event fields for KDM ticketing (merged into EventDoc above) */

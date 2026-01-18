@@ -76,6 +76,19 @@ import {
   EyeOff,
   UserCheck,
   Mail,
+  Package,
+  ClipboardCheck,
+  Wand2,
+  Share2,
+  UserPlus,
+  TrendingUp,
+  GraduationCap,
+  Award,
+  BarChart3,
+  Briefcase,
+  AlertTriangle,
+  Activity,
+  CreditCard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -278,6 +291,12 @@ const adminItems = [
     icon: MessageSquare,
   },
   {
+    title: "Page Designer",
+    href: "/portal/admin/page-designer",
+    icon: Wand2,
+    badge: "AI",
+  },
+  {
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,
@@ -309,6 +328,235 @@ const initiativeItems = [
   },
 ];
 
+// ============================================
+// SVP PLATFORM NAVIGATION ITEMS
+// ============================================
+
+// SME User Navigation
+const svpSmeItems = [
+  {
+    title: "SME Dashboard",
+    href: "/portal/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "My Proof Packs",
+    href: "/portal/proof-packs",
+    icon: Package,
+    badge: "SVP",
+  },
+  {
+    title: "My Profile",
+    href: "/portal/sme/profile",
+    icon: User,
+  },
+  {
+    title: "Subscription",
+    href: "/portal/sme/subscription",
+    icon: CreditCard,
+  },
+  {
+    title: "My Introductions",
+    href: "/portal/sme/introductions",
+    icon: Handshake,
+  },
+  {
+    title: "My Cohorts",
+    href: "/portal/sme/cohorts",
+    icon: GraduationCap,
+  },
+  {
+    title: "Certificates",
+    href: "/portal/sme/certificates",
+    icon: Award,
+  },
+];
+
+// Partner User Navigation
+const svpPartnerItems = [
+  {
+    title: "Partner Dashboard",
+    href: "/portal/partner/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Lead Management",
+    href: "/portal/partner/leads",
+    icon: UserPlus,
+    badge: "SVP",
+  },
+  {
+    title: "Introductions",
+    href: "/portal/partner/introductions",
+    icon: Handshake,
+  },
+  {
+    title: "Revenue Dashboard",
+    href: "/portal/partner/revenue",
+    icon: DollarSign,
+  },
+  {
+    title: "Service Overlaps",
+    href: "/portal/partner/overlaps",
+    icon: AlertTriangle,
+  },
+  {
+    title: "My SME Clients",
+    href: "/portal/partner/clients",
+    icon: Building2,
+  },
+  {
+    title: "Conversion Tracking",
+    href: "/portal/partner/conversions",
+    icon: TrendingUp,
+  },
+];
+
+// Buyer Navigation
+const svpBuyerItems = [
+  {
+    title: "Buyer Dashboard",
+    href: "/portal/buyer/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "SME Directory",
+    href: "/portal/buyer/directory",
+    icon: Search,
+    badge: "SVP",
+  },
+  {
+    title: "My Introductions",
+    href: "/portal/buyer/introductions",
+    icon: Handshake,
+  },
+  {
+    title: "Saved SMEs",
+    href: "/portal/buyer/favorites",
+    icon: Heart,
+  },
+  {
+    title: "Shared Proof Packs",
+    href: "/portal/buyer/shared-packs",
+    icon: Share2,
+  },
+];
+
+// QA Reviewer Navigation
+const svpQaItems = [
+  {
+    title: "QA Dashboard",
+    href: "/portal/qa/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Review Queue",
+    href: "/portal/qa/queue",
+    icon: ClipboardCheck,
+    badge: "SVP",
+  },
+  {
+    title: "My Reviews",
+    href: "/portal/qa/my-reviews",
+    icon: CheckSquare,
+  },
+  {
+    title: "Review History",
+    href: "/portal/qa/history",
+    icon: FileText,
+  },
+];
+
+// CMMC Instructor Navigation
+const svpInstructorItems = [
+  {
+    title: "Instructor Dashboard",
+    href: "/portal/instructor/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "My Cohorts",
+    href: "/portal/instructor/cohorts",
+    icon: GraduationCap,
+    badge: "CMMC",
+  },
+  {
+    title: "Create Cohort",
+    href: "/portal/instructor/cohorts/new",
+    icon: UserPlus,
+  },
+  {
+    title: "Assessments",
+    href: "/portal/instructor/assessments",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Certificates",
+    href: "/portal/instructor/certificates",
+    icon: Award,
+  },
+];
+
+// SVP Admin Navigation
+const svpAdminItems = [
+  {
+    title: "SVP Admin Dashboard",
+    href: "/portal/admin/svp-dashboard",
+    icon: LayoutDashboard,
+    badge: "SVP",
+  },
+  {
+    title: "User Management",
+    href: "/portal/admin/users",
+    icon: Users,
+  },
+  {
+    title: "All Proof Packs",
+    href: "/portal/admin/proof-packs",
+    icon: Package,
+  },
+  {
+    title: "QA Management",
+    href: "/portal/admin/qa",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Lead Routing Rules",
+    href: "/portal/admin/routing-rules",
+    icon: Target,
+  },
+  {
+    title: "Revenue Config",
+    href: "/portal/admin/revenue-config",
+    icon: DollarSign,
+  },
+  {
+    title: "Settlements",
+    href: "/portal/admin/svp-settlements",
+    icon: CreditCard,
+  },
+  {
+    title: "All Cohorts",
+    href: "/portal/admin/cohorts",
+    icon: GraduationCap,
+  },
+  {
+    title: "System Health",
+    href: "/portal/admin/system-health",
+    icon: Activity,
+  },
+  {
+    title: "Audit Logs",
+    href: "/portal/admin/audit-logs",
+    icon: FileText,
+  },
+  {
+    title: "Analytics",
+    href: "/portal/admin/analytics",
+    icon: BarChart3,
+  },
+];
+
 const aiItems = [
   {
     title: "Ask IntellEDGE",
@@ -319,12 +567,33 @@ const aiItems = [
 
 // All available roles for the role switcher
 const AVAILABLE_ROLES = [
+  // Platform roles
   { value: "admin", label: "Admin" },
   { value: "team_member", label: "Team Member" },
   { value: "affiliate", label: "Affiliate" },
   { value: "client", label: "Client" },
   { value: "viewer", label: "Viewer" },
+  // SVP Platform roles
+  { value: "platform_admin", label: "SVP Platform Admin" },
+  { value: "sme_user", label: "SVP SME User" },
+  { value: "partner_user", label: "SVP Partner User" },
+  { value: "buyer", label: "SVP Buyer" },
+  { value: "qa_reviewer", label: "SVP QA Reviewer" },
+  { value: "cmmc_instructor", label: "SVP CMMC Instructor" },
 ];
+
+// Define which sections are visible for each SVP role
+const SVP_ROLE_SECTIONS: Record<string, string[]> = {
+  // Regular admin sees all SVP sections
+  admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin"],
+  // SVP Platform Admin sees all sections
+  platform_admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin"],
+  sme_user: ["svpSme"],
+  partner_user: ["svpPartner"],
+  buyer: ["svpBuyer"],
+  qa_reviewer: ["svpQa"],
+  cmmc_instructor: ["svpInstructor", "svpSme"],
+};
 
 // Export all nav items for use in settings
 export const ALL_NAV_ITEMS = [
@@ -333,6 +602,13 @@ export const ALL_NAV_ITEMS = [
   ...aiItems.map(item => ({ ...item, section: "Intelligence" })),
   ...adminItems.map(item => ({ ...item, section: "Admin" })),
   ...initiativeItems.map(item => ({ ...item, section: "Initiatives" })),
+  // SVP Platform items
+  ...svpSmeItems.map(item => ({ ...item, section: "SVP - SME" })),
+  ...svpPartnerItems.map(item => ({ ...item, section: "SVP - Partner" })),
+  ...svpBuyerItems.map(item => ({ ...item, section: "SVP - Buyer" })),
+  ...svpQaItems.map(item => ({ ...item, section: "SVP - QA" })),
+  ...svpInstructorItems.map(item => ({ ...item, section: "SVP - Instructor" })),
+  ...svpAdminItems.map(item => ({ ...item, section: "SVP - Admin" })),
 ];
 
 export function PortalSidebar() {
@@ -342,33 +618,54 @@ export function PortalSidebar() {
   const [hiddenNavItems, setHiddenNavItems] = useState<string[]>([]);
   const [roleVisibility, setRoleVisibility] = useState<Record<string, string[]>>({});
   const [previewRole, setPreviewRole] = useState<string | null>(null);
-  const isAdmin = profile.role === "admin";
+  const isAdmin = profile.role === "admin" || profile.svpRole === "platform_admin";
   
-  // The effective role for filtering (either preview role or actual role)
-  const effectiveRole = previewRole || profile.role;
+  // The effective role for filtering (either preview role or actual svpRole)
+  const effectiveRole = previewRole || profile.svpRole || profile.role;
+  
+  // Check if a SVP section should be visible based on role
+  const isSvpSectionVisible = (sectionKey: string) => {
+    // Admins see all sections
+    if (isAdmin && !previewRole) return true;
+    
+    // Check SVP role sections
+    const visibleSections = SVP_ROLE_SECTIONS[effectiveRole] || [];
+    return visibleSections.includes(sectionKey);
+  };
 
   // Subscribe to BookCallLeads count (new leads only)
+  // Only subscribe if user is admin to avoid permission errors that can corrupt Firestore state
   useEffect(() => {
-    if (!db) return;
+    if (!db || !isAdmin) return;
     
-    const q = query(
-      collection(db, COLLECTIONS.BOOK_CALL_LEADS),
-      where("status", "==", "new")
-    );
+    let unsubscribe: (() => void) | undefined;
     
-    const unsubscribe = onSnapshot(
-      q, 
-      (snapshot) => {
-        setBookCallLeadsCount(snapshot.size);
-      },
-      (error) => {
-        // Silently handle permission errors - user may not have access to this collection
-        console.warn("BookCallLeads snapshot error (may be permission-related):", error.code);
-      }
-    );
+    try {
+      const q = query(
+        collection(db, COLLECTIONS.BOOK_CALL_LEADS),
+        where("status", "==", "new")
+      );
+      
+      unsubscribe = onSnapshot(
+        q, 
+        (snapshot) => {
+          setBookCallLeadsCount(snapshot.size);
+        },
+        (error) => {
+          // Silently handle permission errors - user may not have access to this collection
+          console.warn("BookCallLeads snapshot error (may be permission-related):", error.code);
+          // Don't let this error propagate - just set count to 0
+          setBookCallLeadsCount(0);
+        }
+      );
+    } catch (error) {
+      console.warn("Failed to set up BookCallLeads listener:", error);
+    }
     
-    return () => unsubscribe();
-  }, []);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [isAdmin]);
   
   // Load navigation settings from Firebase
   useEffect(() => {
@@ -423,6 +720,13 @@ export function PortalSidebar() {
     intelligence: true,
     admin: false,
     initiatives: false,
+    // SVP Platform sections
+    svpSme: false,
+    svpPartner: false,
+    svpBuyer: false,
+    svpQa: false,
+    svpInstructor: false,
+    svpAdmin: false,
   });
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -444,50 +748,9 @@ export function PortalSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Main Navigation */}
-        <Collapsible open={openSections.navigation} onOpenChange={() => toggleSection("navigation")}>
-          <SidebarGroup>
-            <CollapsibleTrigger asChild>
-              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
-                <span>Navigation</span>
-                {openSections.navigation ? (
-                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
-                )}
-              </SidebarGroupLabel>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {filterNavItems(mainNavItems).map((item) => {
-                    const hidden = isItemHidden(item.href);
-                    return (
-                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={pathname === item.href}
-                          tooltip={item.title}
-                        >
-                          <Link href={item.href}>
-                            <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
-                            {hidden && isAdmin && !previewRole && (
-                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
-                            )}
-                          </Link>
-                        </SidebarMenuButton>
-                        {item.badge && !hidden && (
-                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                        )}
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+        {/* ============================================ */}
+        {/* SVP PLATFORM NAVIGATION SECTIONS - TOP PRIORITY */}
+        {/* ============================================ */}
 
         {/* Work Items */}
         <Collapsible open={openSections.work} onOpenChange={() => toggleSection("work")}>
@@ -674,6 +937,310 @@ export function PortalSidebar() {
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
+
+        {/* ============================================ */}
+        {/* SVP PLATFORM NAVIGATION SECTIONS */}
+        {/* ============================================ */}
+
+        {/* SVP - SME Section */}
+        {isSvpSectionVisible("svpSme") && (
+        <Collapsible open={openSections.svpSme} onOpenChange={() => toggleSection("svpSme")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Package className="h-3 w-3 text-blue-500" />
+                  SVP - SME
+                </span>
+                {openSections.svpSme ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpSmeItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* SVP - Partner Section */}
+        {isSvpSectionVisible("svpPartner") && (
+        <Collapsible open={openSections.svpPartner} onOpenChange={() => toggleSection("svpPartner")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Handshake className="h-3 w-3 text-green-500" />
+                  SVP - Partner
+                </span>
+                {openSections.svpPartner ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpPartnerItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* SVP - Buyer Section */}
+        {isSvpSectionVisible("svpBuyer") && (
+        <Collapsible open={openSections.svpBuyer} onOpenChange={() => toggleSection("svpBuyer")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Briefcase className="h-3 w-3 text-purple-500" />
+                  SVP - Buyer
+                </span>
+                {openSections.svpBuyer ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpBuyerItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* SVP - QA Reviewer Section */}
+        {isSvpSectionVisible("svpQa") && (
+        <Collapsible open={openSections.svpQa} onOpenChange={() => toggleSection("svpQa")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <ClipboardCheck className="h-3 w-3 text-orange-500" />
+                  SVP - QA Review
+                </span>
+                {openSections.svpQa ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpQaItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* SVP - CMMC Instructor Section */}
+        {isSvpSectionVisible("svpInstructor") && (
+        <Collapsible open={openSections.svpInstructor} onOpenChange={() => toggleSection("svpInstructor")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <GraduationCap className="h-3 w-3 text-indigo-500" />
+                  SVP - Instructor
+                </span>
+                {openSections.svpInstructor ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpInstructorItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* SVP - Admin Section */}
+        {isSvpSectionVisible("svpAdmin") && (
+        <Collapsible open={openSections.svpAdmin} onOpenChange={() => toggleSection("svpAdmin")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Shield className="h-3 w-3 text-red-500" />
+                  SVP - Admin
+                </span>
+                {openSections.svpAdmin ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItems(svpAdminItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
@@ -754,7 +1321,21 @@ export function PortalSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
+                <DropdownMenuItem 
+                  className="text-destructive cursor-pointer"
+                  onClick={async () => {
+                    try {
+                      const { signOut } = await import("firebase/auth");
+                      const { auth } = await import("@/lib/firebase");
+                      if (auth) {
+                        await signOut(auth);
+                        window.location.href = "/";
+                      }
+                    } catch (error) {
+                      console.error("Error signing out:", error);
+                    }
+                  }}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>

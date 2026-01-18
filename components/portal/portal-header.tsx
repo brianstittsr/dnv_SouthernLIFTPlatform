@@ -186,7 +186,21 @@ export function PortalHeader() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem 
+              className="text-destructive cursor-pointer"
+              onClick={async () => {
+                try {
+                  const { signOut } = await import("firebase/auth");
+                  const { auth } = await import("@/lib/firebase");
+                  if (auth) {
+                    await signOut(auth);
+                    window.location.href = "/";
+                  }
+                } catch (error) {
+                  console.error("Error signing out:", error);
+                }
+              }}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </DropdownMenuItem>

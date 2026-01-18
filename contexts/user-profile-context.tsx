@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
 import { getTeamMemberByAuthUid, findAndLinkTeamMember } from "@/lib/auth-team-member-link";
 import type { TeamMemberDoc } from "@/lib/schema";
 
@@ -19,6 +20,9 @@ export interface UserProfile {
   bio: string;
   avatarUrl: string;
   role: "admin" | "affiliate" | "customer" | "team_member";
+  
+  // SVP Platform role
+  svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor";
   
   // Affiliate-specific fields
   isAffiliate: boolean;
@@ -199,6 +203,23 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         console.log("User authenticated:", firebaseUser.uid, firebaseUser.email);
         
         try {
+          // Fetch user document from Firestore to get svpRole
+          let userDoc = null;
+          let svpRole = undefined;
+          if (db) {
+            try {
+              const userDocRef = doc(db, "users", firebaseUser.uid);
+              const userDocSnap = await getDoc(userDocRef);
+              if (userDocSnap.exists()) {
+                userDoc = userDocSnap.data();
+                svpRole = userDoc.svpRole;
+                console.log("User document loaded, svpRole:", svpRole);
+              }
+            } catch (error) {
+              console.error("Error fetching user document:", error);
+            }
+          }
+          
           // Try to find and link Team Member by UID first, then by email
           let teamMember = await getTeamMemberByAuthUid(firebaseUser.uid);
           
@@ -216,6 +237,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
             setProfile((prev) => ({
               ...prev,
               ...mappedProfile,
+              svpRole, // Add svpRole from user document
               updatedAt: new Date().toISOString(),
             }));
           } else {
@@ -229,6 +251,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
               firstName: firebaseUser.displayName?.split(" ")[0] || "",
               lastName: firebaseUser.displayName?.split(" ").slice(1).join(" ") || "",
               avatarUrl: firebaseUser.photoURL || "",
+              svpRole, // Add svpRole from user document
               updatedAt: new Date().toISOString(),
             }));
           }
