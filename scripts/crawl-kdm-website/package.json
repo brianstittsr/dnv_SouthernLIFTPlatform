@@ -1,0 +1,26 @@
+{
+  "name": "kdm-website-crawler",
+  "version": "1.0.0",
+  "description": "Web crawler for migrating content from kdm-assoc.com to SVP Platform",
+  "main": "crawler.js",
+  "type": "module",
+  "scripts": {
+    "crawl": "node crawler.js",
+    "install-browser": "npx playwright install chromium"
+  },
+  "keywords": [
+    "web-crawler",
+    "content-migration",
+    "playwright"
+  ],
+  "author": "KDM Associates",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "cheerio": "^1.0.0-rc.12",
+    "axios": "^1.6.0",
+    "fs-extra": "^11.2.0",
+    "p-queue": "^8.0.1",
+    "sanitize-filename": "^1.6.3"
+  }
+}
