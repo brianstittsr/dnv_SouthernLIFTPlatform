@@ -72,37 +72,8 @@ export default function ProofPacksPage() {
     }
   };
 
-  const handleCreateProofPack = async () => {
-    try {
-      setError(null);
-
-      const currentUser = auth?.currentUser;
-      if (!currentUser) return;
-
-      const token = await currentUser.getIdToken();
-
-      const response = await fetch("/api/proof-packs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: "New Proof Pack",
-          description: "",
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to create Proof Pack");
-      }
-
-      const data = await response.json();
-      router.push(data.redirectTo);
-    } catch (err: any) {
-      setError(err.message || "Failed to create Proof Pack");
-    }
+  const handleCreateProofPack = () => {
+    router.push("/portal/proof-packs/create");
   };
 
   const getHealthColor = (score: number) => {
