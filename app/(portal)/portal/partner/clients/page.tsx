@@ -8,15 +8,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockSmeClients } from "@/lib/mock-data/partner-mock-data";
 
 export default function MySMEClientsPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<any[]>([]);
+  const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, [profile.id]);
+    if (useMockData) {
+      setItems(mockSmeClients as any[]);
+      setLoading(false);
+    } else {
+      loadData();
+    }
+  }, [profile.id, useMockData]);
 
   const loadData = async () => {
     if (!db) return;
@@ -44,15 +52,20 @@ export default function MySMEClientsPage() {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">My SME Clients</h1>
-          <p className="text-muted-foreground">Manage your my sme clients</p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold">My SME Clients</h1>
+            <p className="text-muted-foreground">Manage your SME clients</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <DataToggle onToggle={setUseMockData} defaultValue={false} />
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add New
+            </Button>
+          </div>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New
-        </Button>
       </div>
 
       <Card>
