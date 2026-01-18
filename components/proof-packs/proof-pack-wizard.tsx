@@ -654,23 +654,23 @@ export function ProofPackWizard({ onComplete, onCancel }: ProofPackWizardProps) 
                     if (!category || !score.isSelected) return null;
 
                     return (
-                      <div key={score.categoryId} className="flex items-center justify-between p-3 bg-secondary rounded">
+                      <div key={score.categoryId} className="flex items-center justify-between p-3 bg-blue-600 text-white rounded">
                         <div className="flex items-center gap-2">
                           {score.hasDocuments ? (
-                            <CheckCircle className="h-4 w-4 text-green-600" />
+                            <CheckCircle className="h-4 w-4 text-green-300" />
                           ) : (
-                            <AlertCircle className="h-4 w-4 text-yellow-600" />
+                            <AlertCircle className="h-4 w-4 text-yellow-300" />
                           )}
                           <span className="font-medium">{score.categoryName}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-sm text-blue-100">
                             {category.weight}% weight
                           </span>
                           {score.hasDocuments ? (
-                            <Badge variant="default">Complete</Badge>
+                            <Badge className="bg-white text-blue-600">Complete</Badge>
                           ) : (
-                            <Badge variant="secondary">Needs Documents</Badge>
+                            <Badge className="bg-white text-blue-600">Needs Documents</Badge>
                           )}
                         </div>
                       </div>
