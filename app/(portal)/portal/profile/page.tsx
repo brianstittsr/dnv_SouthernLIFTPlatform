@@ -427,7 +427,7 @@ export default function ProfilePage() {
                 )}
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Member since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : "N/A"}
+                  Member since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
                 </span>
               </div>
               {/* Quick Stats */}
@@ -843,11 +843,11 @@ export default function ProfilePage() {
                       <div>
                         <p className="font-medium">{cert.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {cert.issuer} • Issued {new Date(cert.date).toLocaleDateString()}
+                          {cert.issuer} • Issued {new Date(cert.date).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
                         </p>
                         {cert.expires && (
                           <p className="text-xs text-muted-foreground">
-                            Expires: {new Date(cert.expires).toLocaleDateString()}
+                            Expires: {new Date(cert.expires).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
                           </p>
                         )}
                       </div>
@@ -1037,7 +1037,7 @@ export default function ProfilePage() {
                         {meeting.status}
                       </Badge>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(meeting.date).toLocaleDateString()}
+                        {new Date(meeting.date).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
                       </p>
                     </div>
                   </div>
@@ -1366,7 +1366,7 @@ export default function ProfilePage() {
                       <div>
                         <p className="font-medium">{recording.title}</p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{new Date(recording.date).toLocaleDateString()}</span>
+                          <span>{new Date(recording.date).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}</span>
                           <span>•</span>
                           <span>{recording.duration}</span>
                           <Badge variant="outline" className="text-xs">
