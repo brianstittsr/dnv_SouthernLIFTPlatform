@@ -7,7 +7,7 @@ import { auth, db } from "@/lib/firebase-admin";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -18,7 +18,8 @@ export async function GET(
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
 
-    const proofPackDoc = await db.collection("proofPacks").doc(params.id).get();
+    const { id } = await params;
+    const proofPackDoc = await db.collection("proofPacks").doc(id).get();
 
     if (!proofPackDoc.exists) {
       return NextResponse.json(
