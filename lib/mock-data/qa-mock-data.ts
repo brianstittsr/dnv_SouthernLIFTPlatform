@@ -177,6 +177,184 @@ export const mockQAStats = {
   onTimeCompletion: 80,
 };
 
+export const mockReviewHistory = [
+  {
+    id: "history-1",
+    proofPackId: "pack-completed-1",
+    proofPackTitle: "AS9100 Rev D Quality Management System",
+    smeId: "sme-aerospace-101",
+    smeCompany: "Precision Aerospace Manufacturing",
+    reviewerId: "qa-reviewer-1",
+    reviewerName: "Sarah Mitchell",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)),
+    decision: "approved",
+    packHealth: {
+      overallScore: 92,
+      completeness: 95,
+      quality: 91,
+      compliance: 90
+    },
+    documentCount: 14,
+    certifications: ["AS9100 Rev D", "ISO 9001:2015"],
+    reviewNotes: "Excellent documentation quality. All procedures are well-defined and compliant with AS9100 requirements. Minor formatting improvements suggested but not required.",
+    findings: [],
+    reviewDuration: 180, // minutes
+  },
+  {
+    id: "history-2",
+    proofPackId: "pack-completed-2",
+    proofPackTitle: "CMMC Level 2 Security Documentation",
+    smeId: "sme-defense-202",
+    smeCompany: "SecureDefense Systems Inc",
+    reviewerId: "qa-reviewer-2",
+    reviewerName: "Michael Chen",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)),
+    decision: "approved_with_conditions",
+    packHealth: {
+      overallScore: 78,
+      completeness: 82,
+      quality: 76,
+      compliance: 76
+    },
+    documentCount: 19,
+    certifications: ["CMMC Level 2", "NIST 800-171"],
+    reviewNotes: "Documentation meets minimum requirements. Approved with condition that incident response procedures be updated within 30 days.",
+    findings: [
+      {
+        id: "finding-h2-1",
+        severity: "minor",
+        category: "documentation",
+        description: "Incident response plan lacks detailed escalation procedures",
+        requirement: "CMMC Practice IR.2.093",
+        status: "open"
+      }
+    ],
+    reviewDuration: 240,
+  },
+  {
+    id: "history-3",
+    proofPackId: "pack-completed-3",
+    proofPackTitle: "ISO 13485 Medical Device QMS Package",
+    smeId: "sme-medical-303",
+    smeCompany: "MedTech Quality Systems",
+    reviewerId: "qa-reviewer-1",
+    reviewerName: "Sarah Mitchell",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 22 * 24 * 60 * 60 * 1000)),
+    decision: "approved",
+    packHealth: {
+      overallScore: 96,
+      completeness: 98,
+      quality: 95,
+      compliance: 95
+    },
+    documentCount: 17,
+    certifications: ["ISO 13485:2016", "FDA 21 CFR Part 820"],
+    reviewNotes: "Outstanding documentation. Comprehensive risk management files and design controls. Exemplary compliance with both ISO 13485 and FDA requirements.",
+    findings: [],
+    reviewDuration: 210,
+  },
+  {
+    id: "history-4",
+    proofPackId: "pack-completed-4",
+    proofPackTitle: "NADCAP Heat Treating Compliance",
+    smeId: "sme-heattreat-404",
+    smeCompany: "Titanium Heat Treating Specialists",
+    reviewerId: "qa-reviewer-3",
+    reviewerName: "David Rodriguez",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    decision: "rejected",
+    packHealth: {
+      overallScore: 62,
+      completeness: 68,
+      quality: 58,
+      compliance: 60
+    },
+    documentCount: 11,
+    certifications: ["NADCAP Heat Treating"],
+    reviewNotes: "Documentation does not meet NADCAP requirements. Critical gaps in equipment calibration records and process validation. Resubmission required after addressing all findings.",
+    findings: [
+      {
+        id: "finding-h4-1",
+        severity: "critical",
+        category: "equipment",
+        description: "Furnace calibration records incomplete for past 6 months",
+        requirement: "NADCAP AC7110 Section 4.2",
+        status: "open"
+      },
+      {
+        id: "finding-h4-2",
+        severity: "major",
+        category: "process",
+        description: "Heat treatment process validation missing statistical analysis",
+        requirement: "NADCAP AC7110 Section 3.5",
+        status: "open"
+      },
+      {
+        id: "finding-h4-3",
+        severity: "minor",
+        category: "training",
+        description: "Operator training records not consistently signed",
+        requirement: "NADCAP AC7110 Section 5.1",
+        status: "open"
+      }
+    ],
+    reviewDuration: 195,
+  },
+  {
+    id: "history-5",
+    proofPackId: "pack-completed-5",
+    proofPackTitle: "ITAR Export Control Documentation",
+    smeId: "sme-defense-505",
+    smeCompany: "Defense Technology Partners",
+    reviewerId: "qa-reviewer-2",
+    reviewerName: "Michael Chen",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)),
+    decision: "approved",
+    packHealth: {
+      overallScore: 88,
+      completeness: 90,
+      quality: 87,
+      compliance: 87
+    },
+    documentCount: 15,
+    certifications: ["ITAR", "EAR"],
+    reviewNotes: "Comprehensive export control procedures. Security measures well-documented. Training program meets all ITAR requirements.",
+    findings: [],
+    reviewDuration: 165,
+  },
+  {
+    id: "history-6",
+    proofPackId: "pack-completed-6",
+    proofPackTitle: "ISO 9001:2015 Initial Certification",
+    smeId: "sme-manufacturing-606",
+    smeCompany: "Advanced Manufacturing Solutions",
+    reviewerId: "qa-reviewer-1",
+    reviewerName: "Sarah Mitchell",
+    reviewDate: Timestamp.fromDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)),
+    decision: "approved_with_conditions",
+    packHealth: {
+      overallScore: 82,
+      completeness: 85,
+      quality: 80,
+      compliance: 81
+    },
+    documentCount: 13,
+    certifications: ["ISO 9001:2015"],
+    reviewNotes: "Good foundation for ISO 9001 certification. Approved with condition to complete internal audit cycle within 60 days and submit audit reports.",
+    findings: [
+      {
+        id: "finding-h6-1",
+        severity: "minor",
+        category: "audit",
+        description: "Internal audit schedule incomplete for Q2",
+        requirement: "ISO 9001 Clause 9.2",
+        status: "open"
+      }
+    ],
+    reviewDuration: 150,
+  }
+];
+
 export const mockQAQueue = [
   {
     id: "pack-1",
