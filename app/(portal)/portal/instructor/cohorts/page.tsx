@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockCMMCCohorts } from "@/lib/mock-data/cohort-mock-data";
 
 interface Cohort {
   id: string;
@@ -60,6 +62,7 @@ export default function InstructorCohortsPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [cohorts, setCohorts] = useState<Cohort[]>([]);
+  const [useMockData, setUseMockData] = useState(false);
   const [stats, setStats] = useState<CohortStats>({
     totalCohorts: 0,
     activeCohorts: 0,
@@ -70,8 +73,14 @@ export default function InstructorCohortsPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
-    loadCohorts();
-  }, [profile.id]);
+    if (useMockData) {
+      setCohorts(mockCMMCCohorts as Cohort[]);
+      calculateStats(mockCMMCCohorts as Cohort[]);
+      setLoading(false);
+    } else {
+      loadCohorts();
+    }
+  }, [profile.id, useMockData]);
 
   const loadCohorts = async () => {
     if (!db || !profile.id) return;
@@ -161,12 +170,15 @@ export default function InstructorCohortsPage() {
           <h1 className="text-3xl font-bold">CMMC Cohort Management</h1>
           <p className="text-muted-foreground">Manage your 12-week CMMC certification cohorts</p>
         </div>
-        <Link href="/portal/instructor/cohorts/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Create New Cohort
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <DataToggle onToggle={setUseMockData} defaultValue={false} />
+          <Link href="/portal/instructor/cohorts/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Cohort
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
