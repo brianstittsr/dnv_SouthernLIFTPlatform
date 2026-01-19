@@ -27,6 +27,7 @@ export interface CrawlOptions {
   crawlDelay: number;
   downloadImages: boolean;
   downloadDocuments: boolean;
+  authToken: string;
 }
 
 export class ClientCrawler {
@@ -119,8 +120,12 @@ export class ClientCrawler {
 
   private async crawlPage(url: string): Promise<void> {
     try {
-      // Use a CORS proxy or our own API to fetch the page
-      const response = await fetch(`/api/content-migration/fetch-page?url=${encodeURIComponent(url)}`);
+      // Use our API to fetch the page (avoids CORS issues)
+      const response = await fetch(`/api/content-migration/fetch-page?url=${encodeURIComponent(url)}`, {
+        headers: {
+          Authorization: `Bearer ${this.options.authToken}`,
+        },
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);

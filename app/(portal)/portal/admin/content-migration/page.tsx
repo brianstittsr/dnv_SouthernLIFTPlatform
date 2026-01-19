@@ -213,6 +213,8 @@ export default function ContentMigrationPage() {
           },
         };
 
+        const token = await currentUser.getIdToken();
+        
         const crawler = new ClientCrawler(
           {
             targetUrl,
@@ -220,6 +222,7 @@ export default function ContentMigrationPage() {
             crawlDelay,
             downloadImages,
             downloadDocuments,
+            authToken: token,
           },
           callbacks
         );
