@@ -7,7 +7,7 @@ import { auth, db } from "@/lib/firebase-admin";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -18,7 +18,8 @@ export async function GET(
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
 
-    const proofPackId = params.id;
+    const { id } = await params;
+    const proofPackId = id;
 
     // Verify ownership
     const proofPackDoc = await db.collection("proofPacks").doc(proofPackId).get();
