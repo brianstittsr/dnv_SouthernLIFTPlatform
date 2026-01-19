@@ -72,15 +72,15 @@ export default function SMEDashboardPage() {
         where("smeId", "==", profile.id)
       );
       const introsSnapshot = await getDocs(introsQuery);
-      const introsData = introsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const introsData = introsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
       setIntroductions(introsData);
 
       // Calculate stats from live data
-      const activeIntros = introsData.filter(i => i.status === "accepted" && i.stage !== "award").length;
-      const pendingIntros = introsData.filter(i => i.status === "pending").length;
+      const activeIntros = introsData.filter((i: any) => i.status === "accepted" && i.stage !== "award").length;
+      const pendingIntros = introsData.filter((i: any) => i.status === "pending").length;
       const totalRevenue = introsData
-        .filter(i => i.stage === "award")
-        .reduce((sum, i) => sum + (i.estimatedValue || 0), 0);
+        .filter((i: any) => i.stage === "award")
+        .reduce((sum: number, i: any) => sum + (i.estimatedValue || 0), 0);
 
       setStats({
         activeIntroductions: activeIntros,
