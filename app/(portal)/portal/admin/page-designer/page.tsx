@@ -1068,7 +1068,7 @@ interface ChatContentProps {
   onInputChange: (value: string) => void;
   onSectionChange: (value: string | null) => void;
   onSend: () => void;
-  chatEndRef: React.RefObject<HTMLDivElement>;
+  chatEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function ChatContent({
