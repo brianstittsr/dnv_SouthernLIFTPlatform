@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { ClientCrawler, CrawlCallbacks } from "@/lib/utils/client-crawler";
 import {
   Card,
   CardContent,
@@ -81,6 +82,7 @@ export default function ContentMigrationPage() {
   const [loading, setLoading] = useState(true);
   const [useMockData, setUseMockData] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const crawlerRef = useRef<ClientCrawler | null>(null);
 
   // Crawl state
   const [crawlProgress, setCrawlProgress] = useState<CrawlProgress | null>(null);
@@ -137,8 +139,9 @@ export default function ContentMigrationPage() {
 
   const startCrawl = async () => {
     toast.info("Starting website crawl...");
-    // In production, this would call the crawler API
+    
     if (useMockData) {
+      // Mock mode - simulate crawl progress
       setCrawlProgress({
         ...mockCrawlProgress,
         status: "running",
@@ -146,13 +149,17 @@ export default function ContentMigrationPage() {
         pagesRemaining: mockCrawlProgress.totalPagesDiscovered,
       });
       
-      // Simulate crawl progress
       let progress = 0;
       const interval = setInterval(() => {
         progress += 5;
         if (progress >= 100) {
           clearInterval(interval);
           setCrawlProgress(mockCrawlProgress);
+          setCrawledPages(mockCrawledPages);
+          setImages(mockImages);
+          setVideos(mockVideos);
+          setDocuments(mockDocuments);
+          setMigrationReport(mockMigrationReport);
           toast.success("Crawl completed!");
         } else {
           setCrawlProgress(prev => prev ? {
@@ -162,17 +169,208 @@ export default function ContentMigrationPage() {
           } : null);
         }
       }, 500);
+    } else {
+      // Live mode - use client-side crawler
+      try {
+        const { auth } = await import("@/lib/firebase");
+        const currentUser = auth?.currentUser;
+        
+        if (!currentUser) {
+          toast.error("You must be logged in to start a crawl");
+          return;
+        }
+
+        // Clear previous data
+        setCrawledPages([]);
+        setImages([]);
+        setVideos([]);
+        setDocuments([]);
+        setMigrationReport(null);
+
+        const callbacks: CrawlCallbacks = {
+          onProgress: (progress) => {
+            setCrawlProgress(progress);
+          },
+          onPageCrawled: (page) => {
+            setCrawledPages(prev => [...prev, page]);
+          },
+          onImageFound: (image) => {
+            setImages(prev => [...prev, image]);
+          },
+          onVideoFound: (video) => {
+            setVideos(prev => [...prev, video]);
+          },
+          onDocumentFound: (doc) => {
+            setDocuments(prev => [...prev, doc]);
+          },
+          onError: (url, error) => {
+            console.error(`Crawl error for ${url}:`, error);
+          },
+          onComplete: (pages, imgs, vids, docs) => {
+            toast.success(`Crawl completed! Found ${pages.length} pages, ${imgs.length} images, ${vids.length} videos`);
+            // Generate migration report
+            generateReport(pages, imgs, vids, docs);
+          },
+        };
+
+        const crawler = new ClientCrawler(
+          {
+            targetUrl,
+            maxPages,
+            crawlDelay,
+            downloadImages,
+            downloadDocuments,
+          },
+          callbacks
+        );
+
+        crawlerRef.current = crawler;
+        crawler.start();
+      } catch (error: any) {
+        console.error("Error starting crawl:", error);
+        toast.error(error.message || "Failed to start crawl");
+        setCrawlProgress(prev => prev ? { ...prev, status: "failed" } : null);
+      }
+    }
+  };
+
+  const generateReport = (pages: CrawledPage[], imgs: ImageAsset[], vids: VideoAsset[], docs: DocumentAsset[]) => {
+    const pagesByType: Record<string, number> = {};
+    let totalWordCount = 0;
+
+    pages.forEach(page => {
+      pagesByType[page.pageType] = (pagesByType[page.pageType] || 0) + 1;
+      totalWordCount += page.wordCount;
+    });
+
+    const report: MigrationReport = {
+      siteUrl: targetUrl,
+      crawlDate: new Date().toISOString(),
+      summary: {
+        totalPages: pages.length,
+        pagesByType,
+        totalImages: imgs.length,
+        totalVideos: vids.length,
+        totalDocuments: docs.length,
+        totalWordCount,
+      },
+      contentAudit: {
+        highValuePages: [...pages].sort((a, b) => b.wordCount - a.wordCount).slice(0, 10).map(p => p.url),
+        outdatedContent: [],
+        duplicateContent: [],
+        missingMetadata: pages.filter(p => !p.metadata.metaDescription).map(p => p.url),
+      },
+      migrationPriority: {
+        priority1: pages.filter(p => ["home", "contact", "services"].includes(p.pageType)).map(p => p.url),
+        priority2: pages.filter(p => ["about", "team", "case-study"].includes(p.pageType)).map(p => p.url),
+        priority3: pages.filter(p => ["blog", "resources"].includes(p.pageType)).map(p => p.url),
+        archive: pages.filter(p => p.pageType === "other").map(p => p.url),
+      },
+      urlMapping: pages.map(p => ({
+        oldUrl: p.url,
+        newUrl: `/${p.slug}`,
+        redirectType: "301" as const,
+        notes: "Auto-generated",
+      })),
+      mediaOptimization: {
+        imagesNeedingCompression: [],
+        imagesNeedingAltText: imgs.filter(img => !img.alt).map(img => img.sourceUrl),
+        brokenMediaLinks: [],
+      },
+      contentGaps: [],
+      recommendations: [
+        `Review ${pages.filter(p => !p.metadata.metaDescription).length} pages missing meta descriptions`,
+        `Add alt text to ${imgs.filter(img => !img.alt).length} images`,
+        "Configure URL redirects from old to new URLs",
+        "Test all pages after migration",
+      ],
+    };
+
+    setMigrationReport(report);
+  };
+
+  const pollCrawlProgress = async (jobId: string, token: string) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/content-migration/crawl?jobId=${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch crawl status");
+        }
+
+        const job = await response.json();
+        
+        setCrawlProgress({
+          ...job.progress,
+          status: job.status,
+        });
+
+        if (job.status === "completed" || job.status === "failed") {
+          clearInterval(pollInterval);
+          if (job.status === "completed") {
+            toast.success("Crawl completed!");
+            // Load the crawled data
+            loadCrawledData(jobId, token);
+          } else {
+            toast.error("Crawl failed");
+          }
+        }
+      } catch (error) {
+        console.error("Error polling crawl status:", error);
+      }
+    }, 2000);
+  };
+
+  const loadCrawledData = async (jobId: string, token: string) => {
+    try {
+      // Load pages
+      const pagesResponse = await fetch(`/api/content-migration/pages?jobId=${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (pagesResponse.ok) {
+        const { pages } = await pagesResponse.json();
+        setCrawledPages(pages);
+      }
+
+      // Load report
+      const reportResponse = await fetch(`/api/content-migration/report?jobId=${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (reportResponse.ok) {
+        const report = await reportResponse.json();
+        setMigrationReport(report);
+      }
+    } catch (error) {
+      console.error("Error loading crawled data:", error);
     }
   };
 
   const pauseCrawl = () => {
+    if (crawlerRef.current) {
+      crawlerRef.current.pause();
+    }
     toast.info("Crawl paused");
     setCrawlProgress(prev => prev ? { ...prev, status: "paused" } : null);
   };
 
   const resumeCrawl = () => {
+    if (crawlerRef.current) {
+      crawlerRef.current.resume();
+    }
     toast.info("Crawl resumed");
     setCrawlProgress(prev => prev ? { ...prev, status: "running" } : null);
+  };
+
+  const stopCrawl = () => {
+    if (crawlerRef.current) {
+      crawlerRef.current.stop();
+    }
+    toast.info("Crawl stopped");
+    setCrawlProgress(prev => prev ? { ...prev, status: "failed" } : null);
   };
 
   const exportReport = () => {
