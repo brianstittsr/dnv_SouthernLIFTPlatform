@@ -1,0 +1,82 @@
+{
+  "url": "https://www.kdm-assoc.com/about",
+  "slug": "about",
+  "title": "About KDM Associates - Our Story & Mission",
+  "pageType": "about",
+  "publishedDate": null,
+  "lastModified": "2025-12-01T10:00:00Z",
+  "metadata": {
+    "url": "https://www.kdm-assoc.com/about",
+    "slug": "about",
+    "title": "About KDM Associates - Our Story & Mission",
+    "metaDescription": "Learn about KDM Associates, our mission, values, and 25+ years of experience helping manufacturers achieve quality excellence.",
+    "metaKeywords": [
+      "about KDM",
+      "quality consulting",
+      "company history"
+    ],
+    "ogTitle": "About KDM Associates",
+    "ogDescription": "Our story and mission in quality management.",
+    "ogImage": "https://www.kdm-assoc.com/images/og-about.jpg",
+    "canonicalUrl": "https://www.kdm-assoc.com/about",
+    "lastModified": "2025-12-01T10:00:00Z",
+    "breadcrumb": [
+      "Home",
+      "About"
+    ]
+  },
+  "content": {
+    "hero": {
+      "heading": "About KDM Associates",
+      "subheading": "25+ years of quality management excellence",
+      "image": "/images/hero-about.jpg"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Our Story",
+        "content": "Founded in 1998, KDM Associates began with a simple mission: to help manufacturers achieve quality excellence. Today, we serve clients across aerospace, defense, and manufacturing industries.",
+        "images": [],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "image-text",
+        "heading": "Our Mission",
+        "content": "We are committed to providing expert guidance and practical solutions that help our clients achieve and maintain the highest standards of quality and compliance.",
+        "images": [
+          "/images/mission.jpg"
+        ],
+        "videos": [],
+        "order": 1
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [
+      "about KDM",
+      "quality consulting"
+    ],
+    "ogImage": "https://www.kdm-assoc.com/images/og-about.jpg",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [
+      "Home",
+      "About"
+    ],
+    "relatedPages": [
+      "/about/team",
+      "/about/careers"
+    ]
+  },
+  "media": {
+    "images": [],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 620,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-18T15:10:00Z"
+}

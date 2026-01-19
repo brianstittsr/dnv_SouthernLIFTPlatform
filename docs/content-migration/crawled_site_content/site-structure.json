@@ -1,0 +1,29 @@
+{
+  "exportedAt": "2026-01-19T15:14:01.470Z",
+  "totalPages": 4,
+  "totalImages": 5,
+  "totalVideos": 3,
+  "totalDocuments": 3,
+  "pages": [
+    {
+      "url": "https://www.kdm-assoc.com/",
+      "title": "KDM Associates - Quality Management & Compliance Solutions",
+      "pageType": "home"
+    },
+    {
+      "url": "https://www.kdm-assoc.com/about",
+      "title": "About KDM Associates - Our Story & Mission",
+      "pageType": "about"
+    },
+    {
+      "url": "https://www.kdm-assoc.com/services/iso-certification",
+      "title": "ISO Certification Services - ISO 9001, AS9100, ISO 13485",
+      "pageType": "services"
+    },
+    {
+      "url": "https://www.kdm-assoc.com/contact",
+      "title": "Contact KDM Associates - Get in Touch",
+      "pageType": "contact"
+    }
+  ]
+}

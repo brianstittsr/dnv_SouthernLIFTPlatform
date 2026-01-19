@@ -1,0 +1,108 @@
+{
+  "siteUrl": "https://www.kdm-assoc.com",
+  "crawlDate": "2026-01-18T16:30:00Z",
+  "summary": {
+    "totalPages": 47,
+    "pagesByType": {
+      "home": 1,
+      "about": 4,
+      "services": 8,
+      "blog": 15,
+      "case-study": 6,
+      "resources": 5,
+      "contact": 1,
+      "legal": 3,
+      "other": 4
+    },
+    "totalImages": 156,
+    "totalVideos": 8,
+    "totalDocuments": 12,
+    "totalWordCount": 28500
+  },
+  "contentAudit": {
+    "highValuePages": [
+      "https://www.kdm-assoc.com/",
+      "https://www.kdm-assoc.com/services/iso-certification",
+      "https://www.kdm-assoc.com/services/cmmc-compliance",
+      "https://www.kdm-assoc.com/about",
+      "https://www.kdm-assoc.com/contact"
+    ],
+    "outdatedContent": [
+      "https://www.kdm-assoc.com/blog/2022-quality-trends",
+      "https://www.kdm-assoc.com/events/2023-conference"
+    ],
+    "duplicateContent": [],
+    "missingMetadata": [
+      "https://www.kdm-assoc.com/blog/post-15",
+      "https://www.kdm-assoc.com/resources/webinar-3"
+    ]
+  },
+  "migrationPriority": {
+    "priority1": [
+      "https://www.kdm-assoc.com/",
+      "https://www.kdm-assoc.com/services",
+      "https://www.kdm-assoc.com/services/iso-certification",
+      "https://www.kdm-assoc.com/services/cmmc-compliance",
+      "https://www.kdm-assoc.com/contact"
+    ],
+    "priority2": [
+      "https://www.kdm-assoc.com/about",
+      "https://www.kdm-assoc.com/about/team",
+      "https://www.kdm-assoc.com/case-studies"
+    ],
+    "priority3": [
+      "https://www.kdm-assoc.com/blog",
+      "https://www.kdm-assoc.com/resources"
+    ],
+    "archive": [
+      "https://www.kdm-assoc.com/events/2023-conference"
+    ]
+  },
+  "urlMapping": [
+    {
+      "oldUrl": "https://www.kdm-assoc.com/",
+      "newUrl": "/",
+      "redirectType": "301",
+      "notes": "Homepage"
+    },
+    {
+      "oldUrl": "https://www.kdm-assoc.com/about",
+      "newUrl": "/about",
+      "redirectType": "301",
+      "notes": ""
+    },
+    {
+      "oldUrl": "https://www.kdm-assoc.com/services/iso-certification",
+      "newUrl": "/services/iso-certification",
+      "redirectType": "301",
+      "notes": ""
+    }
+  ],
+  "mediaOptimization": {
+    "imagesNeedingCompression": [
+      "https://www.kdm-assoc.com/images/hero-home.jpg",
+      "https://www.kdm-assoc.com/images/hero-about.jpg"
+    ],
+    "imagesNeedingAltText": [
+      "https://www.kdm-assoc.com/images/certification-badge.png",
+      "https://www.kdm-assoc.com/images/partner-logo-3.png"
+    ],
+    "brokenMediaLinks": [
+      "https://www.kdm-assoc.com/images/legacy-banner.jpg"
+    ]
+  },
+  "contentGaps": [
+    "No dedicated ITAR compliance page",
+    "Team bios are incomplete",
+    "Missing client testimonials on service pages"
+  ],
+  "recommendations": [
+    "Add meta descriptions to 2 pages missing them",
+    "Add alt text to 14 images",
+    "Compress 8 large hero images for faster loading",
+    "Update 2 outdated blog posts or archive them",
+    "Create dedicated ITAR compliance service page",
+    "Complete team member bios with photos",
+    "Add client testimonials to service pages"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "totalDocuments": 3,
+  "exportedAt": "2026-01-19T15:14:01.444Z",
+  "documents": [
+    {
+      "id": "doc-001",
+      "fileName": "iso-9001-guide.pdf",
+      "fileType": "pdf",
+      "fileSize": 2500000,
+      "linkText": "Download ISO 9001 Implementation Guide"
+    },
+    {
+      "id": "doc-002",
+      "fileName": "cmmc-checklist.pdf",
+      "fileType": "pdf",
+      "fileSize": 850000,
+      "linkText": "CMMC Readiness Checklist"
+    },
+    {
+      "id": "doc-003",
+      "fileName": "case-study-aerospace.pdf",
+      "fileType": "pdf",
+      "fileSize": 1200000,
+      "linkText": "Aerospace Case Study: From Zero to AS9100"
+    }
+  ]
+}

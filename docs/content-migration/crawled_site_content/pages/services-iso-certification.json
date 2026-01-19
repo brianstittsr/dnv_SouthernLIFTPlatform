@@ -1,0 +1,99 @@
+{
+  "url": "https://www.kdm-assoc.com/services/iso-certification",
+  "slug": "services-iso-certification",
+  "title": "ISO Certification Services - ISO 9001, AS9100, ISO 13485",
+  "pageType": "services",
+  "publishedDate": null,
+  "lastModified": "2026-01-10T10:00:00Z",
+  "metadata": {
+    "url": "https://www.kdm-assoc.com/services/iso-certification",
+    "slug": "services-iso-certification",
+    "title": "ISO Certification Services - ISO 9001, AS9100, ISO 13485",
+    "metaDescription": "Expert ISO certification consulting for ISO 9001, AS9100, ISO 13485, and more. Get certified faster with KDM Associates.",
+    "metaKeywords": [
+      "ISO 9001",
+      "AS9100",
+      "ISO 13485",
+      "certification",
+      "consulting"
+    ],
+    "ogTitle": "ISO Certification Services",
+    "ogDescription": "Get ISO certified with expert guidance.",
+    "ogImage": "https://www.kdm-assoc.com/images/og-iso.jpg",
+    "canonicalUrl": "https://www.kdm-assoc.com/services/iso-certification",
+    "lastModified": "2026-01-10T10:00:00Z",
+    "breadcrumb": [
+      "Home",
+      "Services",
+      "ISO Certification"
+    ]
+  },
+  "content": {
+    "hero": {
+      "heading": "ISO Certification Services",
+      "subheading": "Expert guidance for ISO 9001, AS9100, ISO 13485, and more",
+      "image": "/images/hero-iso.jpg",
+      "cta": {
+        "text": "Request a Quote",
+        "link": "/contact?service=iso"
+      }
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Our ISO Certification Expertise",
+        "content": "We provide comprehensive ISO certification consulting services, from gap analysis to successful certification audit. Our proven methodology ensures a smooth certification journey.",
+        "images": [],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "list",
+        "heading": "Standards We Support",
+        "content": "ISO 9001:2015 Quality Management Systems, AS9100D Aerospace Quality, ISO 13485 Medical Devices, ISO 14001 Environmental Management, ISO 45001 Occupational Health & Safety",
+        "images": [],
+        "videos": [],
+        "order": 1
+      },
+      {
+        "type": "video",
+        "heading": "ISO Certification Process Overview",
+        "content": "Watch our video to learn about the ISO certification process and how we can help.",
+        "images": [],
+        "videos": [
+          "https://www.youtube.com/watch?v=abc123"
+        ],
+        "order": 2
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [
+      "ISO 9001",
+      "AS9100",
+      "ISO certification"
+    ],
+    "ogImage": "https://www.kdm-assoc.com/images/og-iso.jpg",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [
+      "Home",
+      "Services",
+      "ISO Certification"
+    ],
+    "relatedPages": [
+      "/services/cmmc-compliance",
+      "/services/quality-systems"
+    ]
+  },
+  "media": {
+    "images": [],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 1250,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-18T15:15:00Z"
+}

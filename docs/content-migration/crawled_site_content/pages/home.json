@@ -1,0 +1,133 @@
+{
+  "url": "https://www.kdm-assoc.com/",
+  "slug": "home",
+  "title": "KDM Associates - Quality Management & Compliance Solutions",
+  "pageType": "home",
+  "publishedDate": null,
+  "lastModified": "2026-01-15T10:00:00Z",
+  "metadata": {
+    "url": "https://www.kdm-assoc.com/",
+    "slug": "home",
+    "title": "KDM Associates - Quality Management & Compliance Solutions",
+    "metaDescription": "KDM Associates provides expert quality management, ISO certification, and CMMC compliance solutions for aerospace and defense manufacturers.",
+    "metaKeywords": [
+      "quality management",
+      "ISO certification",
+      "CMMC compliance",
+      "aerospace",
+      "defense"
+    ],
+    "ogTitle": "KDM Associates - Quality Management & Compliance Solutions",
+    "ogDescription": "Expert quality management and compliance solutions for manufacturers.",
+    "ogImage": "https://www.kdm-assoc.com/images/og-home.jpg",
+    "canonicalUrl": "https://www.kdm-assoc.com/",
+    "lastModified": "2026-01-15T10:00:00Z",
+    "breadcrumb": [
+      "Home"
+    ]
+  },
+  "content": {
+    "hero": {
+      "heading": "Quality Management Excellence",
+      "subheading": "Helping manufacturers achieve certification and compliance with confidence",
+      "image": "/images/hero-home.jpg",
+      "cta": {
+        "text": "Get Started",
+        "link": "/contact"
+      }
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Why Choose KDM Associates?",
+        "content": "With over 25 years of experience in quality management and compliance, KDM Associates has helped hundreds of manufacturers achieve their certification goals.",
+        "images": [],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "image-text",
+        "heading": "Our Services",
+        "content": "From ISO 9001 to CMMC Level 2, we provide comprehensive certification and compliance services tailored to your industry.",
+        "images": [
+          "/images/services-overview.jpg"
+        ],
+        "videos": [],
+        "order": 1
+      },
+      {
+        "type": "testimonial",
+        "heading": "What Our Clients Say",
+        "content": "\"KDM Associates helped us achieve AS9100 certification in record time. Their expertise and guidance were invaluable.\" - John Smith, CEO, Precision Manufacturing Inc.",
+        "images": [],
+        "videos": [],
+        "order": 2
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [
+      "quality management",
+      "ISO certification",
+      "CMMC compliance"
+    ],
+    "ogImage": "https://www.kdm-assoc.com/images/og-home.jpg",
+    "structuredData": {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "KDM Associates",
+      "url": "https://www.kdm-assoc.com"
+    }
+  },
+  "navigation": {
+    "breadcrumb": [
+      "Home"
+    ],
+    "relatedPages": [
+      "/about",
+      "/services",
+      "/contact"
+    ]
+  },
+  "media": {
+    "images": [],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [
+    {
+      "id": "form-contact-home",
+      "purpose": "contact",
+      "action": "/api/contact",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Name",
+          "placeholder": "Your name",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "your@email.com",
+          "required": true
+        },
+        {
+          "name": "message",
+          "type": "textarea",
+          "label": "Message",
+          "placeholder": "How can we help?",
+          "required": true
+        }
+      ],
+      "submitButtonText": "Send Message",
+      "parentPageUrl": "https://www.kdm-assoc.com/"
+    }
+  ],
+  "wordCount": 850,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-18T15:05:00Z"
+}

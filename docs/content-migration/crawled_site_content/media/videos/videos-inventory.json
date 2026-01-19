@@ -1,0 +1,27 @@
+{
+  "totalVideos": 3,
+  "exportedAt": "2026-01-19T15:14:01.434Z",
+  "videos": [
+    {
+      "id": "vid-001",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/abc123\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": "ISO Certification Process Overview",
+      "description": "Learn about the ISO certification process and how KDM Associates can help your organization achieve certification."
+    },
+    {
+      "id": "vid-002",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/def456\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": "CMMC 2.0 Explained",
+      "description": "Understanding the new CMMC 2.0 requirements and how to prepare for certification."
+    },
+    {
+      "id": "vid-003",
+      "platform": "vimeo",
+      "embedCode": "<iframe src=\"https://player.vimeo.com/video/789012\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": "Client Success Story: Precision Manufacturing",
+      "description": "Hear how Precision Manufacturing achieved AS9100 certification with KDM Associates."
+    }
+  ]
+}

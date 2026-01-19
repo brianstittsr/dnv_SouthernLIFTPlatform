@@ -1,0 +1,46 @@
+{
+  "totalImages": 5,
+  "exportedAt": "2026-01-19T15:14:01.432Z",
+  "images": [
+    {
+      "id": "img-001",
+      "sourceUrl": "https://www.kdm-assoc.com/images/hero-home.jpg",
+      "alt": "Quality management professionals collaborating",
+      "title": "KDM Associates Team",
+      "format": "jpg",
+      "context": "hero"
+    },
+    {
+      "id": "img-002",
+      "sourceUrl": "https://www.kdm-assoc.com/images/logo.svg",
+      "alt": "KDM Associates Logo",
+      "title": "KDM Associates",
+      "format": "svg",
+      "context": "logo"
+    },
+    {
+      "id": "img-003",
+      "sourceUrl": "https://www.kdm-assoc.com/images/team/john-doe.jpg",
+      "alt": "John Doe, CEO",
+      "title": "John Doe",
+      "format": "jpg",
+      "context": "team"
+    },
+    {
+      "id": "img-004",
+      "sourceUrl": "https://www.kdm-assoc.com/images/services-overview.jpg",
+      "alt": "Overview of KDM services",
+      "title": null,
+      "format": "jpg",
+      "context": "content"
+    },
+    {
+      "id": "img-005",
+      "sourceUrl": "https://www.kdm-assoc.com/images/certification-badge.png",
+      "alt": null,
+      "title": null,
+      "format": "png",
+      "context": "content"
+    }
+  ]
+}

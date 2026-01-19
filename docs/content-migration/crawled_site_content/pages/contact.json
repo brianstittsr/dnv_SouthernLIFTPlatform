@@ -1,0 +1,144 @@
+{
+  "url": "https://www.kdm-assoc.com/contact",
+  "slug": "contact",
+  "title": "Contact KDM Associates - Get in Touch",
+  "pageType": "contact",
+  "publishedDate": null,
+  "lastModified": "2025-11-15T10:00:00Z",
+  "metadata": {
+    "url": "https://www.kdm-assoc.com/contact",
+    "slug": "contact",
+    "title": "Contact KDM Associates - Get in Touch",
+    "metaDescription": "Contact KDM Associates for quality management consulting, ISO certification, and CMMC compliance services. Get a free consultation today.",
+    "metaKeywords": [
+      "contact",
+      "consultation",
+      "quote"
+    ],
+    "ogTitle": "Contact KDM Associates",
+    "ogDescription": "Get in touch with our team.",
+    "ogImage": null,
+    "canonicalUrl": "https://www.kdm-assoc.com/contact",
+    "lastModified": "2025-11-15T10:00:00Z",
+    "breadcrumb": [
+      "Home",
+      "Contact"
+    ]
+  },
+  "content": {
+    "hero": {
+      "heading": "Contact Us",
+      "subheading": "We're here to help with your quality and compliance needs",
+      "image": null
+    },
+    "sections": [
+      {
+        "type": "form",
+        "heading": "Send Us a Message",
+        "content": "Fill out the form below and we'll get back to you within 24 hours.",
+        "images": [],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "text",
+        "heading": "Contact Information",
+        "content": "Phone: (555) 123-4567\nEmail: info@kdm-assoc.com\nAddress: 123 Quality Lane, Suite 100, Atlanta, GA 30301",
+        "images": [],
+        "videos": [],
+        "order": 1
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [
+      "contact",
+      "consultation"
+    ],
+    "ogImage": null,
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [
+      "Home",
+      "Contact"
+    ],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [
+    {
+      "id": "form-contact-main",
+      "purpose": "contact",
+      "action": "/api/contact",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "firstName",
+          "type": "text",
+          "label": "First Name",
+          "placeholder": null,
+          "required": true
+        },
+        {
+          "name": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "placeholder": null,
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": null,
+          "required": true
+        },
+        {
+          "name": "phone",
+          "type": "tel",
+          "label": "Phone",
+          "placeholder": null,
+          "required": false
+        },
+        {
+          "name": "company",
+          "type": "text",
+          "label": "Company",
+          "placeholder": null,
+          "required": false
+        },
+        {
+          "name": "service",
+          "type": "select",
+          "label": "Service Interest",
+          "placeholder": null,
+          "required": true,
+          "options": [
+            "ISO Certification",
+            "CMMC Compliance",
+            "Lean Manufacturing",
+            "Training",
+            "Other"
+          ]
+        },
+        {
+          "name": "message",
+          "type": "textarea",
+          "label": "Message",
+          "placeholder": null,
+          "required": true
+        }
+      ],
+      "submitButtonText": "Submit Request",
+      "parentPageUrl": "https://www.kdm-assoc.com/contact"
+    }
+  ],
+  "wordCount": 320,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-18T15:20:00Z"
+}
