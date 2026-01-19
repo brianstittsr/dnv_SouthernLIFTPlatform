@@ -11,6 +11,7 @@ import {
   Award,
   Users,
 } from "lucide-react";
+import { getAllArticles } from "@/lib/articles-data";
 
 export const metadata: Metadata = {
   title: "News & Insights",
@@ -18,84 +19,10 @@ export const metadata: Metadata = {
     "Stay informed with the latest news, insights, and updates from KDM Associates on quality management, ISO certification, CMMC compliance, and industry trends.",
 };
 
-// Sample news articles - these would typically come from a CMS or database
-const featuredArticles = [
-  {
-    id: "cmmc-2-0-update",
-    title: "CMMC 2.0: What Defense Contractors Need to Know",
-    excerpt: "The Department of Defense has finalized CMMC 2.0 requirements. Learn what this means for your organization and how to prepare for certification.",
-    category: "Compliance",
-    date: "2026-01-15",
-    author: "KDM Compliance Team",
-    image: "/images/news/cmmc-update.jpg",
-    featured: true
-  },
-  {
-    id: "iso-9001-2025",
-    title: "ISO 9001:2025 Draft Released - Key Changes Ahead",
-    excerpt: "ISO has released the draft for ISO 9001:2025. Discover the proposed changes and how they may impact your quality management system.",
-    category: "ISO Standards",
-    date: "2026-01-10",
-    author: "Quality Management Team",
-    image: "/images/news/iso-update.jpg",
-    featured: true
-  },
-  {
-    id: "aerospace-trends",
-    title: "2026 Aerospace Quality Management Trends",
-    excerpt: "Explore the top quality management trends shaping the aerospace industry in 2026, from AI integration to supply chain resilience.",
-    category: "Industry Insights",
-    date: "2026-01-05",
-    author: "Industry Analysts",
-    image: "/images/news/aerospace-trends.jpg",
-    featured: false
-  }
-];
-
-const recentArticles = [
-  {
-    id: "client-success-precision",
-    title: "Client Success: Precision Manufacturing Achieves AS9100 Certification",
-    excerpt: "Learn how we helped Precision Manufacturing achieve AS9100 certification in just 6 months.",
-    category: "Success Stories",
-    date: "2025-12-20",
-  },
-  {
-    id: "cybersecurity-best-practices",
-    title: "Cybersecurity Best Practices for Defense Contractors",
-    excerpt: "Essential cybersecurity practices to protect your organization and meet DFARS requirements.",
-    category: "Cybersecurity",
-    date: "2025-12-15",
-  },
-  {
-    id: "supplier-quality-guide",
-    title: "The Complete Guide to Supplier Quality Management",
-    excerpt: "Everything you need to know about evaluating, approving, and monitoring supplier quality.",
-    category: "Quality Management",
-    date: "2025-12-10",
-  },
-  {
-    id: "audit-preparation-tips",
-    title: "10 Tips for a Successful Certification Audit",
-    excerpt: "Proven strategies to prepare your team and documentation for a successful certification audit.",
-    category: "Certification",
-    date: "2025-12-05",
-  },
-  {
-    id: "quality-culture",
-    title: "Building a Culture of Quality in Your Organization",
-    excerpt: "How to foster a quality-first mindset across all levels of your manufacturing organization.",
-    category: "Quality Management",
-    date: "2025-11-28",
-  },
-  {
-    id: "iso-13485-medical",
-    title: "ISO 13485 for Medical Device Manufacturers: A Primer",
-    excerpt: "Understanding the unique requirements of ISO 13485 for medical device quality management.",
-    category: "ISO Standards",
-    date: "2025-11-20",
-  }
-];
+// Get all articles from the data file
+const allArticles = getAllArticles();
+const featuredArticles = allArticles.slice(0, 2);
+const recentArticles = allArticles.slice(2);
 
 const categories = [
   "All Articles",
@@ -138,7 +65,7 @@ export default function NewsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {featuredArticles.filter(a => a.featured).map((article) => (
+            {featuredArticles.map((article) => (
               <Card key={article.id} className="overflow-hidden group hover:shadow-xl transition-all">
                 <div className="aspect-video bg-muted relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
@@ -162,7 +89,7 @@ export default function NewsPage() {
                 </CardHeader>
                 <CardContent>
                   <Button variant="ghost" className="group/btn" asChild>
-                    <Link href={`/news/${article.id}`}>
+                    <Link href={`/news/${article.slug}`}>
                       Read More
                       <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                     </Link>
@@ -202,7 +129,7 @@ export default function NewsPage() {
                       {new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/news/${article.id}`}>
+                      <Link href={`/news/${article.slug}`}>
                         Read
                         <ArrowRight className="ml-1 h-3 w-3" />
                       </Link>
