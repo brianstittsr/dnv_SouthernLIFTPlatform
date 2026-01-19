@@ -33,6 +33,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Search, Download, RefreshCw, Calendar as CalendarIcon, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockAuditLogs } from "@/lib/mock-data/audit-log-mock-data";
 
 interface AuditLog {
   id: string;
@@ -63,6 +65,7 @@ export default function AuditLogsPage() {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [useMockData, setUseMockData] = useState(false);
 
   // Filters
   const [searchUserId, setSearchUserId] = useState("");
@@ -123,8 +126,58 @@ export default function AuditLogsPage() {
   };
 
   useEffect(() => {
-    fetchLogs();
-  }, [page]);
+    if (useMockData) {
+      applyMockDataFilters();
+    } else {
+      fetchLogs();
+    }
+  }, [page, useMockData]);
+
+  // Apply filters to mock data
+  const applyMockDataFilters = () => {
+    setLoading(true);
+    let filtered = [...mockAuditLogs];
+
+    // Apply user ID filter
+    if (searchUserId) {
+      filtered = filtered.filter(log => 
+        log.userId.toLowerCase().includes(searchUserId.toLowerCase())
+      );
+    }
+
+    // Apply action filter
+    if (actionFilter !== "all") {
+      filtered = filtered.filter(log => log.action === actionFilter);
+    }
+
+    // Apply resource filter
+    if (resourceFilter !== "all") {
+      filtered = filtered.filter(log => log.resource === resourceFilter);
+    }
+
+    // Apply date range filter
+    if (startDate) {
+      filtered = filtered.filter(log => 
+        new Date(log.timestamp) >= startDate
+      );
+    }
+    if (endDate) {
+      filtered = filtered.filter(log => 
+        new Date(log.timestamp) <= endDate
+      );
+    }
+
+    // Pagination
+    const itemsPerPage = 50;
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedLogs = filtered.slice(startIndex, endIndex);
+
+    setLogs(paginatedLogs);
+    setTotal(filtered.length);
+    setTotalPages(Math.ceil(filtered.length / itemsPerPage));
+    setLoading(false);
+  };
 
   // Export to CSV
   const handleExport = async () => {
@@ -174,7 +227,11 @@ export default function AuditLogsPage() {
   // Apply filters
   const handleApplyFilters = () => {
     setPage(1);
-    fetchLogs();
+    if (useMockData) {
+      applyMockDataFilters();
+    } else {
+      fetchLogs();
+    }
   };
 
   // Clear filters
@@ -185,7 +242,13 @@ export default function AuditLogsPage() {
     setStartDate(undefined);
     setEndDate(undefined);
     setPage(1);
-    setTimeout(() => fetchLogs(), 100);
+    setTimeout(() => {
+      if (useMockData) {
+        applyMockDataFilters();
+      } else {
+        fetchLogs();
+      }
+    }, 100);
   };
 
   const isSensitiveAction = (action: string) => {
@@ -212,10 +275,13 @@ export default function AuditLogsPage() {
             Comprehensive activity logs for compliance and investigation
           </p>
         </div>
-        <Button onClick={handleExport} disabled={exporting}>
-          <Download className="mr-2 h-4 w-4" />
-          {exporting ? "Exporting..." : "Export to CSV"}
-        </Button>
+        <div className="flex items-center gap-3">
+          <DataToggle onToggle={setUseMockData} defaultValue={false} />
+          <Button onClick={handleExport} disabled={exporting || useMockData}>
+            <Download className="mr-2 h-4 w-4" />
+            {exporting ? "Exporting..." : "Export to CSV"}
+          </Button>
+        </div>
       </div>
 
       {error && (
