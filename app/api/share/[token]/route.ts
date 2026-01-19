@@ -7,10 +7,10 @@ import { db } from "@/lib/firebase-admin";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const shareToken = params.token;
+    const { token: shareToken } = await params;
 
     // Find share link by token
     const shareLinksSnapshot = await db
