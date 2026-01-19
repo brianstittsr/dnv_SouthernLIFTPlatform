@@ -8,14 +8,18 @@ import { cn } from "@/lib/utils";
 interface DataToggleProps {
   onToggle: (useMockData: boolean) => void;
   defaultValue?: boolean;
+  useMockData?: boolean;
   className?: string;
 }
 
-export function DataToggle({ onToggle, defaultValue = false, className }: DataToggleProps) {
-  const [useMockData, setUseMockData] = useState(defaultValue);
+export function DataToggle({ onToggle, defaultValue = false, useMockData: controlledValue, className }: DataToggleProps) {
+  const [internalValue, setInternalValue] = useState(defaultValue);
+  const useMockData = controlledValue !== undefined ? controlledValue : internalValue;
 
   const handleToggle = (value: boolean) => {
-    setUseMockData(value);
+    if (controlledValue === undefined) {
+      setInternalValue(value);
+    }
     onToggle(value);
   };
 
