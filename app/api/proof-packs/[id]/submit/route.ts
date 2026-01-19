@@ -8,7 +8,7 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -19,7 +19,8 @@ export async function POST(
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
 
-    const proofPackId = params.id;
+    const { id } = await params;
+    const proofPackId = id;
     const proofPackRef = db.collection("proofPacks").doc(proofPackId);
     const proofPackDoc = await proofPackRef.get();
 
