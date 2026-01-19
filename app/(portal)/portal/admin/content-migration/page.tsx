@@ -77,6 +77,7 @@ import {
   MigrationReport,
   SiteStructure,
 } from "@/lib/types/content-migration";
+import { CrawlProgressModal, CrawlStep } from "@/components/content-migration/crawl-progress-modal";
 
 export default function ContentMigrationPage() {
   const { profile } = useUserProfile();
@@ -104,6 +105,12 @@ export default function ContentMigrationPage() {
   // Filters
   const [pageTypeFilter, setPageTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Progress modal state
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [crawlSteps, setCrawlSteps] = useState<CrawlStep[]>([]);
+  const [currentCrawlUrl, setCurrentCrawlUrl] = useState<string>("");
+  const [recentCrawledPages, setRecentCrawledPages] = useState<string[]>([]);
 
   useEffect(() => {
     loadData();
@@ -138,11 +145,42 @@ export default function ContentMigrationPage() {
     }
   };
 
+  const initializeCrawlSteps = () => {
+    const initialSteps: CrawlStep[] = [
+      { id: "init", label: "Initializing crawler", status: "pending" },
+      { id: "crawling", label: "Crawling pages", status: "pending", count: 0 },
+      { id: "images", label: "Extracting images", status: "pending", count: 0 },
+      { id: "videos", label: "Extracting videos", status: "pending", count: 0 },
+      { id: "documents", label: "Extracting documents", status: "pending", count: 0 },
+      { id: "report", label: "Generating report", status: "pending" },
+      { id: "saving", label: "Saving to disk", status: "pending" },
+    ];
+    setCrawlSteps(initialSteps);
+    return initialSteps;
+  };
+
+  const updateCrawlStep = (stepId: string, updates: Partial<CrawlStep>) => {
+    setCrawlSteps(prev => prev.map(step => 
+      step.id === stepId ? { ...step, ...updates } : step
+    ));
+  };
+
   const startCrawl = async () => {
+    // Initialize steps and show modal
+    initializeCrawlSteps();
+    setShowProgressModal(true);
+    setRecentCrawledPages([]);
+    setCurrentCrawlUrl("");
+    
     toast.info("Starting website crawl...");
     
     if (useMockData) {
-      // Mock mode - simulate crawl progress
+      // Mock mode - simulate crawl progress with steps
+      updateCrawlStep("init", { status: "in_progress" });
+      await new Promise(r => setTimeout(r, 500));
+      updateCrawlStep("init", { status: "completed" });
+      updateCrawlStep("crawling", { status: "in_progress" });
+      
       setCrawlProgress({
         ...mockCrawlProgress,
         status: "running",
@@ -151,10 +189,21 @@ export default function ContentMigrationPage() {
       });
       
       let progress = 0;
-      const interval = setInterval(() => {
+      const interval = setInterval(async () => {
         progress += 5;
         if (progress >= 100) {
           clearInterval(interval);
+          updateCrawlStep("crawling", { status: "completed", count: mockCrawledPages.length });
+          updateCrawlStep("images", { status: "completed", count: mockImages.length });
+          updateCrawlStep("videos", { status: "completed", count: mockVideos.length });
+          updateCrawlStep("documents", { status: "completed", count: mockDocuments.length });
+          updateCrawlStep("report", { status: "in_progress" });
+          await new Promise(r => setTimeout(r, 500));
+          updateCrawlStep("report", { status: "completed" });
+          updateCrawlStep("saving", { status: "in_progress" });
+          await new Promise(r => setTimeout(r, 1000));
+          updateCrawlStep("saving", { status: "completed" });
+          
           setCrawlProgress(mockCrawlProgress);
           setCrawledPages(mockCrawledPages);
           setImages(mockImages);
@@ -163,23 +212,35 @@ export default function ContentMigrationPage() {
           setMigrationReport(mockMigrationReport);
           toast.success("Crawl completed!");
         } else {
+          const pagesCrawled = Math.floor((progress / 100) * mockCrawlProgress.totalPagesDiscovered);
+          updateCrawlStep("crawling", { count: pagesCrawled });
+          updateCrawlStep("images", { status: "in_progress", count: Math.floor(pagesCrawled * 2) });
+          updateCrawlStep("videos", { status: "in_progress", count: Math.floor(pagesCrawled * 0.1) });
+          updateCrawlStep("documents", { status: "in_progress", count: Math.floor(pagesCrawled * 0.3) });
           setCrawlProgress(prev => prev ? {
             ...prev,
-            pagesCrawled: Math.floor((progress / 100) * prev.totalPagesDiscovered),
-            pagesRemaining: prev.totalPagesDiscovered - Math.floor((progress / 100) * prev.totalPagesDiscovered),
+            pagesCrawled,
+            pagesRemaining: prev.totalPagesDiscovered - pagesCrawled,
           } : null);
         }
       }, 500);
     } else {
       // Live mode - use client-side crawler
       try {
+        updateCrawlStep("init", { status: "in_progress", detail: "Authenticating..." });
+        
         const { auth } = await import("@/lib/firebase");
         const currentUser = auth?.currentUser;
         
         if (!currentUser) {
+          updateCrawlStep("init", { status: "error", detail: "Not logged in" });
           toast.error("You must be logged in to start a crawl");
           return;
         }
+
+        const token = await currentUser.getIdToken();
+        updateCrawlStep("init", { status: "completed", detail: "Ready" });
+        updateCrawlStep("crawling", { status: "in_progress", detail: targetUrl });
 
         // Clear previous data
         setCrawledPages([]);
@@ -191,30 +252,85 @@ export default function ContentMigrationPage() {
         const callbacks: CrawlCallbacks = {
           onProgress: (progress) => {
             setCrawlProgress(progress);
+            updateCrawlStep("crawling", { 
+              count: progress.pagesCrawled,
+              detail: `${progress.pagesCrawled}/${progress.totalPagesDiscovered} pages`
+            });
           },
           onPageCrawled: (page) => {
             setCrawledPages(prev => [...prev, page]);
+            setCurrentCrawlUrl(page.url);
+            setRecentCrawledPages(prev => [page.url, ...prev].slice(0, 10));
           },
           onImageFound: (image) => {
-            setImages(prev => [...prev, image]);
+            setImages(prev => {
+              const newImages = [...prev, image];
+              updateCrawlStep("images", { status: "in_progress", count: newImages.length });
+              return newImages;
+            });
           },
           onVideoFound: (video) => {
-            setVideos(prev => [...prev, video]);
+            setVideos(prev => {
+              const newVideos = [...prev, video];
+              updateCrawlStep("videos", { status: "in_progress", count: newVideos.length });
+              return newVideos;
+            });
           },
           onDocumentFound: (doc) => {
-            setDocuments(prev => [...prev, doc]);
+            setDocuments(prev => {
+              const newDocs = [...prev, doc];
+              updateCrawlStep("documents", { status: "in_progress", count: newDocs.length });
+              return newDocs;
+            });
           },
           onError: (url, error) => {
             console.error(`Crawl error for ${url}:`, error);
           },
-          onComplete: (pages, imgs, vids, docs) => {
-            toast.success(`Crawl completed! Found ${pages.length} pages, ${imgs.length} images, ${vids.length} videos`);
-            // Generate migration report
+          onComplete: async (pages, imgs, vids, docs) => {
+            updateCrawlStep("crawling", { status: "completed", count: pages.length });
+            updateCrawlStep("images", { status: "completed", count: imgs.length });
+            updateCrawlStep("videos", { status: "completed", count: vids.length });
+            updateCrawlStep("documents", { status: "completed", count: docs.length });
+            
+            // Generate report
+            updateCrawlStep("report", { status: "in_progress", detail: "Analyzing content..." });
             generateReport(pages, imgs, vids, docs);
+            updateCrawlStep("report", { status: "completed" });
+            
+            // Auto-save to disk
+            updateCrawlStep("saving", { status: "in_progress", detail: "Writing files..." });
+            try {
+              const response = await fetch("/api/content-migration/save-content", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  pages,
+                  images: imgs,
+                  videos: vids,
+                  documents: docs,
+                  report: null, // Will be set after generateReport
+                }),
+              });
+              
+              if (response.ok) {
+                const result = await response.json();
+                updateCrawlStep("saving", { 
+                  status: "completed", 
+                  detail: `Saved ${result.savedFiles.length} files` 
+                });
+              } else {
+                updateCrawlStep("saving", { status: "error", detail: "Failed to save" });
+              }
+            } catch (err) {
+              updateCrawlStep("saving", { status: "error", detail: "Save error" });
+            }
+            
+            toast.success(`Crawl completed! Found ${pages.length} pages, ${imgs.length} images, ${vids.length} videos`);
           },
         };
-
-        const token = await currentUser.getIdToken();
         
         const crawler = new ClientCrawler(
           {
@@ -232,6 +348,7 @@ export default function ContentMigrationPage() {
         crawler.start();
       } catch (error: any) {
         console.error("Error starting crawl:", error);
+        updateCrawlStep("init", { status: "error", detail: error.message });
         toast.error(error.message || "Failed to start crawl");
         setCrawlProgress(prev => prev ? { ...prev, status: "failed" } : null);
       }
@@ -1037,6 +1154,17 @@ export default function ContentMigrationPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Crawl Progress Modal */}
+      <CrawlProgressModal
+        open={showProgressModal}
+        onClose={() => setShowProgressModal(false)}
+        crawlProgress={crawlProgress}
+        steps={crawlSteps}
+        currentUrl={currentCrawlUrl}
+        recentPages={recentCrawledPages}
+        onCancel={stopCrawl}
+      />
     </div>
   );
 }
