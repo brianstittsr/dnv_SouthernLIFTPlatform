@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { AccessibilityWidget } from "@/components/shared/accessibility-widget";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -113,8 +112,6 @@ export default function RootLayout({
         </a>
         {children}
         <Toaster />
-        {/* UserWay Accessibility Widget */}
-        <AccessibilityWidget />
       </body>
     </html>
   );
