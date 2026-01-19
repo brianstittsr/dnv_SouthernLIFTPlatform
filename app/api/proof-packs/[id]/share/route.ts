@@ -9,7 +9,7 @@ import crypto from "crypto";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -20,7 +20,8 @@ export async function POST(
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
 
-    const proofPackId = params.id;
+    const { id } = await params;
+    const proofPackId = id;
     const body = await req.json();
     const { expirationDays } = body;
 
@@ -124,7 +125,7 @@ export async function POST(
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -134,6 +135,8 @@ export async function DELETE(
 
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
+
+    const { id } = await params;
 
     const searchParams = req.nextUrl.searchParams;
     const shareLinkId = searchParams.get("shareLinkId");
@@ -177,7 +180,7 @@ export async function DELETE(
       userId: decodedToken.uid,
       action: "share_link_revoked",
       resource: "proof_pack",
-      resourceId: params.id,
+      resourceId: id,
       details: { shareLinkId },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
