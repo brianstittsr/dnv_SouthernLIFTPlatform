@@ -142,15 +142,26 @@ export class ClientCrawler {
       this.callbacks.onPageCrawled(page);
 
       // Extract and queue new URLs
-      const links = this.extractLinks(html, url);
+      const links = this.extractLinks(html, finalUrl || url);
+      console.log(`[Crawler] Processing ${links.length} links from ${url}`);
+      
+      let newLinksAdded = 0;
       links.forEach(link => {
-        if (!this.visitedUrls.has(link) && !this.urlQueue.includes(link)) {
+        // Normalize the link for comparison
+        const normalizedLink = link.replace(/\/$/, "");
+        const isVisited = this.visitedUrls.has(link) || this.visitedUrls.has(normalizedLink);
+        const isQueued = this.urlQueue.includes(link) || this.urlQueue.includes(normalizedLink);
+        
+        if (!isVisited && !isQueued) {
           if (this.shouldCrawl(link)) {
             this.urlQueue.push(link);
             this.progress.totalPagesDiscovered++;
+            newLinksAdded++;
           }
         }
       });
+      
+      console.log(`[Crawler] Added ${newLinksAdded} new links to queue. Queue size: ${this.urlQueue.length}`);
 
       // Extract media assets
       const images = this.extractImages(html, url);
@@ -370,29 +381,49 @@ export class ClientCrawler {
 
   private extractLinks(html: string, baseUrl: string): string[] {
     const links: string[] = [];
-    const linkRegex = /<a[^>]+href="([^"#]+)"[^>]*>/gi;
-    const matches = html.matchAll(linkRegex);
+    
+    // Match href with double quotes, single quotes, or no quotes
+    const linkPatterns = [
+      /<a[^>]+href="([^"#]+)"/gi,
+      /<a[^>]+href='([^'#]+)'/gi,
+      /<a[^>]+href=([^\s>#]+)/gi,
+    ];
 
-    for (const match of matches) {
-      try {
-        const href = match[1];
-        if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) {
-          continue;
+    for (const linkRegex of linkPatterns) {
+      const matches = html.matchAll(linkRegex);
+      for (const match of matches) {
+        try {
+          let href = match[1].trim();
+          
+          // Skip non-http links
+          if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:") || href.startsWith("data:")) {
+            continue;
+          }
+
+          // Skip empty or hash-only links
+          if (!href || href === "#" || href.startsWith("#")) {
+            continue;
+          }
+
+          const fullUrl = this.resolveUrl(href, baseUrl);
+          const urlObj = new URL(fullUrl);
+          const baseUrlObj = new URL(this.options.targetUrl);
+
+          // Only include internal links (same hostname)
+          if (urlObj.hostname === baseUrlObj.hostname) {
+            // Normalize URL (remove trailing slash, query params for dedup)
+            const normalizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname.replace(/\/$/, "") || "/"}`;
+            if (!links.includes(normalizedUrl)) {
+              links.push(normalizedUrl);
+            }
+          }
+        } catch {
+          // Invalid URL, skip
         }
-
-        const fullUrl = this.resolveUrl(href, baseUrl);
-        const urlObj = new URL(fullUrl);
-        const baseUrlObj = new URL(this.options.targetUrl);
-
-        // Only include internal links
-        if (urlObj.hostname === baseUrlObj.hostname) {
-          links.push(fullUrl);
-        }
-      } catch {
-        // Invalid URL, skip
       }
     }
 
+    console.log(`[Crawler] Found ${links.length} internal links on ${baseUrl}`);
     return [...new Set(links)];
   }
 
