@@ -55,6 +55,7 @@ import {
   Settings,
   Search,
   Filter,
+  Save,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DataToggle } from "@/components/ui/data-toggle";
@@ -389,6 +390,53 @@ export default function ContentMigrationPage() {
     toast.success("Report exported");
   };
 
+  const saveToDisk = async () => {
+    if (crawledPages.length === 0) {
+      toast.error("No crawled data to save");
+      return;
+    }
+
+    try {
+      const { auth } = await import("@/lib/firebase");
+      const currentUser = auth?.currentUser;
+      
+      if (!currentUser) {
+        toast.error("Not authenticated");
+        return;
+      }
+
+      const token = await currentUser.getIdToken();
+      toast.info("Saving crawled content to disk...");
+
+      const response = await fetch("/api/content-migration/save-content", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          pages: crawledPages,
+          images: images,
+          videos: videos,
+          documents: documents,
+          report: migrationReport,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to save content");
+      }
+
+      const result = await response.json();
+      toast.success(`Saved ${result.savedFiles.length} files to ${result.outputDir}`);
+      console.log("[Save] Content saved:", result);
+    } catch (error: any) {
+      console.error("Error saving to disk:", error);
+      toast.error(error.message || "Failed to save content");
+    }
+  };
+
   const filteredPages = crawledPages.filter(page => {
     if (pageTypeFilter !== "all" && page.pageType !== pageTypeFilter) return false;
     if (searchQuery && !page.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
@@ -446,6 +494,10 @@ export default function ContentMigrationPage() {
         </div>
         <div className="flex items-center gap-4">
           <DataToggle useMockData={useMockData} onToggle={setUseMockData} />
+          <Button variant="outline" onClick={saveToDisk} disabled={crawledPages.length === 0}>
+            <Save className="h-4 w-4 mr-2" />
+            Save to Disk
+          </Button>
           <Button variant="outline" onClick={exportReport} disabled={!migrationReport}>
             <Download className="h-4 w-4 mr-2" />
             Export Report

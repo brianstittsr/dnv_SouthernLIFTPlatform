@@ -288,6 +288,173 @@ After crawling, provide:
 - Client logos
 - Review snippets
 
+## Export Data Summary Report
+
+After the crawl completes, generate a summary report in the following format:
+
+---
+
+### 📊 KDM Website Crawl Summary
+
+**Crawl Date:** [Date]  
+**Target URL:** https://www.kdm-assoc.com  
+**Crawl Duration:** [Time elapsed]
+
+---
+
+#### 🌐 Pages Overview
+
+| Metric | Count |
+|--------|-------|
+| **Total Pages Crawled** | [X] |
+| **Successful (200)** | [X] |
+| **Redirects (301/302)** | [X] |
+| **Errors (404/500)** | [X] |
+
+**Pages by Type:**
+| Page Type | Count | % of Total |
+|-----------|-------|------------|
+| Home | 1 | X% |
+| Service Pages | [X] | X% |
+| About/Team | [X] | X% |
+| Blog/News | [X] | X% |
+| Contact | [X] | X% |
+| Other | [X] | X% |
+
+---
+
+#### 🖼️ Media Assets
+
+| Asset Type | Count | Total Size |
+|------------|-------|------------|
+| **Images** | [X] | [X MB] |
+| **Videos** | [X] | N/A (external) |
+| **Documents (PDF)** | [X] | [X MB] |
+| **Other Files** | [X] | [X MB] |
+
+**Image Breakdown:**
+- Hero/Banner Images: [X]
+- Content Images: [X]
+- Team Photos: [X]
+- Logos/Icons: [X]
+- Thumbnails: [X]
+
+**Images Needing Attention:**
+- Missing Alt Text: [X]
+- Oversized (>500KB): [X]
+- Broken/404: [X]
+
+---
+
+#### 📝 Content Statistics
+
+| Metric | Value |
+|--------|-------|
+| **Total Word Count** | [X] |
+| **Average Words/Page** | [X] |
+| **Pages with Meta Description** | [X]/[Total] |
+| **Pages with H1 Tag** | [X]/[Total] |
+
+**Content Quality:**
+- ✅ Complete metadata: [X] pages
+- ⚠️ Missing meta description: [X] pages
+- ⚠️ Missing H1: [X] pages
+- ⚠️ Duplicate titles: [X] pages
+
+---
+
+#### 🔗 Link Analysis
+
+| Link Type | Count |
+|-----------|-------|
+| **Internal Links** | [X] |
+| **External Links** | [X] |
+| **Broken Links** | [X] |
+| **Mailto Links** | [X] |
+| **Tel Links** | [X] |
+
+---
+
+#### 📋 Forms Discovered
+
+| Form Type | Location | Fields |
+|-----------|----------|--------|
+| Contact Form | /contact | [X] fields |
+| Newsletter | Footer | [X] fields |
+| Quote Request | /services | [X] fields |
+
+---
+
+#### 🎯 Migration Priority
+
+**Priority 1 - Critical (Migrate First):**
+- [ ] Homepage
+- [ ] Main Service Pages ([X] pages)
+- [ ] Contact Page
+
+**Priority 2 - Important:**
+- [ ] About/Company Pages ([X] pages)
+- [ ] Team Page
+- [ ] Case Studies ([X] pages)
+
+**Priority 3 - Supporting:**
+- [ ] Blog Posts ([X] pages)
+- [ ] Resource Pages ([X] pages)
+- [ ] FAQ/Help Pages
+
+**Archive/Review:**
+- [ ] Outdated content ([X] pages)
+- [ ] Low-traffic pages ([X] pages)
+
+---
+
+#### ⚠️ Issues & Recommendations
+
+**Critical Issues:**
+1. [Issue description]
+2. [Issue description]
+
+**Warnings:**
+1. [Warning description]
+2. [Warning description]
+
+**Recommendations:**
+1. [Recommendation]
+2. [Recommendation]
+
+---
+
+#### 📁 Export Files Generated
+
+```
+kdm-content-migration/
+├── pages/                    # [X] JSON files
+├── media/
+│   ├── images/              # [X] images ([X] MB)
+│   ├── videos/              # video-inventory.json
+│   └── documents/           # [X] PDFs ([X] MB)
+├── site-structure.json      # Navigation & hierarchy
+├── navigation-map.json      # Menu structure
+├── url-mapping.csv          # [X] URL mappings
+└── migration-report.md      # This summary
+```
+
+---
+
+#### ✅ Crawl Completion Checklist
+
+- [ ] All accessible pages crawled
+- [ ] All images downloaded
+- [ ] All videos cataloged
+- [ ] All documents downloaded
+- [ ] Site structure mapped
+- [ ] URL mapping complete
+- [ ] Forms documented
+- [ ] SEO data extracted
+- [ ] Migration priorities assigned
+
+---
+
 ## Tools & Methods
 
 Recommended crawling tools:
