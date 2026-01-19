@@ -138,6 +138,8 @@ export default function QADashboardPage() {
   };
 
   const getPriorityBadge = (priority: string) => {
+    if (!priority) return null;
+    
     const variants: Record<string, any> = {
       low: "outline",
       medium: "default",
@@ -151,6 +153,8 @@ export default function QADashboardPage() {
   };
 
   const getSeverityBadge = (severity: string) => {
+    if (!severity) return null;
+    
     const variants: Record<string, any> = {
       minor: { variant: "outline", color: "text-blue-600" },
       major: { variant: "default", color: "text-yellow-600" },
