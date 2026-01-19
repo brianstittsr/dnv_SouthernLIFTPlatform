@@ -294,7 +294,7 @@ export default function ContentMigrationPage() {
             
             // Generate report
             updateCrawlStep("report", { status: "in_progress", detail: "Analyzing content..." });
-            generateReport(pages, imgs, vids, docs);
+            const generatedReport = generateReport(pages, imgs, vids, docs);
             updateCrawlStep("report", { status: "completed" });
             
             // Auto-save to disk
@@ -311,7 +311,7 @@ export default function ContentMigrationPage() {
                   images: imgs,
                   videos: vids,
                   documents: docs,
-                  report: null, // Will be set after generateReport
+                  report: generatedReport,
                 }),
               });
               
@@ -321,11 +321,16 @@ export default function ContentMigrationPage() {
                   status: "completed", 
                   detail: `Saved ${result.savedFiles.length} files` 
                 });
+                toast.success(`Saved to ${result.outputDir}`);
               } else {
-                updateCrawlStep("saving", { status: "error", detail: "Failed to save" });
+                const error = await response.json();
+                updateCrawlStep("saving", { status: "error", detail: error.error || "Failed to save" });
+                toast.error("Failed to save crawled data");
               }
-            } catch (err) {
-              updateCrawlStep("saving", { status: "error", detail: "Save error" });
+            } catch (err: any) {
+              console.error("Save error:", err);
+              updateCrawlStep("saving", { status: "error", detail: err.message || "Save error" });
+              toast.error("Error saving crawled data");
             }
             
             toast.success(`Crawl completed! Found ${pages.length} pages, ${imgs.length} images, ${vids.length} videos`);
@@ -355,7 +360,7 @@ export default function ContentMigrationPage() {
     }
   };
 
-  const generateReport = (pages: CrawledPage[], imgs: ImageAsset[], vids: VideoAsset[], docs: DocumentAsset[]) => {
+  const generateReport = (pages: CrawledPage[], imgs: ImageAsset[], vids: VideoAsset[], docs: DocumentAsset[]): MigrationReport => {
     const pagesByType: Record<string, number> = {};
     let totalWordCount = 0;
 
@@ -408,6 +413,7 @@ export default function ContentMigrationPage() {
     };
 
     setMigrationReport(report);
+    return report;
   };
 
   const pollCrawlProgress = async (jobId: string, token: string) => {
