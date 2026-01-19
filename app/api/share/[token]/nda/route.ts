@@ -8,7 +8,7 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -16,10 +16,10 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split("Bearer ")[1];
-    const decodedToken = await auth.verifyIdToken(token);
+    const authToken = authHeader.split("Bearer ")[1];
+    const decodedToken = await auth.verifyIdToken(authToken);
 
-    const shareToken = params.token;
+    const { token: shareToken } = await params;
     const body = await req.json();
     const { accepted } = body;
 
@@ -121,7 +121,7 @@ export async function POST(
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -129,10 +129,10 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split("Bearer ")[1];
-    const decodedToken = await auth.verifyIdToken(token);
+    const authToken = authHeader.split("Bearer ")[1];
+    const decodedToken = await auth.verifyIdToken(authToken);
 
-    const shareToken = params.token;
+    const { token: shareToken } = await params;
 
     // Find share link
     const shareLinksSnapshot = await db
