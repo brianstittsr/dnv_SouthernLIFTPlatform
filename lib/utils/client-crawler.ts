@@ -413,6 +413,19 @@ export class ClientCrawler {
             continue;
           }
 
+          // Skip malformed URLs containing quotes (common in broken HTML)
+          if (href.includes('"') || href.includes("'") || href.includes("%22") || href.includes("%27")) {
+            continue;
+          }
+
+          // Skip URLs that look like they contain another URL (malformed nested hrefs)
+          if (href.includes("http://") && href.indexOf("http://") > 0) {
+            continue;
+          }
+          if (href.includes("https://") && href.indexOf("https://") > 0) {
+            continue;
+          }
+
           const fullUrl = this.resolveUrl(href, baseUrl);
           const urlObj = new URL(fullUrl);
           const linkHostname = this.normalizeHostname(urlObj.hostname);
