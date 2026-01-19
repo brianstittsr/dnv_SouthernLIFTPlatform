@@ -89,6 +89,7 @@ import {
   AlertTriangle,
   Activity,
   CreditCard,
+  Globe,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -544,6 +545,11 @@ const svpAdminItems = [
     title: "Image Manager",
     href: "/portal/admin/images",
     icon: ImageIcon,
+  },
+  {
+    title: "Content Migration",
+    href: "/portal/admin/content-migration",
+    icon: Globe,
   },
   {
     title: "System Health",
