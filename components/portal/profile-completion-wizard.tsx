@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { auth, db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, updateDoc, setDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import {
   Dialog,
@@ -136,9 +136,10 @@ export function ProfileCompletionWizard() {
     try {
       const now = Timestamp.now();
       
-      // 1. Update User Profile (users collection)
+      // 1. Create or Update User Profile (users collection)
       const userRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(userRef, {
+      await setDoc(userRef, {
+        email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
         phone: formData.phone,
@@ -148,7 +149,9 @@ export function ProfileCompletionWizard() {
         bio: formData.bio,
         profileCompletedAt: now,
         updatedAt: now,
-      });
+        createdAt: now,
+      }, { merge: true });
+      console.log("User profile created/updated in users collection:", auth.currentUser.uid);
 
       // 2. Update Team Member if linked (team_members collection)
       if (linkedTeamMember?.id) {
@@ -187,14 +190,25 @@ export function ProfileCompletionWizard() {
         }
       }
 
-      // Update local profile context
+      // Update local profile context with all fields
       updateProfile({
-        ...formData,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        jobTitle: formData.jobTitle,
+        location: formData.location,
+        bio: formData.bio,
         profileCompletedAt: new Date().toISOString(),
       });
 
       toast.success("Profile completed successfully!");
-      setShowProfileWizard(false);
+      
+      // Close the wizard after a short delay to ensure state updates
+      setTimeout(() => {
+        setShowProfileWizard(false);
+      }, 100);
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile. Please try again.");
@@ -216,7 +230,9 @@ export function ProfileCompletionWizard() {
       // Save partial progress to Firebase (users collection)
       const userRef = doc(db, "users", auth.currentUser.uid);
       const userUpdates: any = {
+        email: formData.email,
         updatedAt: now,
+        createdAt: now,
       };
 
       // Only update fields that have values
@@ -228,7 +244,7 @@ export function ProfileCompletionWizard() {
       if (formData.location) userUpdates.location = formData.location;
       if (formData.bio) userUpdates.bio = formData.bio;
 
-      await updateDoc(userRef, userUpdates);
+      await setDoc(userRef, userUpdates, { merge: true });
 
       // Also update Team Member if linked
       if (linkedTeamMember?.id) {
