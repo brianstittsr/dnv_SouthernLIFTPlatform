@@ -218,13 +218,14 @@ CMMC 2.0 represents a significant shift in how the DoD approaches cybersecurity 
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const article = articles[params.slug];
+  const { slug } = await params;
+  const article = articles[slug];
   
   if (!article) {
     return {
@@ -238,8 +239,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function ArticlePage({ params }: PageProps) {
-  const article = articles[params.slug];
+export default async function ArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+  const article = articles[slug];
 
   if (!article) {
     notFound();
