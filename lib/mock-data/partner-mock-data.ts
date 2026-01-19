@@ -239,7 +239,8 @@ export const mockSettlements = [
     eventsByType: {
       introduction_facilitated: 2,
       lead_generated: 1,
-    },
+      service_delivered: 0,
+    } as Record<string, number>,
     status: "paid" as const,
     settlementDate: Timestamp.fromDate(new Date(2024, 11, 15)), // Dec 15, 2024
     createdAt: Timestamp.fromDate(new Date(2024, 11, 1)),
@@ -258,7 +259,8 @@ export const mockSettlements = [
     eventsByType: {
       service_delivered: 3,
       introduction_facilitated: 2,
-    },
+      lead_generated: 0,
+    } as Record<string, number>,
     status: "calculated" as const,
     settlementDate: Timestamp.fromDate(new Date(2025, 0, 15)), // Jan 15, 2025
     createdAt: Timestamp.fromDate(new Date(2025, 0, 1)),
