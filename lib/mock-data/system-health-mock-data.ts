@@ -1,0 +1,142 @@
+import { Timestamp } from "firebase/firestore";
+
+export const mockSystemHealth = {
+  isHealthy: true,
+  uptimePercentage: 99.95,
+  apiResponseTime95p: 145,
+  errorRate: 0.23,
+  concurrentUsers: 47,
+};
+
+export const mockSystemMetrics = [
+  {
+    id: "metric-1",
+    timestamp: Timestamp.now(),
+    apiResponseTime95p: 145,
+    apiResponseTimeAvg: 89,
+    apiRequestCount: 1247,
+    errorCount: 3,
+    errorRate: 0.24,
+    recentErrors: [
+      {
+        timestamp: Timestamp.fromDate(new Date(Date.now() - 2 * 60 * 1000)),
+        endpoint: "/api/proof-packs/upload",
+        error: "File size exceeds maximum limit",
+        statusCode: 413,
+      },
+      {
+        timestamp: Timestamp.fromDate(new Date(Date.now() - 5 * 60 * 1000)),
+        endpoint: "/api/introductions/create",
+        error: "Rate limit exceeded",
+        statusCode: 429,
+      },
+      {
+        timestamp: Timestamp.fromDate(new Date(Date.now() - 8 * 60 * 1000)),
+        endpoint: "/api/qa/reviews/submit",
+        error: "Invalid certification format",
+        statusCode: 400,
+      },
+    ],
+    uptimePercentage: 99.95,
+    isHealthy: true,
+    dbQueryCount: 3421,
+    dbQueryTimeAvg: 23,
+    dbQueryTime95p: 67,
+    concurrentUsers: 47,
+  },
+  {
+    id: "metric-2",
+    timestamp: Timestamp.fromDate(new Date(Date.now() - 5 * 60 * 1000)),
+    apiResponseTime95p: 152,
+    apiResponseTimeAvg: 92,
+    apiRequestCount: 1189,
+    errorCount: 2,
+    errorRate: 0.17,
+    recentErrors: [],
+    uptimePercentage: 99.96,
+    isHealthy: true,
+    dbQueryCount: 3287,
+    dbQueryTimeAvg: 25,
+    dbQueryTime95p: 71,
+    concurrentUsers: 43,
+  },
+  {
+    id: "metric-3",
+    timestamp: Timestamp.fromDate(new Date(Date.now() - 10 * 60 * 1000)),
+    apiResponseTime95p: 138,
+    apiResponseTimeAvg: 85,
+    apiRequestCount: 1312,
+    errorCount: 1,
+    errorRate: 0.08,
+    recentErrors: [],
+    uptimePercentage: 99.97,
+    isHealthy: true,
+    dbQueryCount: 3556,
+    dbQueryTimeAvg: 21,
+    dbQueryTime95p: 63,
+    concurrentUsers: 51,
+  },
+];
+
+export const mockUptimeRecords = [
+  {
+    date: new Date().toISOString().split('T')[0],
+    uptimePercentage: 99.95,
+    totalDowntimeMinutes: 0.72,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.98,
+    totalDowntimeMinutes: 0.29,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 100.0,
+    totalDowntimeMinutes: 0,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.92,
+    totalDowntimeMinutes: 1.15,
+    incidentCount: 1,
+  },
+  {
+    date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.97,
+    totalDowntimeMinutes: 0.43,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.99,
+    totalDowntimeMinutes: 0.14,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.85,
+    totalDowntimeMinutes: 2.16,
+    incidentCount: 1,
+  },
+  {
+    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 100.0,
+    totalDowntimeMinutes: 0,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.94,
+    totalDowntimeMinutes: 0.86,
+    incidentCount: 0,
+  },
+  {
+    date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    uptimePercentage: 99.96,
+    totalDowntimeMinutes: 0.58,
+    incidentCount: 0,
+  },
+];

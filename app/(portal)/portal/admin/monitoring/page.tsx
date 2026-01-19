@@ -32,6 +32,8 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
+import { DataToggle } from "@/components/ui/data-toggle";
+import { mockSystemHealth, mockSystemMetrics, mockUptimeRecords } from "@/lib/mock-data/system-health-mock-data";
 
 interface SystemHealth {
   isHealthy: boolean;
@@ -75,6 +77,7 @@ export default function MonitoringPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<"hour" | "day" | "week" | "month">("hour");
+  const [useMockData, setUseMockData] = useState(false);
   
   const [currentHealth, setCurrentHealth] = useState<SystemHealth | null>(null);
   const [metrics, setMetrics] = useState<SystemMetric[]>([]);
@@ -122,12 +125,20 @@ export default function MonitoringPage() {
 
   // Initial fetch
   useEffect(() => {
-    fetchMonitoringData();
-  }, [timeRange]);
+    if (useMockData) {
+      setCurrentHealth(mockSystemHealth);
+      setMetrics(mockSystemMetrics as SystemMetric[]);
+      setUptimeRecords(mockUptimeRecords);
+      setLastUpdate(new Date());
+      setLoading(false);
+    } else {
+      fetchMonitoringData();
+    }
+  }, [timeRange, useMockData]);
 
   // Real-time listener for system metrics (updates every 30 seconds)
   useEffect(() => {
-    if (!db) return;
+    if (!db || useMockData) return;
 
     const metricsQuery = query(
       collection(db, "systemMetrics"),
@@ -231,6 +242,7 @@ export default function MonitoringPage() {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <DataToggle onToggle={setUseMockData} defaultValue={false} />
           <div className="text-sm text-muted-foreground">
             Last updated: {lastUpdate.toLocaleTimeString()}
           </div>
