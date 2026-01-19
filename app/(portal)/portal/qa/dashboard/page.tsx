@@ -118,6 +118,8 @@ export default function QADashboardPage() {
   };
 
   const getStatusBadge = (status: string) => {
+    if (!status) return null;
+    
     const variants: Record<string, any> = {
       scheduled: { variant: "outline", icon: Calendar, color: "text-blue-600" },
       in_progress: { variant: "default", icon: Clock, color: "text-yellow-600" },
@@ -126,10 +128,11 @@ export default function QADashboardPage() {
     };
     const config = variants[status] || variants.scheduled;
     const Icon = config.icon;
+    const displayText = status.replace("_", " ");
     return (
       <Badge variant={config.variant} className="gap-1">
         <Icon className="h-3 w-3" />
-        {status.replace("_", " ").charAt(0).toUpperCase() + status.replace("_", " ").slice(1)}
+        {displayText.charAt(0).toUpperCase() + displayText.slice(1)}
       </Badge>
     );
   };
