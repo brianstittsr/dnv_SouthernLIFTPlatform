@@ -8,7 +8,7 @@ import { Timestamp } from "firebase-admin/firestore";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -19,7 +19,8 @@ export async function GET(
     const token = authHeader.split("Bearer ")[1];
     const decodedToken = await auth.verifyIdToken(token);
 
-    const leadDoc = await db.collection("leads").doc(params.id).get();
+    const { id } = await params;
+    const leadDoc = await db.collection("leads").doc(id).get();
 
     if (!leadDoc.exists) {
       return NextResponse.json({ error: "Lead not found" }, { status: 404 });
@@ -30,7 +31,7 @@ export async function GET(
     // Get activities
     const activitiesSnapshot = await db
       .collection("leads")
-      .doc(params.id)
+      .doc(id)
       .collection("activities")
       .orderBy("activityDate", "desc")
       .get();
@@ -60,7 +61,7 @@ export async function GET(
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -74,7 +75,8 @@ export async function PUT(
     const body = await req.json();
     const { status, partnerId, notes, followUpDate } = body;
 
-    const leadRef = db.collection("leads").doc(params.id);
+    const { id } = await params;
+    const leadRef = db.collection("leads").doc(id);
     const leadDoc = await leadRef.get();
 
     if (!leadDoc.exists) {
@@ -102,7 +104,7 @@ export async function PUT(
 
       // Check for service overlap
       if (partnerId) {
-        await checkServiceOverlap(params.id, partnerId, leadDoc.data()?.company);
+        await checkServiceOverlap(id, partnerId, leadDoc.data()?.company);
       }
 
       // Notify new partner
@@ -118,7 +120,7 @@ export async function PUT(
               <h2>Lead Assigned</h2>
               <p>A lead has been assigned to you.</p>
               <p><strong>Company:</strong> ${leadDoc.data()?.company}</p>
-              <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/partner/leads/${params.id}">View Lead</a></p>
+              <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/partner/leads/${id}">View Lead</a></p>
             `,
             createdAt: Timestamp.now(),
             status: "pending",
@@ -131,7 +133,7 @@ export async function PUT(
         userId: decodedToken.uid,
         action: "lead_reassigned",
         resource: "lead",
-        resourceId: params.id,
+        resourceId: id,
         details: { oldPartnerId, newPartnerId: partnerId },
         timestamp: Timestamp.now(),
         createdAt: Timestamp.now(),
