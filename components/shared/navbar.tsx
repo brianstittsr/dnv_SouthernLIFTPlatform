@@ -25,6 +25,8 @@ import {
   Calendar,
   Building2,
   Newspaper,
+  Package,
+  Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +67,10 @@ const services = [
 ];
 
 const resources = [
+  { title: "Products", href: "/products", icon: Package },
+  { title: "News & Insights", href: "/news", icon: Newspaper },
+  { title: "Media & Press", href: "/media", icon: Video },
+  { title: "Opportunities", href: "/opportunities", icon: Briefcase },
   { title: "FAQ", href: "/faq", icon: FileText },
   { title: "Events", href: "/events", icon: Calendar },
   { title: "Membership", href: "/membership", icon: Users },
@@ -155,7 +161,7 @@ export function Navbar() {
             <NavigationMenuItem>
               <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:grid-cols-2">
+                <ul className="grid w-[600px] gap-3 p-4 md:grid-cols-3">
                   {resources.map((item) => (
                     <li key={item.title}>
                       <Link
