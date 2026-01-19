@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { auth, db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 import {
   Dialog,
   DialogContent,
@@ -79,7 +80,7 @@ const steps = [
 ];
 
 export function ProfileCompletionWizard() {
-  const { profile, updateProfile, profileCompletion, showProfileWizard, setShowProfileWizard } = useUserProfile();
+  const { profile, updateProfile, profileCompletion, showProfileWizard, setShowProfileWizard, linkedTeamMember } = useUserProfile();
   const [currentStep, setCurrentStep] = useState(1);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -133,6 +134,9 @@ export function ProfileCompletionWizard() {
 
     setSaving(true);
     try {
+      const now = Timestamp.now();
+      
+      // 1. Update User Profile (users collection)
       const userRef = doc(db, "users", auth.currentUser.uid);
       await updateDoc(userRef, {
         firstName: formData.firstName,
@@ -142,9 +146,46 @@ export function ProfileCompletionWizard() {
         jobTitle: formData.jobTitle,
         location: formData.location,
         bio: formData.bio,
-        profileCompletedAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
+        profileCompletedAt: now,
+        updatedAt: now,
       });
+
+      // 2. Update Team Member if linked (team_members collection)
+      if (linkedTeamMember?.id) {
+        const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeamMember.id);
+        await updateDoc(teamMemberRef, {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          mobile: formData.phone,
+          company: formData.company,
+          title: formData.jobTitle,
+          location: formData.location,
+          bio: formData.bio,
+          updatedAt: now,
+        });
+        console.log("Team Member profile updated:", linkedTeamMember.id);
+      } else {
+        // Try to find Team Member by email and update
+        const teamMembersRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        const emailQuery = query(teamMembersRef, where("emailPrimary", "==", formData.email));
+        const snapshot = await getDocs(emailQuery);
+        
+        if (!snapshot.empty) {
+          const teamMemberDoc = snapshot.docs[0];
+          await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, teamMemberDoc.id), {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            mobile: formData.phone,
+            company: formData.company,
+            title: formData.jobTitle,
+            location: formData.location,
+            bio: formData.bio,
+            firebaseUid: auth.currentUser.uid, // Link the accounts
+            updatedAt: now,
+          });
+          console.log("Team Member found by email and updated:", teamMemberDoc.id);
+        }
+      }
 
       // Update local profile context
       updateProfile({
@@ -170,22 +211,39 @@ export function ProfileCompletionWizard() {
 
     setSaving(true);
     try {
-      // Save partial progress to Firebase
+      const now = Timestamp.now();
+      
+      // Save partial progress to Firebase (users collection)
       const userRef = doc(db, "users", auth.currentUser.uid);
-      const updates: any = {
-        updatedAt: Timestamp.now(),
+      const userUpdates: any = {
+        updatedAt: now,
       };
 
       // Only update fields that have values
-      if (formData.firstName) updates.firstName = formData.firstName;
-      if (formData.lastName) updates.lastName = formData.lastName;
-      if (formData.phone) updates.phone = formData.phone;
-      if (formData.company) updates.company = formData.company;
-      if (formData.jobTitle) updates.jobTitle = formData.jobTitle;
-      if (formData.location) updates.location = formData.location;
-      if (formData.bio) updates.bio = formData.bio;
+      if (formData.firstName) userUpdates.firstName = formData.firstName;
+      if (formData.lastName) userUpdates.lastName = formData.lastName;
+      if (formData.phone) userUpdates.phone = formData.phone;
+      if (formData.company) userUpdates.company = formData.company;
+      if (formData.jobTitle) userUpdates.jobTitle = formData.jobTitle;
+      if (formData.location) userUpdates.location = formData.location;
+      if (formData.bio) userUpdates.bio = formData.bio;
 
-      await updateDoc(userRef, updates);
+      await updateDoc(userRef, userUpdates);
+
+      // Also update Team Member if linked
+      if (linkedTeamMember?.id) {
+        const teamMemberUpdates: any = { updatedAt: now };
+        if (formData.firstName) teamMemberUpdates.firstName = formData.firstName;
+        if (formData.lastName) teamMemberUpdates.lastName = formData.lastName;
+        if (formData.phone) teamMemberUpdates.mobile = formData.phone;
+        if (formData.company) teamMemberUpdates.company = formData.company;
+        if (formData.jobTitle) teamMemberUpdates.title = formData.jobTitle;
+        if (formData.location) teamMemberUpdates.location = formData.location;
+        if (formData.bio) teamMemberUpdates.bio = formData.bio;
+
+        const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeamMember.id);
+        await updateDoc(teamMemberRef, teamMemberUpdates);
+      }
 
       // Update local profile context
       updateProfile(formData);

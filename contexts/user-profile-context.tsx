@@ -127,6 +127,27 @@ export function isProfileComplete(profile: UserProfile): boolean {
   return calculateProfileCompletion(profile) === 100;
 }
 
+// Check if User Profile and Team Member data are synced
+export function areProfilesSynced(profile: UserProfile, teamMember: TeamMemberDoc | null): boolean {
+  // If no team member linked, only check if user profile is complete
+  if (!teamMember) {
+    return isProfileComplete(profile);
+  }
+  
+  // Check if all key fields match between User Profile and Team Member
+  const fieldsMatch = 
+    profile.firstName === (teamMember.firstName || "") &&
+    profile.lastName === (teamMember.lastName || "") &&
+    profile.phone === (teamMember.mobile || "") &&
+    profile.company === (teamMember.company || "") &&
+    profile.jobTitle === (teamMember.title || "") &&
+    profile.location === (teamMember.location || "") &&
+    profile.bio === (teamMember.bio || "");
+  
+  // Profiles are synced if user profile is complete AND fields match team member
+  return isProfileComplete(profile) && fieldsMatch;
+}
+
 // Check if affiliate onboarding is needed
 export function needsAffiliateOnboarding(profile: UserProfile): boolean {
   return profile.isAffiliate && !profile.affiliateOnboardingComplete;
@@ -270,6 +291,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
+  // Check if profiles are synced (User Profile matches Team Member)
+  const profilesSynced = areProfilesSynced(profile, linkedTeamMember);
+
   // Check if wizards should be shown after profile is loaded
   useEffect(() => {
     // Don't show wizard while loading or if not authenticated
@@ -277,13 +301,13 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       return;
     }
     
-    // Only show profile wizard if profile is incomplete
-    if (!isComplete) {
+    // Only show profile wizard if profiles are not synced (incomplete or mismatched)
+    if (!profilesSynced) {
       setShowProfileWizard(true);
     } else if (needsOnboarding) {
       setShowAffiliateOnboarding(true);
     }
-  }, [isLoading, isAuthenticated, isComplete, needsOnboarding]);
+  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeamMember]);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setProfile((prev) => ({
