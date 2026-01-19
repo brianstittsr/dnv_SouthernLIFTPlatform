@@ -176,3 +176,114 @@ export const mockQAStats = {
   minorFindings: 3,
   onTimeCompletion: 80,
 };
+
+export const mockQAQueue = [
+  {
+    id: "pack-1",
+    title: "AS9100 Quality Management System Documentation",
+    smeId: "sme-aerospace-001",
+    smeCompany: "Precision Aerospace Manufacturing",
+    userId: "user-123",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 87,
+      completeness: 92,
+      quality: 85,
+      compliance: 84
+    },
+    documentCount: 12,
+    categories: ["Quality Manual", "Procedures", "Work Instructions"],
+    certifications: ["AS9100", "ISO 9001"],
+  },
+  {
+    id: "pack-2",
+    title: "CMMC Level 2 Compliance Package",
+    smeId: "sme-defense-002",
+    smeCompany: "SecureDefense Systems Inc",
+    userId: "user-456",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 72,
+      completeness: 78,
+      quality: 70,
+      compliance: 68
+    },
+    documentCount: 18,
+    categories: ["Security Policies", "Access Control", "Incident Response"],
+    certifications: ["CMMC Level 2", "NIST 800-171"],
+  },
+  {
+    id: "pack-3",
+    title: "ISO 9001:2015 Certification Documents",
+    smeId: "sme-manufacturing-003",
+    smeCompany: "Advanced Manufacturing Solutions",
+    userId: "user-789",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 94,
+      completeness: 96,
+      quality: 93,
+      compliance: 93
+    },
+    documentCount: 15,
+    categories: ["Quality Manual", "Process Documentation", "Audit Records"],
+    certifications: ["ISO 9001:2015"],
+  },
+  {
+    id: "pack-4",
+    title: "NADCAP Heat Treating Compliance Package",
+    smeId: "sme-heattreat-004",
+    smeCompany: "Titanium Heat Treating Specialists",
+    userId: "user-321",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 68,
+      completeness: 72,
+      quality: 65,
+      compliance: 67
+    },
+    documentCount: 9,
+    categories: ["Process Specifications", "Equipment Calibration", "Training Records"],
+    certifications: ["NADCAP Heat Treating"],
+  },
+  {
+    id: "pack-5",
+    title: "ITAR Compliance Documentation Set",
+    smeId: "sme-defense-005",
+    smeCompany: "Defense Technology Partners",
+    userId: "user-654",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 81,
+      completeness: 85,
+      quality: 79,
+      compliance: 79
+    },
+    documentCount: 14,
+    categories: ["Export Control", "Security Procedures", "Training Materials"],
+    certifications: ["ITAR", "EAR"],
+  },
+  {
+    id: "pack-6",
+    title: "ISO 13485 Medical Device QMS",
+    smeId: "sme-medical-006",
+    smeCompany: "MedTech Quality Systems",
+    userId: "user-987",
+    status: "submitted",
+    submittedAt: Timestamp.fromDate(new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)),
+    packHealth: {
+      overallScore: 89,
+      completeness: 91,
+      quality: 88,
+      compliance: 88
+    },
+    documentCount: 16,
+    categories: ["Quality Manual", "Risk Management", "Design Controls"],
+    certifications: ["ISO 13485", "FDA 21 CFR Part 820"],
+  }
+];
