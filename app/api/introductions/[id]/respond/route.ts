@@ -43,6 +43,13 @@ export async function POST(
 
     const introData = introDoc.data();
 
+    if (!introData) {
+      return NextResponse.json(
+        { error: "Introduction data not found" },
+        { status: 404 }
+      );
+    }
+
     // Verify SME ownership
     const userDoc = await db.collection("users").doc(decodedToken.uid).get();
     const userData = userDoc.data();

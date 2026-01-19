@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +14,7 @@ const TIER_INFO: Record<string, { name: string; price: number }> = {
   dfy: { name: "DFY (Done For You)", price: 599 },
 };
 
-export default function SubscriptionSuccessPage() {
+function SubscriptionSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tier = searchParams.get("tier") || "";
@@ -149,5 +149,24 @@ export default function SubscriptionSuccessPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function SubscriptionSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-16 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <Card>
+            <CardContent className="py-12">
+              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+              <p className="text-lg font-semibold mb-2">Loading...</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    }>
+      <SubscriptionSuccessContent />
+    </Suspense>
   );
 }

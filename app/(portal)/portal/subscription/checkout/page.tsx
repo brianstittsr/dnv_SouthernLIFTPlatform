@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -134,7 +134,7 @@ function CheckoutForm({ tier, clientSecret }: { tier: string; clientSecret: stri
   );
 }
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tier = searchParams.get("tier") || "";
@@ -320,5 +320,23 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-8 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardContent className="py-12 text-center">
+              <p className="text-muted-foreground">Loading checkout...</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    }>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }
