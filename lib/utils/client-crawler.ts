@@ -379,6 +379,11 @@ export class ClientCrawler {
     return documents;
   }
 
+  private normalizeHostname(hostname: string): string {
+    // Remove www. prefix for comparison
+    return hostname.replace(/^www\./i, "").toLowerCase();
+  }
+
   private extractLinks(html: string, baseUrl: string): string[] {
     const links: string[] = [];
     
@@ -388,6 +393,9 @@ export class ClientCrawler {
       /<a[^>]+href='([^'#]+)'/gi,
       /<a[^>]+href=([^\s>#]+)/gi,
     ];
+
+    const baseUrlObj = new URL(this.options.targetUrl);
+    const baseHostname = this.normalizeHostname(baseUrlObj.hostname);
 
     for (const linkRegex of linkPatterns) {
       const matches = html.matchAll(linkRegex);
@@ -407,10 +415,10 @@ export class ClientCrawler {
 
           const fullUrl = this.resolveUrl(href, baseUrl);
           const urlObj = new URL(fullUrl);
-          const baseUrlObj = new URL(this.options.targetUrl);
+          const linkHostname = this.normalizeHostname(urlObj.hostname);
 
-          // Only include internal links (same hostname)
-          if (urlObj.hostname === baseUrlObj.hostname) {
+          // Only include internal links (same hostname, ignoring www)
+          if (linkHostname === baseHostname) {
             // Normalize URL (remove trailing slash, query params for dedup)
             const normalizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname.replace(/\/$/, "") || "/"}`;
             if (!links.includes(normalizedUrl)) {
@@ -423,7 +431,7 @@ export class ClientCrawler {
       }
     }
 
-    console.log(`[Crawler] Found ${links.length} internal links on ${baseUrl}`);
+    console.log(`[Crawler] Found ${links.length} internal links on ${baseUrl} (base hostname: ${baseHostname})`);
     return [...new Set(links)];
   }
 
@@ -432,8 +440,11 @@ export class ClientCrawler {
       const urlObj = new URL(url);
       const baseUrlObj = new URL(this.options.targetUrl);
       
-      // Only crawl same domain
-      if (urlObj.hostname !== baseUrlObj.hostname) {
+      // Only crawl same domain (normalize www vs non-www)
+      const urlHostname = this.normalizeHostname(urlObj.hostname);
+      const baseHostname = this.normalizeHostname(baseUrlObj.hostname);
+      
+      if (urlHostname !== baseHostname) {
         return false;
       }
 
