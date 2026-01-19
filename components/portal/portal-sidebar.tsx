@@ -750,7 +750,8 @@ export function PortalSidebar() {
             width={160}
             height={40}
             priority
-            style={{ width: 'auto', height: '40px' }}
+            className="h-10"
+            style={{ width: 'auto' }}
           />
         </Link>
       </SidebarHeader>
