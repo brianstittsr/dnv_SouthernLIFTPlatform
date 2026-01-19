@@ -273,14 +273,97 @@ npm install lucide-react
 npm install next
 ```
 
+## Using ImageField Component in Your Components
+
+The `ImageField` component provides an easy way to integrate Image Manager into any component with a placeholder image. It follows this workflow:
+
+1. **Click to select** → Opens Image Manager library first
+2. **Choose from library** → Select existing image OR
+3. **Upload new** → File is saved to Image Manager, then linked to component
+
+### Basic Usage
+
+```tsx
+import { ImageField } from "@/components/ui/image-field";
+
+function MyComponent() {
+  const [imageId, setImageId] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  return (
+    <ImageField
+      value={imageUrl}
+      imageId={imageId}
+      onChange={(id, url, metadata) => {
+        setImageId(id);
+        setImageUrl(url);
+      }}
+      onClear={() => {
+        setImageId("");
+        setImageUrl("");
+      }}
+      label="Hero Image"
+      category="hero"
+      aspectRatio="video"
+    />
+  );
+}
+```
+
+### ImageField Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Current image URL (data URL or external) |
+| `imageId` | `string` | - | Image ID from Image Manager |
+| `onChange` | `(id, url, metadata) => void` | - | Called when image is selected |
+| `onClear` | `() => void` | - | Called when image is cleared |
+| `label` | `string` | `"Image"` | Field label |
+| `placeholder` | `string` | `"Click to select..."` | Placeholder text |
+| `category` | `ImageCategory` | `"other"` | Default category for uploads |
+| `aspectRatio` | `"square" \| "video" \| "banner" \| "auto"` | `"auto"` | Aspect ratio |
+| `disabled` | `boolean` | `false` | Disable the field |
+| `required` | `boolean` | `false` | Show required indicator |
+| `showLabel` | `boolean` | `true` | Show/hide label |
+
+### Using ImagePicker Dialog
+
+For more control, use the `ImagePicker` component directly:
+
+```tsx
+import { ImagePicker } from "@/components/admin/image-picker";
+
+function MyComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)}>Select Image</Button>
+      <ImagePicker
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        onSelect={(imageId, imageUrl, metadata) => {
+          console.log("Selected:", imageId, metadata.name);
+        }}
+        filterCategory="team"
+        title="Select Team Member Photo"
+      />
+    </>
+  );
+}
+```
+
 ## File Structure Summary
 
 ```
 lib/
   firebase-images.ts          # Core image storage utilities
 components/
+  ui/
+    image-field.tsx           # Reusable image field with Image Manager
   admin/
     image-manager.tsx         # Main Image Manager component
+    image-picker.tsx          # Image picker dialog
 app/
   (portal)/
     portal/
