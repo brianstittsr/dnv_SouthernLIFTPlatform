@@ -24,6 +24,7 @@ import {
   Calendar,
   Target,
 } from "lucide-react";
+import { DataModeToggle } from "@/components/svp/data-mode-toggle";
 
 const DOCUMENT_CATEGORIES = [
   "Certifications",
@@ -35,6 +36,92 @@ const DOCUMENT_CATEGORIES = [
   "Security",
   "Other",
 ];
+
+const MOCK_PROOF_PACK: ProofPack = {
+  id: "mock-1",
+  title: "DoD Manufacturing Capabilities 2024",
+  description: "Comprehensive proof pack for DoD precision manufacturing contracts, including ISO 9001:2015, AS9100D, and CMMC Level 2 certifications.",
+  status: "approved",
+  visibility: "buyer-ready",
+  documents: [
+    {
+      id: "doc-1",
+      fileName: "ISO-9001-2015-Certificate.pdf",
+      category: "Certifications",
+      fileSize: 245000,
+      uploadedAt: new Date("2024-01-10"),
+      expiresAt: new Date("2025-12-31"),
+      status: "valid",
+    },
+    {
+      id: "doc-2",
+      fileName: "AS9100D-Certification.pdf",
+      category: "Certifications",
+      fileSize: 312000,
+      uploadedAt: new Date("2024-01-10"),
+      expiresAt: new Date("2025-06-30"),
+      status: "valid",
+    },
+    {
+      id: "doc-3",
+      fileName: "CMMC-Level-2-Assessment.pdf",
+      category: "Security",
+      fileSize: 890000,
+      uploadedAt: new Date("2024-01-12"),
+      expiresAt: new Date("2026-01-12"),
+      status: "valid",
+    },
+    {
+      id: "doc-4",
+      fileName: "Financial-Statements-2023.pdf",
+      category: "Financial",
+      fileSize: 567000,
+      uploadedAt: new Date("2024-01-08"),
+      status: "valid",
+    },
+    {
+      id: "doc-5",
+      fileName: "Past-Performance-Navy-Contract.pdf",
+      category: "Past Performance",
+      fileSize: 423000,
+      uploadedAt: new Date("2024-01-09"),
+      status: "valid",
+    },
+  ],
+  documentCount: 5,
+  packHealth: {
+    overallScore: 85,
+    completenessScore: 88,
+    expirationScore: 90,
+    qualityScore: 82,
+    remediationScore: 75,
+    breakdown: {
+      certifications: { score: 95, weight: 0.3 },
+      financial: { score: 80, weight: 0.2 },
+      pastPerformance: { score: 85, weight: 0.25 },
+      technical: { score: 75, weight: 0.15 },
+      quality: { score: 80, weight: 0.1 },
+    },
+    isEligibleForIntroductions: true,
+  },
+  gaps: [
+    {
+      id: "gap-1",
+      category: "Technical",
+      description: "Missing technical specifications document",
+      priority: "medium",
+      impact: "Reduces credibility for technical evaluations",
+    },
+    {
+      id: "gap-2",
+      category: "Quality",
+      description: "Quality manual not uploaded",
+      priority: "low",
+      impact: "May be requested during buyer due diligence",
+    },
+  ],
+  tags: ["DoD", "Manufacturing", "ISO-9001", "AS9100D", "CMMC"],
+};
 
 interface ProofPack {
   id: string;
@@ -69,10 +156,24 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
   
   const [proofPack, setProofPack] = useState<ProofPack | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [useMockData, setUseMockData] = useState(true);
 
   useEffect(() => {
-    fetchProofPack();
-  }, [params.id]);
+    if (useMockData) {
+      loadMockData();
+    } else {
+      fetchProofPack();
+    }
+  }, [params.id, useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setProofPack(MOCK_PROOF_PACK);
+      setLoading(false);
+      setError(null);
+    }, 500);
+  };
 
   const fetchProofPack = async () => {
     try {
@@ -305,6 +406,11 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
 
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* Data Mode Toggle */}
+      <div className="flex justify-end mb-4">
+        <DataModeToggle useMockData={useMockData} onToggle={() => setUseMockData(!useMockData)} />
+      </div>
+
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">{proofPack.title}</h1>
