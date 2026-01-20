@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Building2, Mail, Phone, Calendar, FileText, Save } from "lucide-react";
+import { mockLeads } from "@/lib/mock-data/partner-mock-data";
+import { Timestamp } from "firebase/firestore";
 
 interface Lead {
   id: string;
@@ -41,6 +43,8 @@ interface Activity {
 export default function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const useMockData = searchParams.get('mock') === 'true';
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +60,53 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   const [activityOutcome, setActivityOutcome] = useState("");
 
   useEffect(() => {
-    fetchLead();
-  }, [id]);
+    if (useMockData) {
+      loadMockLead();
+    } else {
+      fetchLead();
+    }
+  }, [id, useMockData]);
+
+  const loadMockLead = () => {
+    setLoading(true);
+    // Find mock lead by ID
+    const mockLead = mockLeads.find(l => l.id === id);
+    if (mockLead) {
+      // Add mock activities
+      const leadWithActivities = {
+        ...mockLead,
+        activities: [
+          {
+            id: 'activity-1',
+            activityType: 'call',
+            details: 'Initial outreach call to discuss certification needs',
+            outcome: 'Interested, requested follow-up meeting',
+            activityDate: Timestamp.fromDate(new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)),
+            loggedBy: 'Partner',
+          },
+          {
+            id: 'activity-2',
+            activityType: 'email',
+            details: 'Sent detailed service overview and pricing',
+            outcome: 'Email opened, awaiting response',
+            activityDate: Timestamp.fromDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)),
+            loggedBy: 'Partner',
+          },
+        ],
+      };
+      setLead(leadWithActivities as Lead);
+      setStatus(mockLead.status);
+      setNotes(mockLead.notes || '');
+      setFollowUpDate(
+        mockLead.followUpDate
+          ? new Date(mockLead.followUpDate.toDate()).toISOString().split('T')[0]
+          : ''
+      );
+    } else {
+      setError('Lead not found');
+    }
+    setLoading(false);
+  };
 
   const fetchLead = async () => {
     try {
@@ -97,6 +146,16 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   };
 
   const handleUpdateLead = async () => {
+    if (useMockData) {
+      // Simulate save in mock mode
+      setSaving(true);
+      setTimeout(() => {
+        setSuccess("Lead updated successfully (Mock Mode)");
+        setSaving(false);
+      }, 500);
+      return;
+    }
+
     try {
       setSaving(true);
       setError(null);
@@ -134,6 +193,28 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   const handleLogActivity = async () => {
     if (!activityDetails.trim()) {
       setError("Activity details are required");
+      return;
+    }
+
+    if (useMockData) {
+      // Simulate activity logging in mock mode
+      const newActivity = {
+        id: `activity-${Date.now()}`,
+        activityType,
+        details: activityDetails,
+        outcome: activityOutcome || '',
+        activityDate: Timestamp.now(),
+        loggedBy: 'Partner',
+      };
+      if (lead) {
+        setLead({
+          ...lead,
+          activities: [newActivity, ...(lead.activities || [])],
+        });
+      }
+      setSuccess("Activity logged successfully (Mock Mode)");
+      setActivityDetails("");
+      setActivityOutcome("");
       return;
     }
 

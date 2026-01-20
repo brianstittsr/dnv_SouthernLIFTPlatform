@@ -310,7 +310,7 @@ export default function PartnerLeadsPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => router.push(`/portal/partner/leads/${lead.id}`)}
+                            onClick={() => router.push(`/portal/partner/leads/${lead.id}${useMockData ? '?mock=true' : ''}`)}
                           >
                             View
                           </Button>
@@ -357,7 +357,7 @@ export default function PartnerLeadsPage() {
                         <TableCell>
                           <Button
                             size="sm"
-                            onClick={() => router.push(`/portal/partner/leads/${lead.id}`)}
+                            onClick={() => router.push(`/portal/partner/leads/${lead.id}${useMockData ? '?mock=true' : ''}`)}
                           >
                             Contact
                           </Button>
@@ -398,9 +398,9 @@ export default function PartnerLeadsPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => router.push(`/portal/partner/leads/${lead.id}`)}
+                            onClick={() => router.push(`/portal/partner/leads/${lead.id}${useMockData ? '?mock=true' : ''}`)}
                           >
-                            View
+                            View Details
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -436,9 +436,9 @@ export default function PartnerLeadsPage() {
                         <TableCell>
                           <Button
                             size="sm"
-                            onClick={() => router.push(`/portal/partner/leads/${lead.id}`)}
+                            onClick={() => router.push(`/portal/partner/leads/${lead.id}${useMockData ? '?mock=true' : ''}`)}
                           >
-                            Convert
+                            Follow Up
                           </Button>
                         </TableCell>
                       </TableRow>
