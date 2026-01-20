@@ -83,6 +83,10 @@ import { cn } from "@/lib/utils";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ContactsTab from "./contacts-tab";
+import { AvatarUpload } from "@/components/profile/avatar-upload";
+import { auth, db } from "@/lib/firebase";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { toast } from "sonner";
 
 // User roles
 const userRoles = [
@@ -155,27 +159,7 @@ const premiumAITools: SVPTool[] = [
   { id: "pdf-ocr", name: "PDF Handwriting OCR", description: "Convert handwritten PDFs to structured data", icon: "file-scan", href: "/portal/svp-tools/pdf-handwriting", teamAccess: true, affiliateAccess: true },
 ];
 
-// Mock meeting recordings
-const mockRecordings = [
-  { id: "1", title: "Affiliate Orientation Call", date: "2024-12-10", duration: "45 min", type: "onboarding" },
-  { id: "2", title: "One-to-One with Sarah Chen", date: "2024-12-05", duration: "30 min", type: "networking" },
-  { id: "3", title: "Monthly Affiliate Meeting", date: "2024-12-01", duration: "60 min", type: "group" },
-  { id: "4", title: "ISO Training Workshop", date: "2024-11-28", duration: "90 min", type: "training" },
-];
-
-// Mock certifications
-const mockCertifications = [
-  { id: "1", name: "ISO 9001 Lead Auditor", issuer: "IRCA", date: "2023-06-15", expires: "2026-06-15", status: "active" },
-  { id: "2", name: "Six Sigma Black Belt", issuer: "ASQ", date: "2022-03-20", expires: null, status: "active" },
-  { id: "3", name: "Lean Practitioner", issuer: "SME", date: "2021-09-10", expires: "2024-09-10", status: "expiring" },
-];
-
-// Mock One-to-One history
-const mockOneToOnes = [
-  { id: "1", partner: "Sarah Chen", date: "2024-12-05", status: "completed", notes: "Discussed lean manufacturing collaboration" },
-  { id: "2", partner: "Michael Rodriguez", date: "2024-12-12", status: "scheduled", notes: "ISO certification referral opportunities" },
-  { id: "3", partner: "Jennifer Park", date: "2024-12-15", status: "pending", notes: "AI solutions for manufacturing" },
-];
+// Data will be loaded from Firebase - no mock data
 
 export default function ProfilePage() {
   const { profile: userProfile, getDisplayName, getInitials } = useUserProfile();
@@ -214,7 +198,7 @@ export default function ProfilePage() {
       speaking: true,
       consulting: true,
     },
-    certifications: mockCertifications,
+    certifications: [],
     memberSince: "2024-01-15",
   });
 
@@ -227,6 +211,10 @@ export default function ProfilePage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showCertDialog, setShowCertDialog] = useState(false);
+  
+  // Data loaded from Firebase
+  const [recordings, setRecordings] = useState<any[]>([]);
+  const [oneToOnes, setOneToOnes] = useState<any[]>([]);
 
   // Password change state
   const [passwordForm, setPasswordForm] = useState({
@@ -245,14 +233,24 @@ export default function ProfilePage() {
     setProfile({ ...profile, [field]: value });
   };
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const handleAvatarUpload = async (base64Image: string) => {
+    if (!auth?.currentUser || !db) {
+      toast.error("Authentication required");
+      return;
+    }
+
+    try {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        avatarUrl: base64Image,
+        updatedAt: Timestamp.now(),
+      });
+      
+      setAvatarPreview(base64Image);
+      toast.success("Profile photo updated successfully");
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+      toast.error("Failed to update profile photo");
     }
   };
 
@@ -369,38 +367,12 @@ export default function ProfilePage() {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6 items-start">
             {/* Photo Upload Section */}
-            <div className="relative group">
-              <Avatar className="h-64 w-64 border-4 border-background shadow-lg">
-                <AvatarImage src={avatarPreview || undefined} />
-                <AvatarFallback className="text-5xl bg-primary/10 text-primary">
-                  {getInitials()}
-                </AvatarFallback>
-              </Avatar>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                className="hidden"
-              />
-              <div 
-                className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className="text-center text-white">
-                  <Camera className="h-6 w-6 mx-auto mb-1" />
-                  <span className="text-xs">Change Photo</span>
-                </div>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0 bg-background"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="h-4 w-4" />
-              </Button>
-            </div>
+            <AvatarUpload
+              currentAvatar={avatarPreview || userProfile.avatarUrl}
+              initials={getInitials()}
+              onUpload={handleAvatarUpload}
+              size="lg"
+            />
 
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-3">
@@ -433,7 +405,7 @@ export default function ProfilePage() {
               {/* Quick Stats */}
               <div className="flex gap-6 pt-2">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{mockOneToOnes.length}</div>
+                  <div className="text-2xl font-bold text-primary">{oneToOnes.length}</div>
                   <div className="text-xs text-muted-foreground">One-to-Ones</div>
                 </div>
                 <div className="text-center">
@@ -441,7 +413,7 @@ export default function ProfilePage() {
                   <div className="text-xs text-muted-foreground">Certifications</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{mockRecordings.length}</div>
+                  <div className="text-2xl font-bold text-primary">{recordings.length}</div>
                   <div className="text-xs text-muted-foreground">Recordings</div>
                 </div>
               </div>
@@ -959,19 +931,19 @@ export default function ProfilePage() {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 border rounded-lg text-center">
-                  <div className="text-3xl font-bold text-primary">{mockOneToOnes.filter(m => m.status === 'completed').length}</div>
+                  <div className="text-3xl font-bold text-primary">{oneToOnes.filter((m: any) => m.status === 'completed').length}</div>
                   <div className="text-sm text-muted-foreground">Completed 1-to-1s</div>
                 </div>
                 <div className="p-4 border rounded-lg text-center">
-                  <div className="text-3xl font-bold text-blue-600">{mockOneToOnes.filter(m => m.status === 'scheduled').length}</div>
+                  <div className="text-3xl font-bold text-blue-600">{oneToOnes.filter((m: any) => m.status === 'scheduled').length}</div>
                   <div className="text-sm text-muted-foreground">Scheduled Meetings</div>
                 </div>
                 <div className="p-4 border rounded-lg text-center">
-                  <div className="text-3xl font-bold text-green-600">{mockRecordings.filter(r => r.type === 'networking').length}</div>
+                  <div className="text-3xl font-bold text-green-600">{recordings.filter((r: any) => r.type === 'networking').length}</div>
                   <div className="text-sm text-muted-foreground">Networking Calls</div>
                 </div>
                 <div className="p-4 border rounded-lg text-center">
-                  <div className="text-3xl font-bold text-purple-600">{mockRecordings.length}</div>
+                  <div className="text-3xl font-bold text-purple-600">{recordings.length}</div>
                   <div className="text-sm text-muted-foreground">Total Recordings</div>
                 </div>
               </div>
@@ -983,15 +955,15 @@ export default function ProfilePage() {
                 <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                   <div className="flex items-center gap-1">
                     <CheckCircle className="h-3 w-3 text-green-500" />
-                    <span>{mockOneToOnes.filter(m => m.status === 'completed').length} completed</span>
+                    <span>{oneToOnes.filter((m: any) => m.status === 'completed').length} completed</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="h-3 w-3 text-blue-500" />
-                    <span>{mockOneToOnes.filter(m => m.status === 'scheduled').length} upcoming</span>
+                    <span>{oneToOnes.filter((m: any) => m.status === 'scheduled').length} upcoming</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="h-3 w-3 text-purple-500" />
-                    <span>{new Set(mockOneToOnes.map(m => m.partner)).size} partners</span>
+                    <span>{new Set(oneToOnes.map((m: any) => m.partner)).size} partners</span>
                   </div>
                 </div>
               </div>
@@ -1005,7 +977,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {mockOneToOnes.map((meeting) => (
+                {oneToOnes.map((meeting: any) => (
                   <div
                     key={meeting.id}
                     className="flex items-center justify-between p-3 border rounded-lg"
@@ -1354,7 +1326,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockRecordings.map((recording) => (
+                {recordings.map((recording: any) => (
                   <div
                     key={recording.id}
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
@@ -1386,7 +1358,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ))}
-                {mockRecordings.length === 0 && (
+                {recordings.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground">
                     <Video className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No recordings available yet</p>

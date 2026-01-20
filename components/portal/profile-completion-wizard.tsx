@@ -32,6 +32,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { AvatarUpload } from "@/components/profile/avatar-upload";
 
 // Circular progress component
 function CircularProgress({ percentage, size = 120, strokeWidth = 10 }: { percentage: number; size?: number; strokeWidth?: number }) {
@@ -92,6 +93,7 @@ export function ProfileCompletionWizard() {
     jobTitle: "",
     location: "",
     bio: "",
+    avatarUrl: "",
   });
 
   // Initialize form data from profile when wizard opens
@@ -106,12 +108,17 @@ export function ProfileCompletionWizard() {
         jobTitle: profile.jobTitle || "",
         location: profile.location || "",
         bio: profile.bio || "",
+        avatarUrl: profile.avatarUrl || "",
       });
     }
   }, [showProfileWizard, profile]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAvatarUpload = async (base64Image: string) => {
+    setFormData((prev) => ({ ...prev, avatarUrl: base64Image }));
   };
 
   const handleNext = () => {
@@ -147,6 +154,7 @@ export function ProfileCompletionWizard() {
         jobTitle: formData.jobTitle,
         location: formData.location,
         bio: formData.bio,
+        avatarUrl: formData.avatarUrl,
         profileCompletedAt: now,
         updatedAt: now,
         createdAt: now,
@@ -164,6 +172,7 @@ export function ProfileCompletionWizard() {
           title: formData.jobTitle,
           location: formData.location,
           bio: formData.bio,
+          avatar: formData.avatarUrl,
           updatedAt: now,
         });
         console.log("Team Member profile updated:", linkedTeamMember.id);
@@ -183,6 +192,7 @@ export function ProfileCompletionWizard() {
             title: formData.jobTitle,
             location: formData.location,
             bio: formData.bio,
+            avatar: formData.avatarUrl,
             firebaseUid: auth.currentUser.uid, // Link the accounts
             updatedAt: now,
           });
@@ -200,6 +210,7 @@ export function ProfileCompletionWizard() {
         jobTitle: formData.jobTitle,
         location: formData.location,
         bio: formData.bio,
+        avatarUrl: formData.avatarUrl,
         profileCompletedAt: new Date().toISOString(),
       });
 
@@ -351,6 +362,14 @@ export function ProfileCompletionWizard() {
           <div className="space-y-4 px-4">
             {currentStep === 1 && (
               <>
+                <div className="flex justify-center mb-6">
+                  <AvatarUpload
+                    currentAvatar={formData.avatarUrl}
+                    initials={`${formData.firstName?.[0] || ""}${formData.lastName?.[0] || ""}`.toUpperCase() || "U"}
+                    onUpload={handleAvatarUpload}
+                    size="xl"
+                  />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name *</Label>
