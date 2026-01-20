@@ -59,9 +59,11 @@ export default function AdminUsersPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserFirstName, setNewUserFirstName] = useState("");
+  const [newUserLastName, setNewUserLastName] = useState("");
   const [newUserDisplayName, setNewUserDisplayName] = useState("");
   const [newUserRole, setNewUserRole] = useState<UserRole>("sme_user");
-  const [newUserTenantId, setNewUserTenantId] = useState("");
+  const [newUserTenantId, setNewUserTenantId] = useState("kdm-svp-platform");
   const [creating, setCreating] = useState(false);
 
   // Delete confirmation dialog state
@@ -136,7 +138,9 @@ export default function AdminUsersPage() {
         body: JSON.stringify({
           email: newUserEmail,
           password: newUserPassword,
-          displayName: newUserDisplayName,
+          firstName: newUserFirstName,
+          lastName: newUserLastName,
+          displayName: newUserDisplayName || `${newUserFirstName} ${newUserLastName}`.trim(),
           role: newUserRole,
           tenantId: newUserTenantId,
         }),
@@ -150,9 +154,11 @@ export default function AdminUsersPage() {
       // Reset form and close dialog
       setNewUserEmail("");
       setNewUserPassword("");
+      setNewUserFirstName("");
+      setNewUserLastName("");
       setNewUserDisplayName("");
       setNewUserRole("sme_user");
-      setNewUserTenantId("");
+      setNewUserTenantId("kdm-svp-platform");
       setCreateDialogOpen(false);
 
       // Refresh user list
@@ -441,12 +447,30 @@ export default function AdminUsersPage() {
                 placeholder="Minimum 6 characters"
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">First Name</label>
+                <Input
+                  value={newUserFirstName}
+                  onChange={(e) => setNewUserFirstName(e.target.value)}
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Last Name</label>
+                <Input
+                  value={newUserLastName}
+                  onChange={(e) => setNewUserLastName(e.target.value)}
+                  placeholder="Doe"
+                />
+              </div>
+            </div>
             <div>
-              <label className="text-sm font-medium">Display Name</label>
+              <label className="text-sm font-medium">Display Name (Optional)</label>
               <Input
                 value={newUserDisplayName}
                 onChange={(e) => setNewUserDisplayName(e.target.value)}
-                placeholder="John Doe"
+                placeholder="Auto-generated from first and last name"
               />
             </div>
             <div>

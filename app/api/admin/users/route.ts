@@ -128,12 +128,12 @@ export async function POST(req: NextRequest) {
 
     // Parse request body
     const body = await req.json();
-    const { email, password, displayName, role, tenantId } = body;
+    const { email, password, displayName, firstName, lastName, role, tenantId } = body;
 
     // Validate inputs
-    if (!email || !password || !role || !tenantId) {
+    if (!email || !password || !role) {
       return NextResponse.json(
-        { error: "Missing required fields: email, password, role, tenantId" },
+        { error: "Missing required fields: email, password, role" },
         { status: 400 }
       );
     }
@@ -154,18 +154,24 @@ export async function POST(req: NextRequest) {
     });
 
     // Assign role using RBAC system
-    await assignUserRole(userRecord.uid, role as UserRole, tenantId);
+    await assignUserRole(userRecord.uid, role as UserRole, tenantId || "kdm-svp-platform");
 
-    // Create user document in Firestore
-    await db.collection("users").doc(userRecord.uid).set({
+    // Create user document in Firestore with full profile
+    const userDoc = {
       id: userRecord.uid,
       email,
-      displayName: displayName || email.split("@")[0],
+      displayName: displayName || `${firstName || ''} ${lastName || ''}`.trim() || email.split("@")[0],
+      firstName: firstName || email.split("@")[0],
+      lastName: lastName || "",
       role,
-      tenantId,
+      svpRole: role, // For compatibility
+      tenantId: tenantId || "kdm-svp-platform",
+      hasAvatar: false,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
-    });
+    };
+
+    await db.collection("users").doc(userRecord.uid).set(userDoc);
 
     // Log audit event
     await db.collection("auditLogs").add({

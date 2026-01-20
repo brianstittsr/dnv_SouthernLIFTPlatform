@@ -46,10 +46,12 @@ import {
   Video,
   FileText,
   Download,
-  Calendar
+  Calendar,
+  Upload
 } from "lucide-react";
 import { toast } from "sonner";
 import { Timestamp } from "firebase/firestore";
+import { ScormImportDialog } from "@/components/cohorts/scorm-import-dialog";
 
 interface Module {
   id: string;
@@ -83,6 +85,9 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
   const [modules, setModules] = useState<Module[]>([]);
   const [cohortTitle, setCohortTitle] = useState("");
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
+  
+  // SCORM import dialog state
+  const [scormDialogOpen, setScormDialogOpen] = useState(false);
   
   // Module dialog state
   const [moduleDialogOpen, setModuleDialogOpen] = useState(false);
@@ -314,10 +319,16 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
           <h1 className="text-3xl font-bold">{cohortTitle} - Curriculum</h1>
           <p className="text-muted-foreground">Manage modules and training sessions</p>
         </div>
-        <Button onClick={() => openModuleDialog()}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Module
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setScormDialogOpen(true)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Import SCORM
+          </Button>
+          <Button onClick={() => openModuleDialog()}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Module
+          </Button>
+        </div>
       </div>
 
       {/* Modules List */}
@@ -611,6 +622,14 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* SCORM Import Dialog */}
+      <ScormImportDialog
+        cohortId={cohortId}
+        open={scormDialogOpen}
+        onOpenChange={setScormDialogOpen}
+        onSuccess={loadCurriculum}
+      />
     </div>
   );
 }
