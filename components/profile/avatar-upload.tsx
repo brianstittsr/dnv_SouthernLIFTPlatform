@@ -40,18 +40,29 @@ export function AvatarUpload({
       return;
     }
 
-    // Validate file size (max 2MB)
-    const maxSize = 2 * 1024 * 1024; // 2MB
+    // Validate file size (max 10MB before compression)
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      toast.error("Image size must be less than 2MB");
+      toast.error("Image size must be less than 10MB");
       return;
     }
 
     setIsUploading(true);
 
     try {
-      // Convert to base64
-      const base64 = await convertToBase64(file);
+      // Compress and convert to base64
+      const base64 = await compressAndConvertImage(file);
+      
+      // Check if compressed image is still too large (Firebase limit is ~1MB for a field)
+      // Base64 is ~33% larger than binary, so target ~700KB binary = ~930KB base64
+      const base64Size = base64.length;
+      const estimatedKB = base64Size / 1024;
+      
+      if (estimatedKB > 900) {
+        toast.error("Image is too large even after compression. Please use a smaller image.");
+        setIsUploading(false);
+        return;
+      }
       
       // Create preview
       setPreviewUrl(base64);
@@ -72,13 +83,57 @@ export function AvatarUpload({
     }
   };
 
-  const convertToBase64 = (file: File): Promise<string> => {
+  const compressAndConvertImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
-      reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Create canvas for compression
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+          
+          // Calculate new dimensions (max 400x400 for avatars)
+          let width = img.width;
+          let height = img.height;
+          const maxDimension = 400;
+          
+          if (width > height) {
+            if (width > maxDimension) {
+              height = (height * maxDimension) / width;
+              width = maxDimension;
+            }
+          } else {
+            if (height > maxDimension) {
+              width = (width * maxDimension) / height;
+              height = maxDimension;
+            }
+          }
+          
+          // Set canvas dimensions
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw image on canvas (this compresses it)
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to base64 with quality setting
+          // Start with 0.8 quality, will reduce if still too large
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(compressedBase64);
+        };
+        
+        img.onerror = () => {
+          reject(new Error('Failed to load image'));
+        };
+        
+        img.src = e.target?.result as string;
       };
       
       reader.onerror = (error) => {
@@ -152,7 +207,7 @@ export function AvatarUpload({
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        JPG, PNG or GIF. Max size 2MB.
+        JPG, PNG or GIF. Images will be compressed to 400x400px.
       </p>
     </div>
   );
