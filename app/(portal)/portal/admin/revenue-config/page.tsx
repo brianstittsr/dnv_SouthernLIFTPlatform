@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   DollarSign, 
@@ -14,10 +17,14 @@ import {
   Trash2,
   TrendingUp,
   Percent,
-  Calculator
+  Calculator,
+  Loader2
 } from "lucide-react";
+import { mockCommissionRates } from "@/lib/mock-data/svp-admin-mock-data";
 
 export default function RevenueConfigPage() {
+  const [useMockData, setUseMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [commissionRates, setCommissionRates] = useState([
     {
       id: "1",
@@ -48,6 +55,39 @@ export default function RevenueConfigPage() {
     }
   ]);
 
+  useEffect(() => {
+    if (useMockData) {
+      loadMockData();
+    } else {
+      loadRealData();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setCommissionRates(mockCommissionRates);
+    setLoading(false);
+  };
+
+  const loadRealData = async () => {
+    if (!db) {
+      loadMockData();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "commission_rates"));
+      const rates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setCommissionRates(rates as any);
+    } catch (error) {
+      console.error("Error loading commission rates:", error);
+      loadMockData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatCurrency = (amount: number | null) => {
     if (amount === null) return "No limit";
     return new Intl.NumberFormat('en-US', {
@@ -56,6 +96,16 @@ export default function RevenueConfigPage() {
       minimumFractionDigits: 0
     }).format(amount);
   };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -66,10 +116,22 @@ export default function RevenueConfigPage() {
             Configure commission rates, revenue sharing, and payment rules
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Commission Tier
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mock-data"
+              checked={useMockData}
+              onCheckedChange={setUseMockData}
+            />
+            <Label htmlFor="mock-data" className="cursor-pointer">
+              {useMockData ? "Mock Data" : "Live Data"}
+            </Label>
+          </div>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Commission Tier
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="commission" className="mb-6">

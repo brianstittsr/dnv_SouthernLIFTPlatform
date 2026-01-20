@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   ClipboardCheck, 
@@ -12,11 +16,16 @@ import {
   CheckCircle,
   Clock,
   AlertTriangle,
-  BarChart3
+  BarChart3,
+  Loader2
 } from "lucide-react";
+import { mockQAReviewers } from "@/lib/mock-data/svp-admin-mock-data";
 
 export default function QAManagementPage() {
-  const stats = [
+  const [useMockData, setUseMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [reviewers, setReviewers] = useState<any[]>([]);
+  const [stats, setStats] = useState([
     {
       title: "Total Reviews",
       value: "342",
@@ -41,9 +50,56 @@ export default function QAManagementPage() {
       change: "+5% this month",
       icon: TrendingUp
     }
-  ];
+  ]);
 
-  const reviewers = [
+  useEffect(() => {
+    if (useMockData) {
+      loadMockData();
+    } else {
+      loadRealData();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setReviewers(mockQAReviewers);
+    setStats([
+      { title: "Total Reviews", value: "342", change: "+23 this week", icon: ClipboardCheck },
+      { title: "Active Reviewers", value: mockQAReviewers.filter(r => r.status === 'active').length.toString(), change: "8 online now", icon: Users },
+      { title: "Avg Review Time", value: "2.5 hrs", change: "-15% improvement", icon: Clock },
+      { title: "Approval Rate", value: "87%", change: "+5% this month", icon: TrendingUp }
+    ]);
+    setLoading(false);
+  };
+
+  const loadRealData = async () => {
+    if (!db) {
+      loadMockData();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "qa_reviewers"));
+      const reviewersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setReviewers(reviewersData);
+      
+      const activeCount = reviewersData.filter((r: any) => r.status === 'active').length;
+      setStats([
+        { title: "Total Reviews", value: "0", change: "No data", icon: ClipboardCheck },
+        { title: "Active Reviewers", value: activeCount.toString(), change: `${activeCount} online now`, icon: Users },
+        { title: "Avg Review Time", value: "N/A", change: "No data", icon: Clock },
+        { title: "Approval Rate", value: "N/A", change: "No data", icon: TrendingUp }
+      ]);
+    } catch (error) {
+      console.error("Error loading QA data:", error);
+      loadMockData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const mockReviewersData = [
     {
       name: "John Doe",
       email: "john@example.com",
@@ -74,6 +130,16 @@ export default function QAManagementPage() {
     }
   ];
 
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-8">
@@ -83,10 +149,22 @@ export default function QAManagementPage() {
             Manage quality assurance reviewers and review processes
           </p>
         </div>
-        <Button>
-          <Users className="mr-2 h-4 w-4" />
-          Add Reviewer
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mock-data"
+              checked={useMockData}
+              onCheckedChange={setUseMockData}
+            />
+            <Label htmlFor="mock-data" className="cursor-pointer">
+              {useMockData ? "Mock Data" : "Live Data"}
+            </Label>
+          </div>
+          <Button>
+            <Users className="mr-2 h-4 w-4" />
+            Add Reviewer
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -128,7 +206,7 @@ export default function QAManagementPage() {
                     <div className="flex items-center gap-4">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <span className="text-sm font-semibold text-primary">
-                          {reviewer.name.split(' ').map(n => n[0]).join('')}
+                          {reviewer.name.split(' ').map((n: string) => n[0]).join('')}
                         </span>
                       </div>
                       <div>

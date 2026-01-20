@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,10 +15,14 @@ import {
   Edit,
   Trash2,
   ArrowRight,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
+import { mockRoutingRules } from "@/lib/mock-data/svp-admin-mock-data";
 
 export default function LeadRoutingRulesPage() {
+  const [useMockData, setUseMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [rules, setRules] = useState([
     {
       id: "1",
@@ -52,6 +58,49 @@ export default function LeadRoutingRulesPage() {
     }
   ]);
 
+  useEffect(() => {
+    if (useMockData) {
+      loadMockData();
+    } else {
+      loadRealData();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setRules(mockRoutingRules);
+    setLoading(false);
+  };
+
+  const loadRealData = async () => {
+    if (!db) {
+      loadMockData();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "routing_rules"));
+      const rulesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setRules(rulesData as any);
+    } catch (error) {
+      console.error("Error loading routing rules:", error);
+      loadMockData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-8">
@@ -61,10 +110,22 @@ export default function LeadRoutingRulesPage() {
             Configure automatic lead assignment rules
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Rule
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mock-data"
+              checked={useMockData}
+              onCheckedChange={setUseMockData}
+            />
+            <Label htmlFor="mock-data" className="cursor-pointer">
+              {useMockData ? "Mock Data" : "Live Data"}
+            </Label>
+          </div>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create Rule
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 mb-8">

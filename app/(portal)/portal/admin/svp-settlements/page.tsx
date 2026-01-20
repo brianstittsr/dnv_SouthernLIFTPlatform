@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   CreditCard, 
@@ -14,13 +18,16 @@ import {
   Clock,
   DollarSign,
   TrendingUp,
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react";
+import { mockSettlements } from "@/lib/mock-data/svp-admin-mock-data";
 
 export default function SVPSettlementsPage() {
+  const [useMockData, setUseMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const settlements = [
+  const [settlements, setSettlements] = useState([
     {
       id: "SET-001",
       partner: "Acme Defense Corp",
@@ -57,7 +64,40 @@ export default function SVPSettlementsPage() {
       paidDate: "2025-10-15",
       invoiceNumber: "INV-2025-045"
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    if (useMockData) {
+      loadMockData();
+    } else {
+      loadRealData();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setSettlements(mockSettlements);
+    setLoading(false);
+  };
+
+  const loadRealData = async () => {
+    if (!db) {
+      loadMockData();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "settlements"));
+      const settlementsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSettlements(settlementsData as any);
+    } catch (error) {
+      console.error("Error loading settlements:", error);
+      loadMockData();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: any; label: string; icon: any }> = {
@@ -92,6 +132,16 @@ export default function SVPSettlementsPage() {
     .filter(s => s.status !== 'paid')
     .reduce((sum, s) => sum + s.amount, 0);
 
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-8">
@@ -101,10 +151,22 @@ export default function SVPSettlementsPage() {
             Manage partner settlements and commission payments
           </p>
         </div>
-        <Button>
-          <Download className="mr-2 h-4 w-4" />
-          Export Report
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mock-data"
+              checked={useMockData}
+              onCheckedChange={setUseMockData}
+            />
+            <Label htmlFor="mock-data" className="cursor-pointer">
+              {useMockData ? "Mock Data" : "Live Data"}
+            </Label>
+          </div>
+          <Button>
+            <Download className="mr-2 h-4 w-4" />
+            Export Report
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3 mb-8">

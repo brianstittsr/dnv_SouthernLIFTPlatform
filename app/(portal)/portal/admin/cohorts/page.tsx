@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   GraduationCap, 
@@ -14,13 +18,16 @@ import {
   Calendar,
   TrendingUp,
   Eye,
-  Edit
+  Edit,
+  Loader2
 } from "lucide-react";
+import { mockCohorts } from "@/lib/mock-data/svp-admin-mock-data";
 
 export default function AllCohortsPage() {
+  const [useMockData, setUseMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const cohorts = [
+  const [cohorts, setCohorts] = useState([
     {
       id: "1",
       title: "CMMC Level 1 Foundations",
@@ -54,7 +61,40 @@ export default function AllCohortsPage() {
       status: "enrolling",
       price: 5999
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    if (useMockData) {
+      loadMockData();
+    } else {
+      loadRealData();
+    }
+  }, [useMockData]);
+
+  const loadMockData = () => {
+    setLoading(true);
+    setCohorts(mockCohorts);
+    setLoading(false);
+  };
+
+  const loadRealData = async () => {
+    if (!db) {
+      loadMockData();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const snapshot = await getDocs(collection(db, "cohorts"));
+      const cohortsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setCohorts(cohortsData as any);
+    } catch (error) {
+      console.error("Error loading cohorts:", error);
+      loadMockData();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: any; label: string }> = {
@@ -81,6 +121,16 @@ export default function AllCohortsPage() {
     }).format(amount);
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-8">
@@ -90,10 +140,22 @@ export default function AllCohortsPage() {
             Manage all training cohorts across the platform
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Cohort
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mock-data"
+              checked={useMockData}
+              onCheckedChange={setUseMockData}
+            />
+            <Label htmlFor="mock-data" className="cursor-pointer">
+              {useMockData ? "Mock Data" : "Live Data"}
+            </Label>
+          </div>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create Cohort
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-4 mb-8">
