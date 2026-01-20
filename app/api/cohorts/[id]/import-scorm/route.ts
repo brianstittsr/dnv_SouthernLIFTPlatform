@@ -10,9 +10,12 @@ import { parseStringPromise } from "xml2js";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Await params (Next.js 15+ requirement)
+    const { id: cohortId } = await params;
+
     // Verify authentication
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -30,8 +33,6 @@ export async function POST(
         { status: 403 }
       );
     }
-
-    const cohortId = params.id;
 
     // Verify cohort exists
     const cohortDoc = await db.collection("cohorts").doc(cohortId).get();
