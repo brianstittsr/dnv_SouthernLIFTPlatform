@@ -210,6 +210,11 @@ function SettingsPageContent() {
   });
   const [browserPermission, setBrowserPermission] = useState<string>("default");
   
+  // UI Preferences
+  const [uiPreferences, setUiPreferences] = useState({
+    showAskAI: false, // Hidden by default
+  });
+  
   // Navigation settings - role-based visibility
   const [navigationSettings, setNavigationSettings] = useState<{
     hiddenItems: string[];
@@ -323,6 +328,13 @@ function SettingsPageContent() {
               },
             });
           }
+          
+          // Load UI preferences
+          if (data.uiPreferences) {
+            setUiPreferences({
+              showAskAI: data.uiPreferences.showAskAI ?? false,
+            });
+          }
         }
       } catch (error) {
         console.error("Error loading settings:", error);
@@ -387,6 +399,7 @@ function SettingsPageContent() {
         notificationSettings: notificationSettings,
         socialLinks: socialLinks,
         navigationSettings: navigationSettings,
+        uiPreferences: uiPreferences,
         updatedAt: Timestamp.now(),
       };
       
@@ -510,6 +523,7 @@ function SettingsPageContent() {
           <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="social">Social Links</TabsTrigger>
+          <TabsTrigger value="ui">UI Preferences</TabsTrigger>
           <TabsTrigger value="navigation">Navigation</TabsTrigger>
         </TabsList>
 
@@ -1621,6 +1635,63 @@ function SettingsPageContent() {
                   <li>Links are only shown when both a URL is provided AND visibility is enabled</li>
                   <li>Empty URLs will hide the icon regardless of visibility setting</li>
                   <li>Changes take effect after saving</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* UI Preferences Tab */}
+        <TabsContent value="ui" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Monitor className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>UI Preferences</CardTitle>
+                  <CardDescription>
+                    Control the visibility of UI elements across the platform
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Ask AI Button Toggle */}
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Brain className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <Label htmlFor="show-ask-ai" className="text-base font-medium">Show Ask AI Button</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Display the "Ask AI" button on the Command Center page
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="show-ask-ai"
+                  checked={uiPreferences.showAskAI}
+                  onCheckedChange={(checked) => {
+                    setUiPreferences({ ...uiPreferences, showAskAI: checked });
+                    setHasChanges(true);
+                  }}
+                />
+              </div>
+
+              {/* Info Box */}
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-medium mb-2 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  About UI Preferences
+                </h4>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                  <li>UI preferences control the visibility of optional interface elements</li>
+                  <li>Changes apply platform-wide for all users</li>
+                  <li>Hidden elements can be re-enabled at any time</li>
+                  <li>Changes take effect immediately after saving</li>
                 </ul>
               </div>
             </CardContent>

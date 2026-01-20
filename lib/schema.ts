@@ -846,6 +846,10 @@ export interface PlatformSettingsDoc {
     hiddenItems: string[]; // Array of nav item hrefs that are hidden
     roleVisibility?: Record<string, string[]>; // Role -> array of visible nav item hrefs
   };
+  // UI Preferences (for controlling UI element visibility)
+  uiPreferences?: {
+    showAskAI?: boolean; // Show/hide Ask AI button on Command Center
+  };
   updatedAt: Timestamp;
   updatedBy?: string;
 }

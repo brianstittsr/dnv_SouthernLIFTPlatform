@@ -27,8 +27,8 @@ import {
   Plus,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, query, where, orderBy, limit, getDocs, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMemberDoc } from "@/lib/schema";
+import { collection, query, where, orderBy, limit, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
+import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMemberDoc, type PlatformSettingsDoc } from "@/lib/schema";
 import type { CalendarEventDoc } from "@/lib/schema";
 
 // Types for dashboard data
@@ -154,6 +154,7 @@ export default function CommandCenterPage() {
   const [actionItems, setActionItems] = useState<ActionItemDisplay[]>([]);
   const [recentActivity, setRecentActivity] = useState<ActivityDisplay[]>([]);
   const [teamMembers, setTeamMembers] = useState<{ initials: string; name: string }[]>([]);
+  const [showAskAI, setShowAskAI] = useState(false);
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -354,6 +355,24 @@ export default function CommandCenterPage() {
     fetchDashboardData();
   }, []);
 
+  useEffect(() => {
+    loadUIPreferences();
+  }, []);
+
+  const loadUIPreferences = async () => {
+    if (!db) return;
+    try {
+      const settingsRef = doc(db, COLLECTIONS.PLATFORM_SETTINGS, "global");
+      const settingsSnap = await getDoc(settingsRef);
+      if (settingsSnap.exists()) {
+        const data = settingsSnap.data() as PlatformSettingsDoc;
+        setShowAskAI(data.uiPreferences?.showAskAI ?? false);
+      }
+    } catch (error) {
+      console.error("Error loading UI preferences:", error);
+    }
+  };
+
   // Loading skeleton
   if (isLoading) {
     return (
@@ -392,11 +411,13 @@ export default function CommandCenterPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/portal/ask">
-              Ask AI
-            </Link>
-          </Button>
+          {showAskAI && (
+            <Button variant="outline" asChild>
+              <Link href="/portal/ask">
+                Ask AI
+              </Link>
+            </Button>
+          )}
           <Button asChild>
             <Link href="/portal/opportunities/new">
               New Opportunity
