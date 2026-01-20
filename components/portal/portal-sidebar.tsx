@@ -756,7 +756,7 @@ export function PortalSidebar() {
             width={160}
             height={40}
             priority
-            className="h-10"
+            className="h-10 brightness-0 invert"
             style={{ width: 'auto', height: 'auto' }}
           />
         </Link>
