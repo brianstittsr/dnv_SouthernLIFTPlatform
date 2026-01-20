@@ -47,18 +47,27 @@ export default function CohortCatalogPage() {
 
     try {
       setLoading(true);
+      // Simplified query to avoid composite index requirement
       const q = query(
         collection(db, "cohorts"),
-        where("isPublished", "==", true),
-        where("status", "==", "published"),
-        orderBy("cohortStartDate", "asc")
+        where("isPublished", "==", true)
       );
 
       const snapshot = await getDocs(q);
-      const cohortsData = snapshot.docs.map(doc => ({
+      let cohortsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Cohort[];
+
+      // Filter by status in code
+      cohortsData = cohortsData.filter(c => c.status === "published");
+      
+      // Sort by start date in code
+      cohortsData.sort((a, b) => {
+        const dateA = a.cohortStartDate?.toDate?.() || new Date(a.cohortStartDate);
+        const dateB = b.cohortStartDate?.toDate?.() || new Date(b.cohortStartDate);
+        return dateA.getTime() - dateB.getTime();
+      });
 
       setCohorts(cohortsData);
     } catch (error: any) {
