@@ -28,34 +28,53 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Update the user document with SVP platform admin role
+    // Update the user document with platform admin role
     const userRef = db.collection("users").doc(decodedToken.uid);
     const userDoc = await userRef.get();
 
     if (userDoc.exists) {
       await userRef.update({
-        svpRole: "platform_admin",
-        svpRoleUpdatedAt: Timestamp.now(),
-        svpRoleUpdatedBy: "system_setup",
+        role: "platform_admin",
+        tenantId: "kdm-svp-platform",
+        updatedAt: Timestamp.now(),
+        updatedBy: "system_setup",
       });
     } else {
       await userRef.set({
         uid: decodedToken.uid,
         email: decodedToken.email,
-        role: "admin",
-        svpRole: "platform_admin",
-        svpRoleUpdatedAt: Timestamp.now(),
-        svpRoleUpdatedBy: "system_setup",
+        role: "platform_admin",
+        tenantId: "kdm-svp-platform",
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
+        updatedBy: "system_setup",
       });
     }
 
     // Set custom claims for the user
     await auth.setCustomUserClaims(decodedToken.uid, {
-      role: "admin",
-      svpRole: "platform_admin",
+      role: "platform_admin",
+      tenantId: "kdm-svp-platform",
     });
+
+    // Create permissions document
+    await db.collection("userPermissions").doc(decodedToken.uid).set({
+      userId: decodedToken.uid,
+      role: "platform_admin",
+      tenantId: "kdm-svp-platform",
+      permissions: [
+        "admin:read",
+        "admin:write",
+        "admin:delete",
+        "users:manage",
+        "roles:manage",
+        "settings:manage",
+        "analytics:view",
+        "audit:view",
+      ],
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    }, { merge: true });
 
     // Log the setup action
     await db.collection("auditLogs").add({
@@ -108,9 +127,9 @@ export async function GET(req: NextRequest) {
     const userData = userDoc.data();
 
     return NextResponse.json({
-      isPlatformAdmin: userData?.svpRole === "platform_admin",
+      isPlatformAdmin: userData?.role === "platform_admin" || decodedToken.customClaims?.role === "platform_admin",
       email: decodedToken.email,
-      svpRole: userData?.svpRole || null,
+      role: userData?.role || decodedToken.customClaims?.role || null,
       canSetup: decodedToken.email === PLATFORM_ADMIN_EMAIL,
     });
   } catch (error: any) {
