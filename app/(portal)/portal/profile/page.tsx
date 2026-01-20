@@ -229,6 +229,32 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
+  // Sync profile state with userProfile context when it loads
+  useEffect(() => {
+    if (userProfile.id) {
+      setProfile((prev) => ({
+        ...prev,
+        id: userProfile.id,
+        role: userProfile.role,
+        firstName: userProfile.firstName || "",
+        lastName: userProfile.lastName || "",
+        email: userProfile.email || "",
+        phone: userProfile.phone || "",
+        title: userProfile.jobTitle || "",
+        company: userProfile.company || "",
+        location: userProfile.location || "",
+        bio: userProfile.bio || "",
+      }));
+      
+      // Set avatar preview from context if available
+      if (userProfile.avatarUrl && !avatarPreview) {
+        setAvatarPreview(userProfile.avatarUrl);
+      }
+    }
+  }, [userProfile.id, userProfile.firstName, userProfile.lastName, userProfile.email, 
+      userProfile.phone, userProfile.jobTitle, userProfile.company, userProfile.location, 
+      userProfile.bio, userProfile.role, userProfile.avatarUrl]);
+
   const updateProfile = (field: string, value: any) => {
     setProfile({ ...profile, [field]: value });
   };
@@ -302,10 +328,58 @@ export default function ProfilePage() {
   };
 
   const saveProfile = async () => {
+    if (!auth?.currentUser || !db) {
+      toast.error("Authentication required");
+      return;
+    }
+
     setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    alert("Profile saved successfully!");
+    try {
+      const now = Timestamp.now();
+      
+      // 1. Update User Profile in Firebase (users collection)
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email,
+        phone: profile.phone,
+        company: profile.company,
+        jobTitle: profile.title,
+        location: profile.location,
+        bio: profile.bio,
+        avatarUrl: avatarPreview || userProfile.avatarUrl || "",
+        updatedAt: now,
+      });
+      
+      // 2. Update Team Member if linked
+      if (userProfile.id && userProfile.id !== auth.currentUser.uid) {
+        // If there's a linked team member, update it
+        try {
+          const teamMemberRef = doc(db, "team_members", userProfile.id);
+          await updateDoc(teamMemberRef, {
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            mobile: profile.phone,
+            company: profile.company,
+            title: profile.title,
+            location: profile.location,
+            bio: profile.bio,
+            avatar: avatarPreview || userProfile.avatarUrl || "",
+            updatedAt: now,
+          });
+        } catch (error) {
+          console.log("No team member to update or error:", error);
+        }
+      }
+      
+      toast.success("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Failed to save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleChangePassword = async () => {

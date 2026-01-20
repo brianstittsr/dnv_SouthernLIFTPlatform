@@ -224,7 +224,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         console.log("User authenticated:", firebaseUser.uid, firebaseUser.email);
         
         try {
-          // Fetch user document from Firestore to get svpRole
+          // Fetch user document from Firestore to get full profile data
           let userDoc = null;
           let svpRole = undefined;
           if (db) {
@@ -234,7 +234,12 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
               if (userDocSnap.exists()) {
                 userDoc = userDocSnap.data();
                 svpRole = userDoc.svpRole;
-                console.log("User document loaded, svpRole:", svpRole);
+                console.log("User document loaded from Firebase:", {
+                  svpRole,
+                  hasAvatar: !!userDoc.avatarUrl,
+                  firstName: userDoc.firstName,
+                  lastName: userDoc.lastName
+                });
               }
             } catch (error) {
               console.error("Error fetching user document:", error);
@@ -253,25 +258,45 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
             console.log("Linked Team Member found:", teamMember.id, teamMember.firstName, teamMember.lastName);
             setLinkedTeamMember(teamMember);
             
-            // Map Team Member data to profile
+            // Map Team Member data to profile, but prioritize user document data
             const mappedProfile = mapTeamMemberToProfile(teamMember);
             setProfile((prev) => ({
               ...prev,
               ...mappedProfile,
+              // Override with user document data if available
+              ...(userDoc && {
+                firstName: userDoc.firstName || mappedProfile.firstName,
+                lastName: userDoc.lastName || mappedProfile.lastName,
+                phone: userDoc.phone || mappedProfile.phone,
+                company: userDoc.company || mappedProfile.company,
+                jobTitle: userDoc.jobTitle || mappedProfile.jobTitle,
+                location: userDoc.location || mappedProfile.location,
+                bio: userDoc.bio || mappedProfile.bio,
+                avatarUrl: userDoc.avatarUrl || mappedProfile.avatarUrl,
+                profileCompletedAt: userDoc.profileCompletedAt?.toDate?.()?.toISOString() || null,
+                createdAt: userDoc.createdAt?.toDate?.()?.toISOString() || prev.createdAt,
+              }),
               svpRole, // Add svpRole from user document
               updatedAt: new Date().toISOString(),
             }));
           } else {
             console.log("No linked Team Member found for user:", firebaseUser.email);
             setLinkedTeamMember(null);
-            // Set basic profile from Firebase Auth
+            // Set profile from user document or Firebase Auth
             setProfile((prev) => ({
               ...prev,
               id: firebaseUser.uid,
-              email: firebaseUser.email || "",
-              firstName: firebaseUser.displayName?.split(" ")[0] || "",
-              lastName: firebaseUser.displayName?.split(" ").slice(1).join(" ") || "",
-              avatarUrl: firebaseUser.photoURL || "",
+              email: userDoc?.email || firebaseUser.email || "",
+              firstName: userDoc?.firstName || firebaseUser.displayName?.split(" ")[0] || "",
+              lastName: userDoc?.lastName || firebaseUser.displayName?.split(" ").slice(1).join(" ") || "",
+              phone: userDoc?.phone || "",
+              company: userDoc?.company || "",
+              jobTitle: userDoc?.jobTitle || "",
+              location: userDoc?.location || "",
+              bio: userDoc?.bio || "",
+              avatarUrl: userDoc?.avatarUrl || firebaseUser.photoURL || "",
+              profileCompletedAt: userDoc?.profileCompletedAt?.toDate?.()?.toISOString() || null,
+              createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || prev.createdAt,
               svpRole, // Add svpRole from user document
               updatedAt: new Date().toISOString(),
             }));
