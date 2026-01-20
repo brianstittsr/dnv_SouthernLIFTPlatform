@@ -19,7 +19,17 @@ export async function GET(req: NextRequest) {
     const decodedToken = await auth.verifyIdToken(token);
     const claims = decodedToken as any;
 
-    if (claims.role !== "platform_admin") {
+    // Check custom claims first, then fall back to Firestore user document
+    let isAdmin = claims.role === "platform_admin";
+    
+    if (!isAdmin) {
+      // Check Firestore user document as fallback
+      const userDoc = await db.collection("users").doc(decodedToken.uid).get();
+      const userData = userDoc.data();
+      isAdmin = userData?.role === "platform_admin" || userData?.svpRole === "platform_admin";
+    }
+
+    if (!isAdmin) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -119,7 +129,17 @@ export async function POST(req: NextRequest) {
     const decodedToken = await auth.verifyIdToken(token);
     const claims = decodedToken as any;
 
-    if (claims.role !== "platform_admin") {
+    // Check custom claims first, then fall back to Firestore user document
+    let isAdmin = claims.role === "platform_admin";
+    
+    if (!isAdmin) {
+      // Check Firestore user document as fallback
+      const userDoc = await db.collection("users").doc(decodedToken.uid).get();
+      const userData = userDoc.data();
+      isAdmin = userData?.role === "platform_admin" || userData?.svpRole === "platform_admin";
+    }
+
+    if (!isAdmin) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
