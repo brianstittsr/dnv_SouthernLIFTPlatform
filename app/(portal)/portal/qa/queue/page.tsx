@@ -334,7 +334,7 @@ export default function QAQueuePage() {
 
                       <Button
                         className="w-full"
-                        onClick={() => router.push(`/portal/qa/review/${item.id}`)}
+                        onClick={() => router.push(`/portal/qa/review/${item.id}${useMockData ? '?mock=true' : ''}`)}
                       >
                         <Eye className="mr-2 h-4 w-4" />
                         Review Proof Pack

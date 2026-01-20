@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CheckCircle, XCircle, FileText, TrendingUp, AlertCircle } from "lucide-react";
+import { mockQAQueue } from "@/lib/mock-data/qa-mock-data";
+import { Timestamp } from "firebase/firestore";
 
 interface ProofPack {
   id: string;
@@ -34,6 +36,8 @@ interface ProofPack {
 
 export default function QAReviewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const useMockData = searchParams.get('mock') === 'true';
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +47,80 @@ export default function QAReviewPage({ params }: { params: { id: string } }) {
   const [comments, setComments] = useState("");
 
   useEffect(() => {
-    fetchProofPack();
-  }, [params.id]);
+    if (useMockData) {
+      loadMockProofPack();
+    } else {
+      fetchProofPack();
+    }
+  }, [params.id, useMockData]);
+
+  const loadMockProofPack = () => {
+    setLoading(true);
+    // Find mock proof pack by ID
+    const mockPack = mockQAQueue.find(p => p.id === params.id);
+    if (mockPack) {
+      // Transform mock queue item to full proof pack structure
+      const fullProofPack: ProofPack = {
+        id: mockPack.id,
+        title: mockPack.title,
+        description: `Comprehensive ${mockPack.title} for compliance review`,
+        smeId: mockPack.smeId,
+        userId: mockPack.userId,
+        documents: [
+          {
+            id: 'doc-1',
+            name: 'Quality Manual.pdf',
+            category: 'Quality Manual',
+            uploadedAt: Timestamp.fromDate(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)),
+            size: 2500000,
+            status: 'verified'
+          },
+          {
+            id: 'doc-2',
+            name: 'Procedures.pdf',
+            category: 'Procedures',
+            uploadedAt: Timestamp.fromDate(new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)),
+            size: 1800000,
+            status: 'verified'
+          },
+          {
+            id: 'doc-3',
+            name: 'Work Instructions.pdf',
+            category: 'Work Instructions',
+            uploadedAt: Timestamp.fromDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)),
+            size: 1200000,
+            status: 'verified'
+          }
+        ],
+        packHealth: {
+          overallScore: mockPack.packHealth.overallScore,
+          completenessScore: mockPack.packHealth.completeness || 85,
+          expirationScore: 90,
+          qualityScore: mockPack.packHealth.quality || 80,
+          remediationScore: 88,
+          breakdown: {
+            certifications: mockPack.packHealth.compliance || 85,
+            documentation: mockPack.packHealth.quality || 80,
+            expiration: 90
+          }
+        },
+        gaps: mockPack.packHealth.overallScore < 80 ? [
+          {
+            id: 'gap-1',
+            category: 'Documentation',
+            description: 'Missing calibration records for some equipment',
+            severity: 'medium',
+            recommendation: 'Upload complete calibration records'
+          }
+        ] : [],
+        submittedAt: mockPack.submittedAt
+      };
+      setProofPack(fullProofPack);
+    } else {
+      setError('Proof Pack not found');
+    }
+    setLoading(false);
+  };
 
   const fetchProofPack = async () => {
     try {
@@ -77,6 +153,19 @@ export default function QAReviewPage({ params }: { params: { id: string } }) {
   const handleReview = async (action: "approve" | "reject") => {
     if (action === "reject" && !comments.trim()) {
       setError("Comments are required when rejecting a Proof Pack");
+      return;
+    }
+
+    if (useMockData) {
+      // Simulate review in mock mode
+      setSubmitting(true);
+      setTimeout(() => {
+        setSuccess(`Proof Pack ${action === 'approve' ? 'approved' : 'rejected'} successfully (Mock Mode)`);
+        setSubmitting(false);
+        setTimeout(() => {
+          router.push('/portal/qa/queue');
+        }, 1500);
+      }, 1000);
       return;
     }
 
