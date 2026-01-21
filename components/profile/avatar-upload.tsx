@@ -123,9 +123,34 @@ export function AvatarUpload({
           // Draw image on canvas (this compresses it)
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Convert to base64 with quality setting
-          // Start with 0.8 quality, will reduce if still too large
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          // Iteratively compress until under 1MB base64 size
+          // Target: 900KB base64 = ~675KB binary (base64 is ~33% larger)
+          const maxBase64Size = 900 * 1024; // 900KB in bytes
+          let quality = 0.9;
+          let compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+          
+          // Try progressively lower quality until we hit target size
+          while (compressedBase64.length > maxBase64Size && quality > 0.1) {
+            quality -= 0.1;
+            compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+          }
+          
+          // If still too large, reduce dimensions further
+          if (compressedBase64.length > maxBase64Size) {
+            const scaleFactor = 0.8;
+            canvas.width = Math.floor(width * scaleFactor);
+            canvas.height = Math.floor(height * scaleFactor);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            quality = 0.8;
+            compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+            
+            while (compressedBase64.length > maxBase64Size && quality > 0.1) {
+              quality -= 0.1;
+              compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+            }
+          }
+          
           resolve(compressedBase64);
         };
         

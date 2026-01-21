@@ -120,12 +120,12 @@ export async function getImageDimensions(file: File): Promise<{ width: number; h
 }
 
 /**
- * Compress image if needed
+ * Compress image if needed - aggressively compresses to ensure base64 stays under 1MB
  */
 export async function compressImage(
   file: File,
   maxWidth: number = 1920,
-  quality: number = 0.8
+  targetBase64Size: number = 900 * 1024 // 900KB to leave room for base64 encoding overhead
 ): Promise<File> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -134,6 +134,7 @@ export async function compressImage(
       let width = img.width;
       let height = img.height;
 
+      // Initial resize based on maxWidth
       if (width > maxWidth) {
         height = (height * maxWidth) / width;
         width = maxWidth;
@@ -150,21 +151,54 @@ export async function compressImage(
 
       ctx.drawImage(img, 0, 0, width, height);
 
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            reject(new Error("Failed to compress image"));
-            return;
-          }
-          const compressedFile = new File([blob], file.name, {
-            type: file.type,
-            lastModified: Date.now(),
-          });
-          resolve(compressedFile);
-        },
-        file.type,
-        quality
-      );
+      // Iteratively compress until we hit target size
+      let quality = 0.9;
+      const tryCompress = (currentQuality: number) => {
+        canvas.toBlob(
+          async (blob) => {
+            if (!blob) {
+              reject(new Error("Failed to compress image"));
+              return;
+            }
+
+            // Convert to base64 to check actual size
+            const reader = new FileReader();
+            reader.onload = () => {
+              const base64 = reader.result as string;
+              const base64Size = base64.length;
+
+              // If still too large and we can reduce quality further
+              if (base64Size > targetBase64Size && currentQuality > 0.1) {
+                tryCompress(currentQuality - 0.1);
+              } 
+              // If still too large even at lowest quality, reduce dimensions
+              else if (base64Size > targetBase64Size) {
+                const scaleFactor = 0.8;
+                canvas.width = Math.floor(width * scaleFactor);
+                canvas.height = Math.floor(height * scaleFactor);
+                width = canvas.width;
+                height = canvas.height;
+                ctx.drawImage(img, 0, 0, width, height);
+                tryCompress(0.8);
+              } 
+              // Success - size is acceptable
+              else {
+                const compressedFile = new File([blob], file.name, {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              }
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          },
+          "image/jpeg",
+          currentQuality
+        );
+      };
+
+      tryCompress(quality);
     };
     img.onerror = reject;
     img.src = URL.createObjectURL(file);
@@ -172,7 +206,7 @@ export async function compressImage(
 }
 
 /**
- * Upload image to Firestore
+ * Upload image to Firestore with aggressive compression to ensure base64 stays under 1MB
  */
 export async function uploadImage(
   file: File,
@@ -181,28 +215,25 @@ export async function uploadImage(
   try {
     if (!db) throw new Error("Firebase not initialized");
 
-    let processedFile = file;
-
-    if (file.size > MAX_SIZE) {
-      processedFile = await compressImage(file, 1920, 0.8);
-      
-      if (processedFile.size > MAX_SIZE) {
-        processedFile = await compressImage(file, 1280, 0.7);
-      }
-      
-      if (processedFile.size > MAX_SIZE) {
-        throw new Error("Image is too large even after compression. Please use a smaller image.");
-      }
-    }
+    // Always compress images to ensure they fit in Firestore
+    // Target 900KB base64 size (leaves room for metadata)
+    const processedFile = await compressImage(file, 1920, 900 * 1024);
 
     const base64Data = await fileToBase64(processedFile);
+    
+    // Final check - if base64 is still too large, reject
+    const base64Size = base64Data.length;
+    if (base64Size > 900 * 1024) {
+      throw new Error("Image is too large even after compression. Please use a smaller image.");
+    }
+
     const dimensions = await getImageDimensions(processedFile);
 
     const imageDoc: Omit<ImageDoc, "id"> = {
       name: options.name,
       description: options.description,
       category: options.category,
-      mimeType: processedFile.type,
+      mimeType: "image/jpeg",
       base64Data,
       width: dimensions.width,
       height: dimensions.height,
