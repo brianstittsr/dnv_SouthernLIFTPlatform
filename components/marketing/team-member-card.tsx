@@ -87,7 +87,7 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
       <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
         <CardContent className="pt-8 pb-6">
           <Avatar className="h-24 w-24 mx-auto mb-4">
-            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-cover" />}
+            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-contain" />}
             <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
               {member.initials}
             </AvatarFallback>

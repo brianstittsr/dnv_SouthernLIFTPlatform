@@ -87,7 +87,7 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
         {/* Photo Column */}
         <div className="flex flex-col items-center md:items-start">
           <Avatar className="h-64 w-64 mb-6">
-            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-cover" />}
+            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-contain" />}
             <AvatarFallback className="bg-primary/10 text-primary text-6xl font-semibold">
               {member.initials}
             </AvatarFallback>
