@@ -39,11 +39,32 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
         return;
       }
       
-      const matchingImage = images.find(img => 
-        img.name === member.imageName || 
-        img.name.toLowerCase().includes(member.imageName.toLowerCase()) ||
-        img.name.replace(/_/g, ' ').toLowerCase().includes(member.name.toLowerCase())
-      );
+      // Try multiple matching strategies
+      const matchingImage = images.find(img => {
+        const imgNameLower = img.name.toLowerCase();
+        const memberImageNameLower = member.imageName.toLowerCase();
+        const memberNameLower = member.name.toLowerCase();
+        
+        // Direct match
+        if (imgNameLower === memberImageNameLower) return true;
+        
+        // Contains match
+        if (imgNameLower.includes(memberImageNameLower)) return true;
+        
+        // Reverse name match (LastName_FirstName vs FirstName_LastName)
+        const nameParts = member.name.split(' ');
+        if (nameParts.length >= 2) {
+          const firstName = nameParts[0].toLowerCase();
+          const lastName = nameParts[nameParts.length - 1].toLowerCase();
+          const reversedName = `${lastName}_${firstName}`;
+          if (imgNameLower.includes(reversedName)) return true;
+        }
+        
+        // Full name match with spaces replaced by underscores
+        if (imgNameLower.replace(/_/g, ' ').includes(memberNameLower)) return true;
+        
+        return false;
+      });
 
       if (matchingImage) {
         const fullImage = await getImage(matchingImage.id);
