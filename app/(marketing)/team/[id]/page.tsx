@@ -73,11 +73,19 @@ In addition to the global publications outlined above of which Oscar has appeare
     initials: "PR",
     imageName: "Pamela_Ramos_Brown",
     bio: "Supporting MBE clients with strategic consulting and capacity building initiatives.",
-    fullBio: `Pamela Ramos-Brown is a dedicated consultant at KDM & Associates, specializing in strategic consulting and capacity building for minority-owned businesses. Her work focuses on helping MBEs develop the capabilities and infrastructure needed to compete successfully in government contracting.
+    fullBio: `As current CEO of BeWealthyWithPamela and past president of Ramos Group, LLC, Pamela provides management consulting services such as Business Achievement & Sales Success Planning to entrepreneurs. Pamela is mostly known for serving as Executive Director of Minority Business Development Agency (MBDA) Business Center – Mobile, operated by the Mobile Area Chamber of Commerce and federally funded by the U.S. Department of Commerce, MBDA for almost 10 years.
 
-Pamela's approach combines strategic planning with practical implementation support, ensuring that clients not only understand what they need to do but also have the resources and guidance to execute effectively. She works closely with businesses to assess their current capabilities, identify gaps, and develop actionable plans for growth.
+Concurrently, since Jan. 2020, Pamela helps companies deliver timely communication to target customers on-air and online through Cumulus Media. Brand new to the industry, Pamela used her own Sales Success Plan and mentorship and achieved 250% of her 1st quarter sales goal.
 
-Her commitment to client success is reflected in her hands-on approach and her ability to translate complex requirements into clear, achievable steps that move businesses forward in their government contracting journey.`
+Pamela Brown's service with the MBDA Business Center began in 2006 as a business consultant employee. She was promoted to Project Director in 2008 and transitioned to independent contractor in 2012. She has helped connect diversity officers and financiers to minority businesses resulting in $2 billion+ in revenues and financing supporting 1,500 jobs created and retained. Also, she helped companies achieve 2 of 3 top business plan awards out of 80+ applicants statewide.
+
+Pamela led the Center's team to help the Chamber's program achieve national honors such as Highest Procurement Award, Centurion Award for performance scores over 100%, being the first Center of 40+ to reach $2B cumulative client results, and recognition for becoming an international business loan and political risk insurance originator for Overseas Private Investment Corporation.
+
+Since 1999, Pamela has delivered training, consulting services, and edutainment speaking to a wide variety of clients such as churches, schools, non-profits, Fortune 500 companies, and small businesses. Topics included award winning performance, sales success, soft skills, strategic planning, leadership, change management, financial literacy, green business, and more.
+
+She brings a balanced blend of entrepreneurial skills such as financial, management, marketing, and strategic planning. She earned her MBA in Business Administration and BS in Accounting. Experience as a college instructor, financial manager of budgets – one exceeding $15m, financial advisor, and auditor, has contributed to her business knowledge of "do's" from good practices and "don'ts" from many teachable past mistakes that she shares with business professionals.
+
+Personal interests include: Healing and Deliverance ministry, youth entrepreneurship, Africatown CHESS, volleyball, healthy lifestyles, caregiver respite, and precious family moments.`
   },
   {
     id: "calvin-minor",
