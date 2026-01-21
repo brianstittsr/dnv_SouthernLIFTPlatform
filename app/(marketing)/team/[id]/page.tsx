@@ -94,11 +94,13 @@ Personal interests include: Healing and Deliverance ministry, youth entrepreneur
     initials: "CM",
     imageName: "Calvin_Minor",
     bio: "Managing day-to-day operations and ensuring seamless client support.",
-    fullBio: `Calvin Minor serves as Operations Support Manager at KDM & Associates, where he plays a crucial role in managing day-to-day operations and ensuring seamless client support. His attention to detail and commitment to service excellence make him an essential part of the team.
+    fullBio: `Mr. Minor is currently a member of Alfred Street Baptist Church (ASBC) in Alexandria, VA. He has served as a Member, Secretary, and is the current President of ASBC Foundation. He has also served on the Security, Social Justice Ministries. Before joining ASBC Calvin was Director of Men's Ministry of Antioch Baptist Church, Fairfax Station, VA for 21 years, Co-Chaired the John Q. Gibbs Scholarship Committee, and Disciple Group Team leader. He received disciple group training from Saddleback Church, Lake Forest, CA, and served his community as CFO, James C. Mott Community Center and a Board Member and Employment Counselor for Lincoln Lewis Vannoy Community Association.
 
-Calvin coordinates various operational functions, from client onboarding to ongoing support services, ensuring that every client interaction reflects the organization's commitment to quality and responsiveness. He works behind the scenes to create smooth, efficient processes that enable the team to deliver exceptional results.
+Calvin Graduated from Virginia Union University, Richmond, VA with a Bachelor of Art degree in Secondary Education with a concentration in Math. He pursued his graduate Studies in Administration and Supervision at Richmond Polytechnic Institute, Richmond VA. He Joined the Richmond Public Schools System, Teacher in Math and Science, and Title I School Community Coordinator. He was a Math Teacher at Lake Braddock Secondary School Fairfax County VA. He is a proud member of the Alpha Phi Omega Fraternity.
 
-His dedication to operational excellence and client satisfaction ensures that KDM & Associates maintains the high standards of service that clients have come to expect and rely upon.`
+Calvin has an honorable Discharge from United State Army where he served the Military District of Washington Army Corps of Engineers, Defense Mapping Agency, Washington, DC.
+
+Calvin has an extensive career as a consultant in the corporate world. He is a Business Development Consultant, Cyber Security at Lunarline, LLC, in Arlington, VA. Vice President, Summit Consulting Group, Inc., Executive Consultant to Native American, Women Small Business, Veteran Owned Business, establishing procurement vehicle and Business Development initiatives. Ricoh Corporation, Business Services, Major Account Manager, Marketing of Security Products, 8 years. Retired after 25 years with Xerox Corporation as Senior Sales Executive, other jobs were: Major Account Manager, Marketing Manager, Manager of Regional Hiring Center, Corporate Recruiter, and Major Account Manager, Xerox Business Services.`
   },
   {
     id: "manpreet-hundal",
