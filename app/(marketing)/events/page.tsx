@@ -2,118 +2,36 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { format } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Filter, Search, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Filter, Search, ChevronRight, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { db } from '@/lib/firebase';
-import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { COLLECTIONS } from '@/lib/schema';
+import { events, getUpcomingEvents, getPastEvents, getAllEventCategories, type Event } from '@/lib/events-data';
 
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  shortDescription?: string;
-  startDate: Timestamp;
-  startTime: string;
-  endDate: Timestamp;
-  endTime: string;
-  locationType: 'virtual' | 'in-person' | 'hybrid';
-  location: string;
-  virtualLink?: string;
-  maxAttendees?: number;
-  currentAttendees: number;
-  imageUrl?: string;
-  category: string;
-  tags: string[];
-  status: string;
-  isFeatured: boolean;
-  isTicketed: boolean;
-  ticketTypes?: {
-    name: string;
-    price: number;
-    description?: string;
-  }[];
-}
 
 const EVENT_CATEGORIES = [
   { value: 'all', label: 'All Events' },
-  { value: 'webinar', label: 'Webinars' },
-  { value: 'workshop', label: 'Workshops' },
-  { value: 'conference', label: 'Conferences' },
-  { value: 'networking', label: 'Networking' },
-  { value: 'training', label: 'Training' },
-  { value: 'briefing', label: 'Buyer Briefings' },
-  { value: 'showcase', label: 'Showcases' },
+  ...getAllEventCategories().map(cat => ({ value: cat, label: cat }))
 ];
 
-const LOCATION_TYPES = [
-  { value: 'all', label: 'All Locations' },
-  { value: 'virtual', label: 'Virtual' },
-  { value: 'in-person', label: 'In-Person' },
-  { value: 'hybrid', label: 'Hybrid' },
-];
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
-  const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [locationFilter, setLocationFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('upcoming');
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
     filterEvents();
-  }, [events, searchQuery, categoryFilter, locationFilter, activeTab]);
+  }, [searchQuery, categoryFilter, activeTab]);
 
-  const fetchEvents = async () => {
-    if (!db) return;
-
-    try {
-      const eventsRef = collection(db, COLLECTIONS.EVENTS);
-      const q = query(
-        eventsRef,
-        where('status', '==', 'published'),
-        orderBy('startDate', 'asc')
-      );
-
-      const snapshot = await getDocs(q);
-      const eventsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Event[];
-
-      setEvents(eventsData);
-      setFeaturedEvents(eventsData.filter(e => e.isFeatured));
-    } catch (error) {
-      console.error('Error fetching events:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filterEvents = () => {
-    let filtered = [...events];
-    const now = new Date();
-
-    // Filter by tab (upcoming vs past)
-    if (activeTab === 'upcoming') {
-      filtered = filtered.filter(e => e.startDate.toDate() >= now);
-    } else {
-      filtered = filtered.filter(e => e.startDate.toDate() < now);
-    }
+    let filtered = activeTab === 'upcoming' ? getUpcomingEvents() : getPastEvents();
 
     // Filter by search query
     if (searchQuery) {
@@ -130,57 +48,30 @@ export default function EventsPage() {
       filtered = filtered.filter(e => e.category === categoryFilter);
     }
 
-    // Filter by location type
-    if (locationFilter !== 'all') {
-      filtered = filtered.filter(e => e.locationType === locationFilter);
-    }
-
     setFilteredEvents(filtered);
   };
 
-  const getLocationIcon = (type: string) => {
-    switch (type) {
-      case 'virtual':
-        return '🌐';
-      case 'in-person':
-        return '📍';
-      case 'hybrid':
-        return '🔄';
-      default:
-        return '📍';
-    }
-  };
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      webinar: 'bg-blue-100 text-blue-800',
-      workshop: 'bg-green-100 text-green-800',
-      conference: 'bg-purple-100 text-purple-800',
-      networking: 'bg-orange-100 text-orange-800',
-      training: 'bg-yellow-100 text-yellow-800',
-      briefing: 'bg-red-100 text-red-800',
-      showcase: 'bg-pink-100 text-pink-800',
+      Conference: 'bg-purple-100 text-purple-800',
+      Workshop: 'bg-green-100 text-green-800',
+      Webinar: 'bg-blue-100 text-blue-800',
+      Networking: 'bg-orange-100 text-orange-800',
+      Training: 'bg-yellow-100 text-yellow-800',
+      Summit: 'bg-red-100 text-red-800',
+      Other: 'bg-gray-100 text-gray-800',
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
 
-  const formatEventDate = (startDate: Timestamp, endDate: Timestamp) => {
-    const start = startDate.toDate();
-    const end = endDate.toDate();
-
-    if (format(start, 'yyyy-MM-dd') === format(end, 'yyyy-MM-dd')) {
-      return format(start, 'EEEE, MMMM d, yyyy');
+  const formatEventDate = (startDate: Date, endDate?: Date) => {
+    if (!endDate || format(startDate, 'yyyy-MM-dd') === format(endDate, 'yyyy-MM-dd')) {
+      return format(startDate, 'EEEE, MMMM d, yyyy');
     }
-    return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
+    return `${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -196,72 +87,6 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Featured Events */}
-      {featuredEvents.length > 0 && (
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-2xl font-bold mb-6">Featured Events</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredEvents.slice(0, 3).map(event => (
-              <Card key={event.id} className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-colors">
-                {event.imageUrl && (
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={event.imageUrl}
-                      alt={event.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <Badge className="absolute top-3 right-3 bg-primary">Featured</Badge>
-                  </div>
-                )}
-                <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge className={getCategoryColor(event.category)}>
-                      {event.category}
-                    </Badge>
-                    <span className="text-sm text-muted-foreground">
-                      {getLocationIcon(event.locationType)} {event.locationType}
-                    </span>
-                  </div>
-                  <CardTitle className="line-clamp-2">{event.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    {event.shortDescription || event.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {formatEventDate(event.startDate, event.endDate)}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {event.startTime} - {event.endTime}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      {event.location}
-                    </div>
-                    {event.maxAttendees && (
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        {event.currentAttendees} / {event.maxAttendees} registered
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Link href={`/events/${event.id}`} className="w-full">
-                    <Button className="w-full">
-                      View Details <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Filters and Event List */}
       <section className="container mx-auto px-4 py-8">
@@ -279,34 +104,19 @@ export default function EventsPage() {
                 />
               </div>
             </div>
-            <div className="flex gap-4">
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {EVENT_CATEGORIES.map(cat => (
-                    <SelectItem key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOCATION_TYPES.map(loc => (
-                    <SelectItem key={loc.value} value={loc.value}>
-                      {loc.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-[200px]">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {EVENT_CATEGORIES.map(cat => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -333,50 +143,58 @@ export default function EventsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map(event => (
               <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                {event.imageUrl && (
-                  <div className="relative h-40 w-full">
-                    <Image
-                      src={event.imageUrl}
+                {event.featuredImage && (
+                  <div className="relative h-48 w-full bg-muted">
+                    <img
+                      src={event.featuredImage}
                       alt={event.title}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 )}
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-3">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge className={getCategoryColor(event.category)}>
                       {event.category}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {getLocationIcon(event.locationType)} {event.locationType}
-                    </span>
                   </div>
                   <CardTitle className="text-lg line-clamp-2">{event.title}</CardTitle>
+                  <CardDescription className="line-clamp-2">
+                    {event.description}
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className="pb-2">
-                  <div className="space-y-1 text-sm text-muted-foreground">
+                <CardContent className="pb-3">
+                  <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      {format(event.startDate.toDate(), 'MMM d, yyyy')}
+                      {format(event.eventDate, 'MMM d, yyyy')}
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      {event.startTime}
+                      {event.time}
                     </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      {event.location.city}, {event.location.state}
+                    </div>
+                    {!event.isFree && event.price && (
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4" />
+                        ${event.price}
+                      </div>
+                    )}
+                    {event.capacity && event.registered && (
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        {event.registered} / {event.capacity} registered
+                      </div>
+                    )}
                   </div>
-                  {event.isTicketed && event.ticketTypes && event.ticketTypes.length > 0 && (
-                    <div className="mt-3 pt-3 border-t">
-                      <span className="text-sm font-medium">
-                        From ${(event.ticketTypes[0].price / 100).toFixed(2)}
-                      </span>
-                    </div>
-                  )}
                 </CardContent>
                 <CardFooter className="pt-2">
-                  <Link href={`/events/${event.id}`} className="w-full">
+                  <Link href={`/events/${event.slug}`} className="w-full">
                     <Button variant="outline" className="w-full">
-                      {activeTab === 'upcoming' ? 'Register' : 'View Details'}
+                      {activeTab === 'upcoming' ? 'View Details & Register' : 'View Details'}
                     </Button>
                   </Link>
                 </CardFooter>
