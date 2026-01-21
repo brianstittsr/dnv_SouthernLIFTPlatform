@@ -22,11 +22,16 @@ import {
   Loader2
 } from "lucide-react";
 import { mockCohorts } from "@/lib/mock-data/svp-admin-mock-data";
+import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
 
 export default function AllCohortsPage() {
+  const router = useRouter();
   const [useMockData, setUseMockData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [cleaningUp, setCleaningUp] = useState(false);
   const [cohorts, setCohorts] = useState([
     {
       id: "1",
@@ -96,6 +101,40 @@ export default function AllCohortsPage() {
     }
   };
 
+  const handleCleanupDuplicates = async () => {
+    if (!confirm("This will delete duplicate cohorts, keeping only the newest version of each. Continue?")) {
+      return;
+    }
+
+    try {
+      setCleaningUp(true);
+      const currentUser = auth?.currentUser;
+      if (!currentUser) {
+        toast.error("Not authenticated");
+        return;
+      }
+
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/admin/cohorts/cleanup-duplicates", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to cleanup duplicates");
+      }
+
+      const data = await response.json();
+      toast.success(data.message);
+      loadRealData();
+    } catch (error: any) {
+      console.error("Error cleaning up duplicates:", error);
+      toast.error("Failed to cleanup duplicates");
+    } finally {
+      setCleaningUp(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: any; label: string }> = {
       active: { variant: "default", label: "Active" },
@@ -151,6 +190,20 @@ export default function AllCohortsPage() {
               {useMockData ? "Mock Data" : "Live Data"}
             </Label>
           </div>
+          <Button 
+            variant="outline" 
+            onClick={handleCleanupDuplicates}
+            disabled={cleaningUp}
+          >
+            {cleaningUp ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Cleaning...
+              </>
+            ) : (
+              "Remove Duplicates"
+            )}
+          </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Create Cohort
@@ -285,11 +338,19 @@ export default function AllCohortsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}`)}
+                      >
                         <Eye className="mr-2 h-4 w-4" />
                         View
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}/edit`)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                     </div>
