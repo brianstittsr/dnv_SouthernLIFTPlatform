@@ -12,7 +12,6 @@ import {
   Building2,
   ArrowRight,
 } from "lucide-react";
-import { LeadershipTeam } from "@/components/marketing/leadership-team";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -161,20 +160,6 @@ export default function AboutPage() {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section id="team" className="py-20 md:py-28 bg-muted/30">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Leadership Team</h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Experienced professionals dedicated to your success.
-            </p>
-          </div>
-
-          <LeadershipTeam />
         </div>
       </section>
 

@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight, Users } from "lucide-react";
+import { TeamMemberCard } from "@/components/marketing/team-member-card";
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -18,6 +19,7 @@ const teamMembers = [
     name: "Keith Moore",
     title: "CEO",
     initials: "KM",
+    imageName: "Keith_Moore",
     bio: "Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting."
   },
   {
@@ -25,6 +27,7 @@ const teamMembers = [
     name: "Charles Sills",
     title: "COO",
     initials: "CS",
+    imageName: "Charles_Sills",
     bio: "Overseeing operations and ensuring excellence in service delivery to our MBE clients."
   },
   {
@@ -32,6 +35,7 @@ const teamMembers = [
     name: "Oscar Frazier",
     title: "Consultant",
     initials: "OF",
+    imageName: "Oscar_Frazier",
     bio: "Providing expert guidance on government contracting strategies and business development."
   },
   {
@@ -39,6 +43,7 @@ const teamMembers = [
     name: "Pamela Ramos-Brown",
     title: "KDM Consultant",
     initials: "PR",
+    imageName: "Pamela_Ramos_Brown",
     bio: "Supporting MBE clients with strategic consulting and capacity building initiatives."
   },
   {
@@ -46,6 +51,7 @@ const teamMembers = [
     name: "Calvin Minor",
     title: "Operations Support Manager",
     initials: "CM",
+    imageName: "Calvin_Minor",
     bio: "Managing day-to-day operations and ensuring seamless client support."
   },
   {
@@ -53,6 +59,7 @@ const teamMembers = [
     name: "Manpreet Hundal",
     title: "Compliance and Data Specialist",
     initials: "MH",
+    imageName: "Manpreet_Hundal",
     bio: "Ensuring compliance excellence and data-driven insights for our clients."
   },
   {
@@ -60,6 +67,7 @@ const teamMembers = [
     name: "Timothy Maurice Webster",
     title: "Director of International Communications",
     initials: "TW",
+    imageName: "Timothy_Webster",
     bio: "Leading international outreach and communication strategies for global opportunities."
   },
   {
@@ -67,6 +75,7 @@ const teamMembers = [
     name: "Walter Cotton III",
     title: "Veteran Business Liaison",
     initials: "WC",
+    imageName: "Cotton_III_Walter",
     bio: "Connecting veteran-owned businesses with government contracting opportunities."
   },
   {
@@ -74,27 +83,15 @@ const teamMembers = [
     name: "Jose F. Niño",
     title: "Director of Hispanic Affairs",
     initials: "JN",
+    imageName: "Jose_Nino",
     bio: "Championing Hispanic business interests and expanding outreach to the Hispanic community."
-  },
-  {
-    id: "gaylord-neal",
-    name: "Gaylord Neal",
-    title: "Digital Solutions and Innovation Consultant",
-    initials: "GN",
-    bio: "Driving digital transformation and innovative solutions for MBE clients."
-  },
-  {
-    id: "bentley-charlemagne",
-    name: "Bentley Charlemagne",
-    title: "Digital Innovation Chief Consultant",
-    initials: "BC",
-    bio: "Leading cutting-edge digital initiatives and technology integration strategies."
   },
   {
     id: "candida-mobley",
     name: "Candida Mobley",
     title: "KDM Consultant",
     initials: "CM",
+    imageName: "Candida_Mobley",
     bio: "Providing dedicated consulting support to help MBEs achieve their contracting goals."
   }
 ];
@@ -126,18 +123,7 @@ export default function TeamPage() {
         <div className="container">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {teamMembers.map((member) => (
-              <Card key={member.id} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="pt-8 pb-6">
-                  <Avatar className="h-24 w-24 mx-auto mb-4">
-                    <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-lg font-semibold">{member.name}</h3>
-                  <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
-                  <p className="text-sm text-muted-foreground">{member.bio}</p>
-                </CardContent>
-              </Card>
+              <TeamMemberCard key={member.id} member={member} />
             ))}
           </div>
         </div>
