@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
@@ -53,18 +54,20 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
   }
 
   return (
-    <Card className="text-center hover:shadow-lg transition-shadow">
-      <CardContent className="pt-8 pb-6">
-        <Avatar className="h-24 w-24 mx-auto mb-4">
-          {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-cover" />}
-          <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
-            {member.initials}
-          </AvatarFallback>
-        </Avatar>
-        <h3 className="text-lg font-semibold">{member.name}</h3>
-        <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
-        <p className="text-sm text-muted-foreground">{member.bio}</p>
-      </CardContent>
-    </Card>
+    <Link href={`/team/${member.id}`} className="block">
+      <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
+        <CardContent className="pt-8 pb-6">
+          <Avatar className="h-24 w-24 mx-auto mb-4">
+            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-cover" />}
+            <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
+              {member.initials}
+            </AvatarFallback>
+          </Avatar>
+          <h3 className="text-lg font-semibold">{member.name}</h3>
+          <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
+          <p className="text-sm text-muted-foreground">{member.bio}</p>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
