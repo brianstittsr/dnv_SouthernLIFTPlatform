@@ -483,7 +483,7 @@ function ImageCard({ image, onUpdate }: ImageCardProps) {
             <img
               src={imageUrl}
               alt={image.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           ) : (
             <div className="flex items-center justify-center h-full">
