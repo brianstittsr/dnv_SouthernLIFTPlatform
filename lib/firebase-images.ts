@@ -229,9 +229,8 @@ export async function uploadImage(
 
     const dimensions = await getImageDimensions(processedFile);
 
-    const imageDoc: Omit<ImageDoc, "id"> = {
+    const imageDoc: any = {
       name: options.name,
-      description: options.description,
       category: options.category,
       mimeType: "image/jpeg",
       base64Data,
@@ -239,10 +238,17 @@ export async function uploadImage(
       height: dimensions.height,
       size: processedFile.size,
       createdAt: Timestamp.now(),
-      createdBy: options.createdBy,
       tags: options.tags || [],
       isActive: true,
     };
+
+    // Only add optional fields if they have values
+    if (options.description) {
+      imageDoc.description = options.description;
+    }
+    if (options.createdBy) {
+      imageDoc.createdBy = options.createdBy;
+    }
 
     const docRef = await addDoc(collection(db, IMAGES_COLLECTION), imageDoc);
     return docRef.id;

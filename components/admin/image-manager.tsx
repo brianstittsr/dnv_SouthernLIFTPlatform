@@ -264,10 +264,10 @@ function ImageUploadForm({ onSuccess }: ImageUploadFormProps) {
     try {
       const options: ImageUploadOptions = {
         name,
-        description: description || undefined,
         category,
-        tags: tags ? tags.split(",").map((t) => t.trim()) : undefined,
         createdBy: profile.id,
+        ...(description && { description }),
+        ...(tags && { tags: tags.split(",").map((t) => t.trim()) }),
       };
 
       await uploadImage(file, options);
