@@ -135,11 +135,18 @@ Global Podcast and brand strategy partner to US-based KDM & Associates and the I
     initials: "WC",
     imageName: "Cotton_III_Walter",
     bio: "Connecting veteran-owned businesses with government contracting opportunities.",
-    fullBio: `Walter Cotton III serves as the Veteran Business Liaison at KDM & Associates, dedicated to connecting veteran-owned businesses with government contracting opportunities. His role focuses on supporting veterans who are transitioning their military experience into successful business ventures in the federal marketplace.
+    fullBio: `Walter Cotton III is one of a hand full of dedicated retired services members that are credited with helping the Federal Government increase its level of contracting with Disabled Veteran from $750 Million to more than $19 Billion annually.
 
-Walter understands the unique challenges and opportunities that veteran-owned businesses face in government contracting. He provides specialized guidance on leveraging veteran status, accessing set-aside programs, and building competitive capabilities that align with federal procurement priorities.
+In addition to the above contributions, Mr. Cotton also:
+• Was the Service Disabled Veteran Owned Small Business Community's first National spokesperson.
+• Held positions as Chairperson of the American Legion's Small Business Taskforce, the Veteran Service Organization Community's lead trainer & subject matter expert on SB-to-SB Joint Venturing (i.e., from 2006 to 2010)
+• Co-Authored the Contracting Section of the Small Business Jobs & Credit Act of 2010 (Signed into Law on 9/27/2010)
+• Acted as the SBA's Office of Veteran Services primary industry source & subject matter expert on complex small business contracting matters (i.e., from 2006 to 2012)
+• Is a Board Member & Treasure of the Elite SDVOB Network – and in 2019 he was appointed President of New York Chapter of the Elite SDVOB Network.
+• Founded the AbilityToo Network (i.e., an online Contractor Networking & Teaming Resource), and
+• Is a Contributing Columnist to leading Veteran and Small Business Publications.
 
-His commitment to serving those who have served extends beyond business development to creating a supportive network where veteran entrepreneurs can access the resources, mentorship, and opportunities they need to build sustainable, successful government contracting businesses.`
+Mr. Cotton is currently Managing Partner of 'The Cotton Exchange' (i.e., his consulting and social contracting business units), and is a sought-after Subject Matter Expert by Agencies, Trade Associations, Major Prime Contractors & Veteran Business Owners.`
   },
   {
     id: "jose-nino",
