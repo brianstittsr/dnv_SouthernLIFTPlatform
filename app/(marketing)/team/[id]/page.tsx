@@ -124,11 +124,9 @@ My mission is to collaborate with dynamic individuals and organizations, leverag
     initials: "TW",
     imageName: "Timothy_Webster",
     bio: "Leading international outreach and communication strategies for global opportunities.",
-    fullBio: `Timothy Maurice Webster serves as Director of International Communications at KDM & Associates, leading the organization's international outreach and communication strategies. His role focuses on expanding opportunities for MBEs in the global marketplace and fostering international partnerships.
+    fullBio: `Timothy's education is in Business Management, Branding, Psychology and Applied Neuroscience from Brookstone College in the US and Massachusetts Institute of Technology- MIT. His insights inspire dialogue and critical thinking about brain and brand behavior- inspiring stakeholders to consider broader and more strategic problem-solving for their personal and organizational brands. His research is particularly influential in the following Professional Leadership Domains- Executive leadership, Brand Influence & Gender Equality. His clients are those who seek to influence and expand themselves, their organizations and society.
 
-Timothy brings a strategic communications background and a global perspective to his work, helping clients understand and access international opportunities in government contracting. He develops and implements communication strategies that enhance the organization's reach and impact beyond domestic markets.
-
-His expertise in international business development and cross-cultural communication enables KDM & Associates to support clients in pursuing global opportunities and building international partnerships that complement their domestic government contracting activities.`
+Global Podcast and brand strategy partner to US-based KDM & Associates and the Innovation in Agriculture and Energy Opportunity Zone Summit. Sharing behavioral insights, content and client-centric strategy, for more. He's passionate about mentoring, sports, art and laughs from his soul.`
   },
   {
     id: "walter-cotton",
