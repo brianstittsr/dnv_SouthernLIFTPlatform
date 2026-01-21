@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -136,8 +136,8 @@ export default function SeedCoursesPage() {
           facilitatorId: INSTRUCTOR_ID,
           facilitatorName: INSTRUCTOR_NAME,
           facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-          cohortStartDate: Timestamp.fromDate(course.cohortStartDate),
-          cohortEndDate: Timestamp.fromDate(course.cohortEndDate),
+          cohortStartDate: course.cohortStartDate,
+          cohortEndDate: course.cohortEndDate,
           maxParticipants: course.maxParticipants,
           currentParticipants: 0,
           estimatedDurationWeeks: course.estimatedDurationWeeks,
@@ -150,8 +150,8 @@ export default function SeedCoursesPage() {
           learningOutcomes: course.learningOutcomes,
           prerequisites: course.prerequisites,
           isPublished: true,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         };
 
         const docRef = await addDoc(collection(db, 'cohorts'), cohortData);
