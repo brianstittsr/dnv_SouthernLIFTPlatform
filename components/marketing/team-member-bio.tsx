@@ -30,23 +30,31 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
     try {
       setIsLoading(true);
       
-      // List all images and find the one matching the member's name
+      // Try to load from Firebase Image Manager
       const images = await listImages("team");
+      
+      if (!images || images.length === 0) {
+        // No images in Firebase yet, use fallback
+        setIsLoading(false);
+        return;
+      }
+      
       const matchingImage = images.find(img => 
         img.name === member.imageName || 
-        img.name.toLowerCase().includes(member.imageName.toLowerCase())
+        img.name.toLowerCase().includes(member.imageName.toLowerCase()) ||
+        img.name.replace(/_/g, ' ').toLowerCase().includes(member.name.toLowerCase())
       );
 
       if (matchingImage) {
-        // Load the full image data
         const fullImage = await getImage(matchingImage.id);
-        if (fullImage) {
+        if (fullImage && fullImage.base64Data) {
           const url = base64ToDataUrl(fullImage.base64Data, fullImage.mimeType);
           setImageUrl(url);
         }
       }
     } catch (error) {
-      console.error(`Error loading image for ${member.name}:`, error);
+      // Silently fail and show initials fallback
+      console.log(`Image not available for ${member.name}, showing initials`);
     } finally {
       setIsLoading(false);
     }
