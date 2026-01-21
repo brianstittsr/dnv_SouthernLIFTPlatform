@@ -50,11 +50,21 @@ Mr. Sills' education includes an M.A. in Defense & Foreign Policy, Fletcher Scho
     initials: "OF",
     imageName: "Oscar_Frazier",
     bio: "Providing expert guidance on government contracting strategies and business development.",
-    fullBio: `Oscar Frazier serves as a senior consultant at KDM & Associates, providing expert guidance on government contracting strategies and business development. His extensive knowledge of federal procurement processes and requirements makes him an invaluable resource for MBE clients.
+    fullBio: `Oscar L Frazier is an international consultant with a sought-after leadership and team-building track record that spans over two decades. Oscar holds an MBA with a Management and Quantitative Methods focus, is a certified Lean Six Sigma Black, a certified Project Management Professional (PMP), and a certified SAFe 5 Agilist. He is also an Eagle Scout with the Boy Scouts of America.
 
-Oscar specializes in helping businesses develop competitive strategies, identify teaming opportunities, and navigate the complexities of government contracting. His hands-on approach and deep understanding of the federal marketplace enable clients to position themselves effectively for contract wins.
+Oscar is a published author, having contributed to global publications such as Forbes, Black Enterprise, CBS, FOX, NBC, Business Ghana, and is the author of a book that focuses on DIY methodologies to help individuals reach everything desired in life, called "Confessions: The Truth About Perfect Timing".
 
-With a track record of successful client engagements, Oscar is committed to delivering practical, actionable advice that translates into measurable results for minority-owned businesses seeking to grow their government contracting portfolios.`
+With humble beginnings in Charleston, SC, Oscar learned the importance of perseverance from watching his father and mother raise children in the South during a difficult time in American history. That same perseverance instilled at an early age catapulted Oscar's career. At the age of only 20, Oscar began his career with Fortune 500 companies creating methodologies that empowered teams and leaders to produce results.
+
+Oscar has experience ranging from managing $30MM+ consulting portfolios, owning/operating a 12,000+ square-foot restaurant with over 150 employees with $1.4MM annual sales, owning a successful trucking & logistics company, to fostering efficiencies and process improvement for small, medium, and large organizations. Oscar has spent the majority of his career within the federal space focusing on growth, innovation, and leadership training.
+
+Oscar L Frazier has an unorthodox way of reaching all levels (i.e., top down or bottom up of an organizational chart) of the participants that attend his trainings and seminars. Leaders and teams that attend Oscar's engagements can expect to learn Leadership Methodologies that Produce Results, with primary focuses on Agility-based Leadership, Tactical-based Leadership, Human-Centered Leadership (aka "HCL"), and Technology-based Leadership.
+
+Since 2018, Oscar has successfully led mission-critical trainings globally that have spanned the USA, Europe (i.e., Kosovo and Albania), and Africa (i.e., Luanda (Angola), Huambo (Angola), Djibouti City (Djibouti), Nairobi (Kenya), Mogadishu (Somalia), Addis Ababa (Ethiopia), and Goma North Kivu (The Democratic Republic of the Congo), Nigeria, and Ghana). As a result of this extensive training repertoire, one of Oscar's first published articles in Forbes focused on his experiences with global crisis management and world leadership observations.
+
+Successful organizations and Federal Agencies like Bank of America, Booz Allen Hamilton, IBM, USAGM, CMS, Veterans Affairs, and a host of others invest in Oscar's leadership methodologies by hiring him to train and empower their leaders and teams every year.
+
+In addition to the global publications outlined above of which Oscar has appeared, he has also been featured in global magazines, podcasts, small business expos, and newspapers including Gut + Science (global podcast), Vroom Vroom Veer (podcast), Influential Entrepreneurs with Mike Saunders, School for Startups Radio, Prestige Magazine, Corporate Vision Magazine, and several others.`
   },
   {
     id: "pamela-ramos-brown",
