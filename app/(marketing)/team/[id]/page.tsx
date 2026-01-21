@@ -109,11 +109,13 @@ Calvin has an extensive career as a consultant in the corporate world. He is a B
     initials: "MH",
     imageName: "Manpreet_Hundal",
     bio: "Ensuring compliance excellence and data-driven insights for our clients.",
-    fullBio: `Manpreet Hundal serves as the Compliance and Data Specialist at KDM & Associates, bringing expertise in regulatory compliance and data analysis to support MBE clients. Her role is critical in helping businesses navigate the complex compliance requirements of government contracting.
+    fullBio: `I am a proud graduate of George Mason University, holding a degree in Business Management, with over two decades of professional experience in the finance and healthcare sectors. Throughout my career, I have had the privilege of working with leading financial institutions and information technology organizations, where I developed expertise in business operations, strategic planning, and innovative problem-solving.
 
-Manpreet's work encompasses compliance monitoring, data management, and providing insights that help clients make informed decisions. She ensures that businesses understand and meet all regulatory requirements while also leveraging data to identify opportunities and optimize performance.
+As an entrepreneur, I am committed to building and leading businesses that foster growth, promote inclusivity, and create sustainable economic impact. My professional focus extends to Government Business Development, where I am passionate about empowering minority-owned enterprises to secure opportunities and thrive in competitive markets.
 
-Her analytical approach and attention to detail provide clients with the confidence that they are operating in full compliance while also benefiting from data-driven strategies that enhance their competitive position in the federal marketplace.`
+Beyond my professional pursuits, I serve as a basketball coach, nurturing leadership, teamwork, and discipline in young athletes—skills that translate seamlessly into professional success. This role reflects my belief in the importance of mentorship and investing in the next generation of leaders.
+
+My mission is to collaborate with dynamic individuals and organizations, leveraging my experience to drive success, forge strategic partnerships, and support communities in achieving their full potential. I look forward to engaging with like-minded professionals and contributing to meaningful change in the business landscape.`
   },
   {
     id: "timothy-webster",
