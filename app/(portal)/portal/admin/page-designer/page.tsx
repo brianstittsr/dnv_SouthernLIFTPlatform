@@ -71,12 +71,22 @@ import {
   type PageSEO,
   type UXPrinciple,
 } from "@/lib/page-designer-enhanced-schema";
+import {
+  PAGE_REGISTRY,
+  getEditablePages,
+  getMarketingPages,
+  type PageRegistryEntry,
+} from "@/lib/page-registry";
 
 export default function PageDesignerV2() {
   const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState<"design" | "elements" | "buttons" | "chat" | "seo" | "review">("design");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Page selection state
+  const [selectedPage, setSelectedPage] = useState<PageRegistryEntry | null>(null);
+  const [availablePages] = useState<PageRegistryEntry[]>(getEditablePages());
 
   // Design state
   const [pagePath, setPagePath] = useState("/");
@@ -444,69 +454,126 @@ export default function PageDesignerV2() {
         </div>
       </div>
 
-      {/* Page Path Selector */}
+      {/* Page Selector */}
       <Card>
         <CardHeader>
-          <CardTitle>Page Configuration</CardTitle>
-          <CardDescription>Select which page you want to design</CardDescription>
+          <CardTitle>Select Page to Design</CardTitle>
+          <CardDescription>Choose from {availablePages.length} editable pages in the platform</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <Label>Page Path</Label>
-              <Input
-                value={pagePath}
-                onChange={(e) => setPagePath(e.target.value)}
-                placeholder="/about"
-              />
-            </div>
-            <div className="flex-1">
-              <Label>Page Purpose</Label>
-              <Select value={pagePurpose} onValueChange={setPagePurpose}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select purpose" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PAGE_PURPOSES.map((purpose) => (
-                    <SelectItem key={purpose.id} value={purpose.id}>
-                      {purpose.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {availablePages.map((page) => (
+              <Card
+                key={page.id}
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  selectedPage?.id === page.id ? "ring-2 ring-primary" : ""
+                }`}
+                onClick={() => {
+                  setSelectedPage(page);
+                  setPagePath(page.path);
+                }}
+              >
+                <CardHeader className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {page.category}
+                    </Badge>
+                    {selectedPage?.id === page.id && (
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    )}
+                  </div>
+                  <CardTitle className="text-sm">{page.name}</CardTitle>
+                  <CardDescription className="text-xs">{page.description}</CardDescription>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {page.path}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {page.sections.length} sections
+                    </Badge>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
           </div>
+          {selectedPage && (
+            <div className="mt-4 p-4 bg-muted rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold">Selected: {selectedPage.name}</h4>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedPage(null)}>
+                  Clear Selection
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">{selectedPage.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedPage.sections.map((section) => (
+                  <Badge key={section.id} variant="secondary" className="text-xs">
+                    {section.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="design">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Design
-          </TabsTrigger>
-          <TabsTrigger value="elements">
-            <Layers className="h-4 w-4 mr-2" />
-            Elements
-          </TabsTrigger>
-          <TabsTrigger value="buttons">
-            <MousePointer className="h-4 w-4 mr-2" />
-            Buttons
-          </TabsTrigger>
-          <TabsTrigger value="chat">
-            <MessageSquare className="h-4 w-4 mr-2" />
-            AI Chat
-          </TabsTrigger>
-          <TabsTrigger value="seo">
-            <Search className="h-4 w-4 mr-2" />
-            SEO
-          </TabsTrigger>
-          <TabsTrigger value="review">
-            <Eye className="h-4 w-4 mr-2" />
-            UX Review
-          </TabsTrigger>
-        </TabsList>
+      {selectedPage && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Page Configuration</CardTitle>
+            <CardDescription>Configure design settings for {selectedPage.name}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <Label>Page Purpose</Label>
+                <Select value={pagePurpose} onValueChange={setPagePurpose}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select purpose" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_PURPOSES.map((purpose) => (
+                      <SelectItem key={purpose.id} value={purpose.id}>
+                        {purpose.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main Tabs - Only show when page is selected */}
+      {selectedPage && (
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-4">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="design">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Design
+            </TabsTrigger>
+            <TabsTrigger value="elements">
+              <Layers className="h-4 w-4 mr-2" />
+              Elements
+            </TabsTrigger>
+            <TabsTrigger value="buttons">
+              <MousePointer className="h-4 w-4 mr-2" />
+              Buttons
+            </TabsTrigger>
+            <TabsTrigger value="chat">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              AI Chat
+            </TabsTrigger>
+            <TabsTrigger value="seo">
+              <Search className="h-4 w-4 mr-2" />
+              SEO
+            </TabsTrigger>
+            <TabsTrigger value="review">
+              <Eye className="h-4 w-4 mr-2" />
+              UX Review
+            </TabsTrigger>
+          </TabsList>
 
         {/* Design Tab */}
         <TabsContent value="design" className="space-y-4">
@@ -1184,6 +1251,7 @@ export default function PageDesignerV2() {
           )}
         </TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
