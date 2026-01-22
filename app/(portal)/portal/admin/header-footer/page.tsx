@@ -51,6 +51,12 @@ export default function HeaderFooterManager() {
   async function loadConfigurations() {
     setIsLoading(true);
     try {
+      if (!db) {
+        toast.error("Database connection not available");
+        setIsLoading(false);
+        return;
+      }
+      
       const headerSnap = await getDocs(collection(db, "header_configs"));
       const footerSnap = await getDocs(collection(db, "footer_configs"));
 
