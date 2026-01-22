@@ -356,6 +356,22 @@ const MARKETING_PAGES: PageRegistryEntry[] = [
       { id: "cta", name: "Partner With Us", type: "cta", order: 4, isEditable: true },
     ],
   },
+  {
+    id: "cmmc-training",
+    path: "/cmmc-training",
+    name: "CMMC Training",
+    category: "marketing",
+    description: "CMMC certification training cohorts for DoD contractors",
+    sections: [
+      { id: "hero", name: "Hero Section", type: "hero", order: 1, isEditable: true },
+      { id: "program-overview", name: "CMMC Cohort Program", type: "content", order: 2, isEditable: true },
+      { id: "timeline", name: "Critical Compliance Timeline", type: "timeline", order: 3, isEditable: true },
+      { id: "process", name: "Turnkey Compliance Process", type: "features", order: 4, isEditable: true },
+      { id: "faq", name: "FAQ Section", type: "faq", order: 5, isEditable: true },
+      { id: "testimonials", name: "Testimonials", type: "testimonials", order: 6, isEditable: true },
+      { id: "cta", name: "Final CTA", type: "cta", order: 7, isEditable: true },
+    ],
+  },
 ];
 
 // ============================================================================
