@@ -95,6 +95,8 @@ export default function HeaderFooterManager() {
         textColor: "#000000",
         hoverColor: "#3b82f6",
         position: "sticky",
+        transparent: false,
+        blur: false,
         shadow: true,
       },
       animation: {
