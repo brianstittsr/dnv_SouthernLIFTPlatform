@@ -52,6 +52,11 @@ export default function CohortDetailPage() {
   }, [cohortId]);
 
   async function loadCohort() {
+    if (!db) {
+      toast.error("Database connection not available");
+      return;
+    }
+    
     try {
       setLoading(true);
       const cohortDoc = await getDoc(doc(db, "cohorts", cohortId));
