@@ -537,7 +537,7 @@ const svpAdminItems = [
   },
   {
     title: "Page Designer",
-    href: "/portal/admin/page-designer-v2",
+    href: "/portal/admin/page-designer",
     icon: Wand2,
     badge: "AI",
   },
