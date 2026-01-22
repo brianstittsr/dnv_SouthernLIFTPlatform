@@ -349,17 +349,29 @@ export default function AllCohortsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Button 
+                        type="button"
                         variant="default" 
                         size="sm"
-                        onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}`)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log("View clicked for cohort:", cohort.id);
+                          router.push(`/portal/admin/cohorts/${cohort.id}`);
+                        }}
                       >
                         <Eye className="mr-2 h-4 w-4" />
                         View
                       </Button>
                       <Button 
+                        type="button"
                         variant="outline" 
                         size="sm"
-                        onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}/edit`)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log("Edit clicked for cohort:", cohort.id);
+                          router.push(`/portal/admin/cohorts/${cohort.id}/edit`);
+                        }}
                       >
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
