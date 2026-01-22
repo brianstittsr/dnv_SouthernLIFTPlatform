@@ -164,8 +164,8 @@ export default function TeamMembersPage() {
       querySnapshot.forEach((docSnap) => {
         membersData.push({ id: docSnap.id, ...docSnap.data() } as TeamMemberDoc);
       });
-      // Sort by last name
-      membersData.sort((a, b) => a.lastName.localeCompare(b.lastName));
+      // Sort by last name (handle undefined values)
+      membersData.sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''));
       setMembers(membersData);
     } catch (error) {
       console.error("Error fetching members:", error);
@@ -471,10 +471,10 @@ export default function TeamMembersPage() {
   const filteredMembers = members.filter((member) => {
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch = 
-      member.firstName.toLowerCase().includes(searchLower) ||
-      member.lastName.toLowerCase().includes(searchLower) ||
-      member.emailPrimary.toLowerCase().includes(searchLower) ||
-      member.expertise.toLowerCase().includes(searchLower);
+      (member.firstName || '').toLowerCase().includes(searchLower) ||
+      (member.lastName || '').toLowerCase().includes(searchLower) ||
+      (member.emailPrimary || '').toLowerCase().includes(searchLower) ||
+      (member.expertise || '').toLowerCase().includes(searchLower);
     
     const matchesRole = roleFilter === "all" || member.role === roleFilter;
     

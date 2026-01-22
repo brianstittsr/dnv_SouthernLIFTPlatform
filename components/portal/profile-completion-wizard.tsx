@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { auth, db } from "@/lib/firebase";
-import { doc, updateDoc, setDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, updateDoc, setDoc, addDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
+import { logTeamMemberAdded } from "@/lib/activity-logger";
 import {
   Dialog,
   DialogContent,
@@ -161,7 +162,7 @@ export function ProfileCompletionWizard() {
       }, { merge: true });
       console.log("User profile created/updated in users collection:", auth.currentUser.uid);
 
-      // 2. Update Team Member if linked (team_members collection)
+      // 2. Update or Create Team Member (teamMembers collection)
       if (linkedTeamMember?.id) {
         const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeamMember.id);
         await updateDoc(teamMemberRef, {
@@ -197,6 +198,28 @@ export function ProfileCompletionWizard() {
             updatedAt: now,
           });
           console.log("Team Member found by email and updated:", teamMemberDoc.id);
+        } else {
+          // Create new Team Member record for this user
+          const newTeamMemberRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
+            firebaseUid: auth.currentUser.uid,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            emailPrimary: formData.email,
+            mobile: formData.phone,
+            company: formData.company,
+            title: formData.jobTitle,
+            location: formData.location,
+            bio: formData.bio,
+            avatar: formData.avatarUrl,
+            expertise: formData.jobTitle || "General", // Use job title as initial expertise
+            role: "affiliate" as const, // Default role for new registrations
+            status: "active" as const,
+            createdAt: now,
+            updatedAt: now,
+          });
+          console.log("New Team Member created:", newTeamMemberRef.id);
+          // Log activity for new team member
+          await logTeamMemberAdded(newTeamMemberRef.id, `${formData.firstName} ${formData.lastName}`);
         }
       }
 
