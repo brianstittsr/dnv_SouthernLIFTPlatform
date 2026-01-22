@@ -55,6 +55,7 @@ export interface HeaderConfig {
     position: 'fixed' | 'sticky' | 'static';
     transparent: boolean;
     blur: boolean;
+    shadow?: boolean;
   };
   animation: {
     type: 'fade' | 'slide' | 'scale' | 'none';
