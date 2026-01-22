@@ -129,11 +129,45 @@ export default function AllCohortsPage() {
   };
 
   const formatCurrency = (amount: number) => {
+    // Handle cents (priceInCents) or dollars
+    const dollars = amount > 1000 ? amount / 100 : amount;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0
-    }).format(amount);
+    }).format(dollars);
+  };
+
+  const formatDate = (timestamp: any) => {
+    if (!timestamp) return "N/A";
+    try {
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      return timestamp?.toString() || "N/A";
+    }
+  };
+
+  // Helper to get cohort field with fallback for different naming conventions
+  const getCohortField = (cohort: any, field: string) => {
+    const fieldMappings: Record<string, string[]> = {
+      participants: ["currentParticipants", "participants", "enrolledCount"],
+      maxParticipants: ["maxParticipants", "capacity", "maxCapacity"],
+      startDate: ["cohortStartDate", "startDate", "start_date"],
+      endDate: ["cohortEndDate", "endDate", "end_date"],
+      price: ["priceInCents", "price", "cost"],
+      facilitator: ["facilitatorName", "facilitator", "instructor"],
+    };
+
+    const possibleFields = fieldMappings[field] || [field];
+    for (const f of possibleFields) {
+      if (cohort[f] !== undefined) return cohort[f];
+    }
+    return null;
   };
 
   if (loading) {
@@ -292,24 +326,24 @@ export default function AllCohortsPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{cohort.title}</h3>
-                          {getStatusBadge(cohort.status)}
+                          <h3 className="font-semibold">{cohort.title || "Untitled Cohort"}</h3>
+                          {getStatusBadge(cohort.status || "draft")}
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            {cohort.participants}/{cohort.maxParticipants}
+                            {getCohortField(cohort, "participants") || 0}/{getCohortField(cohort, "maxParticipants") || 50}
                           </span>
                           <span>•</span>
                           <span className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            {cohort.startDate} - {cohort.endDate}
+                            {formatDate(getCohortField(cohort, "startDate"))} - {formatDate(getCohortField(cohort, "endDate"))}
                           </span>
                           <span>•</span>
-                          <span>{formatCurrency(cohort.price)}</span>
+                          <span>{formatCurrency(getCohortField(cohort, "price") || 0)}</span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Facilitator: {cohort.facilitator}
+                          Facilitator: {getCohortField(cohort, "facilitator") || "Not assigned"}
                         </p>
                       </div>
                     </div>
