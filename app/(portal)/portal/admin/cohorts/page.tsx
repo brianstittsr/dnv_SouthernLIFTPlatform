@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { mockCohorts } from "@/lib/mock-data/svp-admin-mock-data";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
 
@@ -348,28 +349,26 @@ export default function AllCohortsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button 
-                        type="button"
-                        variant="default" 
-                        size="sm"
-                        onClick={() => {
-                          window.location.href = `/portal/admin/cohorts/${cohort.id}`;
-                        }}
-                      >
-                        <Eye className="mr-2 h-4 w-4" />
-                        View
-                      </Button>
-                      <Button 
-                        type="button"
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          window.location.href = `/portal/admin/cohorts/${cohort.id}/edit`;
-                        }}
-                      >
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                      </Button>
+                      <Link href={`/portal/admin/cohorts/${cohort.id}`}>
+                        <Button 
+                          type="button"
+                          variant="default" 
+                          size="sm"
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          View
+                        </Button>
+                      </Link>
+                      <Link href={`/portal/admin/cohorts/${cohort.id}/edit`}>
+                        <Button 
+                          type="button"
+                          variant="outline" 
+                          size="sm"
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 ))}
