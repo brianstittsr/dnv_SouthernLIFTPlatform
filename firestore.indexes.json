@@ -380,6 +380,136 @@
         { "fieldPath": "status", "order": "ASCENDING" },
         { "fieldPath": "startDate", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "cohorts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "cohortStartDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohorts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "facilitatorId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohorts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isPublished", "order": "ASCENDING" },
+        { "fieldPath": "cohortStartDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohorts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "difficultyLevel", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_modules",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "sortOrder", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "moduleId", "order": "ASCENDING" },
+        { "fieldPath": "sortOrder", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "sortOrder", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "enrolledAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "enrolledAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_session_progress",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "cohortId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_certificates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "issuedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_certificates",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "issuedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_discussions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "isPinned", "order": "DESCENDING" },
+        { "fieldPath": "lastActivityAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_discussion_replies",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "discussionId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cohort_waitlist",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cohortId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "position", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

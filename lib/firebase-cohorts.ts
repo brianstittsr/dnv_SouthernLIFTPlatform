@@ -56,6 +56,78 @@ export async function getCohort(cohortId: string) {
   return { id: docSnap.id, ...docSnap.data() } as any;
 }
 
+export async function getCohortBySlug(slug: string) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const q = query(
+    collection(db, COHORT_COLLECTIONS.COHORTS),
+    where("slug", "==", slug),
+    limit(1)
+  );
+  
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  
+  const docSnap = snapshot.docs[0];
+  return { id: docSnap.id, ...docSnap.data() } as any;
+}
+
+export async function getCohorts(options: {
+  status?: string | string[];
+  facilitatorId?: string;
+  isPublished?: boolean;
+  difficultyLevel?: string;
+  isFree?: boolean;
+  limit?: number;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+} = {}) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  let q = collection(db, COHORT_COLLECTIONS.COHORTS);
+  const constraints: any[] = [];
+  
+  // Apply filters
+  if (options.status) {
+    if (Array.isArray(options.status)) {
+      constraints.push(where("status", "in", options.status));
+    } else {
+      constraints.push(where("status", "==", options.status));
+    }
+  }
+  
+  if (options.facilitatorId) {
+    constraints.push(where("facilitatorId", "==", options.facilitatorId));
+  }
+  
+  if (options.isPublished !== undefined) {
+    constraints.push(where("isPublished", "==", options.isPublished));
+  }
+  
+  if (options.difficultyLevel) {
+    constraints.push(where("difficultyLevel", "==", options.difficultyLevel));
+  }
+  
+  if (options.isFree !== undefined) {
+    constraints.push(where("isFree", "==", options.isFree));
+  }
+  
+  // Apply ordering
+  const orderByField = options.orderBy || "createdAt";
+  const orderDirection = options.orderDirection || "desc";
+  constraints.push(orderBy(orderByField, orderDirection));
+  
+  // Apply limit
+  if (options.limit) {
+    constraints.push(limit(options.limit));
+  }
+  
+  const finalQuery = query(q, ...constraints);
+  const snapshot = await getDocs(finalQuery);
+  
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 export async function updateCohort(cohortId: string, updates: any) {
   if (!db) throw new Error("Firebase not initialized");
   
@@ -64,6 +136,102 @@ export async function updateCohort(cohortId: string, updates: any) {
     ...updates,
     updatedAt: Timestamp.now(),
   });
+}
+
+export async function publishCohort(cohortId: string) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const docRef = doc(db, COHORT_COLLECTIONS.COHORTS, cohortId);
+  await updateDoc(docRef, {
+    isPublished: true,
+    status: "published",
+    updatedAt: Timestamp.now(),
+  });
+}
+
+export async function deleteCohort(cohortId: string) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const batch = writeBatch(db);
+  
+  // Delete cohort
+  const cohortRef = doc(db, COHORT_COLLECTIONS.COHORTS, cohortId);
+  batch.delete(cohortRef);
+  
+  // Delete modules and sessions
+  const modulesQuery = query(
+    collection(db, COHORT_COLLECTIONS.COHORT_MODULES),
+    where("cohortId", "==", cohortId)
+  );
+  const modulesSnapshot = await getDocs(modulesQuery);
+  
+  for (const moduleDoc of modulesSnapshot.docs) {
+    batch.delete(moduleDoc.ref);
+    
+    // Delete sessions for this module
+    const sessionsQuery = query(
+      collection(db, COHORT_COLLECTIONS.SESSIONS),
+      where("moduleId", "==", moduleDoc.id)
+    );
+    const sessionsSnapshot = await getDocs(sessionsQuery);
+    sessionsSnapshot.docs.forEach(sessionDoc => {
+      batch.delete(sessionDoc.ref);
+    });
+  }
+  
+  await batch.commit();
+}
+
+export async function getCohortWithModulesAndSessions(cohortId: string) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const cohort = await getCohort(cohortId);
+  if (!cohort) return null;
+  
+  const modules = await getModules(cohortId);
+  
+  const modulesWithSessions = await Promise.all(
+    modules.map(async (module: any) => {
+      const sessions = await getSessions(module.id);
+      return { ...module, sessions };
+    })
+  );
+  
+  return { ...cohort, modules: modulesWithSessions };
+}
+
+export async function reorderModules(cohortId: string, moduleIds: string[]) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const batch = writeBatch(db);
+  const dbInstance = db; // Capture for use in forEach
+  
+  moduleIds.forEach((moduleId, index) => {
+    const moduleRef = doc(dbInstance, COHORT_COLLECTIONS.COHORT_MODULES, moduleId);
+    batch.update(moduleRef, {
+      sortOrder: index,
+      updatedAt: Timestamp.now(),
+    });
+  });
+  
+  await batch.commit();
+}
+
+export async function reorderSessions(moduleId: string, sessionIds: string[]) {
+  if (!db) throw new Error("Firebase not initialized");
+  
+  const batch = writeBatch(db);
+  const dbInstance = db; // Capture for use in forEach
+  
+  sessionIds.forEach((sessionId, index) => {
+    const sessionRef = doc(dbInstance, COHORT_COLLECTIONS.SESSIONS, sessionId);
+    batch.update(sessionRef, {
+      sortOrder: index,
+      updatedAt: Timestamp.now(),
+    });
+  });
+  
+  await batch.commit();
 }
 
 // ==================== MODULE OPERATIONS ====================
