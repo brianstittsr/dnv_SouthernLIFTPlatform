@@ -352,11 +352,8 @@ export default function AllCohortsPage() {
                         type="button"
                         variant="default" 
                         size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          console.log("View clicked for cohort:", cohort.id);
-                          router.push(`/portal/admin/cohorts/${cohort.id}`);
+                        onClick={() => {
+                          window.location.href = `/portal/admin/cohorts/${cohort.id}`;
                         }}
                       >
                         <Eye className="mr-2 h-4 w-4" />
@@ -366,11 +363,8 @@ export default function AllCohortsPage() {
                         type="button"
                         variant="outline" 
                         size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          console.log("Edit clicked for cohort:", cohort.id);
-                          router.push(`/portal/admin/cohorts/${cohort.id}/edit`);
+                        onClick={() => {
+                          window.location.href = `/portal/admin/cohorts/${cohort.id}/edit`;
                         }}
                       >
                         <Edit className="mr-2 h-4 w-4" />
