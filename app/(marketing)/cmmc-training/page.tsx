@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,15 @@ export default function CMMCTrainingPage() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
         <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:32px_32px]" />
+        <div className="absolute inset-0 opacity-10">
+          <Image
+            src="/cmmc-training/cybersecurity-lock.jpg"
+            alt="Cybersecurity Protection"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <Badge variant="secondary" className="text-lg px-6 py-2">
@@ -81,6 +91,15 @@ export default function CMMCTrainingPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
+            <div className="flex justify-center mb-8">
+              <Image
+                src="/cmmc-training/kdm-logo.png"
+                alt="KDM & Associates"
+                width={400}
+                height={80}
+                className="object-contain"
+              />
+            </div>
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">
                 <Users className="h-4 w-4 mr-2 inline" />
@@ -97,6 +116,14 @@ export default function CMMCTrainingPage() {
             <Card className="border-2 border-blue-200 bg-blue-50">
               <CardContent className="p-8">
                 <div className="grid md:grid-cols-2 gap-8">
+                  <div className="relative h-64 md:col-span-2 mb-4">
+                    <Image
+                      src="/cmmc-training/assessment-magnifying-glass.jpg"
+                      alt="CMMC Assessment and Analysis"
+                      fill
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                       <AlertTriangle className="h-6 w-6 text-red-600" />
@@ -260,6 +287,16 @@ export default function CMMCTrainingPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
+            <div className="flex justify-center mb-8">
+              <div className="relative w-full max-w-3xl h-64">
+                <Image
+                  src="/cmmc-training/shield-chip-protection.jpg"
+                  alt="CMMC Defense and Protection"
+                  fill
+                  className="object-cover rounded-lg"
+                />
+              </div>
+            </div>
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">
                 <Target className="h-4 w-4 mr-2 inline" />
@@ -381,25 +418,26 @@ export default function CMMCTrainingPage() {
               </Card>
             </div>
 
-            <Card className="mt-12 bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-500">
+            <Card className="mt-12 bg-gradient-to-br from-blue-900 to-blue-800 border-2 border-blue-700 text-white">
               <CardContent className="p-8 text-center">
                 <div className="flex items-center justify-center gap-3 mb-4">
-                  <TrendingUp className="h-8 w-8 text-green-600" />
-                  <h3 className="text-2xl font-bold">Proven Timeline</h3>
+                  <Shield className="h-8 w-8 text-yellow-400" />
+                  <h3 className="text-2xl font-bold text-white">Proven Timeline</h3>
                 </div>
-                <p className="text-xl text-gray-700 mb-6">
-                  Manufacturers who follow a structured approach often achieve compliance in <strong className="text-green-700">90–180 days</strong>.
+                <p className="text-xl text-blue-100 mb-6">
+                  Manufacturers who follow a structured approach often achieve compliance in <strong className="text-yellow-400">90–180 days</strong>.
                 </p>
                 <div className="space-y-2 text-lg">
-                  <p className="font-semibold text-blue-700">Protect your contracts. Protect your future.</p>
-                  <p className="text-gray-700">
+                  <p className="font-semibold text-yellow-400 text-2xl">Protect your contracts. Protect your future.</p>
+                  <p className="text-blue-100">
                     Join us for a clear, practical roadmap to CMMC readiness and certification.
                   </p>
                 </div>
-                <Button size="lg" className="mt-6 bg-green-600 hover:bg-green-700 text-white font-bold text-lg px-12 py-6">
+                <Button size="lg" className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-12 py-6">
                   <Award className="h-5 w-5 mr-2" />
                   Register for the Next CMMC Cohort
                 </Button>
+                <p className="text-sm text-blue-200 mt-4">Limited spots available per cohort. Secure your place today.</p>
               </CardContent>
             </Card>
           </div>
