@@ -481,8 +481,8 @@ export default function TeamMembersPage() {
     return matchesSearch && matchesRole;
   });
 
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
+  const getInitials = (firstName?: string, lastName?: string) => {
+    return `${(firstName || '')[0] || ""}${(lastName || '')[0] || ""}`.toUpperCase();
   };
 
   const getRoleBadge = (role: string) => {
@@ -1201,7 +1201,7 @@ export default function TeamMembersPage() {
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={queueItem.teamMemberAvatar} />
                         <AvatarFallback className="text-xs">
-                          {queueItem.teamMemberName.split(' ').map(n => n[0]).join('')}
+                          {(queueItem.teamMemberName || '').split(' ').filter(n => n).map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
