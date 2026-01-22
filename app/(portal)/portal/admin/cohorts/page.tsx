@@ -349,7 +349,7 @@ export default function AllCohortsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Button 
-                        variant="outline" 
+                        variant="default" 
                         size="sm"
                         onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}`)}
                       >
@@ -357,11 +357,12 @@ export default function AllCohortsPage() {
                         View
                       </Button>
                       <Button 
-                        variant="ghost" 
+                        variant="outline" 
                         size="sm"
                         onClick={() => router.push(`/portal/admin/cohorts/${cohort.id}/edit`)}
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
                       </Button>
                     </div>
                   </div>
