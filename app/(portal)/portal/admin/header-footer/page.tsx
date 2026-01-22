@@ -371,6 +371,229 @@ export default function HeaderFooterManager() {
     });
   }
 
+  // Sub-item management functions
+  function addSubItem(navIndex: number) {
+    if (!headerConfig) return;
+
+    const updatedNav = [...headerConfig.navigation];
+    const navItem = updatedNav[navIndex];
+
+    if (!navItem.children) {
+      navItem.children = [];
+    }
+
+    const newSubItem = {
+      id: `sub-${Date.now()}`,
+      label: "New Sub-item",
+      url: "/",
+      order: navItem.children.length,
+      isEnabled: true,
+    };
+
+    navItem.children.push(newSubItem);
+
+    setHeaderConfig({
+      ...headerConfig,
+      navigation: updatedNav,
+    });
+  }
+
+  function updateSubItem(navIndex: number, subIndex: number, updates: any) {
+    if (!headerConfig) return;
+
+    const updatedNav = [...headerConfig.navigation];
+    const navItem = updatedNav[navIndex];
+
+    if (navItem.children && navItem.children[subIndex]) {
+      navItem.children[subIndex] = { ...navItem.children[subIndex], ...updates };
+    }
+
+    setHeaderConfig({
+      ...headerConfig,
+      navigation: updatedNav,
+    });
+  }
+
+  function deleteSubItem(navIndex: number, subIndex: number) {
+    if (!headerConfig) return;
+
+    const updatedNav = [...headerConfig.navigation];
+    const navItem = updatedNav[navIndex];
+
+    if (navItem.children) {
+      navItem.children = navItem.children.filter((_, i) => i !== subIndex);
+    }
+
+    setHeaderConfig({
+      ...headerConfig,
+      navigation: updatedNav,
+    });
+  }
+
+  function moveSubItem(navIndex: number, subIndex: number, direction: "up" | "down") {
+    if (!headerConfig) return;
+
+    const updatedNav = [...headerConfig.navigation];
+    const navItem = updatedNav[navIndex];
+
+    if (!navItem.children) return;
+
+    const newIndex = direction === "up" ? subIndex - 1 : subIndex + 1;
+    if (newIndex < 0 || newIndex >= navItem.children.length) return;
+
+    [navItem.children[subIndex], navItem.children[newIndex]] = [
+      navItem.children[newIndex],
+      navItem.children[subIndex],
+    ];
+
+    navItem.children.forEach((item, i) => {
+      item.order = i;
+    });
+
+    setHeaderConfig({
+      ...headerConfig,
+      navigation: updatedNav,
+    });
+  }
+
+  // Footer column management functions
+  function addFooterColumn() {
+    if (!footerConfig) return;
+
+    const newColumn = {
+      id: `col-${Date.now()}`,
+      title: "New Column",
+      order: footerConfig.columns.length,
+      isEnabled: true,
+      links: [],
+    };
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: [...footerConfig.columns, newColumn],
+    });
+  }
+
+  function updateFooterColumn(index: number, updates: any) {
+    if (!footerConfig) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    updatedColumns[index] = { ...updatedColumns[index], ...updates };
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
+  function deleteFooterColumn(index: number) {
+    if (!footerConfig) return;
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: footerConfig.columns.filter((_, i) => i !== index),
+    });
+  }
+
+  function moveFooterColumn(index: number, direction: "up" | "down") {
+    if (!footerConfig) return;
+
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= footerConfig.columns.length) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    [updatedColumns[index], updatedColumns[newIndex]] = [
+      updatedColumns[newIndex],
+      updatedColumns[index],
+    ];
+
+    updatedColumns.forEach((col, i) => {
+      col.order = i;
+    });
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
+  // Footer link management functions
+  function addFooterLink(columnIndex: number) {
+    if (!footerConfig) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    const column = updatedColumns[columnIndex];
+
+    const newLink = {
+      id: `link-${Date.now()}`,
+      label: "New Link",
+      url: "/",
+      order: column.links.length,
+      isEnabled: true,
+    };
+
+    column.links.push(newLink);
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
+  function updateFooterLink(columnIndex: number, linkIndex: number, updates: any) {
+    if (!footerConfig) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    const column = updatedColumns[columnIndex];
+
+    if (column.links[linkIndex]) {
+      column.links[linkIndex] = { ...column.links[linkIndex], ...updates };
+    }
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
+  function deleteFooterLink(columnIndex: number, linkIndex: number) {
+    if (!footerConfig) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    const column = updatedColumns[columnIndex];
+
+    column.links = column.links.filter((_, i) => i !== linkIndex);
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
+  function moveFooterLink(columnIndex: number, linkIndex: number, direction: "up" | "down") {
+    if (!footerConfig) return;
+
+    const updatedColumns = [...footerConfig.columns];
+    const column = updatedColumns[columnIndex];
+
+    const newIndex = direction === "up" ? linkIndex - 1 : linkIndex + 1;
+    if (newIndex < 0 || newIndex >= column.links.length) return;
+
+    [column.links[linkIndex], column.links[newIndex]] = [
+      column.links[newIndex],
+      column.links[linkIndex],
+    ];
+
+    column.links.forEach((link, i) => {
+      link.order = i;
+    });
+
+    setFooterConfig({
+      ...footerConfig,
+      columns: updatedColumns,
+    });
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -640,6 +863,119 @@ export default function HeaderFooterManager() {
                               <Label>Open in New Tab</Label>
                             </div>
                           </div>
+
+                          {/* Sub-items section */}
+                          {(item.type === "dropdown" || item.type === "megamenu") && (
+                            <div className="mt-4 pt-4 border-t">
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="font-semibold text-sm">Sub-items</h4>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => addSubItem(index)}
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Add Sub-item
+                                </Button>
+                              </div>
+
+                              {item.children && item.children.length > 0 ? (
+                                <div className="space-y-2">
+                                  {item.children.map((subItem, subIndex) => (
+                                    <div
+                                      key={subItem.id}
+                                      className="p-3 bg-muted rounded-md space-y-2"
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium">{subItem.label}</span>
+                                        <div className="flex items-center gap-1">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => moveSubItem(index, subIndex, "up")}
+                                            disabled={subIndex === 0}
+                                          >
+                                            <ChevronUp className="h-3 w-3" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => moveSubItem(index, subIndex, "down")}
+                                            disabled={subIndex === item.children!.length - 1}
+                                          >
+                                            <ChevronDown className="h-3 w-3" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => deleteSubItem(index, subIndex)}
+                                          >
+                                            <Trash2 className="h-3 w-3 text-destructive" />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        <div className="space-y-1">
+                                          <Label className="text-xs">Label</Label>
+                                          <Input
+                                            value={subItem.label}
+                                            onChange={(e) =>
+                                              updateSubItem(index, subIndex, {
+                                                label: e.target.value,
+                                              })
+                                            }
+                                            className="h-8 text-sm"
+                                          />
+                                        </div>
+                                        <div className="space-y-1">
+                                          <Label className="text-xs">URL</Label>
+                                          <Input
+                                            value={subItem.url}
+                                            onChange={(e) =>
+                                              updateSubItem(index, subIndex, {
+                                                url: e.target.value,
+                                              })
+                                            }
+                                            className="h-8 text-sm"
+                                          />
+                                        </div>
+                                      </div>
+                                      {subItem.description !== undefined && (
+                                        <div className="space-y-1">
+                                          <Label className="text-xs">Description</Label>
+                                          <Input
+                                            value={subItem.description || ""}
+                                            onChange={(e) =>
+                                              updateSubItem(index, subIndex, {
+                                                description: e.target.value,
+                                              })
+                                            }
+                                            className="h-8 text-sm"
+                                            placeholder="Optional description"
+                                          />
+                                        </div>
+                                      )}
+                                      <div className="flex items-center space-x-2">
+                                        <Switch
+                                          checked={subItem.isEnabled}
+                                          onCheckedChange={(checked) =>
+                                            updateSubItem(index, subIndex, {
+                                              isEnabled: checked,
+                                            })
+                                          }
+                                        />
+                                        <Label className="text-xs">Enabled</Label>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-sm text-muted-foreground text-center py-4">
+                                  No sub-items yet. Click "Add Sub-item" to create one.
+                                </p>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </Card>
                     ))
@@ -743,6 +1079,201 @@ export default function HeaderFooterManager() {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Footer Columns */}
+          {footerConfig && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Footer Columns</CardTitle>
+                    <CardDescription>Manage footer link columns</CardDescription>
+                  </div>
+                  <Button onClick={addFooterColumn}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Column
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {footerConfig.columns.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No footer columns yet. Click "Add Column" to create one.
+                  </div>
+                ) : (
+                  footerConfig.columns.map((column, colIndex) => (
+                    <Card key={column.id} className="p-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant={column.isEnabled ? "default" : "secondary"}>
+                              {column.isEnabled ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                            </Badge>
+                            <span className="font-semibold">{column.title}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveFooterColumn(colIndex, "up")}
+                              disabled={colIndex === 0}
+                            >
+                              <ChevronUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveFooterColumn(colIndex, "down")}
+                              disabled={colIndex === footerConfig.columns.length - 1}
+                            >
+                              <ChevronDown className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteFooterColumn(colIndex)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Column Title</Label>
+                            <Input
+                              value={column.title}
+                              onChange={(e) =>
+                                updateFooterColumn(colIndex, { title: e.target.value })
+                              }
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              checked={column.isEnabled}
+                              onCheckedChange={(checked) =>
+                                updateFooterColumn(colIndex, { isEnabled: checked })
+                              }
+                            />
+                            <Label>Enabled</Label>
+                          </div>
+                        </div>
+
+                        {/* Links section */}
+                        <div className="mt-4 pt-4 border-t">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-sm">Links</h4>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addFooterLink(colIndex)}
+                            >
+                              <Plus className="h-3 w-3 mr-1" />
+                              Add Link
+                            </Button>
+                          </div>
+
+                          {column.links && column.links.length > 0 ? (
+                            <div className="space-y-2">
+                              {column.links.map((link, linkIndex) => (
+                                <div
+                                  key={link.id}
+                                  className="p-3 bg-muted rounded-md space-y-2"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium">{link.label}</span>
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => moveFooterLink(colIndex, linkIndex, "up")}
+                                        disabled={linkIndex === 0}
+                                      >
+                                        <ChevronUp className="h-3 w-3" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => moveFooterLink(colIndex, linkIndex, "down")}
+                                        disabled={linkIndex === column.links.length - 1}
+                                      >
+                                        <ChevronDown className="h-3 w-3" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => deleteFooterLink(colIndex, linkIndex)}
+                                      >
+                                        <Trash2 className="h-3 w-3 text-destructive" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Label</Label>
+                                      <Input
+                                        value={link.label}
+                                        onChange={(e) =>
+                                          updateFooterLink(colIndex, linkIndex, {
+                                            label: e.target.value,
+                                          })
+                                        }
+                                        className="h-8 text-sm"
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">URL</Label>
+                                      <Input
+                                        value={link.url}
+                                        onChange={(e) =>
+                                          updateFooterLink(colIndex, linkIndex, {
+                                            url: e.target.value,
+                                          })
+                                        }
+                                        className="h-8 text-sm"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <div className="flex items-center space-x-2">
+                                      <Switch
+                                        checked={link.isEnabled}
+                                        onCheckedChange={(checked) =>
+                                          updateFooterLink(colIndex, linkIndex, {
+                                            isEnabled: checked,
+                                          })
+                                        }
+                                      />
+                                      <Label className="text-xs">Enabled</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                      <Switch
+                                        checked={link.openInNewTab || false}
+                                        onCheckedChange={(checked) =>
+                                          updateFooterLink(colIndex, linkIndex, {
+                                            openInNewTab: checked,
+                                          })
+                                        }
+                                      />
+                                      <Label className="text-xs">Open in New Tab</Label>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground text-center py-4">
+                              No links yet. Click "Add Link" to create one.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                )}
               </CardContent>
             </Card>
           )}
