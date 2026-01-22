@@ -100,10 +100,18 @@ export default function HeaderFooterManager() {
         shadow: true,
       },
       animation: {
-        enabled: true,
         type: "fade",
         duration: 300,
+        easing: "ease",
+        dropdownAnimation: "fade",
+        hoverEffect: "underline",
       },
+      mobileMenu: {
+        breakpoint: 768,
+        animation: "slide-left",
+        overlayColor: "rgba(0, 0, 0, 0.5)",
+      },
+      createdBy: "system",
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     };
@@ -114,22 +122,36 @@ export default function HeaderFooterManager() {
       name: "Main Footer",
       isActive: true,
       columns: [],
-      bottomBar: {
-        copyright: "© 2026 Strategic Value Plus. All rights reserved.",
-        links: [],
-      },
       style: {
         backgroundColor: "#1f2937",
         textColor: "#ffffff",
         linkColor: "#60a5fa",
+        linkHoverColor: "#93c5fd",
       },
+      social: {
+        enabled: false,
+        platforms: [],
+        animation: "scale",
+      },
+      copyright: {
+        text: "© 2026 Strategic Value Plus. All rights reserved.",
+        year: "auto",
+      },
+      newsletter: {
+        enabled: false,
+        title: "Subscribe to our newsletter",
+        description: "Get the latest updates",
+        placeholder: "Enter your email",
+        buttonText: "Subscribe",
+      },
+      createdBy: "system",
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     };
   }
 
   async function saveHeaderConfig() {
-    if (!headerConfig) return;
+    if (!headerConfig || !db) return;
 
     setIsSaving(true);
     try {
@@ -155,7 +177,7 @@ export default function HeaderFooterManager() {
   }
 
   async function saveFooterConfig() {
-    if (!footerConfig) return;
+    if (!footerConfig || !db) return;
 
     setIsSaving(true);
     try {
@@ -550,14 +572,14 @@ export default function HeaderFooterManager() {
                 <div className="space-y-2">
                   <Label>Copyright Text</Label>
                   <Input
-                    value={footerConfig.bottomBar?.copyright || ""}
+                    value={footerConfig.copyright?.text || ""}
                     onChange={(e) =>
                       setFooterConfig({
                         ...footerConfig,
-                        bottomBar: {
-                          ...footerConfig.bottomBar,
-                          copyright: e.target.value,
-                          links: footerConfig.bottomBar?.links || [],
+                        copyright: {
+                          ...footerConfig.copyright,
+                          text: e.target.value,
+                          year: footerConfig.copyright?.year || "auto",
                         },
                       })
                     }
