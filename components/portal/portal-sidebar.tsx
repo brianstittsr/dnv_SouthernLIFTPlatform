@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/collapsible";
 import {
   Factory,
+  Layout,
   LayoutDashboard,
   Target,
   FolderKanban,
@@ -540,6 +541,11 @@ const svpAdminItems = [
     href: "/portal/admin/page-designer",
     icon: Wand2,
     badge: "AI",
+  },
+  {
+    title: "Header & Footer",
+    href: "/portal/admin/header-footer",
+    icon: Layout,
   },
   {
     title: "Image Manager",
