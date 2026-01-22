@@ -32,41 +32,7 @@ export default function AllCohortsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [cleaningUp, setCleaningUp] = useState(false);
-  const [cohorts, setCohorts] = useState([
-    {
-      id: "1",
-      title: "CMMC Level 1 Foundations",
-      facilitator: "CMMC Expert Team",
-      startDate: "2026-02-01",
-      endDate: "2026-04-30",
-      participants: 42,
-      maxParticipants: 50,
-      status: "active",
-      price: 1499
-    },
-    {
-      id: "2",
-      title: "CMMC Level 2 Advanced",
-      facilitator: "CMMC Expert Team",
-      startDate: "2026-03-01",
-      endDate: "2026-06-30",
-      participants: 28,
-      maxParticipants: 40,
-      status: "enrolling",
-      price: 3499
-    },
-    {
-      id: "3",
-      title: "CMMC Level 3 Expert",
-      facilitator: "CMMC Expert Team",
-      startDate: "2026-04-01",
-      endDate: "2026-08-31",
-      participants: 15,
-      maxParticipants: 25,
-      status: "enrolling",
-      price: 5999
-    }
-  ]);
+  const [cohorts, setCohorts] = useState<any[]>([]);
 
   useEffect(() => {
     if (useMockData) {
@@ -84,17 +50,27 @@ export default function AllCohortsPage() {
 
   const loadRealData = async () => {
     if (!db) {
+      console.log("Firebase not initialized, loading mock data");
       loadMockData();
       return;
     }
 
     try {
       setLoading(true);
+      console.log("Fetching cohorts from Firebase...");
       const snapshot = await getDocs(collection(db, "cohorts"));
       const cohortsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log(`Loaded ${cohortsData.length} cohorts from Firebase:`, cohortsData);
+      
+      if (cohortsData.length === 0) {
+        console.warn("No cohorts found in Firebase. Database may be empty.");
+        toast.info("No cohorts found in database. Create your first cohort to get started!");
+      }
+      
       setCohorts(cohortsData as any);
     } catch (error) {
       console.error("Error loading cohorts:", error);
+      toast.error("Failed to load cohorts from database");
       loadMockData();
     } finally {
       setLoading(false);
