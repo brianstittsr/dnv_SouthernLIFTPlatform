@@ -180,7 +180,7 @@ export default function AllCohortsPage() {
               "Remove Duplicates"
             )}
           </Button>
-          <Button>
+          <Button onClick={() => router.push("/portal/admin/cohorts/new")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Cohort
           </Button>

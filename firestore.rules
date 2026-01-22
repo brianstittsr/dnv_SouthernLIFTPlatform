@@ -2,9 +2,237 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // TEMPORARY: Allow all authenticated users full access for initial setup
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isInstructor() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'cmmc_instructor'];
+    }
+    
+    function isSMEUser() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'sme_user';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // ==================== COHORTS ====================
+    match /cohorts/{cohortId} {
+      // Anyone authenticated can read published cohorts
+      allow read: if isAuthenticated() && 
+        (resource.data.isPublished == true || isAdmin() || isInstructor());
+      
+      // Only admins and instructors can create cohorts
+      allow create: if isInstructor();
+      
+      // Only admins and the cohort's instructor can update
+      allow update: if isAdmin() || 
+        (isInstructor() && resource.data.facilitatorId == request.auth.uid);
+      
+      // Only admins can delete cohorts
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== COHORT MODULES ====================
+    match /cohort_modules/{moduleId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isInstructor();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== COHORT SESSIONS ====================
+    match /cohort_sessions/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isInstructor();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== COHORT MEMBERSHIPS ====================
+    match /cohort_memberships/{membershipId} {
+      // Users can read their own memberships, admins/instructors can read all
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isInstructor());
+      
+      // Memberships created via enrollment API (server-side)
+      allow create: if isAuthenticated();
+      
+      // Only admins can update memberships (status changes, etc.)
+      allow update: if isAdmin() || 
+        (isAuthenticated() && resource.data.userId == request.auth.uid);
+      
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== SESSION PROGRESS ====================
+    match /cohort_session_progress/{progressId} {
+      // Users can read/write their own progress
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isInstructor());
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== CERTIFICATES ====================
+    match /cohort_certificates/{certificateId} {
+      // Users can read their own certificates, public verification allowed
+      allow read: if isAuthenticated();
+      
+      // Only system/admin can create certificates
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== DISCUSSIONS ====================
+    match /cohort_discussions/{discussionId} {
+      allow read: if isAuthenticated();
+      
+      // Enrolled users can create discussions
+      allow create: if isAuthenticated();
+      
+      // Authors can update their own discussions
+      allow update: if isAuthenticated() && 
+        (resource.data.authorId == request.auth.uid || isInstructor());
+      
+      allow delete: if isAdmin() || 
+        (isAuthenticated() && resource.data.authorId == request.auth.uid);
+    }
+    
+    // ==================== DISCUSSION REPLIES ====================
+    match /cohort_discussion_replies/{replyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      
+      allow update: if isAuthenticated() && 
+        resource.data.authorId == request.auth.uid;
+      
+      allow delete: if isAdmin() || 
+        (isAuthenticated() && resource.data.authorId == request.auth.uid);
+    }
+    
+    // ==================== LIVE TRAININGS ====================
+    match /cohort_live_trainings/{trainingId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isInstructor();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== TRAINING REGISTRATIONS ====================
+    match /cohort_training_registrations/{registrationId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isInstructor());
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== WAITLIST ====================
+    match /cohort_waitlist/{waitlistId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== NOTIFICATIONS ====================
+    match /cohort_notifications/{notificationId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || resource.data.userId == null || isAdmin());
+      
+      allow create: if isInstructor();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== STATE TRANSITIONS (Audit Log) ====================
+    match /cohort_state_transitions/{transitionId} {
+      allow read: if isAdmin();
+      allow create: if isInstructor();
+      allow update, delete: if false; // Immutable audit log
+    }
+    
+    // ==================== COHORT TEMPLATES ====================
+    match /cohort_templates/{templateId} {
+      allow read: if isInstructor();
+      allow create, update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    match /cohort_template_modules/{moduleId} {
+      allow read: if isInstructor();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    match /cohort_template_sessions/{sessionId} {
+      allow read: if isInstructor();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== OTHER COLLECTIONS ====================
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Team members
+    match /team_members/{memberId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Header/Footer configs
+    match /header_configs/{configId} {
+      allow read: if true; // Public read for site navigation
+      allow create, update, delete: if isAdmin();
+    }
+    
+    match /footer_configs/{configId} {
+      allow read: if true; // Public read for site footer
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Email queue (server-side only)
+    match /emailQueue/{emailId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // Audit logs
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Immutable
+    }
+    
+    // Fallback: Deny all other access
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
     }
   }
 }
