@@ -12,6 +12,7 @@ interface TeamMember {
   title: string;
   initials: string;
   imageName: string;
+  imageUrl?: string;
   bio: string;
 }
 
@@ -25,11 +26,18 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
 
   useEffect(() => {
     loadMemberImage();
-  }, [member.imageName]);
+  }, [member.imageName, member.imageUrl]);
 
   async function loadMemberImage() {
     try {
       setIsLoading(true);
+      
+      // If direct imageUrl is provided, use it
+      if (member.imageUrl) {
+        setImageUrl(member.imageUrl);
+        setIsLoading(false);
+        return;
+      }
       
       // Try to load from Firebase Image Manager
       const images = await listImages("team");

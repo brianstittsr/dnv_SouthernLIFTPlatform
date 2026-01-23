@@ -15,6 +15,7 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
+    imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
     bio: "Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting.",
     fullBio: `Keith Moore serves as the Chief Executive Officer of KDM & Associates, bringing extensive experience in government contracting and business development. With a deep commitment to empowering minority-owned businesses, Keith leads the organization's strategic vision and growth initiatives.
 

@@ -20,6 +20,7 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
+    imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
     bio: "Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting."
   },
   {
