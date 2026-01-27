@@ -230,6 +230,49 @@ service cloud.firestore {
       allow update, delete: if false; // Immutable
     }
     
+    // ==================== PARTNER REVENUE SHARING ====================
+    // Partner profiles - admin only for management
+    match /partnerProfiles/{profileId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Partner attributions - tracks commission attributions per transaction
+    match /partnerAttributions/{attributionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated(); // Created by webhook/system
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Partner commissions - individual commission records
+    match /partnerCommissions/{commissionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated(); // Created by webhook/system
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Commission tiers - configurable commission rate tiers
+    match /commissionTiers/{tierId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Partner payouts - payout records and history
+    match /partnerPayouts/{payoutId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated(); // Created by system
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Revenue sharing config - global configuration
+    match /revenueSharingConfig/{configId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();
