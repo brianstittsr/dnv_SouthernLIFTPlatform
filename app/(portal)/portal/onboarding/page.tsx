@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db } from "@/lib/firebase";
@@ -25,7 +25,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { profile } = useUserProfile();
@@ -247,5 +247,17 @@ export default function OnboardingPage() {
       onComplete={handleComplete}
       onDismiss={handleDismiss}
     />
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <OnboardingContent />
+    </Suspense>
   );
 }

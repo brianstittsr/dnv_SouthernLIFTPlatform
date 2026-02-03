@@ -95,7 +95,7 @@
       "id": "cta-session",
       "type": "cta-banner",
       "content": {
-        "title": "Schedule an MBE Introductory Session",
+        "title": "Schedule an Introductory Session",
         "cta": { "label": "Join to get started", "href": "/contact" }
       }
     },
@@ -104,7 +104,7 @@
       "type": "cta-banner",
       "content": {
         "title": "Become a KDM & Associates \"What Works\" Solution Provider",
-        "description": "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support MBEs on their journey to sustainability and success.",
+        "description": "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support small businesses on their journey to sustainability and success.",
         "cta": { "label": "Click here to get started", "href": "/register" }
       }
     }

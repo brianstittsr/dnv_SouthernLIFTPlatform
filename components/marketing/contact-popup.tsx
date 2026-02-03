@@ -65,7 +65,7 @@ export const defaultPopupConfig: PopupConfig = {
     { id: "phone", type: "phone", label: "Phone", placeholder: "Phone", required: true, enabled: true },
   ],
   productOptions: [
-    "Emerging Small Business",
+    "Small Business",
     "Solution Provider",
   ],
   productLabel: "I am a:",

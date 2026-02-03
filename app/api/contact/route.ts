@@ -55,9 +55,9 @@ export async function POST(request: NextRequest) {
     try {
       await sendEmail({
         to: adminEmail,
-        subject: `New MBE Session Request from ${body.firstName} ${body.lastName}`,
+        subject: `New Session Request from ${body.firstName} ${body.lastName}`,
         html: `
-          <h1>New MBE Session Request</h1>
+          <h1>New Session Request</h1>
           <p>A new contact form submission has been received:</p>
           <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
             <tr>
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
           </table>
           <p style="margin-top: 20px;">Please respond within 24 hours.</p>
         `,
-        text: `New MBE Session Request from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
+        text: `New Session Request from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
       });
     } catch (emailError) {
       console.error("Failed to send notification email:", emailError);
@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
         subject: "Thank you for contacting KDM & Associates",
         html: `
           <h1>Thank you for reaching out, ${body.firstName}!</h1>
-          <p>We've received your request for an MBE introductory session and one of our government contracting experts will contact you within 24 hours.</p>
+          <p>We've received your request for an introductory session and one of our government contracting experts will contact you within 24 hours.</p>
           <p><strong>What happens next?</strong></p>
           <ul>
             <li>A member of our team will review your information</li>
