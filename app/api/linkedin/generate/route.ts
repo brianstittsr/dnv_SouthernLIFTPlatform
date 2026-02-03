@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 interface GenerateRequest {
   topic: string;
@@ -43,6 +38,12 @@ export async function POST(request: NextRequest) {
       // Return mock data for development
       return NextResponse.json(generateMockContent(topic, tone, length));
     }
+
+    // Dynamically import and instantiate OpenAI only when needed
+    const OpenAI = (await import("openai")).default;
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const maxTokens = LENGTH_TOKENS[length] || 2500;
     const toneInstruction = TONE_INSTRUCTIONS[tone] || TONE_INSTRUCTIONS.professional;

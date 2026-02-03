@@ -19,14 +19,55 @@ import {
 } from "lucide-react";
 import { getWhatWorksArticleBySlug, type WhatWorksArticle } from "@/lib/what-works-data";
 
+interface FirebaseArticle {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  content: string;
+  category: string;
+  featuredImage: string;
+  videoUrl?: string;
+  videoId?: string;
+  author: string;
+  tags: string[];
+  publishedAt: string;
+  viewCount: number;
+}
+
+async function getArticleFromFirebase(slug: string): Promise<FirebaseArticle | null> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/what-works/${slug}`, {
+      cache: 'no-store',
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching from Firebase:', error);
+  }
+  return null;
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getWhatWorksArticleBySlug(slug);
   
+  // Try Firebase first
+  const firebaseArticle = await getArticleFromFirebase(slug);
+  if (firebaseArticle) {
+    return {
+      title: `${firebaseArticle.title} - What Works`,
+      description: firebaseArticle.description,
+    };
+  }
+  
+  // Fallback to static data
+  const article = getWhatWorksArticleBySlug(slug);
   if (!article) {
     return {
       title: "Article Not Found",
@@ -66,11 +107,46 @@ function PodcastPlayer({ podcastUrl, title }: { podcastUrl: string; title: strin
 
 export default async function WhatWorksArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const article = getWhatWorksArticleBySlug(slug);
+  
+  // Try Firebase first
+  const firebaseArticle = await getArticleFromFirebase(slug);
+  const staticArticle = getWhatWorksArticleBySlug(slug);
+  
+  // Use Firebase article if available, otherwise static
+  const article = firebaseArticle || staticArticle;
 
   if (!article) {
     notFound();
   }
+  
+  // Helper functions to handle both article types
+  const getExcerpt = () => {
+    if ('excerpt' in article) return article.excerpt;
+    if ('description' in article) return article.description;
+    return '';
+  };
+  
+  const getPublishedDate = () => {
+    if ('publishedDate' in article) return new Date(article.publishedDate);
+    if ('publishedAt' in article) return new Date(article.publishedAt);
+    return new Date();
+  };
+  
+  const getVideoEmbedId = () => {
+    if ('videoEmbedId' in article) return article.videoEmbedId;
+    if ('videoId' in article) return article.videoId;
+    return undefined;
+  };
+  
+  const getPodcastUrl = () => {
+    if ('podcastUrl' in article) return article.podcastUrl;
+    return undefined;
+  };
+  
+  const getDuration = () => {
+    if ('duration' in article) return article.duration;
+    return undefined;
+  };
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareText = article.title;
@@ -78,11 +154,11 @@ export default async function WhatWorksArticlePage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-900 to-green-700 text-white py-12">
+      <section className="bg-[#b8b5e4] text-gray-900 py-12">
         <div className="container mx-auto px-4">
           <Link 
             href="/what-works" 
-            className="inline-flex items-center text-sm text-green-100 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center text-sm text-gray-700 hover:text-gray-900 mb-6 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to What Works
@@ -91,24 +167,24 @@ export default async function WhatWorksArticlePage({ params }: PageProps) {
             <Badge variant="secondary" className="text-base px-3 py-1">
               {article.category}
             </Badge>
-            {article.duration && (
-              <Badge variant="outline" className="border-white text-white">
+            {getDuration() && (
+              <Badge variant="outline" className="border-gray-700 text-gray-700">
                 <Clock className="h-3 w-3 mr-1" />
-                {article.duration}
+                {getDuration()}
               </Badge>
             )}
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {article.title}
           </h1>
-          <div className="flex items-center gap-4 text-green-100">
+          <div className="flex items-center gap-4 text-gray-700">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
               {article.author}
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              {format(article.publishedDate, 'MMMM d, yyyy')}
+              {format(getPublishedDate(), 'MMMM d, yyyy')}
             </div>
           </div>
         </div>
@@ -118,25 +194,25 @@ export default async function WhatWorksArticlePage({ params }: PageProps) {
       <section className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Video/Podcast Player */}
-          {article.videoEmbedId && (
+          {getVideoEmbedId() && (
             <div className="mb-8">
-              <VideoPlayer videoEmbedId={article.videoEmbedId} title={article.title} />
+              <VideoPlayer videoEmbedId={getVideoEmbedId()!} title={article.title} />
             </div>
           )}
 
-          {article.podcastUrl && !article.videoEmbedId && (
+          {getPodcastUrl() && !getVideoEmbedId() && (
             <div className="mb-8">
               <Card>
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold mb-4">Listen to Podcast</h3>
-                  <PodcastPlayer podcastUrl={article.podcastUrl} title={article.title} />
+                  <PodcastPlayer podcastUrl={getPodcastUrl()!} title={article.title} />
                 </CardContent>
               </Card>
             </div>
           )}
 
           {/* Featured Image (if no video) */}
-          {!article.videoEmbedId && article.featuredImage && (
+          {!getVideoEmbedId() && article.featuredImage && (
             <div className="mb-8">
               <img
                 src={article.featuredImage}
@@ -149,7 +225,7 @@ export default async function WhatWorksArticlePage({ params }: PageProps) {
           {/* Excerpt */}
           <div className="mb-8">
             <p className="text-xl text-muted-foreground leading-relaxed">
-              {article.excerpt}
+              {getExcerpt()}
             </p>
           </div>
 
