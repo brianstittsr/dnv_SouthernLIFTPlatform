@@ -19,9 +19,11 @@ interface UpdateDraftData {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     if (!db) {
       return NextResponse.json(
         { error: "Database not initialized" },
@@ -29,7 +31,7 @@ export async function GET(
       );
     }
 
-    const docRef = doc(db, "linkedinArticles", params.id);
+    const docRef = doc(db, "linkedinArticles", id);
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -59,9 +61,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     if (!db) {
       return NextResponse.json(
         { error: "Database not initialized" },
@@ -70,7 +74,7 @@ export async function PUT(
     }
 
     const body: UpdateDraftData = await request.json();
-    const docRef = doc(db, "linkedinArticles", params.id);
+    const docRef = doc(db, "linkedinArticles", id);
 
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
@@ -119,9 +123,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     if (!db) {
       return NextResponse.json(
         { error: "Database not initialized" },
@@ -129,7 +135,7 @@ export async function DELETE(
       );
     }
 
-    const docRef = doc(db, "linkedinArticles", params.id);
+    const docRef = doc(db, "linkedinArticles", id);
     
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
@@ -141,7 +147,7 @@ export async function DELETE(
 
     await deleteDoc(docRef);
 
-    return NextResponse.json({ success: true, id: params.id });
+    return NextResponse.json({ success: true, id });
   } catch (error) {
     console.error("Error deleting draft:", error);
     return NextResponse.json(
