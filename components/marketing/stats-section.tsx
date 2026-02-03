@@ -5,11 +5,11 @@ import { Building2, Users, DollarSign, Handshake } from "lucide-react";
 
 const stats = [
   {
-    label: "MBE Clients",
-    value: 300,
-    suffix: "+",
+    label: "Clients",
+    value: 475,
+    suffix: "",
     icon: Building2,
-    description: "Minority Business Enterprises served",
+    description: "Small emerging businesses served",
   },
   {
     label: "Shared Outcome Agreements",
@@ -28,7 +28,7 @@ const stats = [
   },
   {
     label: "Resource Partners",
-    value: 100,
+    value: 30,
     suffix: "+",
     icon: Users,
     description: "Services and resource network",

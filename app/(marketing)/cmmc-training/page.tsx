@@ -48,6 +48,28 @@ export default function CMMCTrainingPage() {
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
+            {/* V+ and KDM Collaboration Logos */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center gap-6 md:gap-10">
+                <Image
+                  src="/VPlus_logo.webp"
+                  alt="Strategic Value Plus"
+                  width={150}
+                  height={60}
+                  className="object-contain h-12 md:h-16 w-auto"
+                />
+                <Image
+                  src="/cmmc-training/kdm-logo.png"
+                  alt="KDM & Associates"
+                  width={200}
+                  height={60}
+                  className="object-contain h-12 md:h-16 w-auto"
+                />
+              </div>
+              <span className="text-sm md:text-base text-blue-200 font-medium tracking-wider uppercase">
+                Collaboration
+              </span>
+            </div>
             <Badge variant="secondary" className="text-lg px-6 py-2">
               <Shield className="h-5 w-5 mr-2 inline" />
               Phase 1 Enforcement Active - November 2025

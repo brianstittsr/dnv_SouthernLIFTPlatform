@@ -33,7 +33,7 @@ const defaultSlides: HeroSlide[] = [
     badge: "Strategic Partnership Announcement",
     headline: "Strategic Value+ &",
     highlightedText: "KDM Associates",
-    subheadline: "Two industry leaders unite to deliver unparalleled support for minority-owned businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
+    subheadline: "Two industry leaders unite to deliver unparalleled support for small emerging businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
     benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
     primaryCta: { text: "Discover the Partnership", href: "/about" },
     secondaryCta: { text: "Get Started", href: "/contact" },
@@ -47,7 +47,7 @@ const defaultSlides: HeroSlide[] = [
     highlightedText: "Emerging",
     subheadline: "KDM & Associates focuses on best practices in government contracting. We call it \"What Works\" because it drives greater success for Small Businesses.",
     benefits: ["Federal Contract Opportunities", "Strategic Teaming", "Government Introductions"],
-    primaryCta: { text: "Schedule MBE Session", href: "/contact" },
+    primaryCta: { text: "Schedule Introductory Session", href: "/contact" },
     secondaryCta: { text: "Learn More", href: "/about" },
     isPublished: true,
     order: 1,
@@ -57,7 +57,7 @@ const defaultSlides: HeroSlide[] = [
     badge: "Government Contracting Services",
     headline: "Build, Grow &",
     highlightedText: "Scale",
-    subheadline: "We help minority-owned businesses navigate the government procurement process and win government contracts through strategic teaming and capacity building.",
+    subheadline: "We help small emerging businesses navigate the government procurement process and win government contracts through strategic teaming and capacity building.",
     benefits: ["8(a) & WOSB Guidance", "Mentor-Protégé Programs", "SBA Certifications"],
     primaryCta: { text: "Get Started", href: "/contact" },
     secondaryCta: { text: "View Services", href: "/services" },
@@ -69,9 +69,9 @@ const defaultSlides: HeroSlide[] = [
     badge: "What Works Solutions",
     headline: "Drive Next Level",
     highlightedText: "Results",
-    subheadline: "Our team offers a range of free and premium services to help scale success for MBEs once they join as KDM Members through our digital hub.",
+    subheadline: "Our team offers a range of free and premium services to help scale success for small businesses once they join as KDM Members through our digital hub.",
     benefits: ["Digital Solutions", "Technology Integration", "Proposal Support"],
-    primaryCta: { text: "Become a Member", href: "/sign-up" },
+    primaryCta: { text: "Become a KDM Consortium Member", href: "/sign-up" },
     secondaryCta: { text: "Explore Services", href: "/services" },
     isPublished: true,
     order: 3,
@@ -81,7 +81,7 @@ const defaultSlides: HeroSlide[] = [
     badge: "Solution Provider Network",
     headline: "Join Our",
     highlightedText: "Community",
-    subheadline: "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support MBEs on their journey to sustainability and success.",
+    subheadline: "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support small businesses on their journey to sustainability and success.",
     benefits: ["Partner Network", "Resource Sharing", "Collaborative Growth"],
     primaryCta: { text: "Become a Provider", href: "/partners" },
     secondaryCta: { text: "Contact Us", href: "/contact" },
@@ -129,9 +129,9 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
   const currentSlide = publishedSlides[currentIndex];
 
   return (
-    <section className="relative overflow-hidden bg-black text-white">
+    <section className="relative overflow-hidden bg-[#b8b5e4] text-gray-900">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#a8a4d9_1px,transparent_1px),linear-gradient(to_bottom,#a8a4d9_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
       
       <div className="relative py-20 md:py-32 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
@@ -149,7 +149,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
             </h1>
 
             {/* Subheadline */}
-            <p className="mt-6 text-lg text-gray-300 md:text-xl max-w-2xl mx-auto">
+            <p className="mt-6 text-lg text-gray-700 md:text-xl max-w-2xl mx-auto">
               {currentSlide.subheadline}
             </p>
 
@@ -180,7 +180,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
               {/* Prev Button */}
               <button
                 onClick={() => { goToPrev(); setIsAutoPlaying(false); }}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="p-2 rounded-full bg-gray-800/10 hover:bg-gray-800/20 transition-colors"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -196,7 +196,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
                       "w-3 h-3 rounded-full transition-all duration-300",
                       index === currentIndex
                         ? "bg-primary w-8"
-                        : "bg-white/30 hover:bg-white/50"
+                        : "bg-gray-400 hover:bg-gray-500"
                     )}
                     aria-label={`Go to slide ${index + 1}`}
                   />
@@ -206,7 +206,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
               {/* Next Button */}
               <button
                 onClick={() => { goToNext(); setIsAutoPlaying(false); }}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="p-2 rounded-full bg-gray-800/10 hover:bg-gray-800/20 transition-colors"
                 aria-label="Next slide"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -215,28 +215,28 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
           )}
 
           {/* Trust Indicators */}
-          <div className="mt-16 pt-8 border-t border-white/10">
-            <p className="text-sm text-gray-400 mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
+          <div className="mt-16 pt-8 border-t border-[#7c3aed]/30">
+            <p className="text-sm text-[#4c1d95] mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">300+</span>
-                <span className="text-xs text-gray-400">MBE Clients</span>
+                <span className="text-lg font-bold text-[#4c1d95]">475</span>
+                <span className="text-xs text-[#4c1d95]/70">Clients</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">14+</span>
-                <span className="text-xs text-gray-400">Shared Outcome Agreements</span>
+                <span className="text-lg font-bold text-[#4c1d95]">14+</span>
+                <span className="text-xs text-[#4c1d95]/70">Shared Outcome Agreements</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">$50B+</span>
-                <span className="text-xs text-gray-400">Contract Transactions</span>
+                <span className="text-lg font-bold text-[#4c1d95]">$50B+</span>
+                <span className="text-xs text-[#4c1d95]/70">Contract Transactions</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">100+</span>
-                <span className="text-xs text-gray-400">Resource Partners</span>
+                <span className="text-lg font-bold text-[#4c1d95]">30+</span>
+                <span className="text-xs text-[#4c1d95]/70">Resource Partners</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">MBDA</span>
-                <span className="text-xs text-gray-400">Federal Procurement Center</span>
+                <span className="text-lg font-bold text-[#4c1d95]">MBDA</span>
+                <span className="text-xs text-[#4c1d95]/70">Federal Procurement Center</span>
               </div>
             </div>
           </div>

@@ -1,0 +1,97 @@
+{
+  "url": "https://kdm-assoc.com/home/events",
+  "slug": "home-events",
+  "title": "Events | KDM & Associates",
+  "pageType": "other",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/home/events",
+    "slug": "home/events",
+    "title": "Events | KDM & Associates",
+    "metaDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "metaKeywords": [],
+    "ogTitle": "KDM & Associates",
+    "ogDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "sections": [
+      {
+        "type": "text",
+        "heading": "MBDA Federal Procurement Center",
+        "content": "MBDA Federal Procurement Center Events no Spotlights added yet",
+        "images": [],
+        "videos": [],
+        "order": 0
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768884045097-4e9hk00et",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884045097-4ny3bormg",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884045097-iqok5caie",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/dot.png",
+        "localPath": null,
+        "alt": "dot",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/events",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 2438,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:40:45.097Z"
+}

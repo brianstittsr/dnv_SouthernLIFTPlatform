@@ -16,6 +16,13 @@ import { COLLECTIONS, type TransactionDoc, type PaymentPlanDoc } from '@/lib/sch
 import { verifyWebhookSignature } from '@/lib/stripe';
 import { sendTemplatedEmail } from '@/lib/email';
 import Stripe from 'stripe';
+import { 
+  getPartnerAttributions, 
+  calculateCommissions, 
+  savePartnerCommissions 
+} from '@/lib/services/partner-attribution.service';
+import { notifyPartners } from '@/lib/services/partner-notifications.service';
+import { processPartnerPayouts } from '@/lib/services/partner-payouts.service';
 
 /**
  * POST /api/stripe/webhooks
@@ -432,7 +439,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     await handlePaymentPlan(transaction, metadata);
   }
 
-  // 3. Original membership logic
+  // 3. Process partner commissions
+  if (transaction) {
+    await processPartnerCommissions(session, transaction, metadata);
+  }
+
+  // 4. Original membership logic
   const customerId = session.customer as string;
   const subscriptionId = session.subscription as string;
 
@@ -470,9 +482,77 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 }
 
-// Disable body parsing for webhook signature verification
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+/**
+ * Process partner commissions for a successful payment
+ */
+async function processPartnerCommissions(
+  session: Stripe.Checkout.Session,
+  transaction: any,
+  metadata: Record<string, string>
+) {
+  try {
+    const clientId = metadata.clientId || metadata.userId || '';
+    const transactionType = metadata.transactionType || metadata.type || 'other';
+    
+    if (!clientId) {
+      console.log('No client ID found for commission processing');
+      return;
+    }
+
+    // 1. Get partner attributions for this client/transaction
+    const attributions = await getPartnerAttributions(clientId, transactionType);
+    
+    if (attributions.length === 0) {
+      console.log('No partner attributions found for client:', clientId);
+      return;
+    }
+
+    // 2. Calculate commissions
+    const commissions = calculateCommissions(transaction.amount, attributions);
+    
+    // 3. Save commission records to Firestore
+    const attributionId = await savePartnerCommissions({
+      transactionId: transaction.id,
+      stripePaymentIntentId: session.payment_intent as string || '',
+      stripeCustomerId: session.customer as string || '',
+      clientId,
+      clientName: session.customer_details?.name || metadata.userName || 'Unknown',
+      clientEmail: session.customer_details?.email || metadata.userEmail || '',
+      transactionType,
+      totalAmount: transaction.amount,
+      currency: transaction.currency || 'USD',
+      attributions: commissions,
+    });
+
+    if (!attributionId) {
+      console.error('Failed to save partner commissions');
+      return;
+    }
+
+    console.log('Partner commissions saved:', attributionId);
+
+    // 4. Send pending notifications to partners
+    await notifyPartners(commissions, 'pending', {
+      transactionId: transaction.id,
+      clientName: session.customer_details?.name || 'Client',
+      totalAmount: transaction.amount,
+    });
+
+    // 5. Process automated payouts (if enabled)
+    const commissionsForPayout = commissions.map(c => ({
+      attributionId,
+      partnerId: c.partnerId,
+      partnerName: c.partnerName,
+      amount: c.amount,
+      contributionType: c.contributionType,
+    }));
+
+    await processPartnerPayouts(commissionsForPayout);
+
+    console.log('Partner commission workflow completed for transaction:', transaction.id);
+  } catch (error) {
+    console.error('Error processing partner commissions:', error);
+    // Don't throw - we don't want to fail the webhook for commission errors
+  }
+}
+

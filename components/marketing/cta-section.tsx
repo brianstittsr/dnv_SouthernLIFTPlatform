@@ -12,7 +12,7 @@ export function CTASection() {
           </h2>
           <p className="mt-6 text-lg opacity-90 max-w-2xl mx-auto">
             Take the first step toward growing your government contracting business. 
-            Schedule an MBE introductory session and discover how KDM & Associates can help you succeed.
+            Schedule an introductory session and discover how KDM & Associates can help you succeed.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
@@ -24,13 +24,13 @@ export function CTASection() {
             >
               <Link href="/contact">
                 <Calendar className="mr-2 h-5 w-5" />
-                Schedule MBE Session
+                Schedule Introductory Session
               </Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="text-lg px-8 border-white/30 text-white hover:bg-white/10"
+              className="text-lg px-8 border-white bg-white/10 text-white hover:bg-white/20"
               asChild
             >
               <Link href="tel:+1-202-469-3423">

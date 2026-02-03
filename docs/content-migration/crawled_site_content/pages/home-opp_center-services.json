@@ -1,0 +1,187 @@
+{
+  "url": "https://kdm-assoc.com/home/opp_center/services",
+  "slug": "home-opp_center-services",
+  "title": "Service Partners | KDM & Associates",
+  "pageType": "services",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/home/opp_center/services",
+    "slug": "home/opp_center/services",
+    "title": "Service Partners | KDM & Associates",
+    "metaDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "metaKeywords": [],
+    "ogTitle": "KDM & Associates",
+    "ogDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "sections": [
+      {
+        "type": "text",
+        "heading": "MBDA Federal Opportunities Center",
+        "content": "MBDA Federal Opportunities Center Service Partners",
+        "images": [
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-1.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-3.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png"
+        ],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "text",
+        "heading": null,
+        "content": ".category-list a { margin-right:20px; font-size: 19px; } .category-list a:hover, .category-list a.active { border-bottom: 4px solid #574de3; } All Contract Opportunities Resource Partners Service Partners Training Center Service Partners Qme Marketplace Why Join the Qme Spotlight Marketplace? &nbsp; &nbsp; A Digital Agency Marketplace Design For SMB&rsquo;s We offer dedicated in-house professionals, expert industry leaders, and partners committed to supporting your business needs, ensuring quality and expertise in every interaction. &nbsp; Trust and Reliability Rely on a trusted 20+year-old agency/marketplace known for its integrity and commitment to excellence. &nbsp; Quality Assurance Experience the highest service standards w... Service Partners Industry",
+        "images": [
+          "https://mbdafpc.s3.amazonaws.com/uploads/services/1718674178.png"
+        ],
+        "videos": [],
+        "order": 1
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768883998058-pbdmra866",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-3ckwfx055",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-3ogrz35vq",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/dot.png",
+        "localPath": null,
+        "alt": "dot",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-l2105e74f",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-1.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-bdgwb2mfs",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-o7ama1d0k",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-3.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-ismexllqp",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883998058-3nwgg0ab4",
+        "sourceUrl": "https://mbdafpc.s3.amazonaws.com/uploads/services/1718674178.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/home/opp_center/services",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 2534,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:39:58.058Z"
+}

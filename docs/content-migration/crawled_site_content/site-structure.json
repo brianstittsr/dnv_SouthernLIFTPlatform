@@ -1,28 +1,508 @@
 {
-  "exportedAt": "2026-01-19T15:14:01.470Z",
-  "totalPages": 4,
-  "totalImages": 5,
-  "totalVideos": 3,
-  "totalDocuments": 3,
+  "exportedAt": "2026-01-20T04:45:43.650Z",
+  "totalPages": 100,
+  "totalImages": 1496,
+  "totalVideos": 16,
+  "totalDocuments": 0,
   "pages": [
     {
-      "url": "https://www.kdm-assoc.com/",
-      "title": "KDM Associates - Quality Management & Compliance Solutions",
+      "url": "https://kdm-assoc.com/",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
       "pageType": "home"
     },
     {
-      "url": "https://www.kdm-assoc.com/about",
-      "title": "About KDM Associates - Our Story & Mission",
+      "url": "https://kdm-assoc.com/",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "home"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/about-us",
+      "title": "About Us | KDM & Associates",
       "pageType": "about"
     },
     {
-      "url": "https://www.kdm-assoc.com/services/iso-certification",
-      "title": "ISO Certification Services - ISO 9001, AS9100, ISO 13485",
+      "url": "https://kdm-assoc.com/page/contact-us",
+      "title": "Contact Us | KDM & Associates",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/our-work",
+      "title": "Our Work | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/all",
+      "title": "All News | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/news-blog",
+      "title": "News/Media | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/what_works",
+      "title": "What Works | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/pr",
+      "title": "Press Releases | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/spotlights",
+      "title": "Spotlights | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/opp_center/all",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/events",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER\t | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/events/all_events/upcomming",
+      "title": "Upcomming Events\t | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/events/all_events/past",
+      "title": "Past Events\t | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/opp_center/training_center",
+      "title": "Training Center | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/opp_center/resources",
+      "title": "Resource Partners | KDM & Associates",
+      "pageType": "resources"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/opp_center/services",
+      "title": "Service Partners | KDM & Associates",
       "pageType": "services"
     },
     {
-      "url": "https://www.kdm-assoc.com/contact",
-      "title": "Contact KDM Associates - Get in Touch",
+      "url": "https://kdm-assoc.com/login",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/events",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER\t | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/jobs",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/breaking-barriers-how-emerging-technologies-are-empowering-minority-owned-businesses-in-government-contracting",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/silicon-valley-banks-failure-a-catalyst-for-innovation-in-minority-owned-tech-companies",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/cyber-security-opportunities-for-minority-business-enterprises-in-government-contracting",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/the-implications-of-chinas-efforts-to-reduce-the-dominance-of-the-us-dollar-on-minority-owned-businesses-a-comprehensive-analysis",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/unlocking-opportunities-for-minority-owned-businesses-in-drone-industry-with-dws-drone-school",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/is-your-business-prepared-for-the-next-cyber-threat",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-april-2023",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-march-2023",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/inclusive-growth-empowering-minority-owned-businesses-to-succeed-in-cybersecurity-and-beyond",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-tdp-trends-reports",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-tdp-generate-ecosystem-maps",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-tdp-ml-tool-demo",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-tdp-generate-solutions",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-tdp-closing-gaps",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/login",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-client-meeting-tips-defense-leadership-forum",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/news",
+      "title": "Business News & Media | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://form.jotform.com/220264793584059",
+      "title": "MBDA Federal Procurement Client Intake Form",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/our-partners",
+      "title": "Our Partners | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/events",
+      "title": "Events | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/privacy-policy",
+      "title": "Privacy Policy | KDM & Associates",
+      "pageType": "legal"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/faq",
+      "title": "FAQ | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/page/term-of-service",
+      "title": "Term of Service | KDM & Associates",
+      "pageType": "services"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/461/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/462/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/537/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/508/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/469/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/470/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/471/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/533/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/472/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/473/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/team_detail/477/8",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "team"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/newsletter",
+      "title": "Newsletters | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/puerto-ricos-agricultural-sector-in-2025-a-strategic-pivot-toward-resilience-and-innovation",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/puerto-ricos-strategic-role-federal-opportunities-emerging-from-counter-cartel-operations",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/us-manufacturing-environmental-progress-a-new-era-of-innovation-and-sustainability",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/why-engaging-educating-empowering-stakeholders-is-vital-for-puerto-ricos-energy-environmental-future",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/puerto-ricos-energy-crossroads-how-leadership-and-the-iaeoz-summit-2025-can-power-a-sustainable-future",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/iaeoz-summit-2024-africa-overview-from-founder-ceo-keith-moore",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://iaeozsummit.com/",
+      "title": "IAEOZ Summit 2025 Puerto Rico",
+      "pageType": "home"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/mbda-fpc-podcast-series-kimberly-johnston",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/a-legacy-of-transition-resilience-and-what-works",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/mbda-federal-procurement-centers-transition-to-kdm-associates-building-the-future-for-small-and-emerging-federal-contractors",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-international-womens-month-miranda-bouldin",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-is-working-and-what-must-work-better-for-latino-mbes-to-maximize-their-contribution-to-the-gdp-and-the-us-economy",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/all/12",
+      "title": "All News | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/all/24",
+      "title": "All News | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/all/96",
+      "title": "All News | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/american-defense-alliance-and-kdm-associates-collaborate-to-promote-small-business-access-to-governmentdefense-contracting",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/innovation-transforms-government-efficiency-into-what-works",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/resiliency-what-works-for-this-small-business-impacted-by-the-california-wildfire",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/news-blog/12",
+      "title": "News/Media | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/news-blog/24",
+      "title": "News/Media | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/news-blog/60",
+      "title": "News/Media | KDM & Associates",
+      "pageType": "blog"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/gaurrav-bhat-founder-and-ceo-of-talin-labs",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/podcast-change-with-franklin-covey-director-dr-christi-phillips",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-may-2024-1719241095",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-june-2024",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-march-2024",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/mbda-fpc-womens-history-month-2024-newsletter",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-may-2024",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-news-u-can-use-newsletter-black-history-month-edition",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/what-works-january-newsletter",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/detail/video-what-works-for-mbes-in-the-carbon-capture-tax-credits-industry",
+      "title": "MBDA FEDERAL PROCUREMENT CENTER | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/what_works/12",
+      "title": "What Works | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/activities/what_works/24",
+      "title": "What Works | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/marketing_detail/podcast-with-end-to-end-enterprise-solutions-inc",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/marketing_detail/qme-spotlight-ecosystem-unveils-suites-of-digital-solutions-portal-to-help-drive-business-and-community-growth",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/home/opp_center/opportunities",
+      "title": "Contract Opportunities | KDM & Associates",
+      "pageType": "other"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/z1da-632-15-101-replace-primary-electrical-distro-ph-1",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/saber-idiq-2025-arnold-afb-tn",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/occupational-health-support-services-iii-ohss-iii",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/inventory-management-im-and-warehouse-management-wm-support",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/base-operations-support-bos-services-pittsburgh-ars-pa",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/logistics-it-integration-and-support-liis-capability-modernization-deployment-and-support-cmds-multiple-award-contract-mac",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/business-and-logistics-management-support-services-blmss-pre-rfp",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/contractor-owned-contractor-operated-coco-retail-fuel-services-in-altus-afb-oklahoma",
+      "title": "MBDA Federal Procurement Center Portal",
+      "pageType": "contact"
+    },
+    {
+      "url": "https://kdm-assoc.com/contact-opportunity/gps-engineering-analysis-and-remote-site-sustainment-iii-gearss-iii",
+      "title": "MBDA Federal Procurement Center Portal",
       "pageType": "contact"
     }
   ]

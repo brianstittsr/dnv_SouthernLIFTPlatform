@@ -70,7 +70,7 @@ export function ServicesOverview() {
             With Accredited Subject Matter Experts
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Our team offers a range of services to help scale success for MBEs through our digital hub and expert network.
+            Our team offers a range of services to help scale success for emerging small businesses through our digital hub and expert network.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export function ServicesOverview() {
           </p>
           <Button size="lg" asChild>
             <Link href="/contact">
-              Schedule an MBE Introductory Session
+              Schedule an Introductory Session
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

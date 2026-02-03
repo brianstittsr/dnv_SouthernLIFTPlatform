@@ -14,7 +14,7 @@ const testimonials = [
     title: "CEO",
     company: "Johnson Tech Solutions",
     industry: "IT Services",
-    employees: "MBE Client",
+    employees: "Client",
     initials: "MJ",
   },
   {
@@ -24,7 +24,7 @@ const testimonials = [
     title: "President",
     company: "Williams Consulting Group",
     industry: "Professional Services",
-    employees: "MBE Client",
+    employees: "Client",
     initials: "SW",
   },
   {
@@ -34,7 +34,7 @@ const testimonials = [
     title: "Owner",
     company: "Martinez Construction LLC",
     industry: "Construction",
-    employees: "MBE Client",
+    employees: "Client",
     initials: "RM",
   },
   {
@@ -44,7 +44,7 @@ const testimonials = [
     title: "CEO",
     company: "Park Digital Services",
     industry: "Technology",
-    employees: "MBE Client",
+    employees: "Client",
     initials: "JP",
   },
 ];
@@ -69,7 +69,7 @@ export function Testimonials() {
             What Our Clients Say
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real results from MBEs who transformed their government contracting business with KDM & Associates.
+            Real results from clients who transformed their government contracting business with KDM & Associates.
           </p>
         </div>
 

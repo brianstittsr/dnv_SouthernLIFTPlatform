@@ -37,6 +37,9 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-lavender: var(--lavender);
+  --color-lavender-light: var(--lavender-light);
+  --color-lavender-dark: var(--lavender-dark);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -56,6 +59,10 @@
   --primary-foreground: #ffffff;
   --secondary: #0D47A1;
   --secondary-foreground: #ffffff;
+  /* KDM Lavender accent color */
+  --lavender: #b8b5e4;
+  --lavender-light: #d4d2f0;
+  --lavender-dark: #a8a4d9;
   --muted: #e2e8f0;
   --muted-foreground: #64748b;
   --accent: #1565C0;

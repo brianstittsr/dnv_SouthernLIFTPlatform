@@ -379,6 +379,147 @@ export const emailTemplates = {
     `,
     text: `Reminder: You have a remaining balance of $${params.remainingBalance.toFixed(2)} for ${params.entityName} due on ${params.dueDate}. Pay now at: ${params.paymentUrl}`,
   }),
+
+  /**
+   * Partner commission pending notification
+   */
+  partnerCommissionPending: (params: {
+    partnerName: string;
+    clientName: string;
+    amount: string;
+    contributionType: string;
+    percentage: number;
+    totalTransactionAmount: string;
+    expectedPayoutDate: string;
+    transactionId: string;
+    dashboardUrl: string;
+  }) => ({
+    subject: 'Commission Pending - Client Payment Received',
+    html: `
+      <h1>Commission Pending</h1>
+      <p>Hi ${params.partnerName},</p>
+      <p>Great news! A payment has been received and you have a commission pending.</p>
+      <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0066cc;">
+        <p style="margin: 0;"><strong>Client:</strong> ${params.clientName}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Your Commission:</strong> ${params.amount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Contribution Type:</strong> ${params.contributionType} (${params.percentage}%)</p>
+        <p style="margin: 10px 0 0 0;"><strong>Transaction Total:</strong> ${params.totalTransactionAmount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Expected Payout:</strong> ${params.expectedPayoutDate}</p>
+      </div>
+      <p><a href="${params.dashboardUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">View Dashboard</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Commission Pending: ${params.amount} from ${params.clientName}. Expected payout: ${params.expectedPayoutDate}. View at: ${params.dashboardUrl}`,
+  }),
+
+  /**
+   * Partner commission approved notification
+   */
+  partnerCommissionApproved: (params: {
+    partnerName: string;
+    amount: string;
+    contributionType: string;
+    transactionId: string;
+    paymentMethod: string;
+    dashboardUrl: string;
+  }) => ({
+    subject: 'Commission Approved - Payment Processing',
+    html: `
+      <h1>Commission Approved</h1>
+      <p>Hi ${params.partnerName},</p>
+      <p>Your commission has been approved and is being processed.</p>
+      <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22c55e;">
+        <p style="margin: 0;"><strong>Amount:</strong> ${params.amount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Contribution Type:</strong> ${params.contributionType}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Payment Method:</strong> ${params.paymentMethod}</p>
+      </div>
+      <p><a href="${params.dashboardUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">View Dashboard</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Commission Approved: ${params.amount} via ${params.paymentMethod}. View at: ${params.dashboardUrl}`,
+  }),
+
+  /**
+   * Partner commission paid notification
+   */
+  partnerCommissionPaid: (params: {
+    partnerName: string;
+    amount: string;
+    contributionType: string;
+    transactionId: string;
+    paymentMethod: string;
+    payoutId: string;
+    dashboardUrl: string;
+  }) => ({
+    subject: 'Commission Paid - Payment Complete',
+    html: `
+      <h1>Commission Paid</h1>
+      <p>Hi ${params.partnerName},</p>
+      <p>Your commission has been paid successfully!</p>
+      <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22c55e;">
+        <p style="margin: 0;"><strong>Amount:</strong> ${params.amount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Payment Method:</strong> ${params.paymentMethod}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Payout ID:</strong> ${params.payoutId}</p>
+      </div>
+      <p><a href="${params.dashboardUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">View Payment History</a></p>
+      <p>Thank you for being a valued partner!</p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Commission Paid: ${params.amount} via ${params.paymentMethod}. Payout ID: ${params.payoutId}. View at: ${params.dashboardUrl}`,
+  }),
+
+  /**
+   * Partner commission failed notification
+   */
+  partnerCommissionFailed: (params: {
+    partnerName: string;
+    amount: string;
+    transactionId: string;
+    supportEmail: string;
+    dashboardUrl: string;
+  }) => ({
+    subject: 'Commission Payout Failed - Action Required',
+    html: `
+      <h1>Payout Failed</h1>
+      <p>Hi ${params.partnerName},</p>
+      <p>Unfortunately, we were unable to process your commission payout.</p>
+      <div style="background-color: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+        <p style="margin: 0;"><strong>Amount:</strong> ${params.amount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Transaction ID:</strong> ${params.transactionId}</p>
+      </div>
+      <p>Please verify your payment information in your dashboard and contact us if you need assistance.</p>
+      <p><a href="${params.dashboardUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Update Payment Info</a></p>
+      <p>For support, contact: <a href="mailto:${params.supportEmail}">${params.supportEmail}</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Payout Failed: ${params.amount}. Please update your payment info at: ${params.dashboardUrl}. Support: ${params.supportEmail}`,
+  }),
+
+  /**
+   * Admin payout alert notification
+   */
+  adminPayoutAlert: (params: {
+    partnerId: string;
+    partnerName: string;
+    amount: string;
+    errorMessage: string;
+    timestamp: string;
+    dashboardUrl: string;
+  }) => ({
+    subject: `[ALERT] Payout Failed for ${params.partnerName}`,
+    html: `
+      <h1>Payout Alert</h1>
+      <p>A partner payout has failed and requires attention.</p>
+      <div style="background-color: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+        <p style="margin: 0;"><strong>Partner:</strong> ${params.partnerName} (${params.partnerId})</p>
+        <p style="margin: 10px 0 0 0;"><strong>Amount:</strong> ${params.amount}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Error:</strong> ${params.errorMessage}</p>
+        <p style="margin: 10px 0 0 0;"><strong>Time:</strong> ${params.timestamp}</p>
+      </div>
+      <p><a href="${params.dashboardUrl}" style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Review in Dashboard</a></p>
+    `,
+    text: `Payout Failed: ${params.partnerName} - ${params.amount}. Error: ${params.errorMessage}. Review at: ${params.dashboardUrl}`,
+  }),
 };
 
 /**

@@ -53,7 +53,7 @@ export function Footer() {
               strategic teaming, capacity building, and mentorship.
             </p>
             <div className="flex gap-4">
-              <Link href="https://www.linkedin.com/company/mbdafpcenter" className="text-gray-400 hover:text-primary transition-colors">
+              <Link href="https://www.linkedin.com/company/kdmassoc/" className="text-gray-400 hover:text-primary transition-colors">
                 <Linkedin className="h-5 w-5" />
               </Link>
               <Link href="https://www.twitter.com/mbdafpcenter" className="text-gray-400 hover:text-primary transition-colors">

@@ -3,30 +3,30 @@ import { Search, Map, Rocket, Award } from "lucide-react";
 const steps = [
   {
     number: "01",
-    title: "Discovery Assessment",
+    title: "Initial Consultation",
     description:
-      "We evaluate your current operations, identify gaps, and understand your OEM qualification goals.",
+      "We assess your business capabilities, certifications, and government contracting goals to create a tailored strategy.",
     icon: Search,
   },
   {
     number: "02",
-    title: "Readiness Roadmap",
+    title: "Certification & Compliance",
     description:
-      "Receive a customized transformation plan with clear milestones, timelines, and ROI projections.",
+      "Navigate 8(a), WOSB, SDVOSB, HUBZone certifications and ensure your business meets federal compliance requirements.",
     icon: Map,
   },
   {
     number: "03",
-    title: "Implementation",
+    title: "Strategic Teaming",
     description:
-      "Our expert team and affiliate network execute the plan with hands-on support and real-time tracking.",
+      "Connect with prime contractors, build mentor-protégé relationships, and position your business for contract opportunities.",
     icon: Rocket,
   },
   {
     number: "04",
-    title: "OEM Qualification",
+    title: "Contract Success",
     description:
-      "Achieve supplier certification, win contracts, and establish long-term OEM partnerships.",
+      "Win government contracts, build past performance, and scale your federal contracting portfolio with ongoing support.",
     icon: Award,
   },
 ];
@@ -41,8 +41,8 @@ export function HowItWorks() {
             How It Works
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            A proven four-step process to transform your manufacturing operations 
-            and become an OEM-qualified supplier.
+            A proven four-step process to help your business navigate federal procurement 
+            and win government contracts.
           </p>
         </div>
 

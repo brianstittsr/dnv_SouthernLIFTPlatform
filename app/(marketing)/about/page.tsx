@@ -30,7 +30,7 @@ const values = [
     icon: Users,
     title: "Strategic Teaming",
     description:
-      "We leverage our partner network to bring the right expertise and teaming opportunities to every MBE client.",
+      "We leverage our partner network to bring the right expertise and teaming opportunities to every client.",
   },
   {
     icon: Heart,
@@ -80,7 +80,7 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
-                  To empower small, emerging, and Minority Business Enterprises (MBEs) 
+                  To empower small and emerging businesses 
                   to compete and win government contracts by providing accessible, results-driven 
                   support services that bridge the gap between current capabilities 
                   and federal procurement requirements.
@@ -116,7 +116,7 @@ export default function AboutPage() {
               <p className="text-muted-foreground text-lg leading-relaxed">
                 In an exciting development for the large Prime Government Contractors community, 
                 the Minority Business Development Agency (MBDA) network, and small, emerging, 
-                and Minority Business Enterprises (MBEs) across the country, the MBDA Federal 
+                and emerging small businesses across the country, the MBDA Federal 
                 Procurement Center (FPC) is officially transitioning its operations to KDM & Associates, LLC.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
@@ -171,7 +171,7 @@ export default function AboutPage() {
             Ready to Win Government Contracts?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the growing community of MBEs who&apos;ve partnered with 
+            Join the growing community of emerging small businesses who&apos;ve partnered with 
             KDM & Associates to achieve their goals.
           </p>
           <Button
@@ -181,7 +181,7 @@ export default function AboutPage() {
             asChild
           >
             <Link href="/contact">
-              Schedule MBE Session
+              Schedule Introductory Session
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

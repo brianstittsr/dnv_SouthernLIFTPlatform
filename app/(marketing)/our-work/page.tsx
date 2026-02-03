@@ -16,13 +16,13 @@ import {
 export const metadata: Metadata = {
   title: "Our Work",
   description:
-    "See how KDM & Associates has helped MBEs win government contracts and build sustainable businesses through strategic teaming and capacity building.",
+    "See how KDM & Associates has helped emerging small businesses win government contracts and build sustainable businesses through strategic teaming and capacity building.",
 };
 
 const stats = [
   {
     value: "300+",
-    label: "MBE Clients Served",
+    label: "Clients Served",
     icon: Users,
   },
   {
@@ -58,16 +58,53 @@ const services = [
 ];
 
 const industries = [
+  // Technology & IT
   "Information Technology",
+  "Cybersecurity & CMMC",
+  "Cloud Computing & FedRAMP",
+  "Software Development",
+  "Data Analytics & AI",
+  // Professional Services
   "Professional Services",
-  "Construction",
-  "Manufacturing",
-  "Healthcare",
-  "Logistics & Transportation",
-  "Engineering",
-  "Environmental Services",
+  "Management Consulting",
+  "Financial & Accounting Services",
+  "Legal Services",
+  "Human Resources & Staffing",
+  // Defense & Security
+  "Defense Contracting",
   "Security Services",
+  "Intelligence & Surveillance",
+  "Aerospace & Aviation",
+  // Infrastructure & Construction
+  "Construction",
   "Facilities Management",
+  "Architecture & Design",
+  "Civil Engineering",
+  // Healthcare & Life Sciences
+  "Healthcare",
+  "Medical Equipment & Supplies",
+  "Pharmaceuticals",
+  "Research & Development",
+  // Logistics & Supply Chain
+  "Logistics & Transportation",
+  "Supply Chain Management",
+  "Warehousing & Distribution",
+  // Manufacturing & Production
+  "Manufacturing",
+  "Industrial Equipment",
+  "Telecommunications",
+  // Environmental & Energy
+  "Environmental Services",
+  "Renewable Energy",
+  "Utilities & Infrastructure",
+  // Engineering & Technical
+  "Engineering",
+  "Scientific & Technical Services",
+  "Testing & Inspection",
+  // Government-Specific
+  "GSA Schedule Holders",
+  "GWAC & BPA Contractors",
+  "IDIQ Contract Holders",
 ];
 
 export default function OurWorkPage() {
@@ -82,10 +119,10 @@ export default function OurWorkPage() {
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               Building Success for{" "}
-              <span className="text-primary">MBEs</span>
+              <span className="text-primary">Small Businesses</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              We help minority-owned businesses build, grow, and scale their government 
+              We help small emerging businesses build, grow, and scale their government 
               contract revenues through strategic teaming, capacity building, and mentorship.
             </p>
           </div>
@@ -222,7 +259,7 @@ export default function OurWorkPage() {
             Ready to Grow Your Government Contracting Business?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the hundreds of MBEs who have partnered with KDM & Associates 
+            Join the hundreds of emerging small businesses who have partnered with KDM & Associates 
             to achieve their government contracting goals.
           </p>
           <Button

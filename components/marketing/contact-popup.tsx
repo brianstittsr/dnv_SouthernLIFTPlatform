@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
+
+const EXCLUDED_PATHS = ["/cmmc-training"];
 
 export interface PopupField {
   id: string;
@@ -49,7 +52,7 @@ export interface PopupConfig {
 export const defaultPopupConfig: PopupConfig = {
   enabled: true,
   title: "KDM & Associates",
-  subtitle: "Schedule an MBE introductory session to explore how we can help you win government contracts.",
+  subtitle: "Schedule an introductory session to explore how we can help you win government contracts.",
   description: "Tell us about your business and contracting goals. We'll follow up with next steps.",
   buttonText: "Schedule Session",
   successMessage: "Thank you! We'll be in touch within 24 hours.",
@@ -62,7 +65,7 @@ export const defaultPopupConfig: PopupConfig = {
     { id: "phone", type: "phone", label: "Phone", placeholder: "Phone", required: true, enabled: true },
   ],
   productOptions: [
-    "MBE/Small Business",
+    "Emerging Small Business",
     "Solution Provider",
   ],
   productLabel: "I am a:",
@@ -74,6 +77,7 @@ interface ContactPopupProps {
 }
 
 export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -81,9 +85,11 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
   const [customProduct, setCustomProduct] = useState("");
   const [showTriggerButton, setShowTriggerButton] = useState(true);
 
+  const isExcludedPath = EXCLUDED_PATHS.some(path => pathname?.startsWith(path));
+
   useEffect(() => {
     const isBrowser = typeof window !== "undefined";
-    if (!isBrowser) return;
+    if (!isBrowser || isExcludedPath) return;
 
     const shownKey = "kdm_booking_popup_shown";
     if (sessionStorage.getItem(shownKey) === "true") {
@@ -99,9 +105,9 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
     );
 
     return () => clearTimeout(timer);
-  }, [config.triggerDelay]);
+  }, [config.triggerDelay, isExcludedPath]);
 
-  if (!config.enabled) return null;
+  if (!config.enabled || isExcludedPath) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

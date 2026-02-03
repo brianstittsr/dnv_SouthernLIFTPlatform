@@ -13,7 +13,7 @@ import { ArrowRight, HelpCircle } from "lucide-react";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Frequently asked questions about KDM & Associates services, government contracting, and how we help MBEs win federal contracts.",
+    "Frequently asked questions about KDM & Associates services, government contracting, and how we help emerging small businesses win federal contracts.",
 };
 
 const faqs = [
@@ -26,11 +26,11 @@ const faqs = [
       },
       {
         question: "Who can benefit from KDM services?",
-        answer: "Our services are designed for small, emerging, and Minority Business Enterprises (MBEs) looking to enter or expand in the federal contracting space. This includes 8(a) certified businesses, WOSBs, SDVOSBs, HUBZone firms, and other small businesses seeking government contracts."
+        answer: "Our services are designed for small and emerging businesses looking to enter or expand in the federal contracting space. This includes 8(a) certified businesses, WOSBs, SDVOSBs, HUBZone firms, and other small businesses seeking government contracts."
       },
       {
         question: "How do I become a KDM & Associates client?",
-        answer: "Getting started is easy. Simply schedule an MBE introductory session through our contact page. During this session, we'll discuss your business goals, current capabilities, and how our services can help you succeed in government contracting."
+        answer: "Getting started is easy. Simply schedule an introductory session through our contact page. During this session, we'll discuss your business goals, current capabilities, and how our services can help you succeed in government contracting."
       }
     ]
   },
@@ -43,7 +43,7 @@ const faqs = [
       },
       {
         question: "What is the MBDA Federal Procurement Center?",
-        answer: "The MBDA Federal Procurement Center (FPC) has transitioned its operations to KDM & Associates. This center provides Government contracting support services with a focus on empowering MBEs through intense capacity building, mentorship, and defined support services to achieve sustainable success."
+        answer: "The MBDA Federal Procurement Center (FPC) has transitioned its operations to KDM & Associates. This center provides Government contracting support services with a focus on empowering emerging small businesses through intense capacity building, mentorship, and defined support services to achieve sustainable success."
       },
       {
         question: "How can KDM help with certifications?",
@@ -56,7 +56,7 @@ const faqs = [
     questions: [
       {
         question: "How does KDM help with federal contract opportunities?",
-        answer: "We help identify federal contract opportunities that match your capabilities, provide advice on bidding set-aside contracts, facilitate introductions to Government & Military contracting officers, and help put together strategic teaming partnerships with larger Prime contractors and other MBE clients."
+        answer: "We help identify federal contract opportunities that match your capabilities, provide advice on bidding set-aside contracts, facilitate introductions to Government & Military contracting officers, and help put together strategic teaming partnerships with larger Prime contractors and other small business clients."
       },
       {
         question: "What is strategic teaming and why is it important?",
@@ -107,7 +107,7 @@ export default function FAQPage() {
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
               Find answers to common questions about KDM & Associates, our services, 
-              and how we help MBEs succeed in government contracting.
+              and how we help emerging small businesses succeed in government contracting.
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function FAQPage() {
             Still Have Questions?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our team is here to help. Schedule an MBE introductory session to discuss 
+            Our team is here to help. Schedule an introductory session to discuss 
             your specific needs and how we can support your government contracting goals.
           </p>
           <Button size="lg" className="mt-8" asChild>

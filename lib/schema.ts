@@ -1564,6 +1564,8 @@ export const COLLECTIONS = {
   INTEGRATIONS: "integrations",
   SETTINGS: "settings",
   HERO_SLIDES: "heroSlides",
+  CONSORTIUM_HERO_SLIDES: "consortiumHeroSlides",
+  CONSORTIUM_STATS: "consortiumStats",
   POPUP_CONFIG: "popupConfig",
   SOFTWARE_KEYS: "softwareKeys",
   WHITE_LABEL_CONFIG: "whiteLabelConfig",

@@ -1,6 +1,6 @@
 # Content Migration & Merge Guide
 
-**Generated**: 2026-01-19T15:14:01.550Z
+**Generated**: 2026-01-20T04:45:43.661Z
 
 ## Overview
 
@@ -9,27 +9,27 @@ This guide provides instructions for merging crawled content into the existing s
 ## Content Categories
 
 ### Home
-- **Pages Found**: 1
+- **Pages Found**: 25
 - **Merge File**: `content-merge/home-content.md`
 - **Action**: Review and merge content
 
 ### Products
-- **Pages Found**: 0
+- **Pages Found**: 3
 - **Merge File**: `content-merge/products-content.md`
-- **Action**: Create new content
+- **Action**: Review and merge content
 
 ### Services
-- **Pages Found**: 1
+- **Pages Found**: 7
 - **Merge File**: `content-merge/services-content.md`
 - **Action**: Review and merge content
 
 ### News
-- **Pages Found**: 0
+- **Pages Found**: 9
 - **Merge File**: `content-merge/news-content.md`
-- **Action**: Create new content
+- **Action**: Review and merge content
 
 ### About
-- **Pages Found**: 1
+- **Pages Found**: 14
 - **Merge File**: `content-merge/about-content.md`
 - **Action**: Review and merge content
 
@@ -39,14 +39,14 @@ This guide provides instructions for merging crawled content into the existing s
 - **Action**: Create new content
 
 ### Events
-- **Pages Found**: 0
+- **Pages Found**: 4
 - **Merge File**: `content-merge/events-content.md`
-- **Action**: Create new content
+- **Action**: Review and merge content
 
 ### Opportunities
-- **Pages Found**: 0
+- **Pages Found**: 4
 - **Merge File**: `content-merge/opportunities-content.md`
-- **Action**: Create new content
+- **Action**: Review and merge content
 
 ## Merge Instructions
 

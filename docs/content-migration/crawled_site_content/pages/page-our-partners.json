@@ -1,0 +1,162 @@
+{
+  "url": "https://kdm-assoc.com/page/our-partners",
+  "slug": "page-our-partners",
+  "title": "Our Partners | KDM & Associates",
+  "pageType": "other",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/page/our-partners",
+    "slug": "page/our-partners",
+    "title": "Our Partners | KDM & Associates",
+    "metaDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "metaKeywords": [],
+    "ogTitle": "KDM & Associates",
+    "ogDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Our Partners",
+        "content": "Our Partners Home Our Partners",
+        "images": [
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-1.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-3.png",
+          "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png"
+        ],
+        "videos": [],
+        "order": 0
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768884043057-vbtd1173o",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-f35noou8m",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-uvqq5g9r2",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/dot.png",
+        "localPath": null,
+        "alt": "dot",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-4yz6xjp3t",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-1.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-ksthgc2ac",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-9f6fkr1gx",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-3.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884043057-dc2unoeqx",
+        "sourceUrl": "https://kdm-assoc.com/landing_file/assets/images/shape/shape-2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/page/our-partners",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 2528,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:40:43.058Z"
+}

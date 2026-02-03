@@ -17,19 +17,19 @@ import {
 export const metadata: Metadata = {
   title: "Partners",
   description:
-    "Join the KDM & Associates partner network. We connect solution providers with MBEs to drive mutual success in government contracting.",
+    "Join the KDM & Associates partner network. We connect solution providers with emerging small businesses to drive mutual success in government contracting.",
 };
 
 const partnerBenefits = [
   {
     icon: Users,
-    title: "Access to MBE Network",
-    description: "Connect with our extensive network of minority-owned businesses seeking solutions and services."
+    title: "Access to Small Business Network",
+    description: "Connect with our extensive network of small emerging businesses seeking solutions and services."
   },
   {
     icon: Target,
     title: "Targeted Opportunities",
-    description: "Get matched with MBEs whose needs align with your expertise and service offerings."
+    description: "Get matched with emerging small businesses whose needs align with your expertise and service offerings."
   },
   {
     icon: Globe,
@@ -46,7 +46,7 @@ const partnerBenefits = [
 const partnerTypes = [
   {
     title: "Solution Providers",
-    description: "Technology vendors, consultants, and service providers who can support MBE growth.",
+    description: "Technology vendors, consultants, and service providers who can support emerging small business growth.",
     features: [
       "Technology and software solutions",
       "Business consulting services",
@@ -57,9 +57,9 @@ const partnerTypes = [
   },
   {
     title: "Prime Contractors",
-    description: "Large contractors seeking qualified MBE subcontractors and teaming partners.",
+    description: "Large contractors seeking qualified small business subcontractors and teaming partners.",
     features: [
-      "Access to pre-vetted MBE firms",
+      "Access to pre-vetted small business firms",
       "Streamlined teaming arrangements",
       "Mentor-protégé opportunities",
       "Joint venture facilitation",
@@ -95,7 +95,7 @@ export default function PartnersPage() {
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
               Join our exclusive digital community where business solution providers 
-              contribute to and support MBEs on their journey to sustainability and success.
+              contribute to and support emerging small businesses on their journey to sustainability and success.
             </p>
             <Button size="lg" className="mt-8" asChild>
               <Link href="/contact">
@@ -115,7 +115,7 @@ export default function PartnersPage() {
               Why Partner With Us?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join a network dedicated to empowering minority-owned businesses and 
+              Join a network dedicated to empowering small emerging businesses and 
               creating mutual success in government contracting.
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function PartnersPage() {
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               We work with a diverse range of partners to provide comprehensive 
-              support for MBEs.
+              support for emerging small businesses.
             </p>
           </div>
 
@@ -207,7 +207,7 @@ export default function PartnersPage() {
                 </div>
                 <h3 className="font-semibold mb-2">Connect</h3>
                 <p className="text-sm text-muted-foreground">
-                  Start connecting with MBEs and contributing to their success in government contracting.
+                  Start connecting with emerging small businesses and contributing to their success in government contracting.
                 </p>
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function PartnersPage() {
             Ready to Join Our Network?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Partner with KDM & Associates and help drive success for minority-owned 
+            Partner with KDM & Associates and help drive success for small emerging 
             businesses in government contracting.
           </p>
           <Button

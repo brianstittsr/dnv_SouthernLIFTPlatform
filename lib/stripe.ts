@@ -39,7 +39,7 @@ export const REVENUE_SPLIT = {
 export const MEMBERSHIP_TIERS = {
   'core-capture': {
     name: 'Core Capture Member',
-    monthlyPrice: 175000, // $1,750.00 in cents
+    monthlyPrice: 125000, // $1,250.00 in cents
     annualPrice: 189000, // $1,890.00 in cents (10% discount)
     features: [
       'Opportunity matching',

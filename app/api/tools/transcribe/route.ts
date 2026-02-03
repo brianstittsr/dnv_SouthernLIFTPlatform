@@ -136,8 +136,3 @@ function formatTimestamp(seconds: number): string {
     .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};

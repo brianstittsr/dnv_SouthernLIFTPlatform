@@ -1,0 +1,92 @@
+{
+  "url": "https://kdm-assoc.com/events/all_events/past",
+  "slug": "events-all_events-past",
+  "title": "Past Events\t | KDM & Associates",
+  "pageType": "other",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/events/all_events/past",
+    "slug": "events/all_events/past",
+    "title": "Past Events\t | KDM & Associates",
+    "metaDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "metaKeywords": [],
+    "ogTitle": "KDM & Associates",
+    "ogDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "sections": [
+      {
+        "type": "text",
+        "heading": null,
+        "content": "San Juan, Puerto Rico 13 Oct IAEOZ Summit 2025 Puerto Rico Prepare for the IAEOZ Summit 2025 Puerto Rico! Join us for three days of engaging sessions focusing on Agriculture and Energy sectors. KDM &amp; Associates will host the 6th annual IAEOZ Summit on Oc... Read More",
+        "images": [
+          "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1753136731.png"
+        ],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "text",
+        "heading": null,
+        "content": "Stay up to date with our latest events, opportunities, exclusive offers, and promotions. Activate Your Free KDM Account - Coming Soon",
+        "images": [],
+        "videos": [],
+        "order": 1
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768883992051-0zhegkubd",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/kdmassoevents6.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events/all_events/past",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768883992051-dy037h5yc",
+        "sourceUrl": "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1753136731.png",
+        "localPath": null,
+        "alt": "IAEOZ Summit 2025 Puerto Rico",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events/all_events/past",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 2615,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:39:52.051Z"
+}

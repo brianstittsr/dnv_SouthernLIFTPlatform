@@ -16,12 +16,12 @@ const teamMembers = [
     initials: "KM",
     imageName: "Keith_Moore",
     imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
-    bio: "Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting.",
-    fullBio: `Keith Moore serves as the Chief Executive Officer of KDM & Associates, bringing extensive experience in government contracting and business development. With a deep commitment to empowering minority-owned businesses, Keith leads the organization's strategic vision and growth initiatives.
+    bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting.",
+    fullBio: `Keith Moore serves as the Chief Executive Officer of KDM & Associates, bringing extensive experience in government contracting and business development. With a deep commitment to empowering small emerging businesses, Keith leads the organization's strategic vision and growth initiatives.
 
-Under his leadership, KDM & Associates has become a trusted partner for MBEs seeking to navigate the complex landscape of federal procurement. Keith's expertise spans strategic teaming, capacity building, and creating pathways for small businesses to compete successfully for government contracts.
+Under his leadership, KDM & Associates has become a trusted partner for small businesses seeking to navigate the complex landscape of federal procurement. Keith's expertise spans strategic teaming, capacity building, and creating pathways for small businesses to compete successfully for government contracts.
 
-His approach combines practical business acumen with a genuine passion for creating opportunities that drive economic growth and strengthen supply chains across the nation. Keith is dedicated to building an ecosystem where every capable minority-owned business has the resources and support needed to thrive in government contracting.`
+His approach combines practical business acumen with a genuine passion for creating opportunities that drive economic growth and strengthen supply chains across the nation. Keith is dedicated to building an ecosystem where every capable small emerging business has the resources and support needed to thrive in government contracting.`
   },
   {
     id: "charles-sills",
@@ -29,7 +29,7 @@ His approach combines practical business acumen with a genuine passion for creat
     title: "COO",
     initials: "CS",
     imageName: "Charles_Sills",
-    bio: "Overseeing operations and ensuring excellence in service delivery to our MBE clients.",
+    bio: "Overseeing operations and ensuring excellence in service delivery to our clients.",
     fullBio: `Charles Sills is a recognized authority on U.S. Government Contracting, and an advocate for Small Business access to Federal and Military contracting opportunities, serving as a member of the U.S. Chamber of Commerce's Small Business Council; an observer to the White House-sponsored Inter-Agency Task Force on Veterans Business Development; and a member of VET-Force (Veterans Entrepreneurship Task Force). He has helped moderate the Army, Navy and Air Force Contracting Summits in Jacksonville, Norfolk Naval Base, Ft. Hood, Texas and Eglin Air Force Base for the Defense Leadership Forum; keynoted the Veterans Day Panel on "Wartime and Worldwide Government Contracting" at the Mt. Vernon Chamber's forum on "Winning Army Contracts – from Ft. Belvoir to Afghanistan"; and was commended by the Small Business Affairs Director, U.S. Army, for the "overwhelming response" to his presentation on the "Marketing to Prime Contractors" Panel at the National Veteran Small Business Conference.
 
 He is President of FED/Contracting LLC, a Washington DC-based consultancy that assists U.S. Small Businesses, as well as overseas firms and their American affiliates, in accessing Government acquisition programs; helps Prime Contractors qualify Veteran, Minority and Woman-owned vendors as teammates for project opportunities with mandated Diversity Supplier content; and brings Small Businesses and Fortune 1000 corporations together under Government Agency 'Mentor-Protégé' partnerships. Based on the U.S. Defense Dept. Mentor-Protégé program that he managed for Trillacorpe Construction, a Service-Disabled Veteran-Owned Small Business, the company was awarded the prestigious 2010 Defense Dept. Nunn-Perry Award for "superior performance in the areas of business growth and return on investment, Government contracting, technical performance and quality management".
@@ -73,7 +73,7 @@ In addition to the global publications outlined above of which Oscar has appeare
     title: "KDM Consultant",
     initials: "PR",
     imageName: "Pamela_Ramos_Brown",
-    bio: "Supporting MBE clients with strategic consulting and capacity building initiatives.",
+    bio: "Supporting clients with strategic consulting and capacity building initiatives.",
     fullBio: `As current CEO of BeWealthyWithPamela and past president of Ramos Group, LLC, Pamela provides management consulting services such as Business Achievement & Sales Success Planning to entrepreneurs. Pamela is mostly known for serving as Executive Director of Minority Business Development Agency (MBDA) Business Center – Mobile, operated by the Mobile Area Chamber of Commerce and federally funded by the U.S. Department of Commerce, MBDA for almost 10 years.
 
 Concurrently, since Jan. 2020, Pamela helps companies deliver timely communication to target customers on-air and online through Cumulus Media. Brand new to the industry, Pamela used her own Sales Success Plan and mentorship and achieved 250% of her 1st quarter sales goal.
@@ -112,7 +112,7 @@ Calvin has an extensive career as a consultant in the corporate world. He is a B
     bio: "Ensuring compliance excellence and data-driven insights for our clients.",
     fullBio: `I am a proud graduate of George Mason University, holding a degree in Business Management, with over two decades of professional experience in the finance and healthcare sectors. Throughout my career, I have had the privilege of working with leading financial institutions and information technology organizations, where I developed expertise in business operations, strategic planning, and innovative problem-solving.
 
-As an entrepreneur, I am committed to building and leading businesses that foster growth, promote inclusivity, and create sustainable economic impact. My professional focus extends to Government Business Development, where I am passionate about empowering minority-owned enterprises to secure opportunities and thrive in competitive markets.
+As an entrepreneur, I am committed to building and leading businesses that foster growth, promote inclusivity, and create sustainable economic impact. My professional focus extends to Government Business Development, where I am passionate about empowering small emerging enterprises to secure opportunities and thrive in competitive markets.
 
 Beyond my professional pursuits, I serve as a basketball coach, nurturing leadership, teamwork, and discipline in young athletes—skills that translate seamlessly into professional success. This role reflects my belief in the importance of mentorship and investing in the next generation of leaders.
 
@@ -168,8 +168,8 @@ Mr. Niño is Chairman of the Mid-Atlantic Hispanic Chamber of Commerce, a Board 
     title: "KDM Consultant",
     initials: "CM",
     imageName: "Candida_Mobley",
-    bio: "Providing dedicated consulting support to help MBEs achieve their contracting goals.",
-    fullBio: `Candida Mobley is a consultant at KDM & Associates, providing dedicated support to help minority-owned businesses achieve their government contracting goals. Her client-focused approach and comprehensive understanding of the federal procurement process make her a trusted advisor to MBEs.
+    bio: "Providing dedicated consulting support to help clients achieve their contracting goals.",
+    fullBio: `Candida Mobley is a consultant at KDM & Associates, providing dedicated support to help small emerging businesses achieve their government contracting goals. Her client-focused approach and comprehensive understanding of the federal procurement process make her a trusted advisor to clients.
 
 Candida works closely with clients to understand their unique capabilities, challenges, and aspirations, then develops customized strategies that align with their business objectives. She provides hands-on support throughout the contracting process, from opportunity identification to proposal development and contract execution.
 

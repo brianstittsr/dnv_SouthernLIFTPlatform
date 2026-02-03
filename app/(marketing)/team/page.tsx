@@ -10,7 +10,7 @@ import { TeamMemberCard } from "@/components/marketing/team-member-card";
 export const metadata: Metadata = {
   title: "Our Team",
   description:
-    "Meet the KDM & Associates management team - experienced professionals dedicated to helping MBEs succeed in government contracting.",
+    "Meet the KDM & Associates management team - experienced professionals dedicated to helping emerging small businesses succeed in government contracting.",
 };
 
 const teamMembers = [
@@ -21,7 +21,7 @@ const teamMembers = [
     initials: "KM",
     imageName: "Keith_Moore",
     imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
-    bio: "Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting."
+    bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting."
   },
   {
     id: "charles-sills",
@@ -29,7 +29,7 @@ const teamMembers = [
     title: "COO",
     initials: "CS",
     imageName: "Charles_Sills",
-    bio: "Overseeing operations and ensuring excellence in service delivery to our MBE clients."
+    bio: "Overseeing operations and ensuring excellence in service delivery to our clients."
   },
   {
     id: "oscar-frazier",
@@ -45,7 +45,7 @@ const teamMembers = [
     title: "KDM Consultant",
     initials: "PR",
     imageName: "Pamela_Ramos_Brown",
-    bio: "Supporting MBE clients with strategic consulting and capacity building initiatives."
+    bio: "Supporting clients with strategic consulting and capacity building initiatives."
   },
   {
     id: "calvin-minor",
@@ -93,7 +93,7 @@ const teamMembers = [
     title: "KDM Consultant",
     initials: "CM",
     imageName: "Candida_Mobley",
-    bio: "Providing dedicated consulting support to help MBEs achieve their contracting goals."
+    bio: "Providing dedicated consulting support to help clients achieve their contracting goals."
   }
 ];
 
@@ -112,7 +112,7 @@ export default function TeamPage() {
               <span className="text-primary">Management</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Meet the experienced professionals dedicated to helping minority-owned 
+              Meet the experienced professionals dedicated to helping small emerging 
               businesses succeed in government contracting.
             </p>
           </div>

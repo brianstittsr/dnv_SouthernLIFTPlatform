@@ -1,0 +1,73 @@
+{
+  "url": "https://kdm-assoc.com/login",
+  "slug": "login",
+  "title": "MBDA Federal Procurement Center Portal",
+  "pageType": "other",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/login",
+    "slug": "login",
+    "title": "MBDA Federal Procurement Center Portal",
+    "metaDescription": null,
+    "metaKeywords": [],
+    "ogTitle": null,
+    "ogDescription": null,
+    "ogImage": null,
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "sections": []
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": null,
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768884034210-alaf20y1c",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/copyofkdm2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/login",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884034210-rd9ddu7jj",
+        "sourceUrl": "https://kdm-assoc.com/assets/powelogo.svg",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "svg",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/login",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 1633,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:40:34.210Z"
+}

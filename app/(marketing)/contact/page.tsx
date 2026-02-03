@@ -50,7 +50,7 @@ const businessTypes = [
   "WOSB/EDWOSB",
   "SDVOSB",
   "HUBZone",
-  "MBE (Not yet certified)",
+  "Emerging Small Business",
   "Small Business",
   "Other",
 ];
@@ -59,6 +59,8 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookCallOpen, setBookCallOpen] = useState(false);
   const [isBookingCall, setIsBookingCall] = useState(false);
+  const [businessType, setBusinessType] = useState("");
+  const [service, setService] = useState("");
   const [bookCallForm, setBookCallForm] = useState({
     firstName: "",
     lastName: "",
@@ -75,15 +77,51 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
 
-    toast.success("Thank you for your inquiry!", {
-      description: "We'll get back to you within 24 hours.",
-    });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.get("firstName"),
+          lastName: formData.get("lastName"),
+          email: formData.get("email"),
+          phone: formData.get("phone") || undefined,
+          company: formData.get("company"),
+          jobTitle: formData.get("title") || undefined,
+          businessType: businessType,
+          industry: formData.get("industry") || undefined,
+          service: service,
+          message: formData.get("message") || undefined,
+          newsletter: formData.get("newsletter") === "on",
+        }),
+      });
 
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit form");
+      }
+
+      toast.success("Thank you for your inquiry!", {
+        description: "We'll get back to you within 24 hours.",
+      });
+
+      form.reset();
+      setBusinessType("");
+      setService("");
+    } catch (error) {
+      console.error("Contact form error:", error);
+      toast.error("Failed to submit form", {
+        description: "Please try again or contact us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBookCall = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,7 +189,7 @@ export default function ContactPage() {
               <span className="text-primary">Journey</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Ready to win government contracts? Schedule an MBE introductory session 
+              Ready to win government contracts? Schedule an introductory session 
               or reach out to discuss how KDM & Associates can help your business grow.
             </p>
           </div>
@@ -166,7 +204,7 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-2xl">Schedule an MBE Session</CardTitle>
+                  <CardTitle className="text-2xl">Schedule a Session</CardTitle>
                   <CardDescription>
                     Fill out the form below and one of our government contracting experts will contact you within 24 hours.
                   </CardDescription>
@@ -176,40 +214,40 @@ export default function ContactPage() {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">First Name *</Label>
-                        <Input id="firstName" required placeholder="John" />
+                        <Input id="firstName" name="firstName" required placeholder="John" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName">Last Name *</Label>
-                        <Input id="lastName" required placeholder="Smith" />
+                        <Input id="lastName" name="lastName" required placeholder="Smith" />
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="email">Email *</Label>
-                        <Input id="email" type="email" required placeholder="john@company.com" />
+                        <Input id="email" name="email" type="email" required placeholder="john@company.com" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" type="tel" placeholder="(555) 123-4567" />
+                        <Input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" />
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="company">Company Name *</Label>
-                        <Input id="company" required placeholder="Your Company Inc." />
+                        <Input id="company" name="company" required placeholder="Your Company Inc." />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="title">Job Title</Label>
-                        <Input id="title" placeholder="VP Operations" />
+                        <Input id="title" name="title" placeholder="VP Operations" />
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="businessType">Business Type *</Label>
-                        <Select required>
+                        <Select value={businessType} onValueChange={setBusinessType} required>
                           <SelectTrigger>
                             <SelectValue placeholder="Select business type" />
                           </SelectTrigger>
@@ -224,13 +262,13 @@ export default function ContactPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="industry">Industry/NAICS</Label>
-                        <Input id="industry" placeholder="e.g., IT Services, Construction" />
+                        <Input id="industry" name="industry" placeholder="e.g., IT Services, Construction" />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="service">Service of Interest *</Label>
-                      <Select required>
+                      <Select value={service} onValueChange={setService} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a service" />
                         </SelectTrigger>
@@ -248,13 +286,14 @@ export default function ContactPage() {
                       <Label htmlFor="message">Tell us about your goals</Label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="What challenges are you facing? What outcomes are you hoping to achieve?"
                         rows={4}
                       />
                     </div>
 
                     <div className="flex items-start space-x-2">
-                      <Checkbox id="newsletter" />
+                      <Checkbox id="newsletter" name="newsletter" />
                       <Label htmlFor="newsletter" className="text-sm font-normal">
                         Subscribe to our newsletter for government contracting insights and updates
                       </Label>
@@ -265,7 +304,7 @@ export default function ContactPage() {
                         "Submitting..."
                       ) : (
                         <>
-                          Schedule MBE Session
+                          Schedule Introductory Session
                           <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}

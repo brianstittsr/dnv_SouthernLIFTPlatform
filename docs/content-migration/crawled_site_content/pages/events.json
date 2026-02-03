@@ -1,0 +1,177 @@
+{
+  "url": "https://kdm-assoc.com/events",
+  "slug": "events",
+  "title": "MBDA FEDERAL PROCUREMENT CENTER\t | KDM & Associates",
+  "pageType": "other",
+  "publishedDate": null,
+  "lastModified": null,
+  "metadata": {
+    "url": "https://kdm-assoc.com/events",
+    "slug": "events",
+    "title": "MBDA FEDERAL PROCUREMENT CENTER\t | KDM & Associates",
+    "metaDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "metaKeywords": [],
+    "ogTitle": "KDM & Associates",
+    "ogDescription": "KDM & Associates, LLC is a business development, government affairs, and public relations firm that offers a unique collaboration with a team of experts who are experienced in government contracting, acquisition management, and contract compliance. Our KDM associates, understand public policy and have years of proven success in building strategic teaming alliances in order to give our clients a competitive advantage to winning government contracts, and grant awards.",
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "canonicalUrl": null,
+    "lastModified": null,
+    "breadcrumb": []
+  },
+  "content": {
+    "hero": {
+      "heading": "Engage. Partner. Deliver Impact.",
+      "subheading": null,
+      "image": null
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Engage. Partner. Deliver Impact.",
+        "content": "Discover Upcoming Events. Engage. Partner. Deliver Impact.",
+        "images": [],
+        "videos": [],
+        "order": 0
+      },
+      {
+        "type": "text",
+        "heading": null,
+        "content": "Driving Innovation in Agriculture INNOVATION IN AGRICULTURE AND ENERGY OPPORTUNITY ZONE SUMMIT About The Innovation in Agriculture &amp; Energy Opportunity Zone (IAEOZ) Summit is an annual national conference launched in 2020 by KDM &amp; Associates, LLC to reshape the future of farming, energy, and rural enterprise across America. Now in its 6th year , the 2025 IAEOZ Summit will be held October 13&ndash;15, 2025 , in San Juan, Puerto Rico , and will be livestreamed globally. Organized by KDM &amp; Associates, LLC , former operator of the U.S. Commerce Department/Minority Business Development Agency&rsquo;s Federal Procurement Center (2021&ndash;2025) , the Summit brings together local Puerto Rican leaders , U.S. Federal officials , and global experts across agriculture, energy, technology, commerce, and capital investment. The Summit explores the role of small and medium-sized businesses in solving today&rsquo;s most urgent rural challenges&mdash;from energy security and smart farming to sustainable development and government contracting. With Puerto Rico&rsquo;s unique status as an Opportunity Zone-rich territory , the IAEOZ Summit creates a launchpad for public-private partnerships and inclusive economic transformation. Vision To build a resilient, innovative, and inclusive rural economy driven by sustainable agriculture, renewable energy, and equitable access to capital, technology, and federal contracting opportunities&mdash;empowering underserved communities and unlocking new pathways to prosperity. Mission Advance innovation in agriculture and energy within Opportunity Zones and rural communities. Connect minority and underserved businesses with contracting and investment opportunities in the U.S. and abroad. Foster collaboration between federal agencies, HBCUs, land-grant institutions, and rural enterprises to drive workforce development, smart infrastructure, and economic revitalization. Elevate best practices through real-world case studies, podcasts, training content, and partnerships with stakeholders across government, industry, and academia. Register Now – IAEOZ Summit 2025",
+        "images": [],
+        "videos": [],
+        "order": 1
+      },
+      {
+        "type": "text",
+        "heading": null,
+        "content": "Stay in the know Latest News & Media BY KDM & Associates 27 September 2025 Puerto Rico’s Agricultural Sector in 2025: A Strategic Pivot Toward Resilience and Innovation By Ivana HarringtonSan Juan, PR &mdash; September 15, 2025 Puerto Rico&rsquo;s agricultural sector is undergoing a pivotal transformation continuing in 2025, driven by a combination of public policy ... Read More BY KDM & Associates 09 September 2025 Puerto Rico’s Strategic Role: Federal Opportunities Emerging from Counter-Cartel Operations Author: Richard Wagner (September 2025) The Pentagon&rsquo;s recent unannounced visit to Puerto Rico by Defense Secretary Pete Hegseth and Joint Chiefs Chair Gen. Dan Caine underscores the island&rsq... Read More BY KDM & Associates 07 August 2025 U.S. Manufacturing & Environmental Progress: A New Era of Innovation and Sustainability Domestic Manufacturing Rising U.S. manufacturing is experiencing a strategic resurgence. Fueled by economic tailwinds like lower interest rates and renewables-driven demand, industries are returnin... Read More",
+        "images": [
+          "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1759004074.png",
+          "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1757452209.png",
+          "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1754590452.png",
+          "https://kdm-assoc.com/t_assets/events_theme/images/shap/news_memphis2.png",
+          "https://kdm-assoc.com/t_assets/events_theme/images/shap/news_memphis1.png"
+        ],
+        "videos": [],
+        "order": 2
+      },
+      {
+        "type": "text",
+        "heading": null,
+        "content": "Stay up to date with our latest events, opportunities, exclusive offers, and promotions. Activate Your Free KDM Account - Coming Soon",
+        "images": [],
+        "videos": [],
+        "order": 3
+      }
+    ]
+  },
+  "seo": {
+    "keywords": [],
+    "ogImage": "https://kdm-assoc.com/uploads/banners/copyofkdm22.png",
+    "structuredData": null
+  },
+  "navigation": {
+    "breadcrumb": [],
+    "relatedPages": []
+  },
+  "media": {
+    "images": [
+      {
+        "id": "img-1768884002202-hhdhi1ezu",
+        "sourceUrl": "https://kdm-assoc.com/uploads/banners/kdmassoevents6.png",
+        "localPath": null,
+        "alt": "MBDA Federal Procurement Center",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884002202-uxo4kinif",
+        "sourceUrl": "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1759004074.png",
+        "localPath": null,
+        "alt": "Puerto Rico’s Agricultural Sector in 2025: A Strategic Pivot Toward Resilience and Innovation",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884002202-wk9uzv28b",
+        "sourceUrl": "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1757452209.png",
+        "localPath": null,
+        "alt": "Puerto Rico’s Strategic Role: Federal Opportunities Emerging from Counter-Cartel Operations",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884002202-blfxvgmnw",
+        "sourceUrl": "https://mbdafpc.s3.amazonaws.com/uploads/cover_photo/1754590452.png",
+        "localPath": null,
+        "alt": "U.S. Manufacturing & Environmental Progress: A New Era of Innovation and Sustainability",
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884002202-5ll4s2g9a",
+        "sourceUrl": "https://kdm-assoc.com/t_assets/events_theme/images/shap/news_memphis2.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      },
+      {
+        "id": "img-1768884002202-9vww386d5",
+        "sourceUrl": "https://kdm-assoc.com/t_assets/events_theme/images/shap/news_memphis1.png",
+        "localPath": null,
+        "alt": null,
+        "title": null,
+        "width": null,
+        "height": null,
+        "format": "png",
+        "context": "content",
+        "caption": null,
+        "parentPageUrl": "https://kdm-assoc.com/events",
+        "fileSize": null,
+        "downloaded": false
+      }
+    ],
+    "videos": [],
+    "documents": []
+  },
+  "forms": [],
+  "wordCount": 3075,
+  "httpStatus": 200,
+  "crawledAt": "2026-01-20T04:40:02.202Z"
+}

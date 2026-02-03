@@ -6,6 +6,7 @@ import {
   DollarSign,
   Search,
   ArrowUpRight,
+  Calendar,
   Download,
   MoreHorizontal,
   AlertCircle,
@@ -59,6 +60,7 @@ import {
   collection, 
   getDocs, 
   query, 
+  where, 
   orderBy, 
   limit, 
   Timestamp, 
@@ -66,6 +68,7 @@ import {
   updateDoc, 
   arrayUnion, 
   arrayRemove,
+  getDoc 
 } from "firebase/firestore";
 import { COLLECTIONS, type TransactionDoc, type PaymentPlanDoc } from "@/lib/schema";
 import { toast } from "sonner";
@@ -110,17 +113,20 @@ export default function FinancialDashboardPage() {
     try {
       setLoading(true);
       
+      // 1. Fetch Transactions
       const transRef = collection(db, COLLECTIONS.TRANSACTIONS);
       const transQ = query(transRef, orderBy("createdAt", "desc"), limit(100));
       const transSnap = await getDocs(transQ);
-      const transData = transSnap.docs.map(d => ({ id: d.id, ...d.data() })) as TransactionDoc[];
+      const transData = transSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
       setTransactions(transData);
 
+      // 2. Fetch Payment Plans
       const plansRef = collection(db, COLLECTIONS.PAYMENT_PLANS);
       const plansSnap = await getDocs(plansRef);
-      const plansData = plansSnap.docs.map(d => ({ id: d.id, ...d.data() })) as PaymentPlanDoc[];
+      const plansData = plansSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
       setPaymentPlans(plansData);
 
+      // 3. Calculate Metrics and Aggregations
       const totalRev = transData.reduce((sum, t) => sum + (t.amount || 0), 0);
       const outstanding = plansData.reduce((sum, p) => sum + (p.remainingBalance || 0), 0);
       
@@ -128,9 +134,11 @@ export default function FinancialDashboardPage() {
       const revByTag: Record<string, number> = {};
 
       transData.forEach(t => {
-        const type = t.type || "other";
+        // By Type
+        const type = t.type || 'other';
         revByType[type] = (revByType[type] || 0) + (t.amount || 0);
         
+        // By Tag
         if (t.tags && Array.isArray(t.tags)) {
           t.tags.forEach((tag: string) => {
             revByTag[tag] = (revByTag[tag] || 0) + (t.amount || 0);
@@ -140,8 +148,8 @@ export default function FinancialDashboardPage() {
       
       const now = new Date();
       const overdue = plansData.reduce((sum, p) => {
-        const dueDate = p.dueDate instanceof Timestamp ? p.dueDate.toDate() : new Date(p.dueDate as unknown as string);
-        if (p.status === "active" && dueDate < now) {
+        const dueDate = p.dueDate instanceof Timestamp ? p.dueDate.toDate() : new Date(p.dueDate);
+        if (p.status === 'active' && dueDate < now) {
           return sum + (p.remainingBalance || 0);
         }
         return sum;
@@ -307,7 +315,7 @@ export default function FinancialDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{formatCurrency(metrics.outstandingBalance)}</div>
-                <p className="text-xs text-muted-foreground">Across {paymentPlans.filter(p => p.status === "active").length} active plans</p>
+                <p className="text-xs text-muted-foreground">Across {paymentPlans.filter(p => p.status === 'active').length} active plans</p>
               </CardContent>
             </Card>
             <Card>
@@ -344,7 +352,7 @@ export default function FinancialDashboardPage() {
                   {Object.entries(metrics.revenueByType).map(([type, amount]) => (
                     <div key={type} className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="capitalize">{type.replace("_", " ")}</span>
+                        <span className="capitalize">{type.replace('_', ' ')}</span>
                         <span className="font-bold">{formatCurrency(amount)}</span>
                       </div>
                       <Progress value={metrics.totalRevenue > 0 ? (amount / metrics.totalRevenue) * 100 : 0} className="h-1" />
@@ -369,7 +377,9 @@ export default function FinancialDashboardPage() {
             <Card className="col-span-3">
               <CardHeader>
                 <CardTitle>Recent Transactions</CardTitle>
-                <CardDescription>Latest payments processed.</CardDescription>
+                <CardDescription>
+                  Latest payments processed.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
@@ -377,7 +387,7 @@ export default function FinancialDashboardPage() {
                     <div key={t.id} className="flex items-center">
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">{t.userName}</p>
-                        <p className="text-xs text-muted-foreground">{t.type.replace("_", " ")}</p>
+                        <p className="text-xs text-muted-foreground">{t.type.replace('_', ' ')}</p>
                       </div>
                       <div className="ml-auto font-medium text-green-600">
                         +{formatCurrency(t.amount)}
@@ -389,37 +399,41 @@ export default function FinancialDashboardPage() {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Balances</CardTitle>
-              <CardDescription>Payments due based on upcoming event dates.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-8">
-                {paymentPlans
-                  .filter(p => p.status === "active" && p.remainingBalance > 0)
-                  .sort((a, b) => {
-                    const dateA = a.dueDate instanceof Timestamp ? a.dueDate.toMillis() : new Date(a.dueDate as unknown as string).getTime();
-                    const dateB = b.dueDate instanceof Timestamp ? b.dueDate.toMillis() : new Date(b.dueDate as unknown as string).getTime();
-                    return dateA - dateB;
-                  })
-                  .slice(0, 5)
-                  .map((plan) => (
-                    <div key={plan.id} className="flex items-center">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">{plan.entityName}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Due: {format(plan.dueDate instanceof Timestamp ? plan.dueDate.toDate() : new Date(plan.dueDate as unknown as string), "MMM d, yyyy")}
-                        </p>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <Card className="col-span-7">
+              <CardHeader>
+                <CardTitle>Upcoming Balances</CardTitle>
+                <CardDescription>
+                  Payments due based on upcoming event dates.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-8">
+                  {paymentPlans
+                    .filter(p => p.status === 'active' && p.remainingBalance > 0)
+                    .sort((a, b) => {
+                      const dateA = a.dueDate instanceof Timestamp ? a.dueDate.toMillis() : new Date(a.dueDate).getTime();
+                      const dateB = b.dueDate instanceof Timestamp ? b.dueDate.toMillis() : new Date(b.dueDate).getTime();
+                      return dateA - dateB;
+                    })
+                    .slice(0, 5)
+                    .map((plan) => (
+                      <div key={plan.id} className="flex items-center">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium leading-none">{plan.entityName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Due: {format(plan.dueDate instanceof Timestamp ? plan.dueDate.toDate() : new Date(plan.dueDate), "MMM d, yyyy")}
+                          </p>
+                        </div>
+                        <div className="ml-auto font-medium text-red-500">
+                          {formatCurrency(plan.remainingBalance)}
+                        </div>
                       </div>
-                      <div className="ml-auto font-medium text-red-500">
-                        {formatCurrency(plan.remainingBalance)}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="transactions" className="space-y-4">
@@ -479,7 +493,7 @@ export default function FinancialDashboardPage() {
                         <div className="text-xs text-muted-foreground">{t.userEmail}</div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="capitalize">{t.type.replace("_", " ")}</Badge>
+                        <Badge variant="outline" className="capitalize">{t.type.replace('_', ' ')}</Badge>
                       </TableCell>
                       <TableCell className="text-sm font-medium">{t.entityName}</TableCell>
                       <TableCell>
@@ -510,7 +524,7 @@ export default function FinancialDashboardPage() {
                       <TableCell className="font-bold">{formatCurrency(t.amount)}</TableCell>
                       <TableCell>{getStatusBadge(t.status)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {format(t.createdAt instanceof Timestamp ? t.createdAt.toDate() : new Date(t.createdAt as unknown as string), "MMM d, yyyy h:mm a")}
+                        {format(t.createdAt instanceof Timestamp ? t.createdAt.toDate() : new Date(t.createdAt), "MMM d, yyyy h:mm a")}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -528,7 +542,7 @@ export default function FinancialDashboardPage() {
                             }}>Add Tags</DropdownMenuItem>
                             {t.paymentPlanId && (
                               <DropdownMenuItem onClick={() => {
-                                toast.info("Linked to payment plan: " + t.paymentPlanId);
+                                toast.info(`Linked to payment plan: ${t.paymentPlanId}`);
                               }}>
                                 View Payment Plan
                               </DropdownMenuItem>
@@ -584,7 +598,7 @@ export default function FinancialDashboardPage() {
                       </TableCell>
                       <TableCell>{getStatusBadge(plan.status)}</TableCell>
                       <TableCell className="text-xs">
-                        {format(plan.dueDate instanceof Timestamp ? plan.dueDate.toDate() : new Date(plan.dueDate as unknown as string), "MMM d, yyyy")}
+                        {format(plan.dueDate instanceof Timestamp ? plan.dueDate.toDate() : new Date(plan.dueDate), "MMM d, yyyy")}
                       </TableCell>
                       <TableCell className="text-right min-w-[120px]">
                         <div className="flex items-center justify-end gap-2">
@@ -615,6 +629,7 @@ export default function FinancialDashboardPage() {
         </TabsContent>
       </Tabs>
 
+      {/* Tag Dialog */}
       <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
         <DialogContent>
           <DialogHeader>

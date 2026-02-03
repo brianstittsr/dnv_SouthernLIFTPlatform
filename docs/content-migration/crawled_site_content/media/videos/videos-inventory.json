@@ -1,27 +1,118 @@
 {
-  "totalVideos": 3,
-  "exportedAt": "2026-01-19T15:14:01.434Z",
+  "totalVideos": 16,
+  "exportedAt": "2026-01-20T04:45:43.648Z",
   "videos": [
     {
-      "id": "vid-001",
+      "id": "vid-1768883971534-vsua6zcoc",
       "platform": "youtube",
-      "embedCode": "<iframe src=\"https://www.youtube.com/embed/abc123\" frameborder=\"0\" allowfullscreen></iframe>",
-      "title": "ISO Certification Process Overview",
-      "description": "Learn about the ISO certification process and how KDM Associates can help your organization achieve certification."
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/bp0H_VknrCM\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
     },
     {
-      "id": "vid-002",
+      "id": "vid-1768884024105-nrcs5y2zg",
       "platform": "youtube",
-      "embedCode": "<iframe src=\"https://www.youtube.com/embed/def456\" frameborder=\"0\" allowfullscreen></iframe>",
-      "title": "CMMC 2.0 Explained",
-      "description": "Understanding the new CMMC 2.0 requirements and how to prepare for certification."
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/7FX48yx82kw\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
     },
     {
-      "id": "vid-003",
-      "platform": "vimeo",
-      "embedCode": "<iframe src=\"https://player.vimeo.com/video/789012\" frameborder=\"0\" allowfullscreen></iframe>",
-      "title": "Client Success Story: Precision Manufacturing",
-      "description": "Hear how Precision Manufacturing achieved AS9100 certification with KDM Associates."
+      "id": "vid-1768884026090-ruj924bmi",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/ssvD6R_-dIQ\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884028041-lfv80hqov",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/7gj41NiMr2Y\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884030049-b41ai1ep4",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/_zpS05mnUAA\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884032068-j9uikq4v3",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/qjgtnM9IVww\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884036061-ufgjffcmo",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/IE1k4nlEe1Q\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884085048-4dwm41wte",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/3iIBbhC7_OA\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884087047-f7r761iqr",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/0_oq3NTAv48\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884092060-1ytckpr8v",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/mLKPhfSzkDk\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884098041-05mwwitn7",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/eAD1fFRt2VQ\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884120058-j3c7zr0f8",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/5tcSe6nrU2c\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884138079-iapiwony7",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/utAcAuyfYTM\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884138079-nvl030w44",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/aEN47WjE-Fg\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884138079-pu3io7jwz",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/5i0pPOSAaDg\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
+    },
+    {
+      "id": "vid-1768884146068-owgzz9a3t",
+      "platform": "youtube",
+      "embedCode": "<iframe src=\"https://www.youtube.com/embed/SjmBVjW5lqc\" frameborder=\"0\" allowfullscreen></iframe>",
+      "title": null,
+      "description": null
     }
   ]
 }
