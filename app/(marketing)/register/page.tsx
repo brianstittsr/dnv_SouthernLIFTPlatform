@@ -45,6 +45,7 @@ export default function RegisterPage() {
     confirmPassword: "",
     companyName: "",
     industry: "",
+    userType: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +59,7 @@ export default function RegisterPage() {
     }
 
     // Validate all fields
-    if (!formData.email || !formData.password || !formData.companyName || !formData.industry) {
+    if (!formData.email || !formData.password || !formData.companyName || !formData.industry || !formData.userType) {
       setError("Please fill in all required fields");
       return;
     }
@@ -77,6 +78,7 @@ export default function RegisterPage() {
           password: formData.password,
           companyName: formData.companyName,
           industry: formData.industry,
+          userType: formData.userType,
         }),
       });
 
@@ -155,6 +157,31 @@ export default function RegisterPage() {
                   required
                 />
               </div>
+            </div>
+
+            {/* User Type */}
+            <div className="space-y-2">
+              <Label htmlFor="userType">I am registering as a...</Label>
+              <div className="relative">
+                <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                <Select
+                  value={formData.userType}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, userType: value })
+                  }
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Select your user type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sme">SME / Supplier (Sell products/services)</SelectItem>
+                    <SelectItem value="buyer">Buyer / Government (Purchase products/services)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                This determines your role and access level on the platform
+              </p>
             </div>
 
             {/* Industry */}
