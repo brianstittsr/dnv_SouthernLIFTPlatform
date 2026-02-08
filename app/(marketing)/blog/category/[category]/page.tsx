@@ -11,7 +11,7 @@ import {
   Clock,
   BookOpen,
 } from "lucide-react";
-import { allBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
@@ -48,7 +48,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const posts = allBlogPosts.filter((p) => p.category === category);
+  const allPosts = await getAllBlogPosts();
+  const posts = allPosts.filter((p) => p.category === category);
 
   return (
     <>

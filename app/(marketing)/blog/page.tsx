@@ -16,7 +16,7 @@ import {
   Lightbulb,
   Gem,
 } from "lucide-react";
-import { allBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
@@ -44,10 +44,10 @@ const categoryColors: Record<BlogCategory, string> = {
   "Thought Leadership & Case Studies": "bg-indigo-100 text-indigo-800",
 };
 
-const featuredPosts = allBlogPosts.slice(0, 3);
-const remainingPosts = allBlogPosts.slice(3);
-
-export default function BlogPage() {
+export default async function BlogPage() {
+  const allPosts = await getAllBlogPosts();
+  const featuredPosts = allPosts.slice(0, 3);
+  const remainingPosts = allPosts.slice(3);
   return (
     <>
       {/* Hero Section */}

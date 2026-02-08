@@ -13,7 +13,7 @@ import {
   Share2,
   BookOpen,
 } from "lucide-react";
-import { allBlogPosts, getBlogPostBySlug, getBlogPostsByCategory } from "@/lib/blog";
+import { allBlogPosts, getAllBlogPosts, getBlogPostBySlug, getBlogPostsByCategory } from "@/lib/blog";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
   return {
@@ -46,19 +46,20 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = getBlogPostsByCategory(post.category)
+  const allPosts = await getAllBlogPosts();
+  const relatedPosts = (await getBlogPostsByCategory(post.category))
     .filter((p) => p.slug !== post.slug)
     .slice(0, 3);
 
-  const currentIndex = allBlogPosts.findIndex((p) => p.slug === post.slug);
-  const prevPost = currentIndex < allBlogPosts.length - 1 ? allBlogPosts[currentIndex + 1] : null;
-  const nextPost = currentIndex > 0 ? allBlogPosts[currentIndex - 1] : null;
+  const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
+  const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 
   return (
     <>

@@ -6,12 +6,13 @@ import { accessToCapitalPosts } from "./access-to-capital";
 import { opportunityZonesPosts } from "./opportunity-zones";
 import { crossCuttingTopicsPosts } from "./cross-cutting-topics";
 import { thoughtLeadershipPosts } from "./thought-leadership";
-import { linkedinImportedPosts } from "./linkedin-imports";
+import { getLinkedinImportedPosts } from "./linkedin-imports";
 
 export type { BlogPost, BlogCategory };
 export { BLOG_CATEGORIES };
 
-export const allBlogPosts: BlogPost[] = [
+/** Static blog posts (hardcoded in source) */
+const staticBlogPosts: BlogPost[] = [
   ...usManufacturingPosts,
   ...criticalMineralsPosts,
   ...defenseContractingCmmcPosts,
@@ -19,27 +20,45 @@ export const allBlogPosts: BlogPost[] = [
   ...opportunityZonesPosts,
   ...crossCuttingTopicsPosts,
   ...thoughtLeadershipPosts,
-  ...linkedinImportedPosts,
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-export function getBlogPostBySlug(slug: string): BlogPost | undefined {
-  return allBlogPosts.find((post) => post.slug === slug);
+/** All blog posts including static ones (kept for backward compat) */
+export const allBlogPosts: BlogPost[] = staticBlogPosts;
+
+/**
+ * Fetch all blog posts including LinkedIn imports from Firestore.
+ * Use this in server components and pages for the complete list.
+ */
+export async function getAllBlogPosts(): Promise<BlogPost[]> {
+  const imported = await getLinkedinImportedPosts();
+  return [...staticBlogPosts, ...imported].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 }
 
-export function getBlogPostsByCategory(category: BlogCategory): BlogPost[] {
-  return allBlogPosts.filter((post) => post.category === category);
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const all = await getAllBlogPosts();
+  return all.find((post) => post.slug === slug);
 }
 
-export function getFeaturedBlogPosts(count: number = 3): BlogPost[] {
-  return allBlogPosts.slice(0, count);
+export async function getBlogPostsByCategory(category: BlogCategory): Promise<BlogPost[]> {
+  const all = await getAllBlogPosts();
+  return all.filter((post) => post.category === category);
 }
 
-export function getAllBlogTags(): string[] {
+export async function getFeaturedBlogPosts(count: number = 3): Promise<BlogPost[]> {
+  const all = await getAllBlogPosts();
+  return all.slice(0, count);
+}
+
+export async function getAllBlogTags(): Promise<string[]> {
+  const all = await getAllBlogPosts();
   const tags = new Set<string>();
-  allBlogPosts.forEach((post) => post.tags.forEach((tag) => tags.add(tag)));
+  all.forEach((post) => post.tags.forEach((tag) => tags.add(tag)));
   return Array.from(tags).sort();
 }
 
-export function getBlogPostsByTag(tag: string): BlogPost[] {
-  return allBlogPosts.filter((post) => post.tags.includes(tag));
+export async function getBlogPostsByTag(tag: string): Promise<BlogPost[]> {
+  const all = await getAllBlogPosts();
+  return all.filter((post) => post.tags.includes(tag));
 }
