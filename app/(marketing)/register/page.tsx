@@ -176,6 +176,10 @@ export default function RegisterPage() {
                   <SelectContent>
                     <SelectItem value="sme">SME / Supplier (Sell products/services)</SelectItem>
                     <SelectItem value="buyer">Buyer / Government (Purchase products/services)</SelectItem>
+                    <SelectItem value="consortium_partner">Consortium Partner</SelectItem>
+                    <SelectItem value="qa_reviewer">QA Reviewer</SelectItem>
+                    <SelectItem value="cmmc_instructor">CMMC Instructor</SelectItem>
+                    <SelectItem value="marketing_staff">Marketing Staff</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

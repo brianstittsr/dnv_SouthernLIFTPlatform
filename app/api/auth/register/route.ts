@@ -21,9 +21,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate userType
-    if (!["sme", "buyer"].includes(userType)) {
+    const validUserTypes = ["sme", "buyer", "consortium_partner", "qa_reviewer", "cmmc_instructor", "marketing_staff"];
+    if (!validUserTypes.includes(userType)) {
       return NextResponse.json(
-        { error: "Invalid userType. Must be 'sme' or 'buyer'" },
+        { error: "Invalid userType. Must be one of: " + validUserTypes.join(", ") },
         { status: 400 }
       );
     }
@@ -53,14 +54,24 @@ export async function POST(req: NextRequest) {
       emailVerified: false,
     });
 
-    // Determine role and user type based on selection
-    const role: "sme_user" | "buyer" = userType === "sme" ? "sme_user" : "buyer";
-    const roleTag = userType === "sme" ? "SVP SME User (Supplier)" : "SVP Buyer / Buyer (Government)";
-    const userTypeLabel = userType === "sme" ? "SME / Supplier" : "Buyer / Government";
-
+    // Map userType to role and metadata
+    const roleMap: Record<string, { role: string; roleTag: string; label: string; prefix: string }> = {
+      sme: { role: "sme_user", roleTag: "SVP SME User (Supplier)", label: "SME / Supplier", prefix: "sme" },
+      buyer: { role: "buyer", roleTag: "SVP Buyer / Buyer (Government)", label: "Buyer / Government", prefix: "buyer" },
+      consortium_partner: { role: "consortium_partner", roleTag: "SVP Consortium Partner", label: "Consortium Partner", prefix: "partner" },
+      qa_reviewer: { role: "qa_reviewer", roleTag: "SVP QA Reviewer", label: "QA Reviewer", prefix: "qa" },
+      cmmc_instructor: { role: "cmmc_instructor", roleTag: "SVP CMMC Instructor", label: "CMMC Instructor", prefix: "instructor" },
+      marketing_staff: { role: "marketing_staff", roleTag: "SVP Marketing Staff", label: "Marketing Staff", prefix: "marketing" },
+    };
+    
+    const roleConfig = roleMap[userType];
+    const role = roleConfig.role as any;
+    const roleTag = roleConfig.roleTag;
+    const userTypeLabel = roleConfig.label;
+    
     // Generate tenant and user IDs
     const tenantId = `tenant_${userRecord.uid}`;
-    const entityId = userType === "sme" ? `sme_${userRecord.uid}` : `buyer_${userRecord.uid}`;
+    const entityId = `${roleConfig.prefix}_${userRecord.uid}`;
 
     // Create user record in Firestore
     const userData = {
@@ -112,16 +123,9 @@ export async function POST(req: NextRequest) {
         <p>Thank you for registering as a <strong>${userTypeLabel}</strong>. Your account has been created successfully.</p>
         <p><strong>Getting Started:</strong></p>
         <ul>
-          ${userType === "sme" ? `
-          <li>Complete your company profile</li>
-          <li>Add certifications and capabilities</li>
-          <li>Browse opportunities and submit proposals</li>
-          ` : `
-          <li>Complete your organization profile</li>
-          <li>Post opportunities and find suppliers</li>
-          <li>Manage procurement processes</li>
-          `}
-          <li>Explore subscription tiers for additional features</li>
+          <li>Complete your profile</li>
+          <li>Explore the platform features available to your role</li>
+          <li>Connect with other platform members</li>
         </ul>
         <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/dashboard">Go to Dashboard</a></p>
         <p>If you have any questions, please contact our support team.</p>
