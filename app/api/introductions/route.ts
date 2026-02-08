@@ -169,7 +169,9 @@ export async function GET(req: NextRequest) {
     } else if (claims.role === "sme_user") {
       const userDoc = await db.collection("users").doc(decodedToken.uid).get();
       const userData = userDoc.data();
-      query = query.where("smeId", "==", userData?.smeId) as any;
+      // Support both old (smeId) and new (id) formats
+      const userEntityId = userData?.id || userData?.smeId;
+      query = query.where("smeId", "==", userEntityId) as any;
     } else if (claims.role === "partner_user") {
       const userDoc = await db.collection("users").doc(decodedToken.uid).get();
       const userData = userDoc.data();

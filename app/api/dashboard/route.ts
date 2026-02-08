@@ -19,23 +19,24 @@ export async function GET(req: NextRequest) {
     const userDoc = await db.collection("users").doc(decodedToken.uid).get();
     const userData = userDoc.data();
 
-    // Fetch proof packs count
+    // Fetch proof packs count - use userData.id (sme_{uid} or buyer_{uid})
+    const userEntityId = userData?.id || userData?.smeId; // Support both old and new format
     const proofPacksSnapshot = await db
       .collection("proofPacks")
-      .where("smeId", "==", userData?.smeId)
+      .where("smeId", "==", userEntityId)
       .get();
 
     // Fetch active leads count
     const leadsSnapshot = await db
       .collection("leads")
-      .where("smeId", "==", userData?.smeId)
+      .where("smeId", "==", userEntityId)
       .where("status", "==", "active")
       .get();
 
     // Fetch introductions count
     const introductionsSnapshot = await db
       .collection("introductions")
-      .where("smeId", "==", userData?.smeId)
+      .where("smeId", "==", userEntityId)
       .get();
 
     // Fetch upcoming events count

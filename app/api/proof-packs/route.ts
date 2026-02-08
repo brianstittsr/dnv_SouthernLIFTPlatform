@@ -20,9 +20,12 @@ export async function GET(req: NextRequest) {
     const userDoc = await db.collection("users").doc(decodedToken.uid).get();
     const userData = userDoc.data();
 
+    // Support both old format (smeId) and new format (id which can be sme_{uid} or buyer_{uid})
+    const userEntityId = userData?.id || userData?.smeId;
+
     const proofPacksSnapshot = await db
       .collection("proofPacks")
-      .where("smeId", "==", userData?.smeId)
+      .where("smeId", "==", userEntityId)
       .orderBy("updatedAt", "desc")
       .get();
 

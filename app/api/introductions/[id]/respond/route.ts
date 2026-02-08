@@ -50,11 +50,12 @@ export async function POST(
       );
     }
 
-    // Verify SME ownership
+    // Verify SME ownership - support both old (smeId) and new (id) formats
     const userDoc = await db.collection("users").doc(decodedToken.uid).get();
     const userData = userDoc.data();
-
-    if (userData?.smeId !== introData?.smeId) {
+    const userEntityId = userData?.id || userData?.smeId;
+    
+    if (userEntityId !== introData?.smeId) {
       return NextResponse.json(
         { error: "Unauthorized to respond to this introduction" },
         { status: 403 }
@@ -77,7 +78,6 @@ export async function POST(
       updateData.stage = "meeting_scheduling";
       updateData.smeContactInfo = {
         email: userData?.email,
-        phone: userData?.phone || null,
       };
     }
 
@@ -86,6 +86,7 @@ export async function POST(
     // Send notification to buyer
     const buyerDoc = await db.collection("users").doc(introData.buyerId).get();
     const buyerData = buyerDoc.data();
+    const buyerEntityId = buyerData?.id || buyerData?.smeId;
 
     if (action === "accept") {
       await db.collection("emailQueue").add({
