@@ -63,9 +63,11 @@ export async function POST(req: NextRequest) {
 
     // Check subscription limits
     if (userData?.subscriptionTier === "free") {
+      // Support both old and new format
+      const userEntityId = userData?.id || userData?.smeId;
       const existingPacksSnapshot = await db
         .collection("proofPacks")
-        .where("smeId", "==", userData.smeId)
+        .where("smeId", "==", userEntityId)
         .get();
 
       if (existingPacksSnapshot.size >= 3) {
@@ -79,8 +81,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { title, description } = body;
 
+    // Support both old and new format
+    const userEntityId = userData?.id || userData?.smeId;
+
     const proofPackData = {
-      smeId: userData?.smeId,
+      smeId: userEntityId,
       partnerId: null,
       tenantId: userData?.tenantId,
       userId: decodedToken.uid,
