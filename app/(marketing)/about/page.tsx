@@ -11,6 +11,10 @@ import {
   Award,
   Building2,
   ArrowRight,
+  Factory,
+  Handshake,
+  TrendingUp,
+  Globe,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -132,6 +136,99 @@ export default function AboutPage() {
                 process and win government contracts. We help our clients not only win more contracts, 
                 but help firms provide more effective and efficient solutions to their clients and customers.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Strategic Value Plus Partnership */}
+      <section className="py-20 md:py-28">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
+                Strategic Partnership
+              </Badge>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Strategic Value Plus (V+) Partnership
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                Uniting manufacturing excellence with government contracting expertise
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <Card className="border-2 border-primary/20">
+                <CardContent className="p-8">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                    <Handshake className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">A Powerful Alliance</h3>
+                  <p className="text-muted-foreground">
+                    KDM & Associates has partnered with Strategic Value Plus (V+), an industry leader 
+                    in operational excellence and manufacturing consulting. This strategic alliance 
+                    combines V+&apos;s deep manufacturing expertise with KDM&apos;s proven government 
+                    contracting capabilities to deliver comprehensive solutions for businesses 
+                    seeking to enter or expand in federal manufacturing contracts.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-secondary/20">
+                <CardContent className="p-8">
+                  <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
+                    <Factory className="h-6 w-6 text-secondary" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">Manufacturing + Government Contracting</h3>
+                  <p className="text-muted-foreground">
+                    This partnership specifically addresses the unique intersection of manufacturing 
+                    operations and government procurement. We help manufacturing firms navigate 
+                    complex federal requirements while optimizing their production capabilities 
+                    to meet stringent government standards and deliverables.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="text-center">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="h-7 w-7 text-primary" />
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Enhanced Capabilities</h4>
+                  <p className="text-muted-foreground text-sm">
+                    Access to V+&apos;s proven methodologies for operational excellence, lean manufacturing, 
+                    and supply chain optimization combined with KDM&apos;s government contracting expertise.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <Globe className="h-7 w-7 text-primary" />
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Supply Chain Solutions</h4>
+                  <p className="text-muted-foreground text-sm">
+                    Comprehensive support for government manufacturing contractors including 
+                    blockchain-enabled supply chain management, quality assurance, and compliance.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center">
+                <CardContent className="p-6">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-7 w-7 text-primary" />
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Joint Success</h4>
+                  <p className="text-muted-foreground text-sm">
+                    Together, we provide end-to-end support from manufacturing readiness to 
+                    contract award and execution, ensuring clients succeed at every stage.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
