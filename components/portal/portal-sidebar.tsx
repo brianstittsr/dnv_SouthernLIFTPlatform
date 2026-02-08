@@ -211,6 +211,12 @@ const workItems = [
     badge: "AI",
   },
   {
+    title: "LinkedIn Extractor",
+    href: "/portal/linkedin-extractor",
+    icon: Linkedin,
+    badge: "Import",
+  },
+  {
     title: "EOS2 Dashboard",
     href: "/portal/eos2",
     icon: Target,
