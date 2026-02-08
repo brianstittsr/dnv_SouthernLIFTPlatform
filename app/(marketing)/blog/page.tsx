@@ -17,11 +17,48 @@ import {
   Gem,
 } from "lucide-react";
 import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { BlogListJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
   title: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
   description:
     "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
+  keywords: [
+    "defense manufacturing blog",
+    "CMMC certification guide",
+    "government contracting insights",
+    "critical minerals strategy",
+    "minority business defense contracts",
+    "manufacturing reshoring",
+    "opportunity zones investment",
+    "small business capital access",
+    "defense industrial base",
+    "supply chain resilience",
+  ],
+  alternates: {
+    canonical: "https://kdm-assoc.com/blog",
+  },
+  openGraph: {
+    title: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
+    description:
+      "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
+    url: "https://kdm-assoc.com/blog",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "KDM & Associates Blog - Defense Manufacturing & Government Contracting Insights",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KDM Blog | Defense Manufacturing & Government Contracting",
+    description:
+      "Expert articles on CMMC, defense manufacturing, critical minerals, and government contracting for small businesses.",
+  },
 };
 
 const categoryIcons: Record<BlogCategory, React.ElementType> = {
@@ -50,6 +87,23 @@ export default async function BlogPage() {
   const remainingPosts = allPosts.slice(3);
   return (
     <>
+      {/* SEO: Blog List Structured Data */}
+      <BlogListJsonLd
+        posts={allPosts.map((p) => ({
+          title: p.title,
+          url: `https://kdm-assoc.com/blog/${p.slug}`,
+          datePublished: p.date,
+          author: p.author,
+          excerpt: p.excerpt,
+        }))}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://kdm-assoc.com" },
+          { name: "Blog", url: "https://kdm-assoc.com/blog" },
+        ]}
+      />
+
       {/* Hero Section */}
       <section className="py-20 md:py-28 bg-black text-white">
         <div className="container">

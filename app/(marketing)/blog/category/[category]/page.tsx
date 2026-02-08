@@ -12,6 +12,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
@@ -53,6 +54,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
+      {/* SEO: Breadcrumb Structured Data */}
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://kdm-assoc.com" },
+          { name: "Blog", url: "https://kdm-assoc.com/blog" },
+          { name: category, url: `https://kdm-assoc.com/blog/category/${categorySlug}` },
+        ]}
+      />
+
       {/* Hero */}
       <section className="py-16 md:py-24 bg-black text-white">
         <div className="container">

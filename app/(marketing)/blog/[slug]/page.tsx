@@ -14,6 +14,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { allBlogPosts, getAllBlogPosts, getBlogPostBySlug, getBlogPostsByCategory } from "@/lib/blog";
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -30,16 +31,43 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const post = await getBlogPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
+  const postUrl = `https://kdm-assoc.com/blog/${slug}`;
+
   return {
     title: `${post.title} | KDM Blog`,
     description: post.excerpt,
+    keywords: [
+      ...post.tags,
+      post.category,
+      "KDM Associates",
+      "government contracting",
+    ],
+    alternates: {
+      canonical: postUrl,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,
+      url: postUrl,
       type: "article",
       publishedTime: post.date,
+      modifiedTime: post.date,
       authors: [post.author],
       tags: post.tags,
+      section: post.category,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
     },
   };
 }
@@ -63,6 +91,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
+      {/* SEO: Article Structured Data */}
+      <ArticleJsonLd
+        title={post.title}
+        description={post.excerpt}
+        url={`https://kdm-assoc.com/blog/${post.slug}`}
+        image="https://kdm-assoc.com/og-image.png"
+        datePublished={post.date}
+        dateModified={post.date}
+        authorName={post.author}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://kdm-assoc.com" },
+          { name: "Blog", url: "https://kdm-assoc.com/blog" },
+          { name: post.category, url: `https://kdm-assoc.com/blog/category/${encodeURIComponent(post.category.toLowerCase().replace(/[&\s]+/g, "-"))}` },
+          { name: post.title, url: `https://kdm-assoc.com/blog/${post.slug}` },
+        ]}
+      />
+
       {/* Hero */}
       <section className="py-16 md:py-24 bg-black text-white">
         <div className="container">

@@ -60,6 +60,21 @@ export function OrganizationJsonLd() {
       "HUBZone",
       "SBA Programs",
       "Mentor-Protégé Programs",
+      "CMMC Certification",
+      "Cybersecurity Maturity Model Certification",
+      "Defense Manufacturing",
+      "U.S. Manufacturing Reshoring",
+      "Critical Minerals Supply Chain",
+      "Rare Earth Elements",
+      "Defense Industrial Base",
+      "Supply Chain Resilience",
+      "Opportunity Zones",
+      "Access to Capital for Small Business",
+      "Government Manufacturing Consulting",
+      "Federal Manufacturing Contracts",
+      "Aerospace Manufacturing Compliance",
+      "Small Business Defense Contracts",
+      "Supplier Success Workshops",
     ],
   };
 
@@ -279,6 +294,68 @@ export function ArticleJsonLd({
       id="article-jsonld"
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+    />
+  );
+}
+
+// Blog Listing Schema (CollectionPage + ItemList)
+interface BlogListItem {
+  title: string;
+  url: string;
+  datePublished: string;
+  author: string;
+  excerpt: string;
+}
+
+interface BlogListJsonLdProps {
+  posts: BlogListItem[];
+}
+
+export function BlogListJsonLd({ posts }: BlogListJsonLdProps) {
+  const blogListSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
+    description:
+      "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
+    url: "https://kdm-assoc.com/blog",
+    publisher: {
+      "@type": "Organization",
+      name: "KDM & Associates",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://kdm-assoc.com/kdm-logo.png",
+      },
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: posts.slice(0, 20).map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Article",
+          headline: post.title,
+          url: post.url,
+          datePublished: post.datePublished,
+          author: {
+            "@type": "Person",
+            name: post.author,
+          },
+          description: post.excerpt,
+          publisher: {
+            "@type": "Organization",
+            name: "KDM & Associates",
+          },
+        },
+      })),
+    },
+  };
+
+  return (
+    <Script
+      id="blog-list-jsonld"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(blogListSchema) }}
     />
   );
 }
