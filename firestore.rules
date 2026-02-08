@@ -268,6 +268,14 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Book Call Leads - public write for lead capture, admin read
+    match /bookCallLeads/{leadId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public form submission
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
     // Partner payouts - payout records and history
     match /partnerPayouts/{payoutId} {
       allow read: if isAuthenticated();
