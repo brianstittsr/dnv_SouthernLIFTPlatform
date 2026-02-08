@@ -514,6 +514,12 @@ const svpAdminItems = [
     badge: "SVP",
   },
   {
+    title: "Subscription Leads",
+    href: "/portal/admin/leads",
+    icon: Phone,
+    badge: "DWY/DFY",
+  },
+  {
     title: "User Management",
     href: "/portal/admin/users",
     icon: Users,

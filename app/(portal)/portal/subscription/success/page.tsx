@@ -2,11 +2,12 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, db as firestoreDb } from "@/lib/firebase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
 
 const TIER_INFO: Record<string, { name: string; price: number }> = {
   diy: { name: "DIY (Do It Yourself)", price: 99 },
@@ -47,10 +48,80 @@ function SubscriptionSuccessContent() {
         throw new Error("Failed to update subscription");
       }
 
+      // Create lead for DWY and DFY tiers
+      if (tier === "dwy" || tier === "dfy") {
+        await createLead(currentUser.uid, token, tier);
+      }
+
       setUpdating(false);
     } catch (err: any) {
       setError(err.message || "Failed to update subscription");
       setUpdating(false);
+    }
+  };
+
+  const createLead = async (userId: string, token: string, tier: string) => {
+    try {
+      if (!firestoreDb) {
+        console.error("Firestore not initialized");
+        return;
+      }
+
+      // Fetch user profile for lead creation
+      const userDoc = await getDoc(doc(firestoreDb, "users", userId));
+      const userData = userDoc.data();
+
+      if (!userData) {
+        console.error("User data not found for lead creation");
+        return;
+      }
+
+      // Fetch proof pack data if available
+      let proofPackContext = undefined;
+      try {
+        const proofPackDoc = await getDoc(doc(firestoreDb, "proofPacks", userId));
+        if (proofPackDoc.exists()) {
+          const packData = proofPackDoc.data();
+          proofPackContext = {
+            packId: userId,
+            packName: packData.name,
+            packHealth: packData.healthScore,
+            capabilities: packData.capabilities || [],
+            certifications: packData.certifications || [],
+            naicsCodes: packData.naicsCodes || [],
+          };
+        }
+      } catch (e) {
+        // Proof pack may not exist, continue without it
+      }
+
+      const leadData = {
+        userId,
+        tier,
+        email: userData.email,
+        companyName: userData.companyName,
+        industry: userData.industry,
+        userType: userData.userType || "sme",
+        roleTag: userData.roleTag || "SVP SME User (Supplier)",
+        source: "subscription_checkout",
+        proofPackContext,
+      };
+
+      const leadResponse = await fetch("/api/subscription/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(leadData),
+      });
+
+      if (!leadResponse.ok) {
+        console.error("Failed to create lead:", await leadResponse.text());
+      }
+    } catch (err) {
+      console.error("Error creating lead:", err);
+      // Don't block the success flow if lead creation fails
     }
   };
 
