@@ -22,18 +22,48 @@ const staticBlogPosts: BlogPost[] = [
   ...thoughtLeadershipPosts,
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-/** All blog posts including static ones (kept for backward compat) */
+/** All blog posts including static ones (kept for backward compat / sitemap) */
 export const allBlogPosts: BlogPost[] = staticBlogPosts;
 
 /**
- * Fetch all blog posts including LinkedIn imports from Firestore.
- * Use this in server components and pages for the complete list.
+ * Fetch hidden slugs from Firestore blogVisibility collection.
  */
-export async function getAllBlogPosts(): Promise<BlogPost[]> {
+async function getHiddenSlugs(): Promise<Set<string>> {
+  try {
+    const { db } = await import("@/lib/firebase-admin");
+    if (!db) return new Set();
+
+    const snapshot = await db
+      .collection("blogVisibility")
+      .where("hidden", "==", true)
+      .get();
+
+    return new Set(snapshot.docs.map((doc) => doc.id));
+  } catch {
+    return new Set();
+  }
+}
+
+/**
+ * Fetch ALL blog posts (including hidden) for the management page.
+ */
+export async function getAllBlogPostsUnfiltered(): Promise<BlogPost[]> {
   const imported = await getLinkedinImportedPosts();
   return [...staticBlogPosts, ...imported].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+}
+
+/**
+ * Fetch all VISIBLE blog posts (filters out hidden ones).
+ * Use this in server components and public-facing pages.
+ */
+export async function getAllBlogPosts(): Promise<BlogPost[]> {
+  const [all, hiddenSlugs] = await Promise.all([
+    getAllBlogPostsUnfiltered(),
+    getHiddenSlugs(),
+  ]);
+  return all.filter((post) => !hiddenSlugs.has(post.slug));
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {

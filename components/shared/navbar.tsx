@@ -27,6 +27,7 @@ import {
   Newspaper,
   Package,
   Video,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -67,6 +68,7 @@ const services = [
 ];
 
 const resources = [
+  { title: "Blog", href: "/blog", icon: BookOpen },
   { title: "Products", href: "/products", icon: Package },
   { title: "News & Insights", href: "/news", icon: Newspaper },
   { title: "Media & Press", href: "/media", icon: Video },

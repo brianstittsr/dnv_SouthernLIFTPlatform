@@ -91,6 +91,7 @@ import {
   Activity,
   CreditCard,
   Globe,
+  BookOpen,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -215,6 +216,11 @@ const workItems = [
     href: "/portal/linkedin-extractor",
     icon: Linkedin,
     badge: "Import",
+  },
+  {
+    title: "Blog Management",
+    href: "/portal/blog-management",
+    icon: BookOpen,
   },
   {
     title: "EOS2 Dashboard",

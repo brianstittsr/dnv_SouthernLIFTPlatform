@@ -20,6 +20,7 @@ const footerLinks = {
     { title: "Contact Us", href: "/contact" },
   ],
   resources: [
+    { title: "Blog", href: "/blog" },
     { title: "FAQ", href: "/faq" },
     { title: "Events", href: "/events" },
     { title: "Membership", href: "/membership" },
