@@ -10,12 +10,14 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.svpRole == 'platform_admin');
     }
     
     function isInstructor() {
       return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'cmmc_instructor'];
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'cmmc_instructor'] ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.svpRole == 'platform_admin');
     }
     
     function isSMEUser() {
@@ -25,6 +27,11 @@ service cloud.firestore {
     
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isLinkedTeamMember(memberId) {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/team_members/$(memberId)).data.firebaseUid == request.auth.uid;
     }
     
     // ==================== COHORTS ====================
@@ -199,10 +206,12 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // Team members
+    // Team members - allow linked users to update their own record
     match /team_members/{memberId} {
       allow read: if isAuthenticated();
-      allow create, update, delete: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || isLinkedTeamMember(memberId);
+      allow delete: if isAdmin();
     }
     
     // Header/Footer configs

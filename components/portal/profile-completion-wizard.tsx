@@ -100,10 +100,12 @@ export function ProfileCompletionWizard() {
   // Initialize form data from profile when wizard opens
   useEffect(() => {
     if (showProfileWizard && profile.id) {
+      // Get email from profile or Firebase Auth as fallback
+      const userEmail = profile.email || auth?.currentUser?.email || "";
       setFormData({
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
-        email: profile.email || "",
+        email: userEmail,
         phone: profile.phone || "",
         company: profile.company || "",
         jobTitle: profile.jobTitle || "",
