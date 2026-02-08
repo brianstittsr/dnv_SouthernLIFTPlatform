@@ -6,6 +6,7 @@ import { accessToCapitalPosts } from "./access-to-capital";
 import { opportunityZonesPosts } from "./opportunity-zones";
 import { crossCuttingTopicsPosts } from "./cross-cutting-topics";
 import { thoughtLeadershipPosts } from "./thought-leadership";
+import { linkedinImportedPosts } from "./linkedin-imports";
 
 export type { BlogPost, BlogCategory };
 export { BLOG_CATEGORIES };
@@ -18,6 +19,7 @@ export const allBlogPosts: BlogPost[] = [
   ...opportunityZonesPosts,
   ...crossCuttingTopicsPosts,
   ...thoughtLeadershipPosts,
+  ...linkedinImportedPosts,
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

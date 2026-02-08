@@ -16,6 +16,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -46,6 +53,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LinkedInArticle, ExtractionResult } from "@/lib/linkedin-extractor";
+import { BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog/types";
 
 export default function LinkedInExtractorPage() {
   const [activeTab, setActiveTab] = useState("url");
@@ -57,6 +65,13 @@ export default function LinkedInExtractorPage() {
   );
   const [previewArticle, setPreviewArticle] =
     useState<LinkedInArticle | null>(null);
+
+  // Export dialog state
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [exportCategory, setExportCategory] = useState<BlogCategory>("Thought Leadership & Case Studies");
+  const [articleCategories, setArticleCategories] = useState<Record<string, BlogCategory>>({});
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportResult, setExportResult] = useState<{ success: boolean; message: string } | null>(null);
 
   // URL extraction state
   const [linkedinUrl, setLinkedinUrl] = useState("");
@@ -218,27 +233,84 @@ export default function LinkedInExtractorPage() {
     navigator.clipboard.writeText(markdown);
   };
 
-  const exportSelectedAsBlogPosts = () => {
+  const openExportDialog = () => {
+    // Initialize per-article categories with the default
+    const cats: Record<string, BlogCategory> = {};
+    extractedArticles.forEach((a) => {
+      if (selectedArticles.has(a.id)) {
+        cats[a.id] = articleCategories[a.id] || exportCategory;
+      }
+    });
+    setArticleCategories(cats);
+    setExportResult(null);
+    setShowExportDialog(true);
+  };
+
+  const applyDefaultCategoryToAll = () => {
+    const cats: Record<string, BlogCategory> = {};
+    extractedArticles.forEach((a) => {
+      if (selectedArticles.has(a.id)) {
+        cats[a.id] = exportCategory;
+      }
+    });
+    setArticleCategories(cats);
+  };
+
+  const exportSelectedAsBlogPosts = async () => {
     const selected = extractedArticles.filter((a) =>
       selectedArticles.has(a.id)
     );
-    const blogPosts = selected.map((a) => ({
-      slug: a.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, ""),
-      title: a.title,
-      excerpt: a.excerpt,
-      content: a.content,
-      author: a.author,
-      date: a.publishedDate.split("T")[0],
-      category: "Thought Leadership & Case Studies" as const,
-      tags: a.tags,
-      readTime: Math.max(3, Math.ceil(a.content.split(/\s+/).length / 200)),
-    }));
-    navigator.clipboard.writeText(
-      `import { BlogPost, BLOG_CTA } from "./types";\n\nexport const linkedinImportedPosts: BlogPost[] = ${JSON.stringify(blogPosts, null, 2)};`
-    );
+    if (selected.length === 0) return;
+
+    setIsExporting(true);
+    setExportResult(null);
+
+    try {
+      const articlesToImport = selected.map((a) => ({
+        id: a.id,
+        title: a.title,
+        content: a.content,
+        excerpt: a.excerpt,
+        author: a.author || "KDM & Associates",
+        publishedDate: a.publishedDate,
+        url: a.url,
+        tags: a.tags,
+        category: articleCategories[a.id] || exportCategory,
+      }));
+
+      const response = await fetch("/api/blog/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articles: articlesToImport }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.imported > 0) {
+        setExportResult({
+          success: true,
+          message: `Successfully imported ${result.imported} article${result.imported !== 1 ? "s" : ""} as blog posts. They will appear on the blog after the next build/deploy.`,
+        });
+        // Remove exported articles from the list
+        const exportedIds = new Set(selected.map((a) => a.id));
+        setExtractedArticles((prev) =>
+          prev.filter((a) => !exportedIds.has(a.id))
+        );
+        setSelectedArticles(new Set());
+      } else {
+        setExportResult({
+          success: false,
+          message: result.error || "Failed to import articles.",
+        });
+      }
+    } catch (error) {
+      setExportResult({
+        success: false,
+        message: "Failed to connect to the import service.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -670,7 +742,7 @@ export default function LinkedInExtractorPage() {
                   <Button
                     size="sm"
                     className="bg-blue-600 hover:bg-blue-700"
-                    onClick={exportSelectedAsBlogPosts}
+                    onClick={openExportDialog}
                   >
                     <ArrowRight className="h-3 w-3 mr-1" />
                     Export as Blog Posts
@@ -925,6 +997,170 @@ export default function LinkedInExtractorPage() {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Export as Blog Posts Dialog */}
+      <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-600" />
+              Export as Blog Posts
+            </DialogTitle>
+            <DialogDescription>
+              Choose a blog category for each article, then import them into the
+              platform&apos;s blog.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-2">
+            {/* Default category selector */}
+            <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Default Category</Label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={applyDefaultCategoryToAll}
+                >
+                  Apply to All
+                </Button>
+              </div>
+              <Select
+                value={exportCategory}
+                onValueChange={(v) => setExportCategory(v as BlogCategory)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {BLOG_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Per-article category assignment */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">
+                Articles to Import ({selectedArticles.size})
+              </Label>
+              {extractedArticles
+                .filter((a) => selectedArticles.has(a.id))
+                .map((article) => (
+                  <div
+                    key={article.id}
+                    className="p-3 border rounded-lg space-y-2"
+                  >
+                    <p className="text-sm font-medium line-clamp-1">
+                      {article.title}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-xs text-muted-foreground whitespace-nowrap">
+                        Category:
+                      </Label>
+                      <Select
+                        value={
+                          articleCategories[article.id] || exportCategory
+                        }
+                        onValueChange={(v) =>
+                          setArticleCategories((prev) => ({
+                            ...prev,
+                            [article.id]: v as BlogCategory,
+                          }))
+                        }
+                      >
+                        <SelectTrigger className="h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {BLOG_CATEGORIES.map((cat) => (
+                            <SelectItem key={cat} value={cat}>
+                              {cat}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>{article.author}</span>
+                      <span>
+                        {Math.max(
+                          1,
+                          Math.ceil(
+                            article.content.split(/\s+/).length / 200
+                          )
+                        )}{" "}
+                        min read
+                      </span>
+                      {article.tags.length > 0 && (
+                        <span>{article.tags.length} tags</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            {/* Export result feedback */}
+            {exportResult && (
+              <div
+                className={cn(
+                  "p-3 rounded-lg border-2 flex items-start gap-2",
+                  exportResult.success
+                    ? "bg-green-50 border-green-200"
+                    : "bg-red-50 border-red-200"
+                )}
+              >
+                {exportResult.success ? (
+                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                )}
+                <p
+                  className={cn(
+                    "text-sm",
+                    exportResult.success ? "text-green-800" : "text-red-800"
+                  )}
+                >
+                  {exportResult.message}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowExportDialog(false)}
+              disabled={isExporting}
+            >
+              {exportResult?.success ? "Done" : "Cancel"}
+            </Button>
+            {!exportResult?.success && (
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={exportSelectedAsBlogPosts}
+                disabled={isExporting || selectedArticles.size === 0}
+              >
+                {isExporting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Importing...
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    Import {selectedArticles.size} Article
+                    {selectedArticles.size !== 1 ? "s" : ""} to Blog
+                  </>
+                )}
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
