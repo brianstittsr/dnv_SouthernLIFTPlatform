@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Eye, EyeOff, AlertCircle, Users, Building2, CheckCircle, Factory, UserCheck } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle, Building2, CheckCircle, Factory, Landmark } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { findAndLinkTeamMember } from "@/lib/auth-team-member-link";
@@ -19,7 +19,7 @@ import { findAndLinkTeamMember } from "@/lib/auth-team-member-link";
 export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState<"affiliate" | "strategic_partner" | "client" | "">("");
+  const [accountType, setAccountType] = useState<"buyer" | "client" | "">("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -137,9 +137,9 @@ export default function SignUpPage() {
       }
 
       // Redirect based on account type
-      if (accountType === "client") {
-        router.push("/onboarding/client");
-      } else if (accountType === "affiliate") {
+      if (accountType === "buyer") {
+        router.push("/portal/buyer/dashboard");
+      } else if (accountType === "client") {
         router.push("/portal");
       } else {
         router.push("/portal");
@@ -215,63 +215,34 @@ export default function SignUpPage() {
               <div className="space-y-4">
                 <RadioGroup
                   value={accountType}
-                  onValueChange={(value) => setAccountType(value as "affiliate" | "strategic_partner" | "client")}
+                  onValueChange={(value) => setAccountType(value as "buyer" | "client")}
                   className="space-y-4"
                 >
                   <div 
                     className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "affiliate" 
+                      accountType === "buyer" 
                         ? "border-[#C8A951] bg-[#C8A951]/5" 
                         : "border-muted hover:border-muted-foreground/50"
                     }`}
-                    onClick={() => setAccountType("affiliate")}
+                    onClick={() => setAccountType("buyer")}
                   >
-                    <RadioGroupItem value="affiliate" id="affiliate" className="mt-1" />
+                    <RadioGroupItem value="buyer" id="buyer" className="mt-1" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Users className="h-5 w-5 text-[#C8A951]" />
-                        <Label htmlFor="affiliate" className="text-lg font-semibold cursor-pointer">
-                          Affiliate Partner
+                        <Landmark className="h-5 w-5 text-[#C8A951]" />
+                        <Label htmlFor="buyer" className="text-lg font-semibold cursor-pointer">
+                          Buyer / Government
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Join our referral network and earn commissions by connecting manufacturers with V+ services. 
-                        Perfect for consultants, industry experts, and business development professionals.
+                        Government agencies and buyers looking to procure products and services from qualified suppliers. 
+                        Access our network of CMMC-ready SMEs and manage your procurement processes.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Earn referral commissions</li>
-                        <li>• Access networking tools</li>
-                        <li>• One-to-One meeting scheduling</li>
-                        <li>• Training and resources</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div 
-                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "strategic_partner" 
-                        ? "border-[#C8A951] bg-[#C8A951]/5" 
-                        : "border-muted hover:border-muted-foreground/50"
-                    }`}
-                    onClick={() => setAccountType("strategic_partner")}
-                  >
-                    <RadioGroupItem value="strategic_partner" id="strategic_partner" className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-5 w-5 text-[#C8A951]" />
-                        <Label htmlFor="strategic_partner" className="text-lg font-semibold cursor-pointer">
-                          Strategic Partner
-                        </Label>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Partner with Strategic Value+ to deliver comprehensive manufacturing solutions. 
-                        Ideal for service providers, technology vendors, and industry organizations.
-                      </p>
-                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Co-branded solutions</li>
-                        <li>• Joint go-to-market opportunities</li>
-                        <li>• Access to manufacturer network</li>
-                        <li>• Priority deal flow</li>
+                        <li>• Post opportunities and RFPs</li>
+                        <li>• Find qualified suppliers</li>
+                        <li>• Manage procurement processes</li>
+                        <li>• Access CMMC compliance tools</li>
                       </ul>
                     </div>
                   </div>
