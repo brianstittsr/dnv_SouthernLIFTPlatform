@@ -276,6 +276,12 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
+    // Platform Settings - authenticated read for UI preferences, admin write
+    match /platformSettings/{settingsId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Partner payouts - payout records and history
     match /partnerPayouts/{payoutId} {
       allow read: if isAuthenticated();
