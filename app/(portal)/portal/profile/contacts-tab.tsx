@@ -45,16 +45,22 @@ import {
   UserCheck,
   Briefcase,
   Loader2,
+  Plus,
+  UserPlus,
+  Send,
+  X,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, query, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
+import { collection, query, getDocs, doc, updateDoc, Timestamp, addDoc } from "firebase/firestore";
 import { COLLECTIONS, type TeamMemberDoc, type StrategicPartnerDoc } from "@/lib/schema";
+import { toast } from "sonner";
+import { useUserProfile } from "@/contexts/user-profile-context";
 import { logActivity } from "@/lib/activity-logger";
 
 // Unified contact type for display
 interface UnifiedContact {
   id: string;
-  source: "team_member" | "strategic_partner";
+  source: "team_member" | "strategic_partner" | "user";
   firstName: string;
   lastName: string;
   email: string;
@@ -64,11 +70,32 @@ interface UnifiedContact {
   website?: string;
   linkedIn?: string;
   avatar?: string;
-  role?: string; // For team members: admin, team, affiliate, consultant
+  role?: string;
   status: string;
   isClient: boolean;
-  contactTypes: string[]; // affiliate, partner, client, team, etc.
+  contactTypes: string[];
 }
+
+// Invitation template
+const INVITATION_TEMPLATE = {
+  subject: "Invitation to join KDM & Associates SVP Platform",
+  body: (inviterName: string, inviterCompany: string) => `
+    <h2>You've been invited to join the KDM & Associates SVP Platform!</h2>
+    <p><strong>${inviterName}</strong> from <strong>${inviterCompany}</strong> has invited you to join our Strategic Value+ Platform.</p>
+    <h3>Platform Benefits:</h3>
+    <ul>
+      <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
+      <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
+      <li><strong>CMMC Cohort Training:</strong> Access CMMC certification programs</li>
+      <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
+      <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
+      <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
+    </ul>
+    <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.kdm-assoc.com'}/sign-up" style="background: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 16px 0;">Join the Platform</a></p>
+    <p>If you have any questions, please contact our support team at support@kdm-assoc.com.</p>
+    <p>Best regards,<br>The KDM & Associates Team</p>
+  `,
+};
 
 function getContactTypeBadges(contact: UnifiedContact) {
   const badges: { label: string; variant: "default" | "secondary" | "outline" | "destructive" }[] = [];
@@ -85,6 +112,8 @@ function getContactTypeBadges(contact: UnifiedContact) {
     }
   } else if (contact.source === "strategic_partner") {
     badges.push({ label: "Partner", variant: "outline" });
+  } else if (contact.source === "user") {
+    badges.push({ label: "Platform User", variant: "default" });
   }
   
   if (contact.isClient) {
@@ -95,16 +124,33 @@ function getContactTypeBadges(contact: UnifiedContact) {
 }
 
 export default function ContactsTab() {
+  const { profile: userProfile } = useUserProfile();
   const [contacts, setContacts] = useState<UnifiedContact[]>([]);
+  const [platformUsers, setPlatformUsers] = useState<UnifiedContact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedContact, setSelectedContact] = useState<UnifiedContact | null>(null);
   const [showClientDialog, setShowClientDialog] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Add contact dialogs
+  const [showAddPlatformDialog, setShowAddPlatformDialog] = useState(false);
+  const [showInviteExternalDialog, setShowInviteExternalDialog] = useState(false);
+  
+  // External invite form
+  const [inviteForm, setInviteForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    message: "",
+  });
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
 
   useEffect(() => {
     fetchContacts();
+    fetchPlatformUsers();
   }, []);
 
   async function fetchContacts() {
@@ -183,6 +229,128 @@ export default function ContactsTab() {
       console.error("Error fetching contacts:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function fetchPlatformUsers() {
+    if (!db) return;
+
+    try {
+      const usersRef = collection(db, COLLECTIONS.USERS);
+      const usersSnapshot = await getDocs(query(usersRef));
+      const users: UnifiedContact[] = [];
+      
+      usersSnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        // Skip current user
+        if (data.userId === userProfile.id) return;
+        
+        users.push({
+          id: docSnap.id,
+          source: "user",
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          email: data.email || "",
+          phone: data.phone,
+          company: data.companyName || data.company,
+          expertise: data.industry || "",
+          avatar: data.avatarUrl,
+          role: data.svpRole || data.role,
+          status: "active",
+          isClient: false,
+          contactTypes: ["platform_user"],
+        });
+      });
+      
+      setPlatformUsers(users);
+    } catch (error) {
+      console.error("Error fetching platform users:", error);
+    }
+  }
+
+  async function addPlatformUserAsContact(user: UnifiedContact) {
+    if (!db) return;
+    
+    try {
+      // Add to contacts subcollection under user
+      const contactsRef = collection(db, "users", userProfile.id, "contacts");
+      await addDoc(contactsRef, {
+        contactUserId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        company: user.company,
+        source: "platform",
+        createdAt: Timestamp.now(),
+      });
+      
+      toast.success(`${user.firstName} ${user.lastName} added to your contacts`);
+      
+      // Log activity
+      await logActivity({
+        type: "create",
+        entityType: "team-member",
+        entityId: user.id,
+        entityName: `${user.firstName} ${user.lastName}`,
+        description: `Added ${user.firstName} ${user.lastName} as a contact`,
+      });
+    } catch (error) {
+      console.error("Error adding contact:", error);
+      toast.error("Failed to add contact");
+    }
+  }
+
+  async function sendExternalInvitation(e: React.FormEvent) {
+    e.preventDefault();
+    if (!db) return;
+    
+    setIsSendingInvite(true);
+    try {
+      // Queue invitation email
+      const emailQueueRef = collection(db, "emailQueue");
+      await addDoc(emailQueueRef, {
+        to: [inviteForm.email],
+        subject: INVITATION_TEMPLATE.subject,
+        body: INVITATION_TEMPLATE.body(
+          `${userProfile.firstName} ${userProfile.lastName}`,
+          userProfile.company || "KDM & Associates"
+        ),
+        fromName: `${userProfile.firstName} ${userProfile.lastName}`,
+        fromEmail: userProfile.email,
+        status: "pending",
+        createdAt: Timestamp.now(),
+        metadata: {
+          type: "platform_invitation",
+          invitedBy: userProfile.id,
+          invitedByEmail: userProfile.email,
+          invitedUserEmail: inviteForm.email,
+          invitedUserName: `${inviteForm.firstName} ${inviteForm.lastName}`,
+          invitedUserCompany: inviteForm.company,
+        },
+      });
+      
+      // Store pending invitation
+      const invitationsRef = collection(db, "pendingInvitations");
+      await addDoc(invitationsRef, {
+        firstName: inviteForm.firstName,
+        lastName: inviteForm.lastName,
+        email: inviteForm.email,
+        company: inviteForm.company,
+        invitedBy: userProfile.id,
+        invitedByName: `${userProfile.firstName} ${userProfile.lastName}`,
+        message: inviteForm.message,
+        status: "pending",
+        createdAt: Timestamp.now(),
+      });
+      
+      toast.success(`Invitation sent to ${inviteForm.email}`);
+      setInviteForm({ firstName: "", lastName: "", email: "", company: "", message: "" });
+      setShowInviteExternalDialog(false);
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+      toast.error("Failed to send invitation");
+    } finally {
+      setIsSendingInvite(false);
     }
   }
 
@@ -353,6 +521,18 @@ export default function ContactsTab() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Add Contact Buttons */}
+      <div className="flex gap-3">
+        <Button onClick={() => setShowAddPlatformDialog(true)}>
+          <UserPlus className="mr-2 h-4 w-4" />
+          Add Platform User
+        </Button>
+        <Button variant="outline" onClick={() => setShowInviteExternalDialog(true)}>
+          <Send className="mr-2 h-4 w-4" />
+          Invite External Contact
+        </Button>
       </div>
 
       {/* Search and Filters */}
@@ -552,6 +732,171 @@ export default function ContactsTab() {
               )}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Platform User Dialog */}
+      <Dialog open={showAddPlatformDialog} onOpenChange={setShowAddPlatformDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Platform User as Contact</DialogTitle>
+            <DialogDescription>
+              Search and add users from the platform to your contacts
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search users by name, email, or company..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {platformUsers.length > 0 ? (
+                platformUsers
+                  .filter((user) => 
+                    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    user.company?.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={user.avatar} />
+                          <AvatarFallback className="bg-primary/10 text-primary">
+                            {getInitials(user.firstName, user.lastName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{user.firstName} {user.lastName}</p>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                          {user.company && (
+                            <p className="text-xs text-muted-foreground">{user.company}</p>
+                          )}
+                        </div>
+                      </div>
+                      <Button size="sm" onClick={() => addPlatformUserAsContact(user)}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
+                      </Button>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No users found</p>
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddPlatformDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Invite External Contact Dialog */}
+      <Dialog open={showInviteExternalDialog} onOpenChange={setShowInviteExternalDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Invite External Contact</DialogTitle>
+            <DialogDescription>
+              Send an invitation email to join the KDM & Associates SVP Platform
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={sendExternalInvitation}>
+            <div className="py-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    value={inviteForm.firstName}
+                    onChange={(e) => setInviteForm({ ...inviteForm, firstName: e.target.value })}
+                    placeholder="John"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    value={inviteForm.lastName}
+                    onChange={(e) => setInviteForm({ ...inviteForm, lastName: e.target.value })}
+                    placeholder="Smith"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={inviteForm.email}
+                  onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+                  placeholder="john.smith@example.com"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company">Company</Label>
+                <Input
+                  id="company"
+                  value={inviteForm.company}
+                  onChange={(e) => setInviteForm({ ...inviteForm, company: e.target.value })}
+                  placeholder="Company Name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Personal Message (Optional)</Label>
+                <textarea
+                  id="message"
+                  value={inviteForm.message}
+                  onChange={(e) => setInviteForm({ ...inviteForm, message: e.target.value })}
+                  placeholder="Add a personal note to the invitation..."
+                  className="w-full min-h-[100px] p-3 rounded-md border text-sm"
+                />
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Invitation includes:</p>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Access to Proof Packs for compliance</li>
+                  <li>• Buyer connection opportunities</li>
+                  <li>• CMMC cohort training programs</li>
+                  <li>• AI-powered SVP Tools</li>
+                  <li>• Network with other suppliers</li>
+                </ul>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setShowInviteExternalDialog(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSendingInvite}>
+                {isSendingInvite ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Invitation
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

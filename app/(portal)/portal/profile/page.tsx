@@ -81,6 +81,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { USER_ROLES } from "@/lib/rbac-types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ContactsTab from "./contacts-tab";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
@@ -88,13 +89,16 @@ import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 
-// User roles
-const userRoles = [
-  { id: "affiliate", name: "Affiliate", description: "Referral partner earning commissions" },
-  { id: "consultant", name: "Consultant", description: "V+ team member providing services" },
-  { id: "team", name: "Team Member", description: "Core SVP team member" },
-  { id: "admin", name: "Administrator", description: "Platform administrator" },
-];
+// SVP Role descriptions for display
+const svpRoleDescriptions: Record<string, string> = {
+  sme_user: "SME User (Supplier) - Access to proof packs, introductions, and cohort enrollment",
+  buyer: "Buyer / Government - Access to view proof packs and request introductions",
+  consortium_partner: "Consortium Partner - Partner-level access to leads and introductions",
+  qa_reviewer: "QA Reviewer - Review and approve proof packs",
+  cmmc_instructor: "CMMC Instructor - Manage cohorts and curriculum",
+  marketing_staff: "Marketing Staff - Content creation and event management",
+  platform_admin: "Platform Administrator - Full system access",
+};
 
 // Affiliate categories
 const affiliateCategories = [
@@ -454,7 +458,7 @@ export default function ProfilePage() {
                   {profile.firstName || userProfile.firstName} {profile.lastName || userProfile.lastName}
                 </h2>
                 <Badge variant="secondary">
-                  {userRoles.find((r) => r.id === profile.role)?.name || "Member"}
+                  {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "Member"}
                 </Badge>
               </div>
               <p className="text-muted-foreground">{profile.title || "Add your professional title"}</p>
@@ -496,9 +500,9 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Tabbed Content */}
+      {/* Tabbed Content - Only show relevant tabs */}
       <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList className="grid grid-cols-8 w-full">
+        <TabsList className="grid grid-cols-4 w-full">
           <TabsTrigger value="basic" className="text-xs sm:text-sm">
             <User className="h-4 w-4 mr-1 hidden sm:inline" />
             Basic Info
@@ -514,22 +518,6 @@ export default function ProfilePage() {
           <TabsTrigger value="certifications" className="text-xs sm:text-sm">
             <Award className="h-4 w-4 mr-1 hidden sm:inline" />
             Certifications
-          </TabsTrigger>
-          <TabsTrigger value="networking" className="text-xs sm:text-sm">
-            <Handshake className="h-4 w-4 mr-1 hidden sm:inline" />
-            Networking
-          </TabsTrigger>
-          <TabsTrigger value="tools" className="text-xs sm:text-sm">
-            <Wrench className="h-4 w-4 mr-1 hidden sm:inline" />
-            SVP Tools
-          </TabsTrigger>
-          <TabsTrigger value="recordings" className="text-xs sm:text-sm">
-            <Video className="h-4 w-4 mr-1 hidden sm:inline" />
-            Recordings
-          </TabsTrigger>
-          <TabsTrigger value="social" className="text-xs sm:text-sm">
-            <Globe className="h-4 w-4 mr-1 hidden sm:inline" />
-            Social
           </TabsTrigger>
         </TabsList>
 
@@ -638,10 +626,10 @@ export default function ProfilePage() {
                 <Shield className="h-8 w-8 text-primary" />
                 <div>
                   <p className="font-medium">
-                    {userRoles.find((r) => r.id === profile.role)?.name}
+                    {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "Member"}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {userRoles.find((r) => r.id === profile.role)?.description}
+                    {svpRoleDescriptions[userProfile.svpRole as keyof typeof svpRoleDescriptions] || svpRoleDescriptions[profile.role as keyof typeof svpRoleDescriptions] || "Platform member"}
                   </p>
                 </div>
               </div>

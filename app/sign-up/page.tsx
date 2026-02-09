@@ -21,7 +21,7 @@ import { doc, setDoc, Timestamp } from "firebase/firestore";
 export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState<"buyer" | "client" | "">("");
+  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "">("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

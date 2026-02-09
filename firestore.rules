@@ -31,7 +31,7 @@ service cloud.firestore {
     
     function isLinkedTeamMember(memberId) {
       return isAuthenticated() && 
-        get(/databases/$(database)/documents/team_members/$(memberId)).data.firebaseUid == request.auth.uid;
+        get(/databases/$(database)/documents/teamMembers/$(memberId)).data.firebaseUid == request.auth.uid;
     }
     
     // ==================== COHORTS ====================
@@ -207,7 +207,7 @@ service cloud.firestore {
     }
     
     // Team members - allow linked users to update their own record
-    match /team_members/{memberId} {
+    match /teamMembers/{memberId} {
       allow read: if isAuthenticated();
       allow create: if isAdmin();
       allow update: if isAdmin() || isLinkedTeamMember(memberId);
@@ -294,6 +294,37 @@ service cloud.firestore {
     match /revenueSharingConfig/{configId} {
       allow read: if isAuthenticated();
       allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== SVP PLATFORM COLLECTIONS ====================
+    // Proof Packs - SME compliance documentation
+    match /proofPacks/{packId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    // Leads - CRM and routing
+    match /leads/{leadId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || resource.data.assignedTo == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || resource.data.assignedTo == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    // Introductions - buyer-SME matching
+    match /introductions/{introId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || resource.data.buyerId == 'buyer_' + request.auth.uid || resource.data.buyerId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.smeId == 'sme_' + request.auth.uid || resource.data.smeId == request.auth.uid || resource.data.buyerId == 'buyer_' + request.auth.uid || resource.data.buyerId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
     }
     
     // Fallback: Deny all other access
