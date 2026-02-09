@@ -155,6 +155,18 @@ export function needsAffiliateOnboarding(profile: UserProfile): boolean {
 
 // Map TeamMemberDoc to UserProfile
 function mapTeamMemberToProfile(teamMember: TeamMemberDoc): Partial<UserProfile> {
+  // Map team member role to SVP role
+  let svpRole: UserProfile["svpRole"] = undefined;
+  if (teamMember.role === "sme_user") {
+    svpRole = "sme_user";
+  } else if (teamMember.role === "admin") {
+    svpRole = "platform_admin";
+  } else if (teamMember.role === "affiliate" || teamMember.role === "consultant") {
+    svpRole = "partner_user";
+  } else if (teamMember.role === "team") {
+    svpRole = "partner_user"; // Default for team members
+  }
+  
   return {
     id: teamMember.id,
     email: teamMember.emailPrimary || "",
@@ -168,7 +180,9 @@ function mapTeamMemberToProfile(teamMember: TeamMemberDoc): Partial<UserProfile>
     avatarUrl: teamMember.avatar || "",
     role: teamMember.role === "admin" ? "admin" : 
           teamMember.role === "affiliate" ? "affiliate" : 
-          teamMember.role === "consultant" ? "affiliate" : "team_member",
+          teamMember.role === "consultant" ? "affiliate" : 
+          teamMember.role === "sme_user" ? "team_member" : "team_member",
+    svpRole,
     isAffiliate: teamMember.role === "affiliate" || teamMember.role === "consultant",
   };
 }

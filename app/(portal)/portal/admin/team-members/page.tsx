@@ -75,7 +75,7 @@ const seedTeamMembers: Omit<TeamMemberDoc, "id" | "createdAt" | "updatedAt">[] =
   { firstName: "Alex", lastName: "West", emailPrimary: "alex@itscnow.com", mobile: "(518) 801-7315", expertise: "Cybersecurity Consulting", role: "affiliate", status: "active" },
   { firstName: "Alysha", lastName: "Campbell", emailPrimary: "alysha@cultureshifthr.com", expertise: "Human Resources", role: "affiliate", status: "active" },
   { firstName: "Brett", lastName: "Heyns", emailPrimary: "brett@getcompoundeffect.com", expertise: "Advanced Marketing/Bus Dev", role: "affiliate", status: "active" },
-  { firstName: "Brian", lastName: "Stitt", emailPrimary: "bstitt@strategicvalueplus.com", emailSecondary: "brianstittsr@gmail.com", mobile: "(919) 608-3415", expertise: "Advanced Technology/Robotics", role: "admin", status: "active" },
+  { firstName: "Brian", lastName: "Stitt", emailPrimary: "bstitt@strategicvalueplus.com", emailSecondary: "brianstittsr@gmail.com", mobile: "(919) 608-3415", expertise: "Advanced Technology/Robotics", role: "sme_user", status: "active" },
   { firstName: "Brian", lastName: "McCollough", emailPrimary: "bmccollough@nextstagefl.net", mobile: "(801) 719-0076", expertise: "Operations", role: "affiliate", status: "active" },
   { firstName: "Cass", lastName: "Gibson", emailPrimary: "cassgibson@coststudy.us", emailSecondary: "cass@tapeismoney.com", mobile: "(717) 858-3150", expertise: "Cost Segregation", role: "affiliate", status: "active" },
   { firstName: "Christine", lastName: "Nolan", emailPrimary: "christine.nolan@pines-optimization.com", emailSecondary: "canolan912@gmail.com", mobile: "(215) 808-0035", expertise: "Inventory/Supply Chain", role: "affiliate", status: "active" },

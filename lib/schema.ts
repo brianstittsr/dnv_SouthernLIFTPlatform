@@ -585,7 +585,7 @@ export interface TeamMemberDoc {
   avatar?: string;
   linkedIn?: string;
   website?: string;
-  role: "admin" | "team" | "affiliate" | "consultant";
+  role: "admin" | "team" | "affiliate" | "consultant" | "sme_user";
   status: "active" | "inactive" | "pending";
   // Leadership role flags for About/Leadership pages
   isCEO?: boolean;
