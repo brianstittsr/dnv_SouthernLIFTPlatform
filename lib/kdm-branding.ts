@@ -30,7 +30,7 @@ export const KDM_BRANDING = {
 
   // Social Media Links
   social: {
-    linkedin: 'https://linkedin.com/company/kdm-associates',
+    linkedin: 'https://www.linkedin.com/company/kdmassoc',
     twitter: 'https://twitter.com/kdmassociates',
     youtube: 'https://youtube.com/@kdmassociates',
   },
