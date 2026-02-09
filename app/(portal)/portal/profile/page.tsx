@@ -480,8 +480,8 @@ export default function ProfilePage() {
                   Member since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
                 </span>
               </div>
-              {/* Quick Stats */}
-              <div className="flex gap-6 pt-2">
+              {/* Quick Stats - Hidden: One-to-Ones, Certifications, Recordings */}
+              <div className="flex gap-6 pt-2" style={{ display: 'none' }}>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{oneToOnes.length}</div>
                   <div className="text-xs text-muted-foreground">One-to-Ones</div>
@@ -502,7 +502,7 @@ export default function ProfilePage() {
 
       {/* Tabbed Content - Only show relevant tabs */}
       <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-3 w-full">
           <TabsTrigger value="basic" className="text-xs sm:text-sm">
             <User className="h-4 w-4 mr-1 hidden sm:inline" />
             Basic Info
@@ -514,10 +514,6 @@ export default function ProfilePage() {
           <TabsTrigger value="contacts" className="text-xs sm:text-sm">
             <Users className="h-4 w-4 mr-1 hidden sm:inline" />
             Contacts
-          </TabsTrigger>
-          <TabsTrigger value="certifications" className="text-xs sm:text-sm">
-            <Award className="h-4 w-4 mr-1 hidden sm:inline" />
-            Certifications
           </TabsTrigger>
         </TabsList>
 
