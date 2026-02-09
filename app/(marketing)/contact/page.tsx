@@ -508,7 +508,7 @@ export default function ContactPage() {
                 <CardContent>
                   <div className="flex gap-3">
                     <Button variant="outline" size="icon" asChild>
-                      <Link href="https://linkedin.com">
+                      <Link href="https://www.linkedin.com/company/kdmassoc">
                         <Linkedin className="h-5 w-5" />
                       </Link>
                     </Button>
