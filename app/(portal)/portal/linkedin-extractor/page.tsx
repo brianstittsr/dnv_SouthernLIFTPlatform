@@ -276,6 +276,7 @@ export default function LinkedInExtractorPage() {
         url: a.url,
         tags: a.tags,
         category: articleCategories[a.id] || exportCategory,
+        imageUrl: a.imageUrl,
       }));
 
       const response = await fetch("/api/blog/import", {

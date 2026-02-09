@@ -8,6 +8,7 @@ export interface BlogPost {
   category: BlogCategory;
   tags: string[];
   readTime: number;
+  imageUrl?: string;
 }
 
 export type BlogCategory =

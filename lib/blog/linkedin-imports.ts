@@ -33,6 +33,7 @@ export async function getLinkedinImportedPosts(): Promise<BlogPost[]> {
         category: data.category as BlogPost["category"],
         tags: data.tags || [],
         readTime: data.readTime || 5,
+        imageUrl: data.imageUrl,
       };
     });
   } catch (error) {

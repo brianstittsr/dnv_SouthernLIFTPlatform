@@ -16,6 +16,7 @@ interface ImportRequest {
     url: string;
     tags: string[];
     category: BlogCategory;
+    imageUrl?: string;
   }[];
 }
 
@@ -102,6 +103,7 @@ export async function POST(request: NextRequest) {
           article.tags.length > 0 ? article.tags : ["LinkedIn", "Import"],
         readTime: Math.max(3, Math.ceil(wordCount / 200)),
         linkedinUrl: article.url || null,
+        imageUrl: article.imageUrl || null,
         importedAt: Timestamp.now(),
       };
 
