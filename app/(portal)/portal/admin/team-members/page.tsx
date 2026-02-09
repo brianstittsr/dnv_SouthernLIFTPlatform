@@ -141,7 +141,7 @@ export default function TeamMembersPage() {
     bio: "",
     linkedIn: "",
     website: "",
-    role: "affiliate" as "admin" | "team" | "affiliate" | "consultant",
+    role: "affiliate" as TeamMemberDoc["role"],
     status: "active" as "active" | "inactive" | "pending",
     // Leadership flags
     isCEO: false,
@@ -495,6 +495,8 @@ export default function TeamMembersPage() {
         return <Badge className="bg-green-100 text-green-800">Affiliate</Badge>;
       case "consultant":
         return <Badge className="bg-purple-100 text-purple-800">Consultant</Badge>;
+      case "sme_user":
+        return <Badge className="bg-orange-100 text-orange-800">SME User</Badge>;
       default:
         return <Badge variant="secondary">{role}</Badge>;
     }
@@ -610,8 +612,8 @@ export default function TeamMembersPage() {
                     <Label htmlFor="role">Role *</Label>
                     <Select
                       value={formData.role}
-                      onValueChange={(value: "admin" | "team" | "affiliate" | "consultant") => 
-                        setFormData({ ...formData, role: value })
+                      onValueChange={(value) => 
+                        setFormData({ ...formData, role: value as TeamMemberDoc["role"] })
                       }
                     >
                       <SelectTrigger>
@@ -622,6 +624,7 @@ export default function TeamMembersPage() {
                         <SelectItem value="team">Team</SelectItem>
                         <SelectItem value="affiliate">Affiliate</SelectItem>
                         <SelectItem value="consultant">Consultant</SelectItem>
+                        <SelectItem value="sme_user">SME User</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -864,6 +867,7 @@ export default function TeamMembersPage() {
                 <SelectItem value="team">Team</SelectItem>
                 <SelectItem value="affiliate">Affiliate</SelectItem>
                 <SelectItem value="consultant">Consultant</SelectItem>
+                <SelectItem value="sme_user">SME User</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex items-center gap-1 border rounded-md p-1">
