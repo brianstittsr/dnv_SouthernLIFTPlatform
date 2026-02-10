@@ -26,8 +26,8 @@ const footerLinks = {
     { title: "Membership", href: "/membership" },
   ],
   legal: [
-    { title: "Privacy Policy", href: "/privacy" },
-    { title: "Terms of Service", href: "/terms" },
+    { title: "Privacy Policy", href: "/legal/privacy-policy" },
+    { title: "Terms of Service", href: "/legal/terms-of-service" },
     { title: "FAQs", href: "/faq" },
   ],
 };
