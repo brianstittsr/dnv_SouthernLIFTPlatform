@@ -45,7 +45,7 @@ const defaultSlides: HeroSlide[] = [
     id: "1",
     badge: "MBDA Federal Procurement Center",
     headline: "Powering Growth for",
-    highlightedText: "Emerging",
+    highlightedText: "Emerging Businesses",
     subheadline: "KDM & Associates focuses on best practices in government contracting. We call it \"What Works\" because it drives greater success for Small Businesses.",
     benefits: ["Federal Contract Opportunities", "Strategic Teaming", "Government Introductions"],
     primaryCta: { text: "Schedule Introductory Session", href: "/contact" },
