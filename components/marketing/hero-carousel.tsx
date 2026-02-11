@@ -197,7 +197,7 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
             {/* Headline */}
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               {currentSlide.headline}{" "}
-              <span className="text-primary">{currentSlide.highlightedText}</span> Businesses.
+              <span className="text-primary">{currentSlide.highlightedText}</span>
             </h1>
 
             {/* Subheadline */}
