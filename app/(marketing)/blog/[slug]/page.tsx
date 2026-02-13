@@ -167,10 +167,52 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <article className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:text-sm prose-th:bg-muted prose-th:p-3 prose-td:p-3 prose-td:border prose-th:border">
-              {post.content.split("\n").map((line, i) => {
-                if (line.startsWith("## Ready to Take the Next Step?")) {
-                  return (
-                    <div key={i} className="not-prose mt-12 p-8 bg-primary/5 border-2 border-primary/20 rounded-xl">
+              {(() => {
+                const lines = post.content.split("\n");
+                const elements: React.ReactNode[] = [];
+                let tableRows: React.ReactNode[] = [];
+                let i = 0;
+
+                const flushTable = () => {
+                  if (tableRows.length > 0) {
+                    elements.push(
+                      <table key={`table-${i}`} className="w-full border-collapse my-6">
+                        <tbody>{tableRows}</tbody>
+                      </table>
+                    );
+                    tableRows = [];
+                  }
+                };
+
+                while (i < lines.length) {
+                  const line = lines[i];
+
+                  // Handle table rows
+                  if (line.startsWith("| ") && line.includes("|")) {
+                    const cells = line.split("|").filter(Boolean).map((c) => c.trim());
+                    // Skip separator lines (--- or :---:)
+                    if (cells.every((c) => c.match(/^[-:]+$/))) {
+                      i++;
+                      continue;
+                    }
+                    tableRows.push(
+                      <tr key={i}>
+                        {cells.map((cell, j) => (
+                          <td key={j} dangerouslySetInnerHTML={{ __html: cell.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />
+                        ))}
+                      </tr>
+                    );
+                    i++;
+                    continue;
+                  } else {
+                    // Flush any pending table rows before processing non-table content
+                    flushTable();
+                  }
+
+                  // Handle other content types
+                  if (line.startsWith("## Ready to Take the Next Step?")) {
+                    elements.push(
+                      <div key={i} className="not-prose mt-12 p-8 bg-primary/5 border-2 border-primary/20 rounded-xl">
                       <h2 className="text-2xl font-bold mb-4">Ready to Take the Next Step?</h2>
                       <p className="text-muted-foreground mb-6">
                         Whether you&apos;re a small manufacturer seeking defense contracts, a government buyer
@@ -197,56 +239,46 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         to government contracting success.
                       </p>
                     </div>
-                  );
+                    );
+                  } else if (line.startsWith("# ")) {
+                    elements.push(<h1 key={i} className="text-3xl font-bold mt-10 mb-4">{line.replace("# ", "")}</h1>);
+                  } else if (line.startsWith("## ") && !line.includes("Ready to Take")) {
+                    elements.push(<h2 key={i}>{line.replace("## ", "")}</h2>);
+                  } else if (line.startsWith("### ")) {
+                    elements.push(<h3 key={i}>{line.replace("### ", "")}</h3>);
+                  } else if (line.startsWith("**") && line.endsWith("**")) {
+                    elements.push(<p key={i}><strong>{line.replace(/\*\*/g, "")}</strong></p>);
+                  } else if (line.startsWith("- **")) {
+                    const match = line.match(/^- \*\*(.+?)\*\*\s*[—–-]?\s*(.*)/);
+                    if (match) {
+                      elements.push(
+                        <li key={i}>
+                          <strong>{match[1]}</strong>
+                          {match[2] ? ` — ${match[2]}` : ""}
+                        </li>
+                      );
+                    } else {
+                      elements.push(<li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^- /, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />);
+                    }
+                  } else if (line.startsWith("- ")) {
+                    elements.push(<li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^- /, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />);
+                  } else if (line.startsWith("- [ ] ")) {
+                    elements.push(<li key={i} className="list-none"><input type="checkbox" disabled className="mr-2" />{line.replace("- [ ] ", "")}</li>);
+                  } else if (line.startsWith("1. ") || line.match(/^\d+\. /)) {
+                    elements.push(<li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^\d+\.\s/, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />);
+                  } else if (line.trim() === "") {
+                    elements.push(<br key={i} />);
+                  } else {
+                    elements.push(<p key={i} dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>') }} />);
+                  }
+                  i++;
                 }
 
-                if (line.startsWith("# ")) {
-                  return <h1 key={i} className="text-3xl font-bold mt-10 mb-4">{line.replace("# ", "")}</h1>;
-                }
-                if (line.startsWith("## ") && !line.includes("Ready to Take")) {
-                  return <h2 key={i}>{line.replace("## ", "")}</h2>;
-                }
-                if (line.startsWith("### ")) {
-                  return <h3 key={i}>{line.replace("### ", "")}</h3>;
-                }
-                if (line.startsWith("**") && line.endsWith("**")) {
-                  return <p key={i}><strong>{line.replace(/\*\*/g, "")}</strong></p>;
-                }
-                if (line.startsWith("- **")) {
-                  const match = line.match(/^- \*\*(.+?)\*\*\s*[—–-]?\s*(.*)/);
-                  if (match) {
-                    return (
-                      <li key={i}>
-                        <strong>{match[1]}</strong>
-                        {match[2] ? ` — ${match[2]}` : ""}
-                      </li>
-                    );
-                  }
-                  return <li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^- /, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
-                }
-                if (line.startsWith("- ")) {
-                  return <li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^- /, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
-                }
-                if (line.startsWith("- [ ] ")) {
-                  return <li key={i} className="list-none"><input type="checkbox" disabled className="mr-2" />{line.replace("- [ ] ", "")}</li>;
-                }
-                if (line.startsWith("| ") && line.includes("|")) {
-                  const cells = line.split("|").filter(Boolean).map((c) => c.trim());
-                  if (cells.every((c) => c.match(/^[-:]+$/))) return null;
-                  return (
-                    <tr key={i}>
-                      {cells.map((cell, j) => (
-                        <td key={j} dangerouslySetInnerHTML={{ __html: cell.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />
-                      ))}
-                    </tr>
-                  );
-                }
-                if (line.startsWith("1. ") || line.match(/^\d+\. /)) {
-                  return <li key={i} dangerouslySetInnerHTML={{ __html: line.replace(/^\d+\.\s/, "").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
-                }
-                if (line.trim() === "") return <br key={i} />;
-                return <p key={i} dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>') }} />;
-              })}
+                // Flush any remaining table rows at the end
+                flushTable();
+
+                return elements;
+              })()}
             </article>
           </div>
         </div>
