@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -148,6 +149,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
 
       // Send confirmation email to user
       try {
+        console.log("Sending email confirmation to:", email);
         const response = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -164,14 +166,24 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
           }),
         });
 
+        console.log("Email API response status:", response.status);
+
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Email API error:", errorData);
+          toast.error("Email notification failed", {
+            description: errorData.error || "Could not send confirmation email",
+          });
         } else {
-          console.log("Confirmation email sent successfully");
+          const data = await response.json();
+          console.log("Confirmation email sent successfully:", data);
+          toast.success("Email confirmation sent!");
         }
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
+        toast.error("Email notification failed", {
+          description: "Network error when sending confirmation",
+        });
         // Continue - don't fail the submission if email fails
       }
 
