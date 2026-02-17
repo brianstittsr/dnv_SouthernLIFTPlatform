@@ -92,6 +92,7 @@ import {
   CreditCard,
   Globe,
   BookOpen,
+  FileCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -321,6 +322,12 @@ const adminItems = [
     icon: Mail,
     badge: "Email",
   },
+  {
+    title: "Contact Form Submissions",
+    href: "/portal/admin/contact-submissions",
+    icon: Mail,
+    badge: "Forms",
+  },
 ];
 
 const initiativeItems = [
@@ -343,7 +350,7 @@ const initiativeItems = [
 // SME User Navigation
 const svpSmeItems = [
   {
-    title: "SME Dashboard",
+    title: "Vendor Dashboard",
     href: "/portal/dashboard",
     icon: LayoutDashboard,
   },
@@ -352,6 +359,12 @@ const svpSmeItems = [
     href: "/portal/proof-packs",
     icon: Package,
     badge: "SVP",
+  },
+  {
+    title: "Reps and Certs",
+    href: "/portal/reps-certs",
+    icon: FileCheck,
+    badge: "Gov",
   },
   {
     title: "My Profile",
@@ -409,7 +422,7 @@ const svpPartnerItems = [
     icon: AlertTriangle,
   },
   {
-    title: "My SME Clients",
+    title: "My Vendor Clients",
     href: "/portal/partner/clients",
     icon: Building2,
   },
@@ -428,7 +441,7 @@ const svpBuyerItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "SME Directory",
+    title: "Vendor Directory",
     href: "/portal/buyer/directory",
     icon: Search,
     badge: "SVP",
@@ -439,7 +452,7 @@ const svpBuyerItems = [
     icon: Handshake,
   },
   {
-    title: "Saved SMEs",
+    title: "Saved Vendors",
     href: "/portal/buyer/favorites",
     icon: Heart,
   },
@@ -518,6 +531,12 @@ const svpAdminItems = [
     href: "/portal/admin/leads",
     icon: Phone,
     badge: "DWY/DFY",
+  },
+  {
+    title: "Contact Form Submissions",
+    href: "/portal/admin/contact-submissions",
+    icon: Mail,
+    badge: "Forms",
   },
   {
     title: "User Management",
@@ -610,7 +629,7 @@ const AVAILABLE_ROLES = [
   { value: "viewer", label: "Viewer" },
   // SVP Platform roles
   { value: "platform_admin", label: "SVP Platform Admin" },
-  { value: "sme_user", label: "SVP SME User" },
+  { value: "sme_user", label: "Vendor User" },
   { value: "partner_user", label: "SVP Partner User" },
   { value: "buyer", label: "SVP Buyer" },
   { value: "qa_reviewer", label: "SVP QA Reviewer" },
@@ -638,7 +657,7 @@ export const ALL_NAV_ITEMS = [
   ...adminItems.map(item => ({ ...item, section: "Admin" })),
   ...initiativeItems.map(item => ({ ...item, section: "Initiatives" })),
   // SVP Platform items
-  ...svpSmeItems.map(item => ({ ...item, section: "SVP - SME" })),
+  ...svpSmeItems.map(item => ({ ...item, section: "Vendor" })),
   ...svpPartnerItems.map(item => ({ ...item, section: "SVP - Partner" })),
   ...svpBuyerItems.map(item => ({ ...item, section: "SVP - Buyer" })),
   ...svpQaItems.map(item => ({ ...item, section: "SVP - QA" })),
@@ -791,7 +810,7 @@ export function PortalSidebar() {
         {/* SVP PLATFORM NAVIGATION SECTIONS - TOP PRIORITY */}
         {/* ============================================ */}
 
-        {/* SVP - SME Section */}
+        {/* Vendor Section */}
         {isSvpSectionVisible("svpSme") && (
         <Collapsible open={openSections.svpSme} onOpenChange={() => toggleSection("svpSme")}>
           <SidebarGroup>
@@ -799,7 +818,7 @@ export function PortalSidebar() {
               <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
                 <span className="flex items-center gap-2">
                   <Package className="h-3 w-3 text-blue-500" />
-                  SVP - SME
+                  Vendor
                 </span>
                 {openSections.svpSme ? (
                   <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
+import { db } from "@/lib/firebase";
+import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 
 interface ContactFormData {
   firstName: string;
@@ -46,11 +49,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Save to Firestore when firebase-admin is configured
-    console.log("Would save to Firestore:", body);
+    // Save to Firestore
+    let contactMessageId = "";
+    try {
+      if (db) {
+        const contactMessagesCollection = collection(db, COLLECTIONS.CONTACT_MESSAGES);
+        const docRef = await addDoc(contactMessagesCollection, {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          phone: body.phone || null,
+          company: body.company,
+          jobTitle: body.jobTitle || null,
+          businessType: body.businessType,
+          industry: body.industry || null,
+          service: body.service,
+          message: body.message || null,
+          newsletter: body.newsletter,
+          status: "new",
+          emailSent: false,
+          confirmationEmailSent: false,
+          source: "contact-page",
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        });
+        contactMessageId = docRef.id;
+        console.log("Contact form saved to Firestore with ID:", contactMessageId);
+      }
+    } catch (dbError) {
+      console.error("Failed to save contact form to Firestore:", dbError);
+      // Continue with email sending even if DB save fails
+    }
 
     // Send notification email to KDM team
     const adminEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "kmoore@kdm-assoc.com";
+    let emailSent = false;
+    let confirmationSent = false;
     
     try {
       await sendEmail({
@@ -105,6 +139,7 @@ export async function POST(request: NextRequest) {
         `,
         text: `New Session Request from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
       });
+      emailSent = true;
     } catch (emailError) {
       console.error("Failed to send notification email:", emailError);
       // Don't fail the request if email fails - data is still saved
@@ -133,13 +168,31 @@ export async function POST(request: NextRequest) {
         `,
         text: `Thank you for reaching out, ${body.firstName}! We've received your request and will contact you within 24 hours.`,
       });
+      confirmationSent = true;
     } catch (emailError) {
       console.error("Failed to send confirmation email:", emailError);
+    }
+
+    // Update Firestore document with email status
+    if (contactMessageId) {
+      try {
+        if (db) {
+          const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, contactMessageId);
+          await updateDoc(docRef, {
+            emailSent,
+            confirmationEmailSent: confirmationSent,
+            updatedAt: Timestamp.now(),
+          });
+        }
+      } catch (updateError) {
+        console.error("Failed to update email status:", updateError);
+      }
     }
 
     return NextResponse.json({
       success: true,
       message: "Contact form submitted successfully",
+      id: contactMessageId,
     });
   } catch (error) {
     console.error("Contact form error:", error);

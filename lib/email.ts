@@ -1,11 +1,14 @@
 /**
  * Email Service for KDM Consortium Platform
  * 
- * Supports both SendGrid and Resend email providers
+ * Supports SendGrid, Resend, and Azure SMTP email providers
  * Handles transactional emails, notifications, and marketing campaigns
  */
 
-type EmailProvider = 'sendgrid' | 'resend';
+import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
+
+type EmailProvider = 'sendgrid' | 'resend' | 'azure_smtp';
 
 interface EmailParams {
   to: string | string[];
@@ -36,12 +39,14 @@ interface EmailResponse {
  * Determine which email provider to use based on environment variables
  */
 function getEmailProvider(): EmailProvider {
-  if (process.env.SENDGRID_API_KEY) {
+  if (process.env.AZURE_SMTP_HOST && process.env.AZURE_SMTP_USERNAME && process.env.AZURE_SMTP_PASSWORD) {
+    return 'azure_smtp';
+  } else if (process.env.SENDGRID_API_KEY) {
     return 'sendgrid';
   } else if (process.env.RESEND_API_KEY) {
     return 'resend';
   }
-  throw new Error('No email service configured. Set either SENDGRID_API_KEY or RESEND_API_KEY');
+  throw new Error('No email service configured. Set either AZURE_SMTP_HOST + AZURE_SMTP_USERNAME + AZURE_SMTP_PASSWORD, SENDGRID_API_KEY, or RESEND_API_KEY');
 }
 
 /**
@@ -50,7 +55,12 @@ function getEmailProvider(): EmailProvider {
 function getDefaultFrom(): { email: string; name: string } {
   const provider = getEmailProvider();
   
-  if (provider === 'sendgrid') {
+  if (provider === 'azure_smtp') {
+    return {
+      email: process.env.AZURE_SMTP_FROM_EMAIL || process.env.AZURE_SMTP_USERNAME || 'noreply@kdmassociates.com',
+      name: process.env.AZURE_SMTP_FROM_NAME || 'KDM Consortium',
+    };
+  } else if (provider === 'sendgrid') {
     return {
       email: process.env.SENDGRID_FROM_EMAIL || 'noreply@kdmassociates.com',
       name: process.env.SENDGRID_FROM_NAME || 'KDM Consortium',
@@ -59,6 +69,82 @@ function getDefaultFrom(): { email: string; name: string } {
     return {
       email: process.env.RESEND_FROM_EMAIL || 'noreply@kdmassociates.com',
       name: process.env.RESEND_FROM_NAME || 'KDM Consortium',
+    };
+  }
+}
+
+/**
+ * Send email using Azure SMTP (Azure Communication Services)
+ */
+async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
+  try {
+    const smtpHost = process.env.AZURE_SMTP_HOST || 'smtp.azurecomm.net';
+    const smtpPort = parseInt(process.env.AZURE_SMTP_PORT || '587', 10);
+    const smtpUsername = process.env.AZURE_SMTP_USERNAME!;
+    const smtpPassword = process.env.AZURE_SMTP_PASSWORD!;
+    const smtpSecure = process.env.AZURE_SMTP_SECURE === 'true';
+
+    if (!smtpUsername || !smtpPassword) {
+      return {
+        success: false,
+        error: 'Azure SMTP credentials not configured. Set AZURE_SMTP_USERNAME and AZURE_SMTP_PASSWORD environment variables.',
+      };
+    }
+
+    // Create transporter
+    const transporter: Transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure, // true for 465, false for other ports
+      auth: {
+        user: smtpUsername,
+        pass: smtpPassword,
+      },
+      tls: {
+        ciphers: 'SSLv3',
+        rejectUnauthorized: false,
+      },
+    });
+
+    // Verify connection
+    await transporter.verify();
+
+    const from = params.from || getDefaultFrom();
+    
+    // Prepare recipients
+    const toRecipients = Array.isArray(params.to) ? params.to.join(', ') : params.to;
+    const ccRecipients = params.cc ? params.cc.join(', ') : undefined;
+    const bccRecipients = params.bcc ? params.bcc.join(', ') : undefined;
+
+    // Send mail
+    const info = await transporter.sendMail({
+      from: `"${from.name}" <${from.email}>`,
+      to: toRecipients,
+      cc: ccRecipients,
+      bcc: bccRecipients,
+      subject: params.subject,
+      html: params.html,
+      text: params.text,
+      replyTo: params.replyTo,
+      attachments: params.attachments?.map(att => ({
+        filename: att.filename,
+        content: att.content,
+        contentType: att.contentType,
+      })),
+    });
+
+    // Close the connection
+    await transporter.close();
+
+    return {
+      success: true,
+      messageId: info.messageId,
+    };
+  } catch (error: any) {
+    console.error('Azure SMTP error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to send email via Azure SMTP',
     };
   }
 }
@@ -138,7 +224,9 @@ async function sendWithResend(params: EmailParams): Promise<EmailResponse> {
 export async function sendEmail(params: EmailParams): Promise<EmailResponse> {
   const provider = getEmailProvider();
   
-  if (provider === 'sendgrid') {
+  if (provider === 'azure_smtp') {
+    return sendWithAzureSMTP(params);
+  } else if (provider === 'sendgrid') {
     return sendWithSendGrid(params);
   } else {
     return sendWithResend(params);

@@ -632,6 +632,46 @@ export interface BookCallLeadDoc {
   updatedAt: Timestamp;
 }
 
+/** Contact Form Message document in Firestore */
+export interface ContactMessageDoc {
+  id: string;
+  // Contact Information
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  company: string;
+  jobTitle?: string;
+  // Business Information
+  businessType: string;
+  industry?: string;
+  service: string;
+  // Message
+  message?: string;
+  newsletter: boolean;
+  // Status
+  status: "new" | "contacted" | "qualified" | "converted" | "closed";
+  // Assignment
+  assignedTo?: string;
+  assignedToName?: string;
+  // Follow-up
+  notes?: string;
+  emailSent: boolean;
+  confirmationEmailSent: boolean;
+  emailError?: string;
+  // Source
+  source: "contact-page" | "cta" | "popup" | "other";
+  // IP/Metadata for tracking
+  ipAddress?: string;
+  userAgent?: string;
+  referrer?: string;
+  // Timestamps
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  contactedAt?: Timestamp;
+  convertedAt?: Timestamp;
+}
+
 // ============================================================================
 // NDA Management Types
 // ============================================================================
@@ -1652,6 +1692,7 @@ export const COLLECTIONS = {
   PAYMENT_PLANS: "paymentPlans",
   // SVP Platform New Features (Story 0.1)
   PROOF_PACKS: "proofPacks",
+  REPS_CERTS: "repsCerts", // Representations and Certifications for Government Contractors
   LEADS: "leads",
   INTRODUCTIONS: "introductions",
   COHORTS: "cohorts",
@@ -1676,6 +1717,9 @@ export const contentCollection = () => getCollection<ContentDoc>(COLLECTIONS.CON
 export const revenueAttributionCollection = () => getCollection<RevenueAttributionDoc>(COLLECTIONS.REVENUE_ATTRIBUTION);
 export const routingRulesCollection = () => getCollection<RoutingRuleDoc>(COLLECTIONS.ROUTING_RULES);
 export const attributionEventsCollection = () => getCollection<AttributionEventDoc>(COLLECTIONS.ATTRIBUTION_EVENTS);
+
+// Contact Form collection reference
+export const contactMessagesCollection = () => getCollection<ContactMessageDoc>(COLLECTIONS.CONTACT_MESSAGES);
 
 
 // ============================================================================
