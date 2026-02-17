@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
-import { db } from "@/lib/firebase";
-import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 
 interface ContactFormData {
@@ -52,30 +52,27 @@ export async function POST(request: NextRequest) {
     // Save to Firestore
     let contactMessageId = "";
     try {
-      if (db) {
-        const contactMessagesCollection = collection(db, COLLECTIONS.CONTACT_MESSAGES);
-        const docRef = await addDoc(contactMessagesCollection, {
-          firstName: body.firstName,
-          lastName: body.lastName,
-          email: body.email,
-          phone: body.phone || null,
-          company: body.company,
-          jobTitle: body.jobTitle || null,
-          businessType: body.businessType,
-          industry: body.industry || null,
-          service: body.service,
-          message: body.message || null,
-          newsletter: body.newsletter,
-          status: "new",
-          emailSent: false,
-          confirmationEmailSent: false,
-          source: "contact-page",
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        });
-        contactMessageId = docRef.id;
-        console.log("Contact form saved to Firestore with ID:", contactMessageId);
-      }
+      const docRef = await db.collection(COLLECTIONS.CONTACT_MESSAGES).add({
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        phone: body.phone || null,
+        company: body.company,
+        jobTitle: body.jobTitle || null,
+        businessType: body.businessType,
+        industry: body.industry || null,
+        service: body.service,
+        message: body.message || null,
+        newsletter: body.newsletter,
+        status: "new",
+        emailSent: false,
+        confirmationEmailSent: false,
+        source: "contact-page",
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+      contactMessageId = docRef.id;
+      console.log("Contact form saved to Firestore with ID:", contactMessageId);
     } catch (dbError) {
       console.error("Failed to save contact form to Firestore:", dbError);
       // Continue with email sending even if DB save fails
@@ -176,14 +173,11 @@ export async function POST(request: NextRequest) {
     // Update Firestore document with email status
     if (contactMessageId) {
       try {
-        if (db) {
-          const docRef = doc(db, COLLECTIONS.CONTACT_MESSAGES, contactMessageId);
-          await updateDoc(docRef, {
-            emailSent,
-            confirmationEmailSent: confirmationSent,
-            updatedAt: Timestamp.now(),
-          });
-        }
+        await db.collection(COLLECTIONS.CONTACT_MESSAGES).doc(contactMessageId).update({
+          emailSent,
+          confirmationEmailSent: confirmationSent,
+          updatedAt: Timestamp.now(),
+        });
       } catch (updateError) {
         console.error("Failed to update email status:", updateError);
       }
