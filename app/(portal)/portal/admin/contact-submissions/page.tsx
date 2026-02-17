@@ -55,8 +55,6 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-  MailCheck,
-  MailX,
   Loader2,
   MessageSquare,
   Search,
@@ -335,9 +333,9 @@ export default function ContactMessagesPage() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {message.confirmationEmailSent ? (
-                          <MailCheck className="h-4 w-4 text-green-500" />
+                          <CheckCircle className="h-4 w-4 text-green-500" />
                         ) : (
-                          <MailX className="h-4 w-4 text-red-500" />
+                          <XCircle className="h-4 w-4 text-red-500" />
                         )}
                         <span className="text-xs text-muted-foreground">
                           {message.confirmationEmailSent ? "Sent" : "Failed"}
