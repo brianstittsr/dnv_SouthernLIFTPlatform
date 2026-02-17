@@ -476,9 +476,9 @@ export default function RepsCertsPage() {
                   Overall Completion: {repsCertsData?.overallCompletion || 0}%
                 </span>
                 <span className={`text-sm font-bold ${getHealthColor(repsCertsData?.overallCompletion || 0)}`}>
-                  {repsCertsData?.overallCompletion >= 70
+                  {(repsCertsData?.overallCompletion || 0) >= 70
                     ? "Contract Eligible"
-                    : repsCertsData?.overallCompletion >= 40
+                    : (repsCertsData?.overallCompletion || 0) >= 40
                     ? "In Progress"
                     : "Needs Documents"}
                 </span>
