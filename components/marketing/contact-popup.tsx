@@ -148,7 +148,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
 
       // Send confirmation email to user
       try {
-        await fetch("/api/contact", {
+        const response = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -159,11 +159,17 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
             company: "N/A",
             businessType: "N/A",
             service: "General Inquiry",
-            industry: industry,
-            newsletter: false,
             message: `Popup form submission from ${industry} industry`,
+            newsletter: false,
           }),
         });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Email API error:", errorData);
+        } else {
+          console.log("Confirmation email sent successfully");
+        }
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
         // Continue - don't fail the submission if email fails
