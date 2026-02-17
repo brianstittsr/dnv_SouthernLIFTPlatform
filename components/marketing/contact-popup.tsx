@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useUserProfile } from "@/contexts/user-profile-context";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,12 +71,10 @@ export const defaultPopupConfig: PopupConfig = {
     { id: "name", type: "text", label: "Name", placeholder: "Full name", required: true, enabled: true },
     { id: "email", type: "email", label: "Email", placeholder: "Email", required: true, enabled: true },
     { id: "phone", type: "phone", label: "Phone", placeholder: "Phone", required: true, enabled: true },
+    { id: "industry", type: "select", label: "Industry", placeholder: "Select your industry", required: true, enabled: true, options: ["Manufacturing", "Government", "Healthcare"] },
   ],
-  productOptions: [
-    "SME Supplier",
-    "Buyer Government",
-  ],
-  productLabel: "I am a:",
+  productOptions: [],
+  productLabel: "",
   allowCustomProduct: false,
 };
 
@@ -81,8 +87,6 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [customProduct, setCustomProduct] = useState("");
   const [showTriggerButton, setShowTriggerButton] = useState(true);
 
   const isExcludedPath = EXCLUDED_PATHS.some(path => pathname?.startsWith(path));
@@ -112,20 +116,23 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const persona = selectedProduct;
-    if (!persona) return;
+    const industry = formData.industry;
+    if (!industry) return;
+
+    const name = (formData.name || "").trim();
+    const [firstName, ...rest] = name.split(" ");
+    const lastName = rest.join(" ").trim();
+    const email = (formData.email || "").trim();
+    const phone = (formData.phone || "").trim();
 
     try {
+      // Save to Firestore
       if (db) {
-        const name = (formData.name || "").trim();
-        const [firstName, ...rest] = name.split(" ");
-        const lastName = rest.join(" ").trim();
-
         await addDoc(collection(db, COLLECTIONS.BOOK_CALL_LEADS), {
           firstName: firstName || null,
           lastName: lastName || null,
-          email: (formData.email || "").trim(),
-          phone: (formData.phone || "").trim(),
+          email: email,
+          phone: phone,
           company: null,
           jobTitle: null,
           preferredDate: null,
@@ -133,10 +140,33 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
           message: null,
           source: "popup",
           status: "new",
-          persona,
+          industry,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
+      }
+
+      // Send confirmation email to user
+      try {
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: firstName || "Valued",
+            lastName: lastName || "Contact",
+            email: email,
+            phone: phone || undefined,
+            company: "N/A",
+            businessType: "N/A",
+            service: "General Inquiry",
+            industry: industry,
+            newsletter: false,
+            message: `Popup form submission from ${industry} industry`,
+          }),
+        });
+      } catch (emailError) {
+        console.error("Failed to send confirmation email:", emailError);
+        // Continue - don't fail the submission if email fails
       }
 
       setIsSubmitted(true);
@@ -144,8 +174,6 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
         setIsOpen(false);
         setIsSubmitted(false);
         setFormData({});
-        setSelectedProduct("");
-        setCustomProduct("");
       }, 3000);
     } catch (error) {
       console.error("Popup submit error:", error);
@@ -222,6 +250,22 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
                       className="bg-muted/50"
                       rows={3}
                     />
+                  ) : field.type === "select" && field.options ? (
+                    <Select
+                      value={formData[field.id] || ""}
+                      onValueChange={(value) => updateField(field.id, value)}
+                    >
+                      <SelectTrigger className="bg-muted/50">
+                        <SelectValue placeholder={field.placeholder} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {field.options.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   ) : (
                     <Input
                       id={field.id}
@@ -236,47 +280,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
                 </div>
               ))}
 
-              {/* Product Selection */}
-              {config.productOptions.length > 0 && (
-                <div className="space-y-3">
-                  <Label className="text-primary">
-                    {config.productLabel}
-                    <span className="text-destructive ml-1">*</span>
-                  </Label>
-                  <RadioGroup
-                    value={selectedProduct}
-                    onValueChange={(value) => {
-                      setSelectedProduct(value);
-                      setCustomProduct("");
-                    }}
-                  >
-                    {config.productOptions.map((option) => (
-                      <div key={option} className="flex items-center space-x-2">
-                        <RadioGroupItem value={option} id={option} />
-                        <Label htmlFor={option} className="font-normal cursor-pointer">
-                          {option}
-                        </Label>
-                      </div>
-                    ))}
-                    {config.allowCustomProduct && (
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="custom" id="custom" />
-                        <Input
-                          placeholder="Press enter to add custom option"
-                          value={customProduct}
-                          onChange={(e) => {
-                            setCustomProduct(e.target.value);
-                            setSelectedProduct("custom");
-                          }}
-                          className="flex-1 bg-muted/50"
-                        />
-                      </div>
-                    )}
-                  </RadioGroup>
-                </div>
-              )}
-
-              <Button type="submit" className="w-full" size="lg" disabled={!selectedProduct}>
+              <Button type="submit" className="w-full" size="lg" disabled={!formData.industry}>
                 {config.buttonText}
               </Button>
             </form>
