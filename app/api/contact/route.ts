@@ -75,7 +75,10 @@ export async function POST(request: NextRequest) {
       console.log("Contact form saved to Firestore with ID:", contactMessageId);
     } catch (dbError) {
       console.error("Failed to save contact form to Firestore:", dbError);
-      // Continue with email sending even if DB save fails
+      return NextResponse.json(
+        { error: "Failed to save submission. Please try again." },
+        { status: 500 }
+      );
     }
 
     // Send notification email to KDM team
