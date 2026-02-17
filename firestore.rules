@@ -276,6 +276,14 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
+    // Contact Form Messages - public write for form submission, admin read
+    match /contactMessages/{messageId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public form submission
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
     // Platform Settings - authenticated read for UI preferences, admin write
     match /platformSettings/{settingsId} {
       allow read: if isAuthenticated();
