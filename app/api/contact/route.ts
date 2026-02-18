@@ -85,9 +85,10 @@ export async function POST(request: NextRequest) {
     const adminEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "kmoore@kdm-assoc.com";
     let emailSent = false;
     let confirmationSent = false;
+    let emailError = null;
     
     try {
-      await sendEmail({
+      const adminResult = await sendEmail({
         to: adminEmail,
         subject: `New Session Request from ${body.firstName} ${body.lastName}`,
         html: `
@@ -139,10 +140,17 @@ export async function POST(request: NextRequest) {
         `,
         text: `New Session Request from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
       });
+      
+      if (!adminResult.success) {
+        throw new Error(adminResult.error || "Failed to send admin notification email");
+      }
       emailSent = true;
-    } catch (emailError) {
+    } catch (emailError: any) {
       console.error("Failed to send notification email:", emailError);
-      // Don't fail the request if email fails - data is still saved
+      return NextResponse.json(
+        { error: `Email failed: ${emailError.message || "Could not send email"}` },
+        { status: 500 }
+      );
     }
 
     // Send confirmation email to the user

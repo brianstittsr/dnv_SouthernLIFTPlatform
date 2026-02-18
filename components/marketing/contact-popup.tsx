@@ -172,7 +172,8 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
           const errorData = await response.json();
           console.error("Email API error:", errorData);
           toast.error("Email notification failed", {
-            description: errorData.error || "Could not send confirmation email",
+            description: errorData.error || "Could not send confirmation email. Please contact us directly.",
+            duration: 6000,
           });
         } else {
           const data = await response.json();
@@ -182,9 +183,9 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
         toast.error("Email notification failed", {
-          description: "Network error when sending confirmation",
+          description: "Network error when sending confirmation. Please contact us directly at info@kdm-assoc.com",
+          duration: 6000,
         });
-        // Continue - don't fail the submission if email fails
       }
 
       setIsSubmitted(true);
