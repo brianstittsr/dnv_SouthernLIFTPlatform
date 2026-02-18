@@ -37,16 +37,22 @@ interface EmailResponse {
 
 /**
  * Determine which email provider to use based on environment variables
+ * Priority: OAuth SMTP > Basic Auth SMTP > SendGrid > Resend
  */
 function getEmailProvider(): EmailProvider {
-  if (process.env.AZURE_SMTP_HOST && process.env.AZURE_SMTP_USERNAME && process.env.AZURE_SMTP_PASSWORD) {
+  // OAuth-based SMTP (Microsoft 365/Office 365 modern auth)
+  if (process.env.SMTP_CLIENT_ID && process.env.SMTP_CLIENT_SECRET && process.env.SMTP_TENANT_ID) {
+    return 'azure_smtp';
+  }
+  // Legacy basic auth SMTP (deprecated by Microsoft)
+  else if (process.env.AZURE_SMTP_HOST && process.env.AZURE_SMTP_USERNAME && process.env.AZURE_SMTP_PASSWORD) {
     return 'azure_smtp';
   } else if (process.env.SENDGRID_API_KEY) {
     return 'sendgrid';
   } else if (process.env.RESEND_API_KEY) {
     return 'resend';
   }
-  throw new Error('No email service configured. Set either AZURE_SMTP_HOST + AZURE_SMTP_USERNAME + AZURE_SMTP_PASSWORD, SENDGRID_API_KEY, or RESEND_API_KEY');
+  throw new Error('No email service configured. Set SMTP OAuth credentials (SMTP_CLIENT_ID, SMTP_CLIENT_SECRET, SMTP_TENANT_ID) or AZURE_SMTP credentials, SENDGRID_API_KEY, or RESEND_API_KEY');
 }
 
 /**
@@ -74,37 +80,99 @@ function getDefaultFrom(): { email: string; name: string } {
 }
 
 /**
- * Send email using Azure SMTP (Azure Communication Services)
+ * Get OAuth2 access token for Microsoft 365 SMTP
+ */
+async function getMicrosoftAccessToken(): Promise<string | null> {
+  const clientId = process.env.SMTP_CLIENT_ID;
+  const clientSecret = process.env.SMTP_CLIENT_SECRET;
+  const tenantId = process.env.SMTP_TENANT_ID;
+  
+  if (!clientId || !clientSecret || !tenantId) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        scope: 'https://outlook.office365.com/.default',
+        grant_type: 'client_credentials',
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Token request failed: ${response.status} - ${errorText}`);
+    }
+    
+    const data = await response.json();
+    return data.access_token;
+  } catch (error) {
+    console.error('Failed to get Microsoft access token:', error);
+    return null;
+  }
+}
+
+/**
+ * Send email using Azure SMTP (Azure Communication Services or Microsoft 365 OAuth)
  */
 async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
   try {
-    const smtpHost = process.env.AZURE_SMTP_HOST || 'smtp.azurecomm.net';
+    const smtpHost = process.env.AZURE_SMTP_HOST || 'smtp.office365.com';
     const smtpPort = parseInt(process.env.AZURE_SMTP_PORT || '587', 10);
-    const smtpUsername = process.env.AZURE_SMTP_USERNAME!;
-    const smtpPassword = process.env.AZURE_SMTP_PASSWORD!;
+    const smtpUsername = process.env.AZURE_SMTP_USERNAME;
+    const smtpPassword = process.env.AZURE_SMTP_PASSWORD;
     const smtpSecure = process.env.AZURE_SMTP_SECURE === 'true';
 
-    if (!smtpUsername || !smtpPassword) {
+    // Try OAuth2 first
+    const accessToken = await getMicrosoftAccessToken();
+    
+    let transporter: Transporter;
+    
+    if (accessToken && smtpUsername) {
+      // Use OAuth2 authentication
+      console.log('Using OAuth2 authentication for SMTP');
+      transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
+        auth: {
+          type: 'OAuth2',
+          user: smtpUsername,
+          accessToken: accessToken,
+        },
+        tls: {
+          ciphers: 'SSLv3',
+          rejectUnauthorized: false,
+        },
+      });
+    } else if (smtpUsername && smtpPassword) {
+      // Fall back to basic auth
+      console.log('Using basic authentication for SMTP');
+      transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
+        auth: {
+          user: smtpUsername,
+          pass: smtpPassword,
+        },
+        tls: {
+          ciphers: 'SSLv3',
+          rejectUnauthorized: false,
+        },
+      });
+    } else {
       return {
         success: false,
-        error: 'Azure SMTP credentials not configured. Set AZURE_SMTP_USERNAME and AZURE_SMTP_PASSWORD environment variables.',
+        error: 'SMTP credentials not configured. Set SMTP_CLIENT_ID/SMTP_CLIENT_SECRET/SMTP_TENANT_ID for OAuth, or AZURE_SMTP_USERNAME/AZURE_SMTP_PASSWORD for basic auth.',
       };
     }
-
-    // Create transporter
-    const transporter: Transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure, // true for 465, false for other ports
-      auth: {
-        user: smtpUsername,
-        pass: smtpPassword,
-      },
-      tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false,
-      },
-    });
 
     // Verify connection
     await transporter.verify();
