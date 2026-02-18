@@ -8,7 +8,7 @@
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 
-type EmailProvider = 'sendgrid' | 'resend' | 'azure_smtp';
+type EmailProvider = 'sendgrid' | 'resend' | 'azure_smtp' | 'ms_graph';
 
 interface EmailParams {
   to: string | string[];
@@ -37,9 +37,13 @@ interface EmailResponse {
 
 /**
  * Determine which email provider to use based on environment variables
- * Priority: OAuth SMTP > Basic Auth SMTP > SendGrid > Resend
+ * Priority: Microsoft Graph API > OAuth SMTP > Basic Auth SMTP > SendGrid > Resend
  */
 function getEmailProvider(): EmailProvider {
+  // Microsoft Graph API (preferred for Office 365)
+  if (process.env.MS_GRAPH_CLIENT_ID && process.env.MS_GRAPH_CLIENT_SECRET && process.env.MS_GRAPH_TENANT_ID) {
+    return 'ms_graph';
+  }
   // OAuth-based SMTP (Microsoft 365/Office 365 modern auth)
   if (process.env.SMTP_CLIENT_ID && process.env.SMTP_CLIENT_SECRET && process.env.SMTP_TENANT_ID) {
     return 'azure_smtp';
@@ -52,7 +56,7 @@ function getEmailProvider(): EmailProvider {
   } else if (process.env.RESEND_API_KEY) {
     return 'resend';
   }
-  throw new Error('No email service configured. Set SMTP OAuth credentials (SMTP_CLIENT_ID, SMTP_CLIENT_SECRET, SMTP_TENANT_ID) or AZURE_SMTP credentials, SENDGRID_API_KEY, or RESEND_API_KEY');
+  throw new Error('No email service configured. Set MS_GRAPH_CLIENT_ID/MS_GRAPH_CLIENT_SECRET/MS_GRAPH_TENANT_ID for Graph API, SMTP OAuth credentials, AZURE_SMTP credentials, SENDGRID_API_KEY, or RESEND_API_KEY');
 }
 
 /**
@@ -61,9 +65,9 @@ function getEmailProvider(): EmailProvider {
 function getDefaultFrom(): { email: string; name: string } {
   const provider = getEmailProvider();
   
-  if (provider === 'azure_smtp') {
+  if (provider === 'azure_smtp' || provider === 'ms_graph') {
     return {
-      email: process.env.AZURE_SMTP_FROM_EMAIL || process.env.AZURE_SMTP_USERNAME || 'noreply@kdmassociates.com',
+      email: process.env.MS_GRAPH_SENDER_EMAIL || process.env.AZURE_SMTP_FROM_EMAIL || process.env.AZURE_SMTP_USERNAME || 'noreply@kdmassociates.com',
       name: process.env.AZURE_SMTP_FROM_NAME || 'KDM Consortium',
     };
   } else if (provider === 'sendgrid') {
@@ -80,8 +84,127 @@ function getDefaultFrom(): { email: string; name: string } {
 }
 
 /**
- * Get OAuth2 access token for Microsoft 365 SMTP
+ * Get Microsoft Graph API access token
  */
+async function getGraphAccessToken(): Promise<string | null> {
+  const clientId = process.env.MS_GRAPH_CLIENT_ID;
+  const clientSecret = process.env.MS_GRAPH_CLIENT_SECRET;
+  const tenantId = process.env.MS_GRAPH_TENANT_ID;
+  
+  if (!clientId || !clientSecret || !tenantId) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        scope: 'https://graph.microsoft.com/.default',
+        grant_type: 'client_credentials',
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Token request failed: ${response.status} - ${errorText}`);
+    }
+    
+    const data = await response.json();
+    return data.access_token;
+  } catch (error) {
+    console.error('Failed to get Microsoft Graph access token:', error);
+    return null;
+  }
+}
+
+/**
+ * Send email using Microsoft Graph API
+ */
+async function sendWithMicrosoftGraph(params: EmailParams): Promise<EmailResponse> {
+  try {
+    const accessToken = await getGraphAccessToken();
+    
+    if (!accessToken) {
+      return {
+        success: false,
+        error: 'Microsoft Graph credentials not configured. Set MS_GRAPH_CLIENT_ID, MS_GRAPH_CLIENT_SECRET, and MS_GRAPH_TENANT_ID.',
+      };
+    }
+
+    const from = params.from || getDefaultFrom();
+    const senderEmail = process.env.MS_GRAPH_SENDER_EMAIL || from.email;
+    
+    // Build recipients
+    const toRecipients = Array.isArray(params.to) 
+      ? params.to.map(email => ({ emailAddress: { address: email } }))
+      : [{ emailAddress: { address: params.to } }];
+    
+    const ccRecipients = params.cc?.map(email => ({ emailAddress: { address: email } }));
+    const bccRecipients = params.bcc?.map(email => ({ emailAddress: { address: email } }));
+
+    // Build email payload
+    const emailPayload: any = {
+      message: {
+        subject: params.subject,
+        body: {
+          contentType: 'HTML',
+          content: params.html,
+        },
+        from: {
+          emailAddress: {
+            address: senderEmail,
+            name: from.name,
+          },
+        },
+        toRecipients,
+      },
+      saveToSentItems: true,
+    };
+
+    if (ccRecipients?.length) {
+      emailPayload.message.ccRecipients = ccRecipients;
+    }
+    if (bccRecipients?.length) {
+      emailPayload.message.bccRecipients = bccRecipients;
+    }
+    if (params.replyTo) {
+      emailPayload.message.replyTo = [{ emailAddress: { address: params.replyTo } }];
+    }
+
+    // Send via Microsoft Graph API
+    const endpoint = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderEmail)}/sendMail`;
+    
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(emailPayload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Graph API error: ${response.status} - ${errorData}`);
+    }
+
+    return {
+      success: true,
+      messageId: `graph-${Date.now()}`,
+    };
+  } catch (error: any) {
+    console.error('Microsoft Graph API error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to send email via Microsoft Graph API',
+    };
+  }
+}
 async function getMicrosoftAccessToken(): Promise<string | null> {
   const clientId = process.env.SMTP_CLIENT_ID;
   const clientSecret = process.env.SMTP_CLIENT_SECRET;
@@ -292,7 +415,9 @@ async function sendWithResend(params: EmailParams): Promise<EmailResponse> {
 export async function sendEmail(params: EmailParams): Promise<EmailResponse> {
   const provider = getEmailProvider();
   
-  if (provider === 'azure_smtp') {
+  if (provider === 'ms_graph') {
+    return sendWithMicrosoftGraph(params);
+  } else if (provider === 'azure_smtp') {
     return sendWithAzureSMTP(params);
   } else if (provider === 'sendgrid') {
     return sendWithSendGrid(params);
