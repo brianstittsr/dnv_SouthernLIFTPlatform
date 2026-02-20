@@ -779,28 +779,39 @@ export default function TeamMembersPage() {
                           </p>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-4 gap-3 max-h-[360px] overflow-y-auto">
-                          {galleryImages.map((url) => (
-                            <button
-                              key={url}
-                              type="button"
-                              onClick={() => {
-                                setAvatarUrl(url);
-                                setImageManagerOpen(false);
-                              }}
-                              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:border-primary ${
-                                avatarUrl === url ? "border-primary ring-2 ring-primary" : "border-muted"
-                              }`}
-                            >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={url} alt="Gallery" className="w-full h-full object-cover" />
-                              {avatarUrl === url && (
-                                <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                                  <CheckCircle2 className="h-6 w-6 text-primary" />
+                        <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
+                          {galleryImages.map((url) => {
+                            const linkedMember = members.find((m) => m.avatar === url);
+                            const isSelected = avatarUrl === url;
+                            return (
+                              <button
+                                key={url}
+                                type="button"
+                                onClick={() => {
+                                  setAvatarUrl(url);
+                                  setImageManagerOpen(false);
+                                }}
+                                className={`relative flex flex-col rounded-lg overflow-hidden border-2 transition-all hover:border-primary ${
+                                  isSelected ? "border-primary ring-2 ring-primary" : "border-muted"
+                                }`}
+                              >
+                                <div className="relative aspect-square w-full">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={url} alt={linkedMember ? `${linkedMember.firstName} ${linkedMember.lastName}` : "Gallery image"} className="w-full h-full object-cover" />
+                                  {isSelected && (
+                                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                      <CheckCircle2 className="h-6 w-6 text-primary drop-shadow" />
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </button>
-                          ))}
+                                <div className={`px-1.5 py-1 text-center text-xs truncate w-full ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"}`}>
+                                  {linkedMember
+                                    ? `${linkedMember.firstName} ${linkedMember.lastName}`
+                                    : "Unassigned"}
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
