@@ -33,12 +33,12 @@ const teamMembers = [
     bio: "Creator of Space Defense Brief & TechGeekette Brief | CEO, LogiCore | Strategic Insights on Space Command, Space Force & National Defense | GovCon | Defense Logistics | Cybersecurity"
   },
   {
-    id: "kirk-jimenez",
-    name: "Kirk Jimenez",
+    id: "kirk-gimenez",
+    name: "Kirk Gimenez",
     title: "Media & Marketing Partner",
-    initials: "KJ",
-    imageName: "Kirk_Jimenez",
-    imageUrl: "/KirkJimenez",
+    initials: "KG",
+    imageName: "Kirk_Gimenez",
+    imageUrl: undefined,
     bio: "Elevating Latinos & minorities. Triple M: Media, Marketing & Money man. Xizzle TV Founder! 2-time Emmy Winner, Ex-ESPN anchor, Elite Closer University partner, SVP Brickell Capital Finance"
   },
   {

@@ -99,8 +99,8 @@ export function HeroCarousel() {
             <Image
               src="/KDM_Consortium_Logo.png"
               alt="KDM Consortium"
-              width={180}
-              height={180}
+              width={540}
+              height={540}
               className="mx-auto mb-6"
               style={{ width: 'auto', height: 'auto' }}
               priority
