@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +53,11 @@ import {
   X,
   CalendarPlus,
   Clock,
+  ImageIcon,
+  CheckCircle2,
+  Link as LinkIcon,
 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   collection, 
   getDocs, 
@@ -64,7 +68,8 @@ import {
   Timestamp,
   writeBatch,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
 import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeamMemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
@@ -129,6 +134,14 @@ export default function TeamMembersPage() {
   const [schedulingList, setSchedulingList] = useState<OneToOneQueueItemDoc[]>([]);
   const [showSchedulingPanel, setShowSchedulingPanel] = useState(false);
   const [loadingQueue, setLoadingQueue] = useState(false);
+  // Avatar upload / Image Manager state
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [loadingGallery, setLoadingGallery] = useState(false);
+  const [imageManagerOpen, setImageManagerOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -206,6 +219,41 @@ export default function TeamMembersPage() {
     }
   };
 
+  // Upload avatar to Firebase Storage
+  const handleAvatarUpload = async (file: File) => {
+    if (!storage) { alert("Storage not initialized."); return; }
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `team-avatars/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setAvatarUrl(url);
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      alert("Upload failed. Check console for details.");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  // Fetch all images from team-avatars folder
+  const fetchGalleryImages = async () => {
+    if (!storage) return;
+    setLoadingGallery(true);
+    try {
+      const folderRef = ref(storage, "team-avatars");
+      const result = await listAll(folderRef);
+      const urls = await Promise.all(result.items.map((item) => getDownloadURL(item)));
+      setGalleryImages(urls);
+    } catch (error) {
+      console.error("Error fetching gallery:", error);
+    } finally {
+      setLoadingGallery(false);
+    }
+  };
+
   // Seed initial data
   const handleSeedData = async () => {
     if (!db) {
@@ -250,6 +298,7 @@ export default function TeamMembersPage() {
         const docRef = doc(db, COLLECTIONS.TEAM_MEMBERS, editingMember.id);
         await updateDoc(docRef, {
           ...formData,
+          ...(avatarUrl ? { avatar: avatarUrl } : {}),
           updatedAt: Timestamp.now(),
         });
         // Log activity
@@ -378,11 +427,13 @@ export default function TeamMembersPage() {
       isCTO: member.isCTO || false,
       isCRO: member.isCRO || false,
     });
+    setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
   };
 
   const resetForm = () => {
     setEditingMember(null);
+    setAvatarUrl("");
     setFormData({
       firstName: "",
       lastName: "",
@@ -569,6 +620,153 @@ export default function TeamMembersPage() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
+                {/* Avatar Upload Section */}
+                <div className="space-y-2">
+                  <Label>Profile Photo</Label>
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16 border-2 border-muted">
+                      <AvatarImage src={avatarUrl || (editingMember ? getAvatarSrc(editingMember) : undefined)} />
+                      <AvatarFallback className="text-lg">
+                        {getInitials(formData.firstName, formData.lastName)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                        >
+                          {uploadingAvatar ? (
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4 mr-2" />
+                          )}
+                          {uploadingAvatar ? "Uploading..." : "Upload Photo"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            fetchGalleryImages();
+                            setImageManagerOpen(true);
+                          }}
+                        >
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          Image Manager
+                        </Button>
+                        {avatarUrl && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setAvatarUrl("")}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        JPG, PNG, GIF up to 5MB. Or paste a URL below.
+                      </p>
+                      <Input
+                        placeholder="https://example.com/photo.jpg"
+                        value={avatarUrl}
+                        onChange={(e) => setAvatarUrl(e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleAvatarUpload(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+
+                {/* Image Manager Dialog */}
+                <Dialog open={imageManagerOpen} onOpenChange={setImageManagerOpen}>
+                  <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <ImageIcon className="h-5 w-5" />
+                        Image Manager
+                      </DialogTitle>
+                      <DialogDescription>
+                        Select a previously uploaded photo or upload a new one.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm text-muted-foreground">
+                          {galleryImages.length} image{galleryImages.length !== 1 ? "s" : ""} in gallery
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                        >
+                          {uploadingAvatar ? (
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4 mr-2" />
+                          )}
+                          Upload New
+                        </Button>
+                      </div>
+                      {loadingGallery ? (
+                        <div className="flex items-center justify-center py-8">
+                          <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+                        </div>
+                      ) : galleryImages.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <ImageIcon className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                          <p className="text-sm">No images uploaded yet.</p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-4 gap-3 max-h-[360px] overflow-y-auto">
+                          {galleryImages.map((url) => (
+                            <button
+                              key={url}
+                              type="button"
+                              onClick={() => {
+                                setAvatarUrl(url);
+                                setImageManagerOpen(false);
+                              }}
+                              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:border-primary ${
+                                avatarUrl === url ? "border-primary ring-2 ring-primary" : "border-muted"
+                              }`}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={url} alt="Gallery" className="w-full h-full object-cover" />
+                              {avatarUrl === url && (
+                                <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                  <CheckCircle2 className="h-6 w-6 text-primary" />
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setImageManagerOpen(false)}>
+                        Close
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name *</Label>
