@@ -230,6 +230,10 @@ export default function TeamMembersPage() {
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       setAvatarUrl(url);
+      // Refresh gallery if Image Manager is open
+      if (imageManagerOpen) {
+        await fetchGalleryImages();
+      }
     } catch (error) {
       console.error("Error uploading avatar:", error);
       alert("Upload failed. Check console for details.");
@@ -238,15 +242,44 @@ export default function TeamMembersPage() {
     }
   };
 
-  // Fetch all images from team-avatars folder
+  // Fetch all images from storage (scans multiple folders)
   const fetchGalleryImages = async () => {
     if (!storage) return;
+    const storageInstance = storage;
     setLoadingGallery(true);
     try {
-      const folderRef = ref(storage, "team-avatars");
-      const result = await listAll(folderRef);
-      const urls = await Promise.all(result.items.map((item) => getDownloadURL(item)));
-      setGalleryImages(urls);
+      const folders = ["team-avatars", "images", "uploads", "avatars", "photos"];
+      const allUrls: string[] = [];
+      await Promise.all(
+        folders.map(async (folder) => {
+          try {
+            const folderRef = ref(storageInstance, folder);
+            const result = await listAll(folderRef);
+            const urls = await Promise.all(
+              result.items
+                .filter((item) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.name))
+                .map((item) => getDownloadURL(item))
+            );
+            allUrls.push(...urls);
+          } catch {
+            // Folder doesn't exist — skip silently
+          }
+        })
+      );
+      // Also scan root level
+      try {
+        const rootRef = ref(storageInstance, "");
+        const rootResult = await listAll(rootRef);
+        const rootUrls = await Promise.all(
+          rootResult.items
+            .filter((item) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.name))
+            .map((item) => getDownloadURL(item))
+        );
+        allUrls.push(...rootUrls);
+      } catch {
+        // Root scan failed — skip
+      }
+      setGalleryImages(allUrls);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     } finally {
@@ -729,9 +762,21 @@ export default function TeamMembersPage() {
                           <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                         </div>
                       ) : galleryImages.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground">
-                          <ImageIcon className="h-12 w-12 mx-auto mb-2 opacity-30" />
-                          <p className="text-sm">No images uploaded yet.</p>
+                        <div
+                          className="border-2 border-dashed border-muted rounded-lg p-10 text-center cursor-pointer hover:border-primary transition-colors"
+                          onClick={() => fileInputRef.current?.click()}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const file = e.dataTransfer.files?.[0];
+                            if (file && file.type.startsWith("image/")) handleAvatarUpload(file);
+                          }}
+                        >
+                          <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-50" />
+                          <p className="text-sm font-medium">No images yet</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Click or drag &amp; drop to upload your first photo
+                          </p>
                         </div>
                       ) : (
                         <div className="grid grid-cols-4 gap-3 max-h-[360px] overflow-y-auto">
