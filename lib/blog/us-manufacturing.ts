@@ -181,7 +181,7 @@ The federal government reserves a percentage of contracts for small businesses t
 - Sole-source awards up to $4.5 million (manufacturing) or $7 million (services)
 - Set-aside contracts
 - Business development support
-- Mentor-protégé relationships
+- Mentor-protege relationships
 
 **HUBZone Program** - For businesses in Historically Underutilized Business Zones. Benefits include:
 - 10% price evaluation preference
@@ -834,8 +834,8 @@ Differentiate yourself by providing comprehensive solutions:
 
 Collaborate with complementary businesses to offer broader capabilities:
 
-**Mentor-Protégé Programs:**
-- Formal mentor-protégé agreements with larger, established firms
+**Mentor-Protege Programs:**
+- Formal mentor-protege agreements with larger, established firms
 - Learning from experienced defense contractors
 - Access to prime contractor relationships through mentors
 - Joint marketing and business development
@@ -1128,7 +1128,7 @@ A small manufacturer in Ohio recognized the opportunity and made strategic inves
 
 - **$2 million in new CNC equipment** with 5-axis capability
 - **AS9100D quality certification** for aerospace/defense work
-- **SBA mentor-protégé relationship** with a Tier 1 supplier
+- **SBA mentor-protege relationship** with a Tier 1 supplier
 - **Workforce training** in advanced manufacturing techniques
 - **Digital quality systems** for documentation and traceability
 
@@ -2013,7 +2013,7 @@ Partner with other domestic manufacturers to offer complete solutions:
 
 - **Joint ventures** for larger opportunities requiring combined capabilities
 - **Teaming arrangements** with complementary manufacturers
-- **Mentor-protégé relationships** with established defense contractors
+- **Mentor-protege relationships** with established defense contractors
 - **Industry associations** for networking and intelligence
 
 ## The Economic Case for Manufacturing Independence
