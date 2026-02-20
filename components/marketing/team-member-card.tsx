@@ -26,55 +26,45 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
     loadMemberImage();
   }, [member.imageName]);
 
+  function findMatch(images: { id: string; name: string }[]) {
+    const memberImageNameLower = member.imageName.toLowerCase();
+    const memberNameLower = member.name.toLowerCase();
+    const nameParts = member.name.split(" ");
+    const firstName = nameParts[0].toLowerCase();
+    const lastName = nameParts[nameParts.length - 1].toLowerCase();
+
+    return images.find((img) => {
+      const n = img.name.toLowerCase();
+      if (n === memberImageNameLower) return true;
+      if (n.includes(memberImageNameLower)) return true;
+      if (n.includes(`${lastName}_${firstName}`)) return true;
+      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
+      if (n.includes(firstName) && n.includes(lastName)) return true;
+      return false;
+    });
+  }
+
   async function loadMemberImage() {
     try {
       setIsLoading(true);
-      
-      // Try to load from Firebase Image Manager
-      const images = await listImages("team");
-      
-      if (!images || images.length === 0) {
-        // No images in Firebase yet, use fallback
-        setIsLoading(false);
-        return;
+
+      // First try "team" category
+      let images = await listImages("team");
+      let matchingImage = findMatch(images);
+
+      // If no match, search all images across every category
+      if (!matchingImage) {
+        images = await listImages();
+        matchingImage = findMatch(images);
       }
-      
-      // Try multiple matching strategies
-      const matchingImage = images.find(img => {
-        const imgNameLower = img.name.toLowerCase();
-        const memberImageNameLower = member.imageName.toLowerCase();
-        const memberNameLower = member.name.toLowerCase();
-        
-        // Direct match
-        if (imgNameLower === memberImageNameLower) return true;
-        
-        // Contains match
-        if (imgNameLower.includes(memberImageNameLower)) return true;
-        
-        // Reverse name match (LastName_FirstName vs FirstName_LastName)
-        const nameParts = member.name.split(' ');
-        if (nameParts.length >= 2) {
-          const firstName = nameParts[0].toLowerCase();
-          const lastName = nameParts[nameParts.length - 1].toLowerCase();
-          const reversedName = `${lastName}_${firstName}`;
-          if (imgNameLower.includes(reversedName)) return true;
-        }
-        
-        // Full name match with spaces replaced by underscores
-        if (imgNameLower.replace(/_/g, ' ').includes(memberNameLower)) return true;
-        
-        return false;
-      });
 
       if (matchingImage) {
         const fullImage = await getImage(matchingImage.id);
-        if (fullImage && fullImage.base64Data) {
-          const url = base64ToDataUrl(fullImage.base64Data, fullImage.mimeType);
-          setImageUrl(url);
+        if (fullImage?.base64Data) {
+          setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
         }
       }
     } catch (error) {
-      // Silently fail and show initials fallback
       console.log(`Image not available for ${member.name}, showing initials`);
     } finally {
       setIsLoading(false);
