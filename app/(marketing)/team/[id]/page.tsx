@@ -24,6 +24,26 @@ Under his leadership, KDM & Associates has become a trusted partner for small bu
 His approach combines practical business acumen with a genuine passion for creating opportunities that drive economic growth and strengthen supply chains across the nation. Keith is dedicated to building an ecosystem where every capable small emerging business has the resources and support needed to thrive in government contracting.`
   },
   {
+    id: "miranda-bouldin",
+    name: "Miranda Bouldin",
+    title: "President",
+    initials: "MB",
+    imageName: "Miranda_Bouldin",
+    bio: "Creator of Space Defense Brief & TechGeekette Brief | CEO, LogiCore | Strategic Insights on Space Command, Space Force & National Defense | GovCon | Defense Logistics | Cybersecurity",
+    linkedin: "https://www.linkedin.com/in/mirandabouldin/",
+    fullBio: `Miranda Bouldin serves as President of KDM & Associates, bringing a rare combination of defense intelligence, technology leadership, and government contracting expertise to the organization. A recognized thought leader at the intersection of national security, space defense, and emerging technology, Miranda is dedicated to helping small businesses navigate and succeed in the federal marketplace.
+
+Miranda is the creator of Space Defense Brief and TechGeekette Brief — two influential publications that deliver strategic insights on Space Command, Space Force, and national defense to a growing audience of defense professionals, government contractors, and technology leaders. Through these platforms, she has established herself as a trusted voice on the evolving landscape of space-based defense capabilities and their implications for government contracting.
+
+As CEO of LogiCore, Miranda leads a technology-driven company focused on defense logistics, cybersecurity, and strategic intelligence solutions. Her work at LogiCore spans the full spectrum of defense support services, from supply chain resilience and logistics optimization to cybersecurity frameworks that protect critical government infrastructure.
+
+Miranda's expertise in Space Command and Space Force positions her as a uniquely valuable partner for small businesses seeking to enter or expand within the defense and space sectors. She understands the complex acquisition environment, the evolving threat landscape, and the strategic priorities that drive federal procurement decisions in these high-growth domains.
+
+In the cybersecurity arena, Miranda brings deep knowledge of compliance frameworks, risk management, and the Cybersecurity Maturity Model Certification (CMMC) requirements that are increasingly critical for defense contractors. Her ability to translate complex technical and regulatory requirements into actionable business strategies gives KDM clients a significant competitive advantage.
+
+As President of KDM & Associates, Miranda works alongside CEO Keith Moore to drive the organization's strategic vision, expand its network of small business partners, and deepen relationships with government agencies and prime contractors. Her leadership is defined by a commitment to excellence, a passion for empowering underrepresented businesses, and an unwavering focus on delivering results for clients navigating the federal contracting landscape.`
+  },
+  {
     id: "kirk-gimenez",
     name: "Kirk Gimenez",
     title: "Media & Marketing Partner",
