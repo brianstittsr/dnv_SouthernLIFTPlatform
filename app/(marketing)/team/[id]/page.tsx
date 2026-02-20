@@ -24,6 +24,28 @@ Under his leadership, KDM & Associates has become a trusted partner for small bu
 His approach combines practical business acumen with a genuine passion for creating opportunities that drive economic growth and strengthen supply chains across the nation. Keith is dedicated to building an ecosystem where every capable small emerging business has the resources and support needed to thrive in government contracting.`
   },
   {
+    id: "kirk-gimenez",
+    name: "Kirk Gimenez",
+    title: "Media & Marketing Partner",
+    initials: "KG",
+    imageName: "Kirk_Gimenez",
+    bio: "Elevating Latinos & minorities. Triple M: Media, Marketing & Money man. Xizzle TV Founder! 2-time Emmy Winner, Ex-ESPN anchor, Elite Closer University partner, SVP Brickell Capital Finance",
+    linkedin: "https://www.linkedin.com/in/kirk-gimenez/",
+    fullBio: `Kirk Gimenez is a two-time Emmy Award-winning media professional, entrepreneur, and passionate advocate for Latino and minority advancement in business and media. With a career spanning broadcast journalism, digital media, financial services, and sales training, Kirk brings a rare combination of storytelling power and business acumen to everything he does.
+
+Kirk's broadcasting career includes a prominent tenure as an anchor and reporter at ESPN, one of the world's most recognized sports media brands, where he honed his skills in front of a global audience. His on-air excellence earned him two Emmy Awards, cementing his reputation as a top-tier media talent.
+
+Building on his broadcast foundation, Kirk founded Xizzle TV, a digital media platform dedicated to amplifying the voices, stories, and achievements of Latino and minority communities. Through Xizzle TV, Kirk has created a powerful vehicle for cultural representation and community empowerment in the digital age.
+
+Kirk is also a partner with Elite Closer University, a premier sales training and professional development organization, where he helps entrepreneurs and business professionals master the art of closing deals and building lasting client relationships. His dynamic communication style and real-world experience make him a sought-after speaker and trainer.
+
+In the financial services arena, Kirk serves as Senior Vice President at Brickell Capital Finance, where he leverages his extensive network and business development expertise to connect clients with capital solutions that fuel growth and opportunity.
+
+As Media & Marketing Partner at KDM & Associates, Kirk plays a pivotal role in amplifying the organization's mission — connecting small emerging businesses with government contracting opportunities. He brings creative media strategy, brand storytelling, and community outreach capabilities that help KDM reach and empower underserved business communities across the nation.
+
+Kirk's life mission is simple: elevate Latinos and minorities through the Triple M framework — Media, Marketing & Money — creating pathways to visibility, influence, and economic prosperity for communities that have historically been underrepresented in business and government contracting.`
+  },
+  {
     id: "charles-sills",
     name: "Charles Sills",
     title: "COO",

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Linkedin } from "lucide-react";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
 
 interface TeamMember {
@@ -10,9 +12,9 @@ interface TeamMember {
   title: string;
   initials: string;
   imageName: string;
-  imageUrl?: string;
   bio: string;
   fullBio: string;
+  linkedin?: string;
 }
 
 interface TeamMemberBioProps {
@@ -25,64 +27,41 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
 
   useEffect(() => {
     loadMemberImage();
-  }, [member.imageName, member.imageUrl]);
+  }, [member.imageName]);
+
+  function findMatch(images: { id: string; name: string }[]) {
+    const memberImageNameLower = member.imageName.toLowerCase();
+    const memberNameLower = member.name.toLowerCase();
+    const nameParts = member.name.split(" ");
+    const firstName = nameParts[0].toLowerCase();
+    const lastName = nameParts[nameParts.length - 1].toLowerCase();
+    return images.find((img) => {
+      const n = img.name.toLowerCase();
+      if (n === memberImageNameLower) return true;
+      if (n.includes(memberImageNameLower)) return true;
+      if (n.includes(`${lastName}_${firstName}`)) return true;
+      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
+      if (n.includes(firstName) && n.includes(lastName)) return true;
+      return false;
+    });
+  }
 
   async function loadMemberImage() {
     try {
       setIsLoading(true);
-      
-      // If direct imageUrl is provided, use it
-      if (member.imageUrl) {
-        setImageUrl(member.imageUrl);
-        setIsLoading(false);
-        return;
+      let images = await listImages("team");
+      let matchingImage = findMatch(images);
+      if (!matchingImage) {
+        images = await listImages();
+        matchingImage = findMatch(images);
       }
-      
-      // Try to load from Firebase Image Manager
-      const images = await listImages("team");
-      
-      if (!images || images.length === 0) {
-        // No images in Firebase yet, use fallback
-        setIsLoading(false);
-        return;
-      }
-      
-      // Try multiple matching strategies
-      const matchingImage = images.find(img => {
-        const imgNameLower = img.name.toLowerCase();
-        const memberImageNameLower = member.imageName.toLowerCase();
-        const memberNameLower = member.name.toLowerCase();
-        
-        // Direct match
-        if (imgNameLower === memberImageNameLower) return true;
-        
-        // Contains match
-        if (imgNameLower.includes(memberImageNameLower)) return true;
-        
-        // Reverse name match (LastName_FirstName vs FirstName_LastName)
-        const nameParts = member.name.split(' ');
-        if (nameParts.length >= 2) {
-          const firstName = nameParts[0].toLowerCase();
-          const lastName = nameParts[nameParts.length - 1].toLowerCase();
-          const reversedName = `${lastName}_${firstName}`;
-          if (imgNameLower.includes(reversedName)) return true;
-        }
-        
-        // Full name match with spaces replaced by underscores
-        if (imgNameLower.replace(/_/g, ' ').includes(memberNameLower)) return true;
-        
-        return false;
-      });
-
       if (matchingImage) {
         const fullImage = await getImage(matchingImage.id);
-        if (fullImage && fullImage.base64Data) {
-          const url = base64ToDataUrl(fullImage.base64Data, fullImage.mimeType);
-          setImageUrl(url);
+        if (fullImage?.base64Data) {
+          setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
         }
       }
     } catch (error) {
-      // Silently fail and show initials fallback
       console.log(`Image not available for ${member.name}, showing initials`);
     } finally {
       setIsLoading(false);
@@ -102,7 +81,15 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
           </Avatar>
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold mb-2">{member.name}</h2>
-            <p className="text-lg text-primary font-medium">{member.title}</p>
+            <p className="text-lg text-primary font-medium mb-3">{member.title}</p>
+            {member.linkedin && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="h-4 w-4 mr-2" />
+                  LinkedIn Profile
+                </a>
+              </Button>
+            )}
           </div>
         </div>
 
