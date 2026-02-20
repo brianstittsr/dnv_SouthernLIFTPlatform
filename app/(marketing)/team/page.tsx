@@ -20,7 +20,6 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
-    imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
     bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting."
   },
   {
@@ -29,7 +28,6 @@ const teamMembers = [
     title: "President",
     initials: "MB",
     imageName: "Miranda_Bouldin",
-    imageUrl: "/MirandaBouldin",
     bio: "Creator of Space Defense Brief & TechGeekette Brief | CEO, LogiCore | Strategic Insights on Space Command, Space Force & National Defense | GovCon | Defense Logistics | Cybersecurity"
   },
   {
@@ -38,7 +36,6 @@ const teamMembers = [
     title: "Media & Marketing Partner",
     initials: "KG",
     imageName: "Kirk_Gimenez",
-    imageUrl: undefined,
     bio: "Elevating Latinos & minorities. Triple M: Media, Marketing & Money man. Xizzle TV Founder! 2-time Emmy Winner, Ex-ESPN anchor, Elite Closer University partner, SVP Brickell Capital Finance"
   },
   {
