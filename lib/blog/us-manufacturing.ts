@@ -11,13 +11,13 @@ export const usManufacturingPosts: BlogPost[] = [
     tags: ["Manufacturing", "Defense Contracts", "Small Business", "Compliance"],
     readTime: 12,
     imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
-    content: `The U.S. Department of Defense (DoD) spends over $400 billion annually on contracts, and a growing share of that spending is directed toward small businesses. For small manufacturers, this represents a massive opportunity—but only if you're prepared. Becoming "defense-ready" requires more than just having a good product. It demands compliance with specific standards, certifications, and operational capabilities that the DoD requires of its suppliers.
+    content: `The U.S. Department of Defense (DoD) spends over $400 billion annually on contracts, and a growing share of that spending is directed toward small businesses. For small manufacturers, this represents a massive opportunity--but only if you're prepared. Becoming "defense-ready" requires more than just having a good product. It demands compliance with specific standards, certifications, and operational capabilities that the DoD requires of its suppliers.
 
 This comprehensive guide walks you through every step of becoming defense-ready in 2026, providing actionable insights and strategic recommendations to position your manufacturing business for success in the defense contracting market.
 
 ## Understanding the Defense Industrial Base Opportunity
 
-The Defense Industrial Base (DIB) is the network of companies that design, produce, and maintain military systems and components. As a small manufacturer, your goal is to become a qualified participant in this ecosystem—either as a prime contractor or, more commonly, as a subcontractor (Tier 2 or Tier 3 supplier) to a prime.
+The Defense Industrial Base (DIB) is the network of companies that design, produce, and maintain military systems and components. As a small manufacturer, your goal is to become a qualified participant in this ecosystem--either as a prime contractor or, more commonly, as a subcontractor (Tier 2 or Tier 3 supplier) to a prime.
 
 The scale of opportunity is substantial. The DoD's small business contracting goal is 23% of prime contract dollars, representing over $80 billion annually in opportunities specifically reserved for small businesses. For manufacturers, the defense market offers:
 
@@ -27,11 +27,11 @@ The scale of opportunity is substantial. The DoD's small business contracting go
 - **Mission alignment:** Contributing to national security provides meaningful purpose
 
 Key agencies and organizations you'll interact with include:
-- **Department of Defense (DoD)** — The ultimate buyer and program manager
-- **Defense Logistics Agency (DLA)** — Manages supply chains for military parts and materials
-- **Defense Contract Management Agency (DCMA)** — Oversees contract execution and compliance
-- **Small Business Administration (SBA)** — Administers set-aside programs and certification
-- **Defense Contract Audit Agency (DCAA)** — Reviews contract costs and pricing
+- **Department of Defense (DoD)** -- The ultimate buyer and program manager
+- **Defense Logistics Agency (DLA)** -- Manages supply chains for military parts and materials
+- **Defense Contract Management Agency (DCMA)** -- Oversees contract execution and compliance
+- **Small Business Administration (SBA)** -- Administers set-aside programs and certification
+- **Defense Contract Audit Agency (DCAA)** -- Reviews contract costs and pricing
 
 ## Step 1: Foundation - SAM.gov Registration and Business Infrastructure
 
@@ -48,7 +48,7 @@ Your first concrete step is registering on the System for Award Management (SAM.
 **Critical considerations:**
 - Registration is free and must be renewed annually
 - Allow 2-8 weeks for initial registration approval
-- Keep your profile current—outdated information can disqualify you from opportunities
+- Keep your profile current--outdated information can disqualify you from opportunities
 - Use your legal business name exactly as it appears on tax documents
 
 Beyond SAM registration, establish the business infrastructure needed for government contracting:
@@ -64,16 +64,16 @@ Beyond SAM registration, establish the business infrastructure needed for govern
 North American Industry Classification System (NAICS) codes define what you do. Selecting the right codes is critical because contract opportunities are categorized by NAICS, and your codes affect your small business size status.
 
 **Common manufacturing NAICS codes for defense:**
-- **332 — Fabricated Metal Product Manufacturing** - Machining, welding, metal forming
-- **333 — Machinery Manufacturing** - Industrial equipment, engines, turbines
-- **334 — Computer and Electronic Product Manufacturing** - Circuit boards, semiconductors
-- **335 — Electrical Equipment Manufacturing** - Motors, generators, switchgear
-- **336 — Transportation Equipment Manufacturing** - Aircraft, vehicles, ships
-- **339 — Miscellaneous Manufacturing** - Medical equipment, instruments
+- **332 -- Fabricated Metal Product Manufacturing** - Machining, welding, metal forming
+- **333 -- Machinery Manufacturing** - Industrial equipment, engines, turbines
+- **334 -- Computer and Electronic Product Manufacturing** - Circuit boards, semiconductors
+- **335 -- Electrical Equipment Manufacturing** - Motors, generators, switchgear
+- **336 -- Transportation Equipment Manufacturing** - Aircraft, vehicles, ships
+- **339 -- Miscellaneous Manufacturing** - Medical equipment, instruments
 
 **Strategic considerations:**
 - Research which codes align with your actual capabilities
-- Multiple codes are allowed—select all that apply
+- Multiple codes are allowed--select all that apply
 - Size standards vary by NAICS code, affecting your eligibility for small business set-asides
 - Ensure codes match your SAM profile and capability statement
 - Consider future capabilities you plan to develop
@@ -84,7 +84,7 @@ A capability statement is your company's resume for government buyers. It should
 
 **Essential elements:**
 
-**Core Competencies:** What you manufacture and your specializations. Be specific—"precision CNC machining of aluminum aerospace components" is better than "general machining."
+**Core Competencies:** What you manufacture and your specializations. Be specific--"precision CNC machining of aluminum aerospace components" is better than "general machining."
 
 **Differentiators:** What sets you apart from competitors:
 - Special certifications (AS9100D, ISO 9001, CMMC)
@@ -138,7 +138,7 @@ Defense manufacturing requires specific quality and security certifications that
 - ISO 9001: 3-6 months
 - AS9100D: 6-12 months (following ISO 9001)
 
-Start certification processes early—many require lead time and ongoing maintenance.
+Start certification processes early--many require lead time and ongoing maintenance.
 
 ## Step 5: Building Your Proof Pack
 
@@ -303,8 +303,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -318,7 +318,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     tags: ["Manufacturing", "National Security", "Reshoring", "Supply Chain"],
     readTime: 10,
     imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
-    content: `The COVID-19 pandemic, geopolitical tensions with China, and the war in Ukraine have exposed a critical vulnerability in America's defense posture: our dependence on foreign manufacturing. From semiconductors to rare earth minerals, from pharmaceutical ingredients to precision machined parts, the United States has outsourced too much of its manufacturing base—and national security has suffered as a result.
+    content: `The COVID-19 pandemic, geopolitical tensions with China, and the war in Ukraine have exposed a critical vulnerability in America's defense posture: our dependence on foreign manufacturing. From semiconductors to rare earth minerals, from pharmaceutical ingredients to precision machined parts, the United States has outsourced too much of its manufacturing base--and national security has suffered as a result.
 
 Now, a bipartisan consensus is emerging: **America must rebuild its manufacturing capacity.** For small manufacturers, this represents the opportunity of a generation to capture new markets, secure long-term contracts, and contribute to national security while building sustainable, profitable businesses.
 
@@ -335,7 +335,7 @@ The Department of Defense's supply chain depends on approximately 300,000 compan
 - **Lead times** for critical parts have increased by 200-400% since 2019, hampering readiness
 - **Supply chain disruptions** during the pandemic delayed major weapons programs by months or years
 
-These vulnerabilities aren't theoretical—they've already impacted military operations, delayed equipment deliveries, and inflated costs for taxpayers.
+These vulnerabilities aren't theoretical--they've already impacted military operations, delayed equipment deliveries, and inflated costs for taxpayers.
 
 ### The China Factor: Unprecedented Strategic Dependency
 
@@ -353,7 +353,7 @@ A conflict over Taiwan or escalation in the South China Sea could instantly cut 
 
 History provides sobering lessons about manufacturing dependency:
 
-**World War II:** American industrial capacity was decisive in Allied victory. The "Arsenal of Democracy" wasn't just rhetoric—it was a strategic advantage that enabled rapid mobilization and sustained production.
+**World War II:** American industrial capacity was decisive in Allied victory. The "Arsenal of Democracy" wasn't just rhetoric--it was a strategic advantage that enabled rapid mobilization and sustained production.
 
 **Cold War:** Maintaining domestic manufacturing capabilities across sectors provided deterrence and readiness throughout the decades-long standoff with the Soviet Union.
 
@@ -367,19 +367,19 @@ Recognizing these vulnerabilities, the federal government is responding with unp
 
 ### Landmark Legislation
 
-**CHIPS and Science Act — $52 billion** for domestic semiconductor manufacturing
+**CHIPS and Science Act -- $52 billion** for domestic semiconductor manufacturing
 - Subsidies for new fabrication facilities
 - Research and development funding
 - Workforce development programs
 - Tax credits for equipment investment
 
-**Inflation Reduction Act — $369 billion** in clean energy manufacturing incentives
+**Inflation Reduction Act -- $369 billion** in clean energy manufacturing incentives
 - Tax credits for domestic production
 - Requirements for domestic content in government-funded projects
 - Support for critical minerals processing
 - Manufacturing technology advancement
 
-**Bipartisan Infrastructure Law — $1.2 trillion** including manufacturing-related investments
+**Bipartisan Infrastructure Law -- $1.2 trillion** including manufacturing-related investments
 - Grid modernization supporting industrial energy needs
 - Port improvements reducing supply chain costs
 - Broadband expansion enabling Industry 4.0
@@ -396,12 +396,12 @@ Multiple executive orders have strengthened domestic manufacturing requirements:
 ### Department of Defense Initiatives
 
 DoD is actively rebuilding its supplier base:
-- **Defense Production Act Title III** — Direct investment in critical manufacturing
-- **Industrial Base Analysis and Sustainment (IBAS)** — Identifying and addressing vulnerabilities
-- **Manufacturing Technology (ManTech) Program** — Advanced manufacturing R&D
-- **Small Business Innovation Research (SBIR)** — Funding for innovative suppliers
+- **Defense Production Act Title III** -- Direct investment in critical manufacturing
+- **Industrial Base Analysis and Sustainment (IBAS)** -- Identifying and addressing vulnerabilities
+- **Manufacturing Technology (ManTech) Program** -- Advanced manufacturing R&D
+- **Small Business Innovation Research (SBIR)** -- Funding for innovative suppliers
 
-The total federal investment in domestic manufacturing exceeds **$600 billion** over the next decade—a historic mobilization of resources.
+The total federal investment in domestic manufacturing exceeds **$600 billion** over the next decade--a historic mobilization of resources.
 
 ## Where Small Manufacturers Fit In: The Critical Role
 
@@ -440,7 +440,7 @@ The defense market offers substantial opportunities for small manufacturers:
 - **Average contract duration:** 3-5 years with options for extension, providing stability
 - **Premium pricing:** Defense contracts often command 15-30% margins above commercial work
 
-These aren't just numbers—they represent real opportunities for small manufacturers to build sustainable, growing businesses.
+These aren't just numbers--they represent real opportunities for small manufacturers to build sustainable, growing businesses.
 
 ## How to Position Your Manufacturing Business for Defense Success
 
@@ -575,9 +575,9 @@ The companies that invest in defense capabilities now will define the competitiv
 
 ## Conclusion: Manufacturing Independence Is Your Opportunity
 
-The rebuilding of American manufacturing capacity is not just a patriotic cause—it's a business opportunity of historic proportions. Small manufacturers who position themselves to serve defense needs will find stable, growing markets with premium pricing and long-term contract security.
+The rebuilding of American manufacturing capacity is not just a patriotic cause--it's a business opportunity of historic proportions. Small manufacturers who position themselves to serve defense needs will find stable, growing markets with premium pricing and long-term contract security.
 
-The question isn't whether the U.S. will rebuild its manufacturing base. The political will exists, the funding is flowing, and the strategic necessity is clear. The question is whether your company will be part of this historic rebuilding effort—or whether you'll watch from the sidelines as competitors capture the opportunities.
+The question isn't whether the U.S. will rebuild its manufacturing base. The political will exists, the funding is flowing, and the strategic necessity is clear. The question is whether your company will be part of this historic rebuilding effort--or whether you'll watch from the sidelines as competitors capture the opportunities.
 
 The tools, resources, and support are available. The market is growing. The need is urgent. The time to act is now.
 
@@ -587,8 +587,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -610,11 +610,11 @@ For small manufacturers, the journey from Tier 3 supplier to Tier 1 partner repr
 
 Prime contractors like Boeing, Lockheed Martin, Raytheon Technologies, Northrop Grumman, and General Dynamics manage massive defense programs worth billions of dollars. They rely on complex networks of subcontractors and suppliers organized in a tiered structure:
 
-**Tier 1 Subcontractors** — Major subcontractors providing complete subsystems and major assemblies. These firms often have hundreds of employees and manage their own supply chains. They take significant responsibility for program success.
+**Tier 1 Subcontractors** -- Major subcontractors providing complete subsystems and major assemblies. These firms often have hundreds of employees and manage their own supply chains. They take significant responsibility for program success.
 
-**Tier 2 Suppliers** — Companies providing significant components or assemblies, but typically not complete subsystems. They often supply Tier 1 contractors and may have direct relationships with primes for specific items.
+**Tier 2 Suppliers** -- Companies providing significant components or assemblies, but typically not complete subsystems. They often supply Tier 1 contractors and may have direct relationships with primes for specific items.
 
-**Tier 3 Suppliers** — Suppliers of individual parts, materials, or specialized services. This is where most small manufacturers enter the defense ecosystem.
+**Tier 3 Suppliers** -- Suppliers of individual parts, materials, or specialized services. This is where most small manufacturers enter the defense ecosystem.
 
 The goal for ambitious small manufacturers is clear: enter at Tier 3, establish a track record of excellence, and progressively move up the value chain to Tier 2 and ultimately Tier 1 status. This progression brings larger contracts, higher margins, greater stability, and strategic influence.
 
@@ -648,7 +648,7 @@ The best suppliers become extensions of the prime contractor's engineering team,
 
 ### 3. Compliance and Certifications as Baseline Requirements
 
-Compliance isn't a differentiator—it's the price of admission. Prime contractors require:
+Compliance isn't a differentiator--it's the price of admission. Prime contractors require:
 
 - **AS9100D or equivalent** quality management system certification
 - **CMMC certification** at the appropriate level (typically Level 2 for CUI)
@@ -708,7 +708,7 @@ Technical capability gets you considered. Relationships get you selected. Strate
 
 ### Strategy 2: Develop a World-Class Quality System That Exceeds Requirements
 
-Don't just meet minimum requirements—exceed them significantly. World-class quality systems include:
+Don't just meet minimum requirements--exceed them significantly. World-class quality systems include:
 
 **Statistical Process Control (SPC):**
 - Real-time monitoring of critical process parameters
@@ -923,7 +923,7 @@ The transition from supplier to partner doesn't happen overnight. It requires su
 
 For small manufacturers, the key is to start now. Every day you delay is a day your competitors use to build relationships, win contracts, and establish the track record that will make them preferred partners for years to come.
 
-The defense industrial base needs capable, committed small manufacturing partners. The question is whether your company will answer that need—and reap the rewards that come with it.
+The defense industrial base needs capable, committed small manufacturing partners. The question is whether your company will answer that need--and reap the rewards that come with it.
 
 **Ready to transform your manufacturing business from supplier to partner?**
 
@@ -931,8 +931,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*
 
@@ -947,7 +947,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     tags: ["Reshoring", "Manufacturing", "Defense Contracts", "Supply Chain"],
     readTime: 10,
     imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
-    content: `The reshoring of American manufacturing isn't just a trend—it's a strategic imperative backed by hundreds of billions in federal investment. For small manufacturers, this represents the most significant opportunity in a generation to enter or expand in the defense contracting market. Understanding the reshoring landscape and positioning your business to capture these opportunities can transform your company's growth trajectory.
+    content: `The reshoring of American manufacturing isn't just a trend--it's a strategic imperative backed by hundreds of billions in federal investment. For small manufacturers, this represents the most significant opportunity in a generation to enter or expand in the defense contracting market. Understanding the reshoring landscape and positioning your business to capture these opportunities can transform your company's growth trajectory.
 
 ## The Reshoring Landscape in 2026: A Movement Accelerating
 
@@ -958,7 +958,7 @@ The numbers tell a compelling story of massive industrial transformation:
 - **1,800+ companies** have announced reshoring or FDI projects
 - **Defense-related reshoring** growing at 15% annually, outpacing general manufacturing
 
-This isn't a temporary fluctuation—it's a fundamental restructuring of global supply chains driven by national security imperatives, economic resilience concerns, and changing cost dynamics.
+This isn't a temporary fluctuation--it's a fundamental restructuring of global supply chains driven by national security imperatives, economic resilience concerns, and changing cost dynamics.
 
 ### Key Drivers Behind the Reshoring Movement
 
@@ -1066,10 +1066,10 @@ Automation is essential for competing on cost with overseas manufacturers while 
 Multiple programs support manufacturers investing in reshoring capabilities:
 
 **Federal Programs:**
-- **Manufacturing Extension Partnership (MEP)** — Technical assistance, consulting, and training (often free or subsidized)
-- **SBIR/STTR grants** — R&D funding for innovative manufacturing technologies
-- **SBA 504 loans** — Favorable financing for equipment and facility investments
-- **DPA Title III** — Direct investment in critical manufacturing capabilities
+- **Manufacturing Extension Partnership (MEP)** -- Technical assistance, consulting, and training (often free or subsidized)
+- **SBIR/STTR grants** -- R&D funding for innovative manufacturing technologies
+- **SBA 504 loans** -- Favorable financing for equipment and facility investments
+- **DPA Title III** -- Direct investment in critical manufacturing capabilities
 
 **State and Local Programs:**
 - **Tax incentives** for manufacturing investment and job creation
@@ -1183,11 +1183,11 @@ The reshoring movement is real, it's accelerating, and it's creating opportuniti
 
 ## Conclusion: Seizing the Reshoring Opportunity
 
-The reshoring movement represents more than a shift in supply chains—it's a fundamental reordering of manufacturing priorities that favors domestic production, quality, responsiveness, and security over the lowest possible cost.
+The reshoring movement represents more than a shift in supply chains--it's a fundamental reordering of manufacturing priorities that favors domestic production, quality, responsiveness, and security over the lowest possible cost.
 
 For small manufacturers, this is the opportunity of a generation. The combination of federal investment, national security imperatives, and changing buyer preferences has created a market environment where domestic manufacturers can compete and win.
 
-The key is to act decisively. Invest in the capabilities, certifications, and relationships that position your business as a qualified, trusted domestic supplier. The opportunities are there for the taking—your competitors are already moving to capture them.
+The key is to act decisively. Invest in the capabilities, certifications, and relationships that position your business as a qualified, trusted domestic supplier. The opportunities are there for the taking--your competitors are already moving to capture them.
 
 **Ready to position your manufacturing business for reshoring success?**
 
@@ -1195,8 +1195,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -1210,17 +1210,17 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     tags: ["Manufacturing", "Documentation", "DoD", "Proof Pack", "Compliance"],
     readTime: 9,
     imageUrl: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&q=80",
-    content: `In defense contracting, trust is built on documentation. Before any prime contractor or government buyer will award you a contract, they need proof—proof that you can deliver quality products, on time, within budget, and in compliance with all applicable regulations. This documentation package, known as a Manufacturing Proof Pack, is your most powerful tool for opening doors in the defense market.
+    content: `In defense contracting, trust is built on documentation. Before any prime contractor or government buyer will award you a contract, they need proof--proof that you can deliver quality products, on time, within budget, and in compliance with all applicable regulations. This documentation package, known as a Manufacturing Proof Pack, is your most powerful tool for opening doors in the defense market.
 
 This comprehensive guide explains what a Proof Pack is, why it matters, and how to build one that demonstrates your readiness to defense buyers and accelerates your path to contract awards.
 
 ## What Is a Proof Pack and Why Does It Matter?
 
-A Proof Pack is a comprehensive documentation package that demonstrates your company's capabilities, qualifications, and readiness to perform defense manufacturing work. Think of it as your company's portfolio—the evidence that backs up every claim in your capability statement.
+A Proof Pack is a comprehensive documentation package that demonstrates your company's capabilities, qualifications, and readiness to perform defense manufacturing work. Think of it as your company's portfolio--the evidence that backs up every claim in your capability statement.
 
 ### The Purpose of Documentation in Defense Contracting
 
-Defense procurement operates differently from commercial purchasing. In commercial markets, buyers might rely on reputation, samples, or pilot orders to evaluate suppliers. In defense contracting, the stakes are higher—a failure can impact national security and cost lives. Buyers need rigorous documentation to verify your capabilities before awarding contracts.
+Defense procurement operates differently from commercial purchasing. In commercial markets, buyers might rely on reputation, samples, or pilot orders to evaluate suppliers. In defense contracting, the stakes are higher--a failure can impact national security and cost lives. Buyers need rigorous documentation to verify your capabilities before awarding contracts.
 
 Your Proof Pack serves multiple critical functions:
 
@@ -1240,11 +1240,11 @@ A comprehensive Proof Pack includes documentation across eight key areas:
 
 This section establishes who you are and your basic qualifications:
 
-- **Company history and ownership structure** — How long you've been in business, ownership details, and corporate structure
-- **Core manufacturing capabilities** — What you make, processes you use, and specializations
+- **Company history and ownership structure** -- How long you've been in business, ownership details, and corporate structure
+- **Core manufacturing capabilities** -- What you make, processes you use, and specializations
 - **Detailed equipment list** with specifications, ages, and capabilities
-- **Facility details** — Square footage, clean rooms, environmental controls, special features
-- **CAGE code, UEI, and NAICS codes** — Your government registration identifiers
+- **Facility details** -- Square footage, clean rooms, environmental controls, special features
+- **CAGE code, UEI, and NAICS codes** -- Your government registration identifiers
 - **Key contacts** for sales, quality, and program management
 
 ### 2. Quality Management System Documentation
@@ -1254,7 +1254,7 @@ Quality is the foundation of defense manufacturing. This section proves your qua
 - **Quality manual and policy statements** showing your commitment to quality
 - **ISO 9001:2015 or AS9100D certificate** with current validity dates
 - **Quality procedures and work instructions** demonstrating systematic processes
-- **Inspection and testing capabilities** — Equipment, techniques, and accreditations
+- **Inspection and testing capabilities** -- Equipment, techniques, and accreditations
 - **Calibration program documentation** showing measurement traceability
 - **Nonconformance and corrective action procedures** proving problem-solving discipline
 - **Internal audit records** demonstrating ongoing compliance verification
@@ -1291,7 +1291,7 @@ Your track record is the best predictor of future success:
 
 - **Contract summaries** with values, scopes, and performance metrics
 - **Customer references** with contact information and permission to contact
-- **Quality performance data** — PPM rates, on-time delivery percentages, rejection rates
+- **Quality performance data** -- PPM rates, on-time delivery percentages, rejection rates
 - **Awards and recognitions** from customers or industry organizations
 - **Case studies** demonstrating how you solved specific problems
 - **CPARS (Contractor Performance Assessment Reports)** if available
@@ -1317,7 +1317,7 @@ Defense contracting is heavily regulated. Prove your compliance:
 - **Environmental permits** and compliance records
 - **OSHA safety records** including incident rates and corrective actions
 - **EEO/Affirmative Action plans** showing workforce diversity commitment
-- **Small business certifications** — 8(a), HUBZone, SDVOSB, WOSB, etc.
+- **Small business certifications** -- 8(a), HUBZone, SDVOSB, WOSB, etc.
 
 ### 8. Supply Chain Documentation
 
@@ -1470,7 +1470,7 @@ Investing in a high-quality Proof Pack delivers significant returns:
 
 A well-assembled Proof Pack is your most powerful business development tool in the defense market. It transforms your capabilities from claims into evidence, builds trust with buyers, and accelerates the path from introduction to contract award.
 
-The investment in creating and maintaining a comprehensive Proof Pack pays dividends in faster sales cycles, higher win rates, and stronger customer relationships. In the competitive defense market, documentation isn't just administrative overhead—it's a strategic asset that wins contracts.
+The investment in creating and maintaining a comprehensive Proof Pack pays dividends in faster sales cycles, higher win rates, and stronger customer relationships. In the competitive defense market, documentation isn't just administrative overhead--it's a strategic asset that wins contracts.
 
 **Ready to build a Proof Pack that opens DoD doors?**
 
@@ -1478,8 +1478,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -1493,7 +1493,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     tags: ["Digital Transformation", "Manufacturing", "Industry 4.0", "Defense"],
     readTime: 10,
     imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-    content: `The defense industry is undergoing a digital revolution, and small manufacturers who don't keep pace risk being left behind. But digital transformation doesn't mean you need to spend millions on the latest technology. It means strategically implementing the specific digital capabilities that defense buyers actually require and value—capabilities that also improve your operational efficiency and competitiveness.
+    content: `The defense industry is undergoing a digital revolution, and small manufacturers who don't keep pace risk being left behind. But digital transformation doesn't mean you need to spend millions on the latest technology. It means strategically implementing the specific digital capabilities that defense buyers actually require and value--capabilities that also improve your operational efficiency and competitiveness.
 
 This comprehensive guide explains what defense buyers are demanding, how to implement it cost-effectively, and why digital transformation is essential for accessing defense contracting opportunities.
 
@@ -1612,7 +1612,7 @@ Modern equipment and software demonstrate capability and reduce production risks
 
 ## The Business Case: ROI of Digital Transformation
 
-Digital transformation isn't just about meeting buyer requirements—it delivers real business value:
+Digital transformation isn't just about meeting buyer requirements--it delivers real business value:
 
 | Investment Area | Typical ROI | Implementation Timeline |
 |----------------|-------------|-------------------------|
@@ -1711,10 +1711,10 @@ You don't need to do everything at once. A phased approach reduces risk and spre
 You don't have to fund everything from operating cash flow:
 
 **Federal Programs:**
-- **NIST Manufacturing Extension Partnership (MEP)** — Subsidized consulting and implementation support, often 50%+ cost reduction
-- **SBIR/STTR Grants** — R&D funding for innovative manufacturing technology development
-- **SBA 504 Loans** — Favorable financing for equipment and major system investments
-- **DoD Industrial Base Programs** — Funding specifically for critical supply chain improvements
+- **NIST Manufacturing Extension Partnership (MEP)** -- Subsidized consulting and implementation support, often 50%+ cost reduction
+- **SBIR/STTR Grants** -- R&D funding for innovative manufacturing technology development
+- **SBA 504 Loans** -- Favorable financing for equipment and major system investments
+- **DoD Industrial Base Programs** -- Funding specifically for critical supply chain improvements
 
 **State and Local Programs:**
 - **Technology adoption grants** providing direct funding for digital investments
@@ -1743,14 +1743,14 @@ Budget 20-30% of technology cost for training. Insufficient training leads to po
 Phased implementation reduces risk and allows learning. Start with foundational capabilities, demonstrate success, then build from there.
 
 **5. Neglecting Cybersecurity**
-Cybersecurity is foundational—everything else depends on it. Implement security before connecting systems, not as an afterthought.
+Cybersecurity is foundational--everything else depends on it. Implement security before connecting systems, not as an afterthought.
 
 **6. Forgetting Data Quality**
 Digital systems are only as good as the data they contain. Establish data governance, validation procedures, and ongoing quality monitoring.
 
 ## The Competitive Reality
 
-Digital transformation for small manufacturers isn't optional anymore—it's the price of admission to defense contracting opportunities. The good news is that:
+Digital transformation for small manufacturers isn't optional anymore--it's the price of admission to defense contracting opportunities. The good news is that:
 
 **Costs Have Declined:** Cloud computing, SaaS models, and standardized solutions have made enterprise-grade capabilities affordable for small manufacturers.
 
@@ -1764,9 +1764,9 @@ Digital transformation for small manufacturers isn't optional anymore—it's the
 
 Digital transformation for small manufacturers isn't about becoming a tech company. It's about implementing the specific digital capabilities that defense buyers require, in a way that also improves your operations and competitiveness.
 
-Start with cybersecurity—it's foundational and contractually required. Build your digital quality system next. Then expand into supply chain visibility and production connectivity. Each step builds capability and opens new opportunities.
+Start with cybersecurity--it's foundational and contractually required. Build your digital quality system next. Then expand into supply chain visibility and production connectivity. Each step builds capability and opens new opportunities.
 
-The defense market is digitizing rapidly. Small manufacturers who keep pace will thrive. Those who don't will be left behind. The choice is yours—and the time to act is now.
+The defense market is digitizing rapidly. Small manufacturers who keep pace will thrive. Those who don't will be left behind. The choice is yours--and the time to act is now.
 
 **Ready to digitally transform your manufacturing business for defense opportunities?**
 
@@ -1774,8 +1774,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -1788,7 +1788,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["China", "Manufacturing", "National Security", "Supply Chain", "Reshoring"],
     readTime: 11,
-    content: `The United States faces a manufacturing dependency crisis that threatens both national security and economic prosperity. China's dominance in critical manufacturing sectors—from rare earth minerals to electronics to pharmaceuticals—has created vulnerabilities that adversaries could exploit in a conflict. Understanding this challenge is essential for any manufacturer seeking to participate in the defense industrial base, and it creates unprecedented opportunities for domestic suppliers ready to fill the gaps.
+    content: `The United States faces a manufacturing dependency crisis that threatens both national security and economic prosperity. China's dominance in critical manufacturing sectors--from rare earth minerals to electronics to pharmaceuticals--has created vulnerabilities that adversaries could exploit in a conflict. Understanding this challenge is essential for any manufacturer seeking to participate in the defense industrial base, and it creates unprecedented opportunities for domestic suppliers ready to fill the gaps.
 
 ## The Scope of the China Manufacturing Dependency Problem
 
@@ -1830,7 +1830,7 @@ Taiwan produces over 60% of the world's advanced semiconductors through Taiwan S
 - **Impact virtually every sector of the U.S. economy**
 - **Create a national security crisis** of unprecedented proportions
 
-The world's most advanced semiconductors are within easy reach of Chinese military power—a vulnerability that keeps defense planners awake at night.
+The world's most advanced semiconductors are within easy reach of Chinese military power--a vulnerability that keeps defense planners awake at night.
 
 ### Historical Precedents and Wake-Up Calls
 
@@ -1846,19 +1846,19 @@ Recognizing these vulnerabilities, the U.S. government is responding with unprec
 
 ### Landmark Federal Legislation
 
-**CHIPS and Science Act (2022)** — $52 billion for domestic semiconductor manufacturing:
+**CHIPS and Science Act (2022)** -- $52 billion for domestic semiconductor manufacturing:
 - Subsidies for new fabrication facilities from Intel, TSMC, Samsung, and others
 - $13 billion for R&D and workforce development
 - Tax credits for chip fabrication equipment investment
 - Defense Department funding for secure microelectronics
 
-**Inflation Reduction Act (2022)** — $369 billion for clean energy manufacturing:
+**Inflation Reduction Act (2022)** -- $369 billion for clean energy manufacturing:
 - Tax credits for domestic production of solar panels, batteries, and wind components
 - Requirements for domestic content in government-funded clean energy projects
 - Support for critical minerals processing and recycling
 - Advanced manufacturing technology investments
 
-**Bipartisan Infrastructure Law (2021)** — $1.2 trillion including manufacturing support:
+**Bipartisan Infrastructure Law (2021)** -- $1.2 trillion including manufacturing support:
 - Grid modernization supporting industrial energy needs
 - Port improvements reducing supply chain costs
 - Broadband expansion enabling Industry 4.0
@@ -2002,10 +2002,10 @@ Invest in the equipment, certifications, and workforce needed to produce these i
 
 Connect with programs designed to support domestic manufacturing:
 
-- **Manufacturing Extension Partnership (MEP)** — Free or subsidized consulting
-- **Defense Logistics Agency (DLA) supplier outreach** — Direct engagement with DoD buyers
-- **SBA programs** — 8(a), HUBZone, and other small business support
-- **State economic development agencies** — Local incentives and support
+- **Manufacturing Extension Partnership (MEP)** -- Free or subsidized consulting
+- **Defense Logistics Agency (DLA) supplier outreach** -- Direct engagement with DoD buyers
+- **SBA programs** -- 8(a), HUBZone, and other small business support
+- **State economic development agencies** -- Local incentives and support
 
 ### Step 4: Build Strategic Partnerships
 
@@ -2049,8 +2049,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
@@ -2063,7 +2063,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Quality Management", "Manufacturing", "Defense", "AS9100", "ISO 9001"],
     readTime: 10,
-    content: `In defense manufacturing, quality isn't just important—it's everything. A defective part in a commercial product might cause an inconvenience. A defective part in a weapons system can cost lives, compromise missions, and jeopardize national security. That's why the Department of Defense and prime contractors hold their suppliers to the highest quality standards in the world.
+    content: `In defense manufacturing, quality isn't just important--it's everything. A defective part in a commercial product might cause an inconvenience. A defective part in a weapons system can cost lives, compromise missions, and jeopardize national security. That's why the Department of Defense and prime contractors hold their suppliers to the highest quality standards in the world.
 
 For small manufacturers seeking defense contracts, building a robust, defense-grade quality management system (QMS) is the single most important investment you can make. It's the foundation that everything else rests upon, and it's what separates qualified suppliers from those who never break into the defense market.
 
@@ -2071,16 +2071,16 @@ For small manufacturers seeking defense contracts, building a robust, defense-gr
 
 Defense manufacturing operates within a rigorous framework of quality standards. Understanding these standards is essential for positioning your business successfully.
 
-### ISO 9001:2015 — The Universal Foundation
+### ISO 9001:2015 -- The Universal Foundation
 
 ISO 9001 is the internationally recognized standard for quality management systems. It provides the fundamental framework that all other defense quality standards build upon:
 
 **Core Principles:**
-- **Process-based quality management** — Understanding and controlling how work gets done
-- **Risk-based thinking** — Proactively identifying and addressing potential problems
-- **Customer focus** — Understanding and meeting customer requirements
-- **Continuous improvement** — Constantly seeking better ways to work
-- **Evidence-based decision making** — Using data rather than gut feelings
+- **Process-based quality management** -- Understanding and controlling how work gets done
+- **Risk-based thinking** -- Proactively identifying and addressing potential problems
+- **Customer focus** -- Understanding and meeting customer requirements
+- **Continuous improvement** -- Constantly seeking better ways to work
+- **Evidence-based decision making** -- Using data rather than gut feelings
 
 **Key Requirements:**
 - Documented quality policy and objectives
@@ -2091,49 +2091,49 @@ ISO 9001 is the internationally recognized standard for quality management syste
 
 **Who needs it:** Every manufacturer seeking defense work should have ISO 9001 certification as a minimum prerequisite.
 
-### AS9100D — The Aerospace and Defense Gold Standard
+### AS9100D -- The Aerospace and Defense Gold Standard
 
 AS9100D builds on ISO 9001 with additional requirements specific to aerospace and defense industries. It's the quality standard that serious defense suppliers must achieve:
 
 **Additional Requirements Beyond ISO 9001:**
-- **Configuration management** — Controlling changes to designs and specifications
-- **First Article Inspection (FAI)** — Comprehensive verification of initial production
-- **Product safety requirements** — Special processes for safety-critical items
-- **Counterfeit parts prevention** — Processes to prevent fake components entering supply chain
-- **Special process controls** — Validation and control of critical manufacturing processes
-- **Enhanced traceability** — More rigorous tracking of materials and processes
-- **Foreign object debris (FOD) prevention** — Controls to prevent contamination
+- **Configuration management** -- Controlling changes to designs and specifications
+- **First Article Inspection (FAI)** -- Comprehensive verification of initial production
+- **Product safety requirements** -- Special processes for safety-critical items
+- **Counterfeit parts prevention** -- Processes to prevent fake components entering supply chain
+- **Special process controls** -- Validation and control of critical manufacturing processes
+- **Enhanced traceability** -- More rigorous tracking of materials and processes
+- **Foreign object debris (FOD) prevention** -- Controls to prevent contamination
 
 **Why It Matters:**
 Most prime contractors and many government contracts require AS9100D certification. Without it, you're automatically disqualified from major opportunities.
 
 **Implementation Timeline:** Typically 6-12 months after achieving ISO 9001.
 
-### NADCAP — Special Process Accreditation
+### NADCAP -- Special Process Accreditation
 
 The National Aerospace and Defense Contractors Accreditation Program provides specialized accreditation for critical manufacturing processes:
 
 **Accredited Processes:**
-- **Heat treating** — Critical for material properties
-- **Chemical processing** — Including plating, anodizing, and conversion coatings
-- **Welding** — Especially for structural and pressure applications
-- **Non-destructive testing (NDT)** — Ultrasonic, X-ray, magnetic particle, dye penetrant
-- **Coatings** — Paints, primers, and special finishes
-- **Electronics** — Soldering, cable/harness assembly
-- **Materials testing** — Mechanical and chemical testing
-- **Composites** — Manufacturing and repair
+- **Heat treating** -- Critical for material properties
+- **Chemical processing** -- Including plating, anodizing, and conversion coatings
+- **Welding** -- Especially for structural and pressure applications
+- **Non-destructive testing (NDT)** -- Ultrasonic, X-ray, magnetic particle, dye penetrant
+- **Coatings** -- Paints, primers, and special finishes
+- **Electronics** -- Soldering, cable/harness assembly
+- **Materials testing** -- Mechanical and chemical testing
+- **Composites** -- Manufacturing and repair
 
 **Why It Matters:**
 If you perform any of these special processes for defense customers, NADCAP accreditation is often required. It demonstrates your processes meet the most rigorous industry standards.
 
-### CMMC — Cybersecurity as a Quality Requirement
+### CMMC -- Cybersecurity as a Quality Requirement
 
 The Cybersecurity Maturity Model Certification ensures the security of defense information, which is now considered a fundamental quality requirement:
 
 **Certification Levels:**
-- **Level 1:** Basic cyber hygiene (17 practices) — Foundational security for all defense contractors
-- **Level 2:** Advanced (110 practices aligned with NIST 800-171) — Required for handling Controlled Unclassified Information (CUI)
-- **Level 3:** Expert (additional practices) — For critical programs and CUI with higher sensitivity
+- **Level 1:** Basic cyber hygiene (17 practices) -- Foundational security for all defense contractors
+- **Level 2:** Advanced (110 practices aligned with NIST 800-171) -- Required for handling Controlled Unclassified Information (CUI)
+- **Level 3:** Expert (additional practices) -- For critical programs and CUI with higher sensitivity
 
 **Integration with Quality:**
 Cybersecurity is now part of quality management because a security breach can compromise product integrity, intellectual property, and mission security.
@@ -2338,7 +2338,7 @@ Studies consistently show that cost of poor quality is 5-10x the investment in a
 
 A defense-grade quality management system is your most valuable asset in the defense manufacturing market. It's what separates qualified suppliers from the rest, and it's what gives buyers the confidence to award you contracts worth millions of dollars.
 
-The investment in quality isn't a cost—it's an investment that pays dividends through reduced waste, higher customer satisfaction, access to premium markets, and long-term business sustainability.
+The investment in quality isn't a cost--it's an investment that pays dividends through reduced waste, higher customer satisfaction, access to premium markets, and long-term business sustainability.
 
 Don't wait for a quality crisis to invest in your QMS. Start now, build systematically, and position your manufacturing business as a trusted, qualified defense supplier.
 
@@ -2348,8 +2348,8 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 
 **Join the KDM Consortium Platform today:**
 
-- **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
-- **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
+- **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
+- **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
 *Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   }
