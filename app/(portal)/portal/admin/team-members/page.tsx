@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,7 +57,6 @@ import {
   CheckCircle2,
   Link as LinkIcon,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   collection, 
   getDocs, 
@@ -68,8 +67,8 @@ import {
   Timestamp,
   writeBatch,
 } from "firebase/firestore";
-import { db, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { db } from "@/lib/firebase";
+import { listImages, getImage, base64ToDataUrl, type ImageMetadata } from "@/lib/firebase-images";
 import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeamMemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
@@ -136,11 +135,9 @@ export default function TeamMembersPage() {
   const [loadingQueue, setLoadingQueue] = useState(false);
   // Avatar upload / Image Manager state
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
   const [loadingGallery, setLoadingGallery] = useState(false);
   const [imageManagerOpen, setImageManagerOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -219,67 +216,12 @@ export default function TeamMembersPage() {
     }
   };
 
-  // Upload avatar to Firebase Storage
-  const handleAvatarUpload = async (file: File) => {
-    if (!storage) { alert("Storage not initialized."); return; }
-    setUploadingAvatar(true);
-    try {
-      const ext = file.name.split(".").pop();
-      const fileName = `team-avatars/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setAvatarUrl(url);
-      // Refresh gallery if Image Manager is open
-      if (imageManagerOpen) {
-        await fetchGalleryImages();
-      }
-    } catch (error) {
-      console.error("Error uploading avatar:", error);
-      alert("Upload failed. Check console for details.");
-    } finally {
-      setUploadingAvatar(false);
-    }
-  };
-
-  // Fetch all images from storage (scans multiple folders)
+  // Fetch images from the platform Image Manager (Firestore base64)
   const fetchGalleryImages = async () => {
-    if (!storage) return;
-    const storageInstance = storage;
     setLoadingGallery(true);
     try {
-      const folders = ["team-avatars", "images", "uploads", "avatars", "photos"];
-      const allUrls: string[] = [];
-      await Promise.all(
-        folders.map(async (folder) => {
-          try {
-            const folderRef = ref(storageInstance, folder);
-            const result = await listAll(folderRef);
-            const urls = await Promise.all(
-              result.items
-                .filter((item) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.name))
-                .map((item) => getDownloadURL(item))
-            );
-            allUrls.push(...urls);
-          } catch {
-            // Folder doesn't exist — skip silently
-          }
-        })
-      );
-      // Also scan root level
-      try {
-        const rootRef = ref(storageInstance, "");
-        const rootResult = await listAll(rootRef);
-        const rootUrls = await Promise.all(
-          rootResult.items
-            .filter((item) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(item.name))
-            .map((item) => getDownloadURL(item))
-        );
-        allUrls.push(...rootUrls);
-      } catch {
-        // Root scan failed — skip
-      }
-      setGalleryImages(allUrls);
+      const imgs = await listImages();
+      setGalleryImages(imgs);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     } finally {
@@ -669,20 +611,6 @@ export default function TeamMembersPage() {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => fileInputRef.current?.click()}
-                          disabled={uploadingAvatar}
-                        >
-                          {uploadingAvatar ? (
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Upload className="h-4 w-4 mr-2" />
-                          )}
-                          {uploadingAvatar ? "Uploading..." : "Upload Photo"}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
                           onClick={() => {
                             fetchGalleryImages();
                             setImageManagerOpen(true);
@@ -703,7 +631,7 @@ export default function TeamMembersPage() {
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        JPG, PNG, GIF up to 5MB. Or paste a URL below.
+                        Select from Image Manager or paste a URL below.
                       </p>
                       <Input
                         placeholder="https://example.com/photo.jpg"
@@ -713,48 +641,33 @@ export default function TeamMembersPage() {
                       />
                     </div>
                   </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleAvatarUpload(file);
-                      e.target.value = "";
-                    }}
-                  />
                 </div>
 
                 {/* Image Manager Dialog */}
                 <Dialog open={imageManagerOpen} onOpenChange={setImageManagerOpen}>
-                  <DialogContent className="sm:max-w-[600px]">
+                  <DialogContent className="sm:max-w-[640px]">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
                         <ImageIcon className="h-5 w-5" />
                         Image Manager
                       </DialogTitle>
                       <DialogDescription>
-                        Select a previously uploaded photo or upload a new one.
+                        Select a photo from the Image Library. Upload new photos via Admin → Image Management.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
                         <p className="text-sm text-muted-foreground">
-                          {galleryImages.length} image{galleryImages.length !== 1 ? "s" : ""} in gallery
+                          {galleryImages.length} image{galleryImages.length !== 1 ? "s" : ""} in library
                         </p>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => fileInputRef.current?.click()}
-                          disabled={uploadingAvatar}
+                          onClick={fetchGalleryImages}
+                          disabled={loadingGallery}
                         >
-                          {uploadingAvatar ? (
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Upload className="h-4 w-4 mr-2" />
-                          )}
-                          Upload New
+                          <RefreshCw className={`h-4 w-4 mr-2 ${loadingGallery ? "animate-spin" : ""}`} />
+                          Refresh
                         </Button>
                       </div>
                       {loadingGallery ? (
@@ -762,54 +675,32 @@ export default function TeamMembersPage() {
                           <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
                         </div>
                       ) : galleryImages.length === 0 ? (
-                        <div
-                          className="border-2 border-dashed border-muted rounded-lg p-10 text-center cursor-pointer hover:border-primary transition-colors"
-                          onClick={() => fileInputRef.current?.click()}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            const file = e.dataTransfer.files?.[0];
-                            if (file && file.type.startsWith("image/")) handleAvatarUpload(file);
-                          }}
-                        >
-                          <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-50" />
-                          <p className="text-sm font-medium">No images yet</p>
+                        <div className="border-2 border-dashed border-muted rounded-lg p-10 text-center">
+                          <ImageIcon className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-40" />
+                          <p className="text-sm font-medium">No images in library</p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Click or drag &amp; drop to upload your first photo
+                            Go to <strong>Admin → Image Management</strong> to upload photos first.
                           </p>
                         </div>
                       ) : (
                         <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
-                          {galleryImages.map((url) => {
-                            const linkedMember = members.find((m) => m.avatar === url);
-                            const isSelected = avatarUrl === url;
+                          {galleryImages.map((img) => {
+                            const linkedMember = members.find((m) => m.avatar === img.id);
+                            const isSelected = avatarUrl === img.id;
                             return (
-                              <button
-                                key={url}
-                                type="button"
-                                onClick={() => {
-                                  setAvatarUrl(url);
+                              <GalleryImageTile
+                                key={img.id}
+                                img={img}
+                                isSelected={isSelected}
+                                linkedMemberName={linkedMember ? `${linkedMember.firstName} ${linkedMember.lastName}` : undefined}
+                                onSelect={async (id) => {
+                                  const full = await getImage(id);
+                                  if (full) {
+                                    setAvatarUrl(base64ToDataUrl(full.base64Data, full.mimeType));
+                                  }
                                   setImageManagerOpen(false);
                                 }}
-                                className={`relative flex flex-col rounded-lg overflow-hidden border-2 transition-all hover:border-primary ${
-                                  isSelected ? "border-primary ring-2 ring-primary" : "border-muted"
-                                }`}
-                              >
-                                <div className="relative aspect-square w-full">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img src={url} alt={linkedMember ? `${linkedMember.firstName} ${linkedMember.lastName}` : "Gallery image"} className="w-full h-full object-cover" />
-                                  {isSelected && (
-                                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                                      <CheckCircle2 className="h-6 w-6 text-primary drop-shadow" />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className={`px-1.5 py-1 text-center text-xs truncate w-full ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"}`}>
-                                  {linkedMember
-                                    ? `${linkedMember.firstName} ${linkedMember.lastName}`
-                                    : "Unassigned"}
-                                </div>
-                              </button>
+                              />
                             );
                           })}
                         </div>
@@ -1530,5 +1421,61 @@ export default function TeamMembersPage() {
         </Button>
       )}
     </div>
+  );
+}
+
+// ─── Gallery Image Tile ────────────────────────────────────────────────────────
+interface GalleryImageTileProps {
+  img: ImageMetadata;
+  isSelected: boolean;
+  linkedMemberName?: string;
+  onSelect: (id: string) => Promise<void>;
+}
+
+function GalleryImageTile({ img, isSelected, linkedMemberName, onSelect }: GalleryImageTileProps) {
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    getImage(img.id).then((full) => {
+      if (!cancelled && full) {
+        setDataUrl(base64ToDataUrl(full.base64Data, full.mimeType));
+      }
+      if (!cancelled) setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [img.id]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(img.id)}
+      className={`relative flex flex-col rounded-lg overflow-hidden border-2 transition-all hover:border-primary ${
+        isSelected ? "border-primary ring-2 ring-primary" : "border-muted"
+      }`}
+    >
+      <div className="relative aspect-square w-full bg-muted flex items-center justify-center">
+        {loading ? (
+          <RefreshCw className="h-5 w-5 animate-spin text-muted-foreground" />
+        ) : dataUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={dataUrl} alt={img.name} className="w-full h-full object-cover" />
+        ) : (
+          <ImageIcon className="h-8 w-8 text-muted-foreground opacity-40" />
+        )}
+        {isSelected && (
+          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+            <CheckCircle2 className="h-6 w-6 text-primary drop-shadow" />
+          </div>
+        )}
+      </div>
+      <div className={`px-1.5 py-1 text-center text-xs truncate w-full ${
+        isSelected ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"
+      }`}>
+        {linkedMemberName ?? img.name}
+      </div>
+    </button>
   );
 }
