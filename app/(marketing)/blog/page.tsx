@@ -82,6 +82,16 @@ const categoryColors: Record<BlogCategory, string> = {
   "Thought Leadership & Case Studies": "bg-indigo-100 text-indigo-800",
 };
 
+const categoryFallbackImages: Record<BlogCategory, string> = {
+  "U.S. Manufacturing": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+  "Critical Minerals": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
+  "Defense Contracting & CMMC": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+  "Access to Capital": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+  "Opportunity Zones": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+  "Cross-Cutting Strategic Topics": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+  "Thought Leadership & Case Studies": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80",
+};
+
 export default async function BlogPage() {
   const allPosts = await getAllBlogPosts();
   const featuredPosts = allPosts.slice(0, 3);
@@ -163,19 +173,13 @@ export default async function BlogPage() {
               return (
                 <Card key={post.slug} className="overflow-hidden group hover:shadow-xl transition-all flex flex-col">
                   <div className="aspect-video bg-muted relative overflow-hidden">
-                    {post.imageUrl ? (
-                      <Image
-                        src={post.imageUrl}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                        <Icon className="h-16 w-16 text-primary/40" />
-                      </div>
-                    )}
+                    <Image
+                      src={post.imageUrl || categoryFallbackImages[post.category]}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
                   </div>
                   <CardHeader className="flex-1">
                     <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
@@ -249,19 +253,13 @@ export default async function BlogPage() {
                 {categoryPosts.slice(0, 6).map((post) => (
                   <Card key={post.slug} className="group hover:shadow-lg transition-all overflow-hidden">
                     <div className="aspect-video bg-muted relative overflow-hidden">
-                      {post.imageUrl ? (
-                        <Image
-                          src={post.imageUrl}
-                          alt={post.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                          <Icon className="h-12 w-12 text-primary/40" />
-                        </div>
-                      )}
+                      <Image
+                        src={post.imageUrl || categoryFallbackImages[post.category]}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
                     </div>
                     <CardHeader>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
