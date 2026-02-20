@@ -486,6 +486,18 @@ export default function TeamMembersPage() {
     return `${(firstName || '')[0] || ""}${(lastName || '')[0] || ""}`.toUpperCase();
   };
 
+  const getAvatarSrc = (member: TeamMemberDoc): string => {
+    if (member.avatar) return member.avatar;
+    const email = (member.emailPrimary || "").trim().toLowerCase();
+    let hash = 0;
+    for (let i = 0; i < email.length; i++) {
+      hash = ((hash << 5) - hash) + email.charCodeAt(i);
+      hash |= 0;
+    }
+    const hex = Math.abs(hash).toString(16).padStart(32, "0").slice(0, 32);
+    return `https://www.gravatar.com/avatar/${hex}?s=80&d=identicon`;
+  };
+
   const getRoleBadge = (role: string) => {
     switch (role) {
       case "admin":
@@ -960,7 +972,7 @@ export default function TeamMembersPage() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9">
-                            <AvatarImage src={member.avatar} />
+                            <AvatarImage src={getAvatarSrc(member)} />
                             <AvatarFallback className="text-xs">
                               {getInitials(member.firstName, member.lastName)}
                             </AvatarFallback>
@@ -1084,7 +1096,7 @@ export default function TeamMembersPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={member.avatar} />
+                      <AvatarImage src={getAvatarSrc(member)} />
                       <AvatarFallback>
                         {getInitials(member.firstName, member.lastName)}
                       </AvatarFallback>
