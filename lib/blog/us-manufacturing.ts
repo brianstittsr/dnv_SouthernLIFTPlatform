@@ -10,6 +10,7 @@ export const usManufacturingPosts: BlogPost[] = [
     category: "U.S. Manufacturing",
     tags: ["Manufacturing", "Defense Contracts", "Small Business", "Compliance"],
     readTime: 12,
+    imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
     content: `The U.S. Department of Defense (DoD) spends over $400 billion annually on contracts, and a growing share of that spending is directed toward small businesses. For small manufacturers, this represents a massive opportunity—but only if you're prepared. Becoming "defense-ready" requires more than just having a good product. It demands compliance with specific standards, certifications, and operational capabilities that the DoD requires of its suppliers.
 
 This comprehensive guide walks you through every step of becoming defense-ready in 2026, providing actionable insights and strategic recommendations to position your manufacturing business for success in the defense contracting market.
@@ -316,6 +317,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Manufacturing", "National Security", "Reshoring", "Supply Chain"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
     content: `The COVID-19 pandemic, geopolitical tensions with China, and the war in Ukraine have exposed a critical vulnerability in America's defense posture: our dependence on foreign manufacturing. From semiconductors to rare earth minerals, from pharmaceutical ingredients to precision machined parts, the United States has outsourced too much of its manufacturing base—and national security has suffered as a result.
 
 Now, a bipartisan consensus is emerging: **America must rebuild its manufacturing capacity.** For small manufacturers, this represents the opportunity of a generation to capture new markets, secure long-term contracts, and contribute to national security while building sustainable, profitable businesses.
@@ -599,6 +601,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Manufacturing", "Prime Contractors", "Defense", "Business Growth"],
     readTime: 11,
+    imageUrl: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80",
     content: `In the defense manufacturing ecosystem, there's a significant difference between being a supplier and being a partner. Suppliers fill orders. Partners solve problems, anticipate needs, and become integral to the prime contractor's success. Making this transition is the key to long-term growth, profitability, and sustainability in the defense market.
 
 For small manufacturers, the journey from Tier 3 supplier to Tier 1 partner represents one of the most important strategic transformations your business can undertake. This comprehensive guide provides the roadmap for making that transition successfully.
@@ -931,17 +934,19 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 - **[Register as a Supplier (SME)](/register?type=sme)** — Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
 - **[Register as a Government Buyer](/register?type=buyer)** — Discover qualified, defense-ready small businesses and streamline your procurement process.
 
-*Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
+*Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*
+
   },
   {
-    slug: "reshoring-success-small-manufacturers-defense-contracts",
-    title: "Reshoring Success: How Small Manufacturers Can Compete for Defense Contracts",
-    excerpt: "The reshoring movement is creating unprecedented opportunities for domestic manufacturers. Here's how to position your business to win.",
+    slug: "reshoring-success-capturing-american-manufacturing-renaissance",
+    title: "Reshoring Success: Capturing the American Manufacturing Renaissance",
+    excerpt: "The reshoring movement is accelerating. Here's how small manufacturers can position themselves to win contracts in the domestic manufacturing revival.",
     author: "KDM & Associates",
     date: "2026-01-14",
     category: "U.S. Manufacturing",
     tags: ["Reshoring", "Manufacturing", "Defense Contracts", "Supply Chain"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
     content: `The reshoring of American manufacturing isn't just a trend—it's a strategic imperative backed by hundreds of billions in federal investment. For small manufacturers, this represents the most significant opportunity in a generation to enter or expand in the defense contracting market. Understanding the reshoring landscape and positioning your business to capture these opportunities can transform your company's growth trajectory.
 
 ## The Reshoring Landscape in 2026: A Movement Accelerating
@@ -1204,6 +1209,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Manufacturing", "Documentation", "DoD", "Proof Pack", "Compliance"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&q=80",
     content: `In defense contracting, trust is built on documentation. Before any prime contractor or government buyer will award you a contract, they need proof—proof that you can deliver quality products, on time, within budget, and in compliance with all applicable regulations. This documentation package, known as a Manufacturing Proof Pack, is your most powerful tool for opening doors in the defense market.
 
 This comprehensive guide explains what a Proof Pack is, why it matters, and how to build one that demonstrates your readiness to defense buyers and accelerates your path to contract awards.
@@ -1486,6 +1492,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Digital Transformation", "Manufacturing", "Industry 4.0", "Defense"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
     content: `The defense industry is undergoing a digital revolution, and small manufacturers who don't keep pace risk being left behind. But digital transformation doesn't mean you need to spend millions on the latest technology. It means strategically implementing the specific digital capabilities that defense buyers actually require and value—capabilities that also improve your operational efficiency and competitiveness.
 
 This comprehensive guide explains what defense buyers are demanding, how to implement it cost-effectively, and why digital transformation is essential for accessing defense contracting opportunities.

@@ -37,26 +37,18 @@ interface EmailResponse {
 
 /**
  * Determine which email provider to use based on environment variables
- * Priority: Microsoft Graph API > OAuth SMTP > Basic Auth SMTP > SendGrid > Resend
+ * Priority: Microsoft Graph API > SendGrid > Resend
  */
 function getEmailProvider(): EmailProvider {
   // Microsoft Graph API (preferred for Office 365)
-  if (process.env.MS_GRAPH_CLIENT_ID && process.env.MS_GRAPH_CLIENT_SECRET && process.env.MS_GRAPH_TENANT_ID) {
+  if (process.env.AZURE_CLIENT_ID && process.env.AZURE_CLIENT_SECRET && process.env.AZURE_TENANT_ID) {
     return 'ms_graph';
-  }
-  // OAuth-based SMTP (Microsoft 365/Office 365 modern auth)
-  if (process.env.SMTP_CLIENT_ID && process.env.SMTP_CLIENT_SECRET && process.env.SMTP_TENANT_ID) {
-    return 'azure_smtp';
-  }
-  // Legacy basic auth SMTP (deprecated by Microsoft)
-  else if (process.env.AZURE_SMTP_HOST && process.env.AZURE_SMTP_USERNAME && process.env.AZURE_SMTP_PASSWORD) {
-    return 'azure_smtp';
   } else if (process.env.SENDGRID_API_KEY) {
     return 'sendgrid';
   } else if (process.env.RESEND_API_KEY) {
     return 'resend';
   }
-  throw new Error('No email service configured. Set MS_GRAPH_CLIENT_ID/MS_GRAPH_CLIENT_SECRET/MS_GRAPH_TENANT_ID for Graph API, SMTP OAuth credentials, AZURE_SMTP credentials, SENDGRID_API_KEY, or RESEND_API_KEY');
+  throw new Error('No email service configured. Set AZURE_CLIENT_ID/AZURE_CLIENT_SECRET/AZURE_TENANT_ID for Azure AD, SENDGRID_API_KEY, or RESEND_API_KEY');
 }
 
 /**
@@ -65,10 +57,10 @@ function getEmailProvider(): EmailProvider {
 function getDefaultFrom(): { email: string; name: string } {
   const provider = getEmailProvider();
   
-  if (provider === 'azure_smtp' || provider === 'ms_graph') {
+  if (provider === 'ms_graph') {
     return {
-      email: process.env.MS_GRAPH_SENDER_EMAIL || process.env.AZURE_SMTP_FROM_EMAIL || process.env.AZURE_SMTP_USERNAME || 'noreply@kdmassociates.com',
-      name: process.env.AZURE_SMTP_FROM_NAME || 'KDM Consortium',
+      email: process.env.SMTP_FROM_EMAIL || 'admin@kdm-assoc.com',
+      name: process.env.SMTP_FROM_NAME || 'KDM & Associates',
     };
   } else if (provider === 'sendgrid') {
     return {
@@ -87,9 +79,9 @@ function getDefaultFrom(): { email: string; name: string } {
  * Get Microsoft Graph API access token
  */
 async function getGraphAccessToken(): Promise<string | null> {
-  const clientId = process.env.MS_GRAPH_CLIENT_ID;
-  const clientSecret = process.env.MS_GRAPH_CLIENT_SECRET;
-  const tenantId = process.env.MS_GRAPH_TENANT_ID;
+  const clientId = process.env.AZURE_CLIENT_ID;
+  const clientSecret = process.env.AZURE_CLIENT_SECRET;
+  const tenantId = process.env.AZURE_TENANT_ID;
   
   if (!clientId || !clientSecret || !tenantId) {
     return null;
@@ -132,12 +124,12 @@ async function sendWithMicrosoftGraph(params: EmailParams): Promise<EmailRespons
     if (!accessToken) {
       return {
         success: false,
-        error: 'Microsoft Graph credentials not configured. Set MS_GRAPH_CLIENT_ID, MS_GRAPH_CLIENT_SECRET, and MS_GRAPH_TENANT_ID.',
+        error: 'Microsoft Graph credentials not configured. Set AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, and AZURE_TENANT_ID.',
       };
     }
 
     const from = params.from || getDefaultFrom();
-    const senderEmail = process.env.MS_GRAPH_SENDER_EMAIL || from.email;
+    const senderEmail = process.env.SMTP_FROM_EMAIL || from.email;
     
     // Build recipients
     const toRecipients = Array.isArray(params.to) 

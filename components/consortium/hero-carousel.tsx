@@ -102,6 +102,7 @@ export function HeroCarousel() {
               width={180}
               height={180}
               className="mx-auto mb-6"
+              style={{ width: 'auto', height: 'auto' }}
               priority
             />
           </div>

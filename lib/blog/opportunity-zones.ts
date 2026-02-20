@@ -10,6 +10,7 @@ export const opportunityZonesPosts: BlogPost[] = [
     category: "Opportunity Zones",
     tags: ["Opportunity Zones", "Manufacturing", "Tax Incentives", "Investment"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
     content: `Opportunity Zones (OZs) were created by the Tax Cuts and Jobs Act of 2017 to spur economic development in distressed communities through tax incentives for private investment. For manufacturers—especially those pursuing defense contracts—OZs offer a powerful combination of tax benefits and strategic positioning that can significantly reduce the cost of expansion and new facility development.
 
 ## Understanding Opportunity Zones
@@ -162,6 +163,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Caribbean", "Africa", "Opportunity Zones", "Diaspora", "Investment"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?w=800&q=80",
     content: `The concept of the Caribbean as the "6th Region of Africa" reflects the deep historical, cultural, and economic connections between the Caribbean and the African continent. These connections, combined with Opportunity Zone designations in U.S. territories like Puerto Rico and the U.S. Virgin Islands, create unique investment strategies that bridge diaspora communities, economic development, and federal incentives.
 
 ## The 6th Region Concept
@@ -313,6 +315,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["IAEOZ", "Summit", "Investment", "Opportunity Zones", "Networking"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80",
     content: `The International Association of Economic Opportunity Zones (IAEOZ) Summit has become the premier gathering for Opportunity Zone investors, project developers, community leaders, and policymakers. For businesses seeking OZ investment or investors looking for high-impact projects, the Summit is an essential event.
 
 ## What Is the IAEOZ Summit?
@@ -464,6 +467,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Opportunity Zones", "Defense Manufacturing", "Investment", "Strategy"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
     content: `The convergence of Opportunity Zone tax incentives and the defense manufacturing reshoring trend creates one of the most compelling investment strategies of 2026. By locating defense manufacturing facilities in designated Opportunity Zones, investors and manufacturers can achieve significant tax savings while contributing to national security and community economic development.
 
 ## The Investment Thesis
@@ -634,6 +638,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Puerto Rico", "Opportunity Zones", "Manufacturing", "Defense", "Act 60"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
     content: `Puerto Rico presents a unique proposition for manufacturers and defense contractors: 863 designated Opportunity Zones combined with the island's own Act 60 tax incentives create what may be the most favorable tax environment for manufacturing investment anywhere in the United States. Add in an existing manufacturing infrastructure, skilled bilingual workforce, and strategic Caribbean location, and the case becomes compelling.
 
 ## Puerto Rico's OZ Advantage
@@ -786,6 +791,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Federal Contracts", "Opportunity Zones", "Tax Strategy", "Business Growth"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=800&q=80",
     content: `Federal contracts provide stable, long-term revenue. Opportunity Zones provide powerful tax incentives. Combining the two creates a business strategy that maximizes both income and tax efficiency. This guide shows you how to structure this powerful combination.
 
 ## The Synergy: Federal Contracts + Opportunity Zones

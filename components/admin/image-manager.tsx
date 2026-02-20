@@ -514,6 +514,11 @@ function ImageCard({ image, onUpdate }: ImageCardProps) {
             <Badge variant="outline" className="text-xs">
               {(image.size / 1024).toFixed(0)} KB
             </Badge>
+            {image.tags?.includes("used") && (
+              <Badge variant="default" className="text-xs bg-amber-500 hover:bg-amber-600">
+                Used
+              </Badge>
+            )}
           </div>
 
           {image.tags && image.tags.length > 0 && (
@@ -528,17 +533,38 @@ function ImageCard({ image, onUpdate }: ImageCardProps) {
 
           <div className="flex gap-2">
             <Button
+              variant={image.tags?.includes("used") ? "default" : "outline"}
+              size="sm"
+              className={`flex-1 ${image.tags?.includes("used") ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+              onClick={async () => {
+                const newTags = image.tags?.includes("used")
+                  ? image.tags.filter((t) => t !== "used")
+                  : [...(image.tags || []), "used"];
+                try {
+                  const success = await updateImageMetadata(image.id, {
+                    tags: newTags,
+                  });
+                  if (success) {
+                    toast.success(image.tags?.includes("used") ? "Marked as unused" : "Marked as used");
+                    onUpdate();
+                  }
+                } catch (error) {
+                  toast.error("Failed to update");
+                }
+              }}
+            >
+              {image.tags?.includes("used") ? "Used" : "Mark Used"}
+            </Button>
+            <Button
               variant="outline"
               size="sm"
-              className="flex-1"
               onClick={handleCopyId}
             >
               {copiedId ? (
-                <Check className="h-3 w-3 mr-1" />
+                <Check className="h-3 w-3" />
               ) : (
-                <Copy className="h-3 w-3 mr-1" />
+                <Copy className="h-3 w-3" />
               )}
-              ID
             </Button>
             <Button
               variant="outline"

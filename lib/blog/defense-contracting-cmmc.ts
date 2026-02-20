@@ -10,6 +10,7 @@ export const defenseContractingCmmcPosts: BlogPost[] = [
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Certification", "Defense Contracts", "Cybersecurity"],
     readTime: 11,
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
     content: `CMMC certification is now a mandatory requirement for defense contractors handling Federal Contract Information (FCI) and Controlled Unclassified Information (CUI). The good news? With focused effort and the right guidance, many small businesses can achieve Level 1 certification in as little as 12 weeks. This comprehensive guide provides your accelerated roadmap to CMMC compliance and defense contracting eligibility.
 
 ## Understanding the CMMC Timeline and Implementation Phases
@@ -273,6 +274,7 @@ Whether you're a **small business seeking CMMC certification**, a **government b
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Certification", "Compliance", "Cybersecurity"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
     content: `One of the most common questions from businesses entering the defense market is: "Which CMMC level do I need?" The answer depends on the type of information you'll handle and the contracts you're pursuing. This comprehensive guide breaks down the differences between CMMC Level 1 and Level 2, helping you make the right choice for your business.
 
 ## CMMC Overview: Understanding the Framework
@@ -510,6 +512,7 @@ Whether you're a **small business evaluating CMMC requirements**, a **government
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Checklist", "Defense Contractors", "Compliance"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
     content: `Preparing for CMMC certification can feel overwhelming, especially for small businesses without dedicated IT security staff. This comprehensive checklist breaks the process into manageable steps, organized by phase, so you can track your progress and ensure nothing falls through the cracks.
 
 ## Phase 1: Foundation and Planning
@@ -730,6 +733,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Defense Industrial Base", "Contracts", "Opportunity"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
     content: `The Defense Industrial Base (DIB) represents one of the largest and most stable markets in the world. With annual spending exceeding $400 billion, the DoD is the world's largest buyer of goods and services. CMMC certification is rapidly becoming the key that unlocks this market.
 
 ## The DIB Market Opportunity
@@ -836,6 +840,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Cybersecurity", "Revenue", "Business Growth"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
     content: `Most businesses view CMMC certification as a cost of doing business—a necessary expense to maintain or win defense contracts. But forward-thinking companies are discovering that CMMC certification can actually be a revenue generator, opening doors to new markets, customers, and service offerings.
 
 ## New Revenue Streams from CMMC
@@ -946,6 +951,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["DFARS", "Compliance", "Defense Contracting", "Small Business"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
     content: `The Defense Federal Acquisition Regulation Supplement (DFARS) is the set of rules that governs DoD procurement. For small businesses entering the defense market, understanding key DFARS clauses is essential. This guide covers the most important requirements and how to comply with them.
 
 ## What Is DFARS?
@@ -1093,6 +1099,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["Defense Contracting", "Timeline", "Process", "Small Business"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80",
     content: `Winning a defense contract is a process, not an event. From initial registration to contract award, the journey typically takes 6-18 months for first-time contractors. Understanding the timeline helps you plan resources, set expectations, and avoid common delays.
 
 ## The Complete Timeline
@@ -1268,6 +1275,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["Prime Contractors", "Partnerships", "Defense", "Small Business"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     content: `For most small businesses, the path into defense contracting runs through prime contractors. Companies like Boeing, Lockheed Martin, Raytheon, Northrop Grumman, and General Dynamics manage the largest defense programs and rely on thousands of small business subcontractors. Building relationships with these primes is the most effective strategy for entering the defense market.
 
 ## Why Prime Contractors Need Small Businesses
@@ -1414,6 +1422,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["SAM.gov", "Registration", "Federal Contracts", "Getting Started"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80",
     content: `Every journey into federal contracting begins with SAM.gov registration. The System for Award Management is the federal government's official database of vendors, and no agency can award you a contract without it. While the process is free, it can be confusing for first-timers. This guide walks you through every step.
 
 ## What Is SAM.gov?

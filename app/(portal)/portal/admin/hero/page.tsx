@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,23 +14,30 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Plus,
   Pencil,
   Trash2,
-  GripVertical,
-  Eye,
-  EyeOff,
   ChevronRight,
   ChevronLeft,
   Check,
   ArrowUp,
   ArrowDown,
+  Eye,
+  EyeOff,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { HeroSlide } from "@/components/marketing/hero-carousel";
+import {
+  getHeroSlides,
+  saveHeroSlide,
+  deleteHeroSlide,
+  reorderHeroSlides,
+} from "@/lib/firebase-hero";
+import { ImageField } from "@/components/ui/image-field";
+import { toast } from "sonner";
 
 // Mock data - in production this would come from a database
 const initialSlides: HeroSlide[] = [
@@ -136,7 +143,9 @@ const wizardSteps = [
   { id: 1, title: "Basic Info", description: "Badge and headline" },
   { id: 2, title: "Content", description: "Subheadline and benefits" },
   { id: 3, title: "Actions", description: "Call-to-action buttons" },
-  { id: 4, title: "Review", description: "Preview and publish" },
+  { id: 4, title: "Background", description: "Background type and image" },
+  { id: 5, title: "Styling", description: "Overlay and ribbon" },
+  { id: 6, title: "Review", description: "Preview and publish" },
 ];
 
 interface SlideFormData {
@@ -150,6 +159,15 @@ interface SlideFormData {
   secondaryCtaText: string;
   secondaryCtaHref: string;
   isPublished: boolean;
+  fullScreenBg: boolean;
+  showRibbon: boolean;
+  ribbonColor: "light" | "dark";
+  backgroundType: "animated" | "image";
+  backgroundImage: string;
+  backgroundOverlay: boolean;
+  backgroundOverlayOpacity: number;
+  showWaves: boolean;
+  highlightOnSecondLine: boolean;
 }
 
 const emptyFormData: SlideFormData = {
@@ -163,14 +181,54 @@ const emptyFormData: SlideFormData = {
   secondaryCtaText: "",
   secondaryCtaHref: "",
   isPublished: false,
+  fullScreenBg: true,
+  showRibbon: true,
+  ribbonColor: "dark",
+  backgroundType: "animated",
+  backgroundImage: "",
+  backgroundOverlay: true,
+  backgroundOverlayOpacity: 40,
+  showWaves: false,
+  highlightOnSecondLine: false,
 };
 
 export default function HeroManagementPage() {
-  const [slides, setSlides] = useState<HeroSlide[]>(initialSlides);
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [wizardStep, setWizardStep] = useState(1);
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [formData, setFormData] = useState<SlideFormData>(emptyFormData);
+  const [showImageManager, setShowImageManager] = useState(false);
+
+  // Load slides from Firebase on mount
+  useEffect(() => {
+    loadSlidesFromFirebase();
+  }, []);
+
+  const loadSlidesFromFirebase = async () => {
+    try {
+      setIsLoading(true);
+      const firebaseSlides = await getHeroSlides();
+      // If no slides in Firebase, use initial data
+      if (firebaseSlides.length === 0) {
+        // Seed initial slides to Firebase
+        for (const slide of initialSlides) {
+          await saveHeroSlide(slide);
+        }
+        setSlides(initialSlides);
+      } else {
+        setSlides(firebaseSlides);
+      }
+    } catch (error) {
+      console.error("Failed to load slides from Firebase:", error);
+      toast.error("Failed to load slides. Using default data.");
+      setSlides(initialSlides);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const openWizard = (slide?: HeroSlide) => {
     if (slide) {
@@ -186,6 +244,15 @@ export default function HeroManagementPage() {
         secondaryCtaText: slide.secondaryCta.text,
         secondaryCtaHref: slide.secondaryCta.href,
         isPublished: slide.isPublished,
+        fullScreenBg: slide.fullScreenBg ?? true,
+        showRibbon: slide.showRibbon ?? true,
+        ribbonColor: slide.ribbonColor ?? "dark",
+        backgroundType: slide.backgroundType ?? "animated",
+        backgroundImage: slide.backgroundImage ?? "",
+        backgroundOverlay: slide.backgroundOverlay ?? true,
+        backgroundOverlayOpacity: slide.backgroundOverlayOpacity ?? 40,
+        showWaves: slide.showWaves ?? false,
+        highlightOnSecondLine: slide.highlightOnSecondLine ?? false,
       });
     } else {
       setEditingSlide(null);
@@ -202,37 +269,77 @@ export default function HeroManagementPage() {
     setWizardStep(1);
   };
 
-  const handleSave = () => {
-    const newSlide: HeroSlide = {
-      id: editingSlide?.id || Date.now().toString(),
-      badge: formData.badge,
-      headline: formData.headline,
-      highlightedText: formData.highlightedText,
-      subheadline: formData.subheadline,
-      benefits: formData.benefits.filter(b => b.trim() !== ""),
-      primaryCta: { text: formData.primaryCtaText, href: formData.primaryCtaHref },
-      secondaryCta: { text: formData.secondaryCtaText, href: formData.secondaryCtaHref },
-      isPublished: formData.isPublished,
-      order: editingSlide?.order || slides.length + 1,
-    };
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const newSlide: HeroSlide = {
+        id: editingSlide?.id || Date.now().toString(),
+        badge: formData.badge,
+        headline: formData.headline,
+        highlightedText: formData.highlightedText,
+        subheadline: formData.subheadline,
+        benefits: formData.benefits.filter(b => b.trim() !== ""),
+        primaryCta: { text: formData.primaryCtaText, href: formData.primaryCtaHref },
+        secondaryCta: { text: formData.secondaryCtaText, href: formData.secondaryCtaHref },
+        isPublished: formData.isPublished,
+        order: editingSlide?.order || slides.length + 1,
+        fullScreenBg: formData.fullScreenBg,
+        showRibbon: formData.showRibbon,
+        ribbonColor: formData.ribbonColor,
+        backgroundType: formData.backgroundType,
+        backgroundImage: formData.backgroundImage,
+        backgroundOverlay: formData.backgroundOverlay,
+        showWaves: formData.showWaves,
+        highlightOnSecondLine: formData.highlightOnSecondLine,
+      };
 
-    if (editingSlide) {
-      setSlides(slides.map(s => s.id === editingSlide.id ? newSlide : s));
-    } else {
-      setSlides([...slides, newSlide]);
+      await saveHeroSlide(newSlide);
+
+      if (editingSlide) {
+        setSlides(slides.map(s => s.id === editingSlide.id ? newSlide : s));
+      } else {
+        setSlides([...slides, newSlide]);
+      }
+      toast.success(editingSlide ? "Slide updated" : "Slide created");
+      closeWizard();
+    } catch (error) {
+      console.error("Failed to save slide:", error);
+      toast.error("Failed to save slide");
+    } finally {
+      setIsSaving(false);
     }
-    closeWizard();
   };
 
-  const handleDelete = (id: string) => {
-    setSlides(slides.filter(s => s.id !== id));
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this slide?")) return;
+    
+    try {
+      await deleteHeroSlide(id);
+      setSlides(slides.filter(s => s.id !== id));
+      toast.success("Slide deleted");
+    } catch (error) {
+      console.error("Failed to delete slide:", error);
+      toast.error("Failed to delete slide");
+    }
   };
 
-  const togglePublish = (id: string) => {
-    setSlides(slides.map(s => s.id === id ? { ...s, isPublished: !s.isPublished } : s));
+  const togglePublish = async (id: string) => {
+    const slide = slides.find(s => s.id === id);
+    if (!slide) return;
+
+    const updatedSlide = { ...slide, isPublished: !slide.isPublished };
+    
+    try {
+      await saveHeroSlide(updatedSlide);
+      setSlides(slides.map(s => s.id === id ? updatedSlide : s));
+      toast.success(updatedSlide.isPublished ? "Slide published" : "Slide unpublished");
+    } catch (error) {
+      console.error("Failed to update slide:", error);
+      toast.error("Failed to update slide");
+    }
   };
 
-  const moveSlide = (id: string, direction: "up" | "down") => {
+  const moveSlide = async (id: string, direction: "up" | "down") => {
     const index = slides.findIndex(s => s.id === id);
     if (
       (direction === "up" && index === 0) ||
@@ -249,6 +356,14 @@ export default function HeroManagementPage() {
     });
     
     setSlides(newSlides);
+
+    // Save to Firebase
+    try {
+      await reorderHeroSlides(newSlides);
+    } catch (error) {
+      console.error("Failed to reorder slides:", error);
+      toast.error("Failed to save order");
+    }
   };
 
   const updateBenefit = (index: number, value: string) => {
@@ -280,7 +395,7 @@ export default function HeroManagementPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Slides</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{slides.length}</div>
+            <div className="text-2xl font-bold">{isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : slides.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -289,7 +404,7 @@ export default function HeroManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {slides.filter(s => s.isPublished).length}
+              {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : slides.filter(s => s.isPublished).length}
             </div>
           </CardContent>
         </Card>
@@ -299,7 +414,7 @@ export default function HeroManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">
-              {slides.filter(s => !s.isPublished).length}
+              {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : slides.filter(s => !s.isPublished).length}
             </div>
           </CardContent>
         </Card>
@@ -394,7 +509,10 @@ export default function HeroManagementPage() {
 
       {/* Wizard Dialog */}
       <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent 
+          className="sm:max-w-[600px] p-6"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>
               {editingSlide ? "Edit Hero Slide" : "Create New Hero Slide"}
@@ -433,34 +551,57 @@ export default function HeroManagementPage() {
           </div>
 
           {/* Step Content */}
-          <div className="space-y-4 min-h-[300px]">
+          <div className="space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto overflow-x-hidden px-2 w-full">
             {wizardStep === 1 && (
               <>
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-full min-w-0">
                   <Label htmlFor="badge">Badge Text</Label>
-                  <Input
-                    id="badge"
-                    placeholder="e.g., Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence"
-                    value={formData.badge}
-                    onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                  />
+                  <div className="w-full overflow-hidden" style={{ maxWidth: '100%' }}>
+                    <Input
+                      id="badge"
+                      placeholder="e.g., Introducing EDGE-X™"
+                      value={formData.badge}
+                      onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                      className="w-full box-border"
+                      style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-full min-w-0">
                   <Label htmlFor="headline">Headline</Label>
-                  <Input
-                    id="headline"
-                    placeholder="e.g., Win OEM Contracts."
-                    value={formData.headline}
-                    onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
-                  />
+                  <div className="w-full overflow-hidden" style={{ maxWidth: '100%' }}>
+                    <Input
+                      id="headline"
+                      placeholder="e.g., Win OEM Contracts."
+                      value={formData.headline}
+                      onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+                      className="w-full box-border"
+                      style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-full min-w-0">
                   <Label htmlFor="highlightedText">Highlighted Text (shown in green)</Label>
-                  <Input
-                    id="highlightedText"
-                    placeholder="e.g., Transform"
-                    value={formData.highlightedText}
-                    onChange={(e) => setFormData({ ...formData, highlightedText: e.target.value })}
+                  <div className="w-full overflow-hidden" style={{ maxWidth: '100%' }}>
+                    <Input
+                      id="highlightedText"
+                      placeholder="e.g., Transform"
+                      value={formData.highlightedText}
+                      onChange={(e) => setFormData({ ...formData, highlightedText: e.target.value })}
+                      className="w-full box-border"
+                      style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <Label htmlFor="highlightOnSecondLine" className="text-sm font-medium">Highlighted on Second Line</Label>
+                    <p className="text-xs text-muted-foreground">Put highlighted text on its own line</p>
+                  </div>
+                  <Switch
+                    id="highlightOnSecondLine"
+                    checked={formData.highlightOnSecondLine}
+                    onCheckedChange={(checked) => setFormData({ ...formData, highlightOnSecondLine: checked })}
                   />
                 </div>
               </>
@@ -476,6 +617,7 @@ export default function HeroManagementPage() {
                     value={formData.subheadline}
                     onChange={(e) => setFormData({ ...formData, subheadline: e.target.value })}
                     rows={3}
+                    className="w-full resize-none"
                   />
                 </div>
                 <div className="space-y-2">
@@ -486,6 +628,7 @@ export default function HeroManagementPage() {
                       placeholder={`Benefit ${index + 1}`}
                       value={benefit}
                       onChange={(e) => updateBenefit(index, e.target.value)}
+                      className="w-full"
                     />
                   ))}
                 </div>
@@ -496,7 +639,7 @@ export default function HeroManagementPage() {
               <>
                 <div className="space-y-4">
                   <h4 className="font-medium">Primary Call-to-Action</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="primaryCtaText">Button Text</Label>
                       <Input
@@ -504,6 +647,7 @@ export default function HeroManagementPage() {
                         placeholder="e.g., Get Your Free Assessment"
                         value={formData.primaryCtaText}
                         onChange={(e) => setFormData({ ...formData, primaryCtaText: e.target.value })}
+                        className="w-full"
                       />
                     </div>
                     <div className="space-y-2">
@@ -513,13 +657,14 @@ export default function HeroManagementPage() {
                         placeholder="e.g., /contact"
                         value={formData.primaryCtaHref}
                         onChange={(e) => setFormData({ ...formData, primaryCtaHref: e.target.value })}
+                        className="w-full"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <h4 className="font-medium">Secondary Call-to-Action</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="secondaryCtaText">Button Text</Label>
                       <Input
@@ -527,6 +672,7 @@ export default function HeroManagementPage() {
                         placeholder="e.g., See Success Stories"
                         value={formData.secondaryCtaText}
                         onChange={(e) => setFormData({ ...formData, secondaryCtaText: e.target.value })}
+                        className="w-full"
                       />
                     </div>
                     <div className="space-y-2">
@@ -536,6 +682,7 @@ export default function HeroManagementPage() {
                         placeholder="e.g., /case-studies"
                         value={formData.secondaryCtaHref}
                         onChange={(e) => setFormData({ ...formData, secondaryCtaHref: e.target.value })}
+                        className="w-full"
                       />
                     </div>
                   </div>
@@ -544,24 +691,242 @@ export default function HeroManagementPage() {
             )}
 
             {wizardStep === 4 && (
+              <div className="space-y-5">
+                <div className="space-y-3">
+                  <h4 className="font-medium text-lg">Background Type</h4>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, backgroundType: "animated" })}
+                      className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                        formData.backgroundType === "animated"
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <div className="h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded mb-2 flex items-center justify-center">
+                        <span className="text-xl">✨</span>
+                      </div>
+                      <span className="font-medium text-sm">Animated</span>
+                      <p className="text-xs text-muted-foreground">Floating particles</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, backgroundType: "image" })}
+                      className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                        formData.backgroundType === "image"
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <div className="h-12 bg-muted rounded mb-2 flex items-center justify-center">
+                        <span className="text-xl">🖼️</span>
+                      </div>
+                      <span className="font-medium text-sm">Custom Image</span>
+                      <p className="text-xs text-muted-foreground">Upload your own</p>
+                    </button>
+                  </div>
+                </div>
+
+                {formData.backgroundType === "image" && (
+                  <div className="space-y-3">
+                    <h4 className="font-medium">Background Image</h4>
+                    <div className="p-3 border rounded-lg space-y-3">
+                      {formData.backgroundImage ? (
+                        <div className="relative">
+                          <img
+                            src={formData.backgroundImage}
+                            alt="Background preview"
+                            className="w-full h-24 object-cover rounded-lg"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={() => setFormData({ ...formData, backgroundImage: "" })}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <ImageField
+                          imageId={formData.backgroundImage}
+                          onChange={(imageId, imageUrl) => setFormData({ ...formData, backgroundImage: imageUrl })}
+                          category="hero"
+                          label="Background Image"
+                        />
+                      )}
+
+                      <div className="flex items-center justify-between p-2 border rounded-lg">
+                        <div>
+                          <Label htmlFor="fullScreenBg" className="text-sm font-medium">Full Screen</Label>
+                          <p className="text-xs text-muted-foreground">Enable full-screen display</p>
+                        </div>
+                        <Switch
+                          id="fullScreenBg"
+                          checked={formData.fullScreenBg}
+                          onCheckedChange={(checked) => setFormData({ ...formData, fullScreenBg: checked })}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between p-2 border rounded-lg">
+                        <div>
+                          <Label htmlFor="showWaves" className="text-sm font-medium">Show Waves</Label>
+                          <p className="text-xs text-muted-foreground">Enable animated wave background</p>
+                        </div>
+                        <Switch
+                          id="showWaves"
+                          checked={formData.showWaves}
+                          onCheckedChange={(checked) => setFormData({ ...formData, showWaves: checked })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {wizardStep === 5 && (
+              <div className="space-y-5">
+                <div className="space-y-3">
+                  <h4 className="font-medium text-lg">Text Visibility</h4>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <Label htmlFor="showRibbon" className="text-sm font-medium">Show Ribbon</Label>
+                      <p className="text-xs text-muted-foreground">Better text visibility</p>
+                    </div>
+                    <Switch
+                      id="showRibbon"
+                      checked={formData.showRibbon}
+                      onCheckedChange={(checked) => setFormData({ ...formData, showRibbon: checked })}
+                    />
+                  </div>
+
+                  {formData.showRibbon && (
+                    <div className="p-3 border rounded-lg space-y-2">
+                      <Label className="text-sm">Ribbon Color</Label>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, ribbonColor: "dark" })}
+                          className={`flex-1 p-2 rounded-lg border-2 transition-all ${
+                            formData.ribbonColor === "dark"
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <div className="h-6 bg-slate-900 rounded mb-1" />
+                          <span className="text-xs font-medium">Dark</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, ribbonColor: "light" })}
+                          className={`flex-1 p-2 rounded-lg border-2 transition-all ${
+                            formData.ribbonColor === "light"
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <div className="h-6 bg-slate-100 rounded mb-1" />
+                          <span className="text-xs font-medium">Light</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {formData.backgroundType === "image" && (
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-lg">Overlay</h4>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <Label htmlFor="backgroundOverlay" className="text-sm font-medium">Dark Overlay</Label>
+                        <p className="text-xs text-muted-foreground">Better text readability</p>
+                      </div>
+                      <Switch
+                        id="backgroundOverlay"
+                        checked={formData.backgroundOverlay}
+                        onCheckedChange={(checked) => setFormData({ ...formData, backgroundOverlay: checked })}
+                      />
+                    </div>
+
+                    {formData.backgroundOverlay && (
+                      <div className="space-y-2 p-3 border rounded-lg">
+                        <div className="flex justify-between">
+                          <Label htmlFor="overlayOpacity" className="text-sm">Opacity</Label>
+                          <span className="text-sm text-muted-foreground">{formData.backgroundOverlayOpacity}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          id="overlayOpacity"
+                          min="0"
+                          max="100"
+                          value={formData.backgroundOverlayOpacity}
+                          onChange={(e) => setFormData({ ...formData, backgroundOverlayOpacity: parseInt(e.target.value) })}
+                          className="w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {wizardStep === 6 && (
               <div className="space-y-4">
-                <div className="p-4 bg-black text-white rounded-lg">
-                  <Badge variant="outline" className="mb-2 border-primary/50 text-primary">
-                    {formData.badge || "Badge text"}
-                  </Badge>
-                  <h2 className="text-2xl font-bold">
-                    {formData.headline || "Headline"}{" "}
-                    <span className="text-primary">{formData.highlightedText || "Highlighted"}</span> Your Manufacturing.
-                  </h2>
-                  <p className="mt-2 text-gray-300 text-sm">
-                    {formData.subheadline || "Subheadline text"}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {formData.benefits.filter(b => b).map((benefit, i) => (
-                      <Badge key={i} variant="secondary" className="text-xs">
-                        {benefit}
-                      </Badge>
-                    ))}
+                <div 
+                  className="relative p-4 rounded-lg overflow-hidden min-h-[200px]"
+                  style={{
+                    backgroundImage: formData.backgroundType === "image" && formData.backgroundImage 
+                      ? `url(${formData.backgroundImage})` 
+                      : undefined,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundColor: formData.backgroundType === "image" && formData.backgroundImage ? undefined : '#000',
+                  }}
+                >
+                  {/* Background Overlay */}
+                  {formData.backgroundType === "image" && formData.backgroundOverlay && (
+                    <div 
+                      className="absolute inset-0 bg-black"
+                      style={{ opacity: formData.backgroundOverlayOpacity / 100 }}
+                    />
+                  )}
+                  
+                  {/* Text Ribbon */}
+                  {formData.showRibbon && (
+                    <div 
+                      className={`absolute inset-0 ${formData.ribbonColor === "dark" ? "bg-slate-900/80" : "bg-slate-100/80"}`}
+                    />
+                  )}
+                  
+                  {/* Content */}
+                  <div className={`relative z-10 ${formData.showRibbon ? (formData.ribbonColor === "dark" ? "text-white" : "text-slate-900") : "text-white"}`}>
+                    <Badge variant="outline" className={`mb-2 border-primary/50 ${formData.showRibbon && formData.ribbonColor === "light" ? "text-primary" : "text-primary"}`}>
+                      {formData.badge || "Badge text"}
+                    </Badge>
+                    <h2 className={cn(
+                      "text-2xl font-bold",
+                      formData.highlightOnSecondLine && "flex flex-col items-center"
+                    )}>
+                      {formData.headline || "Headline"}
+                      {formData.highlightOnSecondLine ? (
+                        <span className="text-primary">{formData.highlightedText || "Highlighted"}</span>
+                      ) : (
+                        <> <span className="text-primary">{formData.highlightedText || "Highlighted"}</span></>
+                      )}
+                    </h2>
+                    <p className="mt-2 text-sm opacity-90">
+                      {formData.subheadline || "Subheadline text"}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {formData.benefits.filter(b => b).map((benefit, i) => (
+                        <Badge key={i} variant="secondary" className="text-xs">
+                          {benefit}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -590,14 +955,18 @@ export default function HeroManagementPage() {
               <ChevronLeft className="mr-2 h-4 w-4" />
               {wizardStep === 1 ? "Cancel" : "Back"}
             </Button>
-            {wizardStep < 4 ? (
+            {wizardStep < 6 ? (
               <Button onClick={() => setWizardStep(wizardStep + 1)}>
                 Next
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleSave}>
-                <Check className="mr-2 h-4 w-4" />
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="mr-2 h-4 w-4" />
+                )}
                 {editingSlide ? "Save Changes" : "Create Slide"}
               </Button>
             )}

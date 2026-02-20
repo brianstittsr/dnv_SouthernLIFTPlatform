@@ -67,6 +67,7 @@ import {
 import { db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeamMemberAdded, logActivity } from "@/lib/activity-logger";
+import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
 import Link from "next/link";
 
 // Seed data for Team Members
@@ -843,6 +844,9 @@ export default function TeamMembersPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* KDM Team Sync */}
+      <KdmTeamSync />
 
       {/* Filters and View Toggle */}
       <Card>

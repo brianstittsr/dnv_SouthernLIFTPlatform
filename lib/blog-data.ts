@@ -14,7 +14,8 @@ export interface BlogArticle {
   publishedDate: Date;
   category: 'News/Media' | 'Events' | 'What Works' | 'Press Releases' | 'Jobs' | 'Spotlights' | 'Newsletter';
   tags: string[];
-  featuredImage: string;
+  featuredImage?: string;
+  imageUrl?: string;
   location?: {
     city: string;
     state?: string;
@@ -37,7 +38,7 @@ export const blogArticles: BlogArticle[] = [
     publishedDate: new Date('2025-09-15'),
     category: 'News/Media',
     tags: ['Puerto Rico', 'Agriculture', 'Innovation', 'Sustainability', 'Economic Development'],
-    featuredImage: '/images/blog/puerto-rico-agriculture.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=800&q=80',
     location: {
       city: 'San Juan',
       state: 'PR',
@@ -223,7 +224,7 @@ The question is not whether Puerto Rico's agricultural sector will transform, bu
     publishedDate: new Date('2025-09-20'),
     category: 'News/Media',
     tags: ['Puerto Rico', 'Federal Contracting', 'Security', 'Infrastructure', 'Economic Development'],
-    featuredImage: '/images/blog/puerto-rico-federal-opportunities.jpg',
+    featuredImage: 'https://images.unsplash.com/photo-1557597774-04d58c73797b?w=800&q=80',
     location: {
       city: 'San Juan',
       state: 'PR',
@@ -463,7 +464,7 @@ The question is not whether your business can afford to pursue these opportuniti
     publishedDate: new Date('2025-09-25'),
     category: 'News/Media',
     tags: ['Manufacturing', 'Sustainability', 'Innovation', 'Green Technology', 'Economic Development'],
-    featuredImage: '/images/blog/us-manufacturing-environmental.jpg',
+    featuredImage: 'https://images.unsplash.com/photo-1565514020176-db9226f48c20?w=800&q=80',
     location: {
       city: 'Washington',
       state: 'DC',

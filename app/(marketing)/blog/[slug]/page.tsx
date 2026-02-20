@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -121,6 +122,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Blog
             </Link>
+
+            {post.imageUrl && (
+              <div className="relative aspect-video w-full mb-8 rounded-lg overflow-hidden">
+                <Image
+                  src={post.imageUrl}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  priority
+                />
+              </div>
+            )}
 
             <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
               {post.category}

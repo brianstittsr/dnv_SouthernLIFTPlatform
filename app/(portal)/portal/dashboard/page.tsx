@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ProofPackOnboardingWizard, useProofPackOnboarding } from "@/components/portal/proof-pack-onboarding-wizard";
 import {
   FileText,
   Users,
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showOnboarding, setShowOnboarding } = useProofPackOnboarding();
   const [stats, setStats] = useState<DashboardStats>({
     proofPacksCount: 0,
     activeLeadsCount: 0,
@@ -114,6 +116,12 @@ export default function DashboardPage() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
+      {/* Proof Pack Onboarding Wizard */}
+      <ProofPackOnboardingWizard
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+      />
 
       {/* Profile Completeness Alert */}
       {stats.profileCompleteness < 100 && (

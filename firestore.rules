@@ -10,8 +10,16 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (request.auth.token.role == 'admin' ||
+         request.auth.token.svpRole == 'platform_admin' ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.svpRole == 'platform_admin');
+    }
+    
+    function isAdminSimple() {
+      return isAuthenticated() && 
+        (request.auth.token.role == 'admin' ||
+         request.auth.token.svpRole == 'platform_admin');
     }
     
     function isInstructor() {
@@ -214,15 +222,15 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // Header/Footer configs
+    // Header/Footer configs - public read for site navigation
     match /header_configs/{configId} {
-      allow read: if true; // Public read for site navigation
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
     }
     
     match /footer_configs/{configId} {
-      allow read: if true; // Public read for site footer
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
     }
     
     // Email queue (server-side only)
@@ -301,6 +309,24 @@ service cloud.firestore {
     // Revenue sharing config - global configuration
     match /revenueSharingConfig/{configId} {
       allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== HERO CAROUSEL & IMAGES ====================
+    // Hero slides - public read and write for testing
+    match /hero_slides/{slideId} {
+      allow read, write: if true;
+    }
+    
+    // Consortium hero slides - public read for marketing page
+    match /consortiumHeroSlides/{slideId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Images - public read for display, admin write
+    match /images/{imageId} {
+      allow read: if true; // Public read for images
       allow create, update, delete: if isAdmin();
     }
     

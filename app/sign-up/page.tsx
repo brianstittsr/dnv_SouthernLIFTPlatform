@@ -231,18 +231,18 @@ export default function SignUpPage() {
                       <div className="flex items-center gap-2">
                         <Landmark className="h-5 w-5 text-[#C8A951]" />
                         <Label htmlFor="buyer" className="text-lg font-semibold cursor-pointer">
-                          Buyer / Government
+                          Buyers : Government / Prime / OEM
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Government agencies and buyers looking to procure products and services from qualified suppliers. 
-                        Access our network of CMMC-ready SMEs and manage your procurement processes.
+                        Government agencies, prime contractors, and OEMs looking to procure products and services from qualified suppliers. 
+                        Access our network of CMMC-ready SMEs, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Post opportunities and RFPs</li>
-                        <li>• Find qualified suppliers</li>
+                        <li>• Post opportunities and RFPs for government and manufacturing contracts</li>
+                        <li>• Find qualified suppliers and subcontractors</li>
                         <li>• Manage procurement processes</li>
-                        <li>• Access CMMC compliance tools</li>
+                        <li>• Access CMMC compliance and manufacturing readiness tools</li>
                       </ul>
                     </div>
                   </div>
@@ -260,18 +260,18 @@ export default function SignUpPage() {
                       <div className="flex items-center gap-2">
                         <Factory className="h-5 w-5 text-[#C8A951]" />
                         <Label htmlFor="client" className="text-lg font-semibold cursor-pointer">
-                          Client (Customer/Supplier)
+                          Suppliers: Gov't SubContractors / Mfg Suppliers
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Register as a manufacturing customer or supplier to access V+ services and 
-                        connect with our network of consultants and partners.
+                        Register as a government subcontractor or manufacturing supplier to access V+ services, 
+                        connect with prime contractors and government buyers, and grow your business in both defense and commercial markets.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Access to V+ consulting services</li>
-                        <li>• Supplier qualification programs</li>
-                        <li>• Manufacturing assessments</li>
-                        <li>• Industry 4.0 transformation support</li>
+                        <li>• Access to V+ consulting and procurement services</li>
+                        <li>• Supplier qualification and CMMC certification programs</li>
+                        <li>• Manufacturing assessments and Industry 4.0 support</li>
+                        <li>• Connect with government buyers and prime contractors</li>
                       </ul>
                     </div>
                   </div>

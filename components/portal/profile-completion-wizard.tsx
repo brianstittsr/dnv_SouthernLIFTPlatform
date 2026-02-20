@@ -331,7 +331,7 @@ export function ProfileCompletionWizard() {
 
   return (
     <Dialog open={showProfileWizard} onOpenChange={setShowProfileWizard}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-primary/80">
@@ -392,7 +392,7 @@ export function ProfileCompletionWizard() {
                     currentAvatar={formData.avatarUrl}
                     initials={`${formData.firstName?.[0] || ""}${formData.lastName?.[0] || ""}`.toUpperCase() || "U"}
                     onUpload={handleAvatarUpload}
-                    size="xl"
+                    size="lg"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">

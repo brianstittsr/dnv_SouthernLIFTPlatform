@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
 
 interface TeamMember {
@@ -92,14 +91,22 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
 
   return (
     <Link href={`/team/${member.id}`} className="block">
-      <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
+      <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardContent className="pt-8 pb-6">
-          <Avatar className="h-24 w-24 mx-auto mb-4">
-            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-contain" />}
-            <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
-              {member.initials}
-            </AvatarFallback>
-          </Avatar>
+          {/* Image container - proportional aspect ratio, no background showing */}
+          <div className="w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
+            {imageUrl ? (
+              <img 
+                src={imageUrl} 
+                alt={member.name} 
+                className="w-full h-full object-cover object-top"
+              />
+            ) : (
+              <span className="text-primary text-4xl font-semibold">
+                {member.initials}
+              </span>
+            )}
+          </div>
           <h3 className="text-lg font-semibold">{member.name}</h3>
           <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
           <p className="text-sm text-muted-foreground">{member.bio}</p>

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -162,9 +163,19 @@ export default async function BlogPage() {
               return (
                 <Card key={post.slug} className="overflow-hidden group hover:shadow-xl transition-all flex flex-col">
                   <div className="aspect-video bg-muted relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                      <Icon className="h-16 w-16 text-primary/40" />
-                    </div>
+                    {post.imageUrl ? (
+                      <Image
+                        src={post.imageUrl}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                        <Icon className="h-16 w-16 text-primary/40" />
+                      </div>
+                    )}
                   </div>
                   <CardHeader className="flex-1">
                     <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
@@ -236,7 +247,22 @@ export default async function BlogPage() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {categoryPosts.slice(0, 6).map((post) => (
-                  <Card key={post.slug} className="group hover:shadow-lg transition-all">
+                  <Card key={post.slug} className="group hover:shadow-lg transition-all overflow-hidden">
+                    <div className="aspect-video bg-muted relative overflow-hidden">
+                      {post.imageUrl ? (
+                        <Image
+                          src={post.imageUrl}
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                          <Icon className="h-12 w-12 text-primary/40" />
+                        </div>
+                      )}
+                    </div>
                     <CardHeader>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                         <Badge className={categoryColors[post.category]} variant="secondary">

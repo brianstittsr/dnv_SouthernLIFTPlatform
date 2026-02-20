@@ -8,6 +8,8 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { COLLECTIONS, type PlatformSettingsDoc } from "@/lib/schema";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   Sidebar,
   SidebarContent,
@@ -723,10 +725,16 @@ export function PortalSidebar() {
   
   // Load navigation settings from Firebase
   useEffect(() => {
-    const loadNavSettings = async () => {
-      if (!db) return;
+    if (!db || !auth) return;
+    
+    const firestore = db;
+    const firebaseAuth = auth;
+    
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+      if (!user) return; // Not authenticated, skip
+      
       try {
-        const docRef = doc(db, COLLECTIONS.PLATFORM_SETTINGS, "global");
+        const docRef = doc(firestore, COLLECTIONS.PLATFORM_SETTINGS, "global");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data() as PlatformSettingsDoc;
@@ -740,8 +748,9 @@ export function PortalSidebar() {
       } catch (error) {
         console.error("Error loading navigation settings:", error);
       }
-    };
-    loadNavSettings();
+    });
+    
+    return () => unsubscribe();
   }, []);
   
   // Filter nav items based on role-based visibility

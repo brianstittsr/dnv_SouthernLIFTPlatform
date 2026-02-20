@@ -4,9 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AnimatedWaves } from "@/components/ui/animated-waves";
+import Image from "next/image";
+import { getHeroSlides } from "@/lib/firebase-hero";
+import { listImages, getImageDataUrl, type ImageMetadata } from "@/lib/firebase-images";
+import { toast } from "sonner";
 
 export interface HeroSlide {
   id: string;
@@ -25,15 +28,29 @@ export interface HeroSlide {
   };
   isPublished: boolean;
   order: number;
+  // Background options
+  backgroundType?: "animated" | "image";
+  backgroundImage?: string;
+  backgroundOverlay?: boolean;
+  backgroundOverlayOpacity?: number; // 0-100
+  // Appearance toggles
+  fullScreenBg?: boolean;
+  showRibbon?: boolean;
+  ribbonColor?: "light" | "dark";
+  showWaves?: boolean;
+  highlightOnSecondLine?: boolean;
 }
 
 // Default slides - in production these would come from a database
+const STORAGE_KEY = "hero-slides";
+
+// Default slides fallback
 const defaultSlides: HeroSlide[] = [
   {
     id: "0",
     badge: "Strategic Partnership Announcement",
-    headline: "Strategic Value+ &",
-    highlightedText: "KDM Associates",
+    headline: "Strategic Value+",
+    highlightedText: "&\nKDM Associates",
     subheadline: "Two industry leaders unite to deliver unparalleled support for small emerging businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
     benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
     primaryCta: { text: "Discover the Partnership", href: "/about" },
@@ -65,78 +82,6 @@ const defaultSlides: HeroSlide[] = [
     isPublished: true,
     order: 2,
   },
-  {
-    id: "3",
-    badge: "What Works Solutions",
-    headline: "Drive Next Level",
-    highlightedText: "Results",
-    subheadline: "Our team offers a range of free and premium services to help scale success for small businesses once they join as KDM Members through our digital hub.",
-    benefits: ["Digital Solutions", "Technology Integration", "Proposal Support"],
-    primaryCta: { text: "Become a KDM Consortium Member", href: "/sign-up" },
-    secondaryCta: { text: "Explore Services", href: "/services" },
-    isPublished: true,
-    order: 3,
-  },
-  {
-    id: "4",
-    badge: "Solution Provider Network",
-    headline: "Join Our",
-    highlightedText: "Community",
-    subheadline: "Join our exclusive KDM & Associates digital community where business solution providers contribute to and support small businesses on their journey to sustainability and success.",
-    benefits: ["Partner Network", "Resource Sharing", "Collaborative Growth"],
-    primaryCta: { text: "Become a Provider", href: "/partners" },
-    secondaryCta: { text: "Contact Us", href: "/contact" },
-    isPublished: true,
-    order: 4,
-  },
-  {
-    id: "5",
-    badge: "KDM Insights & Resources",
-    headline: "Explore Our Latest",
-    highlightedText: "Blogs",
-    subheadline: "Stay informed with expert insights on government contracting, certifications, and business growth strategies. Our blog features practical advice from industry leaders.",
-    benefits: ["Expert Insights", "Industry Updates", "Practical Tips"],
-    primaryCta: { text: "Read Our Blog", href: "/blog" },
-    secondaryCta: { text: "Subscribe", href: "/newsletter" },
-    isPublished: true,
-    order: 5,
-  },
-  {
-    id: "6",
-    badge: "Join the KDM Network",
-    headline: "KDM",
-    highlightedText: "Consortium",
-    subheadline: "Connect with a powerful network of businesses, partners, and mentors. The KDM Consortium provides access to teaming opportunities, shared resources, and collaborative growth.",
-    benefits: ["Networking Events", "Teaming Opportunities", "Mentorship Programs"],
-    primaryCta: { text: "Join the Consortium", href: "/consortium" },
-    secondaryCta: { text: "Learn More", href: "/about/consortium" },
-    isPublished: true,
-    order: 6,
-  },
-  {
-    id: "7",
-    badge: "Upcoming Opportunities",
-    headline: "KDM",
-    highlightedText: "Events",
-    subheadline: "Attend workshops, webinars, and networking events designed to help you succeed in government contracting. Learn from experts and connect with potential partners.",
-    benefits: ["Workshops & Training", "Networking Sessions", "Expert Panels"],
-    primaryCta: { text: "View Events", href: "/events" },
-    secondaryCta: { text: "Register Now", href: "/events/register" },
-    isPublished: true,
-    order: 7,
-  },
-  {
-    id: "8",
-    badge: "Cybersecurity Certification",
-    headline: "Join Our",
-    highlightedText: "CMMC Cohort",
-    subheadline: "Prepare for CMMC certification with guided support. Our cohort program helps small businesses meet cybersecurity requirements for government contracts.",
-    benefits: ["CMMC Guidance", "Cohort Learning", "Compliance Support"],
-    primaryCta: { text: "Join Cohort", href: "/cmmc-cohort" },
-    secondaryCta: { text: "Learn About CMMC", href: "/services/cmmc" },
-    isPublished: true,
-    order: 8,
-  },
 ];
 
 interface HeroCarouselProps {
@@ -144,7 +89,59 @@ interface HeroCarouselProps {
   autoPlayInterval?: number;
 }
 
-export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }: HeroCarouselProps) {
+export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: HeroCarouselProps) {
+  const [slides, setSlides] = useState<HeroSlide[]>(propSlides || defaultSlides);
+  const [isLoading, setIsLoading] = useState(!propSlides);
+  const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
+  const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
+  const [contentVisible, setContentVisible] = useState(false);
+
+  // Load slides and gallery images from Firebase on mount
+  useEffect(() => {
+    if (!propSlides) {
+      loadSlidesFromFirebase();
+    }
+    loadGalleryImages();
+    // Delay content fade-in slightly so background renders first
+    const t = setTimeout(() => setContentVisible(true), 120);
+    return () => clearTimeout(t);
+  }, [propSlides]);
+
+  const loadGalleryImages = async () => {
+    try {
+      const images = await listImages("hero");
+      setGalleryImages(images);
+      // Pre-load base64 data URLs for each image
+      const dataUrls: Record<number, string> = {};
+      for (let i = 0; i < images.length; i++) {
+        const dataUrl = await getImageDataUrl(images[i].id);
+        if (dataUrl) dataUrls[i] = dataUrl;
+      }
+      setResolvedBgImages(dataUrls);
+    } catch (error) {
+      console.error("Failed to load gallery images:", error);
+    }
+  };
+
+  const loadSlidesFromFirebase = async () => {
+    try {
+      setIsLoading(true);
+      const firebaseSlides = await getHeroSlides();
+      // If no slides in Firebase, use default slides
+      if (firebaseSlides.length > 0) {
+        setSlides(firebaseSlides);
+      } else {
+        setSlides(defaultSlides);
+      }
+    } catch (error) {
+      console.error("Failed to load slides from Firebase:", error);
+      // Fallback to default slides
+      setSlides(defaultSlides);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const publishedSlides = slides.filter(s => s.isPublished).sort((a, b) => a.order - b.order);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -177,15 +174,38 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
 
   const currentSlide = publishedSlides[currentIndex];
 
+  // Resolve background image: use slide's own image, or pull from gallery by index
+  const resolvedBgImage =
+    currentSlide.backgroundImage ||
+    resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length];
+
   return (
-    <section className="relative overflow-hidden bg-[#b8b5e4] text-gray-900">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#a8a4d9_1px,transparent_1px),linear-gradient(to_bottom,#a8a4d9_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-50" />
+    <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#0f172a" }}>
       
-      {/* Animated Wave Background - in front of purple bg */}
-      <AnimatedWaves className="z-10" />
+      {/* Background Image - from slide config or Image Manager gallery */}
+      {resolvedBgImage && (
+        <>
+          <div className="absolute inset-0 z-10" key={`bg-${currentSlide.id}`}>
+            <Image
+              src={resolvedBgImage}
+              alt=""
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          {/* Overlay for text readability */}
+          <div 
+            className="absolute inset-0 z-20 bg-black"
+            style={{ opacity: (currentSlide.backgroundOverlayOpacity ?? 50) / 100 }}
+          />
+        </>
+      )}
       
-      <div className="relative z-20 py-20 md:py-32 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        className="relative z-30 py-20 md:py-32 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+        style={{ opacity: contentVisible ? 1 : 0, transition: "opacity 0.5s ease" }}
+      >
         <div className="mx-auto max-w-4xl text-center">
           {/* Slide Content with Fade Animation */}
           <div key={currentSlide.id} className="animate-in fade-in duration-500">
@@ -195,13 +215,20 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
             </Badge>
 
             {/* Headline */}
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              {currentSlide.headline}{" "}
-              <span className="text-primary">{currentSlide.highlightedText}</span>
+            <h1 className={cn(
+              "text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl whitespace-pre-line",
+              currentSlide.highlightOnSecondLine && "flex flex-col items-center"
+            )}>
+              {currentSlide.headline}
+              {currentSlide.highlightOnSecondLine ? (
+                <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.highlightedText}</span>
+              ) : (
+                <> <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.highlightedText}</span></>
+              )}
             </h1>
 
             {/* Subheadline */}
-            <p className="mt-6 text-lg text-gray-700 md:text-xl max-w-2xl mx-auto">
+            <p className="mt-6 text-lg text-white/90 md:text-xl max-w-2xl mx-auto">
               {currentSlide.subheadline}
             </p>
 
@@ -267,28 +294,28 @@ export function HeroCarousel({ slides = defaultSlides, autoPlayInterval = 6000 }
           )}
 
           {/* Trust Indicators */}
-          <div className="mt-16 pt-8 border-t border-[#7c3aed]/30">
-            <p className="text-sm text-[#4c1d95] mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
+          <div className="mt-16 pt-8 border-t border-white/30">
+            <p className="text-sm text-white/80 mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-[#4c1d95]">475</span>
-                <span className="text-xs text-[#4c1d95]/70">Clients</span>
+                <span className="text-lg font-bold text-white">475</span>
+                <span className="text-xs text-white/70">Clients</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-[#4c1d95]">14+</span>
-                <span className="text-xs text-[#4c1d95]/70">Shared Outcome Agreements</span>
+                <span className="text-lg font-bold text-white">14+</span>
+                <span className="text-xs text-white/70">Shared Outcome Agreements</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-[#4c1d95]">$50B+</span>
-                <span className="text-xs text-[#4c1d95]/70">Contract Transactions</span>
+                <span className="text-lg font-bold text-white">$50B+</span>
+                <span className="text-xs text-white/70">Contract Transactions</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-[#4c1d95]">30+</span>
-                <span className="text-xs text-[#4c1d95]/70">Resource Partners</span>
+                <span className="text-lg font-bold text-white">30+</span>
+                <span className="text-xs text-white/70">Resource Partners</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-[#4c1d95]">MBDA</span>
-                <span className="text-xs text-[#4c1d95]/70">Federal Procurement Center</span>
+                <span className="text-lg font-bold text-white">MBDA</span>
+                <span className="text-xs text-white/70">Federal Procurement Center</span>
               </div>
             </div>
           </div>

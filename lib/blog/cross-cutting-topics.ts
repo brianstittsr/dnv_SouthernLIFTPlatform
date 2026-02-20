@@ -10,6 +10,7 @@ export const crossCuttingTopicsPosts: BlogPost[] = [
     category: "Cross-Cutting Strategic Topics",
     tags: ["Semiconductors", "Manufacturing", "CHIPS Act", "National Security"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
     content: `The global semiconductor shortage that began in 2020 wasn't just an inconvenience—it was a wake-up call. Semiconductors are in everything from smartphones to fighter jets, and the United States produces only about 12% of the world's chips, down from 37% in 1990. The CHIPS and Science Act is investing $52 billion to reverse this trend, creating massive opportunities for manufacturers across the supply chain.
 
 ## The Scale of the Problem
@@ -146,6 +147,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Taiwan", "Supply Chain", "Defense", "Risk Management", "Geopolitics"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
     content: `Taiwan sits at the center of the global technology supply chain, producing over 60% of the world's semiconductors and over 90% of the most advanced chips. A Chinese invasion, blockade, or even sustained military pressure on Taiwan would trigger the most severe supply chain disruption in modern history. For defense contractors, preparing for this scenario isn't alarmist—it's prudent risk management.
 
 ## The Taiwan Risk
@@ -270,14 +272,15 @@ The Taiwan risk is real and growing. While no one can predict if or when a conti
 ${BLOG_CTA}`
   },
   {
-    slug: "whole-of-government-total-team-approach-consortium-advantage",
-    title: "Whole of Government Total Team Approach: The Consortium Advantage",
-    excerpt: "The consortium model is transforming how small businesses compete for and win government contracts. Here's how the V+KDM Consortium creates competitive advantage.",
+    slug: "why-total-team-approach-wins-government-contracts",
+    title: "Why a Total Team Approach Wins Government Contracts",
+    excerpt: "The federal government's 'Whole of Government' approach demands a corresponding 'Total Team' response from industry. Here's how the V+KDM Consortium model delivers results.",
     author: "KDM & Associates",
-    date: "2026-01-24",
+    date: "2026-01-31",
     category: "Cross-Cutting Strategic Topics",
     tags: ["Consortium", "Government Contracting", "Teaming", "V+KDM", "Strategy"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
     content: `The federal government's "Whole of Government" approach to national challenges—from supply chain resilience to manufacturing reshoring—demands a corresponding "Total Team" response from industry. No single small business can address these complex requirements alone. That's where the consortium model comes in, and it's why the V+KDM Consortium is positioned to deliver results that individual companies cannot.
 
 ## The Consortium Model
@@ -437,6 +440,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["AI", "Robotics", "Manufacturing", "Technology", "Automation"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
     content: `Artificial intelligence and embodied robotics are no longer futuristic concepts—they're production-floor realities transforming manufacturing competitiveness. For small manufacturers in the defense supply chain, adopting these technologies isn't optional; it's essential to meeting the quality, speed, and cost requirements that defense buyers demand.
 
 ## The AI Manufacturing Revolution
@@ -590,6 +594,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Energy", "Manufacturing", "Independence", "Clean Energy", "Defense"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80",
     content: `Energy is one of the largest operating costs for manufacturers, and energy reliability is essential for defense production. The push for American energy independence—through both traditional and renewable sources—is creating opportunities for manufacturers to reduce costs, improve resilience, and access new incentives.
 
 ## Why Energy Matters for Defense Manufacturing
@@ -734,6 +739,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Set-Asides", "Small Business", "Defense", "Federal Contracting"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80",
     content: `The federal government is legally required to award a significant percentage of contracts to small businesses. For defense contractors, these set-aside programs create a protected competitive space where small businesses compete against each other—not against billion-dollar corporations. Understanding and leveraging these programs is one of the most effective strategies for building a defense contracting business.
 
 ## Federal Small Business Goals
@@ -862,6 +868,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Prime Contractors", "Boeing", "Lockheed Martin", "Raytheon", "Supply Chain"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1542361345-89e58247f2d5?w=800&q=80",
     content: `The "Big 5" defense prime contractors—Lockheed Martin, Boeing, RTX (Raytheon), Northrop Grumman, and General Dynamics—collectively spend over $200 billion annually with their supply chains. Becoming a Tier 2 or Tier 3 supplier to these companies is the most common path for small manufacturers to enter the defense market. Here's a practical, step-by-step guide.
 
 ## Understanding the Tier Structure
@@ -1033,6 +1040,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Policy", "Manufacturing", "Administration", "Trade", "Defense"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80",
     content: `The current administration has placed manufacturing at the center of its economic and national security agenda. From tariff policies to reshoring incentives to defense spending priorities, the policy landscape has shifted significantly. For manufacturers—especially those in or entering the defense market—understanding these changes is essential to strategic planning.
 
 ## Key Policy Changes
@@ -1167,6 +1175,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["ROI", "Government Contracting", "Small Business", "Financial Analysis"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
     content: `One of the most common questions from small businesses considering government contracting is: "Is it worth the investment?" The answer, based on data from thousands of successful small defense contractors, is a resounding yes—but only if you understand the costs, timeline, and realistic returns.
 
 ## The Investment Required
@@ -1308,6 +1317,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["MBDA", "Federal Procurement", "Strategy", "KDM", "Legacy"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
     content: `The Minority Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping minority-owned businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
 
 ## The MBDA Legacy

@@ -10,6 +10,7 @@ export const thoughtLeadershipPosts: BlogPost[] = [
     category: "Thought Leadership & Case Studies",
     tags: ["Legacy", "Federal Contracts", "Lessons Learned", "Impact"],
     readTime: 11,
+    imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
     content: `Over 25 years and $12 billion in facilitated federal contract awards, we've learned what works, what doesn't, and what separates successful government contractors from those who struggle. These lessons, distilled from thousands of engagements with businesses of every size and sector, form the foundation of everything we do at KDM & Associates.
 
 ## The Big Picture: What 25 Years Taught Us
@@ -194,6 +195,7 @@ ${BLOG_CTA}`
     category: "Thought Leadership & Case Studies",
     tags: ["Transparency", "Open Government", "Data", "Manufacturing", "Procurement"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80",
     content: `The federal government's commitment to transparency—through open data initiatives, public procurement databases, and media engagement—is transforming how manufacturers find and win government contracts. For businesses that know how to leverage these resources, transparency creates a significant competitive advantage.
 
 ## The Open Government Landscape
@@ -344,6 +346,7 @@ ${BLOG_CTA}`
     category: "Thought Leadership & Case Studies",
     tags: ["Case Study", "Success Story", "Fast Track", "Small Business"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80",
     content: `Most small businesses take 12-18 months to win their first government contract. This case study shows how one manufacturer compressed that timeline to just 90 days by following a focused, strategic approach. While not every business can replicate this speed, the principles and methodology are universally applicable.
 
 ## The Company
@@ -543,6 +546,7 @@ ${BLOG_CTA}`
     category: "Thought Leadership & Case Studies",
     tags: ["V+KDM", "Consortium", "Results", "Case Study", "Model"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
     content: `The V+KDM Consortium represents a new model for small business government contracting—one that combines the manufacturing expertise of Strategic Value Plus (V+) with the government contracting capabilities of KDM & Associates. This article examines how the model works and the results it's delivering for member businesses.
 
 ## The V+KDM Model
@@ -766,6 +770,7 @@ ${BLOG_CTA}`
     category: "Thought Leadership & Case Studies",
     tags: ["Military Readiness", "Small Business", "National Defense", "Industrial Base"],
     readTime: 9,
+    imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
     content: `When Americans think about military readiness, they picture aircraft carriers, fighter jets, and soldiers in the field. What they don't see is the vast network of small businesses that make it all possible. From the precision-machined components in a missile guidance system to the circuit boards in a soldier's radio, small manufacturers are the backbone of American military readiness.
 
 ## The Small Business Defense Ecosystem

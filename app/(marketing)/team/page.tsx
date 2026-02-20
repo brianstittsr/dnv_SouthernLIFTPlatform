@@ -24,6 +24,24 @@ const teamMembers = [
     bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting."
   },
   {
+    id: "miranda-bouldin",
+    name: "Miranda Bouldin",
+    title: "President",
+    initials: "MB",
+    imageName: "Miranda_Bouldin",
+    imageUrl: "/MirandaBouldin",
+    bio: "Creator of Space Defense Brief & TechGeekette Brief | CEO, LogiCore | Strategic Insights on Space Command, Space Force & National Defense | GovCon | Defense Logistics | Cybersecurity"
+  },
+  {
+    id: "kirk-jimenez",
+    name: "Kirk Jimenez",
+    title: "Media & Marketing Partner",
+    initials: "KJ",
+    imageName: "Kirk_Jimenez",
+    imageUrl: "/KirkJimenez",
+    bio: "Elevating Latinos & minorities. Triple M: Media, Marketing & Money man. Xizzle TV Founder! 2-time Emmy Winner, Ex-ESPN anchor, Elite Closer University partner, SVP Brickell Capital Finance"
+  },
+  {
     id: "charles-sills",
     name: "Charles Sills",
     title: "COO",
@@ -72,29 +90,13 @@ const teamMembers = [
     bio: "Leading international outreach and communication strategies for global opportunities."
   },
   {
-    id: "walter-cotton",
-    name: "Walter Cotton III",
-    title: "Veteran Business Liaison",
-    initials: "WC",
-    imageName: "Cotton_III_Walter",
-    bio: "Connecting veteran-owned businesses with government contracting opportunities."
-  },
-  {
     id: "jose-nino",
     name: "Jose F. Niño",
     title: "Director of Hispanic Affairs",
     initials: "JN",
     imageName: "Jose_Nino",
-    bio: "Championing Hispanic business interests and expanding outreach to the Hispanic community."
+    bio: "Championing Hispanic business interests and expanding outreach to the Hispanic community.",
   },
-  {
-    id: "candida-mobley",
-    name: "Candida Mobley",
-    title: "KDM Consultant",
-    initials: "CM",
-    imageName: "Candida_Mobley",
-    bio: "Providing dedicated consulting support to help clients achieve their contracting goals."
-  }
 ];
 
 export default function TeamPage() {
