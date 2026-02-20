@@ -11,6 +11,7 @@ interface TeamMember {
   title: string;
   initials: string;
   imageName: string;
+  staticImageUrl?: string;
   bio: string;
 }
 
@@ -48,11 +49,11 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
     try {
       setIsLoading(true);
 
-      // First try "team" category
+      // First try "team" category in Image Manager
       let images = await listImages("team");
       let matchingImage = findMatch(images);
 
-      // If no match, search all images across every category
+      // If no match, search all categories
       if (!matchingImage) {
         images = await listImages();
         matchingImage = findMatch(images);
@@ -62,10 +63,19 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
         const fullImage = await getImage(matchingImage.id);
         if (fullImage?.base64Data) {
           setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
+          return;
         }
       }
+
+      // Fall back to static public image if provided
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
+      }
     } catch (error) {
-      console.log(`Image not available for ${member.name}, showing initials`);
+      // On any error, fall back to static image
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
+      }
     } finally {
       setIsLoading(false);
     }

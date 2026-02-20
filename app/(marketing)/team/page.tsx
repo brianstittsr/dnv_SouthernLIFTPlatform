@@ -20,6 +20,7 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
+    staticImageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
     bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting."
   },
   {
@@ -44,6 +45,7 @@ const teamMembers = [
     title: "COO",
     initials: "CS",
     imageName: "Charles_Sills",
+    staticImageUrl: "/about/NewImages/Charles_Sills.png",
     bio: "Overseeing operations and ensuring excellence in service delivery to our clients."
   },
   {
@@ -52,6 +54,7 @@ const teamMembers = [
     title: "Consultant",
     initials: "OF",
     imageName: "Oscar_Frazier",
+    staticImageUrl: "/about/NewImages/Frazier_Oscar.png",
     bio: "Providing expert guidance on government contracting strategies and business development."
   },
   {
@@ -60,6 +63,7 @@ const teamMembers = [
     title: "KDM Consultant",
     initials: "PR",
     imageName: "Pamela_Ramos_Brown",
+    staticImageUrl: "/about/NewImages/Ramos_Brown_Pamela.png",
     bio: "Supporting clients with strategic consulting and capacity building initiatives."
   },
   {
@@ -68,6 +72,7 @@ const teamMembers = [
     title: "Operations Support Manager",
     initials: "CM",
     imageName: "Calvin_Minor",
+    staticImageUrl: "/about/NewImages/Minor_Calvin.png",
     bio: "Managing day-to-day operations and ensuring seamless client support."
   },
   {
@@ -76,6 +81,7 @@ const teamMembers = [
     title: "Compliance and Data Specialist",
     initials: "MH",
     imageName: "Manpreet_Hundal",
+    staticImageUrl: "/about/NewImages/Manpreet_Hundal.png",
     bio: "Ensuring compliance excellence and data-driven insights for our clients."
   },
   {
@@ -84,6 +90,7 @@ const teamMembers = [
     title: "Director of International Communications",
     initials: "TW",
     imageName: "Timothy_Webster",
+    staticImageUrl: "/about/Timothy_Maurice_Webster.png",
     bio: "Leading international outreach and communication strategies for global opportunities."
   },
   {
@@ -92,6 +99,7 @@ const teamMembers = [
     title: "Director of Hispanic Affairs",
     initials: "JN",
     imageName: "Jose_Nino",
+    staticImageUrl: "/about/NewImages/Nino_Jose.png",
     bio: "Championing Hispanic business interests and expanding outreach to the Hispanic community.",
   },
 ];
