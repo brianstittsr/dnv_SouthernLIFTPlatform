@@ -15,7 +15,7 @@ export interface HeroSlide {
 export const defaultHeroSlides: HeroSlide[] = [
   {
     id: "default-1",
-    title: "Connecting Small Businesses with Government Buyers",
+    title: "KDM Connects Small Businesses with Government Buyers",
     subtitle: "The KDM Consortium",
     description: "We bridge the gap between certified small businesses and federal procurement opportunities, creating pathways to success in government contracting.",
     ctaText: "Learn More",
@@ -28,7 +28,7 @@ export const defaultHeroSlides: HeroSlide[] = [
   },
   {
     id: "default-2",
-    title: "Helping Small Businesses Win Federal Contracts",
+    title: "KDM Helps Small Businesses Win Federal Contracts",
     subtitle: "The KDM Consortium",
     description: "From 8(a) to WOSB, SDVOSB to HUBZone, we provide the tools, training, and connections you need to succeed in federal contracting.",
     ctaText: "Join the Consortium",
@@ -41,7 +41,7 @@ export const defaultHeroSlides: HeroSlide[] = [
   },
   {
     id: "default-3",
-    title: "Helping Small Businesses Become DoD Contract Ready",
+    title: "KDM Prepares Small Businesses for DoD Contracts",
     subtitle: "CMMC Certification & Compliance",
     description: "Get CMMC certified and prepared for Department of Defense contracts. Our expert-led training ensures you meet all cybersecurity and compliance requirements.",
     ctaText: "Get DoD Ready",
@@ -54,7 +54,7 @@ export const defaultHeroSlides: HeroSlide[] = [
   },
   {
     id: "default-4",
-    title: "Find Qualified Small Businesses",
+    title: "KDM Provides Access to Qualified Small Businesses",
     subtitle: "For Government Buyers",
     description: "Access our vetted directory of certified small businesses—8(a), WOSB, SDVOSB, HUBZone, and CMMC-compliant contractors ready to support your mission.",
     ctaText: "Register as a Buyer",
@@ -67,7 +67,7 @@ export const defaultHeroSlides: HeroSlide[] = [
   },
   {
     id: "default-5",
-    title: "CMMC & Compliance Training",
+    title: "KDM Delivers Expert CMMC Certification Training",
     subtitle: "Expert-Led Cohorts",
     description: "Master cybersecurity maturity model certification and federal compliance requirements through our intensive, instructor-led training programs.",
     ctaText: "Explore Training",
