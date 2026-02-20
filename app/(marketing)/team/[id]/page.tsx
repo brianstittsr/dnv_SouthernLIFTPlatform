@@ -15,7 +15,7 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
-    imageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
+    staticImageUrl: "/about/NewImages/Moore_Keith3.png",
     bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting.",
     fullBio: `Keith Moore serves as the Chief Executive Officer of KDM & Associates, bringing extensive experience in government contracting and business development. With a deep commitment to empowering small emerging businesses, Keith leads the organization's strategic vision and growth initiatives.
 
@@ -71,6 +71,7 @@ Kirk's life mission is simple: elevate Latinos and minorities through the Triple
     title: "COO",
     initials: "CS",
     imageName: "Charles_Sills",
+    staticImageUrl: "/about/NewImages/Sills_Charles.png",
     bio: "Overseeing operations and ensuring excellence in service delivery to our clients.",
     fullBio: `Charles Sills is a recognized authority on U.S. Government Contracting, and an advocate for Small Business access to Federal and Military contracting opportunities, serving as a member of the U.S. Chamber of Commerce's Small Business Council; an observer to the White House-sponsored Inter-Agency Task Force on Veterans Business Development; and a member of VET-Force (Veterans Entrepreneurship Task Force). He has helped moderate the Army, Navy and Air Force Contracting Summits in Jacksonville, Norfolk Naval Base, Ft. Hood, Texas and Eglin Air Force Base for the Defense Leadership Forum; keynoted the Veterans Day Panel on "Wartime and Worldwide Government Contracting" at the Mt. Vernon Chamber's forum on "Winning Army Contracts – from Ft. Belvoir to Afghanistan"; and was commended by the Small Business Affairs Director, U.S. Army, for the "overwhelming response" to his presentation on the "Marketing to Prime Contractors" Panel at the National Veteran Small Business Conference.
 
@@ -92,6 +93,7 @@ Mr. Sills' education includes an M.A. in Defense & Foreign Policy, Fletcher Scho
     title: "Consultant",
     initials: "OF",
     imageName: "Oscar_Frazier",
+    staticImageUrl: "/about/NewImages/Frazier_Oscar.png",
     bio: "Providing expert guidance on government contracting strategies and business development.",
     fullBio: `Oscar L Frazier is an international consultant with a sought-after leadership and team-building track record that spans over two decades. Oscar holds an MBA with a Management and Quantitative Methods focus, is a certified Lean Six Sigma Black, a certified Project Management Professional (PMP), and a certified SAFe 5 Agilist. He is also an Eagle Scout with the Boy Scouts of America.
 
@@ -115,6 +117,7 @@ In addition to the global publications outlined above of which Oscar has appeare
     title: "KDM Consultant",
     initials: "PR",
     imageName: "Pamela_Ramos_Brown",
+    staticImageUrl: "/about/NewImages/Ramos_Brown_Pamela.png",
     bio: "Supporting clients with strategic consulting and capacity building initiatives.",
     fullBio: `As current CEO of BeWealthyWithPamela and past president of Ramos Group, LLC, Pamela provides management consulting services such as Business Achievement & Sales Success Planning to entrepreneurs. Pamela is mostly known for serving as Executive Director of Minority Business Development Agency (MBDA) Business Center – Mobile, operated by the Mobile Area Chamber of Commerce and federally funded by the U.S. Department of Commerce, MBDA for almost 10 years.
 
@@ -136,6 +139,7 @@ Personal interests include: Healing and Deliverance ministry, youth entrepreneur
     title: "Operations Support Manager",
     initials: "CM",
     imageName: "Calvin_Minor",
+    staticImageUrl: "/about/NewImages/Minor_Calvin.png",
     bio: "Managing day-to-day operations and ensuring seamless client support.",
     fullBio: `Mr. Minor is currently a member of Alfred Street Baptist Church (ASBC) in Alexandria, VA. He has served as a Member, Secretary, and is the current President of ASBC Foundation. He has also served on the Security, Social Justice Ministries. Before joining ASBC Calvin was Director of Men's Ministry of Antioch Baptist Church, Fairfax Station, VA for 21 years, Co-Chaired the John Q. Gibbs Scholarship Committee, and Disciple Group Team leader. He received disciple group training from Saddleback Church, Lake Forest, CA, and served his community as CFO, James C. Mott Community Center and a Board Member and Employment Counselor for Lincoln Lewis Vannoy Community Association.
 
@@ -151,6 +155,7 @@ Calvin has an extensive career as a consultant in the corporate world. He is a B
     title: "Compliance and Data Specialist",
     initials: "MH",
     imageName: "Manpreet_Hundal",
+    staticImageUrl: "/about/NewImages/Manpreet_Hundal.png",
     bio: "Ensuring compliance excellence and data-driven insights for our clients.",
     fullBio: `I am a proud graduate of George Mason University, holding a degree in Business Management, with over two decades of professional experience in the finance and healthcare sectors. Throughout my career, I have had the privilege of working with leading financial institutions and information technology organizations, where I developed expertise in business operations, strategic planning, and innovative problem-solving.
 
@@ -166,6 +171,7 @@ My mission is to collaborate with dynamic individuals and organizations, leverag
     title: "Director of International Communications",
     initials: "TW",
     imageName: "Timothy_Webster",
+    staticImageUrl: "/about/NewImages/Webster_Timothy.png",
     bio: "Leading international outreach and communication strategies for global opportunities.",
     fullBio: `Timothy's education is in Business Management, Branding, Psychology and Applied Neuroscience from Brookstone College in the US and Massachusetts Institute of Technology- MIT. His insights inspire dialogue and critical thinking about brain and brand behavior- inspiring stakeholders to consider broader and more strategic problem-solving for their personal and organizational brands. His research is particularly influential in the following Professional Leadership Domains- Executive leadership, Brand Influence & Gender Equality. His clients are those who seek to influence and expand themselves, their organizations and society.
 
@@ -177,6 +183,7 @@ Global Podcast and brand strategy partner to US-based KDM & Associates and the I
     title: "Veteran Business Liaison",
     initials: "WC",
     imageName: "Cotton_III_Walter",
+    staticImageUrl: "/about/NewImages/Cotton_III_Walter.png",
     bio: "Connecting veteran-owned businesses with government contracting opportunities.",
     fullBio: `Walter Cotton III is one of a hand full of dedicated retired services members that are credited with helping the Federal Government increase its level of contracting with Disabled Veteran from $750 Million to more than $19 Billion annually.
 
@@ -197,6 +204,7 @@ Mr. Cotton is currently Managing Partner of 'The Cotton Exchange' (i.e., his con
     title: "Director of Hispanic Affairs",
     initials: "JN",
     imageName: "Jose_Nino",
+    staticImageUrl: "/about/NewImages/Nino_Jose.png",
     bio: "Championing Hispanic business interests and expanding outreach to the Hispanic community.",
     fullBio: `Over the past thirty years, Jose F. Niño has built a National and International business development company. His company El Niño Group, LLC has a long and productive history growing and serving as the primary connection in establishing partnerships, opportunities for business development, certifications and strategic planning for clients. He is a Co-founder of Allied Wireless Infrastructure Services, a Hispanic-owned neutral Digital Infrastructure Services Company. AWIS is a wireless & small cell infrastructure, dark fiber, network edge micro data center and management services company. AWIS services the North American market with offices located in Florida, New York, Washington DC, Mexico City and Querétaro, México.
 
@@ -210,6 +218,7 @@ Mr. Niño is Chairman of the Mid-Atlantic Hispanic Chamber of Commerce, a Board 
     title: "KDM Consultant",
     initials: "CM",
     imageName: "Candida_Mobley",
+    staticImageUrl: "/about/NewImages/Mobley_Candida.png",
     bio: "Providing dedicated consulting support to help clients achieve their contracting goals.",
     fullBio: `Candida Mobley is a consultant at KDM & Associates, providing dedicated support to help small emerging businesses achieve their government contracting goals. Her client-focused approach and comprehensive understanding of the federal procurement process make her a trusted advisor to clients.
 

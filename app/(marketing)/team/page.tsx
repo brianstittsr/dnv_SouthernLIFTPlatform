@@ -20,7 +20,7 @@ const teamMembers = [
     title: "CEO",
     initials: "KM",
     imageName: "Keith_Moore",
-    staticImageUrl: "/about/NewImages/Moore_Keith2_files/Keith_Moore3.png",
+    staticImageUrl: "/about/NewImages/Moore_Keith3.png",
     bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting."
   },
   {
@@ -45,7 +45,7 @@ const teamMembers = [
     title: "COO",
     initials: "CS",
     imageName: "Charles_Sills",
-    staticImageUrl: "/about/NewImages/Charles_Sills.png",
+    staticImageUrl: "/about/NewImages/Sills_Charles.png",
     bio: "Overseeing operations and ensuring excellence in service delivery to our clients."
   },
   {
@@ -90,7 +90,7 @@ const teamMembers = [
     title: "Director of International Communications",
     initials: "TW",
     imageName: "Timothy_Webster",
-    staticImageUrl: "/about/Timothy_Maurice_Webster.png",
+    staticImageUrl: "/about/NewImages/Webster_Timothy.png",
     bio: "Leading international outreach and communication strategies for global opportunities."
   },
   {

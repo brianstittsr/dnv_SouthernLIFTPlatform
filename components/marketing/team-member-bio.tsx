@@ -12,6 +12,7 @@ interface TeamMember {
   title: string;
   initials: string;
   imageName: string;
+  staticImageUrl?: string;
   bio: string;
   fullBio: string;
   linkedin?: string;
@@ -59,10 +60,16 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
         const fullImage = await getImage(matchingImage.id);
         if (fullImage?.base64Data) {
           setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
+          return;
         }
       }
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
+      }
     } catch (error) {
-      console.log(`Image not available for ${member.name}, showing initials`);
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +80,20 @@ export function TeamMemberBio({ member }: TeamMemberBioProps) {
       <div className="grid md:grid-cols-[300px_1fr] gap-8 md:gap-12">
         {/* Photo Column */}
         <div className="flex flex-col items-center md:items-start">
-          <Avatar className="h-64 w-64 mb-6">
-            {imageUrl && <AvatarImage src={imageUrl} alt={member.name} className="object-contain" />}
-            <AvatarFallback className="bg-primary/10 text-primary text-6xl font-semibold">
-              {member.initials}
-            </AvatarFallback>
-          </Avatar>
+          <div className="w-full max-w-[280px] rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4] mb-6">
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={imageUrl}
+                alt={member.name}
+                className="w-full h-full object-cover object-top"
+              />
+            ) : (
+              <span className="text-primary text-6xl font-semibold">
+                {member.initials}
+              </span>
+            )}
+          </div>
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold mb-2">{member.name}</h2>
             <p className="text-lg text-primary font-medium mb-3">{member.title}</p>
