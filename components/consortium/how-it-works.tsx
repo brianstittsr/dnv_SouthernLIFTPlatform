@@ -85,13 +85,13 @@ function Step({ step, icon: Icon, title, description, isLast, color }: StepProps
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
         <div className={cn(
-          "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
+          "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg",
           color
         )}>
           <Icon className="h-5 w-5" />
         </div>
         {!isLast && (
-          <div className={cn("w-0.5 h-full min-h-[60px] mt-2", color.replace("bg-", "bg-").replace("]", "/30]"))} />
+          <div className={cn("w-0.5 h-full min-h-[60px] mt-2", color.replace("bg-", "bg-").replace("]", "/40]"))} />
         )}
       </div>
       <div className="pb-8">
@@ -100,8 +100,8 @@ function Step({ step, icon: Icon, title, description, isLast, color }: StepProps
             Step {step}
           </span>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
-        <p className="text-gray-600">{description}</p>
+        <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
+        <p className="text-white/80">{description}</p>
       </div>
     </div>
   );
@@ -109,13 +109,26 @@ function Step({ step, icon: Icon, title, description, isLast, color }: StepProps
 
 export function HowItWorks() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container">
+    <section className="py-20 bg-gray-50 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 z-0 bg-gray-900/85" />
+      
+      <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Your Path to Government Contracting Success
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             Follow our proven process to connect with opportunities and grow your government business.
           </p>
         </div>

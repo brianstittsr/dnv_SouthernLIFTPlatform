@@ -62,8 +62,20 @@ const audiences = [
 
 export function AudienceCards() {
   return (
-    <section className="py-20">
-      <div className="container">
+    <section className="py-20 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=1920&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 z-0 bg-white/95" />
+      
+      <div className="container relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Built for Government Contracting Success

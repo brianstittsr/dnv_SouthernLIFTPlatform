@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import {
   Handshake,
   FileCheck,
@@ -112,13 +113,26 @@ const instructorFeatures = [
 
 export function FeaturesGrid() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container">
+    <section className="py-20 bg-gray-50 relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 z-0 bg-gray-900/80" />
+      
+      <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Why Join the KDM Consortium?
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             Unlock powerful tools and connections designed to accelerate your government contracting success.
           </p>
         </div>
@@ -133,15 +147,15 @@ export function FeaturesGrid() {
           <TabsContent value="sme">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {smeFeatures.map((feature) => (
-                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white/95 backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-[#1e3a5f]/10 flex items-center justify-center mb-4">
                       <feature.icon className="h-6 w-6 text-[#1e3a5f]" />
                     </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">
+                    <CardDescription className="text-base text-gray-600">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
@@ -153,15 +167,15 @@ export function FeaturesGrid() {
           <TabsContent value="buyer">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {buyerFeatures.map((feature) => (
-                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white/95 backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-[#7c3aed]/10 flex items-center justify-center mb-4">
                       <feature.icon className="h-6 w-6 text-[#7c3aed]" />
                     </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">
+                    <CardDescription className="text-base text-gray-600">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
@@ -173,15 +187,15 @@ export function FeaturesGrid() {
           <TabsContent value="instructor">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {instructorFeatures.map((feature) => (
-                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                <Card key={feature.title} className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white/95 backdrop-blur-sm">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-[#c9a227]/10 flex items-center justify-center mb-4">
                       <feature.icon className="h-6 w-6 text-[#c9a227]" />
                     </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">
+                    <CardDescription className="text-base text-gray-600">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
