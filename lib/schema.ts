@@ -1601,6 +1601,7 @@ export const COLLECTIONS = {
   CALENDAR_EVENTS: "calendarEvents",
   BOOK_CALL_LEADS: "bookCallLeads",
   CONTACT_MESSAGES: "contactMessages",
+  CONTACT_EMAIL_RECIPIENTS: "contactEmailRecipients",
   INTEGRATIONS: "integrations",
   SETTINGS: "settings",
   HERO_SLIDES: "heroSlides",

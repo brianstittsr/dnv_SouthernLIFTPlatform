@@ -58,9 +58,12 @@ import {
   Loader2,
   MessageSquare,
   Search,
+  UserPlus,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { addDoc } from "firebase/firestore";
 
 type MessageStatus = "new" | "contacted" | "qualified" | "converted" | "closed";
 
@@ -88,6 +91,13 @@ const statusLabels: Record<MessageStatus, string> = {
   closed: "Closed",
 };
 
+interface CcRecipient {
+  id: string;
+  email: string;
+  label?: string;
+  createdAt: Date;
+}
+
 export default function ContactMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +107,27 @@ export default function ContactMessagesPage() {
   const [notes, setNotes] = useState("");
   const [filterStatus, setFilterStatus] = useState<MessageStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [ccRecipients, setCcRecipients] = useState<CcRecipient[]>([]);
+  const [newCcEmail, setNewCcEmail] = useState("");
+  const [newCcLabel, setNewCcLabel] = useState("");
+  const [savingCc, setSavingCc] = useState(false);
+
+  useEffect(() => {
+    if (!db) return;
+    const recipientsRef = collection(db, COLLECTIONS.CONTACT_EMAIL_RECIPIENTS);
+    const recipientsQuery = query(recipientsRef, orderBy("createdAt", "asc"));
+    const unsubRecipients = onSnapshot(recipientsQuery, (snapshot) => {
+      setCcRecipients(
+        snapshot.docs.map((d) => ({
+          id: d.id,
+          email: d.data().email,
+          label: d.data().label,
+          createdAt: d.data().createdAt?.toDate() || new Date(),
+        }))
+      );
+    });
+    return () => unsubRecipients();
+  }, []);
 
   useEffect(() => {
     if (!db) {
@@ -206,6 +237,46 @@ export default function ContactMessagesPage() {
     }
   };
 
+  const addCcRecipient = async () => {
+    if (!db || !newCcEmail.trim()) return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newCcEmail.trim())) {
+      toast.error("Invalid email address");
+      return;
+    }
+    if (ccRecipients.some((r) => r.email.toLowerCase() === newCcEmail.trim().toLowerCase())) {
+      toast.error("This email is already in the list");
+      return;
+    }
+    setSavingCc(true);
+    try {
+      await addDoc(collection(db, COLLECTIONS.CONTACT_EMAIL_RECIPIENTS), {
+        email: newCcEmail.trim().toLowerCase(),
+        label: newCcLabel.trim() || null,
+        createdAt: Timestamp.now(),
+      });
+      setNewCcEmail("");
+      setNewCcLabel("");
+      toast.success("CC recipient added");
+    } catch (error) {
+      console.error("Error adding CC recipient:", error);
+      toast.error("Failed to add recipient");
+    } finally {
+      setSavingCc(false);
+    }
+  };
+
+  const removeCcRecipient = async (recipientId: string) => {
+    if (!db) return;
+    try {
+      await deleteDoc(doc(db, COLLECTIONS.CONTACT_EMAIL_RECIPIENTS, recipientId));
+      toast.success("Recipient removed");
+    } catch (error) {
+      console.error("Error removing CC recipient:", error);
+      toast.error("Failed to remove recipient");
+    }
+  };
+
   const openDetails = (message: ContactMessage) => {
     setSelectedMessage(message);
     setNotes(message.notes || "");
@@ -268,6 +339,75 @@ export default function ContactMessagesPage() {
           </Select>
         </div>
       </div>
+
+      {/* CC Recipients Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserPlus className="h-5 w-5" />
+            CC Recipients
+          </CardTitle>
+          <CardDescription>
+            These email addresses will receive a copy of every new contact form submission notification.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Existing recipients */}
+          {ccRecipients.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {ccRecipients.map((recipient) => (
+                <div
+                  key={recipient.id}
+                  className="flex items-center gap-2 bg-muted rounded-full px-3 py-1.5 text-sm"
+                >
+                  <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-medium">{recipient.email}</span>
+                  {recipient.label && (
+                    <span className="text-muted-foreground">({recipient.label})</span>
+                  )}
+                  <button
+                    onClick={() => removeCcRecipient(recipient.id)}
+                    className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                    aria-label={`Remove ${recipient.email}`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {ccRecipients.length === 0 && (
+            <p className="text-sm text-muted-foreground">No CC recipients yet.</p>
+          )}
+          {/* Add new recipient */}
+          <div className="flex gap-2 flex-wrap items-end">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground font-medium">Email address *</label>
+              <Input
+                placeholder="email@example.com"
+                value={newCcEmail}
+                onChange={(e) => setNewCcEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCcRecipient()}
+                className="w-[260px]"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground font-medium">Label (optional)</label>
+              <Input
+                placeholder="e.g. Keith Moore"
+                value={newCcLabel}
+                onChange={(e) => setNewCcLabel(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCcRecipient()}
+                className="w-[200px]"
+              />
+            </div>
+            <Button onClick={addCcRecipient} disabled={savingCc || !newCcEmail.trim()}>
+              {savingCc ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+              Add Recipient
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

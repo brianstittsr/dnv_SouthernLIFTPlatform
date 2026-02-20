@@ -81,6 +81,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Fetch CC recipients from Firestore
+    let ccEmails: string[] = [];
+    try {
+      const recipientsSnap = await db.collection("contactEmailRecipients").get();
+      ccEmails = recipientsSnap.docs.map((d) => d.data().email as string).filter(Boolean);
+    } catch (ccError) {
+      console.error("Failed to fetch CC recipients:", ccError);
+    }
+
     // Send notification email to KDM team
     const adminEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "kmoore@kdm-assoc.com";
     let emailSent = false;
@@ -90,6 +99,7 @@ export async function POST(request: NextRequest) {
     try {
       const adminResult = await sendEmail({
         to: adminEmail,
+        ...(ccEmails.length > 0 ? { cc: ccEmails } : {}),
         subject: `New Session Request from ${body.firstName} ${body.lastName}`,
         html: `
           <h1>New Session Request</h1>
