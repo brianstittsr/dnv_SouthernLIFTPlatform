@@ -934,8 +934,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
 - **[Register as a Supplier (SME)](/register?type=sme)** -- Get matched with government contract opportunities, access capacity-building resources, and connect with prime contractors.
 - **[Register as a Government Buyer](/register?type=buyer)** -- Discover qualified, defense-ready small businesses and streamline your procurement process.
 
-*Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*
-
+*Schedule a free introductory session to learn how we can accelerate your path to government contracting success.*`
   },
   {
     slug: "reshoring-success-capturing-american-manufacturing-renaissance",
