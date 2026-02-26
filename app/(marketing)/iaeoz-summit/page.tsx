@@ -153,6 +153,15 @@ export default function IAEOZSummitPage() {
       {/* Hero Carousel */}
       <IAEOZHeroCarousel slides={iaeozHeroSlides} />
 
+      {/* Archive Title */}
+      <div className="bg-muted/50 pt-8 pb-4">
+        <div className="container">
+          <h2 className="text-2xl font-bold text-center">
+            IAEOZ Summit Video Archive Quick Search
+          </h2>
+        </div>
+      </div>
+
       {/* Search and Filter Section */}
       <section id="videos" className="py-8 bg-muted/50 border-b sticky top-20 z-30">
         <div className="container">
