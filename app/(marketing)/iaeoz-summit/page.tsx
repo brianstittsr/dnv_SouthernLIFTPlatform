@@ -1,6 +1,30 @@
 "use client";
 
 import { useState, useMemo } from "react";
+
+// Image Placeholder Component
+function VideoThumbnail({ video }: { video: Video }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className="object-cover w-full h-full bg-gradient-to-br from-emerald-100 to-teal-100 flex flex-col items-center justify-center p-4 text-center">
+        <Play className="h-12 w-12 text-emerald-600 mb-2" />
+        <span className="text-xs font-medium text-emerald-800 line-clamp-2">{video.title}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={video.thumbnail_url || `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
+      alt={video.title}
+      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+      onError={() => setHasError(true)}
+      loading="lazy"
+    />
+  );
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,14 +41,17 @@ interface Video {
   description: string;
   year: number;
   type: string;
-  speaker: string;
+  speaker: string | null;
   organization: string | null;
-  interviewer: string | null;
+  duration_seconds: number;
+  view_count: number;
+  thumbnail_url: string;
 }
 
 interface VideoData {
   channel: {
     name: string;
+    handle: string;
     url: string;
     description: string;
   };
@@ -32,13 +59,13 @@ interface VideoData {
   speakers: Array<{
     name: string;
     organization: string | null;
-    role: string;
     videos: string[];
   }>;
   statistics: {
-    total_videos_found: number;
+    total_videos: number;
     years_covered: number[];
     videos_by_year_count: Record<string, number>;
+    unique_speakers: number;
   };
 }
 
@@ -50,7 +77,7 @@ const allVideos = Object.entries(data.videos_by_year).flatMap(([year, videos]) =
 );
 
 // Get unique values for filters
-const uniqueSpeakers = Array.from(new Set(allVideos.map((v) => v.speaker))).sort();
+const uniqueSpeakers = Array.from(new Set(allVideos.map((v) => v.speaker).filter((s): s is string => s !== null))).sort();
 const uniqueOrganizations = Array.from(new Set(allVideos.map((v) => v.organization).filter(Boolean))).sort() as string[];
 const uniqueTypes = Array.from(new Set(allVideos.map((v) => v.type))).sort();
 const uniqueYears = Array.from(new Set(allVideos.map((v) => v.year))).sort((a, b) => b - a);
@@ -69,10 +96,10 @@ export default function IAEOZSummitPage() {
         searchQuery === "" ||
         video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         video.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        video.speaker.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        video.speaker?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (video.organization && video.organization.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const matchesSpeaker = selectedSpeaker === "all" || video.speaker === selectedSpeaker;
+  const matchesSpeaker = selectedSpeaker === "all" || video.speaker === selectedSpeaker;
       const matchesYear = selectedYear === "all" || video.year.toString() === selectedYear;
       const matchesType = selectedType === "all" || video.type === selectedType;
       const matchesOrganization = selectedOrganization === "all" || video.organization === selectedOrganization;
@@ -143,11 +170,11 @@ export default function IAEOZSummitPage() {
               </span>
               <span className="flex items-center gap-2">
                 <Play className="h-4 w-4" />
-                {data.statistics.total_videos_found} Videos
+                {data.statistics.total_videos} Videos
               </span>
               <span className="flex items-center gap-2">
                 <Mic className="h-4 w-4" />
-                {data.speakers.length} Speakers
+                {data.statistics.unique_speakers} Speakers
               </span>
             </div>
           </div>
@@ -250,7 +277,7 @@ export default function IAEOZSummitPage() {
 
             {/* Results Count */}
             <div className="text-sm text-muted-foreground">
-              Showing {filteredVideos.length} of {data.statistics.total_videos_found} videos
+              Showing {filteredVideos.length} of {data.statistics.total_videos} videos
             </div>
           </div>
         </div>
@@ -293,14 +320,11 @@ export default function IAEOZSummitPage() {
                       >
                         {/* Thumbnail */}
                         <div className="aspect-video bg-muted relative overflow-hidden">
-                          <img
-                            src={getYouTubeThumbnail(video.id)}
-                            alt={video.title}
-                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                              <Play className="h-8 w-8 text-emerald-700 ml-1" />
+                          <VideoThumbnail video={video} />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+                          <div className="absolute bottom-3 right-3">
+                            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                              <Play className="h-5 w-5 text-emerald-700 ml-0.5" />
                             </div>
                           </div>
                           <Badge className="absolute top-3 right-3 capitalize" variant="secondary">
@@ -321,12 +345,7 @@ export default function IAEOZSummitPage() {
                           <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
                               <User className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium">{video.speaker}</span>
-                              {video.interviewer && (
-                                <span className="text-muted-foreground">
-                                  (interviewed by {video.interviewer})
-                                </span>
-                              )}
+                              <span className="font-medium">{video.speaker || "N/A"}</span>
                             </div>
 
                             {video.organization && (
@@ -348,11 +367,6 @@ export default function IAEOZSummitPage() {
                               </div>
                             )}
                           </div>
-
-                          <Button variant="outline" className="w-full mt-4" size="sm">
-                            <Play className="mr-2 h-4 w-4" />
-                            Watch Video
-                          </Button>
                         </CardContent>
                       </Card>
                     ))}
@@ -384,8 +398,7 @@ export default function IAEOZSummitPage() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base">{speaker.name}</CardTitle>
                   <CardDescription className="text-xs">
-                    {speaker.role}
-                    {speaker.organization && ` • ${speaker.organization}`}
+                    {speaker.organization}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
@@ -416,9 +429,8 @@ export default function IAEOZSummitPage() {
               <DialogHeader className="p-6 pt-4">
                 <DialogTitle className="text-lg">{playingVideo.title}</DialogTitle>
                 <DialogDescription className="text-sm">
-                  {playingVideo.speaker}
+                  {playingVideo.speaker || "Unknown Speaker"}
                   {playingVideo.organization && ` • ${playingVideo.organization}`}
-                  {playingVideo.interviewer && ` (Interviewed by ${playingVideo.interviewer})`}
                 </DialogDescription>
               </DialogHeader>
             </>
