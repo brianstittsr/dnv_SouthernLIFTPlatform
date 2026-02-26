@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { IAEOZHeroCarousel } from "@/components/iaeoz/hero-carousel";
+import { iaeozHeroSlides } from "@/lib/iaeoz-config";
 
 // Image Placeholder Component
 function VideoThumbnail({ video }: { video: Video }) {
@@ -148,41 +150,11 @@ export default function IAEOZSummitPage() {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white">
-        <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="outline" className="mb-6 border-white/50 text-white bg-white/10">
-              Video Archive
-            </Badge>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              IAEOZ Summit{" "}
-              <span className="text-emerald-300">Conference Videos</span>
-            </h1>
-            <p className="mt-6 text-lg text-emerald-100 max-w-2xl mx-auto">
-              Explore presentations from the Innovation in Agriculture and Energy Opportunity Zone Summit. 
-              Watch keynotes, interviews, and discussions featuring industry leaders and government officials.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm text-emerald-200">
-              <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                {data.statistics.years_covered.join(", ")}
-              </span>
-              <span className="flex items-center gap-2">
-                <Play className="h-4 w-4" />
-                {data.statistics.total_videos} Videos
-              </span>
-              <span className="flex items-center gap-2">
-                <Mic className="h-4 w-4" />
-                {data.statistics.unique_speakers} Speakers
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Carousel */}
+      <IAEOZHeroCarousel slides={iaeozHeroSlides} />
 
       {/* Search and Filter Section */}
-      <section className="py-8 bg-muted/50 border-b sticky top-20 z-30">
+      <section id="videos" className="py-8 bg-muted/50 border-b sticky top-20 z-30">
         <div className="container">
           <div className="flex flex-col gap-4">
             {/* Search Bar */}
