@@ -94,22 +94,6 @@ export function IAEOZHeroCarousel({ slides }: IAEOZHeroCarouselProps) {
           </button>
 
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20">
-            <div className="flex gap-2">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={cn(
-                    "w-3 h-3 rounded-full transition-all",
-                    index === currentIndex
-                      ? "bg-emerald-400 scale-125"
-                      : "bg-white/50 hover:bg-white/70"
-                  )}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
