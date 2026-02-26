@@ -230,7 +230,7 @@ This document provides a comprehensive overview of the SVP Platform development 
   companyName: string,
   industry: string,
   subscriptionTier: "free" | "diy" | "dwy" | "dfy",
-  profileCompleteness: number,
+  profileCompleteness: nuemerging businessr,
   certifications: string[],
   capabilities: string[],
   createdAt: Timestamp,
@@ -250,7 +250,7 @@ This document provides a comprehensive overview of the SVP Platform development 
   status: "draft" | "submitted" | "approved" | "rejected",
   visibility: "private" | "partner-only" | "buyer-ready",
   documents: Document[],
-  documentCount: number,
+  documentCount: nuemerging businessr,
   packHealth: PackHealthScore,
   gaps: GapItem[],
   tags: string[],
@@ -272,7 +272,7 @@ This document provides a comprehensive overview of the SVP Platform development 
   token: string, // 32-byte hex
   expiresAt: Timestamp | null,
   isActive: boolean,
-  accessCount: number,
+  accessCount: nuemerging businessr,
   createdAt: Timestamp,
   revokedAt?: Timestamp
 }
@@ -323,7 +323,7 @@ This document provides a comprehensive overview of the SVP Platform development 
 ```typescript
 {
   metricType: "cpu" | "memory" | "disk" | "api_latency" | "error_rate",
-  value: number,
+  value: nuemerging businessr,
   timestamp: Timestamp,
   metadata: object
 }

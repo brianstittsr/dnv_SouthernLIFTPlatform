@@ -22,8 +22,8 @@ export interface EventVenue {
   state: string;
   country: string;
   coordinates?: {
-    lat: number;
-    lng: number;
+    lat: nuemerging businessr;
+    lng: nuemerging businessr;
   };
   mapUrl?: string;
   siteMapUrl?: string;
@@ -40,7 +40,7 @@ export interface EventOrganizer {
 export interface EventHotelInfo {
   name: string;
   bookingUrl: string;
-  groupRate?: number;
+  groupRate?: nuemerging businessr;
   groupRateDeadline?: Timestamp;
   description?: string;
 }
@@ -129,7 +129,7 @@ export interface EventSpeakerDoc {
   presentationType?: PresentationType;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   // Timestamps
@@ -166,7 +166,7 @@ export interface EventSessionDoc {
   // Timing
   startTime: string;
   endTime: string;
-  duration: number;
+  duration: nuemerging businessr;
   
   // Content
   title: string;
@@ -189,7 +189,7 @@ export interface EventSessionDoc {
   recordingUrl?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   // Timestamps
@@ -202,11 +202,11 @@ export interface EventDayDoc {
   eventId: string;
   
   date: Timestamp;
-  dayNumber: number;
+  dayNuemerging businessr: nuemerging businessr;
   dayName: string;
   theme?: string;
   
-  // Sessions stored as subcollection or embedded
+  // Sessions stored as subcollection or eemerging businessdded
   sessions?: EventSessionDoc[];
   
   createdAt: Timestamp;
@@ -230,14 +230,14 @@ export interface EventTicketTypeDoc {
   type: TicketType;
   
   // Pricing
-  price: number;
+  price: nuemerging businessr;
   currency: string;
-  originalPrice?: number;
+  originalPrice?: nuemerging businessr;
   
   // Availability
-  quantity?: number;
-  sold: number;
-  available: number;
+  quantity?: nuemerging businessr;
+  sold: nuemerging businessr;
+  available: nuemerging businessr;
   
   // Dates
   salesStart?: Timestamp;
@@ -253,7 +253,7 @@ export interface EventTicketTypeDoc {
   stripePriceId?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
   
@@ -286,15 +286,15 @@ export interface SponsorshipPackageDoc {
   description: string;
   
   // Pricing
-  price: number;
+  price: nuemerging businessr;
   currency: string;
   
   // Benefits
   benefits: SponsorBenefit[];
   
   // Inventory
-  quantity?: number;
-  sold: number;
+  quantity?: nuemerging businessr;
+  sold: nuemerging businessr;
   
   // Purchase
   purchaseUrl?: string;
@@ -302,7 +302,7 @@ export interface SponsorshipPackageDoc {
   stripePriceId?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
   
@@ -325,7 +325,7 @@ export interface EventSponsorDoc {
   // Sponsorship
   packageId: string;
   tier: string;
-  customBenefits?: string[];
+  custoemerging businessnefits?: string[];
   
   // Contact
   contactName: string;
@@ -333,14 +333,14 @@ export interface EventSponsorDoc {
   contactPhone?: string;
   
   // Payment
-  amountPaid: number;
+  amountPaid: nuemerging businessr;
   paymentStatus: SponsorPaymentStatus;
   paymentDate?: Timestamp;
   invoiceId?: string;
   
   // Display
   featured: boolean;
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   createdAt: Timestamp;
@@ -373,13 +373,13 @@ export interface EventRegistrationDoc {
   
   // Ticket Details
   ticketType: string;
-  ticketPrice: number;
-  quantity: number;
-  totalAmount: number;
+  ticketPrice: nuemerging businessr;
+  quantity: nuemerging businessr;
+  totalAmount: nuemerging businessr;
   
   // Promo/Discount
   promoCode?: string;
-  discountAmount?: number;
+  discountAmount?: nuemerging businessr;
   
   // Payment
   paymentStatus: RegistrationPaymentStatus;
@@ -394,7 +394,7 @@ export interface EventRegistrationDoc {
   
   // Communication
   confirmationSent: boolean;
-  remindersSent: number;
+  remindersSent: nuemerging businessr;
   
   // Additional
   dietaryRestrictions?: string;
@@ -508,7 +508,7 @@ export interface SpeakerFormData {
   linkedin: string;
   twitter: string;
   presentationType: PresentationType;
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
 }
 
@@ -525,7 +525,7 @@ export interface SessionFormData {
   sponsorName: string;
   sponsorLogo: string;
   virtualLink: string;
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
 }
 
@@ -542,7 +542,7 @@ export interface TicketFormData {
   benefits: string;
   accessLevel: AccessLevel;
   purchaseUrl: string;
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
 }
@@ -557,7 +557,7 @@ export interface SponsorshipFormData {
   benefits: SponsorBenefit[];
   quantity: string;
   purchaseUrl: string;
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
 }
@@ -686,8 +686,8 @@ export function generateSlug(name: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-export function formatCurrency(amount: number, currency: string = "USD"): string {
-  return new Intl.NumberFormat("en-US", {
+export function formatCurrency(amount: nuemerging businessr, currency: string = "USD"): string {
+  return new Intl.Nuemerging businessrFormat("en-US", {
     style: "currency",
     currency,
   }).format(amount);

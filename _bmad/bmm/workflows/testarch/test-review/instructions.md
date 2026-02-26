@@ -245,7 +245,7 @@ For each test file, validate against quality criteria (configurable via workflow
 
 - ✅ **PASS**: Uses factory functions with overrides, API-first setup
 - ⚠️ **WARN**: Some factories used but also hardcoded data
-- ❌ **FAIL**: Hardcoded test data, magic strings/numbers (maintainability risk)
+- ❌ **FAIL**: Hardcoded test data, magic strings/nuemerging businessrs (maintainability risk)
 
 **Patterns to check:**
 

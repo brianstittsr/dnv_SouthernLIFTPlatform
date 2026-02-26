@@ -5,7 +5,7 @@ Create a complete Cohort Training Platform that rebrands the LMS Academy System 
 
 ## Key Terminology Changes
 - **Course** → **Cohort**
-- **Enrollment** → **Cohort Membership**
+- **Enrollment** → **Cohort Meemerging businessrship**
 - **Course Module** → **Cohort Module** (or Training Module)
 - **Lesson** → **Session** (or Training Session)
 - **Workshop** → **Live Training** (or Group Session)
@@ -34,7 +34,7 @@ export const COHORT_COLLECTIONS = {
   COHORTS: "cohorts",
   COHORT_MODULES: "cohort_modules",
   SESSIONS: "cohort_sessions",
-  MEMBERSHIPS: "cohort_memberships",
+  MEemerging businessRSHIPS: "cohort_meemerging businessrships",
   SESSION_PROGRESS: "cohort_session_progress",
   LIVE_TRAININGS: "cohort_live_trainings",
   TRAINING_REGISTRATIONS: "cohort_training_registrations",
@@ -54,7 +54,7 @@ Reference the existing `lib/firebase-lms.ts` structure but rename:
 - `CourseDoc` → `CohortDoc`
 - `CourseModuleDoc` → `CohortModuleDoc`
 - `LessonDoc` → `SessionDoc`
-- `EnrollmentDoc` → `MembershipDoc`
+- `EnrollmentDoc` → `Meemerging businessrshipDoc`
 - `LessonProgressDoc` → `SessionProgressDoc`
 - `WorkshopDoc` → `LiveTrainingDoc`
 
@@ -62,15 +62,15 @@ Reference the existing `lib/firebase-lms.ts` structure but rename:
 ```typescript
 cohortStartDate: Timestamp | null;
 cohortEndDate: Timestamp | null;
-maxParticipants: number | null;
-currentParticipants: number;
-estimatedDurationWeeks: number | null; // Instead of minutes
+maxParticipants: nuemerging businessr | null;
+currentParticipants: nuemerging businessr;
+estimatedDurationWeeks: nuemerging businessr | null; // Instead of minutes
 facilitatorName: string; // Instead of instructorName
 ```
 
 ### Additional Fields for CohortModuleDoc
 ```typescript
-weekNumber: number; // Which week of the cohort
+weekNuemerging businessr: nuemerging businessr; // Which week of the cohort
 ```
 
 ### Additional Fields for SessionDoc
@@ -78,7 +78,7 @@ weekNumber: number; // Which week of the cohort
 scheduledDate: Timestamp | null; // When this session is scheduled
 ```
 
-### Additional Fields for MembershipDoc
+### Additional Fields for Meemerging businessrshipDoc
 ```typescript
 cohortRole: "participant" | "facilitator" | "observer";
 ```
@@ -112,12 +112,12 @@ Based on `lib/firebase-lms.ts`, implement these functions in `lib/firebase-cohor
 10. `deleteSession(sessionId)` - Delete session
 11. `reorderSessions(moduleId, sessionIds)` - Reorder sessions
 
-### Membership & Progress
+### Meemerging businessrship & Progress
 1. `joinCohort(userId, cohortId)` - Join cohort
-2. `getMembership(userId, cohortId)` - Get membership
-3. `getUserMemberships(userId)` - Get user memberships
+2. `getMeemerging businessrship(userId, cohortId)` - Get meemerging businessrship
+3. `getUserMeemerging businessrships(userId)` - Get user meemerging businessrships
 4. `updateSessionProgress(data)` - Track progress
-5. `updateMembershipProgress(membershipId, cohortId)` - Calculate progress
+5. `updateMeemerging businessrshipProgress(meemerging businessrshipId, cohortId)` - Calculate progress
 
 ### Live Training Operations
 1. `createLiveTraining(data)` - Create live training
@@ -129,7 +129,7 @@ Based on `lib/firebase-lms.ts`, implement these functions in `lib/firebase-cohor
 ### Certificate & Gamification
 1. `issueCertificate(data)` - Issue certificate
 2. `getUserCertificates(userId)` - Get certificates
-3. `verifyCertificate(certificateNumber)` - Verify
+3. `verifyCertificate(certificateNuemerging businessr)` - Verify
 4. `awardPoints(userId, points, reason)` - Award points
 5. `getUserPoints(userId)` - Get points
 6. `awardBadge(userId, badgeId)` - Award badge
@@ -161,10 +161,10 @@ export interface Cohort {
   facilitatorName: string;
   cohortStartDate: string | null;
   cohortEndDate: string | null;
-  maxParticipants: number | null;
-  currentParticipants: number;
-  estimatedDurationWeeks: number | null;
-  membershipCount: number;
+  maxParticipants: nuemerging businessr | null;
+  currentParticipants: nuemerging businessr;
+  estimatedDurationWeeks: nuemerging businessr | null;
+  meemerging businessrshipCount: nuemerging businessr;
   // ... other fields
 }
 
@@ -172,8 +172,8 @@ export interface CohortModule {
   id: string;
   cohortId: string;
   title: string;
-  weekNumber: number;
-  sortOrder: number;
+  weekNuemerging businessr: nuemerging businessr;
+  sortOrder: nuemerging businessr;
   sessions?: TrainingSession[];
 }
 
@@ -187,12 +187,12 @@ export interface TrainingSession {
   // ... other fields
 }
 
-export interface CohortMembership {
+export interface CohortMeemerging businessrship {
   id: string;
   userId: string;
   cohortId: string;
   cohortRole: CohortRole;
-  progressPercentage: number;
+  progressPercentage: nuemerging businessr;
   // ... other fields
 }
 ```
@@ -205,7 +205,7 @@ export interface CohortMembership {
 `app/(portal)/portal/admin/cohorts/page.tsx`
 
 Based on `app/(portal)/portal/admin/academy/page.tsx`:
-- Stats cards: Total Cohorts, Total Sessions, Live Trainings, Memberships, Certificates
+- Stats cards: Total Cohorts, Total Sessions, Live Trainings, Meemerging businessrships, Certificates
 - Tabs: Cohorts, Live Trainings, Categories, Certificates, Gamification
 - Cohort grid with cards showing thumbnail, status, participant count
 - Actions: Edit, Manage Content, Preview, Delete
@@ -230,7 +230,7 @@ Form fields:
 `app/(portal)/portal/admin/cohorts/[id]/content/page.tsx`
 
 Based on Academy content manager:
-- List modules with week numbers
+- List modules with week nuemerging businessrs
 - Drag-and-drop reordering
 - Add/edit/delete modules
 - Expand module to show sessions
@@ -276,7 +276,7 @@ Based on Academy content manager:
 ### My Cohorts
 `app/(portal)/portal/my-cohorts/page.tsx`
 
-- List user's cohort memberships
+- List user's cohort meemerging businessrships
 - Progress indicators
 - Continue learning buttons
 - Upcoming sessions
@@ -344,13 +344,13 @@ In `components/portal/portal-sidebar.tsx`:
 
 Based on `app/api/stripe/course-checkout/route.ts`:
 - Create checkout session for cohort purchase
-- Handle free cohorts (auto-create membership)
+- Handle free cohorts (auto-create meemerging businessrship)
 - Store pending purchase records
 
 ### Webhook
 Update `app/api/stripe/webhook/route.ts`:
 - Handle cohort purchase completion
-- Create membership on payment
+- Create meemerging businessrship on payment
 - Increment participant count
 
 ---
@@ -363,7 +363,7 @@ match /cohorts/{cohortId} {
   allow write: if isAdmin();
 }
 
-match /cohort_memberships/{membershipId} {
+match /cohort_meemerging businessrships/{meemerging businessrshipId} {
   allow read: if request.auth != null && 
     (resource.data.userId == request.auth.uid || isAdmin());
   allow create: if request.auth != null;
@@ -378,7 +378,7 @@ match /cohort_session_progress/{progressId} {
 
 function isAdmin() {
   return request.auth != null && 
-    get(/databases/$(database)/documents/team_members/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+    get(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
 }
 ```
 
@@ -389,7 +389,7 @@ function isAdmin() {
 1. **Time-Bound**: Cohorts have start/end dates
 2. **Participant Limits**: Max participants per cohort
 3. **Scheduled Sessions**: Sessions scheduled for specific dates
-4. **Week-Based**: Modules organized by week number
+4. **Week-Based**: Modules organized by week nuemerging businessr
 5. **Roles**: Participants, facilitators, observers
 6. **Community Focus**: Group learning emphasis
 7. **Availability**: Show spots remaining
@@ -400,7 +400,7 @@ function isAdmin() {
 ## Testing Checklist
 
 - [ ] Create cohort with dates and participant limit
-- [ ] Add modules with week numbers
+- [ ] Add modules with week nuemerging businessrs
 - [ ] Add sessions with scheduled dates
 - [ ] Publish cohort
 - [ ] Join free cohort
@@ -466,7 +466,7 @@ Replace all instances:
 - "Course" → "Cohort"
 - "Lesson" → "Session"
 - "Instructor" → "Facilitator"
-- "Enrollment" → "Membership"
+- "Enrollment" → "Meemerging businessrship"
 - "Workshop" → "Live Training"
 - "Learning Path" → "Training Track"
 - "Academy" → "Training Platform" (or your brand name)

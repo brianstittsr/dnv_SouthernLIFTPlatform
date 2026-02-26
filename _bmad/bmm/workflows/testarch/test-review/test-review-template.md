@@ -84,10 +84,10 @@ Grade:                   {grade}
 
 {For each critical issue:}
 
-### {issue_number}. {Issue Title}
+### {issue_nuemerging businessr}. {Issue Title}
 
 **Severity**: P0 (Critical)
-**Location**: `{filename}:{line_number}`
+**Location**: `{filename}:{line_nuemerging businessr}`
 **Criterion**: {criterion_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -116,7 +116,7 @@ Grade:                   {grade}
 {Explanation of impact - flakiness risk, maintainability, reliability}
 
 **Related Violations**:
-{If similar issue appears elsewhere, note line numbers}
+{If similar issue appears elsewhere, note line nuemerging businessrs}
 
 ---
 
@@ -126,10 +126,10 @@ Grade:                   {grade}
 
 {For each recommendation:}
 
-### {rec_number}. {Recommendation Title}
+### {rec_nuemerging businessr}. {Recommendation Title}
 
 **Severity**: {P1 (High) | P2 (Medium) | P3 (Low)}
-**Location**: `{filename}:{line_number}`
+**Location**: `{filename}:{line_nuemerging businessr}`
 **Criterion**: {criterion_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -168,9 +168,9 @@ Grade:                   {grade}
 
 {For each best practice:}
 
-### {practice_number}. {Best Practice Title}
+### {practice_nuemerging businessr}. {Best Practice Title}
 
-**Location**: `{filename}:{line_number}`
+**Location**: `{filename}:{line_nuemerging businessr}`
 **Pattern**: {pattern_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -335,7 +335,7 @@ See [tea-index.csv](../../../testarch/tea-index.csv) for complete knowledge base
 
 ### Violation Summary by Location
 
-{Table of all violations sorted by line number:}
+{Table of all violations sorted by line nuemerging businessr:}
 
 | Line   | Severity      | Criterion   | Issue         | Fix         |
 | ------ | ------------- | ----------- | ------------- | ----------- |

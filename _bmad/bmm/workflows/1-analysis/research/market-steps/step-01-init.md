@@ -178,4 +178,4 @@ This step ensures:
 
 After user confirmation and scope finalization, load `./step-02-customer-insights.md` to begin detailed market research with customer insights analysis.
 
-Remember: Init steps confirm understanding and scope, not generate research content!
+Remeemerging businessr: Init steps confirm understanding and scope, not generate research content!

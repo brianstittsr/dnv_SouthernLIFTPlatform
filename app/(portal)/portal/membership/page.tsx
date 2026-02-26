@@ -28,25 +28,25 @@ import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore
 import { COLLECTIONS } from '@/lib/schema';
 import { useUserProfile } from '@/contexts/user-profile-context';
 
-interface Membership {
+interface Meemerging businessrship {
   id: string;
   tier: 'core-capture' | 'pursuit-pack' | 'custom';
   status: 'active' | 'trialing' | 'past_due' | 'cancelled';
   billingCycle: 'monthly' | 'annual';
-  amount: number;
+  amount: nuemerging businessr;
   currentPeriodStart: Timestamp;
   currentPeriodEnd: Timestamp;
   cancelAtPeriodEnd: boolean;
   metadata?: {
-    conciergeHoursUsed?: number;
-    conciergeHoursLimit?: number;
+    conciergeHoursUsed?: nuemerging businessr;
+    conciergeHoursLimit?: nuemerging businessr;
   };
   createdAt: Timestamp;
 }
 
 const TIER_CONFIG = {
   'core-capture': {
-    name: 'Core Capture Member',
+    name: 'Core Capture Meemerging businessr',
     icon: Star,
     color: 'bg-blue-100 text-blue-800',
     features: [
@@ -86,16 +86,16 @@ const STATUS_CONFIG = {
   'cancelled': { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: AlertCircle },
 };
 
-export default function MyMembershipPage() {
+export default function MyMeemerging businessrshipPage() {
   const { profile } = useUserProfile();
-  const [membership, setMembership] = useState<Membership | null>(null);
+  const [meemerging businessrship, setMeemerging businessrship] = useState<Meemerging businessrship | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMembership();
+    fetchMeemerging businessrship();
   }, [profile.id]);
 
-  const fetchMembership = async () => {
+  const fetchMeemerging businessrship = async () => {
     if (!db || !profile.id) {
       // Use sample data for demo
       setSampleData();
@@ -103,9 +103,9 @@ export default function MyMembershipPage() {
     }
 
     try {
-      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
+      const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
       const q = query(
-        membershipsRef,
+        meemerging businessrshipsRef,
         where('userId', '==', profile.id),
         where('status', 'in', ['active', 'trialing', 'past_due'])
       );
@@ -113,16 +113,16 @@ export default function MyMembershipPage() {
       const snapshot = await getDocs(q);
       
       if (!snapshot.empty) {
-        const membershipData = {
+        const meemerging businessrshipData = {
           id: snapshot.docs[0].id,
           ...snapshot.docs[0].data()
-        } as Membership;
-        setMembership(membershipData);
+        } as Meemerging businessrship;
+        setMeemerging businessrship(meemerging businessrshipData);
       } else {
         setSampleData();
       }
     } catch (error) {
-      console.error('Error fetching membership:', error);
+      console.error('Error fetching meemerging businessrship:', error);
       setSampleData();
     } finally {
       setLoading(false);
@@ -131,7 +131,7 @@ export default function MyMembershipPage() {
 
   const setSampleData = () => {
     const now = new Date();
-    setMembership({
+    setMeemerging businessrship({
       id: 'sample-1',
       tier: 'core-capture',
       status: 'active',
@@ -149,8 +149,8 @@ export default function MyMembershipPage() {
     setLoading(false);
   };
 
-  const formatCurrency = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatCurrency = (cents: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
@@ -166,27 +166,27 @@ export default function MyMembershipPage() {
     );
   }
 
-  if (!membership) {
+  if (!meemerging businessrship) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">My Membership</h1>
+          <h1 className="text-3xl font-bold">My Meemerging businessrship</h1>
           <p className="text-muted-foreground">
-            Manage your KDM Consortium membership
+            Manage your KDM Consortium meemerging businessrship
           </p>
         </div>
 
         <Card className="text-center py-12">
           <CardContent>
             <Star className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No Active Membership</h3>
+            <h3 className="text-xl font-semibold mb-2">No Active Meemerging businessrship</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Join the KDM Consortium to access curated opportunities, 
               connect with teaming partners, and accelerate your government contracting success.
             </p>
-            <Link href="/membership">
+            <Link href="/meemerging businessrship">
               <Button size="lg">
-                View Membership Options
+                View Meemerging businessrship Options
                 <ArrowUpRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -196,16 +196,16 @@ export default function MyMembershipPage() {
     );
   }
 
-  const tierConfig = TIER_CONFIG[membership.tier];
-  const statusConfig = STATUS_CONFIG[membership.status];
+  const tierConfig = TIER_CONFIG[meemerging businessrship.tier];
+  const statusConfig = STATUS_CONFIG[meemerging businessrship.status];
   const TierIcon = tierConfig.icon;
   const StatusIcon = statusConfig.icon;
   const daysRemaining = differenceInDays(
-    membership.currentPeriodEnd.toDate(),
+    meemerging businessrship.currentPeriodEnd.toDate(),
     new Date()
   );
-  const conciergeUsed = membership.metadata?.conciergeHoursUsed || 0;
-  const conciergeLimit = membership.metadata?.conciergeHoursLimit || 2;
+  const conciergeUsed = meemerging businessrship.metadata?.conciergeHoursUsed || 0;
+  const conciergeLimit = meemerging businessrship.metadata?.conciergeHoursLimit || 2;
   const conciergePercent = (conciergeUsed / conciergeLimit) * 100;
 
   return (
@@ -213,9 +213,9 @@ export default function MyMembershipPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">My Membership</h1>
+          <h1 className="text-3xl font-bold">My Meemerging businessrship</h1>
           <p className="text-muted-foreground">
-            Manage your KDM Consortium membership
+            Manage your KDM Consortium meemerging businessrship
           </p>
         </div>
         <Badge className={statusConfig.color} variant="outline">
@@ -225,7 +225,7 @@ export default function MyMembershipPage() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Main Membership Card */}
+        {/* Main Meemerging businessrship Card */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
@@ -237,14 +237,14 @@ export default function MyMembershipPage() {
                   <div>
                     <CardTitle>{tierConfig.name}</CardTitle>
                     <CardDescription className="capitalize">
-                      {membership.billingCycle} billing
+                      {meemerging businessrship.billingCycle} billing
                     </CardDescription>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold">{formatCurrency(membership.amount)}</div>
+                  <div className="text-2xl font-bold">{formatCurrency(meemerging businessrship.amount)}</div>
                   <div className="text-sm text-muted-foreground">
-                    /{membership.billingCycle === 'monthly' ? 'month' : 'year'}
+                    /{meemerging businessrship.billingCycle === 'monthly' ? 'month' : 'year'}
                   </div>
                 </div>
               </div>
@@ -260,13 +260,13 @@ export default function MyMembershipPage() {
                 </div>
                 <Progress value={((30 - daysRemaining) / 30) * 100} className="h-2" />
                 <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                  <span>{format(membership.currentPeriodStart.toDate(), 'MMM d, yyyy')}</span>
-                  <span>{format(membership.currentPeriodEnd.toDate(), 'MMM d, yyyy')}</span>
+                  <span>{format(meemerging businessrship.currentPeriodStart.toDate(), 'MMM d, yyyy')}</span>
+                  <span>{format(meemerging businessrship.currentPeriodEnd.toDate(), 'MMM d, yyyy')}</span>
                 </div>
               </div>
 
               {/* Concierge Hours (if applicable) */}
-              {membership.tier === 'core-capture' && (
+              {meemerging businessrship.tier === 'core-capture' && (
                 <div className="bg-muted/50 rounded-lg p-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium">Concierge Hours</span>
@@ -282,18 +282,18 @@ export default function MyMembershipPage() {
               )}
 
               {/* Cancel Warning */}
-              {membership.cancelAtPeriodEnd && (
+              {meemerging businessrship.cancelAtPeriodEnd && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 text-yellow-600 shrink-0" />
                     <div>
-                      <p className="font-medium text-yellow-800">Membership Ending</p>
+                      <p className="font-medium text-yellow-800">Meemerging businessrship Ending</p>
                       <p className="text-sm text-yellow-700">
-                        Your membership will end on {format(membership.currentPeriodEnd.toDate(), 'MMMM d, yyyy')}. 
-                        You'll lose access to all member benefits after this date.
+                        Your meemerging businessrship will end on {format(meemerging businessrship.currentPeriodEnd.toDate(), 'MMMM d, yyyy')}. 
+                        You'll lose access to all meemerging businessr benefits after this date.
                       </p>
                       <Button variant="outline" size="sm" className="mt-2">
-                        Keep My Membership
+                        Keep My Meemerging businessrship
                       </Button>
                     </div>
                   </div>
@@ -323,8 +323,8 @@ export default function MyMembershipPage() {
                 <Settings className="h-4 w-4 mr-2" />
                 Manage Subscription
               </Button>
-              {membership.tier !== 'custom' && (
-                <Link href="/membership">
+              {meemerging businessrship.tier !== 'custom' && (
+                <Link href="/meemerging businessrship">
                   <Button variant="default">
                     <ArrowUpRight className="h-4 w-4 mr-2" />
                     Upgrade Plan
@@ -422,13 +422,13 @@ export default function MyMembershipPage() {
             </CardContent>
           </Card>
 
-          {/* Member Since */}
+          {/* Meemerging businessr Since */}
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">Member Since</p>
+                <p className="text-sm text-muted-foreground">Meemerging businessr Since</p>
                 <p className="text-lg font-medium">
-                  {format(membership.createdAt.toDate(), 'MMMM yyyy')}
+                  {format(meemerging businessrship.createdAt.toDate(), 'MMMM yyyy')}
                 </p>
               </div>
             </CardContent>

@@ -13,13 +13,13 @@ import { DataToggle } from "@/components/ui/data-toggle";
 import { mockBuyerDashboardStats } from "@/lib/mock-data/buyer-mock-data";
 
 interface DashboardStats {
-  activeIntroductions: number;
-  pendingResponses: number;
-  scheduledMeetings: number;
-  closedDeals: number;
-  totalSpend: number;
-  savedSMEs: number;
-  sharedProofPacks: number;
+  activeIntroductions: nuemerging businessr;
+  pendingResponses: nuemerging businessr;
+  scheduledMeetings: nuemerging businessr;
+  closedDeals: nuemerging businessr;
+  totalSpend: nuemerging businessr;
+  savedSMEs: nuemerging businessr;
+  sharedProofPacks: nuemerging businessr;
   recentActivity: Array<{
     id: string;
     type: string;
@@ -64,7 +64,7 @@ export default function BuyerDashboardPage() {
       const closedDeals = introductions.filter((i: any) => i.stage === "closed_won").length;
       const totalSpend = introductions
         .filter((i: any) => i.stage === "closed_won")
-        .reduce((sum: number, i: any) => sum + (i.estimatedValue || 0), 0);
+        .reduce((sum: nuemerging businessr, i: any) => sum + (i.estimatedValue || 0), 0);
 
       // Fetch saved SMEs
       const savedQuery = query(
@@ -113,8 +113,8 @@ export default function BuyerDashboardPage() {
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+  const formatCurrency = (value: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   const formatDate = (timestamp: any) => {

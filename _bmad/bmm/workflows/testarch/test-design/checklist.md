@@ -147,7 +147,7 @@
 
 - [ ] bmm-workflow-status.md exists
 - [ ] Test design logged in Quality & Testing Progress
-- [ ] Epic number and scope documented
+- [ ] Epic nuemerging businessr and scope documented
 - [ ] Completion timestamp recorded
 
 ### Workflow Dependencies

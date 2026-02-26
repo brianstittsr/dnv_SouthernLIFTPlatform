@@ -7,7 +7,7 @@ export interface BlogPost {
   date: string;
   category: BlogCategory;
   tags: string[];
-  readTime: number;
+  readTime: nuemerging businessr;
   imageUrl?: string;
 }
 

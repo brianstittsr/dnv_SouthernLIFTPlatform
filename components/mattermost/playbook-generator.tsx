@@ -54,7 +54,7 @@ import {
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy, doc, getDoc, addDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeamMemberDoc, type PlatformSettingsDoc, type MattermostPlaybookDoc, type MattermostPlaybookRunDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMeemerging businessrDoc, type PlatformSettingsDoc, type MattermostPlaybookDoc, type MattermostPlaybookRunDoc } from "@/lib/schema";
 import {
   createPlaybook,
   startPlaybookRun,
@@ -87,7 +87,7 @@ interface MattermostTeam {
   display_name: string;
 }
 
-interface TeamMember {
+interface TeamMeemerging businessr {
   id: string;
   name: string;
   email: string;
@@ -102,12 +102,12 @@ export function PlaybookGenerator() {
   const [selectedTeam, setSelectedTeam] = useState<string>("");
   const [selectedTeamName, setSelectedTeamName] = useState<string>("");
   const [mattermostUsers, setMattermostUsers] = useState<MattermostUser[]>([]);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<TeamMeemerging businessr[]>([]);
   const [playbooks, setPlaybooks] = useState<MattermostPlaybookResponse[]>([]);
   const [playbookRuns, setPlaybookRuns] = useState<MattermostPlaybookRunResponse[]>([]);
   const [trackedPlaybooks, setTrackedPlaybooks] = useState<(MattermostPlaybookDoc & { id: string })[]>([]);
   const [trackedRuns, setTrackedRuns] = useState<(MattermostPlaybookRunDoc & { id: string })[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [selectedMeemerging businessrs, setSelectedMeemerging businessrs] = useState<string[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -150,24 +150,24 @@ export function PlaybookGenerator() {
           }
         }
         
-        // Load team members
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        // Load team meemerging businessrs
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         
-        const members: TeamMember[] = [];
+        const meemerging businessrs: TeamMeemerging businessr[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeamMemberDoc;
+          const data = doc.data() as TeamMeemerging businessrDoc;
           const firstName = data.firstName || "";
           const lastName = data.lastName || "";
-          members.push({
+          meemerging businessrs.push({
             id: doc.id,
             name: `${firstName} ${lastName}`.trim() || "Unknown",
             email: data.emailPrimary || "",
             mattermostUserId: data.mattermostUserId,
           });
         });
-        setTeamMembers(members);
+        setTeamMeemerging businessrs(meemerging businessrs);
         
         // Load tracked playbooks from Firestore
         await loadTrackedPlaybooks();
@@ -270,23 +270,23 @@ export function PlaybookGenerator() {
     setReminderTasks([...reminderTasks, { title: "", description: "" }]);
   };
 
-  const updateReminderTask = (index: number, field: "title" | "description", value: string) => {
+  const updateReminderTask = (index: nuemerging businessr, field: "title" | "description", value: string) => {
     const updated = [...reminderTasks];
     updated[index][field] = value;
     setReminderTasks(updated);
   };
 
-  const removeReminderTask = (index: number) => {
+  const removeReminderTask = (index: nuemerging businessr) => {
     if (reminderTasks.length > 1) {
       setReminderTasks(reminderTasks.filter((_, i) => i !== index));
     }
   };
 
-  const toggleMemberSelection = (memberId: string) => {
-    setSelectedMembers(prev => 
-      prev.includes(memberId) 
-        ? prev.filter(id => id !== memberId)
-        : [...prev, memberId]
+  const toggleMeemerging businessrSelection = (meemerging businessrId: string) => {
+    setSelectedMeemerging businessrs(prev => 
+      prev.includes(meemerging businessrId) 
+        ? prev.filter(id => id !== meemerging businessrId)
+        : [...prev, meemerging businessrId]
     );
   };
 
@@ -301,15 +301,15 @@ export function PlaybookGenerator() {
   };
 
   const getMattermostUserIds = (): string[] => {
-    // Map selected team members to their Mattermost user IDs
+    // Map selected team meemerging businessrs to their Mattermost user IDs
     const userIds: string[] = [];
-    selectedMembers.forEach(memberId => {
-      const member = teamMembers.find(m => m.id === memberId);
-      if (member?.mattermostUserId) {
-        userIds.push(member.mattermostUserId);
-      } else if (member?.email) {
+    selectedMeemerging businessrs.forEach(meemerging businessrId => {
+      const meemerging businessr = teamMeemerging businessrs.find(m => m.id === meemerging businessrId);
+      if (meemerging businessr?.mattermostUserId) {
+        userIds.push(meemerging businessr.mattermostUserId);
+      } else if (meemerging businessr?.email) {
         // Try to find by email
-        const mmUser = mattermostUsers.find(u => u.email === member.email);
+        const mmUser = mattermostUsers.find(u => u.email === meemerging businessr.email);
         if (mmUser) {
           userIds.push(mmUser.id);
         }
@@ -324,14 +324,14 @@ export function PlaybookGenerator() {
       return;
     }
     
-    if (selectedMembers.length === 0) {
-      toast.error("Please select at least one team member");
+    if (selectedMeemerging businessrs.length === 0) {
+      toast.error("Please select at least one team meemerging businessr");
       return;
     }
     
-    const memberIds = getMattermostUserIds();
-    if (memberIds.length === 0) {
-      toast.error("Selected team members don't have linked Mattermost accounts. Please link them in the team member settings.");
+    const meemerging businessrIds = getMattermostUserIds();
+    if (meemerging businessrIds.length === 0) {
+      toast.error("Selected team meemerging businessrs don't have linked Mattermost accounts. Please link them in the team meemerging businessr settings.");
       return;
     }
     
@@ -354,7 +354,7 @@ export function PlaybookGenerator() {
             playbookTitle,
             playbookDescription,
             selectedTeam,
-            memberIds,
+            meemerging businessrIds,
             tasks,
             getReminderSeconds()
           );
@@ -365,14 +365,14 @@ export function PlaybookGenerator() {
             playbookTitle,
             playbookDescription,
             selectedTeam,
-            memberIds[0],
-            memberIds,
+            meemerging businessrIds[0],
+            meemerging businessrIds,
             tasks
           );
           break;
           
         case "level10":
-          config = generateLevel10Playbook(selectedTeam, memberIds, memberIds[0]);
+          config = generateLevel10Playbook(selectedTeam, meemerging businessrIds, meemerging businessrIds[0]);
           break;
           
         case "recurring":
@@ -386,7 +386,7 @@ export function PlaybookGenerator() {
             playbookTitle,
             playbookDescription,
             selectedTeam,
-            memberIds,
+            meemerging businessrIds,
             tasks,
             recurrence
           );
@@ -406,8 +406,8 @@ export function PlaybookGenerator() {
                 description: t.description,
               })),
             }],
-            member_ids: memberIds,
-            invited_user_ids: memberIds,
+            meemerging businessr_ids: meemerging businessrIds,
+            invited_user_ids: meemerging businessrIds,
             invite_users_enabled: true,
           };
       }
@@ -425,8 +425,8 @@ export function PlaybookGenerator() {
             teamName: selectedTeamName,
             type: playbookType,
             recurrence: playbookType === "recurring" ? recurrence : undefined,
-            assignedMemberIds: selectedMembers,
-            mattermostMemberIds: memberIds,
+            assignedMeemerging businessrIds: selectedMeemerging businessrs,
+            mattermostMeemerging businessrIds: meemerging businessrIds,
             checklists: config.checklists.map(c => ({
               title: c.title,
               items: c.items.map(i => ({ title: i.title, description: i.description })),
@@ -460,9 +460,9 @@ export function PlaybookGenerator() {
   const handleDeployPlaybook = async () => {
     if (!selectedPlaybook) return;
     
-    const memberIds = getMattermostUserIds();
-    if (memberIds.length === 0) {
-      toast.error("Please select team members with linked Mattermost accounts");
+    const meemerging businessrIds = getMattermostUserIds();
+    if (meemerging businessrIds.length === 0) {
+      toast.error("Please select team meemerging businessrs with linked Mattermost accounts");
       return;
     }
     
@@ -472,7 +472,7 @@ export function PlaybookGenerator() {
       const result = await startPlaybookRun(serverUrl, token, {
         name: runName,
         description: selectedPlaybook.description,
-        owner_user_id: memberIds[0],
+        owner_user_id: meemerging businessrIds[0],
         team_id: selectedTeam,
         playbook_id: selectedPlaybook.id,
       });
@@ -493,8 +493,8 @@ export function PlaybookGenerator() {
             description: selectedPlaybook.description,
             teamId: selectedTeam,
             channelId: result.run.channel_id,
-            ownerUserId: memberIds[0],
-            ownerMemberId: selectedMembers[0],
+            ownerUserId: meemerging businessrIds[0],
+            ownerMeemerging businessrId: selectedMeemerging businessrs[0],
             status: "in_progress",
             currentStatus: result.run.current_status,
             checklistProgress: selectedPlaybook.checklists?.map((c, idx) => ({
@@ -506,8 +506,8 @@ export function PlaybookGenerator() {
             totalTasks: selectedPlaybook.num_steps || 0,
             completedTasks: 0,
             completionPercentage: 0,
-            assignedMemberIds: selectedMembers,
-            mattermostMemberIds: memberIds,
+            assignedMeemerging businessrIds: selectedMeemerging businessrs,
+            mattermostMeemerging businessrIds: meemerging businessrIds,
             startedAt: Timestamp.now(),
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -530,7 +530,7 @@ export function PlaybookGenerator() {
         toast.success("Playbook deployed! Check Mattermost for the new channel.");
         setShowDeployDialog(false);
         setSelectedPlaybook(null);
-        setSelectedMembers([]);
+        setSelectedMeemerging businessrs([]);
         await loadTeamData(selectedTeam);
       } else {
         toast.error(result.error || "Failed to deploy playbook");
@@ -546,7 +546,7 @@ export function PlaybookGenerator() {
     setPlaybookTitle("");
     setPlaybookDescription("");
     setReminderTasks([{ title: "", description: "" }]);
-    setSelectedMembers([]);
+    setSelectedMeemerging businessrs([]);
     setPlaybookType("reminder");
     setRecurrence("weekly");
     setEnableNotifications(true);
@@ -577,8 +577,8 @@ export function PlaybookGenerator() {
           setRecurrence(tracked.recurrence);
         }
         setEnableNotifications(tracked.notificationsEnabled);
-        // Set selected members from tracked data
-        setSelectedMembers(tracked.assignedMemberIds);
+        // Set selected meemerging businessrs from tracked data
+        setSelectedMeemerging businessrs(tracked.assignedMeemerging businessrIds);
       }
       
       setShowEditDialog(true);
@@ -832,7 +832,7 @@ export function PlaybookGenerator() {
                                 Recurring Playbook
                               </h4>
                               <p className="text-sm text-muted-foreground">
-                                Create a playbook that runs on a schedule with automatic status update notifications to team members.
+                                Create a playbook that runs on a schedule with automatic status update notifications to team meemerging businessrs.
                               </p>
                             </div>
                             <div className="space-y-2">
@@ -921,18 +921,18 @@ export function PlaybookGenerator() {
                         )}
                         
                         <div className="space-y-2">
-                          <Label>Assign to Team Members</Label>
+                          <Label>Assign to Team Meemerging businessrs</Label>
                           <div className="border rounded-lg p-4 max-h-48 overflow-y-auto space-y-2">
-                            {teamMembers.map((member) => (
-                              <div key={member.id} className="flex items-center gap-2">
+                            {teamMeemerging businessrs.map((meemerging businessr) => (
+                              <div key={meemerging businessr.id} className="flex items-center gap-2">
                                 <Checkbox
-                                  id={member.id}
-                                  checked={selectedMembers.includes(member.id)}
-                                  onCheckedChange={() => toggleMemberSelection(member.id)}
+                                  id={meemerging businessr.id}
+                                  checked={selectedMeemerging businessrs.includes(meemerging businessr.id)}
+                                  onCheckedChange={() => toggleMeemerging businessrSelection(meemerging businessr.id)}
                                 />
-                                <label htmlFor={member.id} className="flex-1 text-sm cursor-pointer">
-                                  {member.name}
-                                  {member.mattermostUserId && (
+                                <label htmlFor={meemerging businessr.id} className="flex-1 text-sm cursor-pointer">
+                                  {meemerging businessr.name}
+                                  {meemerging businessr.mattermostUserId && (
                                     <Badge variant="outline" className="ml-2 text-xs">
                                       <CheckCircle className="h-3 w-3 mr-1" />
                                       Linked
@@ -943,7 +943,7 @@ export function PlaybookGenerator() {
                             ))}
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Only members with linked Mattermost accounts will be added to the playbook
+                            Only meemerging businessrs with linked Mattermost accounts will be added to the playbook
                           </p>
                         </div>
                       </div>
@@ -979,7 +979,7 @@ export function PlaybookGenerator() {
               Available Playbooks
             </CardTitle>
             <CardDescription>
-              Deploy existing playbooks to start a new run with team members
+              Deploy existing playbooks to start a new run with team meemerging businessrs
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -1042,24 +1042,24 @@ export function PlaybookGenerator() {
                           <DialogHeader>
                             <DialogTitle>Deploy Playbook</DialogTitle>
                             <DialogDescription>
-                              Start a new run of &quot;{playbook.title}&quot; with selected team members
+                              Start a new run of &quot;{playbook.title}&quot; with selected team meemerging businessrs
                             </DialogDescription>
                           </DialogHeader>
                           
                           <div className="space-y-4">
                             <div className="space-y-2">
-                              <Label>Select Team Members</Label>
+                              <Label>Select Team Meemerging businessrs</Label>
                               <div className="border rounded-lg p-4 max-h-48 overflow-y-auto space-y-2">
-                                {teamMembers.map((member) => (
-                                  <div key={member.id} className="flex items-center gap-2">
+                                {teamMeemerging businessrs.map((meemerging businessr) => (
+                                  <div key={meemerging businessr.id} className="flex items-center gap-2">
                                     <Checkbox
-                                      id={`deploy-${member.id}`}
-                                      checked={selectedMembers.includes(member.id)}
-                                      onCheckedChange={() => toggleMemberSelection(member.id)}
+                                      id={`deploy-${meemerging businessr.id}`}
+                                      checked={selectedMeemerging businessrs.includes(meemerging businessr.id)}
+                                      onCheckedChange={() => toggleMeemerging businessrSelection(meemerging businessr.id)}
                                     />
-                                    <label htmlFor={`deploy-${member.id}`} className="flex-1 text-sm cursor-pointer">
-                                      {member.name}
-                                      {member.mattermostUserId && (
+                                    <label htmlFor={`deploy-${meemerging businessr.id}`} className="flex-1 text-sm cursor-pointer">
+                                      {meemerging businessr.name}
+                                      {meemerging businessr.mattermostUserId && (
                                         <Badge variant="outline" className="ml-2 text-xs">
                                           <CheckCircle className="h-3 w-3 mr-1" />
                                           Linked
@@ -1265,29 +1265,29 @@ export function PlaybookGenerator() {
         </Card>
       )}
 
-      {/* Team Member Linking Info */}
+      {/* Team Meemerging businessr Linking Info */}
       {isConnected && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Team Member Linking
+              Team Meemerging businessr Linking
             </CardTitle>
             <CardDescription>
-              Link SVP team members to their Mattermost accounts for playbook assignments
+              Link SVP team meemerging businessrs to their Mattermost accounts for playbook assignments
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {teamMembers.map((member) => {
+              {teamMeemerging businessrs.map((meemerging businessr) => {
                 const mmUser = mattermostUsers.find(u => 
-                  u.email === member.email || u.id === member.mattermostUserId
+                  u.email === meemerging businessr.email || u.id === meemerging businessr.mattermostUserId
                 );
                 return (
-                  <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={meemerging businessr.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
-                      <span className="font-medium">{member.name}</span>
-                      <span className="text-sm text-muted-foreground ml-2">{member.email}</span>
+                      <span className="font-medium">{meemerging businessr.name}</span>
+                      <span className="text-sm text-muted-foreground ml-2">{meemerging businessr.email}</span>
                     </div>
                     {mmUser ? (
                       <Badge variant="default">
@@ -1305,8 +1305,8 @@ export function PlaybookGenerator() {
               })}
             </div>
             <p className="text-sm text-muted-foreground mt-4">
-              Team members are automatically linked by matching email addresses. 
-              Ensure team members use the same email in both SVP Platform and Mattermost.
+              Team meemerging businessrs are automatically linked by matching email addresses. 
+              Ensure team meemerging businessrs use the same email in both SVP Platform and Mattermost.
             </p>
           </CardContent>
         </Card>

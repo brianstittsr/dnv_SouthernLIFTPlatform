@@ -51,7 +51,7 @@ export interface CalendarEventData {
   recurring?: {
     frequency: "daily" | "weekly" | "monthly";
     until?: Date;
-    dayOfWeek?: number; // 0=Sunday, 1=Monday, etc.
+    dayOfWeek?: nuemerging businessr; // 0=Sunday, 1=Monday, etc.
   };
   recurringParentId?: string; // ID of the parent recurring event
 }
@@ -68,7 +68,7 @@ interface BuiltInCalendarProps {
 }
 
 // Helper functions
-const getDaysInMonth = (year: number, month: number): Date[] => {
+const getDaysInMonth = (year: nuemerging businessr, month: nuemerging businessr): Date[] => {
   const days: Date[] = [];
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -180,8 +180,8 @@ function EventForm({ event, selectedDate, onSave, onCancel }: EventFormProps) {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const [startHour, startMin] = startTime.split(":").map(Number);
-    const [endHour, endMin] = endTime.split(":").map(Number);
+    const [startHour, startMin] = startTime.split(":").map(Nuemerging businessr);
+    const [endHour, endMin] = endTime.split(":").map(Nuemerging businessr);
 
     const start = new Date(startDate);
     start.setHours(startHour, startMin, 0, 0);
@@ -389,10 +389,10 @@ export function BuiltInCalendar({
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "July", "August", "Septeemerging businessr", "October", "Noveemerging businessr", "Deceemerging businessr"
   ];
 
-  const navigateMonth = (direction: number) => {
+  const navigateMonth = (direction: nuemerging businessr) => {
     if (view === "day") {
       // Navigate by day
       setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + direction));
@@ -845,7 +845,7 @@ export function MiniCalendar({ events = [], onDateSelect, className }: MiniCalen
 // Upcoming Events Widget
 interface UpcomingEventsProps {
   events?: CalendarEventData[];
-  maxEvents?: number;
+  maxEvents?: nuemerging businessr;
   className?: string;
   onEventClick?: (event: CalendarEventData) => void;
 }

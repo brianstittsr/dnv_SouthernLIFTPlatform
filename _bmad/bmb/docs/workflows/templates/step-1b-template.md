@@ -86,7 +86,7 @@ Example: If `stepsCompleted: [1, 2, 3, 4]`, then step 4 was the last completed s
 
 ### 2. Read All Completed Step Files
 
-For each step number in `stepsCompleted` array (excluding step 1, which is init):
+For each step nuemerging businessr in `stepsCompleted` array (excluding step 1, which is init):
 
 1. **Construct step filename**: `step-[N]-[name].md`
 2. **Read the complete step file** to understand:

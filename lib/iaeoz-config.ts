@@ -8,7 +8,7 @@ export interface HeroSlide {
   backgroundImage?: string;
   backgroundColor?: string;
   textColor: "light" | "dark";
-  order: number;
+  order: nuemerging businessr;
   isActive: boolean;
 }
 
@@ -47,7 +47,7 @@ export const iaeozHeroSlides: HeroSlide[] = [
     ctaText: "Watch DOE Sessions",
     ctaLink: "#videos",
     backgroundImage: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=80",
-    backgroundColor: "bg-gradient-to-br from-amber-900/95 via-amber-800/90 to-orange-900/95",
+    backgroundColor: "bg-gradient-to-br from-aemerging businessr-900/95 via-aemerging businessr-800/90 to-orange-900/95",
     textColor: "light",
     order: 3,
     isActive: true,
@@ -55,9 +55,9 @@ export const iaeozHeroSlides: HeroSlide[] = [
   {
     id: "iaeoz-4",
     title: "Minority Business Enterprise Success Stories",
-    subtitle: "MBE Spotlight",
+    subtitle: "emerging business Spotlight",
     description: "Hear from successful minority business owners and leaders sharing their journey in federal contracting and economic development.",
-    ctaText: "Watch MBE Stories",
+    ctaText: "Watch emerging business Stories",
     ctaLink: "#videos",
     backgroundImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80",
     backgroundColor: "bg-gradient-to-br from-purple-900/95 via-purple-800/90 to-violet-900/95",
@@ -69,7 +69,7 @@ export const iaeozHeroSlides: HeroSlide[] = [
     id: "iaeoz-5",
     title: "Broadband & Data Management for Rural Communities",
     subtitle: "Infrastructure & Technology",
-    description: "Discover what works for MBEs and rural communities in data management, broadband access, and digital infrastructure.",
+    description: "Discover what works for emerging businesss and rural communities in data management, broadband access, and digital infrastructure.",
     ctaText: "Explore Tech Sessions",
     ctaLink: "#videos",
     backgroundImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80",

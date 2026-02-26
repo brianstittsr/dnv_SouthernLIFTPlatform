@@ -58,9 +58,9 @@ firebase deploy --only firestore:indexes
 
 #### Firestore Security Rules
 - [ ] Review and update security rules for new collections:
-  - `memberships` - User can read own, admin can read/write all
+  - `meemerging businessrships` - User can read own, admin can read/write all
   - `tickets` - User can read own, admin can read/write all
-  - `pursuitBriefs` - Members can read, admin can write
+  - `pursuitBriefs` - Meemerging businessrs can read, admin can write
   - `sponsors` - Public read, admin write
   - `promoCodes` - Admin only
   - `settlements` - Admin only
@@ -137,7 +137,7 @@ npm run start
 ### 1. Public Pages
 - [ ] Homepage loads correctly
 - [ ] Events page displays
-- [ ] Membership pricing page works
+- [ ] Meemerging businessrship pricing page works
 - [ ] Contact form submits
 
 ### 2. Authentication
@@ -145,7 +145,7 @@ npm run start
 - [ ] Sign in flow works
 - [ ] Password reset works
 
-### 3. Membership Flow
+### 3. Meemerging businessrship Flow
 - [ ] Pricing page displays correctly
 - [ ] Signup form works
 - [ ] Stripe checkout redirects properly
@@ -162,13 +162,13 @@ npm run start
 ### 5. Portal Access
 - [ ] Portal loads after login
 - [ ] Pursuit Board displays
-- [ ] Member Directory works
+- [ ] Meemerging businessr Directory works
 - [ ] Resource Library accessible
-- [ ] My Membership page shows data
+- [ ] My Meemerging businessrship page shows data
 
 ### 6. Admin Functions
 - [ ] KDM Dashboard loads with metrics
-- [ ] Membership management works
+- [ ] Meemerging businessrship management works
 - [ ] Settlement statements display
 - [ ] Event management works
 
@@ -183,7 +183,7 @@ npm run start
 ### 2. Analytics
 - [ ] Verify Firebase Analytics working
 - [ ] Set up conversion tracking for:
-  - [ ] Membership signups
+  - [ ] Meemerging businessrship signups
   - [ ] Event registrations
   - [ ] Contact form submissions
 
@@ -249,4 +249,4 @@ NEXT_PUBLIC_SUPPORT_EMAIL=support@kdmassociates.com
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** December 29, 2025
+**Last Updated:** Deceemerging businessr 29, 2025

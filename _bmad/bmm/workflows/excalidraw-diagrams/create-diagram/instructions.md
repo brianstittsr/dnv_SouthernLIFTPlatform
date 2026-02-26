@@ -42,7 +42,7 @@
 
   <step n="4" goal="Create Theme" elicit="true">
     <action>Ask: "Choose a color scheme for your diagram:"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Professional
          - Component: #e3f2fd (light blue)
          - Database: #e8f5e9 (light green)

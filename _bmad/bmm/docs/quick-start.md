@@ -48,7 +48,7 @@ The interactive installer will guide you through setup and create a `_bmad/` fol
    - [VS Code/Cursor/Windsurf](https://github.com/bmad-code-org/BMAD-METHOD/tree/main/docs/ide-info) - Check your IDE folder
    - Other IDEs also supported
 2. **Wait for the agent's menu** to appear
-3. **Tell the agent**: "Run workflow-init" or type "\*workflow-init" or select the menu item number
+3. **Tell the agent**: "Run workflow-init" or type "\*workflow-init" or select the menu item nuemerging businessr
 
 #### What happens during workflow-init?
 
@@ -118,7 +118,7 @@ When an agent tells you to run a workflow (like `prd`):
 3. **Tell the agent** to run it using any of these formats:
    - Type the shorthand: `*prd`
    - Say it naturally: "Let's create a new PRD"
-   - Select the menu number for "create-prd"
+   - Select the menu nuemerging businessr for "create-prd"
 
 The agents in V6 are very good with fuzzy menu matching!
 
@@ -361,6 +361,6 @@ A: Yes, once you learn the flow. Use the Quick Reference in Step 2 to go directl
 ✅ **Let workflow-status guide you** - Load any agent and ask for status when unsure what's next
 ✅ **Track matters** - Quick Flow uses tech-spec, BMad Method/Enterprise need PRD and architecture
 ✅ **Tracking is automatic** - The status files update themselves, no manual editing needed
-✅ **Agents are flexible** - Use menu numbers, shortcuts (\*prd), or natural language
+✅ **Agents are flexible** - Use menu nuemerging businessrs, shortcuts (\*prd), or natural language
 
 **Ready to start building?** Install BMad, load the Analyst, run workflow-init, and let the agents guide you!

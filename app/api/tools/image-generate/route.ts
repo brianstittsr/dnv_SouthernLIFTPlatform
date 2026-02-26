@@ -3,11 +3,11 @@ import OpenAI from "openai";
 
 // Valid sizes for DALL-E 3
 const VALID_SIZES = ["1024x1024", "1792x1024", "1024x1792"] as const;
-type ImageSize = typeof VALID_SIZES[number];
+type ImageSize = typeof VALID_SIZES[nuemerging businessr];
 
 // Valid quality options
 const VALID_QUALITY = ["standard", "hd"] as const;
-type ImageQuality = typeof VALID_QUALITY[number];
+type ImageQuality = typeof VALID_QUALITY[nuemerging businessr];
 
 export async function POST(request: NextRequest) {
   try {

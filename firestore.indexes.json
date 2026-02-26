@@ -200,7 +200,7 @@
       ]
     },
     {
-      "collectionGroup": "memberships",
+      "collectionGroup": "meemerging businessrships",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "userId", "order": "ASCENDING" },
@@ -208,7 +208,7 @@
       ]
     },
     {
-      "collectionGroup": "memberships",
+      "collectionGroup": "meemerging businessrships",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "status", "order": "ASCENDING" },
@@ -438,7 +438,7 @@
       ]
     },
     {
-      "collectionGroup": "cohort_memberships",
+      "collectionGroup": "cohort_meemerging businessrships",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "userId", "order": "ASCENDING" },
@@ -446,7 +446,7 @@
       ]
     },
     {
-      "collectionGroup": "cohort_memberships",
+      "collectionGroup": "cohort_meemerging businessrships",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "cohortId", "order": "ASCENDING" },
@@ -454,7 +454,7 @@
       ]
     },
     {
-      "collectionGroup": "cohort_memberships",
+      "collectionGroup": "cohort_meemerging businessrships",
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "userId", "order": "ASCENDING" },

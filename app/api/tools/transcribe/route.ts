@@ -126,7 +126,7 @@ function formatTranscript(transcription: any): string {
     .join("\n\n");
 }
 
-function formatTimestamp(seconds: number): string {
+function formatTimestamp(seconds: nuemerging businessr): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);

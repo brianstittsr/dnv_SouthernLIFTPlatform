@@ -19,14 +19,14 @@ import { Save, AlertTriangle, CheckCircle, Bell, BellOff } from "lucide-react";
 
 interface AlertConfig {
   id: string;
-  apiResponseTimeThreshold: number;
-  errorRateThreshold: number;
-  uptimeThreshold: number;
-  dbQueryTimeThreshold: number;
-  consecutiveMinutesRequired: number;
+  apiResponseTimeThreshold: nuemerging businessr;
+  errorRateThreshold: nuemerging businessr;
+  uptimeThreshold: nuemerging businessr;
+  dbQueryTimeThreshold: nuemerging businessr;
+  consecutiveMinutesRequired: nuemerging businessr;
   emailEnabled: boolean;
   adminEmails: string[];
-  cooldownMinutes: number;
+  cooldownMinutes: nuemerging businessr;
   isActive: boolean;
 }
 
@@ -34,8 +34,8 @@ interface ActiveAlert {
   id: string;
   type: string;
   severity: "warning" | "critical";
-  currentValue: number;
-  threshold: number;
+  currentValue: nuemerging businessr;
+  threshold: nuemerging businessr;
   message: string;
   status: string;
   triggeredAt: any;
@@ -348,7 +348,7 @@ export default function AlertsPage() {
                     API Response Time (ms)
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     value={config.apiResponseTimeThreshold}
                     onChange={(e) => {
@@ -369,7 +369,7 @@ export default function AlertsPage() {
                     Error Rate (%)
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     max="100"
                     step="0.1"
@@ -392,7 +392,7 @@ export default function AlertsPage() {
                     Uptime Threshold (%)
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     max="100"
                     step="0.1"
@@ -415,7 +415,7 @@ export default function AlertsPage() {
                     Database Query Time (ms)
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     value={config.dbQueryTimeThreshold}
                     onChange={(e) => {
@@ -449,7 +449,7 @@ export default function AlertsPage() {
                     Consecutive Minutes Required
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="1"
                     max="60"
                     value={config.consecutiveMinutesRequired}
@@ -471,7 +471,7 @@ export default function AlertsPage() {
                     Alert Cooldown (minutes)
                   </label>
                   <Input
-                    type="number"
+                    type="nuemerging businessr"
                     min="1"
                     max="1440"
                     value={config.cooldownMinutes}

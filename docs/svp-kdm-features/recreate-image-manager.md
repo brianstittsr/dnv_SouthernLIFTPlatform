@@ -26,9 +26,9 @@ export interface ImageDoc {
   category: ImageCategory;
   mimeType: string;
   base64Data: string;
-  width?: number;
-  height?: number;
-  size: number;
+  width?: nuemerging businessr;
+  height?: nuemerging businessr;
+  size: nuemerging businessr;
   createdAt: Timestamp;
   updatedAt?: Timestamp;
   createdBy?: string;
@@ -55,9 +55,9 @@ export interface ImageMetadata {
   description?: string;
   category: ImageCategory;
   mimeType: string;
-  width?: number;
-  height?: number;
-  size: number;
+  width?: nuemerging businessr;
+  height?: nuemerging businessr;
+  size: nuemerging businessr;
   createdAt: Date;
   updatedAt?: Date;
   tags?: string[];
@@ -77,7 +77,7 @@ export interface ImageUploadOptions {
 1. **fileToBase64(file: File)**: Convert File to base64 string
 2. **base64ToDataUrl(base64: string, mimeType: string)**: Convert base64 to data URL for display
 3. **getImageDimensions(file: File)**: Extract image width/height
-4. **compressImage(file: File, maxWidth: number, quality: number)**: Client-side image compression
+4. **compressImage(file: File, maxWidth: nuemerging businessr, quality: nuemerging businessr)**: Client-side image compression
 5. **uploadImage(file: File, options: ImageUploadOptions)**: Upload image to Firestore (max 1MB)
 6. **getImage(imageId: string)**: Retrieve full image document
 7. **getImageDataUrl(imageId: string)**: Get image as data URL
@@ -210,7 +210,7 @@ match /images/{imageId} {
   
   // Allow admin/superadmin to write
   allow write: if request.auth != null && 
-    get(/databases/$(database)/documents/team_members/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+    get(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
 }
 ```
 
@@ -346,7 +346,7 @@ function MyComponent() {
           console.log("Selected:", imageId, metadata.name);
         }}
         filterCategory="team"
-        title="Select Team Member Photo"
+        title="Select Team Meemerging businessr Photo"
       />
     </>
   );

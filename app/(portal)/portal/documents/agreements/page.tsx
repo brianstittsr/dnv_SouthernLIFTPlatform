@@ -80,7 +80,7 @@ interface Agreement {
   company: string;
   contact: string;
   status: "draft" | "pending_signature" | "signed" | "expired" | "terminated";
-  version: number;
+  version: nuemerging businessr;
   createdDate: string;
   effectiveDate?: string;
   expirationDate?: string;
@@ -633,7 +633,7 @@ export default function AgreementsPage() {
               <div className="space-y-2">
                 <Label>Version</Label>
                 <Input
-                  type="number"
+                  type="nuemerging businessr"
                   min={1}
                   value={formData.version}
                   onChange={(e) =>

@@ -232,7 +232,7 @@ export default function NewAgreementPage() {
                   <div className="space-y-2">
                     <Label>Total Value ($)</Label>
                     <Input
-                      type="number"
+                      type="nuemerging businessr"
                       placeholder="0"
                       value={agreementData.totalValue || ""}
                       onChange={(e) => setAgreementData({ ...agreementData, totalValue: parseFloat(e.target.value) || 0 })}

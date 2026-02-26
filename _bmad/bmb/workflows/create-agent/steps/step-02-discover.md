@@ -109,7 +109,7 @@ As purpose becomes clear, analyze and recommend appropriate agent type.
   - Example: Git commit helper, documentation generator, data validator
 
 - **Expert Agent** - Personal sidecar files, persistent memory, domain-restricted
-  - Choose when: Needs to remember across sessions, personal knowledge base, learning over time
+  - Choose when: Needs to remeemerging businessr across sessions, personal knowledge base, learning over time
   - CAN have personal workflows in sidecar if critical_actions loads workflow engine
   - Example: Personal research assistant, domain expert advisor, learning companion
   - Example: Project coordinator, workflow manager, team orchestrator

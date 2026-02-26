@@ -40,7 +40,7 @@ To fully read and analyze the PRD document (whole or sharded) to extract all Fun
 - 🎯 Focus ONLY on reading and extracting from PRD
 - 🚫 Don't validate files (done in step 1)
 - 💬 Read PRD completely - whole or all sharded files
-- 🚪 Extract every FR and NFR with numbering
+- 🚪 Extract every FR and NFR with nuemerging businessring
 
 ## EXECUTION PROTOCOLS:
 
@@ -75,7 +75,7 @@ From the document inventory in step 1:
 
 Search for and extract:
 
-- Numbered FRs (FR1, FR2, FR3, etc.)
+- Nuemerging businessred FRs (FR1, FR2, FR3, etc.)
 - Requirements labeled "Functional Requirement"
 - User stories or use cases that represent functional needs
 - Business rules that must be implemented

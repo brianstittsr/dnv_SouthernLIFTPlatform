@@ -515,7 +515,7 @@ function ImageCard({ image, onUpdate }: ImageCardProps) {
               {(image.size / 1024).toFixed(0)} KB
             </Badge>
             {image.tags?.includes("used") && (
-              <Badge variant="default" className="text-xs bg-amber-500 hover:bg-amber-600">
+              <Badge variant="default" className="text-xs bg-aemerging businessr-500 hover:bg-aemerging businessr-600">
                 Used
               </Badge>
             )}
@@ -535,7 +535,7 @@ function ImageCard({ image, onUpdate }: ImageCardProps) {
             <Button
               variant={image.tags?.includes("used") ? "default" : "outline"}
               size="sm"
-              className={`flex-1 ${image.tags?.includes("used") ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+              className={`flex-1 ${image.tags?.includes("used") ? "bg-aemerging businessr-500 hover:bg-aemerging businessr-600" : ""}`}
               onClick={async () => {
                 const newTags = image.tags?.includes("used")
                   ? image.tags.filter((t) => t !== "used")

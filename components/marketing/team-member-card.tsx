@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
 
-interface TeamMember {
+interface TeamMeemerging businessr {
   id: string;
   name: string;
   title: string;
@@ -15,37 +15,37 @@ interface TeamMember {
   bio: string;
 }
 
-interface TeamMemberCardProps {
-  member: TeamMember;
+interface TeamMeemerging businessrCardProps {
+  meemerging businessr: TeamMeemerging businessr;
 }
 
-export function TeamMemberCard({ member }: TeamMemberCardProps) {
+export function TeamMeemerging businessrCard({ meemerging businessr }: TeamMeemerging businessrCardProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadMemberImage();
-  }, [member.imageName]);
+    loadMeemerging businessrImage();
+  }, [meemerging businessr.imageName]);
 
   function findMatch(images: { id: string; name: string }[]) {
-    const memberImageNameLower = member.imageName.toLowerCase();
-    const memberNameLower = member.name.toLowerCase();
-    const nameParts = member.name.split(" ");
+    const meemerging businessrImageNameLower = meemerging businessr.imageName.toLowerCase();
+    const meemerging businessrNameLower = meemerging businessr.name.toLowerCase();
+    const nameParts = meemerging businessr.name.split(" ");
     const firstName = nameParts[0].toLowerCase();
     const lastName = nameParts[nameParts.length - 1].toLowerCase();
 
     return images.find((img) => {
       const n = img.name.toLowerCase();
-      if (n === memberImageNameLower) return true;
-      if (n.includes(memberImageNameLower)) return true;
+      if (n === meemerging businessrImageNameLower) return true;
+      if (n.includes(meemerging businessrImageNameLower)) return true;
       if (n.includes(`${lastName}_${firstName}`)) return true;
-      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
+      if (n.replace(/_/g, " ").includes(meemerging businessrNameLower)) return true;
       if (n.includes(firstName) && n.includes(lastName)) return true;
       return false;
     });
   }
 
-  async function loadMemberImage() {
+  async function loadMeemerging businessrImage() {
     try {
       setIsLoading(true);
 
@@ -68,13 +68,13 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
       }
 
       // Fall back to static public image if provided
-      if (member.staticImageUrl) {
-        setImageUrl(member.staticImageUrl);
+      if (meemerging businessr.staticImageUrl) {
+        setImageUrl(meemerging businessr.staticImageUrl);
       }
     } catch (error) {
       // On any error, fall back to static image
-      if (member.staticImageUrl) {
-        setImageUrl(member.staticImageUrl);
+      if (meemerging businessr.staticImageUrl) {
+        setImageUrl(meemerging businessr.staticImageUrl);
       }
     } finally {
       setIsLoading(false);
@@ -82,7 +82,7 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
   }
 
   return (
-    <Link href={`/team/${member.id}`} className="block">
+    <Link href={`/team/${meemerging businessr.id}`} className="block">
       <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardContent className="pt-8 pb-6">
           {/* Image container - proportional aspect ratio, no background showing */}
@@ -90,18 +90,18 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
             {imageUrl ? (
               <img 
                 src={imageUrl} 
-                alt={member.name} 
+                alt={meemerging businessr.name} 
                 className="w-full h-full object-cover object-top"
               />
             ) : (
               <span className="text-primary text-4xl font-semibold">
-                {member.initials}
+                {meemerging businessr.initials}
               </span>
             )}
           </div>
-          <h3 className="text-lg font-semibold">{member.name}</h3>
-          <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
-          <p className="text-sm text-muted-foreground">{member.bio}</p>
+          <h3 className="text-lg font-semibold">{meemerging businessr.name}</h3>
+          <p className="text-sm text-primary font-medium mb-3">{meemerging businessr.title}</p>
+          <p className="text-sm text-muted-foreground">{meemerging businessr.bio}</p>
         </CardContent>
       </Card>
     </Link>

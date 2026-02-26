@@ -22,7 +22,7 @@ const certificationTypes = [
   { id: "edwosb", label: "EDWOSB" },
   { id: "sdvosb", label: "SDVOSB" },
   { id: "hubzone", label: "HUBZone" },
-  { id: "mbe", label: "MBE" },
+  { id: "emerging business", label: "emerging business" },
   { id: "other", label: "Other" },
 ];
 
@@ -88,7 +88,7 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="dunsUei">DUNS/UEI Number *</Label>
+          <Label htmlFor="dunsUei">DUNS/UEI Nuemerging businessr *</Label>
           <Input
             id="dunsUei"
             value={formData.dunsUei}
@@ -170,7 +170,7 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="employeeCount">Number of Employees</Label>
+          <Label htmlFor="employeeCount">Nuemerging businessr of Employees</Label>
           <Select
             value={formData.employeeCount}
             onValueChange={(value) => setFormData({ ...formData, employeeCount: value })}

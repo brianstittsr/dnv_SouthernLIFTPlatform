@@ -5,7 +5,7 @@ export type QuestionType =
   | "long_text"
   | "email"
   | "phone"
-  | "number"
+  | "nuemerging businessr"
   | "single_choice"
   | "multiple_choice"
   | "dropdown"
@@ -49,13 +49,13 @@ export interface SurveyQuestion {
   validation?: ValidationRule[];
   conditionalLogic?: ConditionalLogic[];
   placeholder?: string;
-  minValue?: number;
-  maxValue?: number;
-  step?: number;
+  minValue?: nuemerging businessr;
+  maxValue?: nuemerging businessr;
+  step?: nuemerging businessr;
   allowMultiple?: boolean;
-  maxFileSize?: number;
+  maxFileSize?: nuemerging businessr;
   acceptedFileTypes?: string[];
-  order: number;
+  order: nuemerging businessr;
 }
 
 export interface SurveySection {
@@ -63,7 +63,7 @@ export interface SurveySection {
   title: string;
   description?: string;
   questions: SurveyQuestion[];
-  order: number;
+  order: nuemerging businessr;
 }
 
 export interface SurveySettings {
@@ -72,7 +72,7 @@ export interface SurveySettings {
   showProgressBar: boolean;
   oneResponsePerUser: boolean;
   shuffleQuestions: boolean;
-  showQuestionNumbers: boolean;
+  showQuestionNuemerging businessrs: boolean;
   requireAllQuestions: boolean;
   customTheme?: {
     primaryColor?: string;
@@ -94,12 +94,12 @@ export interface Survey {
   templateName?: string;
   startDate?: Timestamp;
   endDate?: Timestamp;
-  maxResponses?: number;
-  currentResponses: number;
-  completionRate: number;
-  averageTimeToComplete?: number;
+  maxResponses?: nuemerging businessr;
+  currentResponses: nuemerging businessr;
+  completionRate: nuemerging businessr;
+  averageTimeToComplete?: nuemerging businessr;
   shareUrl?: string;
-  embedCode?: string;
+  eemerging businessdCode?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   publishedAt?: Timestamp;
@@ -114,7 +114,7 @@ export interface SurveyResponse {
   answers: Record<string, any>;
   startedAt: Timestamp;
   completedAt?: Timestamp;
-  timeToComplete?: number;
+  timeToComplete?: nuemerging businessr;
   ipAddress?: string;
   userAgent?: string;
   status: "in_progress" | "completed" | "abandoned";
@@ -130,19 +130,19 @@ export interface SurveyTemplate {
   thumbnail?: string;
   sections: SurveySection[];
   settings: SurveySettings;
-  usageCount: number;
+  usageCount: nuemerging businessr;
   createdAt: Timestamp;
 }
 
 export interface SurveyAnalytics {
   surveyId: string;
-  totalResponses: number;
-  completedResponses: number;
-  inProgressResponses: number;
-  abandonedResponses: number;
-  completionRate: number;
-  averageTimeToComplete: number;
-  responsesByDate: Record<string, number>;
+  totalResponses: nuemerging businessr;
+  completedResponses: nuemerging businessr;
+  inProgressResponses: nuemerging businessr;
+  abandonedResponses: nuemerging businessr;
+  completionRate: nuemerging businessr;
+  averageTimeToComplete: nuemerging businessr;
+  responsesByDate: Record<string, nuemerging businessr>;
   questionAnalytics: Record<string, QuestionAnalytics>;
   lastUpdated: Timestamp;
 }
@@ -151,9 +151,9 @@ export interface QuestionAnalytics {
   questionId: string;
   questionTitle: string;
   questionType: QuestionType;
-  totalResponses: number;
-  skipRate: number;
-  averageValue?: number;
-  distribution?: Record<string, number>;
+  totalResponses: nuemerging businessr;
+  skipRate: nuemerging businessr;
+  averageValue?: nuemerging businessr;
+  distribution?: Record<string, nuemerging businessr>;
   textResponses?: string[];
 }

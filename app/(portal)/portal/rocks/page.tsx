@@ -42,7 +42,7 @@ import {
 import { useTractionData, Rock, Milestone } from "@/lib/hooks/use-eos2-data";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
 import { toast } from "sonner";
 
 // Helper to get initials from name
@@ -98,7 +98,7 @@ function getCurrentQuarter(): string {
 }
 
 // Get days remaining in quarter
-function getDaysRemainingInQuarter(): number {
+function getDaysRemainingInQuarter(): nuemerging businessr {
   const now = new Date();
   const quarter = Math.floor(now.getMonth() / 3);
   const quarterEnd = new Date(now.getFullYear(), (quarter + 1) * 3, 0);
@@ -113,7 +113,7 @@ interface RockForm {
   owner: string;
   dueDate: string;
   status: Rock["status"];
-  progress: number;
+  progress: nuemerging businessr;
   quarter: string;
   milestones: Milestone[];
 }
@@ -145,37 +145,37 @@ export default function RocksPage() {
   const [editingRock, setEditingRock] = useState<Rock | null>(null);
   const [rockForm, setRockForm] = useState<RockForm>(emptyRockForm);
   const [saving, setSaving] = useState(false);
-  const [teamMembers, setTeamMembers] = useState<{ id: string; name: string }[]>([]);
+  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<{ id: string; name: string }[]>([]);
   const [newMilestone, setNewMilestone] = useState("");
 
   const currentQuarter = getCurrentQuarter();
   const daysRemaining = getDaysRemainingInQuarter();
 
-  // Load team members
+  // Load team meemerging businessrs
   useEffect(() => {
-    const loadTeamMembers = async () => {
+    const loadTeamMeemerging businessrs = async () => {
       if (!db) return;
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         
-        const members: { id: string; name: string }[] = [];
+        const meemerging businessrs: { id: string; name: string }[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeamMemberDoc;
+          const data = doc.data() as TeamMeemerging businessrDoc;
           if (data.role === "team") {
-            members.push({
+            meemerging businessrs.push({
               id: doc.id,
               name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "Unknown",
             });
           }
         });
-        setTeamMembers(members);
+        setTeamMeemerging businessrs(meemerging businessrs);
       } catch (error) {
-        console.error("Error loading team members:", error);
+        console.error("Error loading team meemerging businessrs:", error);
       }
     };
-    loadTeamMembers();
+    loadTeamMeemerging businessrs();
   }, []);
 
   // Stats
@@ -259,7 +259,7 @@ export default function RocksPage() {
         title: rockForm.title,
         description: rockForm.description,
         owner: rockForm.owner,
-        ownerId: teamMembers.find((m) => m.name === rockForm.owner)?.id || "",
+        ownerId: teamMeemerging businessrs.find((m) => m.name === rockForm.owner)?.id || "",
         dueDate: rockForm.dueDate,
         status: progress === 100 ? "complete" as const : rockForm.status,
         progress,
@@ -375,9 +375,9 @@ export default function RocksPage() {
                       <SelectValue placeholder="Select owner" />
                     </SelectTrigger>
                     <SelectContent>
-                      {teamMembers.map((member) => (
-                        <SelectItem key={member.id} value={member.name}>
-                          {member.name}
+                      {teamMeemerging businessrs.map((meemerging businessr) => (
+                        <SelectItem key={meemerging businessr.id} value={meemerging businessr.name}>
+                          {meemerging businessr.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -46,6 +46,6 @@ export function calculateWordCount(text: string): WordCountStats {
   };
 }
 
-export function formatNumber(num: number): string {
+export function formatNuemerging businessr(num: nuemerging businessr): string {
   return num.toLocaleString();
 }

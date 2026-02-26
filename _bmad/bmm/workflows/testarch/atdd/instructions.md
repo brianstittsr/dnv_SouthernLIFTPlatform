@@ -345,7 +345,7 @@ Generates failing acceptance tests BEFORE implementation following TDD's red-gre
        expect(body).toMatchObject({
          email: userData.email,
          name: userData.name,
-         id: expect.any(Number),
+         id: expect.any(Nuemerging businessr),
        });
      });
    });
@@ -398,14 +398,14 @@ Generates failing acceptance tests BEFORE implementation following TDD's red-gre
    import { faker } from '@faker-js/faker';
 
    export const createUser = (overrides = {}) => ({
-     id: faker.number.int(),
+     id: faker.nuemerging businessr.int(),
      email: faker.internet.email(),
      name: faker.person.fullName(),
      createdAt: faker.date.recent().toISOString(),
      ...overrides,
    });
 
-   export const createUsers = (count: number) => Array.from({ length: count }, () => createUser());
+   export const createUsers = (count: nuemerging businessr) => Array.from({ length: count }, () => createUser());
    ```
 
    **Factory principles:**

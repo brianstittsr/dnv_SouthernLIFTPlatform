@@ -5,7 +5,7 @@
  * - Syncing Traction Rocks to GHL campaigns/opportunities
  * - Creating tasks from To-Dos
  * - Triggering workflows based on Traction events
- * - Syncing team members as users/contacts
+ * - Syncing team meemerging businessrs as users/contacts
  * 
  * API Documentation: https://highlevel.stoplight.io/docs/integrations
  */
@@ -35,7 +35,7 @@ export interface GHLOpportunity {
   pipelineStageId: string;
   status: "open" | "won" | "lost" | "abandoned";
   contactId?: string;
-  monetaryValue?: number;
+  monetaryValue?: nuemerging businessr;
   assignedTo?: string;
   customFields?: Record<string, string>;
 }
@@ -248,7 +248,7 @@ export async function syncRockToGHL(
     description: string;
     owner: string;
     status: string;
-    progress: number;
+    progress: nuemerging businessr;
     quarter: string;
     dueDate: string;
   }
@@ -367,11 +367,11 @@ export async function createLevel10InGHL(
 }
 
 /**
- * Sync a Traction Team Member to GHL as a Contact
+ * Sync a Traction Team Meemerging businessr to GHL as a Contact
  */
-export async function syncTeamMemberToGHL(
+export async function syncTeamMeemerging businessrToGHL(
   client: GoHighLevelClient,
-  member: {
+  meemerging businessr: {
     id: string;
     name: string;
     role: string;
@@ -380,20 +380,20 @@ export async function syncTeamMemberToGHL(
     phone?: string;
   }
 ): Promise<GHLApiResponse<GHLContact>> {
-  const nameParts = member.name.split(" ");
+  const nameParts = meemerging businessr.name.split(" ");
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
 
   const contact: GHLContact = {
     firstName,
     lastName,
-    email: member.email,
-    phone: member.phone,
-    tags: ["traction_team", member.category],
+    email: meemerging businessr.email,
+    phone: meemerging businessr.phone,
+    tags: ["traction_team", meemerging businessr.category],
     customFields: {
-      team_member_id: member.id,
-      role: member.role,
-      category: member.category,
+      team_meemerging businessr_id: meemerging businessr.id,
+      role: meemerging businessr.role,
+      category: meemerging businessr.category,
     },
     source: "SVP Traction Dashboard",
   };

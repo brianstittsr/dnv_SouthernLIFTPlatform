@@ -49,7 +49,7 @@ const gainsFields = [
     color: "text-blue-600",
     bgColor: "bg-blue-100",
     description: "Goals are the financial, business, educational, and personal objectives you want or need to meet for yourself and for people who are important to you.",
-    tip: "The best way to develop a relationship is by helping someone achieve something that's important to them. If you do, they'll remember you when you need help achieving your goals.",
+    tip: "The best way to develop a relationship is by helping someone achieve something that's important to them. If you do, they'll remeemerging businessr you when you need help achieving your goals.",
     placeholder: "What are your short-term and long-term goals? What do you want to achieve in the next year? 5 years?",
   },
   {
@@ -60,7 +60,7 @@ const gainsFields = [
     color: "text-yellow-600",
     bgColor: "bg-yellow-100",
     description: "Some of your best insight into others comes from knowing what goals they have achieved, what projects they've completed, what they have accomplished both for themselves and for others.",
-    tip: "Your fellow member's knowledge, skills, experiences, values, and beliefs can be surmised from their achievements.",
+    tip: "Your fellow meemerging businessr's knowledge, skills, experiences, values, and beliefs can be surmised from their achievements.",
     placeholder: "What are you most proud of? Major projects completed? Awards received? Milestones reached?",
   },
   {
@@ -81,7 +81,7 @@ const gainsFields = [
     icon: Network,
     color: "text-green-600",
     bgColor: "bg-green-100",
-    description: "How would it benefit you to know what other networks, both formal and informal, that your fellow members are involved with?",
+    description: "How would it benefit you to know what other networks, both formal and informal, that your fellow meemerging businessrs are involved with?",
     tip: "A network could be an organization, institution, company, civic, religious or professional association, etc.",
     placeholder: "What organizations do you belong to? Professional associations? Community groups? Alumni networks?",
   },

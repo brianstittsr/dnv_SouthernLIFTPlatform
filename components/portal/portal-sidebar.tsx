@@ -131,8 +131,8 @@ const mainNavItems = [
     badge: "3",
   },
   {
-    title: "Member Directory",
-    href: "/portal/members",
+    title: "Meemerging businessr Directory",
+    href: "/portal/meemerging businessrs",
     icon: Users,
     badge: "KDM",
   },
@@ -156,8 +156,8 @@ const workItems = [
     badge: "KDM",
   },
   {
-    title: "My Membership",
-    href: "/portal/membership",
+    title: "My Meemerging businessrship",
+    href: "/portal/meemerging businessrship",
     icon: UserCheck,
     badge: "KDM",
   },
@@ -276,8 +276,8 @@ const adminItems = [
     badge: "New",
   },
   {
-    title: "Memberships",
-    href: "/portal/admin/memberships",
+    title: "Meemerging businessrships",
+    href: "/portal/admin/meemerging businessrships",
     icon: Users,
     badge: "KDM",
   },
@@ -288,8 +288,8 @@ const adminItems = [
     badge: "KDM",
   },
   {
-    title: "Team Members",
-    href: "/portal/admin/team-members",
+    title: "Team Meemerging businessrs",
+    href: "/portal/admin/team-meemerging businessrs",
     icon: UserCog,
   },
   {
@@ -625,7 +625,7 @@ const aiItems = [
 const AVAILABLE_ROLES = [
   // Platform roles
   { value: "admin", label: "Admin" },
-  { value: "team_member", label: "Team Member" },
+  { value: "team_meemerging businessr", label: "Team Meemerging businessr" },
   { value: "affiliate", label: "Affiliate" },
   { value: "client", label: "Client" },
   { value: "viewer", label: "Viewer" },
@@ -1403,7 +1403,7 @@ export function PortalSidebar() {
               </SelectContent>
             </Select>
             {previewRole && (
-              <p className="text-[10px] text-amber-600 mt-1 flex items-center gap-1">
+              <p className="text-[10px] text-aemerging businessr-600 mt-1 flex items-center gap-1">
                 <Eye className="h-3 w-3" />
                 Previewing as {AVAILABLE_ROLES.find(r => r.value === previewRole)?.label}
               </p>

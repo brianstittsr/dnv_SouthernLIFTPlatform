@@ -20,7 +20,7 @@ import {
   TractionIssueDoc,
   TractionTodoDoc,
   TractionMeetingDoc,
-  TractionTeamMemberDoc,
+  TractionTeamMeemerging businessrDoc,
 } from "@/lib/schema";
 import {
   notifyRockCreated,
@@ -31,7 +31,7 @@ import {
   notifyTodoCreated,
   notifyTodoCompleted,
   notifyMeetingLogged,
-  notifyTeamMemberAdded,
+  notifyTeamMeemerging businessrAdded,
 } from "@/lib/eos2-webhooks";
 
 // Milestone type for Rocks
@@ -51,7 +51,7 @@ export interface Rock {
   ownerId: string;
   dueDate: string;
   status: "on-track" | "at-risk" | "off-track" | "complete";
-  progress: number;
+  progress: nuemerging businessr;
   quarter: string;
   milestones?: Milestone[];
   linkedIssueIds?: string[];
@@ -63,8 +63,8 @@ export interface Rock {
 export interface ScorecardMetric {
   id: string;
   name: string;
-  goal: number;
-  actual: number;
+  goal: nuemerging businessr;
+  actual: nuemerging businessr;
   owner: string;
   ownerId: string;
   trend: "up" | "down" | "flat";
@@ -108,17 +108,17 @@ export interface Meeting {
   startTime: string;
   endTime: string;
   attendees: string[];
-  rating: number;
-  issuesSolved: number;
+  rating: nuemerging businessr;
+  issuesSolved: nuemerging businessr;
   rocksReviewed: boolean;
   scorecardReviewed: boolean;
-  todoCompletionRate: number;
+  todoCompletionRate: nuemerging businessr;
   reviewedRockIds?: string[];
   solvedIssueIds?: string[];
   createdTodoIds?: string[];
 }
 
-export interface TeamMember {
+export interface TeamMeemerging businessr {
   id: string;
   name: string;
   role: string;
@@ -146,7 +146,7 @@ export function useTractionData() {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [team, setTeam] = useState<TeamMeemerging businessr[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -318,15 +318,15 @@ export function useTractionData() {
         })
       );
 
-      // Subscribe to Team Members
+      // Subscribe to Team Meemerging businessrs
       const teamQuery = query(
-        collection(db, COLLECTIONS.TRACTION_TEAM_MEMBERS),
+        collection(db, COLLECTIONS.TRACTION_TEAM_MEemerging businessRS),
         orderBy("name", "asc")
       );
       unsubscribers.push(
         onSnapshot(teamQuery, (snapshot) => {
           const data = snapshot.docs.map((doc) => {
-            const d = doc.data() as TractionTeamMemberDoc;
+            const d = doc.data() as TractionTeamMeemerging businessrDoc;
             return {
               id: doc.id,
               name: d.name,
@@ -336,7 +336,7 @@ export function useTractionData() {
               wantsIt: d.wantsIt,
               capacityToDoIt: d.capacityToDoIt,
               rightSeat: d.rightSeat,
-            } as TeamMember;
+            } as TeamMeemerging businessr;
           });
           setTeam(data);
           setLoading(false);
@@ -682,46 +682,46 @@ export function useTractionData() {
     await deleteDoc(doc(db, COLLECTIONS.TRACTION_MEETINGS, id));
   }, []);
 
-  // CRUD Operations for Team Members
-  const addTeamMember = useCallback(async (member: Omit<TeamMember, "id">) => {
+  // CRUD Operations for Team Meemerging businessrs
+  const addTeamMeemerging businessr = useCallback(async (meemerging businessr: Omit<TeamMeemerging businessr, "id">) => {
     if (!db) return;
     const now = Timestamp.now();
-    await addDoc(collection(db, COLLECTIONS.TRACTION_TEAM_MEMBERS), {
-      name: member.name,
-      role: member.role,
-      category: member.category,
-      getsIt: member.getsIt,
-      wantsIt: member.wantsIt,
-      capacityToDoIt: member.capacityToDoIt,
-      rightSeat: member.rightSeat,
+    await addDoc(collection(db, COLLECTIONS.TRACTION_TEAM_MEemerging businessRS), {
+      name: meemerging businessr.name,
+      role: meemerging businessr.role,
+      category: meemerging businessr.category,
+      getsIt: meemerging businessr.getsIt,
+      wantsIt: meemerging businessr.wantsIt,
+      capacityToDoIt: meemerging businessr.capacityToDoIt,
+      rightSeat: meemerging businessr.rightSeat,
       createdAt: now,
       updatedAt: now,
-    } as Omit<TractionTeamMemberDoc, "id">);
+    } as Omit<TractionTeamMeemerging businessrDoc, "id">);
     
     // Send webhook notification
-    notifyTeamMemberAdded({
-      name: member.name,
-      role: member.role,
-      category: member.category,
+    notifyTeamMeemerging businessrAdded({
+      name: meemerging businessr.name,
+      role: meemerging businessr.role,
+      category: meemerging businessr.category,
     });
   }, []);
 
-  const updateTeamMember = useCallback(async (id: string, member: Partial<TeamMember>) => {
+  const updateTeamMeemerging businessr = useCallback(async (id: string, meemerging businessr: Partial<TeamMeemerging businessr>) => {
     if (!db) return;
     const updateData: Record<string, unknown> = { updatedAt: Timestamp.now() };
-    if (member.name !== undefined) updateData.name = member.name;
-    if (member.role !== undefined) updateData.role = member.role;
-    if (member.category !== undefined) updateData.category = member.category;
-    if (member.getsIt !== undefined) updateData.getsIt = member.getsIt;
-    if (member.wantsIt !== undefined) updateData.wantsIt = member.wantsIt;
-    if (member.capacityToDoIt !== undefined) updateData.capacityToDoIt = member.capacityToDoIt;
-    if (member.rightSeat !== undefined) updateData.rightSeat = member.rightSeat;
-    await updateDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MEMBERS, id), updateData);
+    if (meemerging businessr.name !== undefined) updateData.name = meemerging businessr.name;
+    if (meemerging businessr.role !== undefined) updateData.role = meemerging businessr.role;
+    if (meemerging businessr.category !== undefined) updateData.category = meemerging businessr.category;
+    if (meemerging businessr.getsIt !== undefined) updateData.getsIt = meemerging businessr.getsIt;
+    if (meemerging businessr.wantsIt !== undefined) updateData.wantsIt = meemerging businessr.wantsIt;
+    if (meemerging businessr.capacityToDoIt !== undefined) updateData.capacityToDoIt = meemerging businessr.capacityToDoIt;
+    if (meemerging businessr.rightSeat !== undefined) updateData.rightSeat = meemerging businessr.rightSeat;
+    await updateDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MEemerging businessRS, id), updateData);
   }, []);
 
-  const deleteTeamMember = useCallback(async (id: string) => {
+  const deleteTeamMeemerging businessr = useCallback(async (id: string) => {
     if (!db) return;
-    await deleteDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MEMBERS, id));
+    await deleteDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MEemerging businessRS, id));
   }, []);
 
   return {
@@ -755,9 +755,9 @@ export function useTractionData() {
     addMeeting,
     updateMeeting,
     deleteMeeting,
-    // Team member operations
-    addTeamMember,
-    updateTeamMember,
-    deleteTeamMember,
+    // Team meemerging businessr operations
+    addTeamMeemerging businessr,
+    updateTeamMeemerging businessr,
+    deleteTeamMeemerging businessr,
   };
 }

@@ -16,7 +16,7 @@ export interface WhatWorksArticle {
   tags: string[];
   featuredImage?: string;
   videoUrl?: string;
-  videoEmbedId?: string; // YouTube video ID
+  videoEemerging businessdId?: string; // YouTube video ID
   podcastUrl?: string;
   duration?: string;
   featured?: boolean;
@@ -25,14 +25,14 @@ export interface WhatWorksArticle {
 export const whatWorksArticles: WhatWorksArticle[] = [
   {
     id: '1',
-    slug: 'mbda-fpc-podcast-series-kimberly-johnston',
-    title: 'MBDA FPC Podcast Series – Kimberly Johnston',
+    slug: 'mbda-fpc-podcast-series-kiemerging businessrly-johnston',
+    title: 'MBDA FPC Podcast Series – Kiemerging businessrly Johnston',
     excerpt: 'Timothy sits down with the President of Next Gen Energy Partners to discuss her pioneering work in Energy, from microgrids, carbon reduction to job creation.',
     content: `Timothy sits down with the President of Next Gen Energy Partners to discuss her pioneering work in Energy, from microgrids, carbon reduction to job creation. Johnston also shares how critical her relationship is with MBDA FPC for American and Global energy sustainability.
 
 ## About the Guest
 
-Kimberly Johnston is the President of Next Gen Energy Partners, a company focused on innovative energy solutions including microgrids, carbon reduction technologies, and sustainable job creation in the energy sector.
+Kiemerging businessrly Johnston is the President of Next Gen Energy Partners, a company focused on innovative energy solutions including microgrids, carbon reduction technologies, and sustainable job creation in the energy sector.
 
 ## Key Topics Discussed
 
@@ -43,14 +43,14 @@ Kimberly Johnston is the President of Next Gen Energy Partners, a company focuse
 
 ## Impact and Insights
 
-This conversation highlights the critical intersection of minority business development, energy innovation, and federal procurement opportunities. Johnston's work demonstrates how MBEs can lead in the clean energy transition while creating economic opportunities in their communities.`,
+This conversation highlights the critical intersection of minority business development, energy innovation, and federal procurement opportunities. Johnston's work demonstrates how emerging businesss can lead in the clean energy transition while creating economic opportunities in their communities.`,
     author: 'KDM & Associates',
     publishedDate: new Date('2025-05-28'),
     category: 'Podcast',
     tags: ['Energy', 'Sustainability', 'Microgrids', 'Carbon Reduction', 'Job Creation', 'MBDA'],
-    featuredImage: '/images/what-works/kimberly-johnston-podcast.jpg',
+    featuredImage: '/images/what-works/kiemerging businessrly-johnston-podcast.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example1',
-    videoEmbedId: 'example1',
+    videoEemerging businessdId: 'example1',
     duration: '45:30',
     featured: true
   },
@@ -69,7 +69,7 @@ Miranda Bouldin is a leader in business development and has been instrumental in
 
 - **Breaking Barriers**: Overcoming challenges as a woman in government contracting
 - **Mentorship and Leadership**: The importance of supporting the next generation of women entrepreneurs
-- **Business Development Strategies**: Proven approaches for MBEs and WBEs to grow their federal contracting portfolios
+- **Business Development Strategies**: Proven approaches for emerging businesss and WBEs to grow their federal contracting portfolios
 - **International Women's Month**: Celebrating achievements and looking forward to continued progress
 
 ## Inspiration and Impact
@@ -81,7 +81,7 @@ Miranda's story serves as an inspiration for women entrepreneurs navigating the 
     tags: ['Women in Business', 'International Womens Month', 'Leadership', 'Mentorship', 'Federal Contracting'],
     featuredImage: '/images/what-works/miranda-bouldin.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example2',
-    videoEmbedId: 'example2',
+    videoEemerging businessdId: 'example2',
     duration: '38:15'
   },
   {
@@ -112,7 +112,7 @@ Gaurrav's experience demonstrates that with the right combination of innovation,
     tags: ['Technology', 'Entrepreneurship', 'Innovation', 'Federal Contracting', 'Startups'],
     featuredImage: '/images/what-works/gaurrav-bhat.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example3',
-    videoEmbedId: 'example3',
+    videoEemerging businessdId: 'example3',
     duration: '52:20',
     featured: true
   },
@@ -137,7 +137,7 @@ Dr. Christi Phillips is a Director at Franklin Covey, one of the world's leading
 
 ## Practical Applications
 
-Dr. Phillips shares actionable insights that business leaders can implement immediately to improve their organizations' capacity for change. Her expertise is particularly valuable for MBEs looking to scale their operations and compete more effectively in the federal marketplace.
+Dr. Phillips shares actionable insights that business leaders can implement immediately to improve their organizations' capacity for change. Her expertise is particularly valuable for emerging businesss looking to scale their operations and compete more effectively in the federal marketplace.
 
 ## Key Lessons
 
@@ -168,7 +168,7 @@ Dr. Phillips shares actionable insights that business leaders can implement imme
 - Upcoming procurement forecasts from major agencies
 
 ### Success Stories
-- MBE wins $15M contract with Department of Defense
+- emerging business wins $15M contract with Department of Defense
 - Small business partnership leads to major infrastructure project
 - Veteran-owned business expands through mentor-protégé program
 
@@ -201,7 +201,7 @@ Subscribe to receive monthly updates and never miss an opportunity to grow your 
     slug: 'what-works-news-u-can-use-newsletter-may-2024',
     title: 'What Works News U Can Use Newsletter – May 2024',
     excerpt: 'May 2024 newsletter with updates on federal contracting opportunities, success stories, and upcoming events.',
-    content: `The May 2024 edition of What Works News U Can Use brings you the latest developments in federal contracting, success stories from the MBE community, and upcoming opportunities to grow your business.
+    content: `The May 2024 edition of What Works News U Can Use brings you the latest developments in federal contracting, success stories from the emerging business community, and upcoming opportunities to grow your business.
 
 ## Highlights This Month
 
@@ -226,9 +226,9 @@ Subscribe to receive monthly updates and never miss an opportunity to grow your 
 - Understanding past performance requirements
 
 ### Community Spotlight
-- MBE of the Month feature
+- emerging business of the Month feature
 - Partnership success story
-- New member introductions
+- New meemerging businessr introductions
 
 ## Resources
 

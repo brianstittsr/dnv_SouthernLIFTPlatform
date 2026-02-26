@@ -43,7 +43,7 @@ interface HeroSlide {
   backgroundImage?: string;
   backgroundColor?: string;
   textColor?: "light" | "dark";
-  order: number;
+  order: nuemerging businessr;
   isActive: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -133,7 +133,7 @@ Create admin page at `/portal/admin/consortium/hero` to manage carousel slides w
 ### Target Audience Cards
 
 #### Card 1: Small Business Owners
-- **Heading**: "8(a), WOSB, SDVOSB, HUBZone & MBE Certified Businesses"
+- **Heading**: "8(a), WOSB, SDVOSB, HUBZone & emerging business Certified Businesses"
 - **Description**: "If you're a certified small business looking to break into or expand your government contracting portfolio, the KDM Consortium provides the connections, training, and support you need to win contracts."
 - **Ideal For**:
   - First-time government contractors
@@ -248,16 +248,16 @@ Guide new users through completing essential profile information based on their 
 
 #### Step 1: Business Information
 - Company Name *
-- DUNS/UEI Number *
+- DUNS/UEI Nuemerging businessr *
 - CAGE Code
 - Business Address *
 - Website
 - Year Established
-- Number of Employees
+- Nuemerging businessr of Employees
 
 #### Step 2: Certifications
-- Certification Type (multi-select): 8(a), WOSB, EDWOSB, SDVOSB, HUBZone, MBE, Other
-- Certification Numbers
+- Certification Type (multi-select): 8(a), WOSB, EDWOSB, SDVOSB, HUBZone, emerging business, Other
+- Certification Nuemerging businessrs
 - Expiration Dates
 - Upload Certification Documents
 
@@ -328,7 +328,7 @@ Guide new users through completing essential profile information based on their 
 ### Wizard Data Storage
 - Store wizard progress in user document: `users/{uid}/onboardingProgress`
 - Track completion status: `isOnboardingComplete: boolean`
-- Track last step completed: `lastOnboardingStep: number`
+- Track last step completed: `lastOnboardingStep: nuemerging businessr`
 
 ---
 

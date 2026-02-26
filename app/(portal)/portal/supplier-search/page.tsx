@@ -170,7 +170,7 @@ export default function SupplierSearchPage() {
   const generateMessageId = () => `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   // Search suppliers via API
-  const searchSuppliers = async (query: string, region?: string): Promise<{ results: SupplierResult[]; message: string; total: number; isLiveData?: boolean; error?: string; troubleshooting?: string[] }> => {
+  const searchSuppliers = async (query: string, region?: string): Promise<{ results: SupplierResult[]; message: string; total: nuemerging businessr; isLiveData?: boolean; error?: string; troubleshooting?: string[] }> => {
     try {
       const response = await fetch("/api/thomasnet", {
         method: "POST",
@@ -533,7 +533,7 @@ export default function SupplierSearchPage() {
         <div className="border-b px-6 py-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500 to-aemerging businessr-600">
                 <Factory className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -612,7 +612,7 @@ export default function SupplierSearchPage() {
                     )}
                   >
                     {message.role === "assistant" && (
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shrink-0">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-aemerging businessr-600 flex items-center justify-center shrink-0">
                         <Bot className="h-4 w-4 text-white" />
                       </div>
                     )}
@@ -726,7 +726,7 @@ export default function SupplierSearchPage() {
                 ))}
                 {isLoading && (
                   <div className="flex gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-orange-500 to-aemerging businessr-600 flex items-center justify-center">
                       <Loader2 className="h-4 w-4 text-white animate-spin" />
                     </div>
                     <div className="bg-muted rounded-lg p-4">

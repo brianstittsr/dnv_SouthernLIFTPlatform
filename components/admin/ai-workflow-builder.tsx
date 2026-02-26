@@ -34,7 +34,7 @@ import {
 // Types
 interface WorkflowStep {
   type: 'email' | 'sms' | 'wait' | 'condition' | 'tag' | 'webhook' | 'internal_notification';
-  delay?: number;
+  delay?: nuemerging businessr;
   delayUnit?: 'minutes' | 'hours' | 'days';
   subject?: string;
   content: string;

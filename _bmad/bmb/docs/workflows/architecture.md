@@ -172,7 +172,7 @@ meal_type,multi,"breakfast|lunch|dinner|snacks","Types of meals to plan"
 
 ### Sequential Enforcement
 
-- **Numbered Steps**: Use sequential numbering (1, 2, 3...)
+- **Nuemerging businessred Steps**: Use sequential nuemerging businessring (1, 2, 3...)
 - **No Skipping**: Each step must complete
 - **State Updates**: Mark completion in frontmatter
 

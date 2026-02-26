@@ -23,13 +23,13 @@ export interface IndustryCategory {
 export interface RevenueShareConfig {
   id: string;
   name: string;
-  platformFeePercentage: number; // Default: 10%
-  partnerSharePercentage: number; // Default: 90%
+  platformFeePercentage: nuemerging businessr; // Default: 10%
+  partnerSharePercentage: nuemerging businessr; // Default: 90%
   
   // Revenue type specific overrides
-  leadGenerationFee?: number;
-  serviceDeliveryFee?: number;
-  introductionFee?: number;
+  leadGenerationFee?: nuemerging businessr;
+  serviceDeliveryFee?: nuemerging businessr;
+  introductionFee?: nuemerging businessr;
   
   isDefault: boolean;
   updatedAt: Timestamp;
@@ -39,15 +39,15 @@ export interface PackHealthConfig {
   id: string;
   
   // Thresholds
-  introEligibilityThreshold: number; // Default: 70
-  criticalThreshold: number; // Default: 40
-  warningThreshold: number; // Default: 70
+  introEligibilityThreshold: nuemerging businessr; // Default: 70
+  criticalThreshold: nuemerging businessr; // Default: 40
+  warningThreshold: nuemerging businessr; // Default: 70
   
   // Scoring weights
-  completenessWeight: number; // Default: 40%
-  expirationWeight: number; // Default: 30%
-  qualityWeight: number; // Default: 20%
-  remediationWeight: number; // Default: 10%
+  completenessWeight: nuemerging businessr; // Default: 40%
+  expirationWeight: nuemerging businessr; // Default: 30%
+  qualityWeight: nuemerging businessr; // Default: 20%
+  remediationWeight: nuemerging businessr; // Default: 10%
   
   updatedAt: Timestamp;
 }
@@ -89,8 +89,8 @@ export interface SystemConfig {
   settings: {
     maintenanceMode: boolean;
     registrationEnabled: boolean;
-    maxUploadSizeMB: number;
-    sessionTimeoutMinutes: number;
+    maxUploadSizeMB: nuemerging businessr;
+    sessionTimeoutMinutes: nuemerging businessr;
   };
   
   updatedAt: Timestamp;

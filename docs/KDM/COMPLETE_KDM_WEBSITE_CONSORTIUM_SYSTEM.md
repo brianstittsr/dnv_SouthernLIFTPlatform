@@ -269,7 +269,7 @@ Transform the "Whole of Government Total Team Approach" into a unified digital p
 - Multimedia asset library
 - Social media content calendar
 - Press release repository
-- Member bio and headshot management
+- Meemerging businessr bio and headshot management
 - Training materials
 - Spotlight/case study showcase
 
@@ -284,7 +284,7 @@ Transform the "Whole of Government Total Team Approach" into a unified digital p
 - Document collaboration
 - Meeting notes and action items
 - Workflow automation between verticals
-- Consortium member portal
+- Consortium meemerging businessr portal
 
 **Status**: ❌ Email-based coordination
 **Priority**: MEDIUM
@@ -332,7 +332,7 @@ Transform the "Whole of Government Total Team Approach" into a unified digital p
 
 **Requirements**:
 - MOU/Revenue Share Agreement management
-- Consortium member authorization tracking
+- Consortium meemerging businessr authorization tracking
 - Confidentiality and NDA management
 - Service overlap prevention
 - Quality control and brand consistency
@@ -524,7 +524,7 @@ app/(marketing)/
 
 ## 8. Revenue Model & Monetization {#revenue-model}
 
-### Membership Tiers
+### Meemerging businessrship Tiers
 
 | Tier | Price | Features |
 |------|-------|----------|
@@ -535,7 +535,7 @@ app/(marketing)/
 
 ### Revenue Streams
 
-1. **Membership Subscriptions**: $600K/year (100 members × $500 avg)
+1. **Meemerging businessrship Subscriptions**: $600K/year (100 meemerging businessrs × $500 avg)
 2. **Pack Publishing Fees**: $175K/year (50 packs × $3,500)
 3. **Introductions Access**: $150K/year (200 intros × $750)
 4. **CMMC Cohort Enrollment**: $280K/year (80 participants × $3,500)
@@ -733,14 +733,14 @@ interface ProofPackDoc extends BaseDocument {
   userId: string;
   companyName: string;
   lane: 'government' | 'commercial' | 'both';
-  packHealthScore: number; // 0-100
+  packHealthScore: nuemerging businessr; // 0-100
   status: 'draft' | 'in_review' | 'published' | 'expired';
   
   documents: Array<{
     category: string;
     name: string;
     fileUrl: string;
-    version: number;
+    version: nuemerging businessr;
     uploadedAt: Timestamp;
     expiresAt?: Timestamp;
   }>;
@@ -762,12 +762,12 @@ interface ProofPackDoc extends BaseDocument {
 interface IntroductionDoc extends BaseDocument {
   smeId: string;
   buyerId: string;
-  matchScore: number; // 0-100
+  matchScore: nuemerging businessr; // 0-100
   introBriefUrl: string;
   proofPackUrl: string;
   status: 'pending' | 'sent' | 'meeting_scheduled' | 'contract_awarded';
   conversionStage: 'intro' | 'meeting' | 'rfq' | 'award';
-  contractValue?: number;
+  contractValue?: nuemerging businessr;
 }
 ```
 

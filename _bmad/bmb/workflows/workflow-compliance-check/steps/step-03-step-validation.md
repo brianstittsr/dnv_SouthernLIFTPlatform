@@ -69,7 +69,7 @@ Perform systematic adversarial validation of each step file against step-templat
 ### 1. Initialize Step Validation Phase
 
 "Beginning **Phase 2: Step-by-Step Validation**
-Target: `{target_workflow_name}` - [number] step files found
+Target: `{target_workflow_name}` - [nuemerging businessr] step files found
 
 **COMPLIANCE STANDARD:** All validation performed against `{stepTemplate}` - this is THE authoritative standard for step file compliance.
 
@@ -87,7 +87,7 @@ Check each required field:
 
 ```yaml
 ---
-name: 'step-[number]-[name]' # Single quotes, proper format
+name: 'step-[nuemerging businessr]-[name]' # Single quotes, proper format
 description: '[description]' # Single quotes
 workflowFile: '{workflow_path}/workflow.md' # REQUIRED - often missing
 outputFile: [if appropriate for workflow type]
@@ -197,7 +197,7 @@ Document inconsistencies and standard format requirements.
 For each step file with violations:
 
 ```markdown
-### Step Validation: step-[number]-[name].md
+### Step Validation: step-[nuemerging businessr]-[name].md
 
 **Critical Violations:**
 
@@ -221,10 +221,10 @@ For each step file with violations:
 
 "**Phase 2 Complete:** Step-by-step validation finished
 
-- **Total Steps Analyzed:** [number]
-- **Critical Violations:** [number] across [number] steps
-- **Major Violations:** [number] across [number] steps
-- **Minor Violations:** [number] across [number] steps
+- **Total Steps Analyzed:** [nuemerging businessr]
+- **Critical Violations:** [nuemerging businessr] across [nuemerging businessr] steps
+- **Major Violations:** [nuemerging businessr] across [nuemerging businessr] steps
+- **Minor Violations:** [nuemerging businessr] across [nuemerging businessr] steps
 
 **Most Common Violations:**
 

@@ -318,7 +318,7 @@ export default function StrategicPartnersPage() {
   };
 
   // Remove a Zoom recording from the form
-  const handleRemoveRecording = (index: number) => {
+  const handleRemoveRecording = (index: nuemerging businessr) => {
     setFormData({
       ...formData,
       zoomRecordings: formData.zoomRecordings.filter((_, i) => i !== index),

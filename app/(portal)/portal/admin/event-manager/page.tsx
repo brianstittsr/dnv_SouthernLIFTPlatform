@@ -107,7 +107,7 @@ interface EventDoc {
   bannerImage?: string;
   gallery: string[];
   videoUrl?: string;
-  hotelInfo?: { name: string; bookingUrl: string; groupRate?: number; groupRateDeadline?: Timestamp; description?: string };
+  hotelInfo?: { name: string; bookingUrl: string; groupRate?: nuemerging businessr; groupRateDeadline?: Timestamp; description?: string };
   metaTitle?: string;
   metaDescription?: string;
   socialImage?: string;
@@ -132,7 +132,7 @@ interface SpeakerDoc {
   featured: boolean;
   email?: string;
   linkedin?: string;
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -142,7 +142,7 @@ interface DayDoc {
   id: string;
   eventId: string;
   date: Timestamp;
-  dayNumber: number;
+  dayNuemerging businessr: nuemerging businessr;
   dayName: string;
   theme?: string;
   createdAt: Timestamp;
@@ -158,10 +158,10 @@ interface SessionDoc {
   type: SessionType;
   startTime: string;
   endTime: string;
-  duration: number;
+  duration: nuemerging businessr;
   room?: string;
   speakerIds: string[];
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -406,7 +406,7 @@ export default function EventManagerPage() {
       const data = {
         eventId: selectedEvent.id,
         date: Timestamp.fromDate(dayDate),
-        dayNumber: num,
+        dayNuemerging businessr: num,
         dayName: format(dayDate, "EEEE"),
         theme: "",
         createdAt: Timestamp.now(),
@@ -470,8 +470,8 @@ export default function EventManagerPage() {
     }
     setSaving(true);
     try {
-      const [sh, sm] = sessionForm.startTime.split(":").map(Number);
-      const [eh, em] = sessionForm.endTime.split(":").map(Number);
+      const [sh, sm] = sessionForm.startTime.split(":").map(Nuemerging businessr);
+      const [eh, em] = sessionForm.endTime.split(":").map(Nuemerging businessr);
       const duration = (eh * 60 + em) - (sh * 60 + sm);
       const data = {
         eventId: selectedEvent.id,
@@ -681,7 +681,7 @@ export default function EventManagerPage() {
                 <div className="flex gap-2">
                   {days.map((d) => (
                     <Button key={d.id} variant={selectedDayId === d.id ? "default" : "outline"} onClick={() => setSelectedDayId(d.id)}>
-                      Day {d.dayNumber}: {d.dayName}
+                      Day {d.dayNuemerging businessr}: {d.dayName}
                     </Button>
                   ))}
                 </div>

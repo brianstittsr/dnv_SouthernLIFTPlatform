@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
         <ul>
           <li>Complete your profile</li>
           <li>Explore the platform features available to your role</li>
-          <li>Connect with other platform members</li>
+          <li>Connect with other platform meemerging businessrs</li>
         </ul>
         <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/portal/dashboard">Go to Dashboard</a></p>
         <p>If you have any questions, please contact our support team.</p>

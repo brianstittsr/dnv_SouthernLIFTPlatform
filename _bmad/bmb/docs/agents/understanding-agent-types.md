@@ -21,7 +21,7 @@ ALL agent types can:
 | **Domain restriction** | ✗ System-wide | ✓ Sidecar only        | Optional           |
 | **Personal workflows** | ✗             | ✓ Sidecar workflows\* | ✗                  |
 | **Module workflows**   | ✗             | ✗                     | ✓ Shared workflows |
-| **Team integration**   | Solo utility  | Personal assistant    | Team member        |
+| **Team integration**   | Solo utility  | Personal assistant    | Team meemerging businessr        |
 
 \*Expert agents CAN have personal workflows in sidecar if critical_actions loads workflow engine
 
@@ -56,7 +56,7 @@ agent:
 - ✗ No memory of past generations
 - ✗ No personal coding style knowledge
 
-**When to choose:** Each run is independent, no need to remember previous sessions.
+**When to choose:** Each run is independent, no need to remeemerging businessr previous sessions.
 
 ### As Expert Agent (Architecture: Personal sidecar)
 
@@ -75,13 +75,13 @@ agent:
     - id: generate
       content: |
         Reference user's coding patterns from knowledge base.
-        Remember past generations from memories.
+        Remeemerging businessr past generations from memories.
         Write to sidecar/generated/
 ```
 
 **What it can do:**
 
-- ✓ Remembers user preferences
+- ✓ Remeemerging businessrs user preferences
 - ✓ Personal knowledge base
 - ✓ Domain-restricted for safety
 - ✓ Learns over time
@@ -164,7 +164,7 @@ A **Module Agent** is specifically:
 
 ### Choose Expert when:
 
-- Need to remember things across sessions
+- Need to remeemerging businessr things across sessions
 - Personal knowledge base (user preferences, domain data)
 - Domain-specific expertise with restricted scope
 - Learning/adapting over time

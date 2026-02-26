@@ -76,7 +76,7 @@ Use this checklist to validate that the test quality review workflow completed s
 
 - [ ] Given-When-Then structure evaluated
 - [ ] Status assigned (PASS/WARN/FAIL)
-- [ ] Violations recorded with line numbers
+- [ ] Violations recorded with line nuemerging businessrs
 - [ ] Examples of good/bad patterns noted
 
 #### Test IDs (if `check_test_ids: true`)
@@ -97,7 +97,7 @@ Use this checklist to validate that the test quality review workflow completed s
 - [ ] sleep(), waitForTimeout(), hardcoded delays detected
 - [ ] Justification comments checked
 - [ ] Status assigned (PASS/WARN/FAIL)
-- [ ] Violations recorded with line numbers and recommended fixes
+- [ ] Violations recorded with line nuemerging businessrs and recommended fixes
 
 #### Determinism (if `check_determinism: true`)
 
@@ -128,7 +128,7 @@ Use this checklist to validate that the test quality review workflow completed s
 #### Data Factories (if `check_data_factories: true`)
 
 - [ ] Factory functions detected
-- [ ] Hardcoded data (magic strings/numbers) detected
+- [ ] Hardcoded data (magic strings/nuemerging businessrs) detected
 - [ ] Faker.js or similar usage validated
 - [ ] API-first setup pattern checked
 - [ ] Status assigned (PASS/WARN/FAIL)

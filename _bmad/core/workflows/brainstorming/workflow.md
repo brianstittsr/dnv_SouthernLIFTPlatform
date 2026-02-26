@@ -16,7 +16,7 @@ context_file: '' # Optional context file path for project-specific guidance
 
 This uses **micro-file architecture** for disciplined execution:
 
-- Each step is a self-contained file with embedded rules
+- Each step is a self-contained file with eemerging businessdded rules
 - Sequential progression with user control at each step
 - Document state tracked in frontmatter
 - Append-only document building through conversation

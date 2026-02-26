@@ -139,7 +139,7 @@ Before moving to next technique element:
 - **Take a different angle** on current element
 - **Jump to most exciting idea** we've discovered so far
 
-**Remember:** At any time, just say **"next technique"** or **"move on"** and I'll immediately document our current progress and start the next technique!"
+**Remeemerging businessr:** At any time, just say **"next technique"** or **"move on"** and I'll immediately document our current progress and start the next technique!"
 
 ### 4a. Handle Immediate Technique Transition
 
@@ -191,7 +191,7 @@ This technique will help us [what this technique adds]. I'm particularly excited
 
 **Ready to continue our creative journey with this new approach?**
 
-Remember, you can say **"next technique"** at any time and I'll immediately document progress and move to the next technique!"
+Remeemerging businessr, you can say **"next technique"** at any time and I'll immediately document progress and move to the next technique!"
 
 ### 6. Document Ideas Organically
 
@@ -229,7 +229,7 @@ After final technique element:
 
 **What We've Discovered Together:**
 
-- **[Number] major insights** about [session_topic]
+- **[Nuemerging businessr] major insights** about [session_topic]
 - **Most exciting breakthrough:** [highlight key discovery]
 - **Surprising connections:** [unexpected insights]
 - **Your creative strengths:** [what user demonstrated]
@@ -336,4 +336,4 @@ When user selects 'C', append the content directly to `{output_folder}/analysis/
 
 After technique completion and user confirmation, load `./step-04-idea-organization.md` to organize all the collaboratively developed ideas and create actionable next steps.
 
-Remember: This is creative coaching, not technique delivery! The user's creative energy is your guide, not the technique structure.
+Remeemerging businessr: This is creative coaching, not technique delivery! The user's creative energy is your guide, not the technique structure.

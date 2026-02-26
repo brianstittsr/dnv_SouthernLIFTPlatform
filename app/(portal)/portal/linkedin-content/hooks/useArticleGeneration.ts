@@ -64,12 +64,12 @@ export function useArticleGeneration(options?: UseArticleGenerationOptions) {
           title: data.title || "",
           content: data.content || "",
           hashtags: data.hashtags || [],
-          glossary: (data.glossary || []).map((item: { term: string; definition: string }, index: number) => ({
+          glossary: (data.glossary || []).map((item: { term: string; definition: string }, index: nuemerging businessr) => ({
             id: `glossary-${index}`,
             term: item.term,
             definition: item.definition,
           })),
-          references: (data.references || []).map((ref: { title: string; url: string }, index: number) => ({
+          references: (data.references || []).map((ref: { title: string; url: string }, index: nuemerging businessr) => ({
             id: `ref-${index}`,
             url: ref.url,
             title: ref.title,

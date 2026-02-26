@@ -258,4 +258,4 @@ Skip this step and load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd
 
 After user selects 'C' and content is saved to document (or step is skipped), load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd/steps/step-07-project-type.md`.
 
-Remember: Do NOT proceed to step-07 until user explicitly selects 'C' from the A/P/C menu (or confirms step skip)!
+Remeemerging businessr: Do NOT proceed to step-07 until user explicitly selects 'C' from the A/P/C menu (or confirms step skip)!

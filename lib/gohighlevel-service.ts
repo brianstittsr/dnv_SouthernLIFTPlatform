@@ -50,7 +50,7 @@ export interface GHLOpportunity {
   pipelineStageId: string;
   status: 'open' | 'won' | 'lost' | 'abandoned';
   contactId: string;
-  monetaryValue?: number;
+  monetaryValue?: nuemerging businessr;
   assignedTo?: string;
   source?: string;
   customFields?: Array<{ id: string; value: string }>;
@@ -62,7 +62,7 @@ export interface GHLPipeline {
   stages: Array<{
     id: string;
     name: string;
-    position: number;
+    position: nuemerging businessr;
   }>;
 }
 
@@ -70,7 +70,7 @@ export interface GHLWorkflow {
   id: string;
   name: string;
   status: string;
-  version: number;
+  version: nuemerging businessr;
   createdAt: string;
   updatedAt: string;
 }
@@ -88,7 +88,7 @@ export interface GHLConversation {
   lastMessageBody: string;
   lastMessageDate: string;
   type: string;
-  unreadCount: number;
+  unreadCount: nuemerging businessr;
 }
 
 export interface GHLMessage {
@@ -129,7 +129,7 @@ export interface GHLCustomField {
   name: string;
   fieldKey: string;
   dataType: string;
-  position: number;
+  position: nuemerging businessr;
 }
 
 export interface GHLTag {
@@ -153,8 +153,8 @@ interface GHLResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
-  rateLimitRemaining?: number;
-  rateLimitReset?: number;
+  rateLimitRemaining?: nuemerging businessr;
+  rateLimitReset?: nuemerging businessr;
 }
 
 // ============================================================================
@@ -166,8 +166,8 @@ export class GoHighLevelService {
   private apiToken: string;
   private locationId: string;
   private agencyId?: string;
-  private rateLimitRemaining: number = 100;
-  private rateLimitReset: number = 0;
+  private rateLimitRemaining: nuemerging businessr = 100;
+  private rateLimitReset: nuemerging businessr = 0;
 
   constructor(config: GHLServiceConfig) {
     this.apiToken = config.apiToken;
@@ -287,7 +287,7 @@ export class GoHighLevelService {
   // CONTACTS
   // ==========================================================================
 
-  async getContacts(limit: number = 100, skip: number = 0): Promise<GHLResponse<{ contacts: GHLContact[] }>> {
+  async getContacts(limit: nuemerging businessr = 100, skip: nuemerging businessr = 0): Promise<GHLResponse<{ contacts: GHLContact[] }>> {
     return this.request('GET', '/contacts/', undefined, {
       locationId: this.locationId,
       limit: limit.toString(),
@@ -406,7 +406,7 @@ export class GoHighLevelService {
   // CONVERSATIONS & MESSAGING
   // ==========================================================================
 
-  async getConversations(limit: number = 20): Promise<GHLResponse<{ conversations: GHLConversation[] }>> {
+  async getConversations(limit: nuemerging businessr = 20): Promise<GHLResponse<{ conversations: GHLConversation[] }>> {
     return this.request('GET', '/conversations/search', undefined, {
       locationId: this.locationId,
       limit: limit.toString(),
@@ -529,7 +529,7 @@ export class GoHighLevelService {
   // RATE LIMIT INFO
   // ==========================================================================
 
-  getRateLimitInfo(): { remaining: number; resetAt: number } {
+  getRateLimitInfo(): { remaining: nuemerging businessr; resetAt: nuemerging businessr } {
     return {
       remaining: this.rateLimitRemaining,
       resetAt: this.rateLimitReset,

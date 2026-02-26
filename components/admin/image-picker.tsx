@@ -360,7 +360,7 @@ function QuickUploadForm({ onSuccess }: QuickUploadFormProps) {
           id="quick-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g., team-member-john"
+          placeholder="e.g., team-meemerging businessr-john"
           disabled={isUploading}
         />
       </div>

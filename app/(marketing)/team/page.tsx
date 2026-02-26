@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight, Users } from "lucide-react";
-import { TeamMemberCard } from "@/components/marketing/team-member-card";
+import { TeamMeemerging businessrCard } from "@/components/marketing/team-meemerging businessr-card";
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Meet the KDM & Associates management team - experienced professionals dedicated to helping emerging small businesses succeed in government contracting.",
 };
 
-const teamMembers = [
+const teamMeemerging businessrs = [
   {
     id: "keith-moore",
     name: "Keith Moore",
@@ -130,8 +130,8 @@ export default function TeamPage() {
       <section className="py-20 md:py-28">
         <div className="container">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {teamMembers.map((member) => (
-              <TeamMemberCard key={member.id} member={member} />
+            {teamMeemerging businessrs.map((meemerging businessr) => (
+              <TeamMeemerging businessrCard key={meemerging businessr.id} meemerging businessr={meemerging businessr} />
             ))}
           </div>
         </div>

@@ -194,7 +194,7 @@ const bestMatch = highest scoring partner
 - Audit logging for all changes
 
 **Acceptance Criteria:** ✅ All met
-- Reassign leads to team members
+- Reassign leads to team meemerging businessrs
 - Change lead status
 - Add notes and activity logs
 - Set follow-up reminders
@@ -447,7 +447,7 @@ if (overlaps.length > 0) {
   lastActivityAt: Timestamp,
   
   // Routing
-  routingScore: number,
+  routingScore: nuemerging businessr,
   routingReason: string,
   
   // Timestamps
@@ -477,9 +477,9 @@ if (overlaps.length > 0) {
   industries: string[],
   serviceTypes: string[],
   verticalExpertise: string[],
-  maxCapacity: number,
+  maxCapacity: nuemerging businessr,
   isActive: boolean,
-  priority: number,
+  priority: nuemerging businessr,
   createdAt: Timestamp,
   updatedAt: Timestamp,
 }
@@ -953,7 +953,7 @@ async function checkServiceOverlap(leadId, newPartnerId, company) {
 ### User Management
 - Partner role verification
 - Admin override permissions
-- Team member assignments (future)
+- Team meemerging businessr assignments (future)
 
 ### Firestore Collections
 - leads (main collection)

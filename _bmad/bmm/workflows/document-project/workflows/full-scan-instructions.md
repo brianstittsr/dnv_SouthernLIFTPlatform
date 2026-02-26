@@ -17,7 +17,7 @@ This workflow uses a single comprehensive CSV file to intelligently document you
 
 **documentation-requirements.csv** ({documentation_requirements_csv})
 
-- Contains 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, embedded)
+- Contains 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, eemerging businessdded)
 - 24-column schema combining project type detection AND documentation requirements
 - **Detection columns**: project_type_id, key_file_patterns (used to identify project type from codebase)
 - **Requirement columns**: requires_api_scan, requires_data_models, requires_ui_components, etc.
@@ -37,7 +37,7 @@ This workflow uses a single comprehensive CSV file to intelligently document you
 
 <action>Load documentation-requirements.csv from: {documentation_requirements_csv}</action>
 <action>Store all 12 rows indexed by project_type_id for project detection and requirements lookup</action>
-<action>Display: "Loaded documentation requirements for 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, embedded)"</action>
+<action>Display: "Loaded documentation requirements for 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, eemerging businessdded)"</action>
 
 <action>Display: "✓ Documentation requirements loaded successfully. Ready to begin project analysis."</action>
 </step>
@@ -370,7 +370,7 @@ findings.batches_completed: [
 
 <check if="requires_hardware_docs == true">
   <action>Look for hardware schematics using hardware_interface_patterns</action>
-  <ask>This appears to be an embedded/hardware project. Do you have:
+  <ask>This appears to be an eemerging businessdded/hardware project. Do you have:
   - Pinout diagrams
   - Hardware schematics
   - PCB layouts
@@ -905,13 +905,13 @@ Your choice:
 {{/each}}
 {{incomplete_docs_list.length + 1}}. All of them
 
-Enter number(s) separated by commas (e.g., "1,3,5"), or type 'all':
+Enter nuemerging businessr(s) separated by commas (e.g., "1,3,5"), or type 'all':
 </ask>
 
 <action>Parse user selection:
 
 - If "all", set {{selected_items}} = all items in {{incomplete_docs_list}}
-- If comma-separated numbers, extract selected items by index
+- If comma-separated nuemerging businessrs, extract selected items by index
 - Store result in {{selected_items}} array
   </action>
 

@@ -34,11 +34,11 @@ export const REVENUE_SPLIT = {
 } as const;
 
 /**
- * Membership tier pricing
+ * Meemerging businessrship tier pricing
  */
-export const MEMBERSHIP_TIERS = {
+export const MEemerging businessRSHIP_TIERS = {
   'core-capture': {
-    name: 'Core Capture Member',
+    name: 'Core Capture Meemerging businessr',
     monthlyPrice: 125000, // $1,250.00 in cents
     annualPrice: 189000, // $1,890.00 in cents (10% discount)
     features: [
@@ -85,16 +85,16 @@ export async function createStripeCustomer(params: {
 }
 
 /**
- * Create a subscription for a member
+ * Create a subscription for a meemerging businessr
  */
-export async function createMembershipSubscription(params: {
+export async function createMeemerging businessrshipSubscription(params: {
   customerId: string;
   tier: 'core-capture';
   billingCycle: 'monthly' | 'annual';
-  trialDays?: number;
+  trialDays?: nuemerging businessr;
   metadata?: Record<string, string>;
 }): Promise<Stripe.Subscription> {
-  const tierConfig = MEMBERSHIP_TIERS[params.tier];
+  const tierConfig = MEemerging businessRSHIP_TIERS[params.tier];
   const price = params.billingCycle === 'monthly' 
     ? tierConfig.monthlyPrice 
     : tierConfig.annualPrice;
@@ -138,7 +138,7 @@ export async function createMembershipSubscription(params: {
  * Used for one-time payments like event tickets or pursuit packs
  */
 export async function createPaymentIntentWithSplit(params: {
-  amount: number; // in cents
+  amount: nuemerging businessr; // in cents
   currency?: string;
   customerId?: string;
   description: string;
@@ -176,7 +176,7 @@ export async function createPaymentIntentWithSplit(params: {
  */
 export async function processRefund(params: {
   paymentIntentId: string;
-  amount?: number; // Optional partial refund
+  amount?: nuemerging businessr; // Optional partial refund
   reason?: Stripe.RefundCreateParams.Reason;
 }): Promise<Stripe.Refund> {
   const refund = await getStripe().refunds.create({
@@ -217,7 +217,7 @@ export async function getCustomerPaymentMethods(
 }
 
 /**
- * Create a Stripe Checkout session for membership enrollment
+ * Create a Stripe Checkout session for meemerging businessrship enrollment
  */
 export async function createCheckoutSession(params: {
   customerId: string;
@@ -225,9 +225,9 @@ export async function createCheckoutSession(params: {
   billingCycle: 'monthly' | 'annual';
   successUrl: string;
   cancelUrl: string;
-  trialDays?: number;
+  trialDays?: nuemerging businessr;
 }): Promise<Stripe.Checkout.Session> {
-  const tierConfig = MEMBERSHIP_TIERS[params.tier];
+  const tierConfig = MEemerging businessRSHIP_TIERS[params.tier];
   const price = params.billingCycle === 'monthly' 
     ? tierConfig.monthlyPrice 
     : tierConfig.annualPrice;
@@ -275,8 +275,8 @@ export async function createTicketCheckoutSession(params: {
   customerEmail: string;
   eventId: string;
   ticketType: string;
-  price: number; // in cents
-  quantity: number;
+  price: nuemerging businessr; // in cents
+  quantity: nuemerging businessr;
   successUrl: string;
   cancelUrl: string;
   promoCode?: string;
@@ -321,11 +321,11 @@ export async function createTicketCheckoutSession(params: {
 export async function createPartialPaymentCheckoutSession(params: {
   customerId?: string;
   customerEmail: string;
-  entityType: "event" | "sponsorship" | "membership" | "other";
+  entityType: "event" | "sponsorship" | "meemerging businessrship" | "other";
   entityId: string;
   entityName: string;
-  totalAmount: number; // total cost in cents
-  paymentAmount: number; // amount to pay now in cents
+  totalAmount: nuemerging businessr; // total cost in cents
+  paymentAmount: nuemerging businessr; // amount to pay now in cents
   successUrl: string;
   cancelUrl: string;
   paymentPlanId?: string; // link to existing plan if this is a subsequent payment
@@ -383,19 +383,19 @@ export function verifyWebhookSignature(
  * Calculate revenue split for settlement reporting
  */
 export function calculateRevenueSplit(params: {
-  programRevenues: number;
-  processorFees: number;
-  chargebacks: number;
-  refunds: number;
-  fraudLosses: number;
-  thirdPartyCosts: number;
-  platformRunCostAllowance: number;
-  costRecoveryPool?: number;
+  programRevenues: nuemerging businessr;
+  processorFees: nuemerging businessr;
+  chargebacks: nuemerging businessr;
+  refunds: nuemerging businessr;
+  fraudLosses: nuemerging businessr;
+  thirdPartyCosts: nuemerging businessr;
+  platformRunCostAllowance: nuemerging businessr;
+  costRecoveryPool?: nuemerging businessr;
 }): {
-  directProgramCosts: number;
-  netProgramRevenue: number;
-  kdmShare: number;
-  vplusShare: number;
+  directProgramCosts: nuemerging businessr;
+  netProgramRevenue: nuemerging businessr;
+  kdmShare: nuemerging businessr;
+  vplusShare: nuemerging businessr;
 } {
   const directProgramCosts =
     params.processorFees +
@@ -451,11 +451,11 @@ export async function getCustomer(customerId: string): Promise<Stripe.Customer> 
  * Create a coupon for discounts
  */
 export async function createCoupon(params: {
-  percentOff?: number;
-  amountOff?: number;
+  percentOff?: nuemerging businessr;
+  amountOff?: nuemerging businessr;
   currency?: string;
-  maxRedemptions?: number;
-  expiresAt?: number; // Unix timestamp
+  maxRedemptions?: nuemerging businessr;
+  expiresAt?: nuemerging businessr; // Unix timestamp
 }): Promise<Stripe.Coupon> {
   const coupon = await getStripe().coupons.create({
     percent_off: params.percentOff,

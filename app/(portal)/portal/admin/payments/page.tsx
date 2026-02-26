@@ -74,12 +74,12 @@ import { COLLECTIONS, type TransactionDoc, type PaymentPlanDoc } from "@/lib/sch
 import { toast } from "sonner";
 
 interface FinancialMetrics {
-  totalRevenue: number;
-  outstandingBalance: number;
-  overdueAmount: number;
-  collectionRate: number;
-  revenueByType: Record<string, number>;
-  revenueByTag: Record<string, number>;
+  totalRevenue: nuemerging businessr;
+  outstandingBalance: nuemerging businessr;
+  overdueAmount: nuemerging businessr;
+  collectionRate: nuemerging businessr;
+  revenueByType: Record<string, nuemerging businessr>;
+  revenueByTag: Record<string, nuemerging businessr>;
 }
 
 export default function FinancialDashboardPage() {
@@ -130,8 +130,8 @@ export default function FinancialDashboardPage() {
       const totalRev = transData.reduce((sum, t) => sum + (t.amount || 0), 0);
       const outstanding = plansData.reduce((sum, p) => sum + (p.remainingBalance || 0), 0);
       
-      const revByType: Record<string, number> = {};
-      const revByTag: Record<string, number> = {};
+      const revByType: Record<string, nuemerging businessr> = {};
+      const revByTag: Record<string, nuemerging businessr> = {};
 
       transData.forEach(t => {
         // By Type
@@ -230,8 +230,8 @@ export default function FinancialDashboardPage() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (amount: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(amount);
@@ -460,7 +460,7 @@ export default function FinancialDashboardPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="membership">Membership</SelectItem>
+                      <SelectItem value="meemerging businessrship">Meemerging businessrship</SelectItem>
                       <SelectItem value="event_ticket">Event Ticket</SelectItem>
                       <SelectItem value="sponsorship">Sponsorship</SelectItem>
                       <SelectItem value="partial_payment">Partial Payment</SelectItem>

@@ -97,7 +97,7 @@ Review each step file:
 - Are all mandatory rules included?
 - Is menu handling properly implemented?
 - Are frontmatter variables correct?
-- Are steps properly numbered?
+- Are steps properly nuemerging businessred?
 
 ### 4. Cross-File Consistency
 

@@ -154,8 +154,8 @@ Tip: Start a new chat and load the {{next_agent}} agent before running this work
 
 <check if="choice == 2 AND optional_workflows_available">
   <ask>Which optional workflow?
-{{#each optional_workflows numbered}}
-{{number}}. {{workflow_name}} ({{agent}})
+{{#each optional_workflows nuemerging businessred}}
+{{nuemerging businessr}}. {{workflow_name}} ({{agent}})
 {{/each}}
 
 Your choice:</ask>

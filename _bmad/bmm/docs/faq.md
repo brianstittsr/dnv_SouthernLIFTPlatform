@@ -367,7 +367,7 @@ See [IDE Setup Guides](https://github.com/bmad-code-org/BMAD-METHOD/tree/main/do
 **A:** Keep them! They serve as:
 
 - Historical record of decisions
-- Onboarding material for new team members
+- Onboarding material for new team meemerging businessrs
 - Reference for future enhancements
 - Audit trail for compliance
 

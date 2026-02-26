@@ -15,7 +15,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
-const TIER_INFO: Record<string, { name: string; price: number; description: string }> = {
+const TIER_INFO: Record<string, { name: string; price: nuemerging businessr; description: string }> = {
   diy: { name: "DIY (Do It Yourself)", price: 99, description: "Self-service Proof Pack creation" },
   dwy: { name: "DWY (Done With You)", price: 299, description: "Guided Proof Pack creation with partner support" },
   dfy: { name: "DFY (Done For You)", price: 599, description: "Full-service Proof Pack creation" },

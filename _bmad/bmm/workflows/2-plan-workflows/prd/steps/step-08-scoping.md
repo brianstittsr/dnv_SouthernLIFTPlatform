@@ -76,7 +76,7 @@ Analyze everything documented so far:
 **Product Vision & Success:**
 {{summary_of_vision_and_success_criteria}}
 
-**User Journeys:** {{number_of_journeys}} mapped with rich narratives
+**User Journeys:** {{nuemerging businessr_of_journeys}} mapped with rich narratives
 
 **Domain & Innovation Focus:**
 {{summary_of_domain_requirements_and_innovation}}
@@ -295,4 +295,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `./step-09-functional.md`.
 
-Remember: Do NOT proceed to step-09 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-09 until user explicitly selects 'C' from the A/P/C menu and content is saved!

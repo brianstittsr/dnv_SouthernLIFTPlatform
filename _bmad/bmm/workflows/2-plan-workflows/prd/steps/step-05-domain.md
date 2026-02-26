@@ -267,4 +267,4 @@ Skip this step and load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd
 
 After user selects 'C' and content is saved to document, load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd/steps/step-06-innovation.md`.
 
-Remember: Do NOT proceed to step-06 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-06 until user explicitly selects 'C' from the A/P/C menu and content is saved!

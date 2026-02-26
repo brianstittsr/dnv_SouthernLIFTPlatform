@@ -92,11 +92,11 @@ interface GoHighLevelIntegration {
   lastSyncAt?: Timestamp;
   lastSyncStatus: 'success' | 'error' | 'pending' | 'never';
   lastSyncError?: string;
-  totalContactsSynced: number;
-  totalOpportunitiesSynced: number;
+  totalContactsSynced: nuemerging businessr;
+  totalOpportunitiesSynced: nuemerging businessr;
   
   // Rate Limiting
-  rateLimitRemaining?: number;
+  rateLimitRemaining?: nuemerging businessr;
   rateLimitReset?: Timestamp;
   
   // Metadata
@@ -118,14 +118,14 @@ interface GoHighLevelSyncLog {
   status: 'started' | 'in_progress' | 'completed' | 'failed';
   
   // Statistics
-  recordsProcessed: number;
-  recordsSuccessful: number;
-  recordsFailed: number;
+  recordsProcessed: nuemerging businessr;
+  recordsSuccessful: nuemerging businessr;
+  recordsFailed: nuemerging businessr;
   
   // Timing
   startedAt: Timestamp;
   completedAt?: Timestamp;
-  duration?: number;  // milliseconds
+  duration?: nuemerging businessr;  // milliseconds
   
   // Errors
   errors: Array<{
@@ -136,10 +136,10 @@ interface GoHighLevelSyncLog {
   
   // Summary
   summary?: {
-    contactsCreated: number;
-    contactsUpdated: number;
-    opportunitiesCreated: number;
-    opportunitiesUpdated: number;
+    contactsCreated: nuemerging businessr;
+    contactsUpdated: nuemerging businessr;
+    opportunitiesCreated: nuemerging businessr;
+    opportunitiesUpdated: nuemerging businessr;
   };
   
   // Metadata
@@ -297,7 +297,7 @@ export class GoHighLevelService {
     pipelineId: string;
     stageId: string;
     name: string;
-    monetaryValue?: number;
+    monetaryValue?: nuemerging businessr;
   }) {
     return this.client.post('/opportunities', {
       locationId: this.locationId,
@@ -333,7 +333,7 @@ export class GoHighLevelService {
     name: string;
     type: 'email' | 'sms';
     messages: Array<{
-      delay: number;
+      delay: nuemerging businessr;
       subject?: string;
       content: string;
     }>;
@@ -371,7 +371,7 @@ interface GeneratedWorkflow {
   };
   steps: Array<{
     type: 'email' | 'sms' | 'wait' | 'condition' | 'tag';
-    delay?: number;      // hours
+    delay?: nuemerging businessr;      // hours
     subject?: string;    // for email
     content: string;
     condition?: string;
@@ -570,4 +570,4 @@ For complete implementation details, reference these files:
 
 ---
 
-*Generated from All Pro Sports NC platform - December 2024*
+*Generated from All Pro Sports NC platform - Deceemerging businessr 2024*

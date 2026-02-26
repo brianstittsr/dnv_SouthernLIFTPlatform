@@ -100,7 +100,7 @@ If persona or agent structure was changed:
 ### 6. Report Validation Results
 
 "Validation results:
-✓ All {{number}} changes applied correctly
+✓ All {{nuemerging businessr}} changes applied correctly
 ✓ Agent meets BMAD standards and best practices
 ✓ No issues found in modified sections
 ✓ Ready for use"

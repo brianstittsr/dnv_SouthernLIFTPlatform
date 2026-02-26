@@ -303,7 +303,7 @@ Using TailwindCSS spacing scale (4px base):
 
 **Base Components (shadcn/ui):**
 - Button (primary, secondary, outline, ghost, destructive)
-- Input (text, email, password, number, date)
+- Input (text, email, password, nuemerging businessr, date)
 - Select (dropdown, multi-select)
 - Checkbox, Radio, Switch
 - Card (container for content sections)

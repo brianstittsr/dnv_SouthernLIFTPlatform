@@ -34,7 +34,7 @@ const certificationPreferences = [
   { id: "wosb", label: "WOSB/EDWOSB" },
   { id: "sdvosb", label: "SDVOSB" },
   { id: "hubzone", label: "HUBZone" },
-  { id: "mbe", label: "MBE" },
+  { id: "emerging business", label: "emerging business" },
   { id: "any", label: "Any Small Business" },
 ];
 

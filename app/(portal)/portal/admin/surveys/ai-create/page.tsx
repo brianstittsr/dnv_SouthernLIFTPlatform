@@ -196,7 +196,7 @@ export default function AISurveyCreatorPage() {
                   <Label htmlFor="time">Estimated Completion Time (minutes)</Label>
                   <Input
                     id="time"
-                    type="number"
+                    type="nuemerging businessr"
                     value={estimatedTime}
                     onChange={(e) => setEstimatedTime(e.target.value)}
                     min="1"
@@ -341,7 +341,7 @@ export default function AISurveyCreatorPage() {
                   AI Improvements Made
                 </h4>
                 <div className="space-y-2">
-                  {generatedSurvey.improvements.map((improvement: string, idx: number) => (
+                  {generatedSurvey.improvements.map((improvement: string, idx: nuemerging businessr) => (
                     <div key={idx} className="flex gap-2 text-sm">
                       <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
                       <span>{improvement}</span>
@@ -355,13 +355,13 @@ export default function AISurveyCreatorPage() {
               <div>
                 <h4 className="font-semibold mb-3">Survey Structure</h4>
                 <div className="space-y-4">
-                  {generatedSurvey.sections.map((section: any, sIdx: number) => (
+                  {generatedSurvey.sections.map((section: any, sIdx: nuemerging businessr) => (
                     <Card key={section.id}>
                       <CardHeader>
                         <CardTitle className="text-base">Section {sIdx + 1}: {section.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        {section.questions.map((question: any, qIdx: number) => (
+                        {section.questions.map((question: any, qIdx: nuemerging businessr) => (
                           <div key={question.id} className="border-l-2 border-purple-600 pl-4">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
@@ -398,7 +398,7 @@ export default function AISurveyCreatorPage() {
                   Reporting Capabilities
                 </h4>
                 <div className="grid grid-cols-2 gap-2">
-                  {generatedSurvey.reportingCapabilities.map((capability: string, idx: number) => (
+                  {generatedSurvey.reportingCapabilities.map((capability: string, idx: nuemerging businessr) => (
                     <div key={idx} className="flex gap-2 text-sm">
                       <CheckCircle2 className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
                       <span>{capability}</span>

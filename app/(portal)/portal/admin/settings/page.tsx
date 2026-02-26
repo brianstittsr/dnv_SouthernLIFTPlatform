@@ -35,22 +35,22 @@ interface SystemConfig {
   revenueConfig: {
     id: string;
     name: string;
-    platformFeePercentage: number;
-    partnerSharePercentage: number;
-    leadGenerationFee?: number;
-    serviceDeliveryFee?: number;
-    introductionFee?: number;
+    platformFeePercentage: nuemerging businessr;
+    partnerSharePercentage: nuemerging businessr;
+    leadGenerationFee?: nuemerging businessr;
+    serviceDeliveryFee?: nuemerging businessr;
+    introductionFee?: nuemerging businessr;
     isDefault: boolean;
   };
   packHealthConfig: {
     id: string;
-    introEligibilityThreshold: number;
-    criticalThreshold: number;
-    warningThreshold: number;
-    completenessWeight: number;
-    expirationWeight: number;
-    qualityWeight: number;
-    remediationWeight: number;
+    introEligibilityThreshold: nuemerging businessr;
+    criticalThreshold: nuemerging businessr;
+    warningThreshold: nuemerging businessr;
+    completenessWeight: nuemerging businessr;
+    expirationWeight: nuemerging businessr;
+    qualityWeight: nuemerging businessr;
+    remediationWeight: nuemerging businessr;
   };
   partnerAssignments: Array<{
     id: string;
@@ -64,8 +64,8 @@ interface SystemConfig {
   settings: {
     maintenanceMode: boolean;
     registrationEnabled: boolean;
-    maxUploadSizeMB: number;
-    sessionTimeoutMinutes: number;
+    maxUploadSizeMB: nuemerging businessr;
+    sessionTimeoutMinutes: nuemerging businessr;
   };
 }
 
@@ -327,7 +327,7 @@ export default function SettingsPage() {
                         Platform Fee Percentage
                       </label>
                       <Input
-                        type="number"
+                        type="nuemerging businessr"
                         min="0"
                         max="100"
                         value={revenueConfig.platformFeePercentage}
@@ -347,7 +347,7 @@ export default function SettingsPage() {
                         Partner Share Percentage
                       </label>
                       <Input
-                        type="number"
+                        type="nuemerging businessr"
                         value={revenueConfig.partnerSharePercentage}
                         disabled
                       />
@@ -367,7 +367,7 @@ export default function SettingsPage() {
                         Lead Generation Fee ($)
                       </label>
                       <Input
-                        type="number"
+                        type="nuemerging businessr"
                         min="0"
                         value={revenueConfig.leadGenerationFee || 0}
                         onChange={(e) => {
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                         Service Delivery Fee ($)
                       </label>
                       <Input
-                        type="number"
+                        type="nuemerging businessr"
                         min="0"
                         value={revenueConfig.serviceDeliveryFee || 0}
                         onChange={(e) => {
@@ -401,7 +401,7 @@ export default function SettingsPage() {
                         Introduction Fee ($)
                       </label>
                       <Input
-                        type="number"
+                        type="nuemerging businessr"
                         min="0"
                         value={revenueConfig.introductionFee || 0}
                         onChange={(e) => {
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                           Intro-Eligibility Threshold
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.introEligibilityThreshold}
@@ -469,7 +469,7 @@ export default function SettingsPage() {
                           Critical Threshold
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.criticalThreshold}
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                           Warning Threshold
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.warningThreshold}
@@ -517,7 +517,7 @@ export default function SettingsPage() {
                           Completeness Weight
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.completenessWeight}
@@ -535,7 +535,7 @@ export default function SettingsPage() {
                           Expiration Weight
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.expirationWeight}
@@ -553,7 +553,7 @@ export default function SettingsPage() {
                           Quality Weight
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.qualityWeight}
@@ -571,7 +571,7 @@ export default function SettingsPage() {
                           Remediation Weight
                         </label>
                         <Input
-                          type="number"
+                          type="nuemerging businessr"
                           min="0"
                           max="100"
                           value={packHealthConfig.remediationWeight}
@@ -760,7 +760,7 @@ export default function SettingsPage() {
                       Max Upload Size (MB)
                     </label>
                     <Input
-                      type="number"
+                      type="nuemerging businessr"
                       min="1"
                       max="100"
                       value={platformSettings.maxUploadSizeMB}
@@ -779,7 +779,7 @@ export default function SettingsPage() {
                       Session Timeout (Minutes)
                     </label>
                     <Input
-                      type="number"
+                      type="nuemerging businessr"
                       min="5"
                       max="1440"
                       value={platformSettings.sessionTimeoutMinutes}

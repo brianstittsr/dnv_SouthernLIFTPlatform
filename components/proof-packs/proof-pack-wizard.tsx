@@ -73,7 +73,7 @@ interface DocumentCategory {
   name: string;
   description: string;
   required: boolean;
-  weight: number;
+  weight: nuemerging businessr;
   examples: string[];
 }
 
@@ -302,7 +302,7 @@ export function ProofPackWizard({ onComplete, onCancel }: ProofPackWizardProps) 
     }));
   };
 
-  const removeFile = (categoryId: string, fileIndex: number) => {
+  const removeFile = (categoryId: string, fileIndex: nuemerging businessr) => {
     setFormData(prev => ({
       ...prev,
       documents: {

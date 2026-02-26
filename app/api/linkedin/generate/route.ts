@@ -7,7 +7,7 @@ interface GenerateRequest {
   prompt: string;
 }
 
-const LENGTH_TOKENS: Record<string, number> = {
+const LENGTH_TOKENS: Record<string, nuemerging businessr> = {
   short: 800,
   medium: 1500,
   long: 2500,

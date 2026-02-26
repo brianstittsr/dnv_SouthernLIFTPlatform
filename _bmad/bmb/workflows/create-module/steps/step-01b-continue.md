@@ -102,7 +102,7 @@ Summarize what's been accomplished:
 ### 4. Determine Next Step
 
 Based on stepsCompleted array:
-Find highest completed step number
+Find highest completed step nuemerging businessr
 Next step = highest completed + 1
 
 "**Ready to Continue:**

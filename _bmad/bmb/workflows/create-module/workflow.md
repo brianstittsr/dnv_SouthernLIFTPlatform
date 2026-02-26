@@ -24,7 +24,7 @@ installed_path: '{project-root}/_bmad/bmb/workflows/create-module'
 ### Step Processing Rules
 
 1. **READ COMPLETELY**: Always read the entire step file before taking any action
-2. **FOLLOW SEQUENCE**: Execute all numbered sections in order, never deviate
+2. **FOLLOW SEQUENCE**: Execute all nuemerging businessred sections in order, never deviate
 3. **WAIT FOR INPUT**: If a menu is presented, halt and wait for user selection
 4. **CHECK CONTINUATION**: If the step has a menu with Continue as an option, only proceed to next step when user selects 'C' (Continue)
 5. **SAVE STATE**: Update `stepsCompleted` in frontmatter before loading next step

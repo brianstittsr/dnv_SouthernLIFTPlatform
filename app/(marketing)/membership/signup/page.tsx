@@ -23,7 +23,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const TIER_INFO = {
   'core-capture': {
-    name: 'Core Capture Member',
+    name: 'Core Capture Meemerging businessr',
     monthlyPrice: 175000,
     annualPrice: 1890000,
     features: [
@@ -85,7 +85,7 @@ function SignupForm() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/memberships', {
+      const response = await fetch('/api/meemerging businessrships', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -104,18 +104,18 @@ function SignupForm() {
         // Redirect to Stripe checkout
         window.location.href = data.checkoutUrl;
       } else {
-        throw new Error(data.error || 'Failed to create membership');
+        throw new Error(data.error || 'Failed to create meemerging businessrship');
       }
     } catch (error: any) {
-      console.error('Error creating membership:', error);
+      console.error('Error creating meemerging businessrship:', error);
       alert(error.message || 'Failed to process signup. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatPrice = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatPrice = (cents: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
@@ -127,9 +127,9 @@ function SignupForm() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Back Button */}
-        <Link href="/membership" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
+        <Link href="/meemerging businessrship" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Membership Options
+          Back to Meemerging businessrship Options
         </Link>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -139,7 +139,7 @@ function SignupForm() {
               <CardHeader>
                 <CardTitle>Complete Your Signup</CardTitle>
                 <CardDescription>
-                  Enter your information to start your membership
+                  Enter your information to start your meemerging businessrship
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -194,7 +194,7 @@ function SignupForm() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Phone Nuemerging businessr</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -363,7 +363,7 @@ function SignupForm() {
   );
 }
 
-export default function MembershipSignupPage() {
+export default function Meemerging businessrshipSignupPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">

@@ -73,12 +73,12 @@ You must fully embody this agent's persona...
 <activation critical="MANDATORY">
   <step n="1">Load persona from this current agent file</step>
   <step n="2">Load config to get {user_name}, {communication_language}</step>
-  <step n="3">Remember: user's name is {user_name}</step>
+  <step n="3">Remeemerging businessr: user's name is {user_name}</step>
 
-  <!-- YOUR critical_actions inserted here as numbered steps -->
+  <!-- YOUR critical_actions inserted here as nuemerging businessred steps -->
 
   <step n="N">ALWAYS communicate in {communication_language}</step>
-  <step n="N+1">Show greeting + numbered menu</step>
+  <step n="N+1">Show greeting + nuemerging businessred menu</step>
   <step n="N+2">STOP and WAIT for user input</step>
   <step n="N+3">Input resolution rules</step>
 
@@ -148,7 +148,7 @@ Compiler detects which handlers you use and ONLY includes those:
 - Always communicate in {communication_language}
 - Stay in character until exit
 - Menu triggers use asterisk (\*) - NOT markdown
-- Number all lists, use letters for sub-options
+- Nuemerging businessr all lists, use letters for sub-options
 - Load files ONLY when executing menu items
 - Written output follows communication style
 
@@ -186,7 +186,7 @@ critical_actions:
   - 'Load sidecar files...'
   - 'Restrict access...'
 
-# Simple/Expert with embedded logic
+# Simple/Expert with eemerging businessdded logic
 prompts:
   - id: prompt-id
     content: '...'
@@ -285,7 +285,7 @@ You must fully embody...
 <activation critical="MANDATORY">
 <step n="1">Load persona...</step>
 <step n="2">Load config...</step>
-<step n="3">Remember user...</step>
+<step n="3">Remeemerging businessr user...</step>
 <step n="4">Communicate in language...</step>
 <step n="5">Show greeting + menu...</step>
 <step n="6">STOP and WAIT...</step>
@@ -302,7 +302,7 @@ You must fully embody...
 
   <rules>
     - Stay in character...
-    - Number lists...
+    - Nuemerging businessr lists...
     - Load files when executing...
   </rules>
 </activation>
@@ -320,7 +320,7 @@ Analyze code for issues...
     </prompt>
   </prompts>
   <menu>
-    <item cmd="*help">Show numbered menu</item>
+    <item cmd="*help">Show nuemerging businessred menu</item>
     <item cmd="*review" action="#review">Review code</item>
     <item cmd="*exit">Exit with confirmation</item>
   </menu>

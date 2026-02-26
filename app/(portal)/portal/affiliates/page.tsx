@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, addDoc, query, orderBy, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
 import { toast } from "sonner";
 
 interface AffiliateDisplay {
@@ -48,8 +48,8 @@ interface AffiliateDisplay {
   initials: string;
   location: string;
   availability: string;
-  rating: number;
-  projectsCompleted: number;
+  rating: nuemerging businessr;
+  projectsCompleted: nuemerging businessr;
   capabilities: string[];
   certifications: string[];
   email: string;
@@ -110,20 +110,20 @@ export default function AffiliatesPage() {
       if (!db) return;
       
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         
         const affiliateList: AffiliateDisplay[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeamMemberDoc;
-          // Include all team members (affiliates, consultants, clients, team, admin)
+          const data = doc.data() as TeamMeemerging businessrDoc;
+          // Include all team meemerging businessrs (affiliates, consultants, clients, team, admin)
           const firstName = data.firstName || "";
           const lastName = data.lastName || "";
           affiliateList.push({
             id: doc.id,
             name: `${firstName} ${lastName}`.trim() || "Unknown",
-            title: data.expertise || data.role || "Team Member",
+            title: data.expertise || data.role || "Team Meemerging businessr",
             initials: `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "??",
             location: data.location || "",
             availability: data.status || "active",
@@ -156,7 +156,7 @@ export default function AffiliatesPage() {
 
     setIsSaving(true);
     try {
-      await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
+      await addDoc(collection(db, COLLECTIONS.TEAM_MEemerging businessRS), {
         firstName: newAffiliate.firstName,
         lastName: newAffiliate.lastName,
         emailPrimary: newAffiliate.email,
@@ -230,7 +230,7 @@ export default function AffiliatesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Affiliates & Team</h1>
           <p className="text-muted-foreground">
-            Your network of affiliates, consultants, clients, and team members
+            Your network of affiliates, consultants, clients, and team meemerging businessrs
           </p>
         </div>
         <Button onClick={() => setShowAddDialog(true)}>
@@ -243,7 +243,7 @@ export default function AffiliatesPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Members</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Meemerging businessrs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{affiliates.length}</div>
@@ -352,7 +352,7 @@ export default function AffiliatesPage() {
                     </Avatar>
                     <div>
                       <CardTitle className="text-lg">
-                        <Link href={`/portal/admin/team-members?view=${affiliate.id}`} className="hover:underline">
+                        <Link href={`/portal/admin/team-meemerging businessrs?view=${affiliate.id}`} className="hover:underline">
                           {affiliate.name}
                         </Link>
                       </CardTitle>
@@ -415,7 +415,7 @@ export default function AffiliatesPage() {
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
                   <Button variant="outline" size="sm" className="flex-1" asChild>
-                    <Link href={`/portal/admin/team-members?view=${affiliate.id}`}>View Profile</Link>
+                    <Link href={`/portal/admin/team-meemerging businessrs?view=${affiliate.id}`}>View Profile</Link>
                   </Button>
                   <Button size="sm" className="flex-1">Request</Button>
                 </div>
@@ -431,7 +431,7 @@ export default function AffiliatesPage() {
           <DialogHeader>
             <DialogTitle>Add New Affiliate</DialogTitle>
             <DialogDescription>
-              Add a new affiliate to your network. They will be tagged as an affiliate in the team members list.
+              Add a new affiliate to your network. They will be tagged as an affiliate in the team meemerging businessrs list.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

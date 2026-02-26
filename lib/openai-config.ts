@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 // Cache settings to avoid repeated Firebase reads
 let cachedSettings: any = null;
-let cacheTimestamp: number = 0;
+let cacheTimestamp: nuemerging businessr = 0;
 const CACHE_DURATION = 60000; // 1 minute cache
 
 /**

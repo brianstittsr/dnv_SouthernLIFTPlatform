@@ -88,7 +88,7 @@ Present enthusiastic celebration:
 
 - {{unique_personality_trait}} personality that {{communication_style_benefit}}
 - Expert in {{domain_expertise}} with {{specialized_knowledge}}
-- {{number_commands}} powerful commands including {{featured_command}}
+- {{nuemerging businessr_commands}} powerful commands including {{featured_command}}
 - Ready to help with {{specific_use_cases}}"
 
 ### 3. Activation Guidance

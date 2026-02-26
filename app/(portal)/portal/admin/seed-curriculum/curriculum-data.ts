@@ -3,7 +3,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Introduction to CMMC Level 1",
     description: "Overview of CMMC framework and Level 1 requirements",
-    weekNumber: 1,
+    weekNuemerging businessr: 1,
     sortOrder: 0,
     sessions: [
       {
@@ -37,7 +37,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Access Control (AC)",
     description: "Implementing access control practices",
-    weekNumber: 2,
+    weekNuemerging businessr: 2,
     sortOrder: 1,
     sessions: [
       {
@@ -69,7 +69,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Identification & Authentication (IA)",
     description: "User identification and authentication requirements",
-    weekNumber: 3,
+    weekNuemerging businessr: 3,
     sortOrder: 2,
     sessions: [
       {
@@ -101,7 +101,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Media Protection (MP)",
     description: "Protecting and sanitizing media",
-    weekNumber: 4,
+    weekNuemerging businessr: 4,
     sortOrder: 3,
     sessions: [
       {
@@ -125,7 +125,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Physical Protection (PE)",
     description: "Physical security controls",
-    weekNumber: 5,
+    weekNuemerging businessr: 5,
     sortOrder: 4,
     sessions: [
       {
@@ -157,7 +157,7 @@ export const cmmcLevel1Modules = [
   {
     title: "System & Communications Protection (SC)",
     description: "Protecting systems and communications",
-    weekNumber: 6,
+    weekNuemerging businessr: 6,
     sortOrder: 5,
     sessions: [
       {
@@ -181,7 +181,7 @@ export const cmmcLevel1Modules = [
   {
     title: "System & Information Integrity (SI)",
     description: "Maintaining system integrity",
-    weekNumber: 7,
+    weekNuemerging businessr: 7,
     sortOrder: 6,
     sessions: [
       {
@@ -213,7 +213,7 @@ export const cmmcLevel1Modules = [
   {
     title: "Implementation & Assessment Prep",
     description: "Final implementation and assessment preparation",
-    weekNumber: 8,
+    weekNuemerging businessr: 8,
     sortOrder: 7,
     sessions: [
       {
@@ -249,7 +249,7 @@ export const cmmcLevel2Modules = [
   {
     title: "CMMC Level 2 Overview & Planning",
     description: "Understanding Level 2 requirements and planning implementation",
-    weekNumber: 1,
+    weekNuemerging businessr: 1,
     sortOrder: 0,
     sessions: [
       {
@@ -282,7 +282,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Access Control (AC) - Advanced",
     description: "Advanced access control implementation",
-    weekNumber: 2,
+    weekNuemerging businessr: 2,
     sortOrder: 1,
     sessions: [
       {
@@ -314,7 +314,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Awareness & Training (AT)",
     description: "Security awareness and training programs",
-    weekNumber: 3,
+    weekNuemerging businessr: 3,
     sortOrder: 2,
     sessions: [
       {
@@ -338,7 +338,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Audit & Accountability (AU)",
     description: "Logging, monitoring, and audit requirements",
-    weekNumber: 4,
+    weekNuemerging businessr: 4,
     sortOrder: 3,
     sessions: [
       {
@@ -370,7 +370,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Configuration Management (CM)",
     description: "Managing system configurations securely",
-    weekNumber: 5,
+    weekNuemerging businessr: 5,
     sortOrder: 4,
     sessions: [
       {
@@ -402,7 +402,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Identification & Authentication (IA) - Advanced",
     description: "Advanced authentication mechanisms",
-    weekNumber: 6,
+    weekNuemerging businessr: 6,
     sortOrder: 5,
     sessions: [
       {
@@ -426,7 +426,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Incident Response (IR)",
     description: "Detecting and responding to incidents",
-    weekNumber: 7,
+    weekNuemerging businessr: 7,
     sortOrder: 6,
     sessions: [
       {
@@ -458,7 +458,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Maintenance (MA) & Media Protection (MP)",
     description: "System maintenance and media protection",
-    weekNumber: 8,
+    weekNuemerging businessr: 8,
     sortOrder: 7,
     sessions: [
       {
@@ -482,7 +482,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Personnel Security (PS) & Physical Protection (PE)",
     description: "Personnel and physical security controls",
-    weekNumber: 9,
+    weekNuemerging businessr: 9,
     sortOrder: 8,
     sessions: [
       {
@@ -506,7 +506,7 @@ export const cmmcLevel2Modules = [
   {
     title: "Risk Assessment (RA) & Security Assessment (CA)",
     description: "Risk and security assessments",
-    weekNumber: 10,
+    weekNuemerging businessr: 10,
     sortOrder: 9,
     sessions: [
       {
@@ -538,7 +538,7 @@ export const cmmcLevel2Modules = [
   {
     title: "System & Communications Protection (SC) - Advanced",
     description: "Advanced system and network protection",
-    weekNumber: 11,
+    weekNuemerging businessr: 11,
     sortOrder: 10,
     sessions: [
       {
@@ -570,7 +570,7 @@ export const cmmcLevel2Modules = [
   {
     title: "System & Information Integrity (SI) & Final Prep",
     description: "System integrity and certification preparation",
-    weekNumber: 12,
+    weekNuemerging businessr: 12,
     sortOrder: 11,
     sessions: [
       {
@@ -606,7 +606,7 @@ export const cmmcLevel3Modules = [
   {
     title: "CMMC Level 3 Strategic Overview",
     description: "Understanding Level 3 requirements and strategic planning",
-    weekNumber: 1,
+    weekNuemerging businessr: 1,
     sortOrder: 0,
     sessions: [
       {
@@ -639,7 +639,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Access Control",
     description: "Expert-level access control mechanisms",
-    weekNumber: 2,
+    weekNuemerging businessr: 2,
     sortOrder: 1,
     sessions: [
       {
@@ -671,7 +671,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Threat Detection",
     description: "Detecting and analyzing advanced threats",
-    weekNumber: 3,
+    weekNuemerging businessr: 3,
     sortOrder: 2,
     sessions: [
       {
@@ -703,7 +703,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Security Orchestration & Automation",
     description: "Automating security operations",
-    weekNumber: 4,
+    weekNuemerging businessr: 4,
     sortOrder: 3,
     sessions: [
       {
@@ -735,7 +735,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Cryptography",
     description: "Expert cryptographic implementations",
-    weekNumber: 5,
+    weekNuemerging businessr: 5,
     sortOrder: 4,
     sessions: [
       {
@@ -767,7 +767,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Incident Response",
     description: "Expert-level incident response capabilities",
-    weekNumber: 6,
+    weekNuemerging businessr: 6,
     sortOrder: 5,
     sessions: [
       {
@@ -799,7 +799,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Security Architecture",
     description: "Designing secure architectures",
-    weekNumber: 7,
+    weekNuemerging businessr: 7,
     sortOrder: 6,
     sessions: [
       {
@@ -831,7 +831,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Supply Chain Risk Management",
     description: "Managing supply chain security risks",
-    weekNumber: 8,
+    weekNuemerging businessr: 8,
     sortOrder: 7,
     sessions: [
       {
@@ -855,7 +855,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Monitoring & Analytics",
     description: "Expert-level security monitoring",
-    weekNumber: 9,
+    weekNuemerging businessr: 9,
     sortOrder: 8,
     sessions: [
       {
@@ -887,7 +887,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Red Team Operations",
     description: "Offensive security testing",
-    weekNumber: 10,
+    weekNuemerging businessr: 10,
     sortOrder: 9,
     sessions: [
       {
@@ -919,7 +919,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Continuous Monitoring & Improvement",
     description: "Establishing continuous security improvement",
-    weekNumber: 11,
+    weekNuemerging businessr: 11,
     sortOrder: 10,
     sessions: [
       {
@@ -951,7 +951,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Governance & Compliance",
     description: "Security governance and compliance management",
-    weekNumber: 12,
+    weekNuemerging businessr: 12,
     sortOrder: 11,
     sessions: [
       {
@@ -975,7 +975,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Advanced Documentation",
     description: "Creating comprehensive security documentation",
-    weekNumber: 13,
+    weekNuemerging businessr: 13,
     sortOrder: 12,
     sessions: [
       {
@@ -1007,7 +1007,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Assessment Preparation",
     description: "Preparing for Level 3 certification",
-    weekNumber: 14,
+    weekNuemerging businessr: 14,
     sortOrder: 13,
     sessions: [
       {
@@ -1039,7 +1039,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Final Preparation & Review",
     description: "Final preparation for certification",
-    weekNumber: 15,
+    weekNuemerging businessr: 15,
     sortOrder: 14,
     sessions: [
       {
@@ -1063,7 +1063,7 @@ export const cmmcLevel3Modules = [
   {
     title: "Certification & Beyond",
     description: "Maintaining Level 3 compliance",
-    weekNumber: 16,
+    weekNuemerging businessr: 16,
     sortOrder: 15,
     sessions: [
       {

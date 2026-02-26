@@ -17,17 +17,17 @@ export const mockCMMCCohorts = [
     level: "Level 1",
     curriculum: [
       {
-        weekNumber: 1,
+        weekNuemerging businessr: 1,
         title: "Introduction to CMMC",
         topics: ["CMMC Framework Overview", "Certification Process", "Scoping"]
       },
       {
-        weekNumber: 2,
+        weekNuemerging businessr: 2,
         title: "Access Control",
         topics: ["User Authentication", "Authorization", "Least Privilege"]
       },
       {
-        weekNumber: 3,
+        weekNuemerging businessr: 3,
         title: "Identification and Authentication",
         topics: ["User Identification", "Multi-Factor Authentication", "Password Management"]
       }
@@ -53,12 +53,12 @@ export const mockCMMCCohorts = [
     level: "Level 2",
     curriculum: [
       {
-        weekNumber: 1,
+        weekNuemerging businessr: 1,
         title: "CMMC Level 2 Overview",
         topics: ["Level 2 Requirements", "Assessment Process", "Documentation"]
       },
       {
-        weekNumber: 2,
+        weekNuemerging businessr: 2,
         title: "Advanced Access Control",
         topics: ["Role-Based Access", "Privileged Access Management", "Remote Access"]
       }
@@ -84,12 +84,12 @@ export const mockCMMCCohorts = [
     level: "Level 1",
     curriculum: [
       {
-        weekNumber: 1,
+        weekNuemerging businessr: 1,
         title: "CMMC Basics",
         topics: ["What is CMMC", "Why it Matters", "Getting Started"]
       },
       {
-        weekNumber: 2,
+        weekNuemerging businessr: 2,
         title: "Essential Controls",
         topics: ["Basic Security", "Access Management", "Incident Response"]
       }
@@ -115,7 +115,7 @@ export const mockCMMCCohorts = [
     level: "Level 2",
     curriculum: [
       {
-        weekNumber: 1,
+        weekNuemerging businessr: 1,
         title: "Level 2 Introduction",
         topics: ["Requirements Overview", "Gap Analysis", "Implementation Planning"]
       }
@@ -140,7 +140,7 @@ export const mockCMMCCohorts = [
     level: "Level 1 & 2",
     curriculum: [
       {
-        weekNumber: 1,
+        weekNuemerging businessr: 1,
         title: "Policy Framework",
         topics: ["Policy Structure", "Compliance Requirements", "Best Practices"]
       }

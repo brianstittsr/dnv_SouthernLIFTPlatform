@@ -142,9 +142,9 @@ date: '{{date}}'
 
 **Input Documents Discovered:**
 
-- Research: {number of research files loaded or "None found"}
-- Brainstorming: {number of brainstorming files loaded or "None found"}
-- Project docs: {number of project files loaded or "None found"}
+- Research: {nuemerging businessr of research files loaded or "None found"}
+- Brainstorming: {nuemerging businessr of brainstorming files loaded or "None found"}
+- Project docs: {nuemerging businessr of project files loaded or "None found"}
 
 **Files loaded:** {list of specific file names or "No additional documents found"}
 

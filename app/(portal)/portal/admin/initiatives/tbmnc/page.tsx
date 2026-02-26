@@ -80,7 +80,7 @@ import {
   COLLECTIONS,
   type SupplierReadinessStageId,
   type TBMNCSupplierDoc,
-  type TeamMemberDoc,
+  type TeamMeemerging businessrDoc,
 } from "@/lib/schema";
 
 // Supplier readiness stages based on typical OEM qualification process
@@ -169,7 +169,7 @@ export default function TBMNCSupplierReadinessPage() {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const [suppliers, setSuppliers] = useState<TBMNCSupplier[]>([]);
-  const [affiliates, setAffiliates] = useState<TeamMemberDoc[]>([]);
+  const [affiliates, setAffiliates] = useState<TeamMeemerging businessrDoc[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -181,9 +181,9 @@ export default function TBMNCSupplierReadinessPage() {
 
       setLoading(true);
       try {
-        const [supplierSnap, memberSnap] = await Promise.all([
+        const [supplierSnap, meemerging businessrSnap] = await Promise.all([
           getDocs(collection(db, COLLECTIONS.TBMNC_SUPPLIERS)),
-          getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS)),
+          getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS)),
         ]);
 
         const supplierRows: TBMNCSupplier[] = [];
@@ -191,13 +191,13 @@ export default function TBMNCSupplierReadinessPage() {
           supplierRows.push({ id: d.id, ...(d.data() as Omit<TBMNCSupplierDoc, "id">) });
         });
 
-        const memberRows: TeamMemberDoc[] = [];
-        memberSnap.forEach((d) => {
-          memberRows.push({ id: d.id, ...(d.data() as Omit<TeamMemberDoc, "id">) } as TeamMemberDoc);
+        const meemerging businessrRows: TeamMeemerging businessrDoc[] = [];
+        meemerging businessrSnap.forEach((d) => {
+          meemerging businessrRows.push({ id: d.id, ...(d.data() as Omit<TeamMeemerging businessrDoc, "id">) } as TeamMeemerging businessrDoc);
         });
 
         setSuppliers(supplierRows);
-        setAffiliates(memberRows);
+        setAffiliates(meemerging businessrRows);
       } catch (error) {
         console.error("Error loading TBMNC data:", error);
       } finally {
@@ -258,7 +258,7 @@ export default function TBMNCSupplierReadinessPage() {
     <div class="section-title">1. Company Information</div>
     <div class="field-row">
       <div class="field"><div class="field-label">Company Name <span class="required">*</span></div><div class="field-input"></div></div>
-      <div class="field"><div class="field-label">DUNS Number</div><div class="field-input"></div></div>
+      <div class="field"><div class="field-label">DUNS Nuemerging businessr</div><div class="field-input"></div></div>
     </div>
     <div class="field-row">
       <div class="field"><div class="field-label">Street Address <span class="required">*</span></div><div class="field-input"></div></div>
@@ -300,7 +300,7 @@ export default function TBMNCSupplierReadinessPage() {
     </div>
     <div class="field-row" style="margin-top: 15px;">
       <div class="field"><div class="field-label">Annual Revenue Range <span class="required">*</span></div><div class="field-input"></div></div>
-      <div class="field"><div class="field-label">Number of Employees <span class="required">*</span></div><div class="field-input"></div></div>
+      <div class="field"><div class="field-label">Nuemerging businessr of Employees <span class="required">*</span></div><div class="field-input"></div></div>
       <div class="field"><div class="field-label">Facility Size (sq ft)</div><div class="field-input"></div></div>
     </div>
   </div>
@@ -1095,8 +1095,8 @@ export default function TBMNCSupplierReadinessPage() {
                     <Input placeholder="Enter company name" />
                   </div>
                   <div className="space-y-2">
-                    <Label>DUNS Number</Label>
-                    <Input placeholder="9-digit DUNS number" />
+                    <Label>DUNS Nuemerging businessr</Label>
+                    <Input placeholder="9-digit DUNS nuemerging businessr" />
                   </div>
                   <div className="space-y-2">
                     <Label>Street Address *</Label>
@@ -1181,7 +1181,7 @@ export default function TBMNCSupplierReadinessPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Number of Employees *</Label>
+                    <Label>Nuemerging businessr of Employees *</Label>
                     <Select>
                       <SelectTrigger>
                         <SelectValue placeholder="Select range" />

@@ -181,7 +181,7 @@ The platform centers on 64 functional requirements across 8 capability areas, wi
 **8. Integration Orchestration**
 - Webhook handling for Stripe events
 - Bidirectional contact sync with Go High Level
-- Calendly widget embedding and calendar sync
+- Calendly widget eemerging businessdding and calendar sync
 - Analytics event tracking (GA4/Mixpanel)
 - Email service API calls for transactional emails
 
@@ -464,7 +464,7 @@ svp-platform/
   ```typescript
   {
     id: string,
-    priority: number,
+    priority: nuemerging businessr,
     conditions: { industry?: string[], serviceType?: string[] },
     partnerId: string,
     active: boolean
@@ -648,7 +648,7 @@ interface ProofPackDoc extends BaseDocument {
   smeId: string;
   partnerId: string;
   tenantId: string;
-  packHealthScore: number;
+  packHealthScore: nuemerging businessr;
   status: 'draft' | 'submitted' | 'approved' | 'rejected';
   // ... other fields
 }
@@ -880,7 +880,7 @@ const ProofPackSchema = z.object({
     fileName: z.string(),
     fileData: z.string(), // base64
     mimeType: z.string(),
-    fileSize: z.number().max(1048576), // 1MB limit
+    fileSize: z.nuemerging businessr().max(1048576), // 1MB limit
   })),
 });
 

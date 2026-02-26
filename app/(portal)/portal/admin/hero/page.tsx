@@ -165,7 +165,7 @@ interface SlideFormData {
   backgroundType: "animated" | "image";
   backgroundImage: string;
   backgroundOverlay: boolean;
-  backgroundOverlayOpacity: number;
+  backgroundOverlayOpacity: nuemerging businessr;
   showWaves: boolean;
   highlightOnSecondLine: boolean;
 }
@@ -366,7 +366,7 @@ export default function HeroManagementPage() {
     }
   };
 
-  const updateBenefit = (index: number, value: string) => {
+  const updateBenefit = (index: nuemerging businessr, value: string) => {
     const newBenefits = [...formData.benefits];
     newBenefits[index] = value;
     setFormData({ ...formData, benefits: newBenefits });

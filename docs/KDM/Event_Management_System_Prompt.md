@@ -41,8 +41,8 @@ interface Event {
     state: string;
     country: string;
     coordinates?: {
-      lat: number;
-      lng: number;
+      lat: nuemerging businessr;
+      lng: nuemerging businessr;
     };
     mapUrl?: string;
     siteMapUrl?: string; // Venue floor plan
@@ -72,7 +72,7 @@ interface Event {
   hotelInfo?: {
     name: string;
     bookingUrl: string;
-    groupRate?: number;
+    groupRate?: nuemerging businessr;
     groupRateDeadline?: Timestamp;
     description?: string;
   };
@@ -123,7 +123,7 @@ interface EventSpeaker {
   presentationType?: 'live' | 'pre-recorded' | 'virtual';
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   // Timestamps
@@ -139,7 +139,7 @@ interface EventDay {
   eventId: string;
   
   date: Timestamp;
-  dayNumber: number; // 1, 2, 3...
+  dayNuemerging businessr: nuemerging businessr; // 1, 2, 3...
   dayName: string; // "Sunday", "Monday"...
   theme?: string; // "Summit Kickoff", "Growth & Capital"
   
@@ -157,7 +157,7 @@ interface EventSession {
   // Timing
   startTime: string; // "09:00"
   endTime: string; // "10:30"
-  duration: number; // minutes
+  duration: nuemerging businessr; // minutes
   
   // Content
   title: string;
@@ -183,7 +183,7 @@ interface EventSession {
   recordingUrl?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   createdAt: Timestamp;
@@ -203,14 +203,14 @@ interface EventTicket {
   type: 'general' | 'vip' | 'virtual' | 'early-bird' | 'group' | 'student' | 'speaker' | 'sponsor';
   
   // Pricing
-  price: number;
+  price: nuemerging businessr;
   currency: string; // "USD"
-  originalPrice?: number; // For showing discounts
+  originalPrice?: nuemerging businessr; // For showing discounts
   
   // Availability
-  quantity?: number; // null = unlimited
-  sold: number;
-  available: number;
+  quantity?: nuemerging businessr; // null = unlimited
+  sold: nuemerging businessr;
+  available: nuemerging businessr;
   
   // Dates
   salesStart?: Timestamp;
@@ -226,7 +226,7 @@ interface EventTicket {
   stripePriceId?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
   
@@ -248,15 +248,15 @@ interface SponsorshipPackage {
   description: string;
   
   // Pricing
-  price: number;
+  price: nuemerging businessr;
   currency: string;
   
   // Benefits
   benefits: SponsorBenefit[];
   
   // Inventory
-  quantity?: number; // null = unlimited
-  sold: number;
+  quantity?: nuemerging businessr; // null = unlimited
+  sold: nuemerging businessr;
   
   // Purchase
   purchaseUrl?: string;
@@ -264,7 +264,7 @@ interface SponsorshipPackage {
   stripePriceId?: string;
   
   // Display
-  order: number;
+  order: nuemerging businessr;
   featured: boolean;
   isVisible: boolean;
   
@@ -295,7 +295,7 @@ interface EventSponsor {
   // Sponsorship
   packageId: string; // Reference to sponsorship package
   tier: string;
-  customBenefits?: string[]; // Any custom additions
+  custoemerging businessnefits?: string[]; // Any custom additions
   
   // Contact
   contactName: string;
@@ -303,14 +303,14 @@ interface EventSponsor {
   contactPhone?: string;
   
   // Payment
-  amountPaid: number;
+  amountPaid: nuemerging businessr;
   paymentStatus: 'pending' | 'partial' | 'paid' | 'refunded';
   paymentDate?: Timestamp;
   invoiceId?: string;
   
   // Display
   featured: boolean;
-  order: number;
+  order: nuemerging businessr;
   isVisible: boolean;
   
   createdAt: Timestamp;
@@ -337,13 +337,13 @@ interface EventRegistration {
   
   // Ticket Details
   ticketType: string;
-  ticketPrice: number;
-  quantity: number;
-  totalAmount: number;
+  ticketPrice: nuemerging businessr;
+  quantity: nuemerging businessr;
+  totalAmount: nuemerging businessr;
   
   // Promo/Discount
   promoCode?: string;
-  discountAmount?: number;
+  discountAmount?: nuemerging businessr;
   
   // Payment
   paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded';
@@ -358,7 +358,7 @@ interface EventRegistration {
   
   // Communication
   confirmationSent: boolean;
-  remindersSent: number;
+  remindersSent: nuemerging businessr;
   
   // Additional
   dietaryRestrictions?: string;

@@ -46,10 +46,10 @@ export interface ArticleDraft {
 }
 
 export interface ArticleEngagement {
-  likes: number;
-  comments: number;
-  shares: number;
-  views: number;
+  likes: nuemerging businessr;
+  comments: nuemerging businessr;
+  shares: nuemerging businessr;
+  views: nuemerging businessr;
 }
 
 export type ArticleTone = "professional" | "casual" | "thought-leader" | "storytelling";
@@ -69,12 +69,12 @@ export interface ArticleToneOption {
 }
 
 export interface WordCountStats {
-  words: number;
-  charactersNoSpaces: number;
-  charactersWithSpaces: number;
-  paragraphs: number;
-  lines: number;
-  sentences: number;
+  words: nuemerging businessr;
+  charactersNoSpaces: nuemerging businessr;
+  charactersWithSpaces: nuemerging businessr;
+  paragraphs: nuemerging businessr;
+  lines: nuemerging businessr;
+  sentences: nuemerging businessr;
 }
 
 export const ARTICLE_TONES: ArticleToneOption[] = [

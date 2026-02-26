@@ -26,7 +26,7 @@
 
 - Video: "5 Common Mistakes Minority Businesses Make in Federal Contracting"
   - Length: 8-10 minutes
-  - Platform: YouTube + embedded on website
+  - Platform: YouTube + eemerging businessdded on website
   - Include: real examples, solutions, KDM expertise
 
 **Week 3-4: CMMC Certification Introduction**

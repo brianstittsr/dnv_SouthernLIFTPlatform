@@ -121,7 +121,7 @@ For each file:
 **Common formatting issues to document:**
 
 - Missing blank lines around headings
-- Inconsistent list formatting (numbered vs bullet)
+- Inconsistent list formatting (nuemerging businessred vs bullet)
 - Improper code block language specifications
 - Broken or invalid markdown links
 - Inconsistent heading levels or skipping levels
@@ -217,25 +217,25 @@ For each file with issues:
 
 **File Size Distribution:**
 
-- Optimal (≤5K): [number] files
-- Good (5K-7K): [number] files
-- Acceptable (7K-10K): [number] files
-- Concern (10K-12K): [number] files
-- Action Required (>15K): [number] files
+- Optimal (≤5K): [nuemerging businessr] files
+- Good (5K-7K): [nuemerging businessr] files
+- Acceptable (7K-10K): [nuemerging businessr] files
+- Concern (10K-12K): [nuemerging businessr] files
+- Action Required (>15K): [nuemerging businessr] files
 
 **Markdown Formatting Issues:**
 
-- Heading Structure: [number] files with issues
-- List Formatting: [number] files with inconsistencies
-- Code Blocks: [number] files with formatting problems
-- Link References: [number] broken or invalid links
+- Heading Structure: [nuemerging businessr] files with issues
+- List Formatting: [nuemerging businessr] files with inconsistencies
+- Code Blocks: [nuemerging businessr] files with formatting problems
+- Link References: [nuemerging businessr] broken or invalid links
 
 **CSV Data Files:**
 
-- Total CSV files: [number]
-- Compliant with standards: [number]
-- Require attention: [number]
-- Critical issues: [number]
+- Total CSV files: [nuemerging businessr]
+- Compliant with standards: [nuemerging businessr]
+- Require attention: [nuemerging businessr]
+- Critical issues: [nuemerging businessr]
 
 **Performance Impact Assessment:**
 

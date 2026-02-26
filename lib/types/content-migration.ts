@@ -33,7 +33,7 @@ export interface ContentSection {
   content: string;
   images: string[];
   videos: string[];
-  order: number;
+  order: nuemerging businessr;
 }
 
 export interface ImageAsset {
@@ -42,13 +42,13 @@ export interface ImageAsset {
   localPath: string | null;
   alt: string | null;
   title: string | null;
-  width: number | null;
-  height: number | null;
+  width: nuemerging businessr | null;
+  height: nuemerging businessr | null;
   format: string;
   context: 'hero' | 'content' | 'gallery' | 'thumbnail' | 'logo' | 'team' | 'background' | 'icon';
   caption: string | null;
   parentPageUrl: string;
-  fileSize: number | null;
+  fileSize: nuemerging businessr | null;
   downloaded: boolean;
 }
 
@@ -56,14 +56,14 @@ export interface VideoAsset {
   id: string;
   platform: 'youtube' | 'vimeo' | 'self-hosted' | 'other';
   url: string;
-  embedCode: string | null;
+  eemerging businessdCode: string | null;
   videoId: string | null;
   thumbnailUrl: string | null;
   title: string | null;
   description: string | null;
   duration: string | null;
   parentPageUrl: string;
-  context: 'embedded' | 'linked' | 'modal';
+  context: 'eemerging businessdded' | 'linked' | 'modal';
 }
 
 export interface DocumentAsset {
@@ -72,7 +72,7 @@ export interface DocumentAsset {
   localPath: string | null;
   fileName: string;
   fileType: 'pdf' | 'doc' | 'docx' | 'xls' | 'xlsx' | 'ppt' | 'pptx' | 'other';
-  fileSize: number | null;
+  fileSize: nuemerging businessr | null;
   linkText: string;
   parentPageUrl: string;
   downloaded: boolean;
@@ -101,7 +101,7 @@ export interface NavigationItem {
   label: string;
   url: string;
   children: NavigationItem[];
-  order: number;
+  order: nuemerging businessr;
 }
 
 export interface SiteStructure {
@@ -135,20 +135,20 @@ export interface CrawledPage {
     documents: DocumentAsset[];
   };
   forms: FormData[];
-  wordCount: number;
-  httpStatus: number;
+  wordCount: nuemerging businessr;
+  httpStatus: nuemerging businessr;
   crawledAt: string;
 }
 
 export interface CrawlProgress {
-  totalPagesDiscovered: number;
-  pagesCrawled: number;
-  pagesRemaining: number;
-  imagesFound: number;
-  imagesDownloaded: number;
-  videosFound: number;
-  documentsFound: number;
-  documentsDownloaded: number;
+  totalPagesDiscovered: nuemerging businessr;
+  pagesCrawled: nuemerging businessr;
+  pagesRemaining: nuemerging businessr;
+  imagesFound: nuemerging businessr;
+  imagesDownloaded: nuemerging businessr;
+  videosFound: nuemerging businessr;
+  documentsFound: nuemerging businessr;
+  documentsDownloaded: nuemerging businessr;
   errors: CrawlError[];
   startedAt: string;
   lastUpdatedAt: string;
@@ -166,12 +166,12 @@ export interface MigrationReport {
   siteUrl: string;
   crawlDate: string;
   summary: {
-    totalPages: number;
-    pagesByType: Record<string, number>;
-    totalImages: number;
-    totalVideos: number;
-    totalDocuments: number;
-    totalWordCount: number;
+    totalPages: nuemerging businessr;
+    pagesByType: Record<string, nuemerging businessr>;
+    totalImages: nuemerging businessr;
+    totalVideos: nuemerging businessr;
+    totalDocuments: nuemerging businessr;
+    totalWordCount: nuemerging businessr;
   };
   contentAudit: {
     highValuePages: string[];
@@ -204,10 +204,10 @@ export interface UrlMapping {
 
 export interface CrawlConfig {
   startUrl: string;
-  maxDepth: number;
-  maxPages: number;
+  maxDepth: nuemerging businessr;
+  maxPages: nuemerging businessr;
   respectRobotsTxt: boolean;
-  crawlDelay: number;
+  crawlDelay: nuemerging businessr;
   userAgent: string;
   includePatterns: string[];
   excludePatterns: string[];

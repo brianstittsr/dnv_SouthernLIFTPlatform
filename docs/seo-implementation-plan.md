@@ -276,7 +276,7 @@ const googleBusinessProfile = {
 - Yelp
 - Yellow Pages
 - Manta
-- Chamber of Commerce
+- Chaemerging businessr of Commerce
 - Minority business directories
 - Government contractor directories
 
@@ -323,26 +323,26 @@ const guestPostTargets = [
 ```typescript
 interface SEOMetrics {
   organicTraffic: {
-    current: number;
-    target: number;
-    growthRate: number;
+    current: nuemerging businessr;
+    target: nuemerging businessr;
+    growthRate: nuemerging businessr;
   };
   keywordRankings: {
-    top3: number;
-    top10: number;
-    top50: number;
+    top3: nuemerging businessr;
+    top10: nuemerging businessr;
+    top50: nuemerging businessr;
     targetKeywords: string[];
   };
   conversions: {
-    contactForms: number;
-    phoneCalls: number;
-    consultationRequests: number;
+    contactForms: nuemerging businessr;
+    phoneCalls: nuemerging businessr;
+    consultationRequests: nuemerging businessr;
   };
   localVisibility: {
-    localPackRankings: number;
-    googleMyBusinessViews: number;
-    reviewCount: number;
-    averageRating: number;
+    localPackRankings: nuemerging businessr;
+    googleMyBusinessViews: nuemerging businessr;
+    reviewCount: nuemerging businessr;
+    averageRating: nuemerging businessr;
   };
 }
 ```

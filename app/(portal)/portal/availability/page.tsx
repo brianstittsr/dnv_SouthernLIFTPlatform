@@ -57,7 +57,7 @@ import {
 } from "lucide-react";
 import { collection, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, Timestamp, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeamMemberAvailabilityDoc, type BookingDoc, type TeamMemberDoc, type CalendarEventDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMeemerging businessrAvailabilityDoc, type BookingDoc, type TeamMeemerging businessrDoc, type CalendarEventDoc } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import {
   type WeeklySchedule,
@@ -163,17 +163,17 @@ export default function AvailabilityPage() {
     reason: "",
   });
 
-  // Firebase & Team Member state
+  // Firebase & Team Meemerging businessr state
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [currentTeamMember, setCurrentTeamMember] = useState<TeamMemberDoc | null>(null);
-  const [availabilityDoc, setAvailabilityDoc] = useState<TeamMemberAvailabilityDoc | null>(null);
+  const [currentTeamMeemerging businessr, setCurrentTeamMeemerging businessr] = useState<TeamMeemerging businessrDoc | null>(null);
+  const [availabilityDoc, setAvailabilityDoc] = useState<TeamMeemerging businessrAvailabilityDoc | null>(null);
   const [bookingSlug, setBookingSlug] = useState("");
   const [bookingTitle, setBookingTitle] = useState("");
   const [bookingDescription, setBookingDescription] = useState("");
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
-  const [teamMembers, setTeamMembers] = useState<TeamMemberDoc[]>([]);
-  const [selectedTeamMemberId, setSelectedTeamMemberId] = useState<string>("");
+  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<TeamMeemerging businessrDoc[]>([]);
+  const [selectedTeamMeemerging businessrId, setSelectedTeamMeemerging businessrId] = useState<string>("");
 
   // Get booking URL
   const getBookingUrl = (slug?: string) => {
@@ -181,59 +181,59 @@ export default function AvailabilityPage() {
     return `${window.location.origin}/book/${slug || bookingSlug}`;
   };
 
-  // Fetch team members with role "team"
-  const fetchTeamMembers = async () => {
+  // Fetch team meemerging businessrs with role "team"
+  const fetchTeamMeemerging businessrs = async () => {
     if (!db) return;
     try {
-      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
-      const members: TeamMemberDoc[] = [];
+      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS));
+      const meemerging businessrs: TeamMeemerging businessrDoc[] = [];
       querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data() as TeamMemberDoc;
+        const data = docSnap.data() as TeamMeemerging businessrDoc;
         if (data.role === 'team' || data.role === 'admin') {
-          members.push({ ...data, id: docSnap.id });
+          meemerging businessrs.push({ ...data, id: docSnap.id });
         }
       });
-      setTeamMembers(members);
-      // Auto-select first team member if available
-      if (members.length > 0 && !selectedTeamMemberId) {
-        setSelectedTeamMemberId(members[0].id);
+      setTeamMeemerging businessrs(meemerging businessrs);
+      // Auto-select first team meemerging businessr if available
+      if (meemerging businessrs.length > 0 && !selectedTeamMeemerging businessrId) {
+        setSelectedTeamMeemerging businessrId(meemerging businessrs[0].id);
       }
     } catch (error) {
-      console.error("Error fetching team members:", error);
+      console.error("Error fetching team meemerging businessrs:", error);
     }
   };
 
-  // Fetch availability for selected team member
-  const fetchAvailability = async (teamMemberId: string) => {
-    if (!db || !teamMemberId) return;
+  // Fetch availability for selected team meemerging businessr
+  const fetchAvailability = async (teamMeemerging businessrId: string) => {
+    if (!db || !teamMeemerging businessrId) return;
     setLoading(true);
     try {
-      const docRef = doc(db, COLLECTIONS.TEAM_MEMBER_AVAILABILITY, teamMemberId);
+      const docRef = doc(db, COLLECTIONS.TEAM_MEemerging businessR_AVAILABILITY, teamMeemerging businessrId);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        const data = docSnap.data() as TeamMemberAvailabilityDoc;
+        const data = docSnap.data() as TeamMeemerging businessrAvailabilityDoc;
         setAvailabilityDoc(data);
         setBookingSlug(data.bookingSlug || '');
         setBookingTitle(data.bookingTitle || '');
         setBookingDescription(data.bookingDescription || '');
         setTimezone(data.timezone || 'America/New_York');
       } else {
-        // Create default availability for this team member
-        const member = teamMembers.find(m => m.id === teamMemberId);
-        if (member) {
-          const slug = `${member.firstName.toLowerCase()}-${member.lastName.toLowerCase()}`.replace(/\s+/g, '-');
+        // Create default availability for this team meemerging businessr
+        const meemerging businessr = teamMeemerging businessrs.find(m => m.id === teamMeemerging businessrId);
+        if (meemerging businessr) {
+          const slug = `${meemerging businessr.firstName.toLowerCase()}-${meemerging businessr.lastName.toLowerCase()}`.replace(/\s+/g, '-');
           setBookingSlug(slug);
-          setBookingTitle(`Book a meeting with ${member.firstName} ${member.lastName}`);
-          setBookingDescription(member.expertise || '');
+          setBookingTitle(`Book a meeting with ${meemerging businessr.firstName} ${meemerging businessr.lastName}`);
+          setBookingDescription(meemerging businessr.expertise || '');
         }
         setAvailabilityDoc(null);
       }
 
-      // Fetch bookings for this team member
+      // Fetch bookings for this team meemerging businessr
       const bookingsQuery = query(
         collection(db, COLLECTIONS.BOOKINGS),
-        where('teamMemberId', '==', teamMemberId)
+        where('teamMeemerging businessrId', '==', teamMeemerging businessrId)
       );
       const bookingsSnapshot = await getDocs(bookingsQuery);
       const bookingsData: Booking[] = [];
@@ -243,8 +243,8 @@ export default function AvailabilityPage() {
           id: docSnap.id,
           meetingTypeId: data.meetingTypeId,
           meetingTypeName: data.meetingTypeName,
-          ownerId: data.teamMemberId,
-          ownerName: data.teamMemberName,
+          ownerId: data.teamMeemerging businessrId,
+          ownerName: data.teamMeemerging businessrName,
           guestName: data.clientName,
           guestEmail: data.clientEmail,
           date: data.date,
@@ -257,9 +257,9 @@ export default function AvailabilityPage() {
       });
       setBookings(bookingsData);
 
-      // Set current team member
-      const member = teamMembers.find(m => m.id === teamMemberId);
-      setCurrentTeamMember(member || null);
+      // Set current team meemerging businessr
+      const meemerging businessr = teamMeemerging businessrs.find(m => m.id === teamMeemerging businessrId);
+      setCurrentTeamMeemerging businessr(meemerging businessr || null);
     } catch (error) {
       console.error("Error fetching availability:", error);
     } finally {
@@ -269,18 +269,18 @@ export default function AvailabilityPage() {
 
   // Save availability to Firebase
   const saveAvailability = async () => {
-    if (!db || !selectedTeamMemberId || !currentTeamMember) {
-      alert("Please select a team member first");
+    if (!db || !selectedTeamMeemerging businessrId || !currentTeamMeemerging businessr) {
+      alert("Please select a team meemerging businessr first");
       return;
     }
     
     setSaving(true);
     try {
-      const availabilityData: TeamMemberAvailabilityDoc = {
-        id: selectedTeamMemberId,
-        teamMemberId: selectedTeamMemberId,
-        teamMemberName: `${currentTeamMember.firstName} ${currentTeamMember.lastName}`,
-        teamMemberEmail: currentTeamMember.emailPrimary,
+      const availabilityData: TeamMeemerging businessrAvailabilityDoc = {
+        id: selectedTeamMeemerging businessrId,
+        teamMeemerging businessrId: selectedTeamMeemerging businessrId,
+        teamMeemerging businessrName: `${currentTeamMeemerging businessr.firstName} ${currentTeamMeemerging businessr.lastName}`,
+        teamMeemerging businessrEmail: currentTeamMeemerging businessr.emailPrimary,
         bookingSlug: bookingSlug,
         bookingTitle: bookingTitle,
         bookingDescription: bookingDescription,
@@ -312,7 +312,7 @@ export default function AvailabilityPage() {
         updatedAt: Timestamp.now(),
       };
 
-      await setDoc(doc(db, COLLECTIONS.TEAM_MEMBER_AVAILABILITY, selectedTeamMemberId), availabilityData);
+      await setDoc(doc(db, COLLECTIONS.TEAM_MEemerging businessR_AVAILABILITY, selectedTeamMeemerging businessrId), availabilityData);
       setAvailabilityDoc(availabilityData);
       alert("Availability saved successfully!");
     } catch (error) {
@@ -348,14 +348,14 @@ export default function AvailabilityPage() {
   };
 
   useEffect(() => {
-    fetchTeamMembers();
+    fetchTeamMeemerging businessrs();
   }, []);
 
   useEffect(() => {
-    if (selectedTeamMemberId && teamMembers.length > 0) {
-      fetchAvailability(selectedTeamMemberId);
+    if (selectedTeamMeemerging businessrId && teamMeemerging businessrs.length > 0) {
+      fetchAvailability(selectedTeamMeemerging businessrId);
     }
-  }, [selectedTeamMemberId, teamMembers]);
+  }, [selectedTeamMeemerging businessrId, teamMeemerging businessrs]);
 
   const toggleDayEnabled = (day: keyof WeeklySchedule) => {
     setWeeklySchedule((prev) => ({
@@ -364,7 +364,7 @@ export default function AvailabilityPage() {
     }));
   };
 
-  const updateDaySlot = (day: keyof WeeklySchedule, slotIndex: number, field: "start" | "end", value: string) => {
+  const updateDaySlot = (day: keyof WeeklySchedule, slotIndex: nuemerging businessr, field: "start" | "end", value: string) => {
     setWeeklySchedule((prev) => ({
       ...prev,
       [day]: {
@@ -386,7 +386,7 @@ export default function AvailabilityPage() {
     }));
   };
 
-  const removeSlotFromDay = (day: keyof WeeklySchedule, slotIndex: number) => {
+  const removeSlotFromDay = (day: keyof WeeklySchedule, slotIndex: nuemerging businessr) => {
     setWeeklySchedule((prev) => ({
       ...prev,
       [day]: {
@@ -481,15 +481,15 @@ export default function AvailabilityPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          {teamMembers.length > 0 && (
-            <Select value={selectedTeamMemberId} onValueChange={setSelectedTeamMemberId}>
+          {teamMeemerging businessrs.length > 0 && (
+            <Select value={selectedTeamMeemerging businessrId} onValueChange={setSelectedTeamMeemerging businessrId}>
               <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Select team member" />
+                <SelectValue placeholder="Select team meemerging businessr" />
               </SelectTrigger>
               <SelectContent>
-                {teamMembers.map((member) => (
-                  <SelectItem key={member.id} value={member.id}>
-                    {member.firstName} {member.lastName}
+                {teamMeemerging businessrs.map((meemerging businessr) => (
+                  <SelectItem key={meemerging businessr.id} value={meemerging businessr.id}>
+                    {meemerging businessr.firstName} {meemerging businessr.lastName}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -505,7 +505,7 @@ export default function AvailabilityPage() {
               Preview
             </a>
           </Button>
-          <Button onClick={saveAvailability} disabled={saving || !selectedTeamMemberId}>
+          <Button onClick={saveAvailability} disabled={saving || !selectedTeamMeemerging businessrId}>
             {saving ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Changes
           </Button>
@@ -1027,7 +1027,7 @@ export default function AvailabilityPage() {
                       />
                     </div>
                     <p className="text-sm text-muted-foreground text-center">
-                      {currentTeamMember ? `${currentTeamMember.firstName} ${currentTeamMember.lastName}` : 'Team Member'}
+                      {currentTeamMeemerging businessr ? `${currentTeamMeemerging businessr.firstName} ${currentTeamMeemerging businessr.lastName}` : 'Team Meemerging businessr'}
                     </p>
                     <div className="flex gap-2">
                       <Button variant="outline" onClick={downloadQrCode}>
@@ -1056,8 +1056,8 @@ export default function AvailabilityPage() {
             </Card>
           </div>
 
-          {/* Team Members with Booking Pages */}
-          {teamMembers.length > 1 && (
+          {/* Team Meemerging businessrs with Booking Pages */}
+          {teamMeemerging businessrs.length > 1 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1065,33 +1065,33 @@ export default function AvailabilityPage() {
                   All Team Booking Pages
                 </CardTitle>
                 <CardDescription>
-                  Quick access to all team member booking pages
+                  Quick access to all team meemerging businessr booking pages
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {teamMembers.map((member) => {
-                    const memberSlug = `${member.firstName.toLowerCase()}-${member.lastName.toLowerCase()}`.replace(/\s+/g, '-');
-                    const memberUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/book/${memberSlug}`;
+                  {teamMeemerging businessrs.map((meemerging businessr) => {
+                    const meemerging businessrSlug = `${meemerging businessr.firstName.toLowerCase()}-${meemerging businessr.lastName.toLowerCase()}`.replace(/\s+/g, '-');
+                    const meemerging businessrUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/book/${meemerging businessrSlug}`;
                     return (
-                      <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={meemerging businessr.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div>
-                          <p className="font-medium">{member.firstName} {member.lastName}</p>
-                          <p className="text-xs text-muted-foreground truncate max-w-[150px]">{member.expertise}</p>
+                          <p className="font-medium">{meemerging businessr.firstName} {meemerging businessr.lastName}</p>
+                          <p className="text-xs text-muted-foreground truncate max-w-[150px]">{meemerging businessr.expertise}</p>
                         </div>
                         <div className="flex gap-1">
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => {
-                              navigator.clipboard.writeText(memberUrl);
-                              alert(`Link copied for ${member.firstName}!`);
+                              navigator.clipboard.writeText(meemerging businessrUrl);
+                              alert(`Link copied for ${meemerging businessr.firstName}!`);
                             }}
                           >
                             <Copy className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon" asChild>
-                            <a href={memberUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={meemerging businessrUrl} target="_blank" rel="noopener noreferrer">
                               <ExternalLink className="h-4 w-4" />
                             </a>
                           </Button>
@@ -1126,7 +1126,7 @@ export default function AvailabilityPage() {
               />
             </div>
             <p className="text-sm font-medium">
-              {currentTeamMember ? `${currentTeamMember.firstName} ${currentTeamMember.lastName}` : 'Team Member'}
+              {currentTeamMeemerging businessr ? `${currentTeamMeemerging businessr.firstName} ${currentTeamMeemerging businessr.lastName}` : 'Team Meemerging businessr'}
             </p>
             <p className="text-xs text-muted-foreground break-all text-center">
               {getBookingUrl()}
@@ -1217,7 +1217,7 @@ export default function AvailabilityPage() {
               <div className="space-y-2">
                 <Label>Buffer Before (minutes)</Label>
                 <Input
-                  type="number"
+                  type="nuemerging businessr"
                   min="0"
                   value={newMeetingType.bufferBefore || 0}
                   onChange={(e) => setNewMeetingType({ ...newMeetingType, bufferBefore: parseInt(e.target.value) || 0 })}
@@ -1226,7 +1226,7 @@ export default function AvailabilityPage() {
               <div className="space-y-2">
                 <Label>Buffer After (minutes)</Label>
                 <Input
-                  type="number"
+                  type="nuemerging businessr"
                   min="0"
                   value={newMeetingType.bufferAfter || 0}
                   onChange={(e) => setNewMeetingType({ ...newMeetingType, bufferAfter: parseInt(e.target.value) || 0 })}

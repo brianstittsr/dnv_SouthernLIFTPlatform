@@ -8,7 +8,7 @@ import { daysAgo } from "./affiliates";
 export const mockContactSpheres: ContactSphereDoc[] = [
   {
     id: "sphere-001", affiliateId: "aff-001", sphereName: "Manufacturing Excellence Network",
-    members: [
+    meemerging businessrs: [
       { name: "Tom Bradley", profession: "Commercial Banker", company: "First Citizens Bank" },
       { name: "Rachel Kim", profession: "Manufacturing Attorney", company: "Smith Anderson" },
       { name: "James Wilson", profession: "Industrial Real Estate", company: "CBRE" },
@@ -30,7 +30,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-002", affiliateId: "aff-002", sphereName: "Quality & Compliance Circle",
-    members: [
+    meemerging businessrs: [
       { name: "Jennifer Adams", profession: "Environmental Consultant", company: "ERM" },
       { name: "Robert Lee", profession: "Safety Consultant", company: "Safex" },
       { name: "Michelle Brown", profession: "Manufacturing Attorney", company: "Brooks Pierce" },
@@ -52,7 +52,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-003", affiliateId: "aff-003", sphereName: "Operational Excellence Partners",
-    members: [
+    meemerging businessrs: [
       { name: "Carlos Mendez", profession: "Six Sigma Consultant", company: "Independent" },
       { name: "Amy Johnson", profession: "Change Management", company: "Prosci" },
       { name: "Derek Williams", profession: "Industrial Engineer", company: "Kimley-Horn" },
@@ -74,7 +74,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-004", affiliateId: "aff-004", sphereName: "Automation & Technology Alliance",
-    members: [
+    meemerging businessrs: [
       { name: "Richard Chen", profession: "Controls Engineer", company: "Rockwell Automation" },
       { name: "Sandra Miller", profession: "Machine Vision", company: "Cognex" },
       { name: "Timothy Brown", profession: "Robot Integrator", company: "FANUC" },
@@ -96,7 +96,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-005", affiliateId: "aff-005", sphereName: "Workforce Development Network",
-    members: [
+    meemerging businessrs: [
       { name: "Amanda Roberts", profession: "Community College Dean", company: "Forsyth Tech" },
       { name: "Gregory Thompson", profession: "Staffing Agency", company: "Manpower" },
       { name: "Diane Wilson", profession: "Career Counselor", company: "NCWorks" },
@@ -118,7 +118,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-006", affiliateId: "aff-006", sphereName: "Supply Chain Excellence Group",
-    members: [
+    meemerging businessrs: [
       { name: "William Chen", profession: "Freight Broker", company: "C.H. Robinson" },
       { name: "Barbara Johnson", profession: "Customs Broker", company: "Livingston" },
       { name: "Charles Wilson", profession: "Warehouse Solutions", company: "Prologis" },
@@ -140,7 +140,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-007", affiliateId: "aff-007", sphereName: "Digital Manufacturing Innovators",
-    members: [
+    meemerging businessrs: [
       { name: "Nathan Park", profession: "Cloud Architect", company: "AWS" },
       { name: "Olivia Chen", profession: "Data Scientist", company: "SAS" },
       { name: "Peter Johnson", profession: "Cybersecurity", company: "CrowdStrike" },
@@ -162,7 +162,7 @@ export const mockContactSpheres: ContactSphereDoc[] = [
   },
   {
     id: "sphere-008", affiliateId: "aff-008", sphereName: "Quality Management Professionals",
-    members: [
+    meemerging businessrs: [
       { name: "Xavier Chen", profession: "Calibration Services", company: "Tektronix" },
       { name: "Yvonne Johnson", profession: "Lab Services", company: "Element" },
       { name: "Zachary Williams", profession: "Document Control", company: "MasterControl" },

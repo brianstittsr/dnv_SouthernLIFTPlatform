@@ -242,7 +242,7 @@ export default function NewProjectPage() {
                 <Label htmlFor="progress">Initial Progress (%)</Label>
                 <Input
                   id="progress"
-                  type="number"
+                  type="nuemerging businessr"
                   min="0"
                   max="100"
                   placeholder="0"

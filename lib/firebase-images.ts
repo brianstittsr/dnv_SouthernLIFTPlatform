@@ -41,9 +41,9 @@ export interface ImageDoc {
   category: ImageCategory;
   mimeType: string;
   base64Data: string;
-  width?: number;
-  height?: number;
-  size: number;
+  width?: nuemerging businessr;
+  height?: nuemerging businessr;
+  size: nuemerging businessr;
   createdAt: Timestamp;
   updatedAt?: Timestamp;
   createdBy?: string;
@@ -57,9 +57,9 @@ export interface ImageMetadata {
   description?: string;
   category: ImageCategory;
   mimeType: string;
-  width?: number;
-  height?: number;
-  size: number;
+  width?: nuemerging businessr;
+  height?: nuemerging businessr;
+  size: nuemerging businessr;
   createdAt: Date;
   updatedAt?: Date;
   tags?: string[];
@@ -108,7 +108,7 @@ export function base64ToDataUrl(base64: string, mimeType: string): string {
 /**
  * Extract image dimensions
  */
-export async function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+export async function getImageDimensions(file: File): Promise<{ width: nuemerging businessr; height: nuemerging businessr }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -124,8 +124,8 @@ export async function getImageDimensions(file: File): Promise<{ width: number; h
  */
 export async function compressImage(
   file: File,
-  maxWidth: number = 1920,
-  targetBase64Size: number = 900 * 1024 // 900KB to leave room for base64 encoding overhead
+  maxWidth: nuemerging businessr = 1920,
+  targetBase64Size: nuemerging businessr = 900 * 1024 // 900KB to leave room for base64 encoding overhead
 ): Promise<File> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -153,7 +153,7 @@ export async function compressImage(
 
       // Iteratively compress until we hit target size
       let quality = 0.9;
-      const tryCompress = (currentQuality: number) => {
+      const tryCompress = (currentQuality: nuemerging businessr) => {
         canvas.toBlob(
           async (blob) => {
             if (!blob) {

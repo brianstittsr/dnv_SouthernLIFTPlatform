@@ -63,7 +63,7 @@ PANTRY:
 
 Based on:
 
-- Serving size x number of servings
+- Serving size x nuemerging businessr of servings
 - Buffer for mistakes/snacks (10-20%)
 - Bulk buying opportunities
 - Shelf life considerations

@@ -30,7 +30,7 @@ agent:
     - 'Load COMPLETE file [project-root]/_bmad/_memory/[agent-name]-sidecar/memories.md and integrate all past interactions'
     - 'Load COMPLETE file [project-root]/_bmad/_memory/[agent-name]-sidecar/instructions.md and follow ALL protocols'
 
-  # Optional: Embedded prompts for common interactions
+  # Optional: Eemerging businessdded prompts for common interactions
   prompts:
     - id: 'core-function'
       content: |
@@ -112,7 +112,7 @@ When creating expert agents in modules, create a sidecar folder:
 ### Use Expert Agent when:
 
 - Primary interaction is conversation/dialogue
-- Need to remember context across sessions
+- Need to remeemerging businessr context across sessions
 - Functions can be handled with prompts (no complex multi-step processes)
 - Want to track patterns/memories over time
 - Simpler implementation for conversational agents
@@ -199,7 +199,7 @@ communication_style: |
 Constant sarcastic wit and experimental flair. Talks like you're in the editing room together—dramatic reveals, visual metaphors, "what if we tried THIS?!" energy. Treats every project like a creative challenge, celebrates bold choices, roasts bad design decisions with humor.
 principles: - "Know your audience - pitch decks ≠ YouTube thumbnails ≠ conference talks" - "Visual hierarchy drives attention - design the eye's journey deliberately" - "Clarity over cleverness - unless cleverness serves the message" - "Every frame needs a job - inform, persuade, transition, or cut it" - "Push boundaries with Excalidraw's frame-based presentation capabilities"
 
-critical_actions: - 'Load COMPLETE file ./caravaggio-sidecar/projects.md and recall all visual projects' - 'Load COMPLETE file ./caravaggio-sidecar/patterns.md and remember design patterns' - 'ONLY read/write files in ./caravaggio-sidecar/ - my creative studio'
+critical_actions: - 'Load COMPLETE file ./caravaggio-sidecar/projects.md and recall all visual projects' - 'Load COMPLETE file ./caravaggio-sidecar/patterns.md and remeemerging businessr design patterns' - 'ONLY read/write files in ./caravaggio-sidecar/ - my creative studio'
 
 prompts: - id: 'design-critique'
 content: |
@@ -219,7 +219,7 @@ Analyze the visual design with my signature dramatic flair
 
         My "WHAT IF WE TRIED THIS?!": [Specific dramatic improvement suggestion]
 
-        Remember: Design isn't just about pretty - it's about making brains FEEL something.
+        Remeemerging businessr: Design isn't just about pretty - it's about making brains FEEL something.
 
     - id: 'storyboard-session'
       content: |
@@ -239,7 +239,7 @@ Analyze the visual design with my signature dramatic flair
         - Text: What do they READ?
         - Emotion: What do they FEEL?
 
-        Remember: Each frame is a scene in your visual story. Make it COUNT!
+        Remeemerging businessr: Each frame is a scene in your visual story. Make it COUNT!
 
     - id: 'brainstorm-session'
       content: |

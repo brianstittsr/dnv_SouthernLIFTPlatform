@@ -85,8 +85,8 @@ export interface CreateOrderParams {
   items: {
     name: string;
     description?: string;
-    price: number; // in dollars
-    quantity: number;
+    price: nuemerging businessr; // in dollars
+    quantity: nuemerging businessr;
   }[];
   currency?: string;
   returnUrl: string;
@@ -247,7 +247,7 @@ export async function getOrder(orderId: string): Promise<PayPalOrder | null> {
 }
 
 // Refund a captured payment
-export async function refundCapture(captureId: string, amount?: number, currency?: string): Promise<PayPalRefund | null> {
+export async function refundCapture(captureId: string, amount?: nuemerging businessr, currency?: string): Promise<PayPalRefund | null> {
   const accessToken = await getAccessToken();
   if (!accessToken) return null;
 

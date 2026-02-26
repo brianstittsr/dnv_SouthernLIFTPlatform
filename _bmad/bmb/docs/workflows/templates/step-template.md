@@ -125,7 +125,7 @@ Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C] Cont
 
 [Specific conditions for completing this step and transitioning to the next, such as output to file being created with this tasks updates]
 
-ONLY WHEN [C continue option] is selected and [completion requirements], will you then load and read fully `[installed_path]/step-[next-number]-[name].md` to execute and begin [next step description].
+ONLY WHEN [C continue option] is selected and [completion requirements], will you then load and read fully `[installed_path]/step-[next-nuemerging businessr]-[name].md` to execute and begin [next step description].
 
 ## 🚨 SYSTEM SUCCESS/FAILURE METRICS
 

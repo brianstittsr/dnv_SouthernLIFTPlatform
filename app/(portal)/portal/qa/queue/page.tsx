@@ -23,12 +23,12 @@ interface QueueItem {
   status: string;
   submittedAt: any;
   packHealth: {
-    overallScore: number;
-    completeness?: number;
-    quality?: number;
-    compliance?: number;
+    overallScore: nuemerging businessr;
+    completeness?: nuemerging businessr;
+    quality?: nuemerging businessr;
+    compliance?: nuemerging businessr;
   };
-  documentCount: number;
+  documentCount: nuemerging businessr;
   categories?: string[];
   certifications?: string[];
   reviewedBy?: string;
@@ -81,13 +81,13 @@ export default function QAQueuePage() {
     }
   };
 
-  const getHealthColor = (score: number) => {
+  const getHealthColor = (score: nuemerging businessr) => {
     if (score >= 80) return "text-green-600";
     if (score >= 70) return "text-blue-600";
     return "text-yellow-600";
   };
 
-  const getHealthBadge = (score: number) => {
+  const getHealthBadge = (score: nuemerging businessr) => {
     if (score >= 80) return { variant: "default" as const, label: "High Quality" };
     if (score >= 70) return { variant: "secondary" as const, label: "Good" };
     return { variant: "outline" as const, label: "Needs Review" };

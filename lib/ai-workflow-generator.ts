@@ -24,7 +24,7 @@ export interface WorkflowRequest {
 
 export interface WorkflowStep {
   type: 'email' | 'sms' | 'wait' | 'condition' | 'tag' | 'webhook' | 'internal_notification';
-  delay?: number; // hours
+  delay?: nuemerging businessr; // hours
   delayUnit?: 'minutes' | 'hours' | 'days';
   subject?: string; // for email
   content: string;
@@ -191,7 +191,7 @@ WORKFLOW STRUCTURE:
   "steps": [
     {
       "type": "email|sms|wait|condition|tag|webhook|internal_notification",
-      "delay": number (optional, in hours),
+      "delay": nuemerging businessr (optional, in hours),
       "delayUnit": "minutes|hours|days" (optional),
       "subject": "Email subject" (for emails),
       "content": "Message content with {{personalization}}",
@@ -210,7 +210,7 @@ STEP TYPES:
 - condition: Branch based on contact data
 - tag: Add or remove tags
 - webhook: Call external URL
-- internal_notification: Notify team member`;
+- internal_notification: Notify team meemerging businessr`;
 
 const WORKFLOW_CONVERSION_PROMPT = `You are an expert at analyzing GoHighLevel workflows and converting them to plain language descriptions.
 

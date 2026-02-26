@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
 
     const collections = [
       { name: 'platformSettings', docId: 'global', data: { navigationSettings: { hiddenItems: [], roleVisibility: {} } } },
-      { name: 'teamMembers', docId: '_placeholder', data: { _placeholder: true, note: 'Delete after adding real team members' } },
-      { name: 'memberships', docId: '_placeholder', data: { _placeholder: true, note: 'Delete after adding real memberships' } },
+      { name: 'teamMeemerging businessrs', docId: '_placeholder', data: { _placeholder: true, note: 'Delete after adding real team meemerging businessrs' } },
+      { name: 'meemerging businessrships', docId: '_placeholder', data: { _placeholder: true, note: 'Delete after adding real meemerging businessrships' } },
       { name: 'proofPacks', docId: '_placeholder', data: { _placeholder: true } },
       { name: 'smeSubscriptions', docId: '_placeholder', data: { _placeholder: true } },
       { name: 'partnerLeads', docId: '_placeholder', data: { _placeholder: true } },

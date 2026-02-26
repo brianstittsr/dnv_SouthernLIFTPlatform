@@ -16,7 +16,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { generateCertificateNumber } from "./firebase-cohorts";
+import { generateCertificateNuemerging businessr } from "./firebase-cohorts";
 
 /**
  * Mark a session as completed for a user
@@ -26,7 +26,7 @@ export async function markSessionComplete(
   cohortId: string,
   sessionId: string,
   moduleId: string,
-  timeSpentSeconds?: number
+  timeSpentSeconds?: nuemerging businessr
 ): Promise<void> {
   if (!db) throw new Error("Firebase not initialized");
 
@@ -62,8 +62,8 @@ export async function markSessionComplete(
     });
   }
 
-  // Update membership progress
-  await updateMembershipProgress(userId, cohortId);
+  // Update meemerging businessrship progress
+  await updateMeemerging businessrshipProgress(userId, cohortId);
 }
 
 /**
@@ -74,7 +74,7 @@ export async function updateSessionAccess(
   cohortId: string,
   sessionId: string,
   moduleId: string,
-  timeSpentSeconds?: number
+  timeSpentSeconds?: nuemerging businessr
 ): Promise<void> {
   if (!db) throw new Error("Firebase not initialized");
 
@@ -127,9 +127,9 @@ export async function getUserCohortProgress(userId: string, cohortId: string) {
 }
 
 /**
- * Calculate and update membership progress
+ * Calculate and update meemerging businessrship progress
  */
-export async function updateMembershipProgress(
+export async function updateMeemerging businessrshipProgress(
   userId: string,
   cohortId: string
 ): Promise<void> {
@@ -158,16 +158,16 @@ export async function updateMembershipProgress(
   // Calculate progress percentage
   const progressPercentage = Math.round((completedSessions / totalSessions) * 100);
 
-  // Update membership
-  const membershipQuery = query(
-    collection(db, "cohort_memberships"),
+  // Update meemerging businessrship
+  const meemerging businessrshipQuery = query(
+    collection(db, "cohort_meemerging businessrships"),
     where("userId", "==", userId),
     where("cohortId", "==", cohortId)
   );
-  const membershipSnap = await getDocs(membershipQuery);
+  const meemerging businessrshipSnap = await getDocs(meemerging businessrshipQuery);
 
-  if (!membershipSnap.empty) {
-    const membershipDoc = membershipSnap.docs[0];
+  if (!meemerging businessrshipSnap.empty) {
+    const meemerging businessrshipDoc = meemerging businessrshipSnap.docs[0];
     const updates: any = {
       progressPercentage,
       completedSessions,
@@ -176,7 +176,7 @@ export async function updateMembershipProgress(
     };
 
     // Check if cohort is now completed
-    if (progressPercentage >= 100 && membershipDoc.data().status !== "completed") {
+    if (progressPercentage >= 100 && meemerging businessrshipDoc.data().status !== "completed") {
       updates.status = "completed";
       updates.completedAt = Timestamp.now();
 
@@ -184,7 +184,7 @@ export async function updateMembershipProgress(
       await issueCohortCertificate(userId, cohortId);
     }
 
-    await updateDoc(membershipDoc.ref, updates);
+    await updateDoc(meemerging businessrshipDoc.ref, updates);
   }
 }
 
@@ -217,7 +217,7 @@ async function issueCohortCertificate(userId: string, cohortId: string): Promise
   if (!existingCertSnap.empty) return; // Certificate already issued
 
   // Generate certificate
-  const certificateNumber = generateCertificateNumber();
+  const certificateNuemerging businessr = generateCertificateNuemerging businessr();
 
   await addDoc(collection(db, "cohort_certificates"), {
     userId,
@@ -226,7 +226,7 @@ async function issueCohortCertificate(userId: string, cohortId: string): Promise
     userName: userData.displayName || userData.name || "Student",
     facilitatorName: cohortData.facilitatorName,
     completionDate: Timestamp.now(),
-    certificateNumber,
+    certificateNuemerging businessr,
     issuedAt: Timestamp.now(),
     status: "active",
   });
@@ -300,13 +300,13 @@ export async function getCohortModulesProgress(userId: string, cohortId: string)
       return {
         id: moduleDoc.id,
         title: moduleDoc.data().title,
-        weekNumber: moduleDoc.data().weekNumber,
+        weekNuemerging businessr: moduleDoc.data().weekNuemerging businessr,
         ...progress,
       };
     })
   );
 
-  return moduleProgress.sort((a, b) => a.weekNumber - b.weekNumber);
+  return moduleProgress.sort((a, b) => a.weekNuemerging businessr - b.weekNuemerging businessr);
 }
 
 /**
@@ -329,17 +329,17 @@ export async function resetCohortProgress(userId: string, cohortId: string): Pro
     batch.delete(doc.ref);
   });
 
-  // Reset membership progress
-  const membershipQuery = query(
-    collection(db, "cohort_memberships"),
+  // Reset meemerging businessrship progress
+  const meemerging businessrshipQuery = query(
+    collection(db, "cohort_meemerging businessrships"),
     where("userId", "==", userId),
     where("cohortId", "==", cohortId)
   );
-  const membershipSnap = await getDocs(membershipQuery);
+  const meemerging businessrshipSnap = await getDocs(meemerging businessrshipQuery);
 
-  if (!membershipSnap.empty) {
-    const membershipDoc = membershipSnap.docs[0];
-    batch.update(membershipDoc.ref, {
+  if (!meemerging businessrshipSnap.empty) {
+    const meemerging businessrshipDoc = meemerging businessrshipSnap.docs[0];
+    batch.update(meemerging businessrshipDoc.ref, {
       progressPercentage: 0,
       completedSessions: 0,
       status: "active",
@@ -356,18 +356,18 @@ export async function resetCohortProgress(userId: string, cohortId: string): Pro
 export async function getCohortCompletionStats(cohortId: string) {
   if (!db) throw new Error("Firebase not initialized");
 
-  // Get all memberships
-  const membershipsQuery = query(
-    collection(db, "cohort_memberships"),
+  // Get all meemerging businessrships
+  const meemerging businessrshipsQuery = query(
+    collection(db, "cohort_meemerging businessrships"),
     where("cohortId", "==", cohortId)
   );
-  const membershipsSnap = await getDocs(membershipsQuery);
+  const meemerging businessrshipsSnap = await getDocs(meemerging businessrshipsQuery);
 
-  const totalParticipants = membershipsSnap.size;
+  const totalParticipants = meemerging businessrshipsSnap.size;
   let completedCount = 0;
   let totalProgress = 0;
 
-  membershipsSnap.docs.forEach((doc) => {
+  meemerging businessrshipsSnap.docs.forEach((doc) => {
     const data = doc.data();
     if (data.status === "completed") {
       completedCount++;

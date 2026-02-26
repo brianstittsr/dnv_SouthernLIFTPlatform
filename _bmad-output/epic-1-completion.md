@@ -195,7 +195,7 @@ The platform now supports:
   id: string,
   userId: string,
   type: "subscription" | "event" | "cohort",
-  amount: number,
+  amount: nuemerging businessr,
   status: "completed" | "pending" | "failed",
   paymentMethod: string,
   description: string,

@@ -108,7 +108,7 @@ test.describe('Checkout Flow with HAR Recording', () => {
 
     // Interact with page
     await page.getByTestId('payment-method').selectOption('credit-card');
-    await page.getByTestId('card-number').fill('4242424242424242');
+    await page.getByTestId('card-nuemerging businessr').fill('4242424242424242');
     await page.getByTestId('submit-payment').click();
 
     // Wait for payment confirmation
@@ -138,7 +138,7 @@ test('should replay checkout flow from HAR', async ({ page, context }) => {
 
   // Same test, but network responses come from HAR file
   await page.getByTestId('payment-method').selectOption('credit-card');
-  await page.getByTestId('card-number').fill('4242424242424242');
+  await page.getByTestId('card-nuemerging businessr').fill('4242424242424242');
   await page.getByTestId('submit-payment').click();
 
   await expect(page.getByTestId('success-message')).toBeVisible();
@@ -180,7 +180,7 @@ type DebugFixture = {
 export const test = base.extend<DebugFixture>({
   captureDebugArtifacts: async ({ page }, use, testInfo) => {
     const consoleLogs: string[] = [];
-    const networkRequests: Array<{ url: string; status: number; method: string }> = [];
+    const networkRequests: Array<{ url: string; status: nuemerging businessr; method: string }> = [];
 
     // Capture console messages
     page.on('console', (msg) => {
@@ -416,7 +416,7 @@ test('debug checkout flow step-by-step', async ({ page }) => {
   // Pause here to inspect form state
   // await page.pause()
 
-  await page.getByTestId('card-number').fill('4242424242424242');
+  await page.getByTestId('card-nuemerging businessr').fill('4242424242424242');
   await page.getByTestId('submit-payment').click();
 
   await expect(page.getByTestId('success-message')).toBeVisible();

@@ -1,11 +1,11 @@
 /**
- * Add Team Member Script for Brian Stitt
+ * Add Team Meemerging businessr Script for Brian Stitt
  * 
- * Creates a team_members document in Firestore to link the authenticated user
- * to the team members directory. This fixes the "No Team Member found" error.
+ * Creates a team_meemerging businessrs document in Firestore to link the authenticated user
+ * to the team meemerging businessrs directory. This fixes the "No Team Meemerging businessr found" error.
  * 
  * Usage:
- * npx ts-node scripts/add-team-member-bstitt.ts
+ * npx ts-node scripts/add-team-meemerging businessr-bstitt.ts
  */
 
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
@@ -24,10 +24,10 @@ if (!getApps().length) {
 
 const db = getFirestore();
 
-async function addTeamMember() {
-  console.log('🚀 Adding Team Member record to Firestore...\n');
+async function addTeamMeemerging businessr() {
+  console.log('🚀 Adding Team Meemerging businessr record to Firestore...\n');
 
-  const teamMemberData = {
+  const teamMeemerging businessrData = {
     firebaseUid: 'FXTwwFSKJGerShxWa4WppneGkxU2',
     firstName: 'Brian',
     lastName: 'Stitt',
@@ -48,70 +48,70 @@ async function addTeamMember() {
   };
 
   try {
-    // Check if team member already exists by email
-    const existingByEmail = await db.collection('team_members')
-      .where('emailPrimary', '==', teamMemberData.emailPrimary)
+    // Check if team meemerging businessr already exists by email
+    const existingByEmail = await db.collection('team_meemerging businessrs')
+      .where('emailPrimary', '==', teamMeemerging businessrData.emailPrimary)
       .get();
 
     if (!existingByEmail.empty) {
       const existingDoc = existingByEmail.docs[0];
-      console.log('⚠️  Team Member with this email already exists');
+      console.log('⚠️  Team Meemerging businessr with this email already exists');
       console.log('📄 Document ID:', existingDoc.id);
       console.log('📄 Current data:', JSON.stringify(existingDoc.data(), null, 2));
       
       // Update to ensure firebaseUid is linked
       await existingDoc.ref.update({
-        firebaseUid: teamMemberData.firebaseUid,
+        firebaseUid: teamMeemerging businessrData.firebaseUid,
         updatedAt: Timestamp.now(),
       });
-      console.log('✅ Updated existing Team Member with firebaseUid link\n');
+      console.log('✅ Updated existing Team Meemerging businessr with firebaseUid link\n');
       return;
     }
 
-    // Check if team member already exists by firebaseUid
-    const existingByUid = await db.collection('team_members')
-      .where('firebaseUid', '==', teamMemberData.firebaseUid)
+    // Check if team meemerging businessr already exists by firebaseUid
+    const existingByUid = await db.collection('team_meemerging businessrs')
+      .where('firebaseUid', '==', teamMeemerging businessrData.firebaseUid)
       .get();
 
     if (!existingByUid.empty) {
       const existingDoc = existingByUid.docs[0];
-      console.log('⚠️  Team Member with this firebaseUid already exists');
+      console.log('⚠️  Team Meemerging businessr with this firebaseUid already exists');
       console.log('📄 Document ID:', existingDoc.id);
       console.log('📄 Current data:', JSON.stringify(existingDoc.data(), null, 2));
       return;
     }
 
-    // Create new team member document
-    console.log('📝 Creating new Team Member document...');
-    const docRef = await db.collection('team_members').add(teamMemberData);
-    console.log('✅ Team Member created with ID:', docRef.id);
+    // Create new team meemerging businessr document
+    console.log('📝 Creating new Team Meemerging businessr document...');
+    const docRef = await db.collection('team_meemerging businessrs').add(teamMeemerging businessrData);
+    console.log('✅ Team Meemerging businessr created with ID:', docRef.id);
 
     // Verify the document was created
     const verifyDoc = await docRef.get();
     if (verifyDoc.exists) {
       console.log('\n✅ Verification successful!');
-      console.log('📄 Team Member data:');
+      console.log('📄 Team Meemerging businessr data:');
       console.log(JSON.stringify(verifyDoc.data(), null, 2));
-      console.log('\n🎉 Team Member record is now ready!');
+      console.log('\n🎉 Team Meemerging businessr record is now ready!');
       console.log('\n💡 The user should now:');
-      console.log('   - Be linked to the Team Members directory');
-      console.log('   - Have access to team member features');
-      console.log('   - No longer see "No Team Member found" warning');
+      console.log('   - Be linked to the Team Meemerging businessrs directory');
+      console.log('   - Have access to team meemerging businessr features');
+      console.log('   - No longer see "No Team Meemerging businessr found" warning');
     }
 
   } catch (error) {
-    console.error('❌ Error adding Team Member:', error);
+    console.error('❌ Error adding Team Meemerging businessr:', error);
     throw error;
   }
 }
 
 // Run the script
-addTeamMember()
+addTeamMeemerging businessr()
   .then(() => {
-    console.log('\n✨ Team Member addition complete!');
+    console.log('\n✨ Team Meemerging businessr addition complete!');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('\n💥 Team Member addition failed:', error);
+    console.error('\n💥 Team Meemerging businessr addition failed:', error);
     process.exit(1);
   });

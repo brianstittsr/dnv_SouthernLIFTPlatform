@@ -22,10 +22,10 @@ interface AggregatedSupplier {
 
 interface AggregatedResult {
   suppliers: AggregatedSupplier[];
-  totalResults: number;
+  totalResults: nuemerging businessr;
   sources: {
-    thomasnet: { count: number; total: number; success: boolean; error?: string; authenticated?: boolean };
-    connex: { count: number; total: number; success: boolean; error?: string; authenticated?: boolean };
+    thomasnet: { count: nuemerging businessr; total: nuemerging businessr; success: boolean; error?: string; authenticated?: boolean };
+    connex: { count: nuemerging businessr; total: nuemerging businessr; success: boolean; error?: string; authenticated?: boolean };
   };
   isLiveData: boolean;
 }
@@ -99,7 +99,7 @@ export async function searchAllSources(
   options?: {
     includeThomasNet?: boolean;
     includeConnex?: boolean;
-    maxResultsPerSource?: number;
+    maxResultsPerSource?: nuemerging businessr;
   }
 ): Promise<AggregatedResult> {
   const {

@@ -123,14 +123,14 @@ For each technique:
 
 You can:
 
-- Select by technique name or number
+- Select by technique name or nuemerging businessr
 - Ask for more details about any specific technique
 - Browse another category
 - Select multiple techniques for a comprehensive session
 
 **Options:**
 
-- Enter technique names/numbers you want to use
+- Enter technique names/nuemerging businessrs you want to use
 - [Details] for more information about any technique
 - [Categories] to return to category list
 - [Back] to return to approach selection
@@ -221,4 +221,4 @@ If user selects [Back]:
 
 After technique confirmation, load `./step-03-technique-execution.md` to begin facilitating the selected brainstorming techniques.
 
-Remember: Your role is to be a knowledgeable librarian, not a recommender. Let the user explore and choose based on their interests and intuition!
+Remeemerging businessr: Your role is to be a knowledgeable librarian, not a recommender. Let the user explore and choose based on their interests and intuition!

@@ -54,8 +54,8 @@ export const createUser = (overrides: Partial<User> = {}): User => ({
 type Product = {
   id: string;
   name: string;
-  price: number;
-  stock: number;
+  price: nuemerging businessr;
+  stock: nuemerging businessr;
   category: string;
 };
 
@@ -63,7 +63,7 @@ export const createProduct = (overrides: Partial<Product> = {}): Product => ({
   id: faker.string.uuid(),
   name: faker.commerce.productName(),
   price: parseFloat(faker.commerce.price()),
-  stock: faker.number.int({ min: 0, max: 100 }),
+  stock: faker.nuemerging businessr.int({ min: 0, max: 100 }),
   category: faker.commerce.department(),
   ...overrides,
 });
@@ -107,22 +107,22 @@ import { createProduct } from './product-factory';
 
 type OrderItem = {
   product: Product;
-  quantity: number;
-  price: number;
+  quantity: nuemerging businessr;
+  price: nuemerging businessr;
 };
 
 type Order = {
   id: string;
   user: User;
   items: OrderItem[];
-  total: number;
+  total: nuemerging businessr;
   status: 'pending' | 'paid' | 'shipped' | 'delivered';
   createdAt: Date;
 };
 
 export const createOrderItem = (overrides: Partial<OrderItem> = {}): OrderItem => {
   const product = overrides.product || createProduct();
-  const quantity = overrides.quantity || faker.number.int({ min: 1, max: 5 });
+  const quantity = overrides.quantity || faker.nuemerging businessr.int({ min: 1, max: 5 });
 
   return {
     product,
@@ -305,7 +305,7 @@ test('admin can delete user', async ({ page }) => {
 **Why It Fails**:
 
 - **Parallel collisions**: Hardcoded IDs (`id: 1`, `email: 'test@test.com'`) cause failures when tests run concurrently
-- **Schema drift**: Adding required fields (`phoneNumber`, `address`) breaks all tests using fixtures
+- **Schema drift**: Adding required fields (`phoneNuemerging businessr`, `address`) breaks all tests using fixtures
 - **Hidden intent**: Does this test need `email: 'test@test.com'` specifically, or any email?
 - **Slow setup**: UI-based data creation is 10-50x slower than API
 
@@ -329,12 +329,12 @@ test('user can login', async ({ page, apiRequest }) => {
 });
 
 // ✅ GOOD: Factories adapt to schema changes automatically
-// When `phoneNumber` becomes required, update factory once:
+// When `phoneNuemerging businessr` becomes required, update factory once:
 export const createUser = (overrides: Partial<User> = {}): User => ({
   id: faker.string.uuid(),
   email: faker.internet.email(),
   name: faker.person.fullName(),
-  phoneNumber: faker.phone.number(), // NEW field, all tests get it automatically
+  phoneNuemerging businessr: faker.phone.nuemerging businessr(), // NEW field, all tests get it automatically
   role: 'user',
   ...overrides,
 });
@@ -378,7 +378,7 @@ type Account = {
   owner: User;
   plan: 'free' | 'pro' | 'enterprise';
   features: string[];
-  maxUsers: number;
+  maxUsers: nuemerging businessr;
 };
 
 export const createAccount = (overrides: Partial<Account> = {}): Account => ({

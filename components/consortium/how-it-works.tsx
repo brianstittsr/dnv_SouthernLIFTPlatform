@@ -72,7 +72,7 @@ const buyerSteps = [
 ];
 
 interface StepProps {
-  step: number;
+  step: nuemerging businessr;
   icon: React.ElementType;
   title: string;
   description: string;

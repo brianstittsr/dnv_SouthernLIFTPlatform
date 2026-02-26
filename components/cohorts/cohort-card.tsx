@@ -20,7 +20,7 @@ import type { Cohort } from "@/types/cohorts";
 interface CohortCardProps {
   cohort: Cohort;
   showProgress?: boolean;
-  progress?: number;
+  progress?: nuemerging businessr;
   enrolled?: boolean;
   variant?: "default" | "compact" | "detailed";
   onEnroll?: () => void;
@@ -36,8 +36,8 @@ export function CohortCard({
   onEnroll,
   onView,
 }: CohortCardProps) {
-  const formatPrice = (cents: number) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatPrice = (cents: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,

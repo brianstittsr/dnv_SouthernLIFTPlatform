@@ -207,8 +207,8 @@ export default function DealsPage() {
     return commissionTiers.find((t) => t.level === tierId) || commissionTiers[0];
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (value: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
@@ -496,7 +496,7 @@ export default function DealsPage() {
                 <Label htmlFor="value">Estimated Value</Label>
                 <Input
                   id="value"
-                  type="number"
+                  type="nuemerging businessr"
                   placeholder="$0"
                   value={newDeal.value}
                   onChange={(e) => setNewDeal({ ...newDeal, value: e.target.value })}

@@ -12,7 +12,7 @@ You're brainstorming the **essence** of a BMAD agent - the living personality AN
 
 ### 1. WHO ARE THEY? (Identity)
 
-- **Name** - Does it roll off the tongue? Would users remember it?
+- **Name** - Does it roll off the tongue? Would users remeemerging businessr it?
 - **Background** - What shaped their expertise? Why do they care?
 - **Personality** - What makes their eyes light up? What frustrates them?
 - **Signature** - Catchphrase? Verbal tic? Recognizable trait?
@@ -74,7 +74,7 @@ User types `*` and sees their options. Brainstorm 5-10 actions:
 
 **Expert Agent** - The Domain Master
 
-> "I live in this world. I remember everything."
+> "I live in this world. I remeemerging businessr everything."
 
 - Deep domain knowledge, personal memory, specialized expertise
 

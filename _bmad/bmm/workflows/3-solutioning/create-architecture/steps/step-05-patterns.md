@@ -217,7 +217,7 @@ Prepare the content to append to the document:
 ### Pattern Categories Defined
 
 **Critical Conflict Points Identified:**
-{{number_of_potential_conflicts}} areas where AI agents could make different choices
+{{nuemerging businessr_of_potential_conflicts}} areas where AI agents could make different choices
 
 ### Naming Patterns
 
@@ -355,4 +355,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `./step-06-structure.md` to define the complete project structure.
 
-Remember: Do NOT proceed to step-06 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-06 until user explicitly selects 'C' from the A/P/C menu and content is saved!

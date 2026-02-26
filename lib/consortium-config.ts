@@ -8,7 +8,7 @@ export interface HeroSlide {
   backgroundImage?: string;
   backgroundColor?: string;
   textColor: "light" | "dark";
-  order: number;
+  order: nuemerging businessr;
   isActive: boolean;
 }
 

@@ -2,7 +2,7 @@
  * Create User Profile Script
  * 
  * Creates a user profile document in Firestore for the authenticated user.
- * This fixes the "No Team Member found" error by creating the necessary user document.
+ * This fixes the "No Team Meemerging businessr found" error by creating the necessary user document.
  * 
  * Usage:
  * npx ts-node scripts/create-user-profile.ts

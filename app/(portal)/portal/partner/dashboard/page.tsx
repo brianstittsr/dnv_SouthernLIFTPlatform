@@ -24,7 +24,7 @@ interface PartnerItem {
   email: string;
   phone: string;
   status: "active" | "inactive" | "pending";
-  revenue: number;
+  revenue: nuemerging businessr;
   notes: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -182,8 +182,8 @@ export default function PartnerDashboardPage() {
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (value: nuemerging businessr) => {
+    return new Intl.Nuemerging businessrFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
@@ -350,7 +350,7 @@ export default function PartnerDashboardPage() {
                 <Label htmlFor="revenue">Revenue ($)</Label>
                 <Input
                   id="revenue"
-                  type="number"
+                  type="nuemerging businessr"
                   value={formData.revenue}
                   onChange={(e) => setFormData({ ...formData, revenue: parseFloat(e.target.value) || 0 })}
                   placeholder="0"

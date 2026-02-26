@@ -87,7 +87,7 @@ export interface StatItem {
   label: string;
 }
 
-export interface TeamMember {
+export interface TeamMeemerging businessr {
   id: string;
   name: string;
   title: string;
@@ -161,16 +161,16 @@ export async function getArticlesByCategory(category: string): Promise<NewsArtic
 }
 
 /**
- * Get team members from the about page
+ * Get team meemerging businessrs from the about page
  */
-export async function getTeamMembers(): Promise<TeamMember[]> {
+export async function getTeamMeemerging businessrs(): Promise<TeamMeemerging businessr[]> {
   const aboutPage = await getPageContent('about');
   if (!aboutPage) return [];
   
   const teamSection = aboutPage.sections.find(s => s.type === 'team-grid');
   if (!teamSection || !teamSection.content) return [];
   
-  return (teamSection.content as { members: TeamMember[] }).members || [];
+  return (teamSection.content as { meemerging businessrs: TeamMeemerging businessr[] }).meemerging businessrs || [];
 }
 
 /**

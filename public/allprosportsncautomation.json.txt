@@ -1,0 +1,579 @@
+{
+  "name": "Gmail AR CSV -> QuickBooks Invoices",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "returnAll": true,
+        "additionalFields": {
+          "q": "subject:(\"Accounts Receivable\" OR \"A/R\" OR \"AR\") has:attachment filename:csv newer_than:7d -label:ar_imported"
+        }
+      },
+      "name": "Gmail - Find AR Emails",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        240,
+        240
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_GMAIL_CRED_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Split Emails",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        460,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "get",
+        "messageId": "={{$json.id}}",
+        "additionalFields": {
+          "format": "full",
+          "includeAttachments": true
+        }
+      },
+      "name": "Gmail - Get Email w/ Attachments",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        680,
+        240
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_GMAIL_CRED_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "processedLabelName",
+              "value": "ar_imported"
+            },
+            {
+              "name": "attachmentNameContains",
+              "value": ".csv"
+            },
+            {
+              "name": "qboTxnType",
+              "value": "Invoice"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "SETTINGS",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        680,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $json;\nconst wantExt = $items('SETTINGS')[0].json.attachmentNameContains || '.csv';\n\n// Gmail node returns attachments in different shapes depending on version.\n// We'll handle common patterns.\nlet atts = [];\n\n// Pattern A: msg.attachments array\nif (Array.isArray(msg.attachments)) atts = msg.attachments;\n\n// Pattern B: msg.payload.parts contains attachment parts\nif (!atts.length && msg.payload?.parts) {\n  const parts = msg.payload.parts;\n  const flat = [];\n  const walk = (p) => {\n    if (Array.isArray(p)) return p.forEach(walk);\n    flat.push(p);\n    if (p.parts) walk(p.parts);\n  };\n  walk(parts);\n  atts = flat\n    .filter(p => p.filename && p.body && (p.body.attachmentId || p.body.data))\n    .map(p => ({\n      filename: p.filename,\n      attachmentId: p.body.attachmentId,\n      mimeType: p.mimeType\n    }));\n}\n\nconst csvAtt = atts.find(a => (a.filename || '').toLowerCase().includes(wantExt.replace('.', '').toLowerCase()) || (a.filename || '').toLowerCase().endsWith(wantExt.toLowerCase()));\n\nif (!csvAtt) {\n  return [{ json: { skip: true, reason: 'No CSV attachment found', emailId: msg.id } }];\n}\n\nreturn [{ json: { emailId: msg.id, threadId: msg.threadId, filename: csvAtt.filename, attachmentId: csvAtt.attachmentId } }];"
+      },
+      "name": "Pick CSV Attachment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.skip}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Skip if No CSV",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1130,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messageAttachment",
+        "operation": "get",
+        "messageId": "={{$json.emailId}}",
+        "attachmentId": "={{$json.attachmentId}}"
+      },
+      "name": "Gmail - Download Attachment",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        240
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_GMAIL_CRED_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {
+          "headerRow": true,
+          "delimiter": ",",
+          "quoteChar": "\""
+        }
+      },
+      "name": "Spreadsheet File - CSV to JSON",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 2,
+      "position": [
+        1590,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\n\n// Detect common columns and normalize\nconst norm = (r) => {\n  const get = (...keys) => {\n    for (const k of keys) {\n      if (r[k] !== undefined && r[k] !== null && `${r[k]}`.trim() !== '') return r[k];\n    }\n    return undefined;\n  };\n\n  return {\n    DocNuemerging businessr: get('DocNuemerging businessr','InvoiceNuemerging businessr','Invoice','Doc No','DocNo'),\n    CustomerName: get('CustomerName','Customer','Customer Name','Name'),\n    TxnDate: get('TxnDate','InvoiceDate','Date'),\n    DueDate: get('DueDate','Due','Due Date'),\n    ItemName: get('ItemName','Item','Product','Service'),\n    Description: get('Description','Memo','LineDescription'),\n    Qty: Nuemerging businessr(get('Qty','Quantity','QTY') ?? 1),\n    UnitPrice: Nuemerging businessr(get('UnitPrice','Rate','Price') ?? 0),\n    Amount: Nuemerging businessr(get('Amount','LineAmount','Total') ?? 0)\n  };\n};\n\nconst cleaned = rows.map(norm).filter(r => r.DocNuemerging businessr && r.CustomerName);\n\n// Group by DocNuemerging businessr to create invoice objects with lines\nconst byDoc = new Map();\nfor (const r of cleaned) {\n  if (!byDoc.has(r.DocNuemerging businessr)) {\n    byDoc.set(r.DocNuemerging businessr, {\n      DocNuemerging businessr: r.DocNuemerging businessr,\n      CustomerName: r.CustomerName,\n      TxnDate: r.TxnDate,\n      DueDate: r.DueDate,\n      Lines: []\n    });\n  }\n  const inv = byDoc.get(r.DocNuemerging businessr);\n  const amount = r.Amount && r.Amount !== 0 ? r.Amount : (r.Qty * r.UnitPrice);\n  inv.Lines.push({\n    ItemName: r.ItemName,\n    Description: r.Description,\n    Qty: r.Qty,\n    UnitPrice: r.UnitPrice,\n    Amount: amount\n  });\n}\n\nreturn Array.from(byDoc.values()).map(o => ({ json: o }));"
+      },
+      "name": "Build Invoice Objects",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inv = $json;\n\n// NOTE: This node prepares a QBO Invoice payload in the shape QBO expects.\n// You still need customer/item resolution (IDs) in later steps.\n\nreturn [{\n  json: {\n    DocNuemerging businessr: inv.DocNuemerging businessr,\n    CustomerName: inv.CustomerName,\n    TxnDate: inv.TxnDate,\n    DueDate: inv.DueDate,\n    LineDraft: inv.Lines,\n    externalId: `gmail-ar-${inv.DocNuemerging businessr}`\n  }\n}];"
+      },
+      "name": "Prepare QBO Draft",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2035,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.QBO_BASE_URL + '/v3/company/' + $env.QBO_COMPANY_ID + '/query?minorversion=70'}}",
+        "authentication": "oAuth2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/text"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"query\": `select * from Customer where DisplayName = '${$json.CustomerName.replace(/'/g,\"\\\\'\")}'` } }}",
+        "options": {}
+      },
+      "name": "QBO - Find Customer by Name",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2260,
+        240
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "REPLACE_WITH_YOUR_QBO_OAUTH2_CRED_ID",
+          "name": "QuickBooks OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const q = $json;\nconst inv = $items('Prepare QBO Draft')[0].json;\n\nconst cust = q?.QueryResponse?.Customer?.[0];\n\nreturn [{\n  json: {\n    ...inv,\n    CustomerRef: cust ? { value: cust.Id } : null,\n    customerFound: !!cust\n  }\n}];"
+      },
+      "name": "Attach CustomerRef",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.customerFound}}",
+              "value2": false
+            }
+          ]
+        }
+      },
+      "name": "IF Customer Missing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2700,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.QBO_BASE_URL + '/v3/company/' + $env.QBO_COMPANY_ID + '/customer?minorversion=70'}}",
+        "authentication": "oAuth2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"DisplayName\": $json.CustomerName } }}",
+        "options": {}
+      },
+      "name": "QBO - Create Customer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2920,
+        120
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "REPLACE_WITH_YOUR_QBO_OAUTH2_CRED_ID",
+          "name": "QuickBooks OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inv = $items('Attach CustomerRef')[0].json;\nconst created = $json;\nconst id = created?.Customer?.Id;\n\nreturn [{ json: { ...inv, CustomerRef: { value: id }, customerFound: true } }];"
+      },
+      "name": "Use Created Customer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3140,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inv = $json;\n\n// Minimal Item resolution strategy:\n// If you have a single generic item in QBO (e.g., 'Accounts Receivable Import'), use it for all lines.\n// Otherwise you should add a 'Find Item by Name' query loop similar to Customer.\n\nconst DEFAULT_ITEM_ID = $env.QBO_DEFAULT_ITEM_ID;\n\nconst lines = inv.LineDraft.map((l, idx) => ({\n  DetailType: 'SalesItemLineDetail',\n  Amount: Nuemerging businessr(l.Amount || 0),\n  Description: l.Description || l.ItemName || `Line ${idx+1}`,\n  SalesItemLineDetail: {\n    Qty: Nuemerging businessr(l.Qty || 1),\n    UnitPrice: Nuemerging businessr(l.UnitPrice || 0),\n    ItemRef: { value: DEFAULT_ITEM_ID }\n  }\n}));\n\nreturn [{\n  json: {\n    DocNuemerging businessr: inv.DocNuemerging businessr,\n    TxnDate: inv.TxnDate,\n    DueDate: inv.DueDate,\n    CustomerRef: inv.CustomerRef,\n    Line: lines,\n    PrivateNote: `Imported via n8n (${inv.externalId})`\n  }\n}];"
+      },
+      "name": "Build QBO Invoice Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3140,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.QBO_BASE_URL + '/v3/company/' + $env.QBO_COMPANY_ID + '/invoice?minorversion=70'}}",
+        "authentication": "oAuth2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "name": "QBO - Create Invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3370,
+        300
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "REPLACE_WITH_YOUR_QBO_OAUTH2_CRED_ID",
+          "name": "QuickBooks OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "addLabels",
+        "messageId": "={{$items('Pick CSV Attachment')[0].json.emailId}}",
+        "labelIds": "={{[$items('SETTINGS')[0].json.processedLabelName]}}"
+      },
+      "name": "Gmail - Label as Imported",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_YOUR_GMAIL_CRED_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail - Find AR Emails": {
+      "main": [
+        [
+          {
+            "node": "Split Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Emails": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Get Email w/ Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Get Email w/ Attachments": {
+      "main": [
+        [
+          {
+            "node": "Pick CSV Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick CSV Attachment": {
+      "main": [
+        [
+          {
+            "node": "Skip if No CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip if No CSV": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Download Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Emails",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Gmail - Download Attachment": {
+      "main": [
+        [
+          {
+            "node": "Spreadsheet File - CSV to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spreadsheet File - CSV to JSON": {
+      "main": [
+        [
+          {
+            "node": "Build Invoice Objects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Invoice Objects": {
+      "main": [
+        [
+          {
+            "node": "Prepare QBO Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare QBO Draft": {
+      "main": [
+        [
+          {
+            "node": "QBO - Find Customer by Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QBO - Find Customer by Name": {
+      "main": [
+        [
+          {
+            "node": "Attach CustomerRef",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach CustomerRef": {
+      "main": [
+        [
+          {
+            "node": "IF Customer Missing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Customer Missing": {
+      "main": [
+        [
+          {
+            "node": "QBO - Create Customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build QBO Invoice Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QBO - Create Customer": {
+      "main": [
+        [
+          {
+            "node": "Use Created Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Created Customer": {
+      "main": [
+        [
+          {
+            "node": "Build QBO Invoice Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build QBO Invoice Payload": {
+      "main": [
+        [
+          {
+            "node": "QBO - Create Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QBO - Create Invoice": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Label as Imported",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "versionId": "1",
+  "settings": {
+    "executionTimeout": 3600,
+    "saveExecutionProgress": true
+  }
+}

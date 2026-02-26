@@ -28,7 +28,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/schema';
 
-interface Member {
+interface Meemerging businessr {
   id: string;
   userId: string;
   companyName: string;
@@ -83,7 +83,7 @@ const CERTIFICATION_OPTIONS = [
   'SDVOSB',
   'WOSB',
   'EDWOSB',
-  'MBE',
+  'emerging business',
   'DBE',
   'ISO 9001',
   'ISO 27001',
@@ -92,9 +92,9 @@ const CERTIFICATION_OPTIONS = [
   'GSA Schedule',
 ];
 
-export default function MemberDirectoryPage() {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
+export default function Meemerging businessrDirectoryPage() {
+  const [meemerging businessrs, setMeemerging businessrs] = useState<Meemerging businessr[]>([]);
+  const [filteredMeemerging businessrs, setFilteredMeemerging businessrs] = useState<Meemerging businessr[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [tierFilter, setTierFilter] = useState('all');
@@ -103,35 +103,35 @@ export default function MemberDirectoryPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
-    fetchMembers();
+    fetchMeemerging businessrs();
   }, []);
 
   useEffect(() => {
-    filterMembers();
-  }, [members, searchQuery, tierFilter, capabilityFilter, certificationFilter]);
+    filterMeemerging businessrs();
+  }, [meemerging businessrs, searchQuery, tierFilter, capabilityFilter, certificationFilter]);
 
-  const fetchMembers = async () => {
+  const fetchMeemerging businessrs = async () => {
     if (!db) return;
 
     try {
-      // Fetch active memberships
-      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
+      // Fetch active meemerging businessrships
+      const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
       const q = query(
-        membershipsRef,
+        meemerging businessrshipsRef,
         where('status', 'in', ['active', 'trialing']),
         orderBy('createdAt', 'desc')
       );
 
       const snapshot = await getDocs(q);
       
-      // For demo purposes, create sample member data
+      // For demo purposes, create sample meemerging businessr data
       // In production, this would join with user/organization data
-      const membersData: Member[] = snapshot.docs.map((doc, index) => {
+      const meemerging businessrsData: Meemerging businessr[] = snapshot.docs.map((doc, index) => {
         const data = doc.data();
         return {
           id: doc.id,
           userId: data.userId,
-          companyName: `Member Company ${index + 1}`,
+          companyName: `Meemerging businessr Company ${index + 1}`,
           contactName: `Contact Person ${index + 1}`,
           contactEmail: `contact${index + 1}@example.com`,
           tier: data.tier || 'core-capture',
@@ -144,9 +144,9 @@ export default function MemberDirectoryPage() {
         };
       });
 
-      // If no real members, add sample data for demo
-      if (membersData.length === 0) {
-        const sampleMembers: Member[] = [
+      // If no real meemerging businessrs, add sample data for demo
+      if (meemerging businessrsData.length === 0) {
+        const sampleMeemerging businessrs: Meemerging businessr[] = [
           {
             id: '1',
             userId: 'user1',
@@ -173,7 +173,7 @@ export default function MemberDirectoryPage() {
             tier: 'core-capture',
             status: 'active',
             capabilities: ['Manufacturing', 'Engineering', 'Logistics'],
-            certifications: ['HUBZone', 'ISO 9001', 'MBE'],
+            certifications: ['HUBZone', 'ISO 9001', 'emerging business'],
             naicsCodes: ['332710', '332999'],
             location: 'Virginia',
             website: 'https://precisionmfg.com',
@@ -218,25 +218,25 @@ export default function MemberDirectoryPage() {
             tier: 'custom',
             status: 'active',
             capabilities: ['Healthcare', 'IT Services', 'Research & Development'],
-            certifications: ['WOSB', 'MBE', 'ISO 9001'],
+            certifications: ['WOSB', 'emerging business', 'ISO 9001'],
             naicsCodes: ['541714', '621999'],
             location: 'California',
             description: 'Healthcare technology solutions and medical device development for VA and DoD.',
           },
         ];
-        setMembers(sampleMembers);
+        setMeemerging businessrs(sampleMeemerging businessrs);
       } else {
-        setMembers(membersData);
+        setMeemerging businessrs(meemerging businessrsData);
       }
     } catch (error) {
-      console.error('Error fetching members:', error);
+      console.error('Error fetching meemerging businessrs:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const filterMembers = () => {
-    let filtered = [...members];
+  const filterMeemerging businessrs = () => {
+    let filtered = [...meemerging businessrs];
 
     // Filter by search query
     if (searchQuery) {
@@ -265,7 +265,7 @@ export default function MemberDirectoryPage() {
       filtered = filtered.filter(m => m.certifications.includes(certificationFilter));
     }
 
-    setFilteredMembers(filtered);
+    setFilteredMeemerging businessrs(filtered);
   };
 
   if (loading) {
@@ -281,15 +281,15 @@ export default function MemberDirectoryPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Member Directory</h1>
+          <h1 className="text-3xl font-bold">Meemerging businessr Directory</h1>
           <p className="text-muted-foreground">
-            Connect with consortium members and find teaming partners
+            Connect with consortium meemerging businessrs and find teaming partners
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-lg px-4 py-2">
             <Users className="h-4 w-4 mr-2" />
-            {members.length} Active Members
+            {meemerging businessrs.length} Active Meemerging businessrs
           </Badge>
         </div>
       </div>
@@ -364,32 +364,32 @@ export default function MemberDirectoryPage() {
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground">
-        Showing {filteredMembers.length} of {members.length} members
+        Showing {filteredMeemerging businessrs.length} of {meemerging businessrs.length} meemerging businessrs
       </div>
 
-      {/* Member Cards */}
-      {filteredMembers.length === 0 ? (
+      {/* Meemerging businessr Cards */}
+      {filteredMeemerging businessrs.length === 0 ? (
         <Card className="p-12 text-center">
           <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No members found</h3>
+          <h3 className="text-lg font-medium mb-2">No meemerging businessrs found</h3>
           <p className="text-muted-foreground">
             Try adjusting your search or filters.
           </p>
         </Card>
       ) : viewMode === 'grid' ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMembers.map(member => {
-            const tierConfig = TIER_CONFIG[member.tier];
+          {filteredMeemerging businessrs.map(meemerging businessr => {
+            const tierConfig = TIER_CONFIG[meemerging businessr.tier];
             const TierIcon = tierConfig.icon;
 
             return (
-              <Card key={member.id} className="hover:shadow-lg transition-shadow">
+              <Card key={meemerging businessr.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={member.logoUrl} />
+                      <AvatarImage src={meemerging businessr.logoUrl} />
                       <AvatarFallback className="bg-primary/10 text-primary">
-                        {member.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                        {meemerging businessr.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <Badge className={tierConfig.color}>
@@ -397,42 +397,42 @@ export default function MemberDirectoryPage() {
                       {tierConfig.label}
                     </Badge>
                   </div>
-                  <CardTitle className="text-lg mt-2">{member.companyName}</CardTitle>
-                  <CardDescription>{member.contactName}</CardDescription>
+                  <CardTitle className="text-lg mt-2">{meemerging businessr.companyName}</CardTitle>
+                  <CardDescription>{meemerging businessr.contactName}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {member.location && (
+                  {meemerging businessr.location && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4" />
-                      {member.location}
+                      {meemerging businessr.location}
                     </div>
                   )}
 
                   {/* Certifications */}
                   <div className="flex flex-wrap gap-1">
-                    {member.certifications.slice(0, 3).map(cert => (
+                    {meemerging businessr.certifications.slice(0, 3).map(cert => (
                       <Badge key={cert} variant="outline" className="text-xs">
                         <Shield className="h-3 w-3 mr-1" />
                         {cert}
                       </Badge>
                     ))}
-                    {member.certifications.length > 3 && (
+                    {meemerging businessr.certifications.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{member.certifications.length - 3}
+                        +{meemerging businessr.certifications.length - 3}
                       </Badge>
                     )}
                   </div>
 
                   {/* Capabilities */}
                   <div className="flex flex-wrap gap-1">
-                    {member.capabilities.slice(0, 2).map(cap => (
+                    {meemerging businessr.capabilities.slice(0, 2).map(cap => (
                       <Badge key={cap} variant="secondary" className="text-xs">
                         {cap}
                       </Badge>
                     ))}
-                    {member.capabilities.length > 2 && (
+                    {meemerging businessr.capabilities.length > 2 && (
                       <Badge variant="secondary" className="text-xs">
-                        +{member.capabilities.length - 2}
+                        +{meemerging businessr.capabilities.length - 2}
                       </Badge>
                     )}
                   </div>
@@ -440,12 +440,12 @@ export default function MemberDirectoryPage() {
                   {/* Contact Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button variant="outline" size="sm" className="flex-1" asChild>
-                      <a href={`mailto:${member.contactEmail}`}>
+                      <a href={`mailto:${meemerging businessr.contactEmail}`}>
                         <Mail className="h-4 w-4 mr-1" />
                         Email
                       </a>
                     </Button>
-                    <Link href={`/portal/members/${member.id}`} className="flex-1">
+                    <Link href={`/portal/meemerging businessrs/${meemerging businessr.id}`} className="flex-1">
                       <Button variant="default" size="sm" className="w-full">
                         View Profile
                       </Button>
@@ -458,46 +458,46 @@ export default function MemberDirectoryPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredMembers.map(member => {
-            const tierConfig = TIER_CONFIG[member.tier];
+          {filteredMeemerging businessrs.map(meemerging businessr => {
+            const tierConfig = TIER_CONFIG[meemerging businessr.tier];
             const TierIcon = tierConfig.icon;
 
             return (
-              <Card key={member.id} className="hover:shadow-md transition-shadow">
+              <Card key={meemerging businessr.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-14 w-14">
-                      <AvatarImage src={member.logoUrl} />
+                      <AvatarImage src={meemerging businessr.logoUrl} />
                       <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                        {member.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                        {meemerging businessr.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold truncate">{member.companyName}</h3>
+                        <h3 className="font-semibold truncate">{meemerging businessr.companyName}</h3>
                         <Badge className={tierConfig.color}>
                           <TierIcon className="h-3 w-3 mr-1" />
                           {tierConfig.label}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{member.contactName}</p>
+                      <p className="text-sm text-muted-foreground">{meemerging businessr.contactName}</p>
                       <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                        {member.location && (
+                        {meemerging businessr.location && (
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
-                            {member.location}
+                            {meemerging businessr.location}
                           </span>
                         )}
                         <span className="flex items-center gap-1">
                           <Shield className="h-3 w-3" />
-                          {member.certifications.length} certifications
+                          {meemerging businessr.certifications.length} certifications
                         </span>
                       </div>
                     </div>
 
                     <div className="hidden md:flex flex-wrap gap-1 max-w-xs">
-                      {member.capabilities.slice(0, 3).map(cap => (
+                      {meemerging businessr.capabilities.slice(0, 3).map(cap => (
                         <Badge key={cap} variant="secondary" className="text-xs">
                           {cap}
                         </Badge>
@@ -506,11 +506,11 @@ export default function MemberDirectoryPage() {
 
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm" asChild>
-                        <a href={`mailto:${member.contactEmail}`}>
+                        <a href={`mailto:${meemerging businessr.contactEmail}`}>
                           <Mail className="h-4 w-4" />
                         </a>
                       </Button>
-                      <Link href={`/portal/members/${member.id}`}>
+                      <Link href={`/portal/meemerging businessrs/${meemerging businessr.id}`}>
                         <Button variant="default" size="sm">
                           View
                         </Button>

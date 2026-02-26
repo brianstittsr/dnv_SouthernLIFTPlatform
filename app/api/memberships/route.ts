@@ -1,7 +1,7 @@
 /**
- * Memberships API Route
+ * Meemerging businessrships API Route
  * 
- * Handles CRUD operations for KDM Consortium memberships
+ * Handles CRUD operations for KDM Consortium meemerging businessrships
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -18,16 +18,16 @@ import {
   orderBy,
   Timestamp 
 } from 'firebase/firestore';
-import { COLLECTIONS, MembershipDoc } from '@/lib/schema';
+import { COLLECTIONS, Meemerging businessrshipDoc } from '@/lib/schema';
 import { 
   createStripeCustomer, 
   createCheckoutSession,
-  MEMBERSHIP_TIERS 
+  MEemerging businessRSHIP_TIERS 
 } from '@/lib/stripe';
 
 /**
- * GET /api/memberships
- * Retrieve all memberships or filter by userId
+ * GET /api/meemerging businessrships
+ * Retrieve all meemerging businessrships or filter by userId
  */
 export async function GET(request: NextRequest) {
   try {
@@ -42,42 +42,42 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
+    const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
     let q;
 
     if (userId && status) {
       q = query(
-        membershipsRef,
+        meemerging businessrshipsRef,
         where('userId', '==', userId),
         where('status', '==', status)
       );
     } else if (userId) {
-      q = query(membershipsRef, where('userId', '==', userId));
+      q = query(meemerging businessrshipsRef, where('userId', '==', userId));
     } else if (status) {
-      q = query(membershipsRef, where('status', '==', status));
+      q = query(meemerging businessrshipsRef, where('status', '==', status));
     } else {
-      q = query(membershipsRef, orderBy('createdAt', 'desc'));
+      q = query(meemerging businessrshipsRef, orderBy('createdAt', 'desc'));
     }
 
     const snapshot = await getDocs(q);
-    const memberships = snapshot.docs.map(doc => ({
+    const meemerging businessrships = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
 
-    return NextResponse.json({ memberships });
+    return NextResponse.json({ meemerging businessrships });
   } catch (error: any) {
-    console.error('Error fetching memberships:', error);
+    console.error('Error fetching meemerging businessrships:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch memberships' },
+      { error: error.message || 'Failed to fetch meemerging businessrships' },
       { status: 500 }
     );
   }
 }
 
 /**
- * POST /api/memberships
- * Create a new membership (initiates Stripe checkout)
+ * POST /api/meemerging businessrships
+ * Create a new meemerging businessrship (initiates Stripe checkout)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -107,10 +107,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already has an active membership
-    const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
+    // Check if user already has an active meemerging businessrship
+    const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
     const existingQuery = query(
-      membershipsRef,
+      meemerging businessrshipsRef,
       where('userId', '==', userId),
       where('status', 'in', ['active', 'trialing'])
     );
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     if (!existingSnapshot.empty) {
       return NextResponse.json(
-        { error: 'User already has an active membership' },
+        { error: 'User already has an active meemerging businessrship' },
         { status: 400 }
       );
     }
@@ -140,14 +140,14 @@ export async function POST(request: NextRequest) {
       customerId: customer.id,
       tier: tier as 'core-capture',
       billingCycle: billingCycle as 'monthly' | 'annual',
-      successUrl: successUrl || `${baseUrl}/portal/membership/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: cancelUrl || `${baseUrl}/portal/membership/cancel`,
+      successUrl: successUrl || `${baseUrl}/portal/meemerging businessrship/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: cancelUrl || `${baseUrl}/portal/meemerging businessrship/cancel`,
       trialDays,
     });
 
-    // Create pending membership record
-    const tierConfig = MEMBERSHIP_TIERS[tier as keyof typeof MEMBERSHIP_TIERS];
-    const membershipData: Omit<MembershipDoc, 'id'> = {
+    // Create pending meemerging businessrship record
+    const tierConfig = MEemerging businessRSHIP_TIERS[tier as keyof typeof MEemerging businessRSHIP_TIERS];
+    const meemerging businessrshipData: Omit<Meemerging businessrshipDoc, 'id'> = {
       userId,
       tier: tier as 'core-capture' | 'pursuit-pack' | 'custom',
       status: 'trialing',
@@ -168,34 +168,34 @@ export async function POST(request: NextRequest) {
       updatedAt: Timestamp.now(),
     };
 
-    const docRef = await addDoc(membershipsRef, membershipData);
+    const docRef = await addDoc(meemerging businessrshipsRef, meemerging businessrshipData);
 
     return NextResponse.json({
-      membershipId: docRef.id,
+      meemerging businessrshipId: docRef.id,
       checkoutUrl: session.url,
       customerId: customer.id,
     });
   } catch (error: any) {
-    console.error('Error creating membership:', error);
+    console.error('Error creating meemerging businessrship:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create membership' },
+      { error: error.message || 'Failed to create meemerging businessrship' },
       { status: 500 }
     );
   }
 }
 
 /**
- * PATCH /api/memberships
- * Update membership (admin only)
+ * PATCH /api/meemerging businessrships
+ * Update meemerging businessrship (admin only)
  */
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { membershipId, updates } = body;
+    const { meemerging businessrshipId, updates } = body;
 
-    if (!membershipId || !updates) {
+    if (!meemerging businessrshipId || !updates) {
       return NextResponse.json(
-        { error: 'membershipId and updates are required' },
+        { error: 'meemerging businessrshipId and updates are required' },
         { status: 400 }
       );
     }
@@ -207,29 +207,29 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipId);
-    const membershipSnap = await getDoc(membershipRef);
+    const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipId);
+    const meemerging businessrshipSnap = await getDoc(meemerging businessrshipRef);
 
-    if (!membershipSnap.exists()) {
+    if (!meemerging businessrshipSnap.exists()) {
       return NextResponse.json(
-        { error: 'Membership not found' },
+        { error: 'Meemerging businessrship not found' },
         { status: 404 }
       );
     }
 
-    await updateDoc(membershipRef, {
+    await updateDoc(meemerging businessrshipRef, {
       ...updates,
       updatedAt: Timestamp.now(),
     });
 
     return NextResponse.json({ 
       success: true,
-      membershipId 
+      meemerging businessrshipId 
     });
   } catch (error: any) {
-    console.error('Error updating membership:', error);
+    console.error('Error updating meemerging businessrship:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to update membership' },
+      { error: error.message || 'Failed to update meemerging businessrship' },
       { status: 500 }
     );
   }

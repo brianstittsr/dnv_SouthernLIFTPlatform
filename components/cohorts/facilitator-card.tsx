@@ -13,9 +13,9 @@ interface FacilitatorCardProps {
   email?: string;
   title?: string;
   stats?: {
-    totalCohorts?: number;
-    totalStudents?: number;
-    averageRating?: number;
+    totalCohorts?: nuemerging businessr;
+    totalStudents?: nuemerging businessr;
+    averageRating?: nuemerging businessr;
   };
   variant?: "default" | "compact" | "detailed";
 }

@@ -434,7 +434,7 @@ Knowledge fragments referenced:
 
 - [ ] YAML is valid (no syntax errors)
 - [ ] All required fields present (target, decision, date, evaluator, criteria, evidence)
-- [ ] Field values are correct data types (numbers, strings, dates)
+- [ ] Field values are correct data types (nuemerging businessrs, strings, dates)
 
 **Content:**
 

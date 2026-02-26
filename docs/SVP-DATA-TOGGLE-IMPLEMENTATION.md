@@ -229,7 +229,7 @@ useEffect(() => {
 | `buyerRequests` | Buyer | Buyer introduction requests |
 | `qaReviews` | QA | Proof pack reviews |
 | `platformSettings` | Admin | Platform configuration |
-| `teamMembers` | Admin | User management |
+| `teamMeemerging businessrs` | Admin | User management |
 
 ## Testing Checklist
 

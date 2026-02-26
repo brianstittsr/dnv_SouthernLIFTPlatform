@@ -27,12 +27,12 @@ export interface HeroSlide {
     href: string;
   };
   isPublished: boolean;
-  order: number;
+  order: nuemerging businessr;
   // Background options
   backgroundType?: "animated" | "image";
   backgroundImage?: string;
   backgroundOverlay?: boolean;
-  backgroundOverlayOpacity?: number; // 0-100
+  backgroundOverlayOpacity?: nuemerging businessr; // 0-100
   // Appearance toggles
   fullScreenBg?: boolean;
   showRibbon?: boolean;
@@ -86,14 +86,14 @@ const defaultSlides: HeroSlide[] = [
 
 interface HeroCarouselProps {
   slides?: HeroSlide[];
-  autoPlayInterval?: number;
+  autoPlayInterval?: nuemerging businessr;
 }
 
 export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(propSlides || defaultSlides);
   const [isLoading, setIsLoading] = useState(!propSlides);
   const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
-  const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
+  const [resolvedBgImages, setResolvedBgImages] = useState<Record<nuemerging businessr, string>>({});
   const [contentVisible, setContentVisible] = useState(false);
 
   // Load slides and gallery images from Firebase on mount
@@ -112,7 +112,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       const images = await listImages("hero");
       setGalleryImages(images);
       // Pre-load base64 data URLs for each image
-      const dataUrls: Record<number, string> = {};
+      const dataUrls: Record<nuemerging businessr, string> = {};
       for (let i = 0; i < images.length; i++) {
         const dataUrl = await getImageDataUrl(images[i].id);
         if (dataUrl) dataUrls[i] = dataUrl;
@@ -154,7 +154,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
     setCurrentIndex((prev) => (prev - 1 + publishedSlides.length) % publishedSlides.length);
   }, [publishedSlides.length]);
 
-  const goToSlide = useCallback((index: number) => {
+  const goToSlide = useCallback((index: nuemerging businessr) => {
     setCurrentIndex(index);
     setIsAutoPlaying(false);
     // Resume auto-play after 10 seconds of inactivity

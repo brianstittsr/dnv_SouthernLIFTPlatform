@@ -36,6 +36,15 @@ service firebase.storage {
                       isValidFileSize(5);
     }
 
+    // Team member profile photos (admin-managed)
+    match /team-avatars/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() &&
+                      isValidImageType() &&
+                      isValidFileSize(5);
+      allow list: if true;
+    }
+
     // Organization logos
     match /organizations/{orgId}/logo/{fileName} {
       allow read: if true;

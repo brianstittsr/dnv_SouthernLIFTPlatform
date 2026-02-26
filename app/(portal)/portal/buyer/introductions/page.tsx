@@ -32,7 +32,7 @@ interface Introduction {
   projectDescription: string;
   timeline?: string;
   budgetRange?: string;
-  estimatedValue?: number;
+  estimatedValue?: nuemerging businessr;
   preferredContactMethod?: string;
   status: string;
   stage: string;
@@ -140,9 +140,9 @@ export default function MyIntroductionsPage() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const formatCurrency = (value?: number) => {
+  const formatCurrency = (value?: nuemerging businessr) => {
     if (!value) return "N/A";
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+    return new Intl.Nuemerging businessrFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   if (loading) {

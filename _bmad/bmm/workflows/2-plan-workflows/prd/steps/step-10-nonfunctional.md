@@ -290,4 +290,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd/steps/step-11-complete.md` to finalize the PRD and complete the workflow.
 
-Remember: Do NOT proceed to step-11 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-11 until user explicitly selects 'C' from the A/P/C menu and content is saved!

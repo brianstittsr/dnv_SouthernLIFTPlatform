@@ -37,7 +37,7 @@
 
   <step n="4" goal="Create Theme" elicit="true">
     <action>Ask: "Choose a wireframe style:"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Classic Wireframe
          - Background: #ffffff (white)
          - Container: #f5f5f5 (light gray)

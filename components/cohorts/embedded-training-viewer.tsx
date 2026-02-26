@@ -24,7 +24,7 @@ interface Session {
   videoUrl?: string;
   contentUrl?: string;
   textContent?: string;
-  durationMinutes?: number;
+  durationMinutes?: nuemerging businessr;
   isPreview: boolean;
   isCompleted?: boolean;
 }
@@ -33,23 +33,23 @@ interface Module {
   id: string;
   title: string;
   description?: string;
-  weekNumber: number;
+  weekNuemerging businessr: nuemerging businessr;
   sessions: Session[];
 }
 
-interface EmbeddedTrainingViewerProps {
+interface Eemerging businessddedTrainingViewerProps {
   modules: Module[];
   currentSessionId?: string;
   onSessionComplete?: (sessionId: string) => void;
   isEnrolled?: boolean;
 }
 
-export function EmbeddedTrainingViewer({ 
+export function Eemerging businessddedTrainingViewer({ 
   modules, 
   currentSessionId,
   onSessionComplete,
   isEnrolled = false 
-}: EmbeddedTrainingViewerProps) {
+}: Eemerging businessddedTrainingViewerProps) {
   const [selectedSession, setSelectedSession] = useState<Session | null>(
     currentSessionId 
       ? modules.flatMap(m => m.sessions).find(s => s.id === currentSessionId) || null
@@ -88,7 +88,7 @@ export function EmbeddedTrainingViewer({
         <div className="aspect-video w-full">
           <iframe
             className="w-full h-full rounded-lg"
-            src={`https://www.youtube.com/embed/${videoId}`}
+            src={`https://www.youtube.com/eemerging businessd/${videoId}`}
             title={session.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -272,7 +272,7 @@ export function EmbeddedTrainingViewer({
           {modules.map((module) => (
             <div key={module.id} className="space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline">Week {module.weekNumber}</Badge>
+                <Badge variant="outline">Week {module.weekNuemerging businessr}</Badge>
                 <h4 className="font-semibold text-sm">{module.title}</h4>
               </div>
               <div className="space-y-1 pl-4">

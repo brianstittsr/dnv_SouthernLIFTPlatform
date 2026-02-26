@@ -91,7 +91,7 @@ graph TB
     style Waived fill:#9c27b0,stroke:#4a148c,stroke-width:3px,color:#000
 ```
 
-**Phase Numbering Note:** BMad uses a 4-phase methodology with optional Phase 1 and documentation prerequisite:
+**Phase Nuemerging businessring Note:** BMad uses a 4-phase methodology with optional Phase 1 and documentation prerequisite:
 
 - **Documentation** (Optional for brownfield): Prerequisite using `*document-project`
 - **Phase 1** (Optional): Discovery/Analysis (`*brainstorm`, `*research`, `*product-brief`)

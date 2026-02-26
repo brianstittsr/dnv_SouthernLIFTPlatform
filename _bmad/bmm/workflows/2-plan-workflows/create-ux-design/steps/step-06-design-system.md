@@ -248,4 +248,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `./step-07-defining-experience.md` to define the core user interaction.
 
-Remember: Do NOT proceed to step-07 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-07 until user explicitly selects 'C' from the A/P/C menu and content is saved!

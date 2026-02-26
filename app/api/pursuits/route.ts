@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       geographicPreference,
       solicitation,
       publishedBy,
-      notifyMembers = false
+      notifyMeemerging businessrs = false
     } = body;
 
     if (!title || !agency || !dueDate || estimatedValue === undefined) {
@@ -128,8 +128,8 @@ export async function POST(request: NextRequest) {
       requiredCompliance,
       geographicPreference,
       status: 'published',
-      teamMembers: [],
-      interestedMembers: [],
+      teamMeemerging businessrs: [],
+      interestedMeemerging businessrs: [],
       publishedAt: Timestamp.now(),
       publishedBy: publishedBy || 'system',
       solicitation,
@@ -140,30 +140,30 @@ export async function POST(request: NextRequest) {
     const pursuitsRef = collection(db, COLLECTIONS.PURSUIT_BRIEFS);
     const docRef = await addDoc(pursuitsRef, pursuitData);
 
-    // Notify members if requested
-    if (notifyMembers) {
+    // Notify meemerging businessrs if requested
+    if (notifyMeemerging businessrs) {
       try {
-        // Get active members with matching capabilities
-        const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
-        const membersQuery = query(
-          membershipsRef,
+        // Get active meemerging businessrs with matching capabilities
+        const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
+        const meemerging businessrsQuery = query(
+          meemerging businessrshipsRef,
           where('status', '==', 'active')
         );
-        const membersSnapshot = await getDocs(membersQuery);
+        const meemerging businessrsSnapshot = await getDocs(meemerging businessrsQuery);
 
         const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000';
         
         // Send notifications (in production, this should be queued)
-        for (const memberDoc of membersSnapshot.docs) {
-          const memberData = memberDoc.data();
+        for (const meemerging businessrDoc of meemerging businessrsSnapshot.docs) {
+          const meemerging businessrData = meemerging businessrDoc.data();
           // Get user email from users collection
-          const userRef = doc(db, COLLECTIONS.USERS, memberData.userId);
+          const userRef = doc(db, COLLECTIONS.USERS, meemerging businessrData.userId);
           const userSnap = await getDoc(userRef);
           
           if (userSnap.exists()) {
             const userData = userSnap.data();
             await sendTemplatedEmail('newPursuitBrief', userData.email, {
-              name: userData.name || 'Member',
+              name: userData.name || 'Meemerging businessr',
               pursuitTitle: title,
               agency,
               dueDate: new Date(dueDate).toLocaleDateString(),
@@ -288,34 +288,34 @@ export async function PATCH(request: NextRequest) {
 
     switch (action) {
       case 'express-interest':
-        if (pursuitData.interestedMembers?.includes(userId)) {
+        if (pursuitData.interestedMeemerging businessrs?.includes(userId)) {
           return NextResponse.json(
             { error: 'Already expressed interest' },
             { status: 400 }
           );
         }
         await updateDoc(pursuitRef, {
-          interestedMembers: [...(pursuitData.interestedMembers || []), userId],
+          interestedMeemerging businessrs: [...(pursuitData.interestedMeemerging businessrs || []), userId],
           updatedAt: Timestamp.now(),
         });
         break;
 
       case 'withdraw-interest':
         await updateDoc(pursuitRef, {
-          interestedMembers: (pursuitData.interestedMembers || []).filter((id: string) => id !== userId),
+          interestedMeemerging businessrs: (pursuitData.interestedMeemerging businessrs || []).filter((id: string) => id !== userId),
           updatedAt: Timestamp.now(),
         });
         break;
 
       case 'add-to-team':
-        if (pursuitData.teamMembers?.includes(userId)) {
+        if (pursuitData.teamMeemerging businessrs?.includes(userId)) {
           return NextResponse.json(
             { error: 'Already on team' },
             { status: 400 }
           );
         }
         await updateDoc(pursuitRef, {
-          teamMembers: [...(pursuitData.teamMembers || []), userId],
+          teamMeemerging businessrs: [...(pursuitData.teamMeemerging businessrs || []), userId],
           status: pursuitData.status === 'published' ? 'team-forming' : pursuitData.status,
           updatedAt: Timestamp.now(),
         });
@@ -323,7 +323,7 @@ export async function PATCH(request: NextRequest) {
 
       case 'remove-from-team':
         await updateDoc(pursuitRef, {
-          teamMembers: (pursuitData.teamMembers || []).filter((id: string) => id !== userId),
+          teamMeemerging businessrs: (pursuitData.teamMeemerging businessrs || []).filter((id: string) => id !== userId),
           updatedAt: Timestamp.now(),
         });
         break;
@@ -341,7 +341,7 @@ export async function PATCH(request: NextRequest) {
       action 
     });
   } catch (error: any) {
-    console.error('Error updating pursuit membership:', error);
+    console.error('Error updating pursuit meemerging businessrship:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to update pursuit' },
       { status: 500 }

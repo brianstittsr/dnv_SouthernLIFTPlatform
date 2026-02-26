@@ -10,7 +10,7 @@ export type ToastType = "success" | "error" | "warning" | "info" | "loading";
 
 interface ToastOptions {
   description?: string;
-  duration?: number;
+  duration?: nuemerging businessr;
   action?: {
     label: string;
     onClick: () => void;
@@ -72,7 +72,7 @@ export function showLoading(message: string) {
 /**
  * Dismiss a specific toast by ID
  */
-export function dismissToast(toastId: string | number) {
+export function dismissToast(toastId: string | nuemerging businessr) {
   toast.dismiss(toastId);
 }
 

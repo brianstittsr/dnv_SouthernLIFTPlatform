@@ -71,7 +71,7 @@ These enable advanced electronics and communications:
 
 The United States faces a critical minerals supply chain crisis that threatens both national security and economic competitiveness.
 
-### Current Dependencies: The Numbers Are Alarming
+### Current Dependencies: The Nuemerging businessrs Are Alarming
 
 - The U.S. is **100% import-dependent** for 14 critical minerals, meaning no domestic production whatsoever.
 - The U.S. is **more than 50% import-dependent** for an additional 31 critical minerals.

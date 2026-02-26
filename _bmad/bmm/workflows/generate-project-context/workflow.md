@@ -15,7 +15,7 @@ description: Creates a concise project-context.md file with critical rules and p
 
 This uses **micro-file architecture** for disciplined execution:
 
-- Each step is a self-contained file with embedded rules
+- Each step is a self-contained file with eemerging businessdded rules
 - Sequential progression with user control at each step
 - Document state tracked in frontmatter
 - Focus on lean, LLM-optimized content generation

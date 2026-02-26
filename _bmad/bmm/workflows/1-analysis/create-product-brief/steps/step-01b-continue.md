@@ -65,7 +65,7 @@ Resume the product brief workflow from where it was left off, ensuring smooth co
 Review the frontmatter to understand:
 
 - `stepsCompleted`: Which steps are already done
-- `lastStep`: The most recently completed step number
+- `lastStep`: The most recently completed step nuemerging businessr
 - `inputDocuments`: What context was already loaded
 - All other frontmatter variables
 
@@ -125,9 +125,9 @@ What would be most helpful?"
 ### 6. Present MENU OPTIONS
 
 **If workflow not complete:**
-Display: "Ready to continue with Step {nextStepNumber}: {nextStepTitle}?
+Display: "Ready to continue with Step {nextStepNuemerging businessr}: {nextStepTitle}?
 
-**Select an Option:** [C] Continue to Step {nextStepNumber}"
+**Select an Option:** [C] Continue to Step {nextStepNuemerging businessr}"
 
 #### Menu Handling Logic:
 

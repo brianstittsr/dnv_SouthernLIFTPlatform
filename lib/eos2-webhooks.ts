@@ -18,7 +18,7 @@ export interface TractionRockData {
   quarter: string;
   dueDate: string;
   status: string;
-  progress: number;
+  progress: nuemerging businessr;
   previousStatus?: string;
 }
 
@@ -26,8 +26,8 @@ export interface TractionMetricData {
   [key: string]: unknown;
   name: string;
   owner: string;
-  goal: number;
-  actual: number;
+  goal: nuemerging businessr;
+  actual: nuemerging businessr;
   unit?: string;
   trend: string;
 }
@@ -47,20 +47,20 @@ export interface TractionTodoData {
   owner: string;
   dueDate: string;
   status?: string;
-  daysOverdue?: number;
+  daysOverdue?: nuemerging businessr;
 }
 
 export interface TractionMeetingData {
   [key: string]: unknown;
   date: string;
-  rating: number;
-  issuesSolved: number;
-  todoCompletionRate: number;
+  rating: nuemerging businessr;
+  issuesSolved: nuemerging businessr;
+  todoCompletionRate: nuemerging businessr;
   rocksReviewed: boolean;
   scorecardReviewed: boolean;
 }
 
-export interface TractionTeamMemberData {
+export interface TractionTeamMeemerging businessrData {
   [key: string]: unknown;
   name: string;
   role: string;
@@ -271,21 +271,21 @@ export async function notifyMeetingLogged(meeting: TractionMeetingData) {
 }
 
 // ============================================================================
-// TEAM MEMBER EVENTS
+// TEAM MEemerging businessR EVENTS
 // ============================================================================
 
 /**
- * Send notification when a team member is added
+ * Send notification when a team meemerging businessr is added
  */
-export async function notifyTeamMemberAdded(member: TractionTeamMemberData) {
-  return sendTractionWebhook("team_member_added", member);
+export async function notifyTeamMeemerging businessrAdded(meemerging businessr: TractionTeamMeemerging businessrData) {
+  return sendTractionWebhook("team_meemerging businessr_added", meemerging businessr);
 }
 
 /**
- * Send notification when a team member's GWC is updated
+ * Send notification when a team meemerging businessr's GWC is updated
  */
-export async function notifyGwcUpdated(member: TractionTeamMemberData) {
-  return sendTractionWebhook("team_member_gwc_updated", member);
+export async function notifyGwcUpdated(meemerging businessr: TractionTeamMeemerging businessrData) {
+  return sendTractionWebhook("team_meemerging businessr_gwc_updated", meemerging businessr);
 }
 
 // ============================================================================

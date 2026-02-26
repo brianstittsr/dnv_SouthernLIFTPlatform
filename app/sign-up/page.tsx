@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { findAndLinkTeamMember } from "@/lib/auth-team-member-link";
+import { findAndLinkTeamMeemerging businessr } from "@/lib/auth-team-meemerging businessr-link";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 
@@ -25,13 +25,13 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [remeemerging businessrMe, setRemeemerging businessrMe] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [linkedTeamMember, setLinkedTeamMember] = useState<string | null>(null);
+  const [linkedTeamMeemerging businessr, setLinkedTeamMeemerging businessr] = useState<string | null>(null);
 
   const validateStep1 = () => {
     if (!accountType) {
@@ -75,13 +75,13 @@ export default function SignUpPage() {
     if (!validateStep2()) return;
     
     setIsLoading(true);
-    setLinkedTeamMember(null);
+    setLinkedTeamMeemerging businessr(null);
 
     try {
-      // Save remember me preference
-      if (rememberMe) {
-        localStorage.setItem("svp_remembered_email", email);
-        localStorage.setItem("svp_remember_me", "true");
+      // Save remeemerging businessr me preference
+      if (remeemerging businessrMe) {
+        localStorage.setItem("svp_remeemerging businessred_email", email);
+        localStorage.setItem("svp_remeemerging businessr_me", "true");
       }
 
       let firebaseUid: string | null = null;
@@ -106,15 +106,15 @@ export default function SignUpPage() {
             console.log("User document created in Firestore:", firebaseUid);
           }
 
-          // Check if this email matches an existing Team Member and link them
-          const teamMember = await findAndLinkTeamMember(email, firebaseUid);
-          if (teamMember) {
-            setLinkedTeamMember(`${teamMember.firstName} ${teamMember.lastName}`);
-            console.log(`Linked to existing Team Member: ${teamMember.firstName} ${teamMember.lastName}`);
+          // Check if this email matches an existing Team Meemerging businessr and link them
+          const teamMeemerging businessr = await findAndLinkTeamMeemerging businessr(email, firebaseUid);
+          if (teamMeemerging businessr) {
+            setLinkedTeamMeemerging businessr(`${teamMeemerging businessr.firstName} ${teamMeemerging businessr.lastName}`);
+            console.log(`Linked to existing Team Meemerging businessr: ${teamMeemerging businessr.firstName} ${teamMeemerging businessr.lastName}`);
             
-            // Store team member info in session
-            sessionStorage.setItem("svp_team_member_id", teamMember.id);
-            sessionStorage.setItem("svp_user_role", teamMember.role);
+            // Store team meemerging businessr info in session
+            sessionStorage.setItem("svp_team_meemerging businessr_id", teamMeemerging businessr.id);
+            sessionStorage.setItem("svp_user_role", teamMeemerging businessr.role);
           }
         } catch (authError: any) {
           // Handle specific Firebase Auth errors
@@ -350,12 +350,12 @@ export default function SignUpPage() {
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      id="remember"
-                      checked={rememberMe}
-                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      id="remeemerging businessr"
+                      checked={remeemerging businessrMe}
+                      onCheckedChange={(checked) => setRemeemerging businessrMe(checked as boolean)}
                     />
-                    <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
-                      Remember me on this device
+                    <Label htmlFor="remeemerging businessr" className="text-sm font-normal cursor-pointer">
+                      Remeemerging businessr me on this device
                     </Label>
                   </div>
 

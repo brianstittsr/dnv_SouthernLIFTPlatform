@@ -1,12 +1,12 @@
-# Add Team Member Record for Brian Stitt
+# Add Team Meemerging businessr Record for Brian Stitt
 
 ## Issue
-Console warning: "No Team Member found for email: bstitt@strategicvalueplus.com"
+Console warning: "No Team Meemerging businessr found for email: bstitt@strategicvalueplus.com"
 
 ## Solution
-Add a team member record in Firebase to link the user account to the team members directory.
+Add a team meemerging businessr record in Firebase to link the user account to the team meemerging businessrs directory.
 
-## Firebase Collection: `team_members`
+## Firebase Collection: `team_meemerging businessrs`
 
 Add the following document:
 
@@ -34,7 +34,7 @@ Add the following document:
 1. Go to Firebase Console: https://console.firebase.google.com
 2. Select project: `kdm-svp-platform`
 3. Navigate to Firestore Database
-4. Find or create collection: `team_members`
+4. Find or create collection: `team_meemerging businessrs`
 5. Click "Add Document"
 6. Use auto-generated ID or custom ID: `brian-stitt`
 7. Add all fields from the JSON above
@@ -42,17 +42,17 @@ Add the following document:
 
 ## Alternative: Add via Admin Script
 
-If you have admin access, you can add this via a script or the admin panel once the team members management interface is built.
+If you have admin access, you can add this via a script or the admin panel once the team meemerging businessrs management interface is built.
 
 ## Verification
 
 After adding the record:
 1. Refresh the application
 2. Check browser console - the warning should be gone
-3. User profile should now link to team member record
-4. Team member features should be accessible
+3. User profile should now link to team meemerging businessr record
+4. Team meemerging businessr features should be accessible
 
 ## Notes
-- The `linkedUserId` field connects the user account to the team member record
-- This allows the user to appear in team directories and have team member features
+- The `linkedUserId` field connects the user account to the team meemerging businessr record
+- This allows the user to appear in team directories and have team meemerging businessr features
 - The warning is non-critical but linking improves functionality

@@ -72,7 +72,7 @@ export default function CMMCTrainingPage() {
             </div>
             <Badge variant="secondary" className="text-lg px-6 py-2">
               <Shield className="h-5 w-5 mr-2 inline" />
-              Phase 1 Enforcement Active - November 2025
+              Phase 1 Enforcement Active - Noveemerging businessr 2025
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               Register for the Next
@@ -153,7 +153,7 @@ export default function CMMCTrainingPage() {
                     </h3>
                     <div className="space-y-4 text-lg">
                       <p className="font-semibold text-red-700">
-                        With Department of Defense CMMC Program enforcement effective November 10, 2025, Phase 1 enforcement is now active.
+                        With Department of Defense CMMC Program enforcement effective Noveemerging businessr 10, 2025, Phase 1 enforcement is now active.
                       </p>
                       <div className="space-y-3">
                         <div className="flex items-start gap-3">
@@ -211,7 +211,7 @@ export default function CMMCTrainingPage() {
                     <Badge variant="destructive" className="text-lg px-4 py-1">Phase 1</Badge>
                     <Badge variant="outline" className="text-sm">NOW ACTIVE</Badge>
                   </div>
-                  <CardTitle className="text-2xl">November 2025 - November 2026</CardTitle>
+                  <CardTitle className="text-2xl">Noveemerging businessr 2025 - Noveemerging businessr 2026</CardTitle>
                   <CardDescription className="text-base font-semibold text-red-700">
                     Initial Enforcement In Effect
                   </CardDescription>

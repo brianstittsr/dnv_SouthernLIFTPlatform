@@ -115,7 +115,7 @@ Help user choose or combine elements:
 Capture the chosen approach:
 "Based on your exploration, I'm understanding your design direction preference:
 
-**Chosen Direction:** [Direction number or combination]
+**Chosen Direction:** [Direction nuemerging businessr or combination]
 **Key Elements:** [Specific elements you liked]
 **Modifications Needed:** [Any changes requested]
 **Rationale:** [Why this direction works for your product]
@@ -220,4 +220,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `./step-10-user-journeys.md` to design user journey flows.
 
-Remember: Do NOT proceed to step-10 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-10 until user explicitly selects 'C' from the A/P/C menu and content is saved!

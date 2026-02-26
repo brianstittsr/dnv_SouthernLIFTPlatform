@@ -234,4 +234,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-04-regulatory-focus.md` to analyze regulatory requirements, compliance frameworks, and legal considerations for {{research_topic}}.
 
-Remember: Always write research content to document immediately and search the web to verify facts!
+Remeemerging businessr: Always write research content to document immediately and search the web to verify facts!

@@ -183,7 +183,7 @@ Educators and trainers who create and deliver cohort-based learning programs. Ma
 
 **Dashboard Features:**
 - Active cohorts overview
-- Student enrollment numbers
+- Student enrollment nuemerging businessrs
 - Upcoming sessions
 - Assessment queue
 - Certificate issuance tracking
@@ -247,11 +247,11 @@ Quality assurance specialists who review and validate content, proof packs, and 
 
 ---
 
-### 7. **Team Member**
+### 7. **Team Meemerging businessr**
 **Primary Dashboard:** Main Dashboard (`/portal/dashboard`)
 
 **Role Definition:**
-General team members with standard access to core platform features. Manage opportunities, projects, and collaborate with the team.
+General team meemerging businessrs with standard access to core platform features. Manage opportunities, projects, and collaborate with the team.
 
 **Key Capabilities:**
 - Opportunity management
@@ -289,7 +289,7 @@ General team members with standard access to core platform features. Manage oppo
 
 ## Role Comparison Matrix
 
-| Feature | Admin | Buyer | Partner | SME | Instructor | QA | Team Member |
+| Feature | Admin | Buyer | Partner | SME | Instructor | QA | Team Meemerging businessr |
 |---------|-------|-------|---------|-----|------------|----|-----------| 
 | User Management | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | System Settings | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -317,7 +317,7 @@ Each role has a customized sidebar navigation that shows only relevant menu item
 - **SME**: Cohorts, Certificates, Profile, Subscription, Introductions
 - **Instructor**: Cohorts, Assessments, Certificates
 - **QA**: Queue, Reviews, History, My Reviews
-- **Team Member**: Opportunities, Projects, Calendar, Documents
+- **Team Meemerging businessr**: Opportunities, Projects, Calendar, Documents
 
 Navigation visibility can be customized by administrators in **Settings → Navigation**.
 
@@ -328,7 +328,7 @@ Navigation visibility can be customized by administrators in **Settings → Navi
 ### New Admin
 1. Complete profile setup
 2. Configure integrations (Settings → Integrations)
-3. Set up team members (Admin → User Management)
+3. Set up team meemerging businessrs (Admin → User Management)
 4. Configure platform settings
 5. Review audit logs and monitoring
 
@@ -367,7 +367,7 @@ Navigation visibility can be customized by administrators in **Settings → Navi
 4. Learn quality standards
 5. Track review metrics
 
-### New Team Member
+### New Team Meemerging businessr
 1. Complete profile
 2. Create first opportunity
 3. Set up calendar

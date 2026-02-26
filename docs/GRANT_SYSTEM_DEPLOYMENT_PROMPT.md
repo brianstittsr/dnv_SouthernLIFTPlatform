@@ -88,8 +88,8 @@ interface Proposal {
   startDate: string;           // YYYY-MM-DD
   endDate: string;             // YYYY-MM-DD
   fundingSource: string;       // Use existing funding source dropdown if available
-  referenceNumber: string;     // Grant number, contract number, etc.
-  totalBudget: number;
+  referenceNuemerging businessr: string;     // Grant nuemerging businessr, contract nuemerging businessr, etc.
+  totalBudget: nuemerging businessr;
   status: 'draft' | 'pending_signature' | 'active' | 'inactive' | 'completed';
   organizationId: string;      // Link to existing organization model
   
@@ -127,7 +127,7 @@ interface Agreement {
   effectiveDate: string;
   expirationDate?: string;
   terms: string;
-  totalValue?: number;
+  totalValue?: nuemerging businessr;
   status: 'draft' | 'pending_signature' | 'active' | 'expired' | 'terminated';
   linkedProposalId?: string;   // Optional link to parent proposal
   
@@ -246,14 +246,14 @@ interface DashboardMetric {
   id: string;
   name: string;
   description?: string;
-  value: number | string;
-  target?: number | string;
+  value: nuemerging businessr | string;
+  target?: nuemerging businessr | string;
   unit?: string;
   status?: 'success' | 'warning' | 'danger' | 'info';
   trend?: 'up' | 'down' | 'flat';
   linkedForm: string;          // Form that provides data
   datasetField: string;        // Field to visualize
-  visualization: 'number' | 'percentage' | 'currency' | 'ratio';
+  visualization: 'nuemerging businessr' | 'percentage' | 'currency' | 'ratio';
 }
 ```
 
@@ -337,10 +337,10 @@ Content-Type: multipart/form-data
     title: string;
     description: string;
     fundingSource: string;
-    referenceNumber: string;
+    referenceNuemerging businessr: string;
     startDate: string;
     endDate: string;
-    totalBudget: number;
+    totalBudget: nuemerging businessr;
     entities: Array<{
       name: string;
       role: string;
@@ -381,7 +381,7 @@ Content-Type: multipart/form-data
     specialRequirements: string;
   };
   extractedText?: string;
-  extractedTextLength?: number;
+  extractedTextLength?: nuemerging businessr;
 }
 ```
 
@@ -399,7 +399,7 @@ The AI analysis uses a comprehensive prompt that:
 - Extract ONLY from document text (no fabrication)
 - Use exact organization names as written
 - Convert dates to YYYY-MM-DD format
-- Convert budgets to numbers (remove $ and commas)
+- Convert budgets to nuemerging businessrs (remove $ and commas)
 - Create 4-6 milestones spanning project period
 - Generate 2-3 forms per proposal
 - Link all dashboard elements to form datasets
@@ -502,7 +502,7 @@ The AI analysis uses a comprehensive prompt that:
 - `text` - Single line text
 - `textarea` - Multi-line text
 - `email` - Email with validation
-- `phone` - Phone number
+- `phone` - Phone nuemerging businessr
 - `url` - Website URL
 - `password` - Masked input
 
@@ -532,7 +532,7 @@ The AI analysis uses a comprehensive prompt that:
 - `date-range` - Date range
 
 ### Numeric
-- `number` - Number input
+- `nuemerging businessr` - Nuemerging businessr input
 - `currency` - Money input
 - `percentage` - Percentage
 - `calculation` - Calculated field
@@ -641,7 +641,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.com  # For webhook callbacks
 import { createContext, useContext, useState } from 'react';
 
 interface ProposalWizardContextType {
-  currentStep: number;
+  currentStep: nuemerging businessr;
   proposalData: Partial<Proposal>;
   updateProposalData: (data: Partial<Proposal>) => void;
   analyzeDocument: (file: File, type?: string) => Promise<AnalysisResult>;
@@ -856,10 +856,10 @@ Content-Type: application/json
     name: string;
     email: string;
     role: string;              // e.g., "Client", "Contractor", "Witness"
-    order?: number;            // Signing order (1, 2, 3...)
+    order?: nuemerging businessr;            // Signing order (1, 2, 3...)
   }>;
   message?: string;            // Custom email message
-  expiresIn?: number;          // Days until expiration
+  expiresIn?: nuemerging businessr;          // Days until expiration
   sendEmail?: boolean;         // Default: true
 }
 ```
@@ -947,9 +947,9 @@ export class DocuSealService {
   // Create a submission from a PDF
   static async createSubmission(params: {
     pdfUrl: string;
-    signers: Array<{ name: string; email: string; role: string; order?: number }>;
+    signers: Array<{ name: string; email: string; role: string; order?: nuemerging businessr }>;
     message?: string;
-    expiresIn?: number;
+    expiresIn?: nuemerging businessr;
   }) {
     const response = await axios.post(
       `${DOCUSEAL_API_URL}/submissions`,
@@ -1067,7 +1067,7 @@ export class DocumentFilingService {
         : proposal.type === 'rfp_response' ? 'RFP_Responses' 
         : 'Contracts';
       
-      fileName = `${proposal.referenceNumber || proposal.id}_signed_${dateStr}.pdf`;
+      fileName = `${proposal.referenceNuemerging businessr || proposal.id}_signed_${dateStr}.pdf`;
       filePath = `Documents/Proposals/${year}/${typeFolder}/${fileName}`;
     }
     
@@ -1263,7 +1263,7 @@ The generated Markdown file follows this structure:
 ## Grant Information
 | Field | Value |
 |-------|-------|
-| Grant Number | [grantNumber] |
+| Grant Nuemerging businessr | [grantNuemerging businessr] |
 | Funding Source | [fundingSource] |
 | Total Budget | $[totalBudget] |
 | Project Period | [startDate] to [endDate] |
@@ -1364,7 +1364,7 @@ The PDF export creates a funder-ready submission document with:
 │     A Proposal Submitted to:                │
 │        [FUNDING SOURCE]                     │
 │                                             │
-│     Grant Number: [GRANT NUMBER]            │
+│     Grant Nuemerging businessr: [GRANT NUemerging businessR]            │
 │                                             │
 │     Project Period:                         │
 │     [START DATE] - [END DATE]               │
@@ -1386,7 +1386,7 @@ The PDF export creates a funder-ready submission document with:
 
 #### Document Sections
 
-1. **Table of Contents** (auto-generated with page numbers)
+1. **Table of Contents** (auto-generated with page nuemerging businessrs)
 
 2. **Executive Summary** (1 page)
    - Project overview
@@ -1437,9 +1437,9 @@ The PDF export creates a funder-ready submission document with:
 interface PDFBrandingConfig {
   // Header/Footer
   headerLogo: string;           // URL to logo image
-  headerHeight: number;         // pixels
+  headerHeight: nuemerging businessr;         // pixels
   footerText: string;           // e.g., "Confidential - [Org Name]"
-  pageNumbers: boolean;
+  pageNuemerging businessrs: boolean;
   
   // Colors
   primaryColor: string;         // Section headers
@@ -1449,14 +1449,14 @@ interface PDFBrandingConfig {
   // Typography
   headingFont: string;          // e.g., "Georgia", "Arial"
   bodyFont: string;             // e.g., "Times New Roman", "Calibri"
-  fontSize: number;             // Base font size (pt)
+  fontSize: nuemerging businessr;             // Base font size (pt)
   
   // Layout
   margins: {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
+    top: nuemerging businessr;
+    bottom: nuemerging businessr;
+    left: nuemerging businessr;
+    right: nuemerging businessr;
   };
   
   // Sections to include

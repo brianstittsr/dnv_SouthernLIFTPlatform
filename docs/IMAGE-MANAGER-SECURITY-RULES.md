@@ -20,8 +20,8 @@ service cloud.firestore {
       
       // Allow admin/superadmin to create, update, and delete images
       allow create, update, delete: if request.auth != null && 
-        exists(/databases/$(database)/documents/team_members/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/team_members/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+        exists(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
       
       // Validate image document structure on write
       allow write: if request.auth != null &&
@@ -30,7 +30,7 @@ service cloud.firestore {
         request.resource.data.category in ['hero', 'about', 'team', 'services', 'testimonials', 'logos', 'icons', 'backgrounds', 'marketing', 'portal', 'other'] &&
         request.resource.data.mimeType is string &&
         request.resource.data.base64Data is string &&
-        request.resource.data.size is number &&
+        request.resource.data.size is nuemerging businessr &&
         request.resource.data.size <= 1048576 && // 1MB limit
         request.resource.data.isActive is bool;
     }
@@ -56,7 +56,7 @@ The security rules enforce the following constraints:
    - `category` (string)
    - `mimeType` (string)
    - `base64Data` (string)
-   - `size` (number)
+   - `size` (nuemerging businessr)
    - `createdAt` (timestamp)
    - `isActive` (boolean)
 
@@ -77,8 +77,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // Existing rules...
-    match /team_members/{memberId} {
-      // Your existing team_members rules
+    match /team_meemerging businessrs/{meemerging businessrId} {
+      // Your existing team_meemerging businessrs rules
     }
     
     match /users/{userId} {
@@ -90,8 +90,8 @@ service cloud.firestore {
       allow read: if request.auth != null;
       
       allow create, update, delete: if request.auth != null && 
-        exists(/databases/$(database)/documents/team_members/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/team_members/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+        exists(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/team_meemerging businessrs/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
     }
   }
 }
@@ -137,7 +137,7 @@ Or deploy through the Firebase Console:
 
 1. **Client-Side Validation**: The application already validates image size and type before upload
 2. **Server-Side Validation**: Firestore rules provide an additional layer of validation
-3. **Role-Based Access**: Ensure your `team_members` collection has proper role assignments
+3. **Role-Based Access**: Ensure your `team_meemerging businessrs` collection has proper role assignments
 4. **Image Size**: The 1MB limit is enforced both client-side (with compression) and server-side
 
 ## Troubleshooting
@@ -148,13 +148,13 @@ Or deploy through the Firebase Console:
 - Check browser console for permission errors
 
 ### Cannot Upload Images
-- Verify user has admin or superadmin role in `team_members` collection
+- Verify user has admin or superadmin role in `team_meemerging businessrs` collection
 - Check that image size is under 1MB
 - Verify all required fields are present
 
 ### Permission Denied Errors
 - Ensure Firestore rules are deployed
-- Check that the user's role is correctly set in the `team_members` collection
+- Check that the user's role is correctly set in the `team_meemerging businessrs` collection
 - Verify the user is authenticated
 
 ## Related Documentation

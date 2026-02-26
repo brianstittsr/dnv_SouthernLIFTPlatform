@@ -5,7 +5,7 @@ import { useUserProfile } from "@/contexts/user-profile-context";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, setDoc, addDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
-import { logTeamMemberAdded } from "@/lib/activity-logger";
+import { logTeamMeemerging businessrAdded } from "@/lib/activity-logger";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +36,7 @@ import { toast } from "sonner";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
 
 // Circular progress component
-function CircularProgress({ percentage, size = 120, strokeWidth = 10 }: { percentage: number; size?: number; strokeWidth?: number }) {
+function CircularProgress({ percentage, size = 120, strokeWidth = 10 }: { percentage: nuemerging businessr; size?: nuemerging businessr; strokeWidth?: nuemerging businessr }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (percentage / 100) * circumference;
@@ -82,7 +82,7 @@ const steps = [
 ];
 
 export function ProfileCompletionWizard() {
-  const { profile, updateProfile, profileCompletion, showProfileWizard, setShowProfileWizard, linkedTeamMember } = useUserProfile();
+  const { profile, updateProfile, profileCompletion, showProfileWizard, setShowProfileWizard, linkedTeamMeemerging businessr } = useUserProfile();
   const [currentStep, setCurrentStep] = useState(1);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -164,10 +164,10 @@ export function ProfileCompletionWizard() {
       }, { merge: true });
       console.log("User profile created/updated in users collection:", auth.currentUser.uid);
 
-      // 2. Update or Create Team Member (teamMembers collection)
-      if (linkedTeamMember?.id) {
-        const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeamMember.id);
-        await updateDoc(teamMemberRef, {
+      // 2. Update or Create Team Meemerging businessr (teamMeemerging businessrs collection)
+      if (linkedTeamMeemerging businessr?.id) {
+        const teamMeemerging businessrRef = doc(db, COLLECTIONS.TEAM_MEemerging businessRS, linkedTeamMeemerging businessr.id);
+        await updateDoc(teamMeemerging businessrRef, {
           firstName: formData.firstName,
           lastName: formData.lastName,
           mobile: formData.phone,
@@ -178,16 +178,16 @@ export function ProfileCompletionWizard() {
           avatar: formData.avatarUrl,
           updatedAt: now,
         });
-        console.log("Team Member profile updated:", linkedTeamMember.id);
+        console.log("Team Meemerging businessr profile updated:", linkedTeamMeemerging businessr.id);
       } else {
-        // Try to find Team Member by email and update
-        const teamMembersRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
-        const emailQuery = query(teamMembersRef, where("emailPrimary", "==", formData.email));
+        // Try to find Team Meemerging businessr by email and update
+        const teamMeemerging businessrsRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
+        const emailQuery = query(teamMeemerging businessrsRef, where("emailPrimary", "==", formData.email));
         const snapshot = await getDocs(emailQuery);
         
         if (!snapshot.empty) {
-          const teamMemberDoc = snapshot.docs[0];
-          await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, teamMemberDoc.id), {
+          const teamMeemerging businessrDoc = snapshot.docs[0];
+          await updateDoc(doc(db, COLLECTIONS.TEAM_MEemerging businessRS, teamMeemerging businessrDoc.id), {
             firstName: formData.firstName,
             lastName: formData.lastName,
             mobile: formData.phone,
@@ -199,10 +199,10 @@ export function ProfileCompletionWizard() {
             firebaseUid: auth.currentUser.uid, // Link the accounts
             updatedAt: now,
           });
-          console.log("Team Member found by email and updated:", teamMemberDoc.id);
+          console.log("Team Meemerging businessr found by email and updated:", teamMeemerging businessrDoc.id);
         } else {
-          // Create new Team Member record for this user
-          const newTeamMemberRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
+          // Create new Team Meemerging businessr record for this user
+          const newTeamMeemerging businessrRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEemerging businessRS), {
             firebaseUid: auth.currentUser.uid,
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -219,9 +219,9 @@ export function ProfileCompletionWizard() {
             createdAt: now,
             updatedAt: now,
           });
-          console.log("New Team Member created:", newTeamMemberRef.id);
-          // Log activity for new team member
-          await logTeamMemberAdded(newTeamMemberRef.id, `${formData.firstName} ${formData.lastName}`);
+          console.log("New Team Meemerging businessr created:", newTeamMeemerging businessrRef.id);
+          // Log activity for new team meemerging businessr
+          await logTeamMeemerging businessrAdded(newTeamMeemerging businessrRef.id, `${formData.firstName} ${formData.lastName}`);
         }
       }
 
@@ -282,19 +282,19 @@ export function ProfileCompletionWizard() {
 
       await setDoc(userRef, userUpdates, { merge: true });
 
-      // Also update Team Member if linked
-      if (linkedTeamMember?.id) {
-        const teamMemberUpdates: any = { updatedAt: now };
-        if (formData.firstName) teamMemberUpdates.firstName = formData.firstName;
-        if (formData.lastName) teamMemberUpdates.lastName = formData.lastName;
-        if (formData.phone) teamMemberUpdates.mobile = formData.phone;
-        if (formData.company) teamMemberUpdates.company = formData.company;
-        if (formData.jobTitle) teamMemberUpdates.title = formData.jobTitle;
-        if (formData.location) teamMemberUpdates.location = formData.location;
-        if (formData.bio) teamMemberUpdates.bio = formData.bio;
+      // Also update Team Meemerging businessr if linked
+      if (linkedTeamMeemerging businessr?.id) {
+        const teamMeemerging businessrUpdates: any = { updatedAt: now };
+        if (formData.firstName) teamMeemerging businessrUpdates.firstName = formData.firstName;
+        if (formData.lastName) teamMeemerging businessrUpdates.lastName = formData.lastName;
+        if (formData.phone) teamMeemerging businessrUpdates.mobile = formData.phone;
+        if (formData.company) teamMeemerging businessrUpdates.company = formData.company;
+        if (formData.jobTitle) teamMeemerging businessrUpdates.title = formData.jobTitle;
+        if (formData.location) teamMeemerging businessrUpdates.location = formData.location;
+        if (formData.bio) teamMeemerging businessrUpdates.bio = formData.bio;
 
-        const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeamMember.id);
-        await updateDoc(teamMemberRef, teamMemberUpdates);
+        const teamMeemerging businessrRef = doc(db, COLLECTIONS.TEAM_MEemerging businessRS, linkedTeamMeemerging businessr.id);
+        await updateDoc(teamMeemerging businessrRef, teamMeemerging businessrUpdates);
       }
 
       // Update local profile context
@@ -436,7 +436,7 @@ export function ProfileCompletionWizard() {
                   <p className="text-xs text-muted-foreground">Email cannot be changed here. Contact support if needed.</p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone">Phone Nuemerging businessr *</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input

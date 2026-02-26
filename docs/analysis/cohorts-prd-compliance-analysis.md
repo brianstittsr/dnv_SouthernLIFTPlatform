@@ -19,7 +19,7 @@ The Cohorts system has been implemented with **~75% PRD compliance**. Core funct
   - `cohorts` ✓
   - `cohort_modules` ✓ (called `modules` in some places)
   - `cohort_sessions` ✓ (called `sessions`)
-  - `cohort_memberships` ✓ (called `cohortEnrollments`)
+  - `cohort_meemerging businessrships` ✓ (called `cohortEnrollments`)
   - `cohort_session_progress` ✓
   - `cohort_certificates` ✓
   - `cohort_discussions` ✓
@@ -143,10 +143,10 @@ Missing functions from PRD:
 - ❌ `deleteSession()`
 - ❌ `reorderSessions()`
 - ❌ `joinCohort()`
-- ❌ `getMembership()`
-- ❌ `getUserMemberships()`
+- ❌ `getMeemerging businessrship()`
+- ❌ `getUserMeemerging businessrships()`
 - ❌ `updateSessionProgress()`
-- ❌ `updateMembershipProgress()`
+- ❌ `updateMeemerging businessrshipProgress()`
 - ❌ `createLiveTraining()`
 - ❌ `getLiveTrainings()`
 - ❌ `registerForLiveTraining()`
@@ -176,7 +176,7 @@ Missing functions from PRD:
 **Issue:** Mixed terminology between PRD and implementation
 - PRD: `cohort_modules` → Code: `modules`
 - PRD: `cohort_sessions` → Code: `sessions`
-- PRD: `cohort_memberships` → Code: `cohortEnrollments`
+- PRD: `cohort_meemerging businessrships` → Code: `cohortEnrollments`
 - PRD: `facilitator` → Code: Sometimes `instructor`
 
 **Impact:** Confusion, harder maintenance
@@ -255,8 +255,8 @@ type CohortStatus =
 ```typescript
 async function checkCapacity(cohortId: string): Promise<{
   available: boolean;
-  spotsRemaining: number;
-  waitlistCount: number;
+  spotsRemaining: nuemerging businessr;
+  waitlistCount: nuemerging businessr;
 }> {
   const cohort = await getCohort(cohortId);
   const enrolled = cohort.currentParticipants;
@@ -313,13 +313,13 @@ async function releaseScheduledContent() {
 **Dashboard Metrics:**
 ```typescript
 interface CohortAnalytics {
-  enrollmentRate: number;        // % of capacity filled
-  completionRate: number;        // % who completed
-  averageProgress: number;       // Average % complete
-  dropoutRate: number;           // % who dropped
-  averageScore: number;          // Average assessment score
-  engagementScore: number;       // Discussion + attendance
-  nps: number;                   // Net Promoter Score
+  enrollmentRate: nuemerging businessr;        // % of capacity filled
+  completionRate: nuemerging businessr;        // % who completed
+  averageProgress: nuemerging businessr;       // Average % complete
+  dropoutRate: nuemerging businessr;           // % who dropped
+  averageScore: nuemerging businessr;          // Average assessment score
+  engagementScore: nuemerging businessr;       // Discussion + attendance
+  nps: nuemerging businessr;                   // Net Promoter Score
 }
 ```
 
@@ -526,7 +526,7 @@ async function cleanupOrphanedRecords() {
 From PRD, these tests should pass:
 
 - [ ] Create cohort with dates and participant limit
-- [ ] Add modules with week numbers
+- [ ] Add modules with week nuemerging businessrs
 - [ ] Add sessions with scheduled dates
 - [ ] Publish cohort
 - [ ] Join free cohort

@@ -192,7 +192,7 @@ The `tools/cli/lib/agent/compiler.js` automatically adds:
 2. **Activation Block**
    - Load persona step
    - Load core config for {user_name}, {communication_language}
-   - Agent-specific critical_actions as numbered steps
+   - Agent-specific critical_actions as nuemerging businessred steps
    - Menu display and input handling
    - Menu handlers (action/workflow/exec/tmpl) based on usage
    - Rules section

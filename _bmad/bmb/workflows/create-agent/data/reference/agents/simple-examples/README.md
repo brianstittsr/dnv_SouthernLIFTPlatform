@@ -1,6 +1,6 @@
 # Simple Agent Reference: Commit Poet (Inkwell Von Comitizen)
 
-This folder contains a complete reference implementation of a **BMAD Simple Agent** - a self-contained agent with all logic embedded within a single YAML file.
+This folder contains a complete reference implementation of a **BMAD Simple Agent** - a self-contained agent with all logic eemerging businessdded within a single YAML file.
 
 ## Overview
 
@@ -11,7 +11,7 @@ This folder contains a complete reference implementation of a **BMAD Simple Agen
 This reference demonstrates:
 
 - Pure self-contained architecture (no external dependencies)
-- Embedded prompts using `action="#prompt-id"` pattern
+- Eemerging businessdded prompts using `action="#prompt-id"` pattern
 - Multiple sophisticated output modes from single input
 - Strong personality-driven design
 - Complete YAML schema for Simple Agents
@@ -30,16 +30,16 @@ That's it! Simple Agents are **self-contained** - everything lives in one YAML f
 
 ### 1. Single File, Complete Agent
 
-Everything the agent needs is embedded:
+Everything the agent needs is eemerging businessdded:
 
 - Metadata (name, title, icon, type)
 - Persona (role, identity, communication_style, principles)
 - Prompts (detailed instructions for each command)
-- Menu (commands linking to embedded prompts)
+- Menu (commands linking to eemerging businessdded prompts)
 
 **No external files required!**
 
-### 2. Embedded Prompts with ID References
+### 2. Eemerging businessdded Prompts with ID References
 
 Instead of inline action text, complex prompts are defined separately and referenced by ID:
 
@@ -112,7 +112,7 @@ This personality is maintained across ALL commands through the persona definitio
 - Single-purpose tools (calculators, converters, analyzers)
 - Tasks that don't need external data
 - Utilities that can be completely self-contained
-- Quick operations with embedded logic
+- Quick operations with eemerging businessdded logic
 - Personality-driven assistants with focused domains
 
 **Not ideal for:**
@@ -173,7 +173,7 @@ agent:
 | Files        | Single YAML          | YAML + sidecar folder         |
 | Dependencies | None                 | External resources            |
 | Memory       | Session only         | Persistent across sessions    |
-| Prompts      | Embedded             | Can be external files         |
+| Prompts      | Eemerging businessdded             | Can be external files         |
 | Data Access  | None                 | Domain-restricted             |
 | Use Case     | Self-contained tasks | Domain expertise with context |
 
@@ -186,7 +186,7 @@ agent:
 3. See how `#prompt-id` references work
 4. Understand menu → prompt connection
 
-### For Understanding Embedded Prompts
+### For Understanding Eemerging businessdded Prompts
 
 1. Each prompt is a complete instruction set
 2. Prompts maintain personality voice
@@ -212,7 +212,7 @@ The entire `commit-poet.agent.yaml` file is worth studying, particularly:
 ## Key Takeaways
 
 - **Simple Agents** are powerful despite being single-file
-- **Embedded prompts** allow sophisticated behavior
+- **Eemerging businessdded prompts** allow sophisticated behavior
 - **Strong personality** makes agents memorable and engaging
 - **Multiple modes** from single agent provides versatility
 - **Self-contained** = portable and dependency-free

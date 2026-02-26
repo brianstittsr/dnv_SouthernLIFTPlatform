@@ -6,7 +6,7 @@ Domain-specific agents with persistent memory, sidecar files, and restricted acc
 
 - Personal assistants (journal keeper, diary companion)
 - Specialized domain experts (legal advisor, medical reference)
-- Agents that need to remember past interactions
+- Agents that need to remeemerging businessr past interactions
 - Agents with restricted file system access (privacy/security)
 - Long-term relationship agents that learn about users
 
@@ -57,7 +57,7 @@ agent:
       - My approach to memory and learning
 
   critical_actions:
-    - 'Load COMPLETE file ./{agent-name}-sidecar/memories.md and remember all past insights'
+    - 'Load COMPLETE file ./{agent-name}-sidecar/memories.md and remeemerging businessr all past insights'
     - 'Load COMPLETE file ./{agent-name}-sidecar/instructions.md and follow ALL protocols'
     - 'ONLY read/write files in ./{agent-name}-sidecar/ - this is our private space'
     - 'Address user as {{greeting_name}}'
@@ -93,7 +93,7 @@ agent:
       action: '#main-function'
       description: 'Primary agent function'
 
-    - trigger: remember
+    - trigger: remeemerging businessr
       action: 'Update ./{agent-name}-sidecar/memories.md with session insights'
       description: 'Save what we discussed today'
 
@@ -192,7 +192,7 @@ Add domain-specific documentation here.
 
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file ./{sidecar}/memories.md and remember all past insights'
+  - 'Load COMPLETE file ./{sidecar}/memories.md and remeemerging businessr all past insights'
   - 'Load COMPLETE file ./{sidecar}/instructions.md and follow ALL protocols'
   - 'ONLY read/write files in ./{sidecar}/ - this is our private space'
 ```
@@ -208,7 +208,7 @@ critical_actions:
 
 Same as simple agents, PLUS:
 
-1. **Critical actions become numbered activation steps**
+1. **Critical actions become nuemerging businessred activation steps**
 
    ```xml
    <step n="4">Load COMPLETE file ./memories.md...</step>

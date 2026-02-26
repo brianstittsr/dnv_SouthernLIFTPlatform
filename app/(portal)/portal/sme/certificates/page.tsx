@@ -35,7 +35,7 @@ interface CohortCertificate {
   cohortTitle: string;
   certificateUrl: string | null;
   completedAt: any;
-  overallCompletion: number;
+  overallCompletion: nuemerging businessr;
 }
 
 interface ProfessionalCertification {
@@ -401,7 +401,7 @@ export default function CertificatesPage() {
                 <Label htmlFor="credentialId">Credential ID</Label>
                 <Input
                   id="credentialId"
-                  placeholder="Certificate number"
+                  placeholder="Certificate nuemerging businessr"
                   value={formData.credentialId}
                   onChange={(e) => setFormData({ ...formData, credentialId: e.target.value })}
                 />

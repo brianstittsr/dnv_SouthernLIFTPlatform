@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the custom Stripe checkout implementation that replaces the hosted Stripe checkout with an embedded payment form that matches the SVP Platform's design system.
+This document describes the custom Stripe checkout implementation that replaces the hosted Stripe checkout with an eemerging businessdded payment form that matches the SVP Platform's design system.
 
 ## Architecture
 
@@ -23,7 +23,7 @@ This document describes the custom Stripe checkout implementation that replaces 
 **Features:**
 - Matches website design with Card components
 - Order summary sidebar showing tier details and pricing
-- Embedded Stripe Elements payment form
+- Eemerging businessdded Stripe Elements payment form
 - Email pre-filled from Firebase Auth
 - Secure payment processing with Stripe
 - Error handling and loading states

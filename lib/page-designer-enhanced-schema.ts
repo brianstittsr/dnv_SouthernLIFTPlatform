@@ -14,7 +14,7 @@ export interface PageButton {
   icon?: string;
   position: {
     section: string;
-    order: number;
+    order: nuemerging businessr;
   };
   isEnabled: boolean;
 }
@@ -38,7 +38,7 @@ export interface PageElement {
   };
   position: {
     section: string;
-    order: number;
+    order: nuemerging businessr;
   };
   isVisible: boolean;
 }
@@ -108,7 +108,7 @@ export interface EnhancedPageDesign {
   };
   
   // Metadata
-  version: number;
+  version: nuemerging businessr;
   status: 'draft' | 'published' | 'archived';
   createdBy: string;
   createdAt: Timestamp;
@@ -120,7 +120,7 @@ export interface PageSection {
   id: string;
   name: string;
   type: string;
-  order: number;
+  order: nuemerging businessr;
   content: {
     headline?: string;
     subheadline?: string;
@@ -140,7 +140,7 @@ export interface PageImageAssignment {
   id: string;
   imageId: string; // From Image Manager
   section: string;
-  position: number;
+  position: nuemerging businessr;
   alt: string;
   caption?: string;
   styling: {

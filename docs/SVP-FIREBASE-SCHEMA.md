@@ -30,7 +30,7 @@ interface UserDocument {
   email: string;
   
   // Standard role (existing system)
-  role: "admin" | "team_member" | "affiliate" | "customer";
+  role: "admin" | "team_meemerging businessr" | "affiliate" | "customer";
   
   // SVP Platform role
   svpRole: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | null;
@@ -71,11 +71,11 @@ interface ProofPack {
   documents: Document[];
   
   packHealth: {
-    overallScore: number;      // 0-100
-    completeness: number;      // 40% weight
-    expiration: number;        // 30% weight
-    quality: number;           // 20% weight
-    remediation: number;       // 10% weight
+    overallScore: nuemerging businessr;      // 0-100
+    completeness: nuemerging businessr;      // 40% weight
+    expiration: nuemerging businessr;        // 30% weight
+    quality: nuemerging businessr;           // 20% weight
+    remediation: nuemerging businessr;       // 10% weight
     isEligible: boolean;       // true if score >= 70
   };
   
@@ -107,8 +107,8 @@ interface ShareLink {
   token: string;              // 32-byte hex token
   
   expiresAt: Timestamp;
-  maxViews: number;
-  viewCount: number;
+  maxViews: nuemerging businessr;
+  viewCount: nuemerging businessr;
   
   requireNDA: boolean;
   isActive: boolean;
@@ -173,7 +173,7 @@ interface Lead {
   followUpDate: Timestamp | null;
   lastActivityAt: Timestamp;
   
-  routingScore: number;
+  routingScore: nuemerging businessr;
   routingReason: string;
   
   capturedAt: Timestamp;
@@ -222,7 +222,7 @@ interface Introduction {
   declineReason?: string;
   smeContactInfo?: object;
   meetingDate?: Timestamp;
-  estimatedValue?: number;
+  estimatedValue?: nuemerging businessr;
   
   stageHistory: StageTransition[];
   
@@ -249,8 +249,8 @@ interface AttributionEvent {
   buyerId: string | null;
   
   eventType: "lead_generated" | "service_delivered" | "introduction_facilitated" | "conversion_completed";
-  revenueAmount: number;
-  attributionPercentage: number;
+  revenueAmount: nuemerging businessr;
+  attributionPercentage: nuemerging businessr;
   
   source: string | null;
   dealId: string | null;
@@ -279,12 +279,12 @@ interface RevenueSettlement {
   periodStart: Timestamp;
   periodEnd: Timestamp;
   
-  grossRevenue: number;
-  platformFeePercentage: number;  // 10%
-  platformFeeAmount: number;
-  netRevenue: number;
+  grossRevenue: nuemerging businessr;
+  platformFeePercentage: nuemerging businessr;  // 10%
+  platformFeeAmount: nuemerging businessr;
+  netRevenue: nuemerging businessr;
   
-  eventCount: number;
+  eventCount: nuemerging businessr;
   eventIds: string[];
   eventsByType: object;
   
@@ -310,16 +310,16 @@ interface Cohort {
   instructorId: string;
   
   startDate: Timestamp;
-  duration: number;           // 12 weeks
+  duration: nuemerging businessr;           // 12 weeks
   endDate: Timestamp;
   
-  maxParticipants: number;
-  enrolledCount: number;
+  maxParticipants: nuemerging businessr;
+  enrolledCount: nuemerging businessr;
   participants: string[];
   
   pricing: {
-    fullPayment: number;
-    partialPayment: number | null;
+    fullPayment: nuemerging businessr;
+    partialPayment: nuemerging businessr | null;
   };
   
   syllabus: string | null;    // base64
@@ -349,9 +349,9 @@ interface CohortEnrollment {
   stripeSessionId: string | null;
   
   progress: {
-    completedWeeks: number[];
-    assessmentScores: Record<number, number>;
-    overallCompletion: number;
+    completedWeeks: nuemerging businessr[];
+    assessmentScores: Record<nuemerging businessr, nuemerging businessr>;
+    overallCompletion: nuemerging businessr;
   };
   
   enrolledAt: Timestamp;

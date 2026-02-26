@@ -241,7 +241,7 @@ Markdown file containing story details: description, acceptance criteria, techni
 
 ### Story Context
 
-Implementation guidance embedded within story files during the create-story workflow. Provides implementation-specific context, references existing patterns, suggests approaches, and helps maintain consistency with established codebase conventions.
+Implementation guidance eemerging businessdded within story files during the create-story workflow. Provides implementation-specific context, references existing patterns, suggests approaches, and helps maintain consistency with established codebase conventions.
 
 ### Sprint Planning
 

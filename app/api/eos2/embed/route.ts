@@ -1,8 +1,8 @@
 /**
- * Traction Embed API
+ * Traction Eemerging businessd API
  * 
- * Public API endpoint for embeddable Traction widgets
- * Provides read-only access to Traction data for external embedding
+ * Public API endpoint for eemerging businessddable Traction widgets
+ * Provides read-only access to Traction data for external eemerging businessdding
  * 
  * Supports:
  * - Scorecard widget data
@@ -16,7 +16,7 @@ import { collection, getDocs, query, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { COLLECTIONS } from "@/lib/schema";
 
-// CORS headers for embed access
+// CORS headers for eemerging businessd access
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
@@ -29,18 +29,18 @@ type WidgetType = "scorecard" | "rocks" | "health" | "issues" | "todos" | "dashb
 interface ScorecardWidgetData {
   metrics: {
     name: string;
-    goal: number;
-    actual: number;
+    goal: nuemerging businessr;
+    actual: nuemerging businessr;
     unit?: string;
     trend: string;
     status: "above" | "at" | "below";
   }[];
   summary: {
-    total: number;
-    aboveGoal: number;
-    atGoal: number;
-    belowGoal: number;
-    healthPercent: number;
+    total: nuemerging businessr;
+    aboveGoal: nuemerging businessr;
+    atGoal: nuemerging businessr;
+    belowGoal: nuemerging businessr;
+    healthPercent: nuemerging businessr;
   };
 }
 
@@ -49,26 +49,26 @@ interface RocksWidgetData {
     description: string;
     owner: string;
     status: string;
-    progress: number;
+    progress: nuemerging businessr;
     quarter: string;
   }[];
   summary: {
-    total: number;
-    onTrack: number;
-    atRisk: number;
-    offTrack: number;
-    complete: number;
-    avgProgress: number;
-    healthPercent: number;
+    total: nuemerging businessr;
+    onTrack: nuemerging businessr;
+    atRisk: nuemerging businessr;
+    offTrack: nuemerging businessr;
+    complete: nuemerging businessr;
+    avgProgress: nuemerging businessr;
+    healthPercent: nuemerging businessr;
   };
 }
 
 interface HealthWidgetData {
-  overall: number;
-  rocks: number;
-  scorecard: number;
-  issues: number;
-  todos: number;
+  overall: nuemerging businessr;
+  rocks: nuemerging businessr;
+  scorecard: nuemerging businessr;
+  issues: nuemerging businessr;
+  todos: nuemerging businessr;
   trend: "up" | "down" | "flat";
 }
 
@@ -78,14 +78,14 @@ interface IssuesWidgetData {
     owner: string;
     priority: string;
     status: string;
-    daysOpen: number;
+    daysOpen: nuemerging businessr;
   }[];
   summary: {
-    total: number;
-    open: number;
-    inProgress: number;
-    solved: number;
-    highPriority: number;
+    total: nuemerging businessr;
+    open: nuemerging businessr;
+    inProgress: nuemerging businessr;
+    solved: nuemerging businessr;
+    highPriority: nuemerging businessr;
   };
 }
 
@@ -98,11 +98,11 @@ interface TodosWidgetData {
     isOverdue: boolean;
   }[];
   summary: {
-    total: number;
-    complete: number;
-    pending: number;
-    overdue: number;
-    completionRate: number;
+    total: nuemerging businessr;
+    complete: nuemerging businessr;
+    pending: nuemerging businessr;
+    overdue: nuemerging businessr;
+    completionRate: nuemerging businessr;
   };
 }
 
@@ -374,7 +374,7 @@ export async function GET(request: NextRequest) {
       { headers: corsHeaders }
     );
   } catch (error) {
-    console.error("Embed API error:", error);
+    console.error("Eemerging businessd API error:", error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : "Unknown error" },
       { status: 500, headers: corsHeaders }

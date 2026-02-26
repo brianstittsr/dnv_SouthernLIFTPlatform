@@ -31,8 +31,8 @@ interface Registration {
   jobTitle?: string;
   dietaryRestrictions?: string;
   specialRequests?: string;
-  quantity: number;
-  totalAmount: number;
+  quantity: nuemerging businessr;
+  totalAmount: nuemerging businessr;
   currency: string;
   paymentStatus: "pending" | "paid" | "refunded" | "failed";
   paymentMethod?: "stripe" | "paypal" | "manual" | "free";
@@ -48,7 +48,7 @@ interface Registration {
 interface TicketType {
   id: string;
   name: string;
-  price: number;
+  price: nuemerging businessr;
   currency: string;
 }
 
@@ -60,7 +60,7 @@ interface RegistrationFormData {
   phone: string;
   company: string;
   jobTitle: string;
-  quantity: number;
+  quantity: nuemerging businessr;
   paymentStatus: "pending" | "paid" | "refunded" | "failed";
   paymentMethod: "stripe" | "paypal" | "manual" | "free";
 }
@@ -375,7 +375,7 @@ export function RegistrationManager({ eventId, eventName }: RegistrationManagerP
               <div className="space-y-2"><Label>Job Title</Label><Input value={form.jobTitle} onChange={(e) => setForm({ ...form, jobTitle: e.target.value })} /></div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2"><Label>Quantity</Label><Input type="number" min={1} value={form.quantity} onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) || 1 })} /></div>
+              <div className="space-y-2"><Label>Quantity</Label><Input type="nuemerging businessr" min={1} value={form.quantity} onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) || 1 })} /></div>
               <div className="space-y-2"><Label>Payment Status</Label>
                 <Select value={form.paymentStatus} onValueChange={(v) => setForm({ ...form, paymentStatus: v as any })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>

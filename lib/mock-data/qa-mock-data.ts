@@ -67,7 +67,7 @@ export const mockQAReviews = [
         id: "finding-3",
         severity: "minor",
         category: "training",
-        description: "Employee training records incomplete for 2 staff members",
+        description: "Employee training records incomplete for 2 staff meemerging businessrs",
         requirement: "ISO 9001 Section 6.2",
         status: "resolved"
       }

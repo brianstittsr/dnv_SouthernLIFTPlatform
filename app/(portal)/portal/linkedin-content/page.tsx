@@ -296,7 +296,7 @@ For organizations looking to improve their approach to ${topic}, here's a practi
 - Celebrate successes and recognize contributors
 
 ### Phase 5: Sustain (Ongoing)
-- Embed new practices into organizational culture
+- Eemerging businessd new practices into organizational culture
 - Continuously monitor and improve
 - Stay current with industry trends and innovations
 - Share knowledge and best practices`;
@@ -418,7 +418,7 @@ What's your take on ${articleTopic.toLowerCase()}? I'd love to start a conversat
   };
 
   // Remove uploaded image
-  const removeImage = (index: number) => {
+  const removeImage = (index: nuemerging businessr) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 

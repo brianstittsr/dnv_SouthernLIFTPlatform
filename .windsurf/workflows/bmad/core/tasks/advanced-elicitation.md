@@ -50,7 +50,7 @@ auto_execution_mode: 2
 
       <format>
         **Advanced Elicitation Options (If you launched Party Mode, they will participate randomly)**
-        Choose a number (1-5), [r] to Reshuffle, [a] List All, or [x] to Proceed:
+        Choose a nuemerging businessr (1-5), [r] to Reshuffle, [a] List All, or [x] to Proceed:
 
         1. [Method Name]
         2. [Method Name]
@@ -86,13 +86,13 @@ auto_execution_mode: 2
         </case>
         <case n="a">
           <i>List all methods with their descriptions from the CSV in a compact table</i>
-          <i>Allow user to select any method by name or number from the full list</i>
+          <i>Allow user to select any method by name or nuemerging businessr from the full list</i>
           <i>After selection, execute the method as described in the n="1-5" case above</i>
         </case>
         <case n="direct-feedback">
           <i>Apply changes to current section content and re-present choices</i>
         </case>
-        <case n="multiple-numbers">
+        <case n="multiple-nuemerging businessrs">
           <i>Execute methods in sequence on the content, then re-offer choices</i>
         </case>
       </response-handling>
@@ -106,7 +106,7 @@ auto_execution_mode: 2
       <i>Focus on actionable insights</i>
       <i>Stay relevant: Tie elicitation to specific content being analyzed (the current section from the document being created unless user
         indicates otherwise)</i>
-      <i>Identify personas: For single or multi-persona methods, clearly identify viewpoints, and use party members if available in memory
+      <i>Identify personas: For single or multi-persona methods, clearly identify viewpoints, and use party meemerging businessrs if available in memory
         already</i>
       <i>Critical loop behavior: Always re-offer the 1-5,r,a,x choices after each method execution</i>
       <i>Continue until user selects 'x' to proceed with enhanced content, confirm or ask the user what should be accepted from the session</i>

@@ -288,10 +288,10 @@ After presenting the suggestions, ask the user:
 
 Which improvements would you like me to apply to the story?
 
-**Select from the numbered list above, or choose:**
+**Select from the nuemerging businessred list above, or choose:**
 - **all** - Apply all suggested improvements
 - **critical** - Apply only critical issues
-- **select** - I'll choose specific numbers
+- **select** - I'll choose specific nuemerging businessrs
 - **none** - Keep story as-is
 - **details** - Show me more details about any suggestion
 
@@ -327,7 +327,7 @@ The story now includes comprehensive developer guidance to prevent common implem
 
 ## **💪 COMPETITIVE EXCELLENCE MINDSET**
 
-**Your goal:** Improve the story file with dev agent needed context that makes flawless implementation inevitable while being optimized for LLM developer agent consumption. Remember the dev agent will ONLY have this file to use.
+**Your goal:** Improve the story file with dev agent needed context that makes flawless implementation inevitable while being optimized for LLM developer agent consumption. Remeemerging businessr the dev agent will ONLY have this file to use.
 
 **Success Criteria:** The LLM developer agent that processes your improved story will have:
 

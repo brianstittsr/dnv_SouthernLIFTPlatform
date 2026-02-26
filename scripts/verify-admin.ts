@@ -61,7 +61,7 @@ async function verifyAndSetAdmin(email: string) {
       console.log("✅ Firestore document updated!");
     }
 
-    console.log("\n✨ All done! Remember to refresh your token.\n");
+    console.log("\n✨ All done! Remeemerging businessr to refresh your token.\n");
   } catch (error: any) {
     console.error("❌ Error:", error.message);
     process.exit(1);

@@ -203,7 +203,7 @@ function PaymentContent() {
                 <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="payAmount"
-                  type="number"
+                  type="nuemerging businessr"
                   step="0.01"
                   className="pl-9 text-lg font-medium"
                   value={payAmount}

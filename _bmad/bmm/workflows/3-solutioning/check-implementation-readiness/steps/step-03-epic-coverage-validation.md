@@ -74,7 +74,7 @@ From the document inventory in step 1:
 From the epics document:
 
 - Find FR coverage mapping or list
-- Extract which FR numbers are claimed to be covered
+- Extract which FR nuemerging businessrs are claimed to be covered
 - Document which epics cover which FRs
 
 Format as:
@@ -102,7 +102,7 @@ Create coverage matrix:
 ```
 ## FR Coverage Analysis
 
-| FR Number | PRD Requirement | Epic Coverage  | Status    |
+| FR Nuemerging businessr | PRD Requirement | Epic Coverage  | Status    |
 | --------- | --------------- | -------------- | --------- |
 | FR1       | [PRD text]      | Epic X Story Y | ✓ Covered |
 | FR2       | [PRD text]      | **NOT FOUND**  | ❌ MISSING |

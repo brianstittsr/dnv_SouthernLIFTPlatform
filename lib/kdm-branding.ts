@@ -11,7 +11,7 @@ export const KDM_BRANDING = {
     name: 'KDM Consortium',
     legalName: 'KDM Associates, LLC',
     tagline: 'Empowering Small Businesses to Win Government Contracts',
-    description: 'A membership-based consortium helping small businesses compete for and win government contracts through collaborative teaming and expert support.',
+    description: 'A meemerging businessrship-based consortium helping small businesses compete for and win government contracts through collaborative teaming and expert support.',
   },
 
   // Contact Information
@@ -48,9 +48,9 @@ export const KDM_BRANDING = {
       dark: 'slate-800',
     },
     accent: {
-      light: 'amber-400',
-      DEFAULT: 'amber-500',
-      dark: 'amber-600',
+      light: 'aemerging businessr-400',
+      DEFAULT: 'aemerging businessr-500',
+      dark: 'aemerging businessr-600',
     },
   },
 
@@ -60,7 +60,7 @@ export const KDM_BRANDING = {
     '--kdm-primary-light': '#3b82f6', // blue-500
     '--kdm-primary-dark': '#1d4ed8', // blue-700
     '--kdm-secondary': '#475569', // slate-600
-    '--kdm-accent': '#f59e0b', // amber-500
+    '--kdm-accent': '#f59e0b', // aemerging businessr-500
   },
 
   // Logo paths
@@ -90,13 +90,13 @@ export const KDM_BRANDING = {
     ogImage: '/images/kdm-og-image.png',
   },
 
-  // Membership Tiers
-  membership: {
+  // Meemerging businessrship Tiers
+  meemerging businessrship: {
     tiers: {
       'core-capture': {
         name: 'Core Capture',
         shortName: 'Core',
-        badge: 'Member',
+        badge: 'Meemerging businessr',
         color: 'blue',
       },
       'pursuit-pack': {
@@ -109,7 +109,7 @@ export const KDM_BRANDING = {
         name: 'Enterprise',
         shortName: 'Enterprise',
         badge: 'Custom',
-        color: 'amber',
+        color: 'aemerging businessr',
       },
     },
   },
@@ -119,14 +119,14 @@ export const KDM_BRANDING = {
     portal: {
       dashboard: 'Dashboard',
       pursuits: 'Pursuit Board',
-      members: 'Member Directory',
+      meemerging businessrs: 'Meemerging businessr Directory',
       resources: 'Resource Library',
       events: 'Events',
-      membership: 'My Membership',
+      meemerging businessrship: 'My Meemerging businessrship',
     },
     admin: {
       dashboard: 'KDM Dashboard',
-      memberships: 'Memberships',
+      meemerging businessrships: 'Meemerging businessrships',
       settlements: 'Settlements',
       events: 'Events',
     },
@@ -139,7 +139,7 @@ export const KDM_BRANDING = {
     replyTo: 'support@kdmassociates.com',
     templates: {
       welcome: 'Welcome to KDM Consortium',
-      membershipConfirmation: 'Your KDM Membership is Active',
+      meemerging businessrshipConfirmation: 'Your KDM Meemerging businessrship is Active',
       eventRegistration: 'Event Registration Confirmed',
       pursuitNotification: 'New Pursuit Opportunity',
     },
@@ -158,4 +158,4 @@ export const KDM_BRANDING = {
 
 // Type exports for TypeScript
 export type KDMBranding = typeof KDM_BRANDING;
-export type MembershipTier = keyof typeof KDM_BRANDING.membership.tiers;
+export type Meemerging businessrshipTier = keyof typeof KDM_BRANDING.meemerging businessrship.tiers;

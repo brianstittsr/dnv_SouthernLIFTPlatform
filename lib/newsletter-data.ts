@@ -67,39 +67,39 @@ export const newsletters: Newsletter[] = [
   },
   {
     id: '2',
-    slug: 'mbe-success-2024-highlights',
-    title: 'A Year of Achievement: MBE Success and Key Takeaways from 2024',
+    slug: 'emerging business-success-2024-highlights',
+    title: 'A Year of Achievement: emerging business Success and Key Takeaways from 2024',
     subtitle: 'At the MBDA Federal Procurement Center - 2024 Highlights',
     description: 'Celebrating a year of success stories, contract wins, and milestones achieved by minority-owned businesses through the MBDA Federal Procurement Center.',
     publishedDate: new Date('2024-12-01'),
     volume: 'Vol 1',
-    issue: 'December 2024 Issue',
-    featuredImage: '/images/newsletters/mbe-success-2024.jpg',
+    issue: 'Deceemerging businessr 2024 Issue',
+    featuredImage: '/images/newsletters/emerging business-success-2024.jpg',
     category: 'Annual Report',
     highlights: [
-      'Major contract wins by MBEs',
+      'Major contract wins by emerging businesss',
       'Success stories from 2024',
       'Key statistics and achievements',
       'Lessons learned and best practices'
     ],
-    tags: ['MBE', 'Success Stories', '2024 Highlights', 'MBDA FPC'],
+    tags: ['emerging business', 'Success Stories', '2024 Highlights', 'MBDA FPC'],
     content: {
       sections: [
         {
-          title: '2024 By The Numbers',
+          title: '2024 By The Nuemerging businessrs',
           content: 'This year, the MBDA Federal Procurement Center helped minority-owned businesses secure over $500 million in federal contracts, supporting thousands of jobs and driving economic growth in underserved communities.'
         },
         {
           title: 'Success Stories',
-          content: 'From small startups to established firms, MBEs across the country achieved remarkable success in 2024. We highlight several inspiring stories of businesses that overcame challenges and won significant contracts.'
+          content: 'From small startups to established firms, emerging businesss across the country achieved remarkable success in 2024. We highlight several inspiring stories of businesses that overcame challenges and won significant contracts.'
         },
         {
           title: 'Key Takeaways',
-          content: 'The most successful MBEs in 2024 shared common traits: strong capability statements, strategic partnerships, persistent business development efforts, and a commitment to excellence in contract performance.'
+          content: 'The most successful emerging businesss in 2024 shared common traits: strong capability statements, strategic partnerships, persistent business development efforts, and a commitment to excellence in contract performance.'
         },
         {
           title: 'Looking Ahead to 2025',
-          content: 'Building on 2024\'s momentum, we\'re excited about the opportunities ahead. New initiatives, expanded services, and continued support will help even more MBEs succeed in federal contracting.'
+          content: 'Building on 2024\'s momentum, we\'re excited about the opportunities ahead. New initiatives, expanded services, and continued support will help even more emerging businesss succeed in federal contracting.'
         }
       ]
     }
@@ -107,7 +107,7 @@ export const newsletters: Newsletter[] = [
   {
     id: '3',
     slug: 'celebrating-23-years-kdm',
-    title: 'Celebrating 23 Years of KDM: Championing MBEs in Government Contracting',
+    title: 'Celebrating 23 Years of KDM: Championing emerging businesss in Government Contracting',
     subtitle: 'August 2024 Issue - KDM & MBDA FPC',
     description: 'Commemorating 23 years of KDM & Associates\' dedication to empowering minority-owned businesses in federal contracting.',
     publishedDate: new Date('2024-08-01'),
@@ -116,12 +116,12 @@ export const newsletters: Newsletter[] = [
     featuredImage: '/images/newsletters/kdm-23-years.jpg',
     category: 'Special Edition',
     highlights: [
-      '23 years of supporting MBEs',
+      '23 years of supporting emerging businesss',
       'Milestones and achievements',
       'Evolution of services',
       'Future vision and commitment'
     ],
-    tags: ['Anniversary', 'KDM History', 'MBE Support', 'Milestone'],
+    tags: ['Anniversary', 'KDM History', 'emerging business Support', 'Milestone'],
     content: {
       sections: [
         {
@@ -134,11 +134,11 @@ export const newsletters: Newsletter[] = [
         },
         {
           title: 'Impact and Achievements',
-          content: 'Over two decades, we\'ve helped thousands of MBEs secure billions in federal contracts, creating jobs and economic opportunities in communities across the nation.'
+          content: 'Over two decades, we\'ve helped thousands of emerging businesss secure billions in federal contracts, creating jobs and economic opportunities in communities across the nation.'
         },
         {
           title: 'Our Commitment Moving Forward',
-          content: 'As we celebrate this milestone, we renew our commitment to championing MBEs in government contracting, providing the tools, training, and support needed for continued success.'
+          content: 'As we celebrate this milestone, we renew our commitment to championing emerging businesss in government contracting, providing the tools, training, and support needed for continued success.'
         }
       ]
     }
@@ -172,7 +172,7 @@ export const newsletters: Newsletter[] = [
         },
         {
           title: 'What Works This Month',
-          content: 'Learn from successful MBEs who recently won contracts. Discover the strategies and approaches that led to their success.'
+          content: 'Learn from successful emerging businesss who recently won contracts. Discover the strategies and approaches that led to their success.'
         },
         {
           title: 'Resources and Tools',
@@ -194,11 +194,11 @@ export const newsletters: Newsletter[] = [
     category: 'Special Edition',
     highlights: [
       'Juneteenth significance and economic justice',
-      'MBE contributions to equitable growth',
+      'emerging business contributions to equitable growth',
       'Historical context and modern impact',
       'Pathways to economic empowerment'
     ],
-    tags: ['Juneteenth', 'Economic Justice', 'MBE Impact', 'Equity'],
+    tags: ['Juneteenth', 'Economic Justice', 'emerging business Impact', 'Equity'],
     content: {
       sections: [
         {
@@ -211,7 +211,7 @@ export const newsletters: Newsletter[] = [
         },
         {
           title: 'Breaking Barriers in Federal Contracting',
-          content: 'Federal contracting provides a pathway to economic empowerment for minority businesses. By securing government contracts, MBEs can scale their operations and create lasting impact.'
+          content: 'Federal contracting provides a pathway to economic empowerment for minority businesses. By securing government contracts, emerging businesss can scale their operations and create lasting impact.'
         },
         {
           title: 'Building an Equitable Future',
@@ -254,7 +254,7 @@ export const newsletters: Newsletter[] = [
         },
         {
           title: 'Lessons Learned',
-          content: 'From proposal development to contract performance, we share key lessons that other MBEs can apply to their own federal contracting pursuits.'
+          content: 'From proposal development to contract performance, we share key lessons that other emerging businesss can apply to their own federal contracting pursuits.'
         }
       ]
     }

@@ -225,4 +225,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-03-competitive-landscape.md` to analyze competitive landscape, key players, and ecosystem analysis for {{research_topic}}.
 
-Remember: Always write research content to document immediately and search the web to verify facts!
+Remeemerging businessr: Always write research content to document immediately and search the web to verify facts!

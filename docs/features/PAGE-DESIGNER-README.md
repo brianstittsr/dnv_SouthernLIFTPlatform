@@ -87,7 +87,7 @@ interface PageDesign {
   pageId: string;
   pageName: string;
   content: DesignContent;
-  version: number;
+  version: nuemerging businessr;
   status: "draft" | "published" | "archived";
   createdBy: string;
   createdAt: Date;
@@ -104,7 +104,7 @@ interface DesignHistory {
   designId: string;
   pageId: string;
   content: DesignContent;
-  version: number;
+  version: nuemerging businessr;
   changeDescription?: string;
   createdBy: string;
   createdAt: Date;
@@ -121,7 +121,7 @@ interface LayoutTemplate {
   category: string;
   sectionType: SectionType;
   content: SectionDesign;
-  popularity: number;
+  popularity: nuemerging businessr;
   isDefault: boolean;
   createdBy: string;
   createdAt: Date;
@@ -154,7 +154,7 @@ UX audit results and recommendations.
 interface UXReview {
   pageId: string;
   designId: string;
-  overallScore: number;
+  overallScore: nuemerging businessr;
   categories: CategoryScores;
   recommendations: Recommendation[];
   accessibilityIssues: AccessibilityIssue[];
@@ -314,7 +314,7 @@ const review = await callAIReviewAPI({
 - `testimonials` - Customer testimonials
 - `cta` - Call-to-action sections
 - `pricing` - Pricing tables
-- `team` - Team member profiles
+- `team` - Team meemerging businessr profiles
 - `faq` - Frequently asked questions
 - `contact` - Contact forms
 - `gallery` - Image galleries
@@ -323,7 +323,7 @@ const review = await callAIReviewAPI({
 - `cards` - Card-based layouts
 - `timeline` - Timeline displays
 - `comparison` - Comparison tables
-- `video` - Video embeds
+- `video` - Video eemerging businessds
 - `newsletter` - Newsletter signups
 - `footer` - Page footers
 

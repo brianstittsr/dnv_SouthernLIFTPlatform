@@ -13,25 +13,25 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { findAndLinkTeamMember } from "@/lib/auth-team-member-link";
+import { findAndLinkTeamMeemerging businessr } from "@/lib/auth-team-meemerging businessr-link";
 
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [remeemerging businessrMe, setRemeemerging businessrMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   // Load saved credentials on mount
   useEffect(() => {
-    const savedEmail = localStorage.getItem("svp_remembered_email");
-    const savedRememberMe = localStorage.getItem("svp_remember_me") === "true";
+    const savedEmail = localStorage.getItem("svp_remeemerging businessred_email");
+    const savedRemeemerging businessrMe = localStorage.getItem("svp_remeemerging businessr_me") === "true";
     
-    if (savedEmail && savedRememberMe) {
+    if (savedEmail && savedRemeemerging businessrMe) {
       setEmail(savedEmail);
-      setRememberMe(true);
+      setRemeemerging businessrMe(true);
     }
   }, []);
 
@@ -41,13 +41,13 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      // Save or clear remembered credentials
-      if (rememberMe) {
-        localStorage.setItem("svp_remembered_email", email);
-        localStorage.setItem("svp_remember_me", "true");
+      // Save or clear remeemerging businessred credentials
+      if (remeemerging businessrMe) {
+        localStorage.setItem("svp_remeemerging businessred_email", email);
+        localStorage.setItem("svp_remeemerging businessr_me", "true");
       } else {
-        localStorage.removeItem("svp_remembered_email");
-        localStorage.removeItem("svp_remember_me");
+        localStorage.removeItem("svp_remeemerging businessred_email");
+        localStorage.removeItem("svp_remeemerging businessr_me");
       }
 
       if (!email || !password) {
@@ -66,14 +66,14 @@ export default function SignInPage() {
           firebaseUid = userCredential.user.uid;
           userName = userCredential.user.displayName;
 
-          // Check if this email matches an existing Team Member and link them
-          // This handles the case where a Team Member exists but hasn't been linked yet
-          const teamMember = await findAndLinkTeamMember(email, firebaseUid);
-          if (teamMember) {
-            console.log(`Linked to Team Member: ${teamMember.firstName} ${teamMember.lastName}`);
-            sessionStorage.setItem("svp_team_member_id", teamMember.id);
-            sessionStorage.setItem("svp_user_role", teamMember.role);
-            sessionStorage.setItem("svp_user_name", `${teamMember.firstName} ${teamMember.lastName}`);
+          // Check if this email matches an existing Team Meemerging businessr and link them
+          // This handles the case where a Team Meemerging businessr exists but hasn't been linked yet
+          const teamMeemerging businessr = await findAndLinkTeamMeemerging businessr(email, firebaseUid);
+          if (teamMeemerging businessr) {
+            console.log(`Linked to Team Meemerging businessr: ${teamMeemerging businessr.firstName} ${teamMeemerging businessr.lastName}`);
+            sessionStorage.setItem("svp_team_meemerging businessr_id", teamMeemerging businessr.id);
+            sessionStorage.setItem("svp_user_role", teamMeemerging businessr.role);
+            sessionStorage.setItem("svp_user_name", `${teamMeemerging businessr.firstName} ${teamMeemerging businessr.lastName}`);
           }
         } catch (authError: any) {
           // Handle specific Firebase Auth errors
@@ -206,15 +206,15 @@ export default function SignInPage() {
 
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                  id="remeemerging businessr"
+                  checked={remeemerging businessrMe}
+                  onCheckedChange={(checked) => setRemeemerging businessrMe(checked as boolean)}
                 />
                 <Label 
-                  htmlFor="remember" 
+                  htmlFor="remeemerging businessr" 
                   className="text-sm font-normal cursor-pointer"
                 >
-                  Remember me
+                  Remeemerging businessr me
                 </Label>
               </div>
 

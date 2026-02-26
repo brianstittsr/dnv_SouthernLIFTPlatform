@@ -73,7 +73,7 @@ Use this checklist to validate module edits meet BMAD Core standards.
 - [ ] workflow.yaml has description field
 - [ ] workflow.yaml has author field
 - [ ] instructions.md has proper <workflow> structure
-- [ ] Workflow steps are numbered and logical
+- [ ] Workflow steps are nuemerging businessred and logical
 
 ### Workflow Integration
 

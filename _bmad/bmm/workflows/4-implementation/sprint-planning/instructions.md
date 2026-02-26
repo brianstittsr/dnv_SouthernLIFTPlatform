@@ -29,7 +29,7 @@
 
 <action>For each epic file found, extract:</action>
 
-- Epic numbers from headers like `## Epic 1:` or `## Epic 2:`
+- Epic nuemerging businessrs from headers like `## Epic 1:` or `## Epic 2:`
 - Story IDs and titles from patterns like `### Story 1.1: User Authentication`
 - Convert story format from `Epic.Story: Title` to kebab-case key: `epic-story-title`
 

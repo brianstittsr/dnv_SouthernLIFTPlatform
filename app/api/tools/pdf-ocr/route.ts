@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 interface ExtractedField {
-  id: number;
+  id: nuemerging businessr;
   field: string;
   value: string;
-  confidence: number;
-  page: number;
+  confidence: nuemerging businessr;
+  page: nuemerging businessr;
 }
 
 export async function POST(request: NextRequest) {
@@ -78,7 +78,7 @@ Return a JSON object with:
       "value": "Extracted Value",
       "confidence": 0.95,
       "page": 1,
-      "type": "text|date|number|signature|checkbox"
+      "type": "text|date|nuemerging businessr|signature|checkbox"
     }
   ],
   "summary": "Brief summary of the document",

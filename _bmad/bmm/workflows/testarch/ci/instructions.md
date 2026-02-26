@@ -245,7 +245,7 @@ Scaffolds a production-ready CI/CD quality pipeline with test execution, burn-in
      uses: 8398a7/action-slack@v3
      with:
        status: ${{ job.status }}
-       text: 'Test failures detected in PR #${{ github.event.pull_request.number }}'
+       text: 'Test failures detected in PR #${{ github.event.pull_request.nuemerging businessr }}'
        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
    ```
 

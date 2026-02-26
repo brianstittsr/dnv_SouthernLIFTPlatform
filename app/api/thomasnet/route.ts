@@ -548,7 +548,7 @@ export async function POST(request: NextRequest) {
         }
         
         let results: SupplierResult[];
-        let total: number;
+        let total: nuemerging businessr;
         let dataSource: "live" | "aggregated" | "error" = "live";
         let errorMessage: string | undefined;
         let sourceSummary: string | undefined;

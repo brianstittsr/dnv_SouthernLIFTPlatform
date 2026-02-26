@@ -79,7 +79,7 @@ export default function CalendarPage() {
   const [hasCompletedInitialSync, setHasCompletedInitialSync] = useState(false);
   const [view, setView] = useState<"month" | "week" | "day">("month");
   const [filterType, setFilterType] = useState<string | null>(null);
-  const [filterTeamMember, setFilterTeamMember] = useState<string | null>(null);
+  const [filterTeamMeemerging businessr, setFilterTeamMeemerging businessr] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("calendar");
   
   // 1-to-1 Queue state
@@ -205,13 +205,13 @@ export default function CalendarPage() {
       
       // Create calendar event
       const calendarEvent: Omit<CalendarEventDoc, 'id'> = {
-        title: `1-to-1 with ${selectedQueueItem.teamMemberName}`,
-        description: `1-to-1 meeting with ${selectedQueueItem.teamMemberName} (${selectedQueueItem.teamMemberExpertise || ''})`,
+        title: `1-to-1 with ${selectedQueueItem.teamMeemerging businessrName}`,
+        description: `1-to-1 meeting with ${selectedQueueItem.teamMeemerging businessrName} (${selectedQueueItem.teamMeemerging businessrExpertise || ''})`,
         startDate: Timestamp.fromDate(scheduledDate),
         endDate: Timestamp.fromDate(endDate),
         type: 'one-to-one',
         color: '#f59e0b',
-        attendees: [selectedQueueItem.teamMemberName],
+        attendees: [selectedQueueItem.teamMeemerging businessrName],
         location: scheduleForm.location || (scheduleForm.meetingType === 'virtual' ? 'Video Call' : ''),
         oneToOneQueueItemId: selectedQueueItem.id,
         createdAt: Timestamp.now(),
@@ -236,13 +236,13 @@ export default function CalendarPage() {
       // Add to local events
       const newEvent: CalendarEventData = {
         id: eventRef.id,
-        title: `1-to-1 with ${selectedQueueItem.teamMemberName}`,
-        description: `1-to-1 meeting with ${selectedQueueItem.teamMemberName}`,
+        title: `1-to-1 with ${selectedQueueItem.teamMeemerging businessrName}`,
+        description: `1-to-1 meeting with ${selectedQueueItem.teamMeemerging businessrName}`,
         startDate: scheduledDate,
         endDate: endDate,
         type: 'meeting',
         color: '#f59e0b',
-        attendees: [selectedQueueItem.teamMemberName],
+        attendees: [selectedQueueItem.teamMeemerging businessrName],
         location: scheduleForm.location,
       };
       setEvents(prev => [...prev, newEvent]);
@@ -469,8 +469,8 @@ export default function CalendarPage() {
     setEvents((prev) => prev.filter((event) => event.id !== id));
   };
 
-  // Get unique team members from events (attendees)
-  const teamMembers = Array.from(
+  // Get unique team meemerging businessrs from events (attendees)
+  const teamMeemerging businessrs = Array.from(
     new Set(
       events
         .flatMap((e) => e.attendees || [])
@@ -478,12 +478,12 @@ export default function CalendarPage() {
     )
   ).sort();
 
-  // Filter events by type and team member
+  // Filter events by type and team meemerging businessr
   const filteredEvents = events.filter((e) => {
     const matchesType = !filterType || e.type === filterType;
-    const matchesTeamMember = !filterTeamMember || 
-      (e.attendees && e.attendees.includes(filterTeamMember));
-    return matchesType && matchesTeamMember;
+    const matchesTeamMeemerging businessr = !filterTeamMeemerging businessr || 
+      (e.attendees && e.attendees.includes(filterTeamMeemerging businessr));
+    return matchesType && matchesTeamMeemerging businessr;
   });
 
   // Stats
@@ -637,21 +637,21 @@ export default function CalendarPage() {
               </Select>
             </div>
 
-            {/* Team Member Filter */}
+            {/* Team Meemerging businessr Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Team Member:</span>
+              <span className="text-sm font-medium">Team Meemerging businessr:</span>
               <Select
-                value={filterTeamMember || "all"}
-                onValueChange={(value) => setFilterTeamMember(value === "all" ? null : value)}
+                value={filterTeamMeemerging businessr || "all"}
+                onValueChange={(value) => setFilterTeamMeemerging businessr(value === "all" ? null : value)}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="All Members" />
+                  <SelectValue placeholder="All Meemerging businessrs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Members</SelectItem>
-                  {teamMembers.map((member) => (
-                    <SelectItem key={member} value={member}>
-                      {member}
+                  <SelectItem value="all">All Meemerging businessrs</SelectItem>
+                  {teamMeemerging businessrs.map((meemerging businessr) => (
+                    <SelectItem key={meemerging businessr} value={meemerging businessr}>
+                      {meemerging businessr}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -659,13 +659,13 @@ export default function CalendarPage() {
             </div>
 
             {/* Clear Filters */}
-            {(filterType || filterTeamMember) && (
+            {(filterType || filterTeamMeemerging businessr) && (
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => {
                   setFilterType(null);
-                  setFilterTeamMember(null);
+                  setFilterTeamMeemerging businessr(null);
                 }}
               >
                 <X className="h-4 w-4 mr-1" />
@@ -674,7 +674,7 @@ export default function CalendarPage() {
             )}
 
             {/* Active filter badges */}
-            {(filterType || filterTeamMember) && (
+            {(filterType || filterTeamMeemerging businessr) && (
               <div className="flex items-center gap-2">
                 {filterType && (
                   <Badge variant="secondary" className="flex items-center gap-1">
@@ -682,10 +682,10 @@ export default function CalendarPage() {
                     Type: {filterType}
                   </Badge>
                 )}
-                {filterTeamMember && (
+                {filterTeamMeemerging businessr && (
                   <Badge variant="secondary" className="flex items-center gap-1">
                     <User className="h-3 w-3" />
-                    {filterTeamMember}
+                    {filterTeamMeemerging businessr}
                   </Badge>
                 )}
               </div>
@@ -727,7 +727,7 @@ export default function CalendarPage() {
                   <span className="text-sm">Issues</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500" />
+                  <div className="w-3 h-3 rounded-full bg-aemerging businessr-500" />
                   <span className="text-sm">1-to-1 Meetings</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -763,7 +763,7 @@ export default function CalendarPage() {
                     1-to-1 Scheduling Queue
                   </CardTitle>
                   <CardDescription>
-                    Team members queued for 1-to-1 meetings. Click "Schedule" to book a meeting.
+                    Team meemerging businessrs queued for 1-to-1 meetings. Click "Schedule" to book a meeting.
                   </CardDescription>
                 </div>
                 <Button variant="outline" onClick={fetchOneToOneQueue} disabled={loadingQueue}>
@@ -782,12 +782,12 @@ export default function CalendarPage() {
                   <UserPlus className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <h3 className="text-lg font-medium mb-2">No 1-to-1s Queued</h3>
                   <p className="text-sm mb-4">
-                    Add team members to your 1-to-1 queue from the Team Members page.
+                    Add team meemerging businessrs to your 1-to-1 queue from the Team Meemerging businessrs page.
                   </p>
                   <Button variant="outline" asChild>
-                    <a href="/portal/admin/team-members">
+                    <a href="/portal/admin/team-meemerging businessrs">
                       <Users className="mr-2 h-4 w-4" />
-                      Go to Team Members
+                      Go to Team Meemerging businessrs
                     </a>
                   </Button>
                 </div>
@@ -803,15 +803,15 @@ export default function CalendarPage() {
                           {index + 1}
                         </div>
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={queueItem.teamMemberAvatar} />
+                          <AvatarImage src={queueItem.teamMeemerging businessrAvatar} />
                           <AvatarFallback>
-                            {queueItem.teamMemberName.split(' ').map(n => n[0]).join('')}
+                            {queueItem.teamMeemerging businessrName.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-medium">{queueItem.teamMemberName}</p>
-                          <p className="text-sm text-muted-foreground">{queueItem.teamMemberExpertise}</p>
-                          <p className="text-xs text-muted-foreground">{queueItem.teamMemberEmail}</p>
+                          <p className="font-medium">{queueItem.teamMeemerging businessrName}</p>
+                          <p className="text-sm text-muted-foreground">{queueItem.teamMeemerging businessrExpertise}</p>
+                          <p className="text-xs text-muted-foreground">{queueItem.teamMeemerging businessrEmail}</p>
                         </div>
                         <Button
                           variant="ghost"
@@ -837,7 +837,7 @@ export default function CalendarPage() {
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-green-500 mt-0.5" />
-                  <span>Add team members to your queue from the <strong>Team Members</strong> page</span>
+                  <span>Add team meemerging businessrs to your queue from the <strong>Team Meemerging businessrs</strong> page</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-green-500 mt-0.5" />
@@ -845,7 +845,7 @@ export default function CalendarPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-green-500 mt-0.5" />
-                  <span>Scheduled meetings appear in the <strong>Calendar</strong> tab with an amber color</span>
+                  <span>Scheduled meetings appear in the <strong>Calendar</strong> tab with an aemerging businessr color</span>
                 </li>
               </ul>
             </CardContent>
@@ -860,7 +860,7 @@ export default function CalendarPage() {
             <DialogTitle>Schedule 1-to-1 Meeting</DialogTitle>
             <DialogDescription>
               {selectedQueueItem && (
-                <span>Schedule a meeting with <strong>{selectedQueueItem.teamMemberName}</strong></span>
+                <span>Schedule a meeting with <strong>{selectedQueueItem.teamMeemerging businessrName}</strong></span>
               )}
             </DialogDescription>
           </DialogHeader>

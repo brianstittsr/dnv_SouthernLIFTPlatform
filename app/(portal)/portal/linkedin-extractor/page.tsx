@@ -437,10 +437,10 @@ export default function LinkedInExtractorPage() {
                       </ul>
                     </div>
 
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div className="p-3 bg-aemerging businessr-50 border border-aemerging businessr-200 rounded-lg">
                       <div className="flex gap-2">
-                        <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-xs text-amber-800">
+                        <AlertCircle className="h-4 w-4 text-aemerging businessr-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-xs text-aemerging businessr-800">
                           <p className="font-medium">Note about LinkedIn access</p>
                           <p className="mt-1">
                             LinkedIn restricts automated access to most content.

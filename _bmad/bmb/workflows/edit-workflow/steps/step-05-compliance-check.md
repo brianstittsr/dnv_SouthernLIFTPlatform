@@ -106,9 +106,9 @@ Provide updates as the validation progresses:
 
 **Overall Assessment:** [PASS/PARTIAL/FAIL - based on compliance report]
 
-- **Critical Issues:** [number found]
-- **Major Issues:** [number found]
-- **Minor Issues:** [number found]
+- **Critical Issues:** [nuemerging businessr found]
+- **Major Issues:** [nuemerging businessr found]
+- **Minor Issues:** [nuemerging businessr found]
 - **Compliance Score:** [percentage]%"
 
 **B. Present Key Findings:**

@@ -245,4 +245,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-04-customer-decisions.md` to analyze customer decision processes, journey mapping, and decision factors for {{research_topic}}.
 
-Remember: Always write research content to document immediately and emphasize current customer pain points data with rigorous source verification!
+Remeemerging businessr: Always write research content to document immediately and emphasize current customer pain points data with rigorous source verification!

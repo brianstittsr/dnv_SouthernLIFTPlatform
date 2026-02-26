@@ -118,7 +118,7 @@ export default function ClientOnboardingPage() {
     // Company Information
     companyName: "",
     companyType: "",
-    dunsNumber: "",
+    dunsNuemerging businessr: "",
     taxId: "",
     yearEstablished: "",
     employeeCount: "",
@@ -292,7 +292,7 @@ export default function ClientOnboardingPage() {
             />
             <div className="flex flex-col">
               <span className="text-lg font-bold leading-none">KDM & Associates</span>
-              <span className="text-xs text-muted-foreground">Member Onboarding</span>
+              <span className="text-xs text-muted-foreground">Meemerging businessr Onboarding</span>
             </div>
           </Link>
           <div className="flex items-center gap-4">
@@ -382,11 +382,11 @@ export default function ClientOnboardingPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="dunsNumber">DUNS Number</Label>
+                      <Label htmlFor="dunsNuemerging businessr">DUNS Nuemerging businessr</Label>
                       <Input
-                        id="dunsNumber"
-                        value={formData.dunsNumber}
-                        onChange={(e) => updateFormData("dunsNumber", e.target.value)}
+                        id="dunsNuemerging businessr"
+                        value={formData.dunsNuemerging businessr}
+                        onChange={(e) => updateFormData("dunsNuemerging businessr", e.target.value)}
                         placeholder="00-000-0000"
                       />
                     </div>
@@ -400,7 +400,7 @@ export default function ClientOnboardingPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="employeeCount">Number of Employees</Label>
+                      <Label htmlFor="employeeCount">Nuemerging businessr of Employees</Label>
                       <Select value={formData.employeeCount} onValueChange={(v) => updateFormData("employeeCount", v)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select range" />

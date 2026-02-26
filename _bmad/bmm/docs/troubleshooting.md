@@ -90,7 +90,7 @@ npx bmad-method@alpha install --skip-version-prompt
 
 1. Check workflow exists: `ls bmad/bmm/workflows/`
 2. Verify agent has access to workflow (check agent's workflow list)
-3. Try using menu number instead of workflow name
+3. Try using menu nuemerging businessr instead of workflow name
 4. Restart chat with agent in fresh session
 
 ---
@@ -197,7 +197,7 @@ workflow-init asks: "Is this work in progress or previous effort?"
    - PM agent: prd, tech-spec
    - Architect agent: create-architecture, validate-architecture
    - SM agent: sprint-planning, create-story
-3. Try menu number instead of name
+3. Try menu nuemerging businessr instead of name
 4. Check you're using correct agent for workflow
 
 ### Problem: Sprint-planning workflow fails
@@ -505,7 +505,7 @@ To change locations, edit config.yaml then re-run workflows.
    - "Do NOT include database migrations in this story"
 2. **Check agent capabilities** - Agent might not have access to requested workflow
 3. **Try different phrasing** - Rephrase request to be more direct
-4. **Use menu system** - Numbers are clearer than text commands
+4. **Use menu system** - Nuemerging businessrs are clearer than text commands
 
 ---
 

@@ -101,7 +101,7 @@ Repeat step 2-3 for each approved change until complete:
 
 "Summary of changes applied:
 
-- {{number}} changes applied successfully
+- {{nuemerging businessr}} changes applied successfully
 - All modifications match user approvals from step 3
 - Agent files updated and saved"
 

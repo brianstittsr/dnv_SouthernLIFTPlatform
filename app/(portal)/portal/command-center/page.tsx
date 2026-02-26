@@ -28,33 +28,33 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, limit, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
-import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMemberDoc, type PlatformSettingsDoc } from "@/lib/schema";
+import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMeemerging businessrDoc, type PlatformSettingsDoc } from "@/lib/schema";
 import type { CalendarEventDoc } from "@/lib/schema";
 
 // Types for dashboard data
 interface DashboardStats {
   pipeline: {
-    value: number;
-    change: number;
+    value: nuemerging businessr;
+    change: nuemerging businessr;
     trend: "up" | "down";
   };
   activeProjects: {
-    count: number;
-    atRisk: number;
+    count: nuemerging businessr;
+    atRisk: nuemerging businessr;
   };
   rocks: {
-    progress: number;
-    daysRemaining: number;
+    progress: nuemerging businessr;
+    daysRemaining: nuemerging businessr;
   };
-  teamOnline: number;
+  teamOnline: nuemerging businessr;
 }
 
 interface OpportunityDisplay {
   id: string;
   name: string;
   stage: string;
-  value: number;
-  daysAgo: number;
+  value: nuemerging businessr;
+  daysAgo: nuemerging businessr;
   owner: { name: string; initials: string };
 }
 
@@ -63,7 +63,7 @@ interface MeetingDisplay {
   title: string;
   time: string;
   duration: string;
-  attendees: number;
+  attendees: nuemerging businessr;
 }
 
 interface ActionItemDisplay {
@@ -81,8 +81,8 @@ interface ActivityDisplay {
   time: string;
 }
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
+function formatCurrency(value: nuemerging businessr) {
+  return new Intl.Nuemerging businessrFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
@@ -121,7 +121,7 @@ function getRelativeTime(date: Date): string {
   return `${diffDays} days ago`;
 }
 
-function getDaysAgo(date: Date): number {
+function getDaysAgo(date: Date): nuemerging businessr {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   return Math.floor(diffMs / 86400000);
@@ -133,7 +133,7 @@ function getCurrentQuarter(): string {
   return `Q${quarter} ${now.getFullYear()}`;
 }
 
-function getDaysRemainingInQuarter(): number {
+function getDaysRemainingInQuarter(): nuemerging businessr {
   const now = new Date();
   const quarter = Math.floor(now.getMonth() / 3);
   const quarterEnd = new Date(now.getFullYear(), (quarter + 1) * 3, 0);
@@ -153,7 +153,7 @@ export default function CommandCenterPage() {
   const [meetings, setMeetings] = useState<MeetingDisplay[]>([]);
   const [actionItems, setActionItems] = useState<ActionItemDisplay[]>([]);
   const [recentActivity, setRecentActivity] = useState<ActivityDisplay[]>([]);
-  const [teamMembers, setTeamMembers] = useState<{ initials: string; name: string }[]>([]);
+  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<{ initials: string; name: string }[]>([]);
   const [showAskAI, setShowAskAI] = useState(false);
 
   useEffect(() => {
@@ -289,24 +289,24 @@ export default function CommandCenterPage() {
           setRecentActivity([]);
         }
 
-        // Fetch team members
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        // Fetch team meemerging businessrs
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
         const teamQuery = query(teamRef, where("status", "==", "active"), limit(10));
         
         try {
           const teamSnapshot = await getDocs(teamQuery);
           const teamData: { initials: string; name: string }[] = [];
           teamSnapshot.forEach((doc) => {
-            const data = doc.data() as TeamMemberDoc;
+            const data = doc.data() as TeamMeemerging businessrDoc;
             const initials = `${(data.firstName || "")[0] || ""}${(data.lastName || "")[0] || ""}`.toUpperCase() || "??";
             teamData.push({
               initials,
-              name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "Team Member",
+              name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "Team Meemerging businessr",
             });
           });
-          setTeamMembers(teamData);
+          setTeamMeemerging businessrs(teamData);
         } catch {
-          setTeamMembers([]);
+          setTeamMeemerging businessrs([]);
         }
 
         // Fetch rocks progress
@@ -342,7 +342,7 @@ export default function CommandCenterPage() {
             progress: rockCount > 0 ? Math.round(totalProgress / rockCount) : 0,
             daysRemaining: getDaysRemainingInQuarter(),
           },
-          teamOnline: teamMembers.length,
+          teamOnline: teamMeemerging businessrs.length,
         });
 
       } catch (error) {
@@ -498,23 +498,23 @@ export default function CommandCenterPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{teamMembers.length}</div>
+            <div className="text-2xl font-bold">{teamMeemerging businessrs.length}</div>
             <div className="flex -space-x-2 mt-2">
-              {teamMembers.length > 0 ? (
-                teamMembers.slice(0, 5).map((member, i) => (
+              {teamMeemerging businessrs.length > 0 ? (
+                teamMeemerging businessrs.slice(0, 5).map((meemerging businessr, i) => (
                   <Avatar key={i} className="h-8 w-8 border-2 border-background">
                     <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                      {member.initials}
+                      {meemerging businessr.initials}
                     </AvatarFallback>
                   </Avatar>
                 ))
               ) : (
-                <p className="text-xs text-muted-foreground">No team members</p>
+                <p className="text-xs text-muted-foreground">No team meemerging businessrs</p>
               )}
-              {teamMembers.length > 5 && (
+              {teamMeemerging businessrs.length > 5 && (
                 <Avatar className="h-8 w-8 border-2 border-background">
                   <AvatarFallback className="bg-muted text-muted-foreground text-xs">
-                    +{teamMembers.length - 5}
+                    +{teamMeemerging businessrs.length - 5}
                   </AvatarFallback>
                 </Avatar>
               )}
@@ -711,7 +711,7 @@ export default function CommandCenterPage() {
                       {activity.type === "meeting" && <Calendar className="h-4 w-4" />}
                       {activity.type === "document" && <FileText className="h-4 w-4" />}
                       {activity.type === "project" && <FolderKanban className="h-4 w-4" />}
-                      {activity.type === "team-member" && <Users className="h-4 w-4" />}
+                      {activity.type === "team-meemerging businessr" && <Users className="h-4 w-4" />}
                       {activity.type === "organization" && <Target className="h-4 w-4" />}
                       {activity.type === "affiliate" && <Users className="h-4 w-4" />}
                       {activity.type === "settings" && <CheckSquare className="h-4 w-4" />}

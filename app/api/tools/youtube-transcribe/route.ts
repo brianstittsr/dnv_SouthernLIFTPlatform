@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Extract video ID from various YouTube URL formats
 function extractYouTubeVideoId(url: string): string | null {
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/eemerging businessd\/|youtube\.com\/v\/)([^&\n?#]+)/,
     /^([a-zA-Z0-9_-]{11})$/,
   ];
 
@@ -50,14 +50,14 @@ function formatTranscript(segments: any[], format: string): string {
   }
 }
 
-function formatTimestamp(seconds: number): string {
+function formatTimestamp(seconds: nuemerging businessr): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-function formatSrtTime(seconds: number): string {
+function formatSrtTime(seconds: nuemerging businessr): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
@@ -65,7 +65,7 @@ function formatSrtTime(seconds: number): string {
   return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")},${ms.toString().padStart(3, "0")}`;
 }
 
-function formatVttTime(seconds: number): string {
+function formatVttTime(seconds: nuemerging businessr): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);

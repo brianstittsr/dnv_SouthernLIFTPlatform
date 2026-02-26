@@ -83,7 +83,7 @@ FRs define WHAT capabilities the product must have. They are the complete invent
 ✅ Each FR is a testable capability
 ✅ Each FR is implementation-agnostic (could be built many ways)
 ✅ Each FR specifies WHO and WHAT, not HOW
-✅ No UI details, no performance numbers, no technology choices
+✅ No UI details, no performance nuemerging businessrs, no technology choices
 ✅ Comprehensive coverage of capability areas
 
 **How They Will Be Used:**
@@ -124,7 +124,7 @@ Create complete functional requirements using this format:
 **Format:**
 
 - FR#: [Actor] can [capability] [context/constraint if needed]
-- Number sequentially (FR1, FR2, FR3...)
+- Nuemerging businessr sequentially (FR1, FR2, FR3...)
 - Aim for 20-50 FRs for typical projects
 
 **Altitude Check:**
@@ -266,4 +266,4 @@ Emphasize to user: "This FR list is now binding. Any feature not listed here wil
 
 After user selects 'C' and content is saved to document, load `{project-root}/_bmad/bmm/workflows/2-plan-workflows/prd/steps/step-10-nonfunctional.md` to define non-functional requirements.
 
-Remember: Do NOT proceed to step-10 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-10 until user explicitly selects 'C' from the A/P/C menu and content is saved!

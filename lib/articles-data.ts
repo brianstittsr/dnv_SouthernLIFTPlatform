@@ -104,7 +104,7 @@ In times of economic uncertainty, lenders may be more cautious about extending c
 
 ## The Importance of Resilience and Adaptability
 
-While the collapse of Silicon Valley Bank may have created challenges for minority-owned tech companies seeking to access capital, it is important to remember that the banking industry remains a crucial source of funding for startups and small businesses. The failure of one bank does not reflect the overall health of the financial system. Minority-owned tech companies should remain optimistic and adaptable, using this as an opportunity to explore new funding sources and strengthen their business models.
+While the collapse of Silicon Valley Bank may have created challenges for minority-owned tech companies seeking to access capital, it is important to remeemerging businessr that the banking industry remains a crucial source of funding for startups and small businesses. The failure of one bank does not reflect the overall health of the financial system. Minority-owned tech companies should remain optimistic and adaptable, using this as an opportunity to explore new funding sources and strengthen their business models.
 
 ## Key Takeaways for Minority-Owned Tech Companies
 
@@ -138,7 +138,7 @@ The failure of Silicon Valley Bank, while challenging, presents an opportunity f
 CMMC 2.0 introduces several key changes from the original framework:
 
 ### Simplified Tier Structure
-The new model reduces the number of maturity levels from five to three:
+The new model reduces the nuemerging businessr of maturity levels from five to three:
 - **Level 1 (Foundational)**: Basic cyber hygiene practices
 - **Level 2 (Advanced)**: Implementation of NIST SP 800-171 controls
 - **Level 3 (Expert)**: Advanced cybersecurity practices for critical national security information

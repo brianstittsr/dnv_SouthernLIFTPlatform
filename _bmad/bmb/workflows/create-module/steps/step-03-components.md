@@ -124,7 +124,7 @@ Workflows are the step-by-step processes that users will follow to accomplish sp
 2. **[Supporting Workflow 1]** - For specific use case
 3. **[Supporting Workflow 2]** - For another use case
 
-Remember: We'll create workflow PLANS first, not full implementations. These plans can be used later with the create-workflow workflow."
+Remeemerging businessr: We'll create workflow PLANS first, not full implementations. These plans can be used later with the create-workflow workflow."
 
 ### 4. Task Planning (Optional)
 

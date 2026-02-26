@@ -25,7 +25,7 @@ interface FirebaseArticle {
   author: string;
   tags: string[];
   publishedAt: string;
-  viewCount: number;
+  viewCount: nuemerging businessr;
 }
 
 const CATEGORIES = [

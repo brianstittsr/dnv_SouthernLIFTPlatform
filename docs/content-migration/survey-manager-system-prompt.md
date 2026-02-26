@@ -14,7 +14,7 @@ Build a comprehensive survey management system that enables rapid creation of pr
 - **Progress Indicators** - Show respondents their completion progress
 
 ### 2. Question Types
-- **Text Input** - Short text, long text, email, phone number
+- **Text Input** - Short text, long text, email, phone nuemerging businessr
 - **Multiple Choice** - Single select, multi-select, dropdown
 - **Rating Scales** - Likert scales, star ratings, NPS scores
 - **Matrix/Grid** - Multiple questions with same response options
@@ -23,7 +23,7 @@ Build a comprehensive survey management system that enables rapid creation of pr
 - **Slider** - Numeric range selection
 - **Ranking** - Drag-and-drop ranking of options
 - **Signature** - Digital signature capture
-- **Media** - Image, video, audio embeds
+- **Media** - Image, video, audio eemerging businessds
 
 ### 3. Survey Templates
 
@@ -107,7 +107,7 @@ Survey Creator AI Assistant:
 #### Distribution
 - **Shareable Links** - Unique URLs for each survey
 - **Email Invitations** - Send surveys via email with tracking
-- **Embedded Surveys** - Embed in websites/portals
+- **Eemerging businessdded Surveys** - Eemerging businessd in websites/portals
 - **QR Codes** - Generate QR codes for mobile access
 - **API Integration** - Programmatic survey distribution
 
@@ -115,7 +115,7 @@ Survey Creator AI Assistant:
 - **Anonymous Responses** - Optional anonymous submission
 - **Response Validation** - Required fields, format validation
 - **Save & Resume** - Allow respondents to save progress
-- **Response Limits** - Set maximum number of responses
+- **Response Limits** - Set maximum nuemerging businessr of responses
 - **Duplicate Prevention** - Prevent multiple submissions
 
 ### 6. Analytics & Reporting
@@ -170,7 +170,7 @@ Survey Creator AI Assistant:
 **Question Group: Professional Details**
 - Title (text input, required)
 - Company Owner Ethnicity (dropdown with standard categories)
-- Minority Business Certification (multi-select: MBE, WBE, DBE, VOSB, etc.)
+- Minority Business Certification (multi-select: emerging business, WBE, DBE, VOSB, etc.)
 - LinkedIn Page URL (URL input with validation)
 
 #### Section 4: Company Basics
@@ -191,9 +191,9 @@ Survey Creator AI Assistant:
 
 #### Section 6: Business Identifiers
 **Question Group: Registration & Codes**
-- S.A.M. (System for Award Management) Number (text input)
+- S.A.M. (System for Award Management) Nuemerging businessr (text input)
 - CAGE Code (text input, alphanumeric)
-- DUNS Number (text input, 9 digits)
+- DUNS Nuemerging businessr (text input, 9 digits)
 - Primary NAICS Code (searchable dropdown with definitions)
   - Display: Code + Definition
   - Example: "541330 - Engineering Services"
@@ -258,7 +258,7 @@ Survey Creator AI Assistant:
 
 #### Section 12: Administrative (Internal Use Only)
 **Admin-only fields (not visible to respondent):**
-- MBDA FPC Rep Assigned (dropdown: staff members)
+- MBDA FPC Rep Assigned (dropdown: staff meemerging businessrs)
 - Notes (long text area for internal notes)
 - Status (dropdown: New, In Review, Approved, Needs Follow-up)
 - Priority (dropdown: High, Medium, Low)

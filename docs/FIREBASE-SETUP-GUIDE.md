@@ -64,8 +64,8 @@ This will automatically set you up as platform_admin.
 The following collections are being queried but may not exist:
 
 - `platformSettings` - Navigation settings
-- `teamMembers` - Team member data
-- `memberships` - User memberships
+- `teamMeemerging businessrs` - Team meemerging businessr data
+- `meemerging businessrships` - User meemerging businessrships
 
 **Create placeholder documents:**
 
@@ -83,10 +83,10 @@ Go to Firestore Console and create these collections with initial documents:
 }
 ```
 
-#### `teamMembers` collection
+#### `teamMeemerging businessrs` collection
 Create an empty collection (add a dummy doc and delete it to create the collection)
 
-#### `memberships` collection
+#### `meemerging businessrships` collection
 Create an empty collection (add a dummy doc and delete it to create the collection)
 
 ### 4. Update Firestore Rules for Missing Collections

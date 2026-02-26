@@ -233,4 +233,4 @@ When user selects 'C', append the content directly to the document using the str
 
 After user selects 'C' and content is saved to document, load `./step-13-responsive-accessibility.md` to define responsive design and accessibility strategy.
 
-Remember: Do NOT proceed to step-13 until user explicitly selects 'C' from the A/P/C menu and content is saved!
+Remeemerging businessr: Do NOT proceed to step-13 until user explicitly selects 'C' from the A/P/C menu and content is saved!

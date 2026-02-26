@@ -282,7 +282,7 @@ export async function POST(request: NextRequest) {
                 name: `${c.first_name} ${c.last_name}`,
                 company: c.organization_name,
                 email: c.email,
-                hasPhone: !!(c.phone_numbers as unknown[])?.length,
+                hasPhone: !!(c.phone_nuemerging businessrs as unknown[])?.length,
               })));
             }
 
@@ -330,7 +330,7 @@ export async function POST(request: NextRequest) {
             last_name: lastName,
             organization_name: company,
             reveal_personal_emails: true,
-            reveal_phone_number: true,
+            reveal_phone_nuemerging businessr: true,
           };
           
           if (linkedIn) {
@@ -374,7 +374,7 @@ export async function POST(request: NextRequest) {
             last_name: lastName,
             organization_name: company,
             reveal_personal_emails: true,
-            reveal_phone_number: true,
+            reveal_phone_nuemerging businessr: true,
           };
           
           if (linkedIn) {
@@ -449,12 +449,12 @@ export async function POST(request: NextRequest) {
         
         // Helper to extract phone from person object
         const extractPhone = (person: Record<string, unknown>): string | null => {
-          // Check phone_numbers array first
-          const phoneNumbers = person.phone_numbers as Array<{ sanitized_number?: string; raw_number?: string }> | undefined;
-          if (phoneNumbers && phoneNumbers.length > 0) {
-            const firstPhone = phoneNumbers[0];
+          // Check phone_nuemerging businessrs array first
+          const phoneNuemerging businessrs = person.phone_nuemerging businessrs as Array<{ sanitized_nuemerging businessr?: string; raw_nuemerging businessr?: string }> | undefined;
+          if (phoneNuemerging businessrs && phoneNuemerging businessrs.length > 0) {
+            const firstPhone = phoneNuemerging businessrs[0];
             if (firstPhone) {
-              return firstPhone.sanitized_number || firstPhone.raw_number || null;
+              return firstPhone.sanitized_nuemerging businessr || firstPhone.raw_nuemerging businessr || null;
             }
           }
           // Check other phone fields
@@ -485,8 +485,8 @@ export async function POST(request: NextRequest) {
               console.log("Contacts found for phone:", contactSearchData.contacts.map((c: Record<string, unknown>) => ({
                 name: `${c.first_name} ${c.last_name}`,
                 company: c.organization_name,
-                hasPhone: !!(c.phone_numbers as unknown[])?.length,
-                phoneNumbers: c.phone_numbers,
+                hasPhone: !!(c.phone_nuemerging businessrs as unknown[])?.length,
+                phoneNuemerging businessrs: c.phone_nuemerging businessrs,
               })));
             }
 
@@ -509,7 +509,7 @@ export async function POST(request: NextRequest) {
                   company: matchingContact.organization_name,
                   phone: phone,
                   hasPhone: !!phone,
-                  phoneNumbers: matchingContact.phone_numbers,
+                  phoneNuemerging businessrs: matchingContact.phone_nuemerging businessrs,
                   sanitizedPhone: matchingContact.sanitized_phone,
                 });
                 
@@ -539,7 +539,7 @@ export async function POST(request: NextRequest) {
             first_name: firstName,
             last_name: lastName,
             organization_name: company,
-            reveal_phone_number: true,
+            reveal_phone_nuemerging businessr: true,
             reveal_personal_emails: true,
           };
           
@@ -568,7 +568,7 @@ export async function POST(request: NextRequest) {
               source: "people_enrich",
               creditsUsed: true,
               debug: {
-                phoneNumbers: data.person.phone_numbers,
+                phoneNuemerging businessrs: data.person.phone_nuemerging businessrs,
                 mobilePhone: data.person.mobile_phone,
                 corporatePhone: data.person.corporate_phone,
               }
@@ -582,7 +582,7 @@ export async function POST(request: NextRequest) {
             first_name: firstName,
             last_name: lastName,
             organization_name: company,
-            reveal_phone_number: true,
+            reveal_phone_nuemerging businessr: true,
             reveal_personal_emails: true,
           };
           
@@ -608,7 +608,7 @@ export async function POST(request: NextRequest) {
               person: data.person,
               source: "people_match",
               debug: {
-                phoneNumbers: data.person.phone_numbers,
+                phoneNuemerging businessrs: data.person.phone_nuemerging businessrs,
                 mobilePhone: data.person.mobile_phone,
                 corporatePhone: data.person.corporate_phone,
               }
@@ -623,7 +623,7 @@ export async function POST(request: NextRequest) {
             headers,
             body: JSON.stringify({
               linkedin_url: linkedIn,
-              reveal_phone_number: true,
+              reveal_phone_nuemerging businessr: true,
             }),
           });
 
@@ -669,7 +669,7 @@ export async function POST(request: NextRequest) {
               body: JSON.stringify({
                 id: personId,
                 reveal_personal_emails: true,
-                reveal_phone_number: true,
+                reveal_phone_nuemerging businessr: true,
               }),
             });
 
@@ -679,7 +679,7 @@ export async function POST(request: NextRequest) {
               results.push({
                 id: personId,
                 email: data.person.email || data.person.personal_emails?.[0] || undefined,
-                phone: data.person.phone_numbers?.[0]?.sanitized_number || 
+                phone: data.person.phone_nuemerging businessrs?.[0]?.sanitized_nuemerging businessr || 
                        data.person.mobile_phone || 
                        data.person.corporate_phone || undefined,
               });

@@ -2,7 +2,7 @@
 
 **Document Type:** Feature Specification / Development Prompt  
 **Author:** Strategic Value Plus Solutions, LLC  
-**Date:** December 19, 2025  
+**Date:** Deceemerging businessr 19, 2025  
 **Version:** 1.0
 
 ---
@@ -26,7 +26,7 @@ When the OEM Supplier Readiness workflow is complete, the following artifacts wi
 6. **Vector Datastore** - PGVector-based knowledge base for conversational research chat
 
 ### 1.4 PGVector Integration
-All research data (crawled websites, uploaded documents, generated analyses) will be converted to vector embeddings and stored in a PGVector database. This enables:
+All research data (crawled websites, uploaded documents, generated analyses) will be converted to vector eemerging businessddings and stored in a PGVector database. This enables:
 - **Conversational Research Chat** - Ask questions about the research data
 - **Semantic Search** - Find relevant information across all sources
 - **Context-Aware Generation** - Use RAG for document generation
@@ -264,7 +264,7 @@ interface ResearchWebsite {
   url: string;
   status: 'pending' | 'crawling' | 'crawled' | 'error';
   crawledAt?: string;
-  pagesCrawled?: number;
+  pagesCrawled?: nuemerging businessr;
   extractedData?: WebsiteCrawlResult;
 }
 
@@ -284,7 +284,7 @@ interface WebsiteCrawlResult {
 interface ResearchDocument {
   id: string;
   name: string;
-  size: number;
+  size: nuemerging businessr;
   type: string;
   uploadedAt: string;
   analyzed: boolean;
@@ -326,7 +326,7 @@ interface CapabilityAssessment {
 interface Capability {
   name: string;
   description: string;
-  relevanceScore: number; // 1-5
+  relevanceScore: nuemerging businessr; // 1-5
   evidence: string[];
 }
 
@@ -334,7 +334,7 @@ interface CertificationAnalysis {
   current: Certification[];
   required: Certification[];
   gaps: CertificationGap[];
-  timeline: { certification: string; estimatedMonths: number; estimatedCost: string }[];
+  timeline: { certification: string; estimatedMonths: nuemerging businessr; estimatedCost: string }[];
 }
 
 interface Certification {
@@ -357,15 +357,15 @@ interface CertificationGap {
 
 interface OpportunityMatrix {
   opportunities: Opportunity[];
-  totalEstimatedValue: { low: number; high: number };
-  readinessScore: number; // 0-100
+  totalEstimatedValue: { low: nuemerging businessr; high: nuemerging businessr };
+  readinessScore: nuemerging businessr; // 0-100
 }
 
 interface Opportunity {
   id: string;
   name: string;
   description: string;
-  estimatedAnnualValue: { low: number; high: number };
+  estimatedAnnualValue: { low: nuemerging businessr; high: nuemerging businessr };
   readiness: 'ready' | 'needs_certification' | 'needs_development' | 'not_applicable';
   requirements: string[];
   timeline: string;
@@ -387,16 +387,16 @@ interface GapAnalysis {
 // POST /api/research/crawl-website
 interface CrawlWebsiteRequest {
   url: string;
-  depth?: number; // Default 2 levels
-  maxPages?: number; // Default 50
+  depth?: nuemerging businessr; // Default 2 levels
+  maxPages?: nuemerging businessr; // Default 50
 }
 
 interface CrawlWebsiteResponse {
   success: boolean;
   data?: WebsiteCrawlResult;
   error?: string;
-  pagesCrawled: number;
-  duration: number;
+  pagesCrawled: nuemerging businessr;
+  duration: nuemerging businessr;
 }
 ```
 
@@ -415,7 +415,7 @@ interface DeepResearchResponse {
   success: boolean;
   result?: DeepResearchResult;
   error?: string;
-  processingTime: number;
+  processingTime: nuemerging businessr;
 }
 ```
 
@@ -662,7 +662,7 @@ Structured document following the template from `RedArts-TBMNC-ProjectBrief.md`:
 ```typescript
 interface DocumentVersion {
   id: string;
-  version: number;
+  version: nuemerging businessr;
   createdAt: string;
   createdBy: string;
   changeLog: string;
@@ -686,7 +686,7 @@ interface DocumentSections {
 interface VersionHistory {
   documentId: string;
   versions: DocumentVersion[];
-  currentVersion: number;
+  currentVersion: nuemerging businessr;
 }
 ```
 
@@ -1007,7 +1007,7 @@ async function generatePresentationFromDeepResearch(
     branding,
     slides,
     transitions: { defaultTransition: 'fade', duration: 300, autoAdvance: false, autoAdvanceDelay: 0 },
-    navigation: { showProgress: true, showSlideNumbers: true, showThumbnails: true, keyboardNavigation: true, swipeNavigation: true },
+    navigation: { showProgress: true, showSlideNuemerging businessrs: true, showThumbnails: true, keyboardNavigation: true, swipeNavigation: true },
     metadata: { createdAt: new Date().toISOString(), sourceProjectId: deepResearch.projectId }
   };
 }
@@ -1057,14 +1057,14 @@ type TransitionType = 'fade' | 'slide' | 'zoom' | 'flip' | 'cube' | 'none';
 
 interface TransitionConfig {
   defaultTransition: TransitionType;
-  duration: number; // ms
+  duration: nuemerging businessr; // ms
   autoAdvance: boolean;
-  autoAdvanceDelay: number; // ms
+  autoAdvanceDelay: nuemerging businessr; // ms
 }
 
 interface NavigationConfig {
   showProgress: boolean;
-  showSlideNumbers: boolean;
+  showSlideNuemerging businessrs: boolean;
   showThumbnails: boolean;
   keyboardNavigation: boolean;
   swipeNavigation: boolean;
@@ -1255,35 +1255,35 @@ Interactive scenario modeling with real-time document regeneration:
 ```typescript
 interface OptimizationVariables {
   // Customer Value Variables
-  certificationInvestment: number;
-  facilitiesInScope: number;
-  implementationTimeline: number; // months
+  certificationInvestment: nuemerging businessr;
+  facilitiesInScope: nuemerging businessr;
+  implementationTimeline: nuemerging businessr; // months
   certificationScope: 'minimal' | 'standard' | 'comprehensive';
   systemsIntegration: boolean;
   wellnessProgramIncluded: boolean;
   
   // SVP Profit Variables
-  consultingRate: number;
-  successFeePercentage: number;
-  ongoingSupportMonths: number;
-  travelExpenseMarkup: number;
-  subcontractorMarkup: number;
+  consultingRate: nuemerging businessr;
+  successFeePercentage: nuemerging businessr;
+  ongoingSupportMonths: nuemerging businessr;
+  travelExpenseMarkup: nuemerging businessr;
+  subcontractorMarkup: nuemerging businessr;
 }
 
 interface OptimizationResults {
   customerMetrics: {
-    totalInvestment: number;
-    annualRevenueOpportunity: { low: number; high: number };
-    paybackPeriodMonths: number;
-    threeYearROI: number;
-    riskScore: number; // 1-10
+    totalInvestment: nuemerging businessr;
+    annualRevenueOpportunity: { low: nuemerging businessr; high: nuemerging businessr };
+    paybackPeriodMonths: nuemerging businessr;
+    threeYearROI: nuemerging businessr;
+    riskScore: nuemerging businessr; // 1-10
   };
   svpMetrics: {
-    totalRevenue: number;
-    grossMargin: number;
-    netMargin: number;
-    projectDurationMonths: number;
-    resourceRequirements: { role: string; hours: number }[];
+    totalRevenue: nuemerging businessr;
+    grossMargin: nuemerging businessr;
+    netMargin: nuemerging businessr;
+    projectDurationMonths: nuemerging businessr;
+    resourceRequirements: { role: string; hours: nuemerging businessr }[];
   };
   tradeoffs: {
     description: string;
@@ -1456,7 +1456,7 @@ CREATE TABLE document_versions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID REFERENCES oem_supplier_projects(id),
   document_type VARCHAR(50) NOT NULL, -- 'brief', 'dossier', 'presentation'
-  version_number INTEGER NOT NULL,
+  version_nuemerging businessr INTEGER NOT NULL,
   content JSONB NOT NULL,
   change_log TEXT,
   created_by UUID REFERENCES users(id),
@@ -1476,16 +1476,16 @@ CREATE TABLE optimization_scenarios (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Vector Embeddings for Research Data (PGVector)
-CREATE TABLE research_embeddings (
+-- Vector Eemerging businessddings for Research Data (PGVector)
+CREATE TABLE research_eemerging businessddings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID REFERENCES oem_supplier_projects(id) ON DELETE CASCADE,
   source_type VARCHAR(50) NOT NULL, -- 'website', 'document', 'analysis', 'brief'
   source_id UUID NOT NULL, -- Reference to research_websites, research_documents, etc.
   chunk_index INTEGER NOT NULL,
   content TEXT NOT NULL,
-  metadata JSONB, -- source URL, page number, section name, etc.
-  embedding vector(1536), -- OpenAI ada-002 dimension, adjust for other models
+  metadata JSONB, -- source URL, page nuemerging businessr, section name, etc.
+  eemerging businessdding vector(1536), -- OpenAI ada-002 dimension, adjust for other models
   created_at TIMESTAMP DEFAULT NOW(),
   
   -- Index for similarity search
@@ -1493,7 +1493,7 @@ CREATE TABLE research_embeddings (
 );
 
 -- Create HNSW index for fast similarity search
-CREATE INDEX ON research_embeddings USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX ON research_eemerging businessddings USING hnsw (eemerging businessdding vector_cosine_ops);
 
 -- Chat History for Research Conversations
 CREATE TABLE research_chat_history (
@@ -1511,8 +1511,8 @@ CREATE TABLE vector_store_configs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID REFERENCES oem_supplier_projects(id) ON DELETE CASCADE,
   connection_name VARCHAR(255) NOT NULL,
-  embedding_model VARCHAR(100) DEFAULT 'text-embedding-ada-002',
-  embedding_dimension INTEGER DEFAULT 1536,
+  eemerging businessdding_model VARCHAR(100) DEFAULT 'text-eemerging businessdding-ada-002',
+  eemerging businessdding_dimension INTEGER DEFAULT 1536,
   chunk_size INTEGER DEFAULT 1000,
   chunk_overlap INTEGER DEFAULT 200,
   total_chunks INTEGER DEFAULT 0,
@@ -1539,8 +1539,8 @@ CREATE TABLE pgvector_settings (
   password_encrypted TEXT NOT NULL, -- Encrypted with platform key
   ssl_mode VARCHAR(50) DEFAULT 'require',
   pool_size INTEGER DEFAULT 10,
-  embedding_provider VARCHAR(50) DEFAULT 'openai', -- 'openai', 'cohere', 'local'
-  embedding_model VARCHAR(100) DEFAULT 'text-embedding-ada-002',
+  eemerging businessdding_provider VARCHAR(50) DEFAULT 'openai', -- 'openai', 'cohere', 'local'
+  eemerging businessdding_model VARCHAR(100) DEFAULT 'text-eemerging businessdding-ada-002',
   is_active BOOLEAN DEFAULT TRUE,
   last_tested_at TIMESTAMP,
   test_status VARCHAR(50), -- 'success', 'error', 'pending'
@@ -1613,7 +1613,7 @@ Add a new "Vector Database" tab to the Settings page (`app/(portal)/portal/setti
           <Label htmlFor="pgvector-port">Port</Label>
           <Input
             id="pgvector-port"
-            type="number"
+            type="nuemerging businessr"
             placeholder="5432"
             value={pgvectorConfig.port}
             onChange={(e) => setPgvectorConfig({ ...pgvectorConfig, port: parseInt(e.target.value) })}
@@ -1680,18 +1680,18 @@ Add a new "Vector Database" tab to the Settings page (`app/(portal)/portal/setti
         </Select>
       </div>
 
-      {/* Embedding Configuration */}
+      {/* Eemerging businessdding Configuration */}
       <div className="border-t pt-4">
         <h4 className="font-medium mb-4 flex items-center gap-2">
           <Sparkles className="h-4 w-4" />
-          Embedding Configuration
+          Eemerging businessdding Configuration
         </h4>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="embedding-provider">Embedding Provider</Label>
+            <Label htmlFor="eemerging businessdding-provider">Eemerging businessdding Provider</Label>
             <Select
-              value={pgvectorConfig.embeddingProvider}
-              onValueChange={(value) => setPgvectorConfig({ ...pgvectorConfig, embeddingProvider: value })}
+              value={pgvectorConfig.eemerging businessddingProvider}
+              onValueChange={(value) => setPgvectorConfig({ ...pgvectorConfig, eemerging businessddingProvider: value })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select provider" />
@@ -1705,32 +1705,32 @@ Add a new "Vector Database" tab to the Settings page (`app/(portal)/portal/setti
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="embedding-model">Embedding Model</Label>
+            <Label htmlFor="eemerging businessdding-model">Eemerging businessdding Model</Label>
             <Select
-              value={pgvectorConfig.embeddingModel}
-              onValueChange={(value) => setPgvectorConfig({ ...pgvectorConfig, embeddingModel: value })}
+              value={pgvectorConfig.eemerging businessddingModel}
+              onValueChange={(value) => setPgvectorConfig({ ...pgvectorConfig, eemerging businessddingModel: value })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                {pgvectorConfig.embeddingProvider === 'openai' && (
+                {pgvectorConfig.eemerging businessddingProvider === 'openai' && (
                   <>
-                    <SelectItem value="text-embedding-ada-002">text-embedding-ada-002 (1536 dim)</SelectItem>
-                    <SelectItem value="text-embedding-3-small">text-embedding-3-small (1536 dim)</SelectItem>
-                    <SelectItem value="text-embedding-3-large">text-embedding-3-large (3072 dim)</SelectItem>
+                    <SelectItem value="text-eemerging businessdding-ada-002">text-eemerging businessdding-ada-002 (1536 dim)</SelectItem>
+                    <SelectItem value="text-eemerging businessdding-3-small">text-eemerging businessdding-3-small (1536 dim)</SelectItem>
+                    <SelectItem value="text-eemerging businessdding-3-large">text-eemerging businessdding-3-large (3072 dim)</SelectItem>
                   </>
                 )}
-                {pgvectorConfig.embeddingProvider === 'cohere' && (
+                {pgvectorConfig.eemerging businessddingProvider === 'cohere' && (
                   <>
-                    <SelectItem value="embed-english-v3.0">embed-english-v3.0 (1024 dim)</SelectItem>
-                    <SelectItem value="embed-multilingual-v3.0">embed-multilingual-v3.0 (1024 dim)</SelectItem>
+                    <SelectItem value="eemerging businessd-english-v3.0">eemerging businessd-english-v3.0 (1024 dim)</SelectItem>
+                    <SelectItem value="eemerging businessd-multilingual-v3.0">eemerging businessd-multilingual-v3.0 (1024 dim)</SelectItem>
                   </>
                 )}
-                {pgvectorConfig.embeddingProvider === 'ollama' && (
+                {pgvectorConfig.eemerging businessddingProvider === 'ollama' && (
                   <>
-                    <SelectItem value="nomic-embed-text">nomic-embed-text (768 dim)</SelectItem>
-                    <SelectItem value="mxbai-embed-large">mxbai-embed-large (1024 dim)</SelectItem>
+                    <SelectItem value="nomic-eemerging businessd-text">nomic-eemerging businessd-text (768 dim)</SelectItem>
+                    <SelectItem value="mxbai-eemerging businessd-large">mxbai-eemerging businessd-large (1024 dim)</SelectItem>
                   </>
                 )}
               </SelectContent>
@@ -1740,7 +1740,7 @@ Add a new "Vector Database" tab to the Settings page (`app/(portal)/portal/setti
             <Label htmlFor="chunk-size">Chunk Size (tokens)</Label>
             <Input
               id="chunk-size"
-              type="number"
+              type="nuemerging businessr"
               placeholder="1000"
               value={pgvectorConfig.chunkSize}
               onChange={(e) => setPgvectorConfig({ ...pgvectorConfig, chunkSize: parseInt(e.target.value) })}
@@ -1750,7 +1750,7 @@ Add a new "Vector Database" tab to the Settings page (`app/(portal)/portal/setti
             <Label htmlFor="chunk-overlap">Chunk Overlap (tokens)</Label>
             <Input
               id="chunk-overlap"
-              type="number"
+              type="nuemerging businessr"
               placeholder="200"
               value={pgvectorConfig.chunkOverlap}
               onChange={(e) => setPgvectorConfig({ ...pgvectorConfig, chunkOverlap: parseInt(e.target.value) })}
@@ -1794,8 +1794,8 @@ const [pgvectorConfig, setPgvectorConfig] = useState({
   username: 'postgres',
   password: '',
   sslMode: 'require',
-  embeddingProvider: 'openai',
-  embeddingModel: 'text-embedding-ada-002',
+  eemerging businessddingProvider: 'openai',
+  eemerging businessddingModel: 'text-eemerging businessdding-ada-002',
   chunkSize: 1000,
   chunkOverlap: 200,
 });
@@ -1807,15 +1807,15 @@ interface PlatformSettingsDoc {
   // ... existing fields
   pgvectorConfig?: {
     host: string;
-    port: number;
+    port: nuemerging businessr;
     database: string;
     username: string;
     password: string; // Encrypted
     sslMode: string;
-    embeddingProvider: string;
-    embeddingModel: string;
-    chunkSize: number;
-    chunkOverlap: number;
+    eemerging businessddingProvider: string;
+    eemerging businessddingModel: string;
+    chunkSize: nuemerging businessr;
+    chunkOverlap: nuemerging businessr;
     status: 'connected' | 'disconnected' | 'error';
     lastTestedAt?: Timestamp;
   };
@@ -1862,7 +1862,7 @@ interface ChatMessage {
     name: string;
     url?: string;
     snippet: string;
-    relevance: number;
+    relevance: nuemerging businessr;
   }[];
   timestamp: Date;
 }
@@ -2104,12 +2104,12 @@ export async function POST(request: NextRequest) {
     const pgConfig = await getPgVectorConfig();
     const pool = new Pool(pgConfig);
 
-    // 1. Generate embedding for the user's question
-    const embeddingResponse = await openai.embeddings.create({
-      model: pgConfig.embeddingModel || 'text-embedding-ada-002',
+    // 1. Generate eemerging businessdding for the user's question
+    const eemerging businessddingResponse = await openai.eemerging businessddings.create({
+      model: pgConfig.eemerging businessddingModel || 'text-eemerging businessdding-ada-002',
       input: message,
     });
-    const queryEmbedding = embeddingResponse.data[0].embedding;
+    const queryEemerging businessdding = eemerging businessddingResponse.data[0].eemerging businessdding;
 
     // 2. Search for relevant chunks using cosine similarity
     const searchQuery = `
@@ -2119,15 +2119,15 @@ export async function POST(request: NextRequest) {
         source_id,
         content,
         metadata,
-        1 - (embedding <=> $1::vector) as similarity
-      FROM research_embeddings
+        1 - (eemerging businessdding <=> $1::vector) as similarity
+      FROM research_eemerging businessddings
       WHERE project_id = $2
-      ORDER BY embedding <=> $1::vector
+      ORDER BY eemerging businessdding <=> $1::vector
       LIMIT 5
     `;
     
     const searchResult = await pool.query(searchQuery, [
-      JSON.stringify(queryEmbedding),
+      JSON.stringify(queryEemerging businessdding),
       projectId,
     ]);
 
@@ -2202,26 +2202,26 @@ ${context}`;
 
 ## 13. Vector Store Creation & Data Ingestion
 
-### 13.1 Embedding Pipeline
+### 13.1 Eemerging businessdding Pipeline
 
 ```typescript
-// lib/vector-store/embeddings.ts
+// lib/vector-store/eemerging businessddings.ts
 import OpenAI from 'openai';
 import { Pool } from 'pg';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 const openai = new OpenAI();
 
-interface EmbeddingConfig {
+interface Eemerging businessddingConfig {
   model: string;
-  chunkSize: number;
-  chunkOverlap: number;
+  chunkSize: nuemerging businessr;
+  chunkOverlap: nuemerging businessr;
 }
 
-export async function createEmbeddingsForProject(
+export async function createEemerging businessddingsForProject(
   projectId: string,
   pgPool: Pool,
-  config: EmbeddingConfig
+  config: Eemerging businessddingConfig
 ) {
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: config.chunkSize,
@@ -2239,14 +2239,14 @@ export async function createEmbeddingsForProject(
     const chunks = await splitter.splitText(content);
 
     for (let i = 0; i < chunks.length; i++) {
-      const embedding = await generateEmbedding(chunks[i], config.model);
+      const eemerging businessdding = await generateEemerging businessdding(chunks[i], config.model);
       
       await pgPool.query(`
-        INSERT INTO research_embeddings 
-        (project_id, source_type, source_id, chunk_index, content, metadata, embedding)
+        INSERT INTO research_eemerging businessddings 
+        (project_id, source_type, source_id, chunk_index, content, metadata, eemerging businessdding)
         VALUES ($1, 'website', $2, $3, $4, $5, $6)
         ON CONFLICT (source_id, chunk_index) 
-        DO UPDATE SET content = $4, metadata = $5, embedding = $6
+        DO UPDATE SET content = $4, metadata = $5, eemerging businessdding = $6
       `, [
         projectId,
         website.id,
@@ -2258,7 +2258,7 @@ export async function createEmbeddingsForProject(
           chunk_index: i,
           total_chunks: chunks.length,
         }),
-        JSON.stringify(embedding),
+        JSON.stringify(eemerging businessdding),
       ]);
     }
   }
@@ -2274,14 +2274,14 @@ export async function createEmbeddingsForProject(
     const chunks = await splitter.splitText(content);
 
     for (let i = 0; i < chunks.length; i++) {
-      const embedding = await generateEmbedding(chunks[i], config.model);
+      const eemerging businessdding = await generateEemerging businessdding(chunks[i], config.model);
       
       await pgPool.query(`
-        INSERT INTO research_embeddings 
-        (project_id, source_type, source_id, chunk_index, content, metadata, embedding)
+        INSERT INTO research_eemerging businessddings 
+        (project_id, source_type, source_id, chunk_index, content, metadata, eemerging businessdding)
         VALUES ($1, 'document', $2, $3, $4, $5, $6)
         ON CONFLICT (source_id, chunk_index) 
-        DO UPDATE SET content = $4, metadata = $5, embedding = $6
+        DO UPDATE SET content = $4, metadata = $5, eemerging businessdding = $6
       `, [
         projectId,
         doc.id,
@@ -2293,7 +2293,7 @@ export async function createEmbeddingsForProject(
           chunk_index: i,
           total_chunks: chunks.length,
         }),
-        JSON.stringify(embedding),
+        JSON.stringify(eemerging businessdding),
       ]);
     }
   }
@@ -2301,11 +2301,11 @@ export async function createEmbeddingsForProject(
   // 3. Update vector store config with stats
   const stats = await pgPool.query(`
     SELECT COUNT(*) as total_chunks, SUM(LENGTH(content)) as total_chars
-    FROM research_embeddings WHERE project_id = $1
+    FROM research_eemerging businessddings WHERE project_id = $1
   `, [projectId]);
 
   await pgPool.query(`
-    INSERT INTO vector_store_configs (project_id, connection_name, embedding_model, chunk_size, chunk_overlap, total_chunks, last_sync_at)
+    INSERT INTO vector_store_configs (project_id, connection_name, eemerging businessdding_model, chunk_size, chunk_overlap, total_chunks, last_sync_at)
     VALUES ($1, 'default', $2, $3, $4, $5, NOW())
     ON CONFLICT (project_id) 
     DO UPDATE SET total_chunks = $5, last_sync_at = NOW(), updated_at = NOW()
@@ -2323,12 +2323,12 @@ export async function createEmbeddingsForProject(
   };
 }
 
-async function generateEmbedding(text: string, model: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
+async function generateEemerging businessdding(text: string, model: string): Promise<nuemerging businessr[]> {
+  const response = await openai.eemerging businessddings.create({
     model,
     input: text,
   });
-  return response.data[0].embedding;
+  return response.data[0].eemerging businessdding;
 }
 ```
 
@@ -2338,7 +2338,7 @@ async function generateEmbedding(text: string, model: string): Promise<number[]>
 // app/api/research/create-vector-store/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
-import { createEmbeddingsForProject } from '@/lib/vector-store/embeddings';
+import { createEemerging businessddingsForProject } from '@/lib/vector-store/eemerging businessddings';
 
 export async function POST(request: NextRequest) {
   try {
@@ -2348,9 +2348,9 @@ export async function POST(request: NextRequest) {
     const pgConfig = await getPgVectorConfig();
     const pool = new Pool(pgConfig);
 
-    // Create embeddings for all research data
-    const result = await createEmbeddingsForProject(projectId, pool, {
-      model: pgConfig.embeddingModel,
+    // Create eemerging businessddings for all research data
+    const result = await createEemerging businessddingsForProject(projectId, pool, {
+      model: pgConfig.eemerging businessddingModel,
       chunkSize: pgConfig.chunkSize,
       chunkOverlap: pgConfig.chunkOverlap,
     });
@@ -2385,17 +2385,17 @@ interface ExportedProject {
   // ... existing fields
   vectorStoreConfig: {
     connectionName: string;
-    embeddingModel: string;
-    embeddingDimension: number;
-    chunkSize: number;
-    chunkOverlap: number;
-    totalChunks: number;
-    totalTokens: number;
+    eemerging businessddingModel: string;
+    eemerging businessddingDimension: nuemerging businessr;
+    chunkSize: nuemerging businessr;
+    chunkOverlap: nuemerging businessr;
+    totalChunks: nuemerging businessr;
+    totalTokens: nuemerging businessr;
     lastSyncAt: string;
     // Connection details (for re-import)
     connectionSettings: {
       host: string;
-      port: number;
+      port: nuemerging businessr;
       database: string;
       // Note: password not included for security
       sslMode: string;
@@ -2427,8 +2427,8 @@ async function exportProjectWithVectorConfig(projectId: string) {
   return {
     vectorStoreConfig: {
       connectionName: vectorConfig?.connection_name || 'default',
-      embeddingModel: vectorConfig?.embedding_model,
-      embeddingDimension: vectorConfig?.embedding_dimension,
+      eemerging businessddingModel: vectorConfig?.eemerging businessdding_model,
+      eemerging businessddingDimension: vectorConfig?.eemerging businessdding_dimension,
       chunkSize: vectorConfig?.chunk_size,
       chunkOverlap: vectorConfig?.chunk_overlap,
       totalChunks: vectorConfig?.total_chunks,
@@ -2498,7 +2498,7 @@ To reconnect to the vector store:
 ### Phase 7: PGVector Integration (Week 7-8)
 - [ ] Add PGVector Settings tab to Settings page
 - [ ] Implement connection testing
-- [ ] Create embedding pipeline
+- [ ] Create eemerging businessdding pipeline
 - [ ] Build vector store creation API
 - [ ] Implement chat with research feature
 - [ ] Add RAG-powered responses
@@ -2530,7 +2530,7 @@ To reconnect to the vector store:
 | `/api/research/save-version` | POST | Save document version |
 | `/api/research/save-scenario` | POST | Save optimization scenario |
 | `/api/research/export` | POST | Export documents |
-| `/api/research/create-vector-store` | POST | Create PGVector embeddings for project |
+| `/api/research/create-vector-store` | POST | Create PGVector eemerging businessddings for project |
 | `/api/research/chat` | POST | RAG-powered chat with research data |
 | `/api/pgvector/test-connection` | POST | Test PGVector database connection |
 | `/api/pgvector/config` | GET/PUT | Get or update PGVector configuration |
@@ -2548,7 +2548,7 @@ To reconnect to the vector store:
 7. **Presentation Builder** generates professional SVP-branded slides
 8. **AI Enhancement** improves document quality on demand
 9. **Value Optimizer** provides real-time scenario modeling
-10. **PGVector Integration** successfully stores embeddings and enables semantic search
+10. **PGVector Integration** successfully stores eemerging businessddings and enables semantic search
 11. **Chat with Research** provides accurate RAG-powered responses with source citations
 12. **Export** includes vector store connection settings for data portability
 13. **Export** delivers all formats (PDF, HTML, Markdown, PPTX, Web)

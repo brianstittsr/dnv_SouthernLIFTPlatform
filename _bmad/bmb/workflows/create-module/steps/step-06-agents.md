@@ -82,13 +82,13 @@ Let's design this agent by understanding what it needs:
 
 **Memory & Learning:**
 
-1. Does this agent need to remember things across sessions? (conversations, preferences, patterns)
+1. Does this agent need to remeemerging businessr things across sessions? (conversations, preferences, patterns)
    - If yes: We'll add sidecar folder structure for memory
    - If no: No persistent memory needed
 
 **Interaction Types:** 2. What does this agent DO?
 
-- Conversational interactions? → Use embedded prompts
+- Conversational interactions? → Use eemerging businessdded prompts
 - Quick single actions? → Use inline actions
 - Complex multi-step processes? → Consider workflows
 - Document generation? → Likely need workflows
@@ -96,12 +96,12 @@ Let's design this agent by understanding what it needs:
 **Multiple Agent Usage:** 3. Will other agents in this module need the same workflows?
 
 - If yes: Definitely create separate workflow files
-- If no: Could embed in agent file
+- If no: Could eemerging businessd in agent file
 
 **Based on this, what combination does [Agent Name] need?**
 
 - Memory/Persistence: [Yes/No]
-- Embedded prompts: [List main interactions]
+- Eemerging businessdded prompts: [List main interactions]
 - Workflows needed: [Which processes need separate files?]"
 
 #### 3.2 Present Agent Design
@@ -124,7 +124,7 @@ Let's design this agent by understanding what it needs:
 **Structure:**
 
 - Memory needed: [Yes/No - sidecar folder]
-- Embedded prompts: [List main interaction prompts]
+- Eemerging businessdded prompts: [List main interaction prompts]
 - Workflow processes: [Which need separate files]
 
 **Menu Items Planned:**
@@ -167,7 +167,7 @@ agent:
     - 'Load COMPLETE file ./[agent-name]-sidecar/memories.md and integrate all past interactions'
     - 'ONLY read/write files in ./[agent-name]-sidecar/ - this is our private workspace'
 
-  # Only include if agent has embedded prompts
+  # Only include if agent has eemerging businessdded prompts
   prompts:
     - id: '[prompt-name]'
       content: |
@@ -244,10 +244,10 @@ Update module-plan.md with agents section:
 
 1. **[Agent Name]** - [Agent Title]
    - File: [agent-filename].yaml
-   - Features: [Memory/Sidecar, Embedded prompts, Workflows]
+   - Features: [Memory/Sidecar, Eemerging businessdded prompts, Workflows]
    - Structure:
      - Sidecar: [Yes/No]
-     - Prompts: [number embedded]
+     - Prompts: [nuemerging businessr eemerging businessdded]
      - Workflows: [list of workflow folders]
    - Status: Created with [combination of features]
 ```

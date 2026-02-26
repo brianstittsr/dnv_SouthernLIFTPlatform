@@ -6,25 +6,25 @@
 ```typescript
 interface ExecutiveKPIs {
   organicTraffic: {
-    current: number; // Monthly organic sessions
-    target: number; // Target: 50% increase Year 1
-    growthRate: number; // Month-over-month growth
+    current: nuemerging businessr; // Monthly organic sessions
+    target: nuemerging businessr; // Target: 50% increase Year 1
+    growthRate: nuemerging businessr; // Month-over-month growth
   };
   leadGeneration: {
-    organicLeads: number; // Leads from organic search
-    conversionRate: number; // Organic traffic to lead conversion
-    qualifiedLeads: number; // Marketing qualified leads
-    costPerLead: number; // SEO investment per lead
+    organicLeads: nuemerging businessr; // Leads from organic search
+    conversionRate: nuemerging businessr; // Organic traffic to lead conversion
+    qualifiedLeads: nuemerging businessr; // Marketing qualified leads
+    costPerLead: nuemerging businessr; // SEO investment per lead
   };
   revenueAttribution: {
-    organicRevenue: number; // Revenue attributed to organic search
-    roi: number; // SEO return on investment
-    customerLifetimeValue: number; // LTV of SEO-acquired customers
+    organicRevenue: nuemerging businessr; // Revenue attributed to organic search
+    roi: nuemerging businessr; // SEO return on investment
+    customerLifetimeValue: nuemerging businessr; // LTV of SEO-acquired customers
   };
   marketPosition: {
-    keywordRankings: number; // Keywords in top 3 positions
-    localVisibility: number; // Local pack appearances
-    brandAwareness: number; // Branded search volume
+    keywordRankings: nuemerging businessr; // Keywords in top 3 positions
+    localVisibility: nuemerging businessr; // Local pack appearances
+    brandAwareness: nuemerging businessr; // Branded search volume
   };
 }
 ```

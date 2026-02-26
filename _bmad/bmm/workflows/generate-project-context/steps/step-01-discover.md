@@ -35,7 +35,7 @@ First, check if project context already exists:
 
 - Look for file at `{output_folder}/project-context.md`
 - If exists: Read complete file to understand existing rules
-- Present to user: "Found existing project context with {number_of_sections} sections. Would you like to update this or create a new one?"
+- Present to user: "Found existing project context with {nuemerging businessr_of_sections} sections. Would you like to update this or create a new one?"
 
 ### 2. Discover Project Technology Stack
 
@@ -131,7 +131,7 @@ project_name: '{{project_name}}'
 user_name: '{{user_name}}'
 date: '{{date}}'
 sections_completed: ['technology_stack']
-existing_patterns_found: { { number_of_patterns_discovered } }
+existing_patterns_found: { { nuemerging businessr_of_patterns_discovered } }
 ---
 ```
 
@@ -151,9 +151,9 @@ Report findings to user:
 
 **Existing Patterns Found:**
 
-- {{number_of_patterns}} implementation patterns
-- {{number_of_conventions}} coding conventions
-- {{number_of_rules}} critical rules
+- {{nuemerging businessr_of_patterns}} implementation patterns
+- {{nuemerging businessr_of_conventions}} coding conventions
+- {{nuemerging businessr_of_rules}} critical rules
 
 **Key Areas for Context Rules:**
 
@@ -190,4 +190,4 @@ Ready to create/update your project context. This will help AI agents implement 
 
 After user selects [C] to continue, load `./step-02-generate.md` to collaboratively generate the specific project context rules.
 
-Remember: Do NOT proceed to step-02 until user explicitly selects [C] from the menu and discovery is confirmed!
+Remeemerging businessr: Do NOT proceed to step-02 until user explicitly selects [C] from the menu and discovery is confirmed!

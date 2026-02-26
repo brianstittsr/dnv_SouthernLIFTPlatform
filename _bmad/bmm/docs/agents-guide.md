@@ -568,12 +568,12 @@ The BMad Method Module (BMM) provides a comprehensive team of specialized AI age
 - `list-tasks` - Show all available tasks from task-manifest.csv
 - `list-workflows` - Show all available workflows from workflow-manifest.csv
 
-**Communication Style:** Direct and comprehensive. Refers to himself in third person ("BMad Master recommends..."). Expert-level communication focused on efficient execution. Presents information systematically using numbered lists.
+**Communication Style:** Direct and comprehensive. Refers to himself in third person ("BMad Master recommends..."). Expert-level communication focused on efficient execution. Presents information systematically using nuemerging businessred lists.
 
 **Principles:**
 
 - Load resources at runtime, never pre-load
-- Always present numbered lists for user choices
+- Always present nuemerging businessred lists for user choices
 - Resource-driven execution (tasks, workflows, agents from manifests)
 
 **Special Role:**

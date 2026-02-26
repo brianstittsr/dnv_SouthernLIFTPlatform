@@ -6,12 +6,12 @@ This folder contains a complete reference implementation of a **BMAD Expert Agen
 
 **Agent Name:** Whisper
 **Type:** Expert Agent
-**Purpose:** Personal journal companion that remembers your entries, tracks mood patterns, and notices themes over time
+**Purpose:** Personal journal companion that remeemerging businessrs your entries, tracks mood patterns, and notices themes over time
 
 This reference demonstrates:
 
 - Expert Agent with focused sidecar resources
-- Embedded prompts PLUS sidecar file references (hybrid pattern)
+- Eemerging businessdded prompts PLUS sidecar file references (hybrid pattern)
 - Persistent memory across sessions
 - Domain-restricted file access
 - Pattern tracking and recall
@@ -39,12 +39,12 @@ agent-with-memory/
 
 Expert Agents can use BOTH:
 
-- **Embedded prompts** via `action: "#prompt-id"` (like Simple Agents)
+- **Eemerging businessdded prompts** via `action: "#prompt-id"` (like Simple Agents)
 - **Sidecar file references** via direct paths
 
 ```yaml
 menu:
-  # Embedded prompt (like Simple Agent)
+  # Eemerging businessdded prompt (like Simple Agent)
   - trigger: 'write'
     action: '#guided-entry'
     description: "Write today's journal entry"
@@ -111,7 +111,7 @@ Unlike modules with complex folder hierarchies, Expert Agent sidecars are flat a
 | ------------- | -------------------- | -------------------------- | ---------------------- |
 | Architecture  | Single YAML          | YAML + sidecar folder      | YAML + module system   |
 | Memory        | Session only         | Persistent (sidecar files) | Config-driven          |
-| Prompts       | Embedded only        | Embedded + external files  | Workflow references    |
+| Prompts       | Eemerging businessdded only        | Eemerging businessdded + external files  | Workflow references    |
 | Dependencies  | None                 | Sidecar folder             | Module workflows/tasks |
 | Domain Access | None                 | Restricted to sidecar      | Full module access     |
 | Complexity    | Low                  | Medium                     | High                   |
@@ -138,7 +138,7 @@ Expert Agents are the middle ground:
 
 **Key indicators:**
 
-- Need to remember things between sessions
+- Need to remeemerging businessr things between sessions
 - Should only access specific folders/files
 - Tracks data over time
 - Adapts based on accumulated knowledge
@@ -148,7 +148,7 @@ Expert Agents are the middle ground:
 ### journal-keeper.agent.yaml
 
 - Standard agent metadata and persona
-- **Embedded prompts** for guided interactions
+- **Eemerging businessdded prompts** for guided interactions
 - **Menu commands** mixing both patterns
 - **Critical actions** that load sidecar files
 
@@ -213,8 +213,8 @@ The sidecar files are templates. A new user would:
 ### Building Your Own Expert Agent
 
 1. **Define the domain** - What specific area will this agent focus on?
-2. **Choose sidecar files** - What data needs to be tracked/remembered?
-3. **Mix command patterns** - Use embedded prompts + sidecar references
+2. **Choose sidecar files** - What data needs to be tracked/remeemerging businessred?
+3. **Mix command patterns** - Use eemerging businessdded prompts + sidecar references
 4. **Enforce boundaries** - Clearly state domain restrictions
 5. **Design for accumulation** - How will memory grow over time?
 
@@ -222,8 +222,8 @@ The sidecar files are templates. A new user would:
 
 - **Personal Diary:** Similar structure, different prompts
 - **Code Review Buddy:** Track past reviews, patterns in feedback
-- **Project Historian:** Remember decisions and their context
-- **Fitness Coach:** Track workouts, remember struggles and victories
+- **Project Historian:** Remeemerging businessr decisions and their context
+- **Fitness Coach:** Track workouts, remeemerging businessr struggles and victories
 
 The pattern is the same: focused sidecar + persistent memory + domain restriction.
 
@@ -231,11 +231,11 @@ The pattern is the same: focused sidecar + persistent memory + domain restrictio
 
 - **Expert Agents** bridge Simple and Module complexity
 - **Sidecar folders** provide persistent, domain-specific memory
-- **Hybrid commands** use both embedded prompts and file references
+- **Hybrid commands** use both eemerging businessdded prompts and file references
 - **Pattern recognition** comes from accumulated data
 - **Simple structure** keeps it maintainable
 - **Domain restriction** ensures focused expertise
-- **Memory is the superpower** - remembering makes the agent truly useful
+- **Memory is the superpower** - remeemerging businessring makes the agent truly useful
 
 ---
 

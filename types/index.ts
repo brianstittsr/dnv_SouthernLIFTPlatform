@@ -68,7 +68,7 @@ export interface Capability {
   category: CapabilityCategory;
   level: 'basic' | 'intermediate' | 'expert';
   certifications?: string[];
-  yearsExperience: number;
+  yearsExperience: nuemerging businessr;
 }
 
 // Certification interface
@@ -90,7 +90,7 @@ export interface Service {
   features: string[];
   pricing?: {
     type: 'fixed' | 'hourly' | 'project' | 'subscription';
-    amount?: number;
+    amount?: nuemerging businessr;
     currency?: string;
   };
 }
@@ -102,8 +102,8 @@ export interface Opportunity {
   organizationId: string;
   organization?: Organization;
   stage: OpportunityStage;
-  value: number;
-  probability: number;
+  value: nuemerging businessr;
+  probability: nuemerging businessr;
   expectedCloseDate: Date;
   owner: User;
   assignedAffiliates?: User[];
@@ -148,7 +148,7 @@ export interface Document {
   name: string;
   type: string;
   url: string;
-  size: number;
+  size: nuemerging businessr;
   uploadedBy: User;
   projectId?: string;
   organizationId?: string;
@@ -160,7 +160,7 @@ export interface Meeting {
   id: string;
   title: string;
   date: Date;
-  duration: number;
+  duration: nuemerging businessr;
   attendees: User[];
   projectId?: string;
   opportunityId?: string;
@@ -214,7 +214,7 @@ export interface Rock {
   owner: User;
   quarter: string;
   status: RockStatus;
-  progress: number;
+  progress: nuemerging businessr;
   milestones: RockMilestone[];
   createdAt: Date;
 }
@@ -229,13 +229,13 @@ export interface RockMilestone {
 
 // Dashboard Stats interface
 export interface DashboardStats {
-  pipelineValue: number;
-  pipelineChange: number;
-  activeProjects: number;
-  projectsAtRisk: number;
-  rockProgress: number;
-  daysRemaining: number;
-  teamOnline: number;
+  pipelineValue: nuemerging businessr;
+  pipelineChange: nuemerging businessr;
+  activeProjects: nuemerging businessr;
+  projectsAtRisk: nuemerging businessr;
+  rockProgress: nuemerging businessr;
+  daysRemaining: nuemerging businessr;
+  teamOnline: nuemerging businessr;
 }
 
 // Navigation item interface
@@ -243,6 +243,6 @@ export interface NavItem {
   title: string;
   href: string;
   icon?: string;
-  badge?: string | number;
+  badge?: string | nuemerging businessr;
   children?: NavItem[];
 }

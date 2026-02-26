@@ -16,13 +16,13 @@ export interface Cohort {
   facilitatorImage?: string;
   cohortStartDate: Timestamp | null;
   cohortEndDate: Timestamp | null;
-  maxParticipants: number | null;
-  currentParticipants: number;
-  estimatedDurationWeeks: number | null;
+  maxParticipants: nuemerging businessr | null;
+  currentParticipants: nuemerging businessr;
+  estimatedDurationWeeks: nuemerging businessr | null;
   status: CohortStatus;
   difficultyLevel: DifficultyLevel;
-  priceInCents: number;
-  compareAtPriceInCents?: number;
+  priceInCents: nuemerging businessr;
+  compareAtPriceInCents?: nuemerging businessr;
   isFree: boolean;
   thumbnailUrl?: string;
   tags?: string[];
@@ -38,8 +38,8 @@ export interface CohortModule {
   cohortId: string;
   title: string;
   description?: string;
-  weekNumber: number;
-  sortOrder: number;
+  weekNuemerging businessr: nuemerging businessr;
+  sortOrder: nuemerging businessr;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   sessions?: TrainingSession[];
@@ -56,22 +56,22 @@ export interface TrainingSession {
   videoUrl?: string;
   textContent?: string;
   downloadUrl?: string;
-  durationMinutes?: number;
+  durationMinutes?: nuemerging businessr;
   scheduledDate: Timestamp | null;
-  sortOrder: number;
+  sortOrder: nuemerging businessr;
   isPreview: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
 
-export interface CohortMembership {
+export interface CohortMeemerging businessrship {
   id: string;
   userId: string;
   cohortId: string;
   cohortRole: CohortRole;
-  progressPercentage: number;
-  completedSessions: number;
-  totalSessions: number;
+  progressPercentage: nuemerging businessr;
+  completedSessions: nuemerging businessr;
+  totalSessions: nuemerging businessr;
   enrolledAt: Timestamp;
   lastAccessedAt: Timestamp;
   status: 'active' | 'completed' | 'dropped';
@@ -86,7 +86,7 @@ export interface SessionProgress {
   moduleId: string;
   isCompleted: boolean;
   completedAt?: Timestamp;
-  timeSpentSeconds?: number;
+  timeSpentSeconds?: nuemerging businessr;
   lastAccessedAt: Timestamp;
 }
 
@@ -98,7 +98,7 @@ export interface Certificate {
   userName: string;
   facilitatorName: string;
   completionDate: Timestamp;
-  certificateNumber: string;
+  certificateNuemerging businessr: string;
   issuedAt: Timestamp;
   status: 'active' | 'revoked';
 }
@@ -112,7 +112,7 @@ export interface Discussion {
   title: string;
   content: string;
   isPinned: boolean;
-  replyCount: number;
+  replyCount: nuemerging businessr;
   lastActivityAt: Timestamp;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -131,7 +131,7 @@ export interface DiscussionReply {
 
 export interface CohortWithDetails extends Cohort {
   modules?: CohortModule[];
-  membershipCount?: number;
+  meemerging businessrshipCount?: nuemerging businessr;
 }
 
 // Live Training Types
@@ -143,11 +143,11 @@ export interface LiveTraining {
   facilitatorId: string;
   facilitatorName: string;
   scheduledDate: Timestamp;
-  durationMinutes: number;
+  durationMinutes: nuemerging businessr;
   meetingUrl?: string;
   meetingPlatform?: 'zoom' | 'teams' | 'meet' | 'other';
-  maxAttendees?: number;
-  currentAttendees: number;
+  maxAttendees?: nuemerging businessr;
+  currentAttendees: nuemerging businessr;
   isRecorded: boolean;
   recordingUrl?: string;
   status: 'scheduled' | 'live' | 'completed' | 'cancelled';
@@ -173,7 +173,7 @@ export interface Badge {
   description: string;
   imageUrl: string;
   criteria: string;
-  points: number;
+  points: nuemerging businessr;
   rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
   category: 'completion' | 'engagement' | 'achievement' | 'special';
   isActive: boolean;
@@ -194,9 +194,9 @@ export interface UserPoints {
   id: string;
   userId: string;
   cohortId?: string;
-  points: number;
-  totalPoints: number;
-  level: number;
+  points: nuemerging businessr;
+  totalPoints: nuemerging businessr;
+  level: nuemerging businessr;
   lastUpdatedAt: Timestamp;
 }
 
@@ -204,7 +204,7 @@ export interface PointsTransaction {
   id: string;
   userId: string;
   cohortId?: string;
-  points: number;
+  points: nuemerging businessr;
   reason: string;
   type: 'earned' | 'spent' | 'bonus' | 'penalty';
   createdAt: Timestamp;
@@ -216,7 +216,7 @@ export interface CohortPurchase {
   userId: string;
   cohortId: string;
   cohortTitle: string;
-  amountInCents: number;
+  amountInCents: nuemerging businessr;
   currency: string;
   paymentMethod: 'stripe' | 'paypal' | 'free';
   stripePaymentIntentId?: string;
@@ -230,32 +230,32 @@ export interface CohortPurchase {
 // Analytics Types
 export interface CohortAnalytics {
   cohortId: string;
-  enrollmentRate: number;
-  completionRate: number;
-  averageProgress: number;
-  dropoutRate: number;
-  averageScore: number;
-  engagementScore: number;
-  nps?: number;
-  totalRevenue: number;
+  enrollmentRate: nuemerging businessr;
+  completionRate: nuemerging businessr;
+  averageProgress: nuemerging businessr;
+  dropoutRate: nuemerging businessr;
+  averageScore: nuemerging businessr;
+  engagementScore: nuemerging businessr;
+  nps?: nuemerging businessr;
+  totalRevenue: nuemerging businessr;
   calculatedAt: Timestamp;
 }
 
 export interface SessionAnalytics {
   sessionId: string;
   cohortId: string;
-  completionRate: number;
-  averageTimeSpent: number;
-  viewCount: number;
-  dropoffRate: number;
+  completionRate: nuemerging businessr;
+  averageTimeSpent: nuemerging businessr;
+  viewCount: nuemerging businessr;
+  dropoffRate: nuemerging businessr;
   calculatedAt: Timestamp;
 }
 
 // Capacity Management Types
 export interface CapacityCheck {
   available: boolean;
-  spotsRemaining: number;
-  waitlistCount: number;
+  spotsRemaining: nuemerging businessr;
+  waitlistCount: nuemerging businessr;
   isOverbooked: boolean;
 }
 
@@ -263,7 +263,7 @@ export interface Waitlist {
   id: string;
   userId: string;
   cohortId: string;
-  position: number;
+  position: nuemerging businessr;
   addedAt: Timestamp;
   notifiedAt?: Timestamp;
   status: 'waiting' | 'notified' | 'enrolled' | 'expired';
@@ -320,12 +320,12 @@ export interface GetCohortsOptions {
   isPublished?: boolean;
   difficultyLevel?: DifficultyLevel;
   isFree?: boolean;
-  limit?: number;
+  limit?: nuemerging businessr;
   orderBy?: 'startDate' | 'createdAt' | 'title';
   orderDirection?: 'asc' | 'desc';
 }
 
-export interface GetMembershipsOptions {
+export interface GetMeemerging businessrshipsOptions {
   userId?: string;
   cohortId?: string;
   status?: 'active' | 'completed' | 'dropped';
@@ -334,12 +334,12 @@ export interface GetMembershipsOptions {
 
 // Stats Types
 export interface PlatformStats {
-  totalCohorts: number;
-  activeCohorts: number;
-  totalParticipants: number;
-  totalCertificates: number;
-  totalRevenue: number;
-  averageCompletionRate: number;
+  totalCohorts: nuemerging businessr;
+  activeCohorts: nuemerging businessr;
+  totalParticipants: nuemerging businessr;
+  totalCertificates: nuemerging businessr;
+  totalRevenue: nuemerging businessr;
+  averageCompletionRate: nuemerging businessr;
   calculatedAt: Timestamp;
 }
 

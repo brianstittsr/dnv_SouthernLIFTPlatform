@@ -14,17 +14,17 @@ export interface MercuryAccount {
   name: string;
   status: string;
   type: string;
-  routingNumber: string;
-  accountNumber: string;
-  currentBalance: number;
-  availableBalance: number;
+  routingNuemerging businessr: string;
+  accountNuemerging businessr: string;
+  currentBalance: nuemerging businessr;
+  availableBalance: nuemerging businessr;
   kind: string;
   createdAt: string;
 }
 
 export interface MercuryTransaction {
   id: string;
-  amount: number;
+  amount: nuemerging businessr;
   bankDescription: string | null;
   counterpartyId: string;
   counterpartyName: string;
@@ -40,12 +40,12 @@ export interface MercuryTransaction {
     };
     domesticWireRoutingInfo?: {
       bankName: string;
-      routingNumber: string;
+      routingNuemerging businessr: string;
     };
     electronicRoutingInfo?: {
       bankName: string;
-      routingNumber: string;
-      accountNumber: string;
+      routingNuemerging businessr: string;
+      accountNuemerging businessr: string;
     };
   } | null;
   estimatedDeliveryDate: string | null;
@@ -67,8 +67,8 @@ export interface MercuryRecipient {
   emails: string[];
   paymentMethod: string;
   electronicRoutingInfo?: {
-    accountNumber: string;
-    routingNumber: string;
+    accountNuemerging businessr: string;
+    routingNuemerging businessr: string;
     bankName: string;
     accountType: string;
   };
@@ -171,13 +171,13 @@ export class MercuryService {
   async getTransactions(
     accountId: string,
     options?: {
-      offset?: number;
-      limit?: number;
+      offset?: nuemerging businessr;
+      limit?: nuemerging businessr;
       status?: string;
       start?: string; // ISO date string
       end?: string; // ISO date string
     }
-  ): Promise<MercuryResponse<{ total: number; transactions: MercuryTransaction[] }>> {
+  ): Promise<MercuryResponse<{ total: nuemerging businessr; transactions: MercuryTransaction[] }>> {
     const queryParams: Record<string, string> = {};
     
     if (options?.offset !== undefined) queryParams.offset = options.offset.toString();
@@ -218,8 +218,8 @@ export class MercuryService {
    */
   async getStatements(accountId: string): Promise<MercuryResponse<{ statements: Array<{
     id: string;
-    month: number;
-    year: number;
+    month: nuemerging businessr;
+    year: nuemerging businessr;
     url: string;
   }> }>> {
     return this.request("GET", `/account/${accountId}/statements`);

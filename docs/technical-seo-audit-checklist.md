@@ -143,7 +143,7 @@ const siteArchitecture = {
 **Content Structure Checklist:**
 - [ ] Clear introduction with main keyword
 - [ ] Well-organized sections with headers
-- [ ] Bullet points and numbered lists where appropriate
+- [ ] Bullet points and nuemerging businessred lists where appropriate
 - [ ] Internal linking to related pages
 - [ ] External linking to authoritative sources
 - [ ] Strong call-to-action (CTA) elements

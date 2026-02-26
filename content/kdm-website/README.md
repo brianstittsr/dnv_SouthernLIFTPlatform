@@ -9,7 +9,7 @@ content/kdm-website/
 ├── site-metadata.json      # Global site configuration, navigation, contact info
 ├── pages/                  # Individual page content
 │   ├── home.json          # Homepage content and sections
-│   ├── about.json         # About page with team members
+│   ├── about.json         # About page with team meemerging businessrs
 │   ├── contact.json       # Contact page and form configuration
 │   ├── services.json      # Services detail page
 │   ├── privacy-policy.json # Privacy policy content
@@ -28,7 +28,7 @@ content/kdm-website/
 import {
   getSiteMetadata,
   getPageContent,
-  getTeamMembers,
+  getTeamMeemerging businessrs,
   getServices,
   getContactInfo,
   getNewsArticles,
@@ -44,8 +44,8 @@ console.log(metadata.siteName); // "KDM & Associates"
 const homePage = await getPageContent('home');
 const aboutPage = await getPageContent('about');
 
-// Get team members
-const team = await getTeamMembers();
+// Get team meemerging businessrs
+const team = await getTeamMeemerging businessrs();
 
 // Get services
 const services = await getServices();
@@ -91,7 +91,7 @@ Each page JSON file contains:
 - `services-grid` - Grid of service cards
 - `services-detail` - Detailed service descriptions
 - `stats` - Performance metrics display
-- `team-grid` - Team member cards
+- `team-grid` - Team meemerging businessr cards
 - `contact-details` - Contact information
 - `form` - Form configuration
 - `faq-section` - FAQ accordion
@@ -142,5 +142,5 @@ Content scraped from https://kdm-assoc.com on 2026-01-09.
 ## Notes
 
 - Some content may reference "QmeLocal" which appears to be a related platform
-- Team member profile images need to be downloaded separately
+- Team meemerging businessr profile images need to be downloaded separately
 - News article full content can be fetched from the source URLs in `articles-index.json`

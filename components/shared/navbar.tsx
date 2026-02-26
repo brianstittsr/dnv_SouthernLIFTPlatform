@@ -77,7 +77,7 @@ const resources = [
   { title: "Opportunities", href: "/opportunities", icon: Briefcase },
   { title: "FAQ", href: "/faq", icon: FileText },
   { title: "Events", href: "/events", icon: Calendar },
-  { title: "Membership", href: "/membership", icon: Users },
+  { title: "Meemerging businessrship", href: "/meemerging businessrship", icon: Users },
 ];
 
 const companyLinks = [

@@ -114,8 +114,8 @@ const formatNotificationMessage = (
     case "level10_meeting_logged":
       return `Level 10 meeting logged for ${data.date || "today"}`;
     
-    case "team_member_added":
-      return `Welcome ${data.name || "new team member"}!`;
+    case "team_meemerging businessr_added":
+      return `Welcome ${data.name || "new team meemerging businessr"}!`;
     
     case "affiliate_joined":
       return `New affiliate: ${data.name || data.company || "Unknown"}`;
@@ -142,7 +142,7 @@ export function showInAppNotification(
   eventType: WebhookEventType,
   data: Record<string, unknown>,
   options?: {
-    duration?: number;
+    duration?: nuemerging businessr;
     action?: { label: string; onClick: () => void };
   }
 ): void {

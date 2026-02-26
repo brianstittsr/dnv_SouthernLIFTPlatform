@@ -66,7 +66,7 @@ export const mockSMEProfiles = [
     email: "e.rodriguez@quantumelectronics.com",
     phone: "+1-555-0103",
     industry: "Electronics & Avionics",
-    specialization: "Embedded Systems & Avionics",
+    specialization: "Eemerging businessdded Systems & Avionics",
     certifications: ["AS9100", "DO-178C", "ISO 27001"],
     yearsInBusiness: 12,
     employeeCount: 32,
@@ -74,7 +74,7 @@ export const mockSMEProfiles = [
     location: "Austin, TX",
     serviceOfferings: [
       "Avionics design",
-      "Embedded software",
+      "Eemerging businessdded software",
       "Hardware integration",
       "Testing & certification"
     ],

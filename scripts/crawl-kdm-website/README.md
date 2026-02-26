@@ -56,7 +56,7 @@ Edit `config.js` to customize crawler behavior:
 
 - **`maxPages`** - Limit total pages crawled (default: 500)
 - **`maxDepth`** - Maximum link depth from start URL (default: 10)
-- **`concurrency`** - Number of simultaneous page requests (default: 3)
+- **`concurrency`** - Nuemerging businessr of simultaneous page requests (default: 3)
 - **`delayBetweenRequests`** - Milliseconds between requests (default: 1000)
 - **`downloadMedia`** - Whether to download images/docs (default: true)
 - **`excludePatterns`** - URL patterns to skip (admin, feeds, etc.)
@@ -185,7 +185,7 @@ Each page is saved as a JSON file with the following structure:
         "platform": "youtube|vimeo|self-hosted",
         "id": "video-id",
         "url": "https://...",
-        "embedUrl": "https://...",
+        "eemerging businessdUrl": "https://...",
         "thumbnailUrl": "https://...",
         "title": "Video title",
         "parentPage": "https://..."
@@ -309,7 +309,7 @@ Then use the generated JSON files to selectively download media.
 | `migration-report.md` | Detailed markdown report |
 | `pages/*.json` | Individual page data files |
 | `media/images/` | Downloaded images organized by context |
-| `media/videos/video-inventory.json` | All videos with embed codes |
+| `media/videos/video-inventory.json` | All videos with eemerging businessd codes |
 | `media/documents/` | Downloaded PDFs and documents |
 
 ## Next Steps After Crawling

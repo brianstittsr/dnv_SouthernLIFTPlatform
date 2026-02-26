@@ -30,7 +30,7 @@
 
   <step n="1" goal="Gather Requirements" elicit="true">
     <action>Ask Question 1: "What type of process flow do you need to visualize?"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Business Process Flow - Document business workflows, approval processes, or operational procedures
       2. Algorithm/Logic Flow - Visualize code logic, decision trees, or computational processes
       3. User Journey Flow - Map user interactions, navigation paths, or experience flows
@@ -40,7 +40,7 @@
     <action>WAIT for user selection (1-5)</action>
 
     <action>Ask Question 2: "How many main steps are in this flow?"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Simple (3-5 steps) - Quick process with few decision points
       2. Medium (6-10 steps) - Standard workflow with some branching
       3. Complex (11-20 steps) - Detailed process with multiple decision points
@@ -50,7 +50,7 @@
     <action>Store selection in {{complexity}}</action>
 
     <action>Ask Question 3: "Does your flow include decision points (yes/no branches)?"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. No decisions - Linear flow from start to end
       2. Few decisions (1-2) - Simple branching with yes/no paths
       3. Multiple decisions (3-5) - Several conditional branches
@@ -60,7 +60,7 @@
     <action>Store selection in {{decision_points}}</action>
 
     <action>Ask Question 4: "Where should the flowchart be saved?"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Default location - docs/flowcharts/[auto-generated-name].excalidraw
       2. Custom path - Specify your own file path
       3. Project root - Save in main project directory
@@ -94,7 +94,7 @@
 
   <step n="3" goal="Create Theme" elicit="true">
     <action>Ask: "Let's create a theme for your flowchart. Choose a color scheme:"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Professional Blue
          - Primary Fill: #e3f2fd (light blue)
          - Accent/Border: #1976d2 (blue)
@@ -139,7 +139,7 @@
     <action>Create theme.json with selected colors</action>
     <action>Show theme preview with all colors</action>
     <action>Ask: "Theme looks good?"</action>
-    <action>Present numbered options:
+    <action>Present nuemerging businessred options:
       1. Yes, use this theme - Proceed with theme
       2. No, adjust colors - Modify color selections
       3. Start over - Choose different preset

@@ -361,7 +361,7 @@ export default function ContentMigrationPage() {
   };
 
   const generateReport = (pages: CrawledPage[], imgs: ImageAsset[], vids: VideoAsset[], docs: DocumentAsset[]): MigrationReport => {
-    const pagesByType: Record<string, number> = {};
+    const pagesByType: Record<string, nuemerging businessr> = {};
     let totalWordCount = 0;
 
     pages.forEach(page => {
@@ -660,7 +660,7 @@ export default function ContentMigrationPage() {
               <Label htmlFor="maxPages">Max Pages</Label>
               <Input
                 id="maxPages"
-                type="number"
+                type="nuemerging businessr"
                 value={maxPages}
                 onChange={(e) => setMaxPages(parseInt(e.target.value))}
               />
@@ -669,7 +669,7 @@ export default function ContentMigrationPage() {
               <Label htmlFor="crawlDelay">Crawl Delay (ms)</Label>
               <Input
                 id="crawlDelay"
-                type="number"
+                type="nuemerging businessr"
                 value={crawlDelay}
                 onChange={(e) => setCrawlDelay(parseInt(e.target.value))}
               />

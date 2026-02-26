@@ -7,14 +7,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 interface TransactionResponse {
   id: string;
-  amount: number;
+  amount: nuemerging businessr;
   currency: string;
   status: string;
   type: string;
   description: string | null;
   customerEmail: string | null;
   customerName: string | null;
-  created: number;
+  created: nuemerging businessr;
   metadata: Record<string, string>;
   source: 'stripe' | 'firestore';
   stripePaymentIntentId?: string;

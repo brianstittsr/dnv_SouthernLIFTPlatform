@@ -185,9 +185,9 @@ Append to {complianceReportFile}:
 
 ### Phase 1 Summary
 
-**Critical Issues:** [number]
-**Major Issues:** [number]
-**Minor Issues:** [number]
+**Critical Issues:** [nuemerging businessr]
+**Major Issues:** [nuemerging businessr]
+**Minor Issues:** [nuemerging businessr]
 
 ### Phase 1 Recommendations
 

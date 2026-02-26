@@ -41,12 +41,12 @@ interface Video {
   title: string;
   url: string;
   description: string;
-  year: number;
+  year: nuemerging businessr;
   type: string;
   speaker: string | null;
   organization: string | null;
-  duration_seconds: number;
-  view_count: number;
+  duration_seconds: nuemerging businessr;
+  view_count: nuemerging businessr;
   thumbnail_url: string;
 }
 
@@ -64,10 +64,10 @@ interface VideoData {
     videos: string[];
   }>;
   statistics: {
-    total_videos: number;
-    years_covered: number[];
-    videos_by_year_count: Record<string, number>;
-    unique_speakers: number;
+    total_videos: nuemerging businessr;
+    years_covered: nuemerging businessr[];
+    videos_by_year_count: Record<string, nuemerging businessr>;
+    unique_speakers: nuemerging businessr;
   };
 }
 
@@ -111,7 +111,7 @@ export default function IAEOZSummitPage() {
   }, [searchQuery, selectedSpeaker, selectedYear, selectedType, selectedOrganization]);
 
   const groupedVideos = useMemo(() => {
-    const grouped: Record<number, Video[]> = {};
+    const grouped: Record<nuemerging businessr, Video[]> = {};
     filteredVideos.forEach((video) => {
       if (!grouped[video.year]) {
         grouped[video.year] = [];
@@ -122,11 +122,11 @@ export default function IAEOZSummitPage() {
   }, [filteredVideos]);
 
   const sortedYears = Object.keys(groupedVideos)
-    .map(Number)
+    .map(Nuemerging businessr)
     .sort((a, b) => b - a);
 
-  const getYouTubeEmbedUrl = (videoId: string) => {
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+  const getYouTubeEemerging businessdUrl = (videoId: string) => {
+    return `https://www.youtube.com/eemerging businessd/${videoId}?autoplay=1&rel=0&modestbranding=1`;
   };
 
   const getYouTubeThumbnail = (videoId: string) => {
@@ -400,7 +400,7 @@ export default function IAEOZSummitPage() {
             <>
               <div className="aspect-video bg-black">
                 <iframe
-                  src={getYouTubeEmbedUrl(playingVideo.id)}
+                  src={getYouTubeEemerging businessdUrl(playingVideo.id)}
                   title={playingVideo.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen

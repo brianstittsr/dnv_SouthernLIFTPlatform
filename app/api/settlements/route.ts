@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
 
     // Calculate totals
     const revenueTotal = 
-      (programRevenues.membershipDues || 0) +
+      (programRevenues.meemerging businessrshipDues || 0) +
       (programRevenues.eventTickets || 0) +
       (programRevenues.sponsorFees || 0) +
       (programRevenues.pursuitPacks || 0) +
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       periodStart: Timestamp.fromDate(new Date(periodStart)),
       periodEnd: Timestamp.fromDate(new Date(periodEnd)),
       programRevenues: {
-        membershipDues: programRevenues.membershipDues || 0,
+        meemerging businessrshipDues: programRevenues.meemerging businessrshipDues || 0,
         eventTickets: programRevenues.eventTickets || 0,
         sponsorFees: programRevenues.sponsorFees || 0,
         pursuitPacks: programRevenues.pursuitPacks || 0,
@@ -255,19 +255,19 @@ export async function generateSettlement(periodStart: Date, periodEnd: Date) {
   const startTimestamp = Timestamp.fromDate(periodStart);
   const endTimestamp = Timestamp.fromDate(periodEnd);
 
-  // Aggregate membership revenue
-  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
-  const membershipsQuery = query(
-    membershipsRef,
+  // Aggregate meemerging businessrship revenue
+  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
+  const meemerging businessrshipsQuery = query(
+    meemerging businessrshipsRef,
     where('status', '==', 'active')
   );
-  const membershipsSnapshot = await getDocs(membershipsQuery);
+  const meemerging businessrshipsSnapshot = await getDocs(meemerging businessrshipsQuery);
   
-  let membershipDues = 0;
-  membershipsSnapshot.docs.forEach(doc => {
+  let meemerging businessrshipDues = 0;
+  meemerging businessrshipsSnapshot.docs.forEach(doc => {
     const data = doc.data();
     // Simplified - in production, query actual payments from Stripe
-    membershipDues += data.amount || 0;
+    meemerging businessrshipDues += data.amount || 0;
   });
 
   // Aggregate ticket revenue
@@ -303,7 +303,7 @@ export async function generateSettlement(periodStart: Date, periodEnd: Date) {
   });
 
   return {
-    membershipDues,
+    meemerging businessrshipDues,
     eventTickets,
     sponsorFees,
     pursuitPacks: 0, // Would need pursuit pack tracking

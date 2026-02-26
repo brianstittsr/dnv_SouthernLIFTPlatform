@@ -22,7 +22,7 @@ export default function TermsPage() {
         
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p className="text-muted-foreground mb-6">
-            Last updated: December 2024
+            Last updated: Deceemerging businessr 2024
           </p>
 
           <section className="mb-8">

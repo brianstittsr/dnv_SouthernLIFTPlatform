@@ -244,7 +244,7 @@ Happy coding! 🚀</output>
 2. 🔍 **Research** - Technical/competitive analysis
 3. 📋 **Product Brief** - Strategic product planning (recommended)
 
-Enter numbers (e.g., "1,3" or "all" or "none"): </ask>
+Enter nuemerging businessrs (e.g., "1,3" or "all" or "none"): </ask>
 </check>
 
 <check if="field_type == brownfield AND selected_track in [method, enterprise]">
@@ -254,7 +254,7 @@ Enter numbers (e.g., "1,3" or "all" or "none"): </ask>
 1. 🧠 **Brainstorm** - Creative exploration
 2. 🔍 **Research** - Domain analysis
 
-Enter numbers (e.g., "1,2" or "none"): </ask>
+Enter nuemerging businessrs (e.g., "1,2" or "none"): </ask>
 </check>
 
 <action>Parse selections and set:

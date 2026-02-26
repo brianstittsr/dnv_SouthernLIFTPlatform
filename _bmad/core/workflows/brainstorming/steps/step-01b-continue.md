@@ -46,7 +46,7 @@ Load existing document and analyze current state:
 
 - **Steps Completed:** [List completed steps]
 - **Techniques Used:** [List techniques from frontmatter]
-- **Ideas Generated:** [Number from frontmatter]
+- **Ideas Generated:** [Nuemerging businessr from frontmatter]
 - **Current Stage:** [Assess where they left off]
 
 **Session Progress:**

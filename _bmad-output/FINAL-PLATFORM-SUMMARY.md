@@ -307,11 +307,11 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   documents: Document[],
   
   packHealth: {
-    overallScore: number,
-    completeness: number,
-    expiration: number,
-    quality: number,
-    remediation: number,
+    overallScore: nuemerging businessr,
+    completeness: nuemerging businessr,
+    expiration: nuemerging businessr,
+    quality: nuemerging businessr,
+    remediation: nuemerging businessr,
     isEligible: boolean,
   },
   
@@ -336,8 +336,8 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   token: string, // 32-byte hex
   
   expiresAt: Timestamp,
-  maxViews: number,
-  viewCount: number,
+  maxViews: nuemerging businessr,
+  viewCount: nuemerging businessr,
   
   requireNDA: boolean,
   isActive: boolean,
@@ -408,7 +408,7 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   followUpDate: Timestamp | null,
   lastActivityAt: Timestamp,
   
-  routingScore: number,
+  routingScore: nuemerging businessr,
   routingReason: string,
   
   capturedAt: Timestamp,
@@ -436,9 +436,9 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   industries: string[],
   serviceTypes: string[],
   verticalExpertise: string[],
-  maxCapacity: number,
+  maxCapacity: nuemerging businessr,
   isActive: boolean,
-  priority: number,
+  priority: nuemerging businessr,
   createdAt: Timestamp,
   updatedAt: Timestamp,
 }
@@ -482,7 +482,7 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   declineReason?: string,
   smeContactInfo?: object,
   meetingDate?: Timestamp,
-  estimatedValue?: number,
+  estimatedValue?: nuemerging businessr,
   
   stageHistory: StageTransition[],
   
@@ -501,8 +501,8 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   buyerId: string | null,
   
   eventType: "lead_generated" | "service_delivered" | "introduction_facilitated" | "conversion_completed",
-  revenueAmount: number,
-  attributionPercentage: number,
+  revenueAmount: nuemerging businessr,
+  attributionPercentage: nuemerging businessr,
   
   source: string | null,
   dealId: string | null,
@@ -524,12 +524,12 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   periodStart: Timestamp,
   periodEnd: Timestamp,
   
-  grossRevenue: number,
-  platformFeePercentage: number,
-  platformFeeAmount: number,
-  netRevenue: number,
+  grossRevenue: nuemerging businessr,
+  platformFeePercentage: nuemerging businessr,
+  platformFeeAmount: nuemerging businessr,
+  netRevenue: nuemerging businessr,
   
-  eventCount: number,
+  eventCount: nuemerging businessr,
   eventIds: string[],
   eventsByType: object,
   
@@ -548,16 +548,16 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   instructorId: string,
   
   startDate: Timestamp,
-  duration: number, // 12 weeks
+  duration: nuemerging businessr, // 12 weeks
   endDate: Timestamp,
   
-  maxParticipants: number,
-  enrolledCount: number,
+  maxParticipants: nuemerging businessr,
+  enrolledCount: nuemerging businessr,
   participants: string[],
   
   pricing: {
-    fullPayment: number,
-    partialPayment: number | null,
+    fullPayment: nuemerging businessr,
+    partialPayment: nuemerging businessr | null,
   },
   
   syllabus: string | null, // base64
@@ -580,9 +580,9 @@ The platform is built on **Next.js 16**, **React 19**, **TypeScript 5**, **Fireb
   stripeSessionId: string | null,
   
   progress: {
-    completedWeeks: number[],
-    assessmentScores: Record<number, number>,
-    overallCompletion: number,
+    completedWeeks: nuemerging businessr[],
+    assessmentScores: Record<nuemerging businessr, nuemerging businessr>,
+    overallCompletion: nuemerging businessr,
   },
   
   enrolledAt: Timestamp,

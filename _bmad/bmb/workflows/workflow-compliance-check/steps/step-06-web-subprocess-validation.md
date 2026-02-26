@@ -99,7 +99,7 @@ For each step, analyze web search appropriateness using these criteria:
 
 Using subprocess for parallel analysis of multiple steps:
 
-"**Analyzing [number] steps for web search optimization...**"
+"**Analyzing [nuemerging businessr] steps for web search optimization...**"
 
 For each step file:
 
@@ -232,19 +232,19 @@ Analyzing how each step uses LLM resources efficiently..."
 
 "**Web Search Optimization Results:**
 
-- **Total Steps Analyzed:** [number]
-- **Steps with Web Searches:** [number]
-- **Unnecessary Searches Found:** [number]
-- **Optimization Opportunities:** [number]
+- **Total Steps Analyzed:** [nuemerging businessr]
+- **Steps with Web Searches:** [nuemerging businessr]
+- **Unnecessary Searches Found:** [nuemerging businessr]
+- **Optimization Opportunities:** [nuemerging businessr]
 - **Estimated Time Savings:** [time_estimate]"
 
 **B. Subprocess Implementation Summary:**
 
 "**Subprocess Optimization Results:**
 
-- **Parallel Processing Opportunities:** [number]
-- **Batch Processing Groups:** [number]
-- **Background Processing Tasks:** [number]
+- **Parallel Processing Opportunities:** [nuemerging businessr]
+- **Batch Processing Groups:** [nuemerging businessr]
+- **Background Processing Tasks:** [nuemerging businessr]
 - **Estimated Performance Improvement:** [percentage_improvement]"
 
 ### 7. User-Facing Optimization Report
@@ -281,16 +281,16 @@ Append to {complianceReportFile}:
 
 ### Web Search Optimization
 
-**Unnecessary Searches Identified:** [number]
+**Unnecessary Searches Identified:** [nuemerging businessr]
 **Essential Searches to Keep:** [specific_list]
 **Optimization Recommendations:** [detailed_suggestions]
 **Estimated Time Savings:** [time_improvement]
 
 ### Subprocess Optimization Opportunities
 
-**Parallel Processing:** [number] opportunities identified
-**Batch Processing:** [number] grouping opportunities
-**Background Processing:** [number] background task opportunities
+**Parallel Processing:** [nuemerging businessr] opportunities identified
+**Batch Processing:** [nuemerging businessr] grouping opportunities
+**Background Processing:** [nuemerging businessr] background task opportunities
 **Performance Improvement:** [estimated_improvement_percentage]%
 
 ### Resource Efficiency Analysis
@@ -311,7 +311,7 @@ Append to {complianceReportFile}:
 "**Web Search & Subprocess Analysis Complete:**
 
 - **Web Search Optimization:** [summary of improvements]
-- **Subprocess Opportunities:** [number of optimization areas]
+- **Subprocess Opportunities:** [nuemerging businessr of optimization areas]
 - **Performance Impact:** [expected efficiency gains]
 - **User Experience Benefits:** [specific improvements]
 

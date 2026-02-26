@@ -82,8 +82,8 @@ Based on the approved plan, confirm:
 "I have your approved plan and I'm ready to generate the workflow files. The plan specifies creating:
 
 - Main workflow.md file
-- [Number] step files
-- [Number] templates
+- [Nuemerging businessr] step files
+- [Nuemerging businessr] templates
 - Supporting files
 
 All in: {targetWorkflowPath}
@@ -160,7 +160,7 @@ If continuation support is needed:
   - Set correct outputFile path
   - Adjust role and persona to match workflow type
   - Customize welcome back message for workflow context
-- Ensure proper nextStep detection logic based on step numbers
+- Ensure proper nextStep detection logic based on step nuemerging businessrs
 
 #### 4d. Generate Remaining Step Files
 
@@ -198,7 +198,7 @@ After creating all files:
 - Check all file paths are correct
 - Validate frontmatter syntax
 - Ensure variable consistency across files
-- Confirm sequential step numbering
+- Confirm sequential step nuemerging businessring
 - Verify menu handling logic
 
 ### 8. Document Generated Files
@@ -224,7 +224,7 @@ Create a summary of what was generated:
 - Each step follows the template structure
 - All mandatory rules are included
 - Menu handling is properly implemented
-- Step numbering is sequential
+- Step nuemerging businessring is sequential
 
 ### Cross-File Consistency
 

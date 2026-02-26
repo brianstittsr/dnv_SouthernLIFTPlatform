@@ -23,7 +23,7 @@ const footerLinks = {
     { title: "Blog", href: "/blog" },
     { title: "FAQ", href: "/faq" },
     { title: "Events", href: "/events" },
-    { title: "Membership", href: "/membership" },
+    { title: "Meemerging businessrship", href: "/meemerging businessrship" },
   ],
   legal: [
     { title: "Privacy Policy", href: "/legal/privacy-policy" },

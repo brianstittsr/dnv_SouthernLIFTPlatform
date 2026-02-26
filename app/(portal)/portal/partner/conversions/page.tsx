@@ -21,7 +21,7 @@ interface Introduction {
   partnerId: string | null;
   status: "pending" | "accepted" | "declined";
   stage: "intro" | "meeting_scheduling" | "meeting_held" | "rfq_sent" | "proposal_submitted" | "award";
-  estimatedValue?: number;
+  estimatedValue?: nuemerging businessr;
   requestedAt: any;
   respondedAt?: any;
   meetingDate?: any;
@@ -98,7 +98,7 @@ export default function ConversionTrackingPage() {
   const stageCounts = STAGE_ORDER.reduce((acc, stage) => {
     acc[stage] = introductions.filter(i => i.stage === stage && i.status === "accepted").length;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, nuemerging businessr>);
 
   const conversionRates = STAGE_ORDER.slice(1).map((stage, index) => {
     const prevStage = STAGE_ORDER[index];

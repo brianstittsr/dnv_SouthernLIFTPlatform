@@ -62,7 +62,7 @@ Image Types to Capture:
 - Content images (inline)
 - Logos and branding
 - Icons and graphics
-- Team member photos
+- Team meemerging businessr photos
 - Case study images
 - Product/service images
 - Infographics
@@ -72,18 +72,18 @@ Image Types to Capture:
 #### B. Videos
 For each video found, capture:
 - **Video URL**: Full video link (YouTube, Vimeo, self-hosted)
-- **Embed Code**: Complete iframe or embed code
+- **Eemerging businessd Code**: Complete iframe or eemerging businessd code
 - **Video ID**: Platform-specific identifier
 - **Thumbnail**: Video preview image URL
 - **Title**: Video title
 - **Description**: Video description if available
 - **Duration**: Video length if available
 - **Parent Page**: Which page contains this video
-- **Context**: How video is presented (embedded, linked, modal)
+- **Context**: How video is presented (eemerging businessdded, linked, modal)
 
 Video Sources to Check:
-- YouTube embeds
-- Vimeo embeds
+- YouTube eemerging businessds
+- Vimeo eemerging businessds
 - Self-hosted video files (.mp4, .webm, .mov)
 - Video links in text
 - Video galleries or playlists
@@ -213,7 +213,7 @@ kdm-content-migration/
       {
         "platform": "youtube|vimeo|self-hosted",
         "url": "video-url",
-        "embedCode": "iframe code"
+        "eemerging businessdCode": "iframe code"
       }
     ]
   }
@@ -275,7 +275,7 @@ After crawling, provide:
 - Compliance statements
 
 ### Contact Information
-- All phone numbers
+- All phone nuemerging businessrs
 - Email addresses
 - Physical addresses
 - Social media links

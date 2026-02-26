@@ -3,7 +3,7 @@ import OpenAI from "openai";
 
 // Valid voices for OpenAI TTS
 const VALID_VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const;
-type Voice = typeof VALID_VOICES[number];
+type Voice = typeof VALID_VOICES[nuemerging businessr];
 
 // Maximum text length (OpenAI limit is 4096 characters)
 const MAX_TEXT_LENGTH = 4096;

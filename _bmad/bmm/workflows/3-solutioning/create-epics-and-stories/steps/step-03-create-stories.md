@@ -141,7 +141,7 @@ For each epic in the approved epics_list:
 
 Display:
 
-- Epic number and title
+- Epic nuemerging businessr and title
 - Epic goal statement
 - FRs covered by this epic
 - Any NFRs or additional requirements relevant
@@ -183,7 +183,7 @@ After writing each story:
 When story is approved:
 
 - Append it to {outputFile} following template structure
-- Use correct numbering (Epic N, Story M)
+- Use correct nuemerging businessring (Epic N, Story M)
 - Maintain proper markdown formatting
 
 ### 4. Epic Completion

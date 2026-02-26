@@ -227,7 +227,7 @@ test('order handles missing optional fields', async ({ page }) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      // Missing optional fields like 'trackingNumber', 'estimatedDelivery'
+      // Missing optional fields like 'trackingNuemerging businessr', 'estimatedDelivery'
       body: JSON.stringify({ orderId: '123', status: 'confirmed' }),
     }),
   );

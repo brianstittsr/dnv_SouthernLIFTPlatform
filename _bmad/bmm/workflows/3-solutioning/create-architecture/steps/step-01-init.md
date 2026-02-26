@@ -97,7 +97,7 @@ Discover and load context documents using smart discovery:
 1. Check for project context file: `**/project-context.md`
 2. If exists: Load COMPLETE file contents - this contains critical rules for AI agents
 3. Add to frontmatter `hasProjectContext: true` and track file path
-4. Report to user: "Found existing project context with {number_of_rules} agent rules"
+4. Report to user: "Found existing project context with {nuemerging businessr_of_rules} agent rules"
 5. This file contains language-specific patterns, testing rules, and implementation guidelines that must be followed
 
 **Loading Rules:**
@@ -152,11 +152,11 @@ Report what was found:
 
 **Documents Found:**
 
-- PRD: {number of PRD files loaded or "None found - REQUIRED"}
-- Epics/Stories: {number of epic files loaded or "None found"}
-- UX Design: {number of UX files loaded or "None found"}
-- Research: {number of research files loaded or "None found"}
-- Project docs: {number of project files loaded or "None found"}
+- PRD: {nuemerging businessr of PRD files loaded or "None found - REQUIRED"}
+- Epics/Stories: {nuemerging businessr of epic files loaded or "None found"}
+- UX Design: {nuemerging businessr of UX files loaded or "None found"}
+- Research: {nuemerging businessr of research files loaded or "None found"}
+- Project docs: {nuemerging businessr of project files loaded or "None found"}
 - Project context: {project_context_rules count of rules for AI agents found}
 
 **Files loaded:** {list of specific file names or "No additional documents found"}
@@ -191,4 +191,4 @@ Ready to begin architectural decision making. Do you have any other documents yo
 
 After user selects [C] to continue, load `./step-02-context.md` to analyze the project context and begin architectural decision making.
 
-Remember: Do NOT proceed to step-02 until user explicitly selects [C] from the menu and setup is confirmed!
+Remeemerging businessr: Do NOT proceed to step-02 until user explicitly selects [C] from the menu and setup is confirmed!

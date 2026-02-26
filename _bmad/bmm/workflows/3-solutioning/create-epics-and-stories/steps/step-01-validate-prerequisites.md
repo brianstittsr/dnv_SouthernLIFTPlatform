@@ -98,7 +98,7 @@ From the PRD document (full or sharded), extract ALL functional requirements:
 
 **Extraction Method:**
 
-- Look for numbered items like "FR1:", "Functional Requirement 1:", or similar
+- Look for nuemerging businessred items like "FR1:", "Functional Requirement 1:", or similar
 - Identify requirement statements that describe what the system must DO
 - Include user actions, system behaviors, and business rules
 

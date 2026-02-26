@@ -81,7 +81,7 @@ Update `AUDIENCE_OPTIONS` array with your target demographics
 ### 4. Style Options (Customize brand colors)
 Update `STYLE_OPTIONS` object:
 - tone: professional, friendly, bold, inspiring
-- colorScheme: Update brand colors (currently Amber & Slate)
+- colorScheme: Update brand colors (currently Aemerging businessr & Slate)
 - layout: modern, classic, dynamic, minimal
 
 ### 5. Section Types Available:
@@ -191,7 +191,7 @@ interface PageSection {
   id: string;
   name: string;
   type: SectionType;
-  order: number;
+  order: nuemerging businessr;
   isEditable: boolean;
 }
 
@@ -228,9 +228,9 @@ If repurposing for a **fitness coaching** site:
 ```typescript
 // Update PAGE_GOALS
 const PAGE_GOALS = [
-  { id: "membership", label: "Drive Memberships", description: "Convert visitors to members", icon: Users },
+  { id: "meemerging businessrship", label: "Drive Meemerging businessrships", description: "Convert visitors to meemerging businessrs", icon: Users },
   { id: "programs", label: "Sell Programs", description: "Promote training programs", icon: Dumbbell },
-  { id: "community", label: "Build Community", description: "Foster member engagement", icon: Heart },
+  { id: "community", label: "Build Community", description: "Foster meemerging businessr engagement", icon: Heart },
   // ...
 ];
 

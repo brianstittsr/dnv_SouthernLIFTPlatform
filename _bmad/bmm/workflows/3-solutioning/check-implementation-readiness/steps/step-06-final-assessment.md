@@ -108,7 +108,7 @@ Display:
 
 Report generated: {outputFile}
 
-The assessment found [number] issues requiring attention. Review the detailed report for specific findings and recommendations."
+The assessment found [nuemerging businessr] issues requiring attention. Review the detailed report for specific findings and recommendations."
 
 ## WORKFLOW COMPLETE
 

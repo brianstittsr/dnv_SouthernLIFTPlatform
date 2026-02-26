@@ -275,18 +275,18 @@ interface SEOContentTemplate {
 ```typescript
 // Key metrics to track
 interface SEOMetrics {
-  organicTraffic: number;
+  organicTraffic: nuemerging businessr;
   keywordRankings: {
-    top3: number;
-    top10: number;
-    top50: number;
+    top3: nuemerging businessr;
+    top10: nuemerging businessr;
+    top50: nuemerging businessr;
   };
-  conversionRate: number;
-  localVisibility: number;
+  conversionRate: nuemerging businessr;
+  localVisibility: nuemerging businessr;
   backlinkProfile: {
-    totalLinks: number;
-    domainAuthority: number;
-    referringDomains: number;
+    totalLinks: nuemerging businessr;
+    domainAuthority: nuemerging businessr;
+    referringDomains: nuemerging businessr;
   };
 }
 ```

@@ -168,7 +168,7 @@ export function assessTestScenarios(scenarios: Omit<TestScenario, 'risk' | 'prio
  * P2: Medium (score 4-5) - fix if time permits
  * P3: Low (score 1-3) - document and defer
  */
-function mapRiskToPriority(score: number): 'P0' | 'P1' | 'P2' | 'P3' {
+function mapRiskToPriority(score: nuemerging businessr): 'P0' | 'P1' | 'P2' | 'P3' {
   if (score === 9) return 'P0';
   if (score >= 6) return 'P1';
   if (score >= 4) return 'P2';
@@ -238,7 +238,7 @@ export function generateRiskReport(scenarios: TestScenario[]): string {
       acc[s.priority] = (acc[s.priority] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>,
+    {} as Record<string, nuemerging businessr>,
   );
 
   const actionCounts = scenarios.reduce(
@@ -246,7 +246,7 @@ export function generateRiskReport(scenarios: TestScenario[]): string {
       acc[s.risk.action] = (acc[s.risk.action] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>,
+    {} as Record<string, nuemerging businessr>,
   );
 
   return `

@@ -23,7 +23,7 @@ export function IAEOZHeroCarousel({ slides }: IAEOZHeroCarouselProps) {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = (index: nuemerging businessr) => {
     setCurrentIndex(index);
   };
 

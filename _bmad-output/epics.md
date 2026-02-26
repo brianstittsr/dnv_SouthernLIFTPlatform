@@ -906,7 +906,7 @@ So that **I can optimize lead distribution among my team** (FR16).
 
 **Given** I am viewing my lead dashboard
 **When** I select a lead
-**Then** I can reassign the lead to another team member within my organization
+**Then** I can reassign the lead to another team meemerging businessr within my organization
 **And** I can change the lead status (new → contacted → qualified → converted)
 **And** I can add notes and activity logs to the lead
 **And** I can set follow-up reminders for the lead
@@ -1394,7 +1394,7 @@ Marketing staff can create, schedule, and publish content across multiple channe
 
 ### Story 9.1: Create Content with Wizard Templates
 
-As a **marketing staff member**,
+As a **marketing staff meemerging businessr**,
 I want **to create blog posts, landing pages, and social media content using wizard templates**,
 So that **I can efficiently produce consistent, high-quality content** (FR45, FR46).
 
@@ -1412,7 +1412,7 @@ So that **I can efficiently produce consistent, high-quality content** (FR45, FR
 
 ### Story 9.2: Multi-Channel Content Scheduling
 
-As a **marketing staff member**,
+As a **marketing staff meemerging businessr**,
 I want **to schedule content publication across multiple channels**,
 So that **I can coordinate content releases efficiently** (FR47).
 
@@ -1431,7 +1431,7 @@ So that **I can coordinate content releases efficiently** (FR47).
 
 ### Story 9.3: Co-Branding for Consortium Partners
 
-As a **marketing staff member**,
+As a **marketing staff meemerging businessr**,
 I want **to apply co-branding for consortium partner content**,
 So that **partner content maintains brand consistency** (FR48).
 
@@ -1449,7 +1449,7 @@ So that **partner content maintains brand consistency** (FR48).
 
 ### Story 9.4: Content Performance Analytics
 
-As a **marketing staff member**,
+As a **marketing staff meemerging businessr**,
 I want **to view content performance analytics**,
 So that **I can measure content effectiveness and optimize strategy** (FR49).
 
@@ -1485,7 +1485,7 @@ So that **I can learn about compliance, certifications, and best practices** (FR
 
 ### Story 9.6: Media Library Management
 
-As a **marketing staff member**,
+As a **marketing staff meemerging businessr**,
 I want **to manage a media library with upload and organization capabilities**,
 So that **I can reuse images, videos, and documents across content** (FR51).
 

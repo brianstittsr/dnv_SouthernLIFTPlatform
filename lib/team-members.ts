@@ -14,7 +14,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 
-export interface TeamMember {
+export interface TeamMeemerging businessr {
   id: string;
   name: string;
   title: string;
@@ -22,38 +22,38 @@ export interface TeamMember {
   bio: string;
   imageUrl?: string;
   imageName?: string;
-  order: number;
+  order: nuemerging businessr;
   createdAt?: Date;
   updatedAt?: Date;
   createdBy?: string;
   updatedBy?: string;
 }
 
-export interface CreateTeamMemberInput {
+export interface CreateTeamMeemerging businessrInput {
   name: string;
   title: string;
   initials: string;
   bio: string;
   imageUrl?: string;
   imageName?: string;
-  order?: number;
+  order?: nuemerging businessr;
   createdBy?: string;
 }
 
-export interface UpdateTeamMemberInput {
+export interface UpdateTeamMeemerging businessrInput {
   name?: string;
   title?: string;
   initials?: string;
   bio?: string;
   imageUrl?: string;
   imageName?: string;
-  order?: number;
+  order?: nuemerging businessr;
   updatedBy?: string;
 }
 
-const COLLECTION_NAME = "teamMembers";
+const COLLECTION_NAME = "teamMeemerging businessrs";
 
-function docToTeamMember(docSnap: QueryDocumentSnapshot<DocumentData> | DocumentData): TeamMember {
+function docToTeamMeemerging businessr(docSnap: QueryDocumentSnapshot<DocumentData> | DocumentData): TeamMeemerging businessr {
   const data = docSnap.data();
   return {
     id: docSnap.id,
@@ -71,7 +71,7 @@ function docToTeamMember(docSnap: QueryDocumentSnapshot<DocumentData> | Document
   };
 }
 
-export async function getTeamMembers(): Promise<TeamMember[]> {
+export async function getTeamMeemerging businessrs(): Promise<TeamMeemerging businessr[]> {
   if (!db) throw new Error("Firestore not initialized");
   
   const q = query(
@@ -80,20 +80,20 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
   );
   
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(docToTeamMember);
+  return snapshot.docs.map(docToTeamMeemerging businessr);
 }
 
-export async function getTeamMemberById(id: string): Promise<TeamMember | null> {
+export async function getTeamMeemerging businessrById(id: string): Promise<TeamMeemerging businessr | null> {
   if (!db) throw new Error("Firestore not initialized");
   
   const docRef = doc(db, COLLECTION_NAME, id);
   const snapshot = await getDoc(docRef);
   
   if (!snapshot.exists()) return null;
-  return docToTeamMember(snapshot);
+  return docToTeamMeemerging businessr(snapshot);
 }
 
-export async function createTeamMember(input: CreateTeamMemberInput): Promise<TeamMember> {
+export async function createTeamMeemerging businessr(input: CreateTeamMeemerging businessrInput): Promise<TeamMeemerging businessr> {
   if (!db) throw new Error("Firestore not initialized");
   
   const now = Timestamp.now();
@@ -105,7 +105,7 @@ export async function createTeamMember(input: CreateTeamMemberInput): Promise<Te
   });
   
   const newDoc = await getDoc(docRef);
-  if (!newDoc.exists()) throw new Error("Failed to create team member");
+  if (!newDoc.exists()) throw new Error("Failed to create team meemerging businessr");
   
   return {
     id: newDoc.id,
@@ -122,10 +122,10 @@ export async function createTeamMember(input: CreateTeamMemberInput): Promise<Te
   };
 }
 
-export async function updateTeamMember(
+export async function updateTeamMeemerging businessr(
   id: string,
-  input: UpdateTeamMemberInput
-): Promise<TeamMember> {
+  input: UpdateTeamMeemerging businessrInput
+): Promise<TeamMeemerging businessr> {
   if (!db) throw new Error("Firestore not initialized");
   
   const docRef = doc(db, COLLECTION_NAME, id);
@@ -137,7 +137,7 @@ export async function updateTeamMember(
   });
   
   const updatedDoc = await getDoc(docRef);
-  if (!updatedDoc.exists()) throw new Error("Team member not found");
+  if (!updatedDoc.exists()) throw new Error("Team meemerging businessr not found");
   
   const data = updatedDoc.data();
   return {
@@ -156,18 +156,18 @@ export async function updateTeamMember(
   };
 }
 
-export async function deleteTeamMember(id: string): Promise<void> {
+export async function deleteTeamMeemerging businessr(id: string): Promise<void> {
   if (!db) throw new Error("Firestore not initialized");
   
   const docRef = doc(db, COLLECTION_NAME, id);
   await deleteDoc(docRef);
 }
 
-export async function reorderTeamMembers(orderedIds: string[]): Promise<void> {
+export async function reorderTeamMeemerging businessrs(orderedIds: string[]): Promise<void> {
   if (!db) throw new Error("Firestore not initialized");
   
   const now = Timestamp.now();
-  const updates = orderedIds.map((id: string, index: number) => 
+  const updates = orderedIds.map((id: string, index: nuemerging businessr) => 
     updateDoc(doc(db as NonNullable<typeof db>, COLLECTION_NAME, id), {
       order: index,
       updatedAt: now,

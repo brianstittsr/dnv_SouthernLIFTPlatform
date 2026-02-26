@@ -25,7 +25,7 @@ const ASSET_URLS = [
   '/images/hero-bg.jpg',
   '/images/about-hero.jpg',
   
-  // Team member photos (placeholder paths - actual paths need to be discovered)
+  // Team meemerging businessr photos (placeholder paths - actual paths need to be discovered)
   '/uploads/team/keith-moore.jpg',
   '/uploads/team/charles-sills.jpg',
   '/uploads/team/oscar-frazier.jpg',

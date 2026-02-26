@@ -54,93 +54,93 @@ import {
 import { toast } from "sonner";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
 import {
-  getTeamMembers,
-  createTeamMember,
-  updateTeamMember,
-  deleteTeamMember,
-  type TeamMember,
-  type CreateTeamMemberInput,
-} from "@/lib/team-members";
+  getTeamMeemerging businessrs,
+  createTeamMeemerging businessr,
+  updateTeamMeemerging businessr,
+  deleteTeamMeemerging businessr,
+  type TeamMeemerging businessr,
+  type CreateTeamMeemerging businessrInput,
+} from "@/lib/team-meemerging businessrs";
 
-export function TeamMemberManager() {
+export function TeamMeemerging businessrManager() {
   const { profile } = useUserProfile();
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<TeamMeemerging businessr[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+  const [editingMeemerging businessr, setEditingMeemerging businessr] = useState<TeamMeemerging businessr | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletingMember, setDeletingMember] = useState<TeamMember | null>(null);
+  const [deletingMeemerging businessr, setDeletingMeemerging businessr] = useState<TeamMeemerging businessr | null>(null);
 
   useEffect(() => {
-    loadTeamMembers();
+    loadTeamMeemerging businessrs();
   }, []);
 
-  async function loadTeamMembers() {
+  async function loadTeamMeemerging businessrs() {
     setIsLoading(true);
     try {
-      const members = await getTeamMembers();
-      setTeamMembers(members.sort((a: TeamMember, b: TeamMember) => (a.order || 0) - (b.order || 0)));
+      const meemerging businessrs = await getTeamMeemerging businessrs();
+      setTeamMeemerging businessrs(meemerging businessrs.sort((a: TeamMeemerging businessr, b: TeamMeemerging businessr) => (a.order || 0) - (b.order || 0)));
     } catch (error) {
-      console.error("Error loading team members:", error);
-      toast.error("Failed to load team members");
+      console.error("Error loading team meemerging businessrs:", error);
+      toast.error("Failed to load team meemerging businessrs");
     } finally {
       setIsLoading(false);
     }
   }
 
-  function handleEdit(member: TeamMember) {
-    setEditingMember(member);
+  function handleEdit(meemerging businessr: TeamMeemerging businessr) {
+    setEditingMeemerging businessr(meemerging businessr);
     setDialogOpen(true);
   }
 
-  function handleDelete(member: TeamMember) {
-    setDeletingMember(member);
+  function handleDelete(meemerging businessr: TeamMeemerging businessr) {
+    setDeletingMeemerging businessr(meemerging businessr);
     setDeleteDialogOpen(true);
   }
 
   async function confirmDelete() {
-    if (!deletingMember) return;
+    if (!deletingMeemerging businessr) return;
     
     try {
-      await deleteTeamMember(deletingMember.id);
-      toast.success("Team member deleted");
-      loadTeamMembers();
+      await deleteTeamMeemerging businessr(deletingMeemerging businessr.id);
+      toast.success("Team meemerging businessr deleted");
+      loadTeamMeemerging businessrs();
     } catch (error) {
-      toast.error("Failed to delete team member");
+      toast.error("Failed to delete team meemerging businessr");
     } finally {
       setDeleteDialogOpen(false);
-      setDeletingMember(null);
+      setDeletingMeemerging businessr(null);
     }
   }
 
   function handleAddNew() {
-    setEditingMember(null);
+    setEditingMeemerging businessr(null);
     setDialogOpen(true);
   }
 
   function handleSuccess() {
     setDialogOpen(false);
-    setEditingMember(null);
-    loadTeamMembers();
+    setEditingMeemerging businessr(null);
+    loadTeamMeemerging businessrs();
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Team Members</h2>
+          <h2 className="text-2xl font-bold">Team Meemerging businessrs</h2>
           <p className="text-sm text-muted-foreground">
-            Manage team members displayed on the website
+            Manage team meemerging businessrs displayed on the website
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={loadTeamMembers} disabled={isLoading}>
+          <Button variant="outline" onClick={loadTeamMeemerging businessrs} disabled={isLoading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
           <Button onClick={handleAddNew}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Team Member
+            Add Team Meemerging businessr
           </Button>
         </div>
       </div>
@@ -149,7 +149,7 @@ export function TeamMemberManager() {
         <CardHeader>
           <CardTitle>Current Team</CardTitle>
           <CardDescription>
-            {teamMembers.length} team member{teamMembers.length !== 1 ? "s" : ""} on the website
+            {teamMeemerging businessrs.length} team meemerging businessr{teamMeemerging businessrs.length !== 1 ? "s" : ""} on the website
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -157,16 +157,16 @@ export function TeamMemberManager() {
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
-          ) : teamMembers.length === 0 ? (
+          ) : teamMeemerging businessrs.length === 0 ? (
             <div className="text-center py-12 space-y-4">
               <User className="h-16 w-16 mx-auto text-muted-foreground" />
-              <h3 className="text-xl font-semibold">No Team Members</h3>
+              <h3 className="text-xl font-semibold">No Team Meemerging businessrs</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Add team members to display them on the team page
+                Add team meemerging businessrs to display them on the team page
               </p>
               <Button onClick={handleAddNew}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add First Team Member
+                Add First Team Meemerging businessr
               </Button>
             </div>
           ) : (
@@ -181,41 +181,41 @@ export function TeamMemberManager() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {teamMembers.map((member, index) => (
-                  <TableRow key={member.id}>
+                {teamMeemerging businessrs.map((meemerging businessr, index) => (
+                  <TableRow key={meemerging businessr.id}>
                     <TableCell>
                       <span className="text-muted-foreground">{index + 1}</span>
                     </TableCell>
                     <TableCell>
                       <div className="h-12 w-12 rounded-lg overflow-hidden bg-muted">
-                        {member.imageUrl ? (
+                        {meemerging businessr.imageUrl ? (
                           <img
-                            src={member.imageUrl}
-                            alt={member.name}
+                            src={meemerging businessr.imageUrl}
+                            alt={meemerging businessr.name}
                             className="h-full w-full object-cover"
                           />
                         ) : (
                           <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">
-                            {member.initials}
+                            {meemerging businessr.initials}
                           </div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium">{member.name}</TableCell>
-                    <TableCell>{member.title}</TableCell>
+                    <TableCell className="font-medium">{meemerging businessr.name}</TableCell>
+                    <TableCell>{meemerging businessr.title}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleEdit(member)}
+                          onClick={() => handleEdit(meemerging businessr)}
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(member)}
+                          onClick={() => handleDelete(meemerging businessr)}
                           className="text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -232,8 +232,8 @@ export function TeamMemberManager() {
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <TeamMemberForm
-            member={editingMember}
+          <TeamMeemerging businessrForm
+            meemerging businessr={editingMeemerging businessr}
             onSuccess={handleSuccess}
             onCancel={() => setDialogOpen(false)}
           />
@@ -243,9 +243,9 @@ export function TeamMemberManager() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Team Member</AlertDialogTitle>
+            <AlertDialogTitle>Delete Team Meemerging businessr</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {deletingMember?.name}? This action cannot be undone.
+              Are you sure you want to delete {deletingMeemerging businessr?.name}? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -263,28 +263,28 @@ export function TeamMemberManager() {
   );
 }
 
-interface TeamMemberFormProps {
-  member: TeamMember | null;
+interface TeamMeemerging businessrFormProps {
+  meemerging businessr: TeamMeemerging businessr | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
+function TeamMeemerging businessrForm({ meemerging businessr, onSuccess, onCancel }: TeamMeemerging businessrFormProps) {
   const { profile } = useUserProfile();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(member?.imageUrl || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(meemerging businessr?.imageUrl || null);
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
   const [availableImages, setAvailableImages] = useState<{ id: string; name: string; url: string }[]>([]);
   const [showImageSelector, setShowImageSelector] = useState(false);
   
-  const [formData, setFormData] = useState<CreateTeamMemberInput>({
-    name: member?.name || "",
-    title: member?.title || "",
-    initials: member?.initials || "",
-    bio: member?.bio || "",
-    imageUrl: member?.imageUrl || "",
-    imageName: member?.imageName || "",
-    order: member?.order || 0,
+  const [formData, setFormData] = useState<CreateTeamMeemerging businessrInput>({
+    name: meemerging businessr?.name || "",
+    title: meemerging businessr?.title || "",
+    initials: meemerging businessr?.initials || "",
+    bio: meemerging businessr?.bio || "",
+    imageUrl: meemerging businessr?.imageUrl || "",
+    imageName: meemerging businessr?.imageName || "",
+    order: meemerging businessr?.order || 0,
   });
 
   useEffect(() => {
@@ -347,23 +347,23 @@ function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
 
     setIsSubmitting(true);
     try {
-      if (member) {
-        await updateTeamMember(member.id, {
+      if (meemerging businessr) {
+        await updateTeamMeemerging businessr(meemerging businessr.id, {
           ...formData,
           updatedBy: profile.id,
         });
-        toast.success("Team member updated");
+        toast.success("Team meemerging businessr updated");
       } else {
-        await createTeamMember({
+        await createTeamMeemerging businessr({
           ...formData,
           createdBy: profile.id,
         });
-        toast.success("Team member created");
+        toast.success("Team meemerging businessr created");
       }
       onSuccess();
     } catch (error) {
-      console.error("Error saving team member:", error);
-      toast.error("Failed to save team member");
+      console.error("Error saving team meemerging businessr:", error);
+      toast.error("Failed to save team meemerging businessr");
     } finally {
       setIsSubmitting(false);
     }
@@ -372,9 +372,9 @@ function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <DialogHeader>
-        <DialogTitle>{member ? "Edit Team Member" : "Add Team Member"}</DialogTitle>
+        <DialogTitle>{meemerging businessr ? "Edit Team Meemerging businessr" : "Add Team Meemerging businessr"}</DialogTitle>
         <DialogDescription>
-          Fill in the details for the team member
+          Fill in the details for the team meemerging businessr
         </DialogDescription>
       </DialogHeader>
 
@@ -485,7 +485,7 @@ function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
             id="bio"
             value={formData.bio}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-            placeholder="Brief description or tagline for this team member"
+            placeholder="Brief description or tagline for this team meemerging businessr"
             rows={3}
           />
         </div>
@@ -495,7 +495,7 @@ function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
           <Label htmlFor="order">Display Order</Label>
           <Input
             id="order"
-            type="number"
+            type="nuemerging businessr"
             value={formData.order}
             onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
             placeholder="0"
@@ -513,10 +513,10 @@ function TeamMemberForm({ member, onSuccess, onCancel }: TeamMemberFormProps) {
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Saving...
             </>
-          ) : member ? (
-            "Update Team Member"
+          ) : meemerging businessr ? (
+            "Update Team Meemerging businessr"
           ) : (
-            "Create Team Member"
+            "Create Team Meemerging businessr"
           )}
         </Button>
       </DialogFooter>

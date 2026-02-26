@@ -36,7 +36,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
 import { logOpportunityCreated } from "@/lib/activity-logger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -123,12 +123,12 @@ export default function NewOpportunityPage() {
     async function fetchAffiliates() {
       if (!db) return;
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         const affiliateList: AffiliateOption[] = [];
         snapshot.forEach((doc) => {
-          const data = doc.data() as TeamMemberDoc;
+          const data = doc.data() as TeamMeemerging businessrDoc;
           // Include affiliates and consultants
           if (data.role === "affiliate" || data.role === "consultant") {
             affiliateList.push({
@@ -173,14 +173,14 @@ export default function NewOpportunityPage() {
   };
 
   // Calculate total deal value from subscription
-  const calculateSubscriptionValue = (): number => {
+  const calculateSubscriptionValue = (): nuemerging businessr => {
     const monthly = parseFloat(form.monthlyAmount) || 0;
     const months = parseInt(form.subscriptionTermMonths) || 12;
     return monthly * months;
   };
 
   // Get the effective deal value (either direct or calculated from subscription)
-  const getEffectiveDealValue = (): number => {
+  const getEffectiveDealValue = (): nuemerging businessr => {
     if (form.isSubscription) {
       return calculateSubscriptionValue();
     }
@@ -222,7 +222,7 @@ export default function NewOpportunityPage() {
     }
   };
 
-  const removeDeliverable = (index: number) => {
+  const removeDeliverable = (index: nuemerging businessr) => {
     setForm((prev) => ({
       ...prev,
       deliverables: prev.deliverables.filter((_, i) => i !== index),
@@ -556,7 +556,7 @@ export default function NewOpportunityPage() {
                       <Label htmlFor="monthlyAmount">Monthly Amount ($)</Label>
                       <Input
                         id="monthlyAmount"
-                        type="number"
+                        type="nuemerging businessr"
                         placeholder="e.g., 500"
                         value={form.monthlyAmount}
                         onChange={(e) => updateField("monthlyAmount", e.target.value)}
@@ -597,7 +597,7 @@ export default function NewOpportunityPage() {
                   <Label htmlFor="value">Deal Value ($)</Label>
                   <Input
                     id="value"
-                    type="number"
+                    type="nuemerging businessr"
                     placeholder="e.g., 50000"
                     value={form.value}
                     onChange={(e) => updateField("value", e.target.value)}
@@ -610,7 +610,7 @@ export default function NewOpportunityPage() {
                   <Label htmlFor="probability">Probability (%)</Label>
                   <Input
                     id="probability"
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     max="100"
                     placeholder="e.g., 50"

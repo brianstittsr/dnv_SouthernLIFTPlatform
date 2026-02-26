@@ -242,7 +242,7 @@ test('parallel test 2', async ({ page }) => {
 - Each worker has isolated user account
 - No conflicts in parallel execution
 - Token management automatic per worker
-- Scales to any number of workers
+- Scales to any nuemerging businessr of workers
 
 ## Custom Auth Provider Pattern
 

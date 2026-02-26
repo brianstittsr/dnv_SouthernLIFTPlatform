@@ -8,43 +8,43 @@ import { TrendingUp, TrendingDown, Minus, Target, BarChart3, AlertCircle, CheckC
 
 // Widget data types
 interface HealthData {
-  overall: number;
-  rocks: number;
-  scorecard: number;
-  issues: number;
-  todos: number;
+  overall: nuemerging businessr;
+  rocks: nuemerging businessr;
+  scorecard: nuemerging businessr;
+  issues: nuemerging businessr;
+  todos: nuemerging businessr;
   trend: "up" | "down" | "flat";
 }
 
 interface RocksSummary {
-  total: number;
-  onTrack: number;
-  atRisk: number;
-  offTrack: number;
-  complete: number;
-  avgProgress: number;
-  healthPercent: number;
+  total: nuemerging businessr;
+  onTrack: nuemerging businessr;
+  atRisk: nuemerging businessr;
+  offTrack: nuemerging businessr;
+  complete: nuemerging businessr;
+  avgProgress: nuemerging businessr;
+  healthPercent: nuemerging businessr;
 }
 
 interface ScorecardSummary {
-  total: number;
-  aboveGoal: number;
-  atGoal: number;
-  belowGoal: number;
-  healthPercent: number;
+  total: nuemerging businessr;
+  aboveGoal: nuemerging businessr;
+  atGoal: nuemerging businessr;
+  belowGoal: nuemerging businessr;
+  healthPercent: nuemerging businessr;
 }
 
 interface ScorecardMetric {
   name: string;
-  goal: number;
-  actual: number;
+  goal: nuemerging businessr;
+  actual: nuemerging businessr;
   unit?: string;
   trend: string;
   status: "above" | "at" | "below";
 }
 
 // Hook to fetch widget data
-function useWidgetData<T>(widget: string, refreshInterval?: number) {
+function useWidgetData<T>(widget: string, refreshInterval?: nuemerging businessr) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +52,7 @@ function useWidgetData<T>(widget: string, refreshInterval?: number) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/eos2/embed?widget=${widget}`);
+        const response = await fetch(`/api/eos2/eemerging businessd?widget=${widget}`);
         const result = await response.json();
         if (result.success) {
           setData(result.data);
@@ -81,7 +81,7 @@ function useWidgetData<T>(widget: string, refreshInterval?: number) {
 interface HealthWidgetProps {
   className?: string;
   showDetails?: boolean;
-  refreshInterval?: number;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function HealthWidget({ className, showDetails = true, refreshInterval = 60000 }: HealthWidgetProps) {
@@ -107,7 +107,7 @@ export function HealthWidget({ className, showDetails = true, refreshInterval = 
     );
   }
 
-  const getHealthColor = (value: number) => {
+  const getHealthColor = (value: nuemerging businessr) => {
     if (value >= 80) return "text-green-600";
     if (value >= 60) return "text-yellow-600";
     return "text-red-600";
@@ -166,7 +166,7 @@ export function HealthWidget({ className, showDetails = true, refreshInterval = 
 interface RocksWidgetProps {
   className?: string;
   compact?: boolean;
-  refreshInterval?: number;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function RocksWidget({ className, compact = false, refreshInterval = 60000 }: RocksWidgetProps) {
@@ -245,8 +245,8 @@ export function RocksWidget({ className, compact = false, refreshInterval = 6000
 interface ScorecardWidgetProps {
   className?: string;
   showMetrics?: boolean;
-  maxMetrics?: number;
-  refreshInterval?: number;
+  maxMetrics?: nuemerging businessr;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function ScorecardWidget({ 
@@ -351,12 +351,12 @@ export function ScorecardWidget({
 // Issues Summary Widget
 interface IssuesWidgetProps {
   className?: string;
-  refreshInterval?: number;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function IssuesWidget({ className, refreshInterval = 60000 }: IssuesWidgetProps) {
   const { data, loading, error } = useWidgetData<{ 
-    summary: { total: number; open: number; inProgress: number; solved: number; highPriority: number } 
+    summary: { total: nuemerging businessr; open: nuemerging businessr; inProgress: nuemerging businessr; solved: nuemerging businessr; highPriority: nuemerging businessr } 
   }>("issues", refreshInterval);
 
   if (loading) {
@@ -416,12 +416,12 @@ export function IssuesWidget({ className, refreshInterval = 60000 }: IssuesWidge
 // To-Dos Summary Widget
 interface TodosWidgetProps {
   className?: string;
-  refreshInterval?: number;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function TodosWidget({ className, refreshInterval = 60000 }: TodosWidgetProps) {
   const { data, loading, error } = useWidgetData<{ 
-    summary: { total: number; complete: number; pending: number; overdue: number; completionRate: number } 
+    summary: { total: nuemerging businessr; complete: nuemerging businessr; pending: nuemerging businessr; overdue: nuemerging businessr; completionRate: nuemerging businessr } 
   }>("todos", refreshInterval);
 
   if (loading) {
@@ -485,7 +485,7 @@ export function TodosWidget({ className, refreshInterval = 60000 }: TodosWidgetP
 // Combined Mini Dashboard Widget
 interface MiniDashboardProps {
   className?: string;
-  refreshInterval?: number;
+  refreshInterval?: nuemerging businessr;
 }
 
 export function MiniDashboard({ className, refreshInterval = 60000 }: MiniDashboardProps) {

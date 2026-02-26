@@ -1,14 +1,14 @@
 ---
-name: "step-{{stepNumber}}-{{stepName}}"
+name: "step-{{stepNuemerging businessr}}-{{stepName}}"
 description: "{{stepDescription}}"
 
 # Path Definitions
 workflow_path: "{project-root}/_bmad/{{targetModule}}/workflows/{{workflowName}}"
 
 # File References
-thisStepFile: "{workflow_path}/steps/step-{{stepNumber}}-{{stepName}}.md"
+thisStepFile: "{workflow_path}/steps/step-{{stepNuemerging businessr}}-{{stepName}}.md"
 {{#hasNextStep}}
-nextStepFile: "{workflow_path}/steps/step-{{nextStepNumber}}-{{nextStepName}}.md"
+nextStepFile: "{workflow_path}/steps/step-{{nextStepNuemerging businessr}}-{{nextStepName}}.md"
 {{/hasNextStep}}
 workflowFile: "{workflow_path}/workflow.md"
 {{#hasOutput}}
@@ -27,7 +27,7 @@ partyModeWorkflow: "{project-root}/_bmad/core/workflows/party-mode/workflow.md"
 {{/hasTemplates}}
 ---
 
-# Step {{stepNumber}}: {{stepTitle}}
+# Step {{stepNuemerging businessr}}: {{stepTitle}}
 
 ## STEP GOAL:
 
@@ -75,7 +75,7 @@ partyModeWorkflow: "{project-root}/_bmad/core/workflows/party-mode/workflow.md"
 
 {{#instructions}}
 
-### {{number}}. {{title}}
+### {{nuemerging businessr}}. {{title}}
 
 {{content}}
 
@@ -93,7 +93,7 @@ partyModeWorkflow: "{project-root}/_bmad/core/workflows/party-mode/workflow.md"
 
 {{#hasMenu}}
 
-### {{menuNumber}}. Present MENU OPTIONS
+### {{menuNuemerging businessr}}. Present MENU OPTIONS
 
 Display: **{{menuDisplay}}**
 
@@ -111,7 +111,7 @@ Display: **{{menuDisplay}}**
 
 - IF {{key}}: {{action}}
   {{/menuOptions}}
-- IF Any other comments or queries: help user respond then [Redisplay Menu Options](#{{menuNumber}}-present-menu-options)
+- IF Any other comments or queries: help user respond then [Redisplay Menu Options](#{{menuNuemerging businessr}}-present-menu-options)
   {{/hasMenu}}
 
 ## CRITICAL STEP COMPLETION NOTE

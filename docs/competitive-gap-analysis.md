@@ -194,7 +194,7 @@ const localMarketStrategy = {
     "Washington DC federal contracting trends"
   ],
   localPartnerships: [
-    "DC Chamber of Commerce",
+    "DC Chaemerging businessr of Commerce",
     "Local MBDA centers",
     "Government contractor associations",
     "Federal agency partnerships"
@@ -377,7 +377,7 @@ const localMarketStrategy = {
 - **Brand Awareness**: Branded search volume growth
 - **Market Share**: Share of voice in target keywords
 - **Thought Leadership**: Speaking engagements and media mentions
-- **Partnership Development**: Number and quality of strategic partnerships
+- **Partnership Development**: Nuemerging businessr and quality of strategic partnerships
 
 ### Competitive Metrics
 - **Search Rankings**: Position vs. competitors for target keywords

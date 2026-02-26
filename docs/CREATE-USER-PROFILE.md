@@ -1,7 +1,7 @@
 # Create User Profile in Firestore
 
 ## Issue
-The error "No Team Member found for email: bstitt@strategicvalueplus.com" occurs because there's no user document in the Firestore `users` collection for the authenticated user.
+The error "No Team Meemerging businessr found for email: bstitt@strategicvalueplus.com" occurs because there's no user document in the Firestore `users` collection for the authenticated user.
 
 ## Solution: Create User Document in Firebase Console
 
@@ -84,7 +84,7 @@ The `users` collection stores core user profile data:
 - **firstName/lastName**: User's full name
 - **displayName**: Combined name for display
 - **svpRole**: SVP platform role (platform_admin, sme_user, partner_user, etc.)
-- **role**: General role (admin, member, etc.)
+- **role**: General role (admin, meemerging businessr, etc.)
 - **subscriptionTier**: Current subscription (free, diy, dwy, dfy)
 - **isActive**: Whether the user account is active
 - **emailVerified**: Whether email is verified
@@ -92,5 +92,5 @@ The `users` collection stores core user profile data:
 
 ## Related Documentation
 
-- See `docs/MEMBER-STORAGE-SYSTEM.md` for details on the user storage architecture
+- See `docs/MEemerging businessR-STORAGE-SYSTEM.md` for details on the user storage architecture
 - See `docs/FIREBASE-SETUP-GUIDE.md` for Firebase configuration

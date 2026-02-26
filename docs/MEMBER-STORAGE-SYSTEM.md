@@ -1,11 +1,11 @@
-# Member Storage System Documentation
+# Meemerging businessr Storage System Documentation
 
 ## Overview
 
-The SVP Platform uses **two separate collections** to manage member data:
+The SVP Platform uses **two separate collections** to manage meemerging businessr data:
 
 1. **`users`** collection - Firebase Authentication profiles
-2. **`teamMembers`** collection - Detailed team member information
+2. **`teamMeemerging businessrs`** collection - Detailed team meemerging businessr information
 
 These collections are **linked** but serve different purposes.
 
@@ -26,7 +26,7 @@ These collections are **linked** but serve different purposes.
   email: string;
   firstName?: string;            // Optional - often empty
   lastName?: string;             // Optional - often empty
-  role: "admin" | "affiliate" | "customer" | "team_member";
+  role: "admin" | "affiliate" | "customer" | "team_meemerging businessr";
   svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor";
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -40,11 +40,11 @@ These collections are **linked** but serve different purposes.
 
 ---
 
-### 2. `teamMembers` Collection (Detailed Member Profiles)
+### 2. `teamMeemerging businessrs` Collection (Detailed Meemerging businessr Profiles)
 
-**Location:** `firestore/teamMembers/{memberId}`
+**Location:** `firestore/teamMeemerging businessrs/{meemerging businessrId}`
 
-**Purpose:** Stores comprehensive team member information with rich profile data
+**Purpose:** Stores comprehensive team meemerging businessr information with rich profile data
 
 **Key Fields:**
 ```typescript
@@ -86,7 +86,7 @@ These collections are **linked** but serve different purposes.
 }
 ```
 
-**Current Issue:** No `teamMembers` document exists for `bstitt@strategicvalueplus.com`
+**Current Issue:** No `teamMeemerging businessrs` document exists for `bstitt@strategicvalueplus.com`
 
 ---
 
@@ -94,9 +94,9 @@ These collections are **linked** but serve different purposes.
 
 ### Linking Mechanism
 
-The connection between `users` and `teamMembers` is established through:
+The connection between `users` and `teamMeemerging businessrs` is established through:
 
-1. **`firebaseUid` field** in `teamMembers` document
+1. **`firebaseUid` field** in `teamMeemerging businessrs` document
 2. **Email matching** as fallback
 
 ### Connection Flow
@@ -106,20 +106,20 @@ Firebase Auth User (users collection)
          ↓
     firebaseUid
          ↓
-Team Member (teamMembers collection)
+Team Meemerging businessr (teamMeemerging businessrs collection)
 ```
 
 ### Code Implementation
 
-Located in `lib/auth-team-member-link.ts`:
+Located in `lib/auth-team-meemerging businessr-link.ts`:
 
 ```typescript
 // 1. Try to find by Firebase UID
-const teamMember = await getTeamMemberByAuthUid(firebaseUid);
+const teamMeemerging businessr = await getTeamMeemerging businessrByAuthUid(firebaseUid);
 
 // 2. If not found, try to find by email and link
-if (!teamMember) {
-  const teamMember = await findAndLinkTeamMember(email, firebaseUid);
+if (!teamMeemerging businessr) {
+  const teamMeemerging businessr = await findAndLinkTeamMeemerging businessr(email, firebaseUid);
 }
 ```
 
@@ -130,9 +130,9 @@ Located in `contexts/user-profile-context.tsx`:
 ```typescript
 // Loads user data on authentication
 1. Fetch user document from users collection (gets svpRole)
-2. Try to find linked team member by firebaseUid
+2. Try to find linked team meemerging businessr by firebaseUid
 3. If not found, try to find by email
-4. If found, merge team member data into profile
+4. If found, merge team meemerging businessr data into profile
 5. If not found, use basic Firebase Auth data
 ```
 
@@ -148,9 +148,9 @@ Located in `contexts/user-profile-context.tsx`:
 - ✅ `svpRole: "platform_admin"` (correctly set)
 - ❌ `firstName` and `lastName` missing
 
-**Team Members (`teamMembers` collection):**
+**Team Meemerging businessrs (`teamMeemerging businessrs` collection):**
 - ❌ No document found for your email
-- Console shows: "No Team Member found for email: bstitt@strategicvalueplus.com"
+- Console shows: "No Team Meemerging businessr found for email: bstitt@strategicvalueplus.com"
 
 ### Why You See "bstitt" Instead of Full Name
 
@@ -165,7 +165,7 @@ const getDisplayName = () => {
 };
 ```
 
-Since neither `users` nor `teamMembers` has your name, it falls back to the email prefix.
+Since neither `users` nor `teamMeemerging businessrs` has your name, it falls back to the email prefix.
 
 ---
 
@@ -183,14 +183,14 @@ Since neither `users` nor `teamMembers` has your name, it falls back to the emai
 3. Refresh browser
 
 **Pros:** Quick, immediate fix
-**Cons:** Doesn't create full team member profile
+**Cons:** Doesn't create full team meemerging businessr profile
 
 ---
 
-### Option 2: Create `teamMembers` Document (Recommended)
+### Option 2: Create `teamMeemerging businessrs` Document (Recommended)
 
 **Steps:**
-1. Go to Firebase Console: https://console.firebase.google.com/project/kdm-svp-platform/firestore/databases/-default-/data/~2FteamMembers
+1. Go to Firebase Console: https://console.firebase.google.com/project/kdm-svp-platform/firestore/databases/-default-/data/~2FteamMeemerging businessrs
 2. Click "Add document"
 3. Document ID: (auto-generate or use custom)
 4. Add fields:
@@ -211,7 +211,7 @@ Since neither `users` nor `teamMembers` has your name, it falls back to the emai
 
 **Pros:** 
 - Full profile with all fields
-- Appears in team member lists
+- Appears in team meemerging businessr lists
 - Can be used for leadership pages
 - Supports additional metadata
 
@@ -221,13 +221,13 @@ Since neither `users` nor `teamMembers` has your name, it falls back to the emai
 
 ### Option 3: Automated Profile Creation (Future Enhancement)
 
-Create an API endpoint or admin tool to automatically create linked `teamMembers` documents when users are created.
+Create an API endpoint or admin tool to automatically create linked `teamMeemerging businessrs` documents when users are created.
 
 **Implementation location:** `app/api/admin/users/route.ts`
 
 ```typescript
-// When creating a new user, also create teamMembers document
-await setDoc(doc(db, "teamMembers", teamMemberId), {
+// When creating a new user, also create teamMeemerging businessrs document
+await setDoc(doc(db, "teamMeemerging businessrs", teamMeemerging businessrId), {
   firebaseUid: userId,
   firstName,
   lastName,
@@ -251,9 +251,9 @@ await setDoc(doc(db, "teamMembers", teamMemberId), {
 - Quick role checks
 - Firebase Auth integration
 
-**Use `teamMembers` collection for:**
+**Use `teamMeemerging businessrs` collection for:**
 - Detailed profile information
-- Team member listings
+- Team meemerging businessr listings
 - Leadership pages
 - Rich metadata (expertise, bio, social links)
 - Client relationship tracking
@@ -262,8 +262,8 @@ await setDoc(doc(db, "teamMembers", teamMemberId), {
 ### Linking Requirements
 
 **Always ensure:**
-1. `teamMembers.firebaseUid` matches `users.id`
-2. `teamMembers.emailPrimary` matches `users.email`
+1. `teamMeemerging businessrs.firebaseUid` matches `users.id`
+2. `teamMeemerging businessrs.emailPrimary` matches `users.email`
 3. Both documents are created for platform admins
 4. Updates to one collection consider the other
 
@@ -272,7 +272,7 @@ await setDoc(doc(db, "teamMembers", teamMemberId), {
 ## Related Files
 
 - **Schema:** `lib/schema.ts` (lines 572-603)
-- **Linking Logic:** `lib/auth-team-member-link.ts`
+- **Linking Logic:** `lib/auth-team-meemerging businessr-link.ts`
 - **Profile Context:** `contexts/user-profile-context.tsx`
 - **User Profile Interface:** `contexts/user-profile-context.tsx` (lines 10-58)
 - **Firestore Rules:** `firestore.rules`
@@ -284,12 +284,12 @@ await setDoc(doc(db, "teamMembers", teamMemberId), {
 **For your account (bstitt@strategicvalueplus.com):**
 
 1. **Immediate:** Add `firstName` and `lastName` to your `users` document
-2. **Complete:** Create a full `teamMembers` document with all profile fields
+2. **Complete:** Create a full `teamMeemerging businessrs` document with all profile fields
 3. **Future:** Implement automated linking when creating new admin users
 
 This will ensure:
 - ✅ Full name displays correctly
 - ✅ Complete profile information
-- ✅ Appears in team member lists
+- ✅ Appears in team meemerging businessr lists
 - ✅ Can be featured on leadership pages
 - ✅ All platform features work correctly

@@ -63,7 +63,7 @@ To resume the nutrition planning workflow from where it was left off, ensuring s
 Review the frontmatter to understand:
 
 - `stepsCompleted`: Which steps are already done
-- `lastStep`: The most recently completed step number
+- `lastStep`: The most recently completed step nuemerging businessr
 - `userProfile`: User information already collected
 - `nutritionGoals`: Goals already established
 - All other frontmatter variables

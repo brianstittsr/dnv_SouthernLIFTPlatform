@@ -12,7 +12,7 @@ interface GenerateBudgetRequest {
 
 interface BudgetBreakdown {
   category: string;
-  amount: number;
+  amount: nuemerging businessr;
   description: string;
 }
 
@@ -38,7 +38,7 @@ async function callOpenAI(apiKey: string, systemPrompt: string, userPrompt: stri
   return data.choices?.[0]?.message?.content || "";
 }
 
-function generateFallbackBudget(request: GenerateBudgetRequest): { totalBudget: number; breakdown: BudgetBreakdown[] } {
+function generateFallbackBudget(request: GenerateBudgetRequest): { totalBudget: nuemerging businessr; breakdown: BudgetBreakdown[] } {
   const { proposalType, startDate, endDate, milestones, entities } = request;
   
   // Calculate project duration in months
@@ -139,7 +139,7 @@ Type: ${proposalType || "General"}
 Description: ${description || "Not provided"}
 Start Date: ${startDate || "Not specified"}
 End Date: ${endDate || "Not specified"}
-Number of Milestones: ${milestones?.length || "Not specified"}
+Nuemerging businessr of Milestones: ${milestones?.length || "Not specified"}
 Collaborating Entities: ${entities?.map(e => e.name).join(", ") || "Not specified"}
 
 Generate a realistic total budget and breakdown that:

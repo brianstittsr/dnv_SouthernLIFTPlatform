@@ -27,7 +27,7 @@ export const TOOL_DEFINITIONS: Record<ToolType, { name: string; description: str
   },
   'ai-workforce': { 
     name: 'AI Workforce', 
-    description: 'AI-powered virtual team members and assistants',
+    description: 'AI-powered virtual team meemerging businessrs and assistants',
     icon: 'Bot'
   },
   'proposal-creator': { 
@@ -98,7 +98,7 @@ export async function createSoftwareKey(params: {
   description?: string;
   tools: ToolType[];
   expiresAt?: Date;
-  maxActivations?: number;
+  maxActivations?: nuemerging businessr;
   assignedTo?: string;
   assignedToName?: string;
   assignedToEmail?: string;

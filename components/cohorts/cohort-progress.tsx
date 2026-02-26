@@ -14,9 +14,9 @@ import {
 import { cn } from "@/lib/utils";
 
 interface CohortProgressProps {
-  completedSessions: number;
-  totalSessions: number;
-  progressPercentage: number;
+  completedSessions: nuemerging businessr;
+  totalSessions: nuemerging businessr;
+  progressPercentage: nuemerging businessr;
   variant?: "default" | "compact" | "detailed";
   showModules?: boolean;
   modules?: Array<{
@@ -24,8 +24,8 @@ interface CohortProgressProps {
     title: string;
     completed: boolean;
     locked: boolean;
-    sessionCount: number;
-    completedSessionCount: number;
+    sessionCount: nuemerging businessr;
+    completedSessionCount: nuemerging businessr;
   }>;
 }
 
@@ -37,14 +37,14 @@ export function CohortProgress({
   showModules = false,
   modules = [],
 }: CohortProgressProps) {
-  const getProgressColor = (percentage: number) => {
+  const getProgressColor = (percentage: nuemerging businessr) => {
     if (percentage >= 100) return "text-green-600";
     if (percentage >= 75) return "text-blue-600";
     if (percentage >= 50) return "text-yellow-600";
     return "text-gray-600";
   };
 
-  const getProgressLabel = (percentage: number) => {
+  const getProgressLabel = (percentage: nuemerging businessr) => {
     if (percentage >= 100) return "Completed";
     if (percentage >= 75) return "Almost There";
     if (percentage >= 50) return "Halfway";

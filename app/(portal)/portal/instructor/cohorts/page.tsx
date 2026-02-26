@@ -35,26 +35,26 @@ interface Cohort {
   instructorId: string;
   startDate: Timestamp;
   endDate: Timestamp;
-  duration: number;
-  maxParticipants: number;
-  currentEnrollment: number;
+  duration: nuemerging businessr;
+  maxParticipants: nuemerging businessr;
+  currentEnrollment: nuemerging businessr;
   status: "draft" | "published" | "active" | "completed" | "archived";
-  price: number;
+  price: nuemerging businessr;
   curriculum: {
-    weekNumber: number;
+    weekNuemerging businessr: nuemerging businessr;
     title: string;
     topics: string[];
   }[];
-  completionRate?: number;
-  averageScore?: number;
+  completionRate?: nuemerging businessr;
+  averageScore?: nuemerging businessr;
 }
 
 interface CohortStats {
-  totalCohorts: number;
-  activeCohorts: number;
-  totalParticipants: number;
-  averageCompletion: number;
-  upcomingCohorts: number;
+  totalCohorts: nuemerging businessr;
+  activeCohorts: nuemerging businessr;
+  totalParticipants: nuemerging businessr;
+  averageCompletion: nuemerging businessr;
+  upcomingCohorts: nuemerging businessr;
 }
 
 export default function InstructorCohortsPage() {

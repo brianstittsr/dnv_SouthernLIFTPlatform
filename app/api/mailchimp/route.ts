@@ -29,15 +29,15 @@ export async function GET(request: NextRequest) {
         const list = await mailchimp.getList(listId);
         return NextResponse.json(list);
 
-      case 'members':
+      case 'meemerging businessrs':
         if (!listId) {
           return NextResponse.json({ error: 'listId is required' }, { status: 400 });
         }
         const count = parseInt(searchParams.get('count') || '100');
         const offset = parseInt(searchParams.get('offset') || '0');
         const status = searchParams.get('status') || undefined;
-        const members = await mailchimp.getMembers(listId, { count, offset, status });
-        return NextResponse.json(members);
+        const meemerging businessrs = await mailchimp.getMeemerging businessrs(listId, { count, offset, status });
+        return NextResponse.json(meemerging businessrs);
 
       case 'campaigns':
         const campaignCount = parseInt(searchParams.get('count') || '50');

@@ -25,11 +25,11 @@ interface PartnerAttribution {
     partnerId: string;
     partnerName: string; // V+, ADA, E3S, LogiCore, KDM-NMSDC, nDemand
     contributionType: 'lead_generation' | 'service_delivery' | 'introduction' | 'platform_fee';
-    percentage: number; // Based on revenue share model
-    amount: number; // Calculated commission
+    percentage: nuemerging businessr; // Based on revenue share model
+    amount: nuemerging businessr; // Calculated commission
     status: 'pending' | 'notified' | 'paid' | 'failed';
   }>;
-  totalAmount: number;
+  totalAmount: nuemerging businessr;
   stripePaymentIntentId: string;
   createdAt: Timestamp;
   paidAt?: Timestamp;
@@ -66,7 +66,7 @@ Modify existing Stripe webhook handler to:
 async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
   // 1. Extract client/transaction context
   const clientId = paymentIntent.metadata.clientId;
-  const transactionType = paymentIntent.metadata.transactionType; // membership, event, pack_publishing, etc.
+  const transactionType = paymentIntent.metadata.transactionType; // meemerging businessrship, event, pack_publishing, etc.
   
   // 2. Retrieve partner attributions
   const attributions = await getPartnerAttributions(clientId, transactionType);
@@ -146,7 +146,7 @@ export async function getPartnerAttributions(
 ### 5. Commission Calculation Engine
 ```typescript
 function calculateCommissions(
-  totalAmount: number,
+  totalAmount: nuemerging businessr,
   attributions: PartnerContribution[]
 ): CommissionRecord[] {
   return attributions.map(attr => {
@@ -270,7 +270,7 @@ const session = await stripe.checkout.sessions.create({
   // ... existing config
   metadata: {
     clientId: user.id,
-    transactionType: 'membership' | 'event_registration' | 'pack_publishing',
+    transactionType: 'meemerging businessrship' | 'event_registration' | 'pack_publishing',
     leadPartnerId: user.leadSource?.partnerId,
     servicePartnerIds: JSON.stringify(getServicePartnerIds(user)),
   },

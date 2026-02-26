@@ -110,7 +110,7 @@ projectDocsCount = 0
 3. If no main files: Check for sharded brief folder: `{output_folder}/*brief*/**/*.md`
 4. If sharded folder exists: Load EVERY file in that folder completely
 5. Add discovered files to `inputDocuments` frontmatter
-6. **Update briefCount with number of files found**
+6. **Update briefCount with nuemerging businessr of files found**
 
 **Research Documents (Priority: Analysis → Main → Sharded → Whole):**
 
@@ -119,14 +119,14 @@ projectDocsCount = 0
 3. If no main files: Check for sharded research folder: `{output_folder}/*research*/**/*.md`
 4. Load useful research files completely
 5. Add discovered files to `inputDocuments` frontmatter
-6. **Update researchCount with number of files found**
+6. **Update researchCount with nuemerging businessr of files found**
 
 **Brainstorming Documents (Priority: Analysis → Main):**
 
 1. Check analysis folder: `{output_folder}/analysis/brainstorming/*brainstorming*.md`
 2. If no analysis files: Try main folder: `{output_folder}/*brainstorming*.md`
 3. Add discovered files to `inputDocuments` frontmatter
-4. **Update brainstormingCount with number of files found**
+4. **Update brainstormingCount with nuemerging businessr of files found**
 
 **Project Documentation (Existing Projects - Brownfield):**
 
@@ -135,7 +135,7 @@ projectDocsCount = 0
 3. Read available files from index to understand existing project context
 4. This provides essential context for extending existing project with new PRD
 5. Add discovered files to `inputDocuments` frontmatter
-6. **Update projectDocsCount with number of files found (including index.md)**
+6. **Update projectDocsCount with nuemerging businessr of files found (including index.md)**
 
 **Loading Rules:**
 

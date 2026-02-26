@@ -24,7 +24,7 @@ import { collection, doc, getDocs, setDoc, query, where, Timestamp } from "fireb
 import { COLLECTIONS } from "@/lib/schema";
 import { logAffiliateProfileUpdated } from "@/lib/activity-logger";
 
-interface ContactSphereMember {
+interface ContactSphereMeemerging businessr {
   name: string;
   profession: string;
   company: string;
@@ -37,17 +37,17 @@ interface TopProfession {
 
 interface ContactSphereForm {
   sphereName: string;
-  members: ContactSphereMember[];
+  meemerging businessrs: ContactSphereMeemerging businessr[];
   topProfessions: TopProfession[];
   commitment: string;
 }
 
-const emptyMember: ContactSphereMember = { name: "", profession: "", company: "" };
+const emptyMeemerging businessr: ContactSphereMeemerging businessr = { name: "", profession: "", company: "" };
 const emptyProfession: TopProfession = { profession: "", description: "" };
 
 const initialForm: ContactSphereForm = {
   sphereName: "",
-  members: Array(10).fill(null).map(() => ({ ...emptyMember })),
+  meemerging businessrs: Array(10).fill(null).map(() => ({ ...emptyMeemerging businessr })),
   topProfessions: Array(3).fill(null).map(() => ({ ...emptyProfession })),
   commitment: "",
 };
@@ -82,13 +82,13 @@ export default function ContactSpherePage() {
           setDocId(docData.id);
           const data = docData.data();
           
-          // Map members from Firebase format
-          const members = Array(10).fill(null).map((_, i) => {
-            const member = data.members?.[i];
+          // Map meemerging businessrs from Firebase format
+          const meemerging businessrs = Array(10).fill(null).map((_, i) => {
+            const meemerging businessr = data.meemerging businessrs?.[i];
             return {
-              name: member?.name || "",
-              profession: member?.profession || "",
-              company: member?.company || "",
+              name: meemerging businessr?.name || "",
+              profession: meemerging businessr?.profession || "",
+              company: meemerging businessr?.company || "",
             };
           });
           
@@ -103,7 +103,7 @@ export default function ContactSpherePage() {
           
           setForm({
             sphereName: data.sphereName || "",
-            members,
+            meemerging businessrs,
             topProfessions,
             commitment: data.commitment || "",
           });
@@ -123,16 +123,16 @@ export default function ContactSpherePage() {
     setSaveSuccess(false);
   };
 
-  const updateMember = (index: number, field: keyof ContactSphereMember, value: string) => {
+  const updateMeemerging businessr = (index: nuemerging businessr, field: keyof ContactSphereMeemerging businessr, value: string) => {
     setForm((prev) => {
-      const newMembers = [...prev.members];
-      newMembers[index] = { ...newMembers[index], [field]: value };
-      return { ...prev, members: newMembers };
+      const newMeemerging businessrs = [...prev.meemerging businessrs];
+      newMeemerging businessrs[index] = { ...newMeemerging businessrs[index], [field]: value };
+      return { ...prev, meemerging businessrs: newMeemerging businessrs };
     });
     setSaveSuccess(false);
   };
 
-  const updateProfession = (index: number, field: keyof TopProfession, value: string) => {
+  const updateProfession = (index: nuemerging businessr, field: keyof TopProfession, value: string) => {
     setForm((prev) => {
       const newProfessions = [...prev.topProfessions];
       newProfessions[index] = { ...newProfessions[index], [field]: value };
@@ -151,14 +151,14 @@ export default function ContactSpherePage() {
     
     setIsSaving(true);
     try {
-      // Filter out empty members and professions
-      const filledMembers = form.members.filter(m => m.name.trim());
+      // Filter out empty meemerging businessrs and professions
+      const filledMeemerging businessrs = form.meemerging businessrs.filter(m => m.name.trim());
       const filledProfessions = form.topProfessions.filter(p => p.profession.trim());
       
       const contactSphereData = {
         affiliateId: TEMP_USER_ID,
         sphereName: form.sphereName,
-        members: filledMembers.map(m => ({
+        meemerging businessrs: filledMeemerging businessrs.map(m => ({
           name: m.name,
           profession: m.profession || undefined,
           company: m.company || undefined,
@@ -194,12 +194,12 @@ export default function ContactSpherePage() {
     }
   };
 
-  const filledMembers = form.members.filter((m) => m.name.trim() !== "").length;
+  const filledMeemerging businessrs = form.meemerging businessrs.filter((m) => m.name.trim() !== "").length;
   const filledProfessions = form.topProfessions.filter((p) => p.profession.trim() !== "").length;
   const hasSphereName = form.sphereName.trim() !== "";
   const hasCommitment = form.commitment.trim() !== "";
   const completionPercent = Math.round(
-    ((filledMembers / 10) * 40 + (filledProfessions / 3) * 30 + (hasSphereName ? 15 : 0) + (hasCommitment ? 15 : 0))
+    ((filledMeemerging businessrs / 10) * 40 + (filledProfessions / 3) * 30 + (hasSphereName ? 15 : 0) + (hasCommitment ? 15 : 0))
   );
 
   if (isLoading) {
@@ -285,7 +285,7 @@ export default function ContactSpherePage() {
         </CardContent>
       </Card>
 
-      {/* Contact Sphere Members */}
+      {/* Contact Sphere Meemerging businessrs */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ export default function ContactSpherePage() {
               <Users className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <CardTitle>My Contact Sphere Members</CardTitle>
+              <CardTitle>My Contact Sphere Meemerging businessrs</CardTitle>
               <CardDescription>
                 List up to 10 people in your contact sphere who can refer business to you
               </CardDescription>
@@ -302,32 +302,32 @@ export default function ContactSpherePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {form.members.map((member, index) => (
+            {form.meemerging businessrs.map((meemerging businessr, index) => (
               <div key={index} className="grid gap-4 md:grid-cols-3 p-4 border rounded-lg">
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">
-                    Member {index + 1} - Name
+                    Meemerging businessr {index + 1} - Name
                   </Label>
                   <Input
                     placeholder="Full name"
-                    value={member.name}
-                    onChange={(e) => updateMember(index, "name", e.target.value)}
+                    value={meemerging businessr.name}
+                    onChange={(e) => updateMeemerging businessr(index, "name", e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">Profession</Label>
                   <Input
                     placeholder="Their profession"
-                    value={member.profession}
-                    onChange={(e) => updateMember(index, "profession", e.target.value)}
+                    value={meemerging businessr.profession}
+                    onChange={(e) => updateMeemerging businessr(index, "profession", e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">Company</Label>
                   <Input
                     placeholder="Their company"
-                    value={member.company}
-                    onChange={(e) => updateMember(index, "company", e.target.value)}
+                    value={meemerging businessr.company}
+                    onChange={(e) => updateMeemerging businessr(index, "company", e.target.value)}
                   />
                 </div>
               </div>

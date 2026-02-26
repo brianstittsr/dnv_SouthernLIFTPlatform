@@ -15,7 +15,7 @@ Analyzes and documents brownfield projects by scanning codebase, architecture, a
 
 ## Key Features
 
-- **Multi-Project Type Support**: Handles web, backend, mobile, CLI, game, embedded, data, infra, library, desktop, and extension projects
+- **Multi-Project Type Support**: Handles web, backend, mobile, CLI, game, eemerging businessdded, data, infra, library, desktop, and extension projects
 - **Multi-Part Detection**: Automatically detects and documents projects with separate client/server or multiple services
 - **Three Scan Levels** (NEW v1.2.0): Quick (2-5 min), Deep (10-30 min), Exhaustive (30-120 min)
 - **Resumability** (NEW v1.2.0): Interrupt and resume workflows without losing progress
@@ -180,7 +180,7 @@ The workflow uses a single comprehensive CSV file:
 **documentation-requirements.csv** - Complete project analysis guide
 
 - Location: `/_bmad/bmm/workflows/document-project/documentation-requirements.csv`
-- 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, embedded)
+- 12 project types (web, mobile, backend, cli, library, desktop, game, data, extension, infra, eemerging businessdded)
 - 24 columns combining:
   - **Detection columns**: `project_type_id`, `key_file_patterns` (identifies project type from codebase)
   - **Requirement columns**: `requires_api_scan`, `requires_data_models`, `requires_ui_components`, etc.

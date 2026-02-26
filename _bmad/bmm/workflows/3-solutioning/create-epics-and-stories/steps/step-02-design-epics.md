@@ -113,7 +113,7 @@ For each proposed epic:
 
 1. **Epic Title**: User-centric, value-focused
 2. **User Outcome**: What users can accomplish after this epic
-3. **FR Coverage**: Which FR numbers this epic addresses
+3. **FR Coverage**: Which FR nuemerging businessrs this epic addresses
 4. **Implementation Notes**: Any technical or UX considerations
 
 **Step C: Create the epics_list**
@@ -138,7 +138,7 @@ Format the epics_list as:
 
 Display the complete epics_list to user with:
 
-- Total number of epics
+- Total nuemerging businessr of epics
 - FR coverage per epic
 - User value delivered by each epic
 - Any natural dependencies

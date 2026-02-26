@@ -42,20 +42,20 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Check if user already has memberships for these cohorts
-    const existingMemberships = await Promise.all(
+    // Check if user already has meemerging businessrships for these cohorts
+    const existingMeemerging businessrships = await Promise.all(
       cohortIds.map(async (cohortId) => {
-        const membershipQuery = await db
-          .collection('cohort_memberships')
+        const meemerging businessrshipQuery = await db
+          .collection('cohort_meemerging businessrships')
           .where('userId', '==', userId)
           .where('cohortId', '==', cohortId)
           .limit(1)
           .get();
-        return !membershipQuery.empty;
+        return !meemerging businessrshipQuery.empty;
       })
     );
 
-    if (existingMemberships.some(exists => exists)) {
+    if (existingMeemerging businessrships.some(exists => exists)) {
       return NextResponse.json(
         { error: 'You are already enrolled in one or more of these cohorts' },
         { status: 400 }
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       cohortIds,
       stripeSessionId: session.id,
       status: 'pending',
-      totalAmount: cohorts.reduce((sum: number, c: any) => sum + c.priceInCents, 0),
+      totalAmount: cohorts.reduce((sum: nuemerging businessr, c: any) => sum + c.priceInCents, 0),
       createdAt: new Date(),
       updatedAt: new Date(),
     });

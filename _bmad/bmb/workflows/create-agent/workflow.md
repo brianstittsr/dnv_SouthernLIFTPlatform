@@ -27,7 +27,7 @@ This uses **step-file architecture** for disciplined execution:
 ### Step Processing Rules
 
 1. **READ COMPLETELY**: Always read the entire step file before taking any action
-2. **FOLLOW SEQUENCE**: Execute numbered sections in order
+2. **FOLLOW SEQUENCE**: Execute nuemerging businessred sections in order
 3. **WAIT FOR INPUT**: Halt at menus and wait for user selection
 4. **CHECK CONTINUATION**: Only proceed when user selects 'C' (Continue)
 5. **SAVE STATE**: Update progress before loading next step

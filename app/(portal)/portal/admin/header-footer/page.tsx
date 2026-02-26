@@ -331,7 +331,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function updateNavigationItem(index: number, updates: Partial<NavigationItem>) {
+  function updateNavigationItem(index: nuemerging businessr, updates: Partial<NavigationItem>) {
     if (!headerConfig) return;
 
     const updatedNav = [...headerConfig.navigation];
@@ -343,7 +343,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function deleteNavigationItem(index: number) {
+  function deleteNavigationItem(index: nuemerging businessr) {
     if (!headerConfig) return;
 
     setHeaderConfig({
@@ -352,7 +352,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function moveNavigationItem(index: number, direction: "up" | "down") {
+  function moveNavigationItem(index: nuemerging businessr, direction: "up" | "down") {
     if (!headerConfig) return;
 
     const newIndex = direction === "up" ? index - 1 : index + 1;
@@ -372,7 +372,7 @@ export default function HeaderFooterManager() {
   }
 
   // Sub-item management functions
-  function addSubItem(navIndex: number) {
+  function addSubItem(navIndex: nuemerging businessr) {
     if (!headerConfig) return;
 
     const updatedNav = [...headerConfig.navigation];
@@ -398,7 +398,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function updateSubItem(navIndex: number, subIndex: number, updates: any) {
+  function updateSubItem(navIndex: nuemerging businessr, subIndex: nuemerging businessr, updates: any) {
     if (!headerConfig) return;
 
     const updatedNav = [...headerConfig.navigation];
@@ -414,7 +414,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function deleteSubItem(navIndex: number, subIndex: number) {
+  function deleteSubItem(navIndex: nuemerging businessr, subIndex: nuemerging businessr) {
     if (!headerConfig) return;
 
     const updatedNav = [...headerConfig.navigation];
@@ -430,7 +430,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function moveSubItem(navIndex: number, subIndex: number, direction: "up" | "down") {
+  function moveSubItem(navIndex: nuemerging businessr, subIndex: nuemerging businessr, direction: "up" | "down") {
     if (!headerConfig) return;
 
     const updatedNav = [...headerConfig.navigation];
@@ -474,7 +474,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function updateFooterColumn(index: number, updates: any) {
+  function updateFooterColumn(index: nuemerging businessr, updates: any) {
     if (!footerConfig) return;
 
     const updatedColumns = [...footerConfig.columns];
@@ -486,7 +486,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function deleteFooterColumn(index: number) {
+  function deleteFooterColumn(index: nuemerging businessr) {
     if (!footerConfig) return;
 
     setFooterConfig({
@@ -495,7 +495,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function moveFooterColumn(index: number, direction: "up" | "down") {
+  function moveFooterColumn(index: nuemerging businessr, direction: "up" | "down") {
     if (!footerConfig) return;
 
     const newIndex = direction === "up" ? index - 1 : index + 1;
@@ -518,7 +518,7 @@ export default function HeaderFooterManager() {
   }
 
   // Footer link management functions
-  function addFooterLink(columnIndex: number) {
+  function addFooterLink(columnIndex: nuemerging businessr) {
     if (!footerConfig) return;
 
     const updatedColumns = [...footerConfig.columns];
@@ -540,7 +540,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function updateFooterLink(columnIndex: number, linkIndex: number, updates: any) {
+  function updateFooterLink(columnIndex: nuemerging businessr, linkIndex: nuemerging businessr, updates: any) {
     if (!footerConfig) return;
 
     const updatedColumns = [...footerConfig.columns];
@@ -556,7 +556,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function deleteFooterLink(columnIndex: number, linkIndex: number) {
+  function deleteFooterLink(columnIndex: nuemerging businessr, linkIndex: nuemerging businessr) {
     if (!footerConfig) return;
 
     const updatedColumns = [...footerConfig.columns];
@@ -570,7 +570,7 @@ export default function HeaderFooterManager() {
     });
   }
 
-  function moveFooterLink(columnIndex: number, linkIndex: number, direction: "up" | "down") {
+  function moveFooterLink(columnIndex: nuemerging businessr, linkIndex: nuemerging businessr, direction: "up" | "down") {
     if (!footerConfig) return;
 
     const updatedColumns = [...footerConfig.columns];

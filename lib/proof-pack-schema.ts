@@ -13,7 +13,7 @@ export interface ProofPack {
   submissionMetadata: {
     submissionDate: Timestamp;
     lastUpdateDate: Timestamp;
-    version: number;
+    version: nuemerging businessr;
     status: 'draft' | 'submitted' | 'approved' | 'needs_revision';
   };
 
@@ -58,9 +58,9 @@ export interface ProofPack {
 
   // Business Identifiers
   businessIdentifiers: {
-    samNumber?: string;
+    samNuemerging businessr?: string;
     cageCode?: string;
-    dunsNumber?: string;
+    dunsNuemerging businessr?: string;
     primaryNaicsCode?: string;
     primaryNaicsDefinition?: string;
   };
@@ -91,7 +91,7 @@ export interface ProofPack {
   needsInterests: {
     helpLookingFor: string[];
     servicesInterestedIn: string[];
-    numberOneNeed?: string;
+    nuemerging businessrOneNeed?: string;
     certificationsLoansInterested: string[];
   };
 
@@ -140,9 +140,9 @@ export interface ProofPackFormData {
   websiteUrl?: string;
 
   // Business Identifiers
-  samNumber?: string;
+  samNuemerging businessr?: string;
   cageCode?: string;
-  dunsNumber?: string;
+  dunsNuemerging businessr?: string;
   primaryNaicsCode?: string;
 
   // Financials & Capacity
@@ -164,7 +164,7 @@ export interface ProofPackFormData {
   // Needs & Interests
   helpLookingFor: string[];
   servicesInterestedIn: string[];
-  numberOneNeed?: string;
+  nuemerging businessrOneNeed?: string;
   certificationsLoansInterested: string[];
 
   // Targeting
@@ -198,7 +198,7 @@ export const CERTIFICATION_OPTIONS = [
   'Service-Disabled Veteran-Owned Small Business (SDVOSB)',
   'Veteran-Owned Small Business (VOSB)',
   'Small Disadvantaged Business (SDB)',
-  'Minority Business Enterprise (MBE)',
+  'Minority Business Enterprise (emerging business)',
   'Disadvantaged Business Enterprise (DBE)',
   'None',
   'Other',

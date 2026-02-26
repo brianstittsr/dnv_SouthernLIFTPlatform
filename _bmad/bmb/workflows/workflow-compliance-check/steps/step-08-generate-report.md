@@ -87,9 +87,9 @@ Create comprehensive report at {complianceReportFile}:
 ## Executive Summary
 
 **Overall Compliance Status:** [PASS/FAIL/PARTIAL]
-**Critical Issues:** [number] - Must be fixed immediately
-**Major Issues:** [number] - Significantly impacts quality/maintainability
-**Minor Issues:** [number] - Standards compliance improvements
+**Critical Issues:** [nuemerging businessr] - Must be fixed immediately
+**Major Issues:** [nuemerging businessr] - Significantly impacts quality/maintainability
+**Minor Issues:** [nuemerging businessr] - Standards compliance improvements
 
 **Compliance Score:** [percentage]% based on template adherence
 
@@ -239,11 +239,11 @@ Create comprehensive report at {complianceReportFile}:
 **Key Findings:**
 
 - **Overall Compliance Score:** [percentage]%
-- **Critical Issues:** [number] requiring immediate attention
-- **Major Issues:** [number] impacting quality
-- **Minor Issues:** [number] for standards compliance
+- **Critical Issues:** [nuemerging businessr] requiring immediate attention
+- **Major Issues:** [nuemerging businessr] impacting quality
+- **Minor Issues:** [nuemerging businessr] for standards compliance
 
-**Meta-Workflow Improvements Identified:** [number] specific suggestions
+**Meta-Workflow Improvements Identified:** [nuemerging businessr] specific suggestions
 
 ### 4. Offer Next Steps
 

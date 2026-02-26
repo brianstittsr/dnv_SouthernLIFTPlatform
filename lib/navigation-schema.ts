@@ -12,7 +12,7 @@ export interface NavigationItem {
   type: 'link' | 'dropdown' | 'megamenu' | 'button';
   icon?: string;
   description?: string;
-  order: number;
+  order: nuemerging businessr;
   isEnabled: boolean;
   openInNewTab?: boolean;
   children?: NavigationSubItem[];
@@ -29,7 +29,7 @@ export interface NavigationSubItem {
   url: string;
   icon?: string;
   description?: string;
-  order: number;
+  order: nuemerging businessr;
   isEnabled: boolean;
   openInNewTab?: boolean;
   badge?: {
@@ -45,7 +45,7 @@ export interface HeaderConfig {
   logo: {
     imageUrl?: string;
     text?: string;
-    height?: number;
+    height?: nuemerging businessr;
   };
   navigation: NavigationItem[];
   style: {
@@ -59,13 +59,13 @@ export interface HeaderConfig {
   };
   animation: {
     type: 'fade' | 'slide' | 'scale' | 'none';
-    duration: number; // in ms
+    duration: nuemerging businessr; // in ms
     easing: 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
     dropdownAnimation: 'fade' | 'slide-down' | 'scale' | 'flip' | 'none';
     hoverEffect: 'underline' | 'background' | 'scale' | 'glow' | 'none';
   };
   mobileMenu: {
-    breakpoint: number; // in px
+    breakpoint: nuemerging businessr; // in px
     animation: 'slide-left' | 'slide-right' | 'slide-down' | 'fade' | 'scale';
     overlayColor: string;
   };
@@ -92,7 +92,7 @@ export interface FooterConfig {
   };
   copyright: {
     text: string;
-    year: 'auto' | number;
+    year: 'auto' | nuemerging businessr;
   };
   newsletter: {
     enabled: boolean;
@@ -109,7 +109,7 @@ export interface FooterConfig {
 export interface FooterColumn {
   id: string;
   title: string;
-  order: number;
+  order: nuemerging businessr;
   isEnabled: boolean;
   links: FooterLink[];
 }
@@ -118,7 +118,7 @@ export interface FooterLink {
   id: string;
   label: string;
   url: string;
-  order: number;
+  order: nuemerging businessr;
   isEnabled: boolean;
   openInNewTab?: boolean;
   icon?: string;

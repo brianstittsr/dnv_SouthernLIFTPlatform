@@ -149,7 +149,7 @@ Which approach appeals to you most? (Enter 1-4)"
 
 ### 4. Handle User Selection and Initial Document Append
 
-#### When user selects approach number:
+#### When user selects approach nuemerging businessr:
 
 - **Append initial session overview to `{output_folder}/analysis/brainstorming-session-{{date}}.md`**
 - **Update frontmatter:** `stepsCompleted: [1]`, `selected_approach: '[selected approach]'`
@@ -157,7 +157,7 @@ Which approach appeals to you most? (Enter 1-4)"
 
 ### 5. Handle User Selection
 
-After user selects approach number:
+After user selects approach nuemerging businessr:
 
 - **If 1:** Load `./step-02a-user-selected.md`
 - **If 2:** Load `./step-02b-ai-recommended.md`
@@ -193,4 +193,4 @@ After user selects approach number:
 
 Based on user's approach selection, load the appropriate step-02 file for technique selection and facilitation.
 
-Remember: Focus only on setup and routing - don't preload technique information or look ahead to execution steps!
+Remeemerging businessr: Focus only on setup and routing - don't preload technique information or look ahead to execution steps!

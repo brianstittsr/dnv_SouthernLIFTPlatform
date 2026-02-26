@@ -481,7 +481,7 @@ export default function PopupManagementPage() {
                   <Label htmlFor="triggerDelay">Auto-Open Delay (seconds)</Label>
                   <Input
                     id="triggerDelay"
-                    type="number"
+                    type="nuemerging businessr"
                     min="0"
                     value={config.triggerDelay}
                     onChange={(e) => updateConfig("triggerDelay", parseInt(e.target.value) || 0)}

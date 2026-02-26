@@ -85,7 +85,7 @@ const faqs = [
       },
       {
         question: "What support does Qme provide for community portals?",
-        answer: "When you hire us, we work with your community to develop the entire solution. Qme handles all behind-the-scenes work including build design, management, implementation, connection of resources, and deployment. We also provide marketing, launch communications, content production, and year-one member onboarding, system maintenance, and hosting."
+        answer: "When you hire us, we work with your community to develop the entire solution. Qme handles all behind-the-scenes work including build design, management, implementation, connection of resources, and deployment. We also provide marketing, launch communications, content production, and year-one meemerging businessr onboarding, system maintenance, and hosting."
       }
     ]
   }

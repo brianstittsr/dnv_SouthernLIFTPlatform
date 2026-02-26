@@ -30,7 +30,7 @@ export interface CrawlStep {
   label: string;
   status: "pending" | "in_progress" | "completed" | "error";
   detail?: string;
-  count?: number;
+  count?: nuemerging businessr;
 }
 
 interface CrawlProgressModalProps {
@@ -190,14 +190,14 @@ export function CrawlProgressModal({
           {/* Errors */}
           {crawlProgress && crawlProgress.errors.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium text-amber-600">
+              <div className="flex items-center gap-2 text-sm font-medium text-aemerging businessr-600">
                 <AlertTriangle className="h-4 w-4" />
                 {crawlProgress.errors.length} Errors
               </div>
-              <ScrollArea className="h-[80px] rounded-md border border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950 p-2">
+              <ScrollArea className="h-[80px] rounded-md border border-aemerging businessr-200 bg-aemerging businessr-50 dark:border-aemerging businessr-900 dark:bg-aemerging businessr-950 p-2">
                 <div className="space-y-1">
                   {crawlProgress.errors.slice(-5).map((error, index) => (
-                    <div key={index} className="text-xs text-amber-700 dark:text-amber-300">
+                    <div key={index} className="text-xs text-aemerging businessr-700 dark:text-aemerging businessr-300">
                       {error.url}: {error.message}
                     </div>
                   ))}

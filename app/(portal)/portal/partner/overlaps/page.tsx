@@ -30,12 +30,12 @@ interface ServiceOverlap {
   otherPartners: Array<{
     id: string;
     name: string;
-    clientCount: number;
+    clientCount: nuemerging businessr;
   }>;
-  myClientCount: number;
-  totalMarketSize: number;
-  marketShare: number;
-  overlapPercentage: number;
+  myClientCount: nuemerging businessr;
+  totalMarketSize: nuemerging businessr;
+  marketShare: nuemerging businessr;
+  overlapPercentage: nuemerging businessr;
   recommendations: string[];
   lastUpdated: any;
 }
@@ -75,13 +75,13 @@ export default function ServiceOverlapsPage() {
     }
   };
 
-  const getOverlapSeverity = (percentage: number) => {
+  const getOverlapSeverity = (percentage: nuemerging businessr) => {
     if (percentage >= 50) return { color: "text-red-600", bg: "bg-red-50", label: "High Overlap" };
     if (percentage >= 30) return { color: "text-yellow-600", bg: "bg-yellow-50", label: "Medium Overlap" };
     return { color: "text-green-600", bg: "bg-green-50", label: "Low Overlap" };
   };
 
-  const getMarketShareColor = (share: number) => {
+  const getMarketShareColor = (share: nuemerging businessr) => {
     if (share >= 50) return "text-green-600";
     if (share >= 30) return "text-blue-600";
     return "text-gray-600";

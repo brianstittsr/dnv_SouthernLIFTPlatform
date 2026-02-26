@@ -87,7 +87,7 @@ Create a comprehensive admin component for configuring and managing custom Strip
 - **Checkout Settings**
   - Collect shipping address toggle
   - Collect billing address toggle
-  - Phone number collection (required/optional)
+  - Phone nuemerging businessr collection (required/optional)
   - Custom fields (text, dropdown, checkbox)
   - Terms & conditions checkbox
   - Privacy policy link
@@ -166,7 +166,7 @@ Create a comprehensive admin component for configuring and managing custom Strip
 - **Order Confirmation**
   - Sent immediately after successful payment
   - Order details (items, quantities, prices)
-  - Order number and receipt
+  - Order nuemerging businessr and receipt
   - Estimated delivery date
   - Customer support contact info
   - Branded email template
@@ -205,14 +205,14 @@ Create a comprehensive admin component for configuring and managing custom Strip
   - Payment method expiring soon
 
 - **Shipping Notifications**
-  - Order shipped with tracking number
+  - Order shipped with tracking nuemerging businessr
   - Out for delivery
   - Delivered confirmation
   - Delivery exception/delay
 
 #### Email Template Management
 - Visual email template editor
-- Variable insertion (customer name, order number, etc.)
+- Variable insertion (customer name, order nuemerging businessr, etc.)
 - Preview before sending
 - Test email functionality
 - Multiple template versions (A/B testing)
@@ -337,7 +337,7 @@ Create a comprehensive admin component for configuring and managing custom Strip
   - Invoice payment tracking
   - Partial payments
   - Invoice reminders
-  - Custom invoice numbering
+  - Custom invoice nuemerging businessring
 
 - **Refunds & Disputes**
   - Full and partial refunds
@@ -428,7 +428,7 @@ stripe_prices {
   id: string
   stripePriceId: string
   productId: string
-  unitAmount: number
+  unitAmount: nuemerging businessr
   currency: string
   type: 'one_time' | 'recurring'
   interval?: 'day' | 'week' | 'month' | 'year'
@@ -462,7 +462,7 @@ stripe_orders {
   userId: string
   stripePaymentIntentId: string
   stripeCustomerId: string
-  amount: number
+  amount: nuemerging businessr
   currency: string
   status: string
   items: array
@@ -589,7 +589,7 @@ email_templates {
 
 ## Notes
 - Start with test mode and thoroughly test before enabling production
-- Use Stripe's test card numbers for development
+- Use Stripe's test card nuemerging businessrs for development
 - Implement proper error handling for all Stripe API calls
 - Consider rate limits when making API requests
 - Use webhooks for asynchronous event handling (don't rely on client-side callbacks)

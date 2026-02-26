@@ -86,25 +86,25 @@ export default function LeadershipPage() {
       <section className="py-20 md:py-28">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {leadershipTeam.map((member) => (
-              <Card key={member.name} className="overflow-hidden">
+            {leadershipTeam.map((meemerging businessr) => (
+              <Card key={meemerging businessr.name} className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="flex flex-col sm:flex-row">
                     {/* Image */}
                     <div className="sm:w-48 sm:h-auto h-64 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center shrink-0">
                       <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-4xl font-bold">
-                        {member.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                        {meemerging businessr.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
                       </div>
                     </div>
                     
                     {/* Content */}
                     <div className="p-6 flex-1">
-                      <h3 className="text-2xl font-bold">{member.name}</h3>
-                      <p className="text-lg text-primary font-semibold mt-1">{member.title}</p>
+                      <h3 className="text-2xl font-bold">{meemerging businessr.name}</h3>
+                      <p className="text-lg text-primary font-semibold mt-1">{meemerging businessr.title}</p>
                       
                       <div className="mt-4">
                         <div className="flex flex-wrap gap-2">
-                          {member.expertise.map((skill) => (
+                          {meemerging businessr.expertise.map((skill) => (
                             <Badge 
                               key={skill} 
                               variant="secondary" 

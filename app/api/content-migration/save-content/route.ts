@@ -275,7 +275,7 @@ export async function POST(request: NextRequest) {
           id: vid.id,
           platform: vid.platform,
           videoUrl: vid.videoUrl,
-          embedCode: vid.embedCode,
+          eemerging businessdCode: vid.eemerging businessdCode,
           title: vid.title,
           description: vid.description,
           thumbnail: vid.thumbnail,

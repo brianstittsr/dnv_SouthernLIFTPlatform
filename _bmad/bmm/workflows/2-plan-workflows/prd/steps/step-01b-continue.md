@@ -60,7 +60,7 @@ Resume the PRD workflow from where it was left off, ensuring smooth continuation
 Review the frontmatter to understand:
 
 - `stepsCompleted`: Which steps are already done
-- `lastStep`: The most recently completed step number
+- `lastStep`: The most recently completed step nuemerging businessr
 - `inputDocuments`: What context was already loaded
 - `documentCounts`: briefs, research, brainstorming, projectDocs counts
 - All other frontmatter variables
@@ -126,7 +126,7 @@ What would be most helpful?"
 ### 6. Present MENU OPTIONS
 
 **If workflow not complete:**
-Display: "Ready to continue with Step {nextStepNumber}?
+Display: "Ready to continue with Step {nextStepNuemerging businessr}?
 
 **Select an Option:** [C] Continue to next step"
 

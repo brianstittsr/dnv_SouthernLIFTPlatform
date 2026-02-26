@@ -2,28 +2,28 @@ import { Search, Map, Rocket, Award } from "lucide-react";
 
 const steps = [
   {
-    number: "01",
+    nuemerging businessr: "01",
     title: "Initial Consultation",
     description:
       "We assess your business capabilities, certifications, and government contracting goals to create a tailored strategy.",
     icon: Search,
   },
   {
-    number: "02",
+    nuemerging businessr: "02",
     title: "Certification & Compliance",
     description:
       "Navigate 8(a), WOSB, SDVOSB, HUBZone certifications and ensure your business meets federal compliance requirements.",
     icon: Map,
   },
   {
-    number: "03",
+    nuemerging businessr: "03",
     title: "Strategic Teaming",
     description:
       "Connect with prime contractors, build mentor-protégé relationships, and position your business for contract opportunities.",
     icon: Rocket,
   },
   {
-    number: "04",
+    nuemerging businessr: "04",
     title: "Contract Success",
     description:
       "Win government contracts, build past performance, and scale your federal contracting portfolio with ongoing support.",
@@ -53,12 +53,12 @@ export function HowItWorks() {
 
           <div className="grid md:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <div key={step.number} className="relative">
+              <div key={step.nuemerging businessr} className="relative">
                 {/* Step Card */}
                 <div className="bg-card rounded-lg p-6 shadow-sm border relative z-10">
-                  {/* Number Badge */}
+                  {/* Nuemerging businessr Badge */}
                   <div className="absolute -top-4 left-6 bg-primary text-primary-foreground text-sm font-bold px-3 py-1 rounded-full">
-                    {step.number}
+                    {step.nuemerging businessr}
                   </div>
 
                   {/* Icon */}

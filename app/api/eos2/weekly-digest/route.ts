@@ -21,42 +21,42 @@ const CRON_SECRET = process.env.CRON_SECRET;
 
 interface DigestData {
   rocks: {
-    total: number;
-    onTrack: number;
-    atRisk: number;
-    offTrack: number;
-    complete: number;
-    avgProgress: number;
+    total: nuemerging businessr;
+    onTrack: nuemerging businessr;
+    atRisk: nuemerging businessr;
+    offTrack: nuemerging businessr;
+    complete: nuemerging businessr;
+    avgProgress: nuemerging businessr;
   };
   scorecard: {
-    total: number;
-    aboveGoal: number;
-    belowGoal: number;
-    atGoal: number;
+    total: nuemerging businessr;
+    aboveGoal: nuemerging businessr;
+    belowGoal: nuemerging businessr;
+    atGoal: nuemerging businessr;
   };
   issues: {
-    total: number;
-    open: number;
-    inProgress: number;
-    solved: number;
-    highPriority: number;
+    total: nuemerging businessr;
+    open: nuemerging businessr;
+    inProgress: nuemerging businessr;
+    solved: nuemerging businessr;
+    highPriority: nuemerging businessr;
   };
   todos: {
-    total: number;
-    complete: number;
-    overdue: number;
-    completionRate: number;
+    total: nuemerging businessr;
+    complete: nuemerging businessr;
+    overdue: nuemerging businessr;
+    completionRate: nuemerging businessr;
   };
   meetings: {
     lastMeetingDate: string | null;
-    lastMeetingRating: number | null;
-    avgRating: number;
-    totalMeetings: number;
+    lastMeetingRating: nuemerging businessr | null;
+    avgRating: nuemerging businessr;
+    totalMeetings: nuemerging businessr;
   };
   team: {
-    total: number;
-    rightSeat: number;
-    needsReview: number;
+    total: nuemerging businessr;
+    rightSeat: nuemerging businessr;
+    needsReview: nuemerging businessr;
   };
 }
 
@@ -157,7 +157,7 @@ async function gatherDigestData(): Promise<DigestData> {
     : 0;
 
   // Gather Team data
-  const teamSnapshot = await getDocs(collection(db, COLLECTIONS.TRACTION_TEAM_MEMBERS));
+  const teamSnapshot = await getDocs(collection(db, COLLECTIONS.TRACTION_TEAM_MEemerging businessRS));
   teamSnapshot.forEach((doc) => {
     const data = doc.data();
     if (data.category === "team") {
@@ -232,7 +232,7 @@ function formatDigestMessage(digest: DigestData): string {
 
 ---
 
-#### 👥 Team (${digest.team.total} members)
+#### 👥 Team (${digest.team.total} meemerging businessrs)
 - **Right Seat:** ${digest.team.rightSeat}
 - **Needs GWC Review:** ${digest.team.needsReview}
 

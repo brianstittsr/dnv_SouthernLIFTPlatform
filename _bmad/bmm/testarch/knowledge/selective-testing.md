@@ -34,7 +34,7 @@ test.describe('Checkout Flow', () => {
   // P0 + Smoke: Must run on every commit
   test('@smoke @p0 should complete purchase with valid payment', async ({ page }) => {
     await page.goto('/checkout');
-    await page.getByTestId('card-number').fill('4242424242424242');
+    await page.getByTestId('card-nuemerging businessr').fill('4242424242424242');
     await page.getByTestId('submit-payment').click();
 
     await expect(page.getByTestId('order-confirmation')).toBeVisible();
@@ -43,7 +43,7 @@ test.describe('Checkout Flow', () => {
   // P0 but not smoke: Run pre-merge
   test('@regression @p0 should handle payment decline gracefully', async ({ page }) => {
     await page.goto('/checkout');
-    await page.getByTestId('card-number').fill('4000000000000002'); // Decline card
+    await page.getByTestId('card-nuemerging businessr').fill('4000000000000002'); // Decline card
     await page.getByTestId('submit-payment').click();
 
     await expect(page.getByTestId('payment-error')).toBeVisible();
@@ -60,7 +60,7 @@ test.describe('Checkout Flow', () => {
   });
 
   // P2: Run in full regression only
-  test('@regression @p2 should remember saved payment methods', async ({ page }) => {
+  test('@regression @p2 should remeemerging businessr saved payment methods', async ({ page }) => {
     await page.goto('/checkout');
     await expect(page.getByTestId('saved-cards')).toBeVisible();
   });
@@ -98,14 +98,14 @@ test.describe('Checkout Flow', () => {
 describe('Checkout Flow', { tags: ['@checkout'] }, () => {
   it('should complete purchase', { tags: ['@smoke', '@p0'] }, () => {
     cy.visit('/checkout');
-    cy.get('[data-cy="card-number"]').type('4242424242424242');
+    cy.get('[data-cy="card-nuemerging businessr"]').type('4242424242424242');
     cy.get('[data-cy="submit-payment"]').click();
     cy.get('[data-cy="order-confirmation"]').should('be.visible');
   });
 
   it('should handle decline', { tags: ['@regression', '@p0'] }, () => {
     cy.visit('/checkout');
-    cy.get('[data-cy="card-number"]').type('4000000000000002');
+    cy.get('[data-cy="card-nuemerging businessr"]').type('4000000000000002');
     cy.get('[data-cy="submit-payment"]').click();
     cy.get('[data-cy="payment-error"]').should('be.visible');
   });

@@ -106,14 +106,14 @@ export interface RockDoc extends Omit<Rock, "createdAt" | "owner" | "milestones"
 export interface TractionScorecardMetricDoc {
   id: string;
   name: string;
-  goal: number;
-  actual: number;
-  ownerId: string; // Reference to team member
+  goal: nuemerging businessr;
+  actual: nuemerging businessr;
+  ownerId: string; // Reference to team meemerging businessr
   ownerName: string; // Denormalized for display
   trend: "up" | "down" | "flat";
   unit?: string; // $, %, #, etc.
-  weekNumber?: number;
-  year?: number;
+  weekNuemerging businessr?: nuemerging businessr;
+  year?: nuemerging businessr;
   // Linkages to other EOS components
   linkedRockIds?: string[]; // Rocks that affect this metric
   createdAt: Timestamp;
@@ -127,7 +127,7 @@ export interface TractionIssueDoc {
   description: string;
   priority: "high" | "medium" | "low";
   identifiedDate: Timestamp;
-  ownerId: string; // Reference to team member
+  ownerId: string; // Reference to team meemerging businessr
   ownerName: string; // Denormalized for display
   status: "open" | "in-progress" | "solved";
   solvedDate?: Timestamp;
@@ -145,7 +145,7 @@ export interface TractionTodoDoc {
   id: string;
   title: string; // Short title for the todo
   description: string;
-  ownerId: string; // Reference to team member
+  ownerId: string; // Reference to team meemerging businessr
   ownerName: string; // Denormalized for display
   dueDate: Timestamp;
   status: "not-started" | "in-progress" | "complete";
@@ -165,13 +165,13 @@ export interface TractionMeetingDoc {
   date: Timestamp;
   startTime: string;
   endTime: string;
-  attendeeIds: string[]; // References to team members
+  attendeeIds: string[]; // References to team meemerging businessrs
   attendeeNames: string[]; // Denormalized for display
-  rating: number; // 1-10
-  issuesSolved: number;
+  rating: nuemerging businessr; // 1-10
+  issuesSolved: nuemerging businessr;
   rocksReviewed: boolean;
   scorecardReviewed: boolean;
-  todoCompletionRate: number; // 0-100
+  todoCompletionRate: nuemerging businessr; // 0-100
   // Linkages to other EOS components
   reviewedRockIds?: string[]; // Rocks reviewed in this meeting
   solvedIssueIds?: string[]; // Issues solved in this meeting
@@ -181,8 +181,8 @@ export interface TractionMeetingDoc {
   updatedAt: Timestamp;
 }
 
-/** Traction Team Member document (extends base TeamMemberDoc) */
-export interface TractionTeamMemberDoc {
+/** Traction Team Meemerging businessr document (extends base TeamMeemerging businessrDoc) */
+export interface TractionTeamMeemerging businessrDoc {
   id: string;
   name: string;
   role: string;
@@ -203,11 +203,11 @@ export interface TractionRockDoc {
   id: string;
   title: string; // Short title for the rock
   description: string; // Detailed description
-  ownerId: string; // Reference to team member
+  ownerId: string; // Reference to team meemerging businessr
   ownerName: string; // Denormalized for display
   dueDate: Timestamp;
   status: "on-track" | "at-risk" | "off-track" | "complete";
-  progress: number; // 0-100
+  progress: nuemerging businessr; // 0-100
   quarter: string; // e.g., "Q1 2025"
   // Milestones for tracking progress
   milestones?: Array<{
@@ -250,7 +250,7 @@ export interface CertificationDoc extends Omit<Certification, "dateObtained" | "
 export interface ActivityDoc extends Omit<Activity, "createdAt" | "user"> {
   createdAt: Timestamp;
   userId: string; // Reference to user
-  entityType: "opportunity" | "project" | "organization" | "meeting" | "document" | "task" | "rock" | "affiliate" | "team-member" | "proposal" | "calendar" | "settings";
+  entityType: "opportunity" | "project" | "organization" | "meeting" | "document" | "task" | "rock" | "affiliate" | "team-meemerging businessr" | "proposal" | "calendar" | "settings";
   entityId: string;
   entityName?: string;
   metadata?: Record<string, unknown>;
@@ -269,7 +269,7 @@ export interface AffiliateBiographyDoc {
   businessName: string;
   profession: string;
   location: string;
-  yearsInBusiness: number;
+  yearsInBusiness: nuemerging businessr;
   previousJobs: string[];
   
   // Personal Information
@@ -279,7 +279,7 @@ export interface AffiliateBiographyDoc {
   hobbies: string[];
   activitiesOfInterest: string[];
   cityOfResidence: string;
-  yearsInCity?: number;
+  yearsInCity?: nuemerging businessr;
   
   // Miscellaneous
   burningDesire?: string;
@@ -311,8 +311,8 @@ export interface ContactSphereDoc {
   
   sphereName: string; // Name of their contact sphere
   
-  // Top 10 members in their contact sphere
-  members: {
+  // Top 10 meemerging businessrs in their contact sphere
+  meemerging businessrs: {
     name: string;
     profession?: string;
     company?: string;
@@ -357,7 +357,7 @@ export interface OneToOneMeetingDoc {
   // Scheduling
   scheduledDate: Timestamp;
   scheduledTime: string; // e.g., "10:00 AM"
-  duration: number; // Minutes (typically 60)
+  duration: nuemerging businessr; // Minutes (typically 60)
   
   // Location
   meetingType: "virtual" | "in-person";
@@ -388,7 +388,7 @@ export interface OneToOneMeetingDoc {
   nextMeetingDate?: Timestamp;
   
   // AI matching data
-  matchScore?: number; // 0-100 compatibility score
+  matchScore?: nuemerging businessr; // 0-100 compatibility score
   matchReasons?: string[]; // Why AI suggested this pairing
   
   createdAt: Timestamp;
@@ -426,13 +426,13 @@ export interface ReferralDoc {
   status: "submitted" | "contacted" | "meeting-scheduled" | "proposal" | "negotiation" | "won" | "lost";
   
   // Outcome tracking
-  dealValue?: number; // In dollars, when won
+  dealValue?: nuemerging businessr; // In dollars, when won
   dealClosedDate?: Timestamp;
   lostReason?: string;
   
   // Activity log
   lastContactDate?: Timestamp;
-  contactAttempts: number;
+  contactAttempts: nuemerging businessr;
   
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -448,38 +448,38 @@ export interface AffiliateStatsDoc {
   gainsProfileComplete: boolean;
   contactSphereComplete: boolean;
   customersListComplete: boolean;
-  profileCompletionPercent: number;
+  profileCompletionPercent: nuemerging businessr;
   
   // One-to-one activity
-  totalOneToOnesScheduled: number;
-  totalOneToOnesCompleted: number;
-  oneToOnesThisMonth: number;
-  oneToOnesThisQuarter: number;
+  totalOneToOnesScheduled: nuemerging businessr;
+  totalOneToOnesCompleted: nuemerging businessr;
+  oneToOnesThisMonth: nuemerging businessr;
+  oneToOnesThisQuarter: nuemerging businessr;
   lastOneToOneDate?: Timestamp;
   
   // Referral activity
-  referralsGiven: number;
-  referralsReceived: number;
-  referralsGivenThisMonth: number;
-  referralsReceivedThisMonth: number;
+  referralsGiven: nuemerging businessr;
+  referralsReceived: nuemerging businessr;
+  referralsGivenThisMonth: nuemerging businessr;
+  referralsReceivedThisMonth: nuemerging businessr;
   
   // Deal outcomes
-  dealsClosedFromReferralsGiven: number;
-  dealsClosedFromReferralsReceived: number;
-  totalRevenueGenerated: number; // From referrals they gave that closed
-  totalRevenueReceived: number; // From referrals they received that closed
+  dealsClosedFromReferralsGiven: nuemerging businessr;
+  dealsClosedFromReferralsReceived: nuemerging businessr;
+  totalRevenueGenerated: nuemerging businessr; // From referrals they gave that closed
+  totalRevenueReceived: nuemerging businessr; // From referrals they received that closed
   
   // SVP-specific
-  svpReferralsGiven: number;
-  svpReferralsClosed: number;
-  svpRevenueGenerated: number;
+  svpReferralsGiven: nuemerging businessr;
+  svpReferralsClosed: nuemerging businessr;
+  svpRevenueGenerated: nuemerging businessr;
   
   // Engagement score (calculated)
-  engagementScore: number; // 0-100
+  engagementScore: nuemerging businessr; // 0-100
   
   // Streaks
-  currentOneToOneStreak: number; // Consecutive weeks with a one-to-one
-  longestOneToOneStreak: number;
+  currentOneToOneStreak: nuemerging businessr; // Consecutive weeks with a one-to-one
+  longestOneToOneStreak: nuemerging businessr;
   
   updatedAt: Timestamp;
 }
@@ -490,13 +490,13 @@ export interface AiMatchSuggestionDoc {
   affiliateId: string; // Who this suggestion is for
   suggestedPartnerId: string; // Suggested partner
   
-  matchScore: number; // 0-100
+  matchScore: nuemerging businessr; // 0-100
   
   // Reasons for the match
   reasons: {
     category: "contact-sphere" | "interests" | "skills" | "geography" | "complementary" | "rotation";
     description: string;
-    weight: number;
+    weight: nuemerging businessr;
   }[];
   
   // Suggested talking points
@@ -507,7 +507,7 @@ export interface AiMatchSuggestionDoc {
   
   // When was their last meeting?
   lastMeetingDate?: Timestamp;
-  daysSinceLastMeeting?: number;
+  daysSinceLastMeeting?: nuemerging businessr;
   
   createdAt: Timestamp;
   expiresAt: Timestamp; // Suggestions expire after a period
@@ -568,8 +568,8 @@ export interface StrategicPartnerDoc {
   updatedAt: Timestamp;
 }
 
-/** Team Member document in Firestore */
-export interface TeamMemberDoc {
+/** Team Meemerging businessr document in Firestore */
+export interface TeamMeemerging businessrDoc {
   id: string;
   firebaseUid?: string; // Links to Firebase Auth user UID
   firstName: string;
@@ -593,7 +593,7 @@ export interface TeamMemberDoc {
   isCTO?: boolean;
   isCRO?: boolean;
   // Additional flags - Affiliates/Suppliers can also be Clients
-  isClient?: boolean; // Can this affiliate/team member also be served as a client?
+  isClient?: boolean; // Can this affiliate/team meemerging businessr also be served as a client?
   clientSince?: Timestamp; // When they became a client
   clientNotes?: string; // Notes about them as a client
   // Mattermost integration
@@ -689,7 +689,7 @@ export interface NDATemplateDoc {
     id: string;
     title: string;
     content: string;
-    order: number;
+    order: nuemerging businessr;
     isEditable: boolean;
     isRequired: boolean;
     placeholders?: Array<{
@@ -743,7 +743,7 @@ export interface NDADocumentDoc {
     id: string;
     title: string;
     content: string;
-    order: number;
+    order: nuemerging businessr;
     isEditable: boolean;
     isRequired: boolean;
   }>;
@@ -795,8 +795,8 @@ export interface EventDoc {
   // Registration
   registrationUrl?: string;
   registrationDeadline?: Timestamp;
-  maxAttendees?: number;
-  currentAttendees: number;
+  maxAttendees?: nuemerging businessr;
+  currentAttendees: nuemerging businessr;
   // Display
   imageUrl?: string;
   category: "webinar" | "workshop" | "conference" | "networking" | "training" | "briefing" | "showcase" | "other";
@@ -808,10 +808,10 @@ export interface EventDoc {
   isTicketed?: boolean;
   ticketTypes?: {
     name: string;
-    price: number;
+    price: nuemerging businessr;
     description?: string;
-    maxQuantity?: number;
-    soldCount: number;
+    maxQuantity?: nuemerging businessr;
+    soldCount: nuemerging businessr;
   }[];
   sponsorIds?: string[];
   speakerIds?: string[];
@@ -1026,8 +1026,8 @@ export interface SupplierDeliverableItem {
 }
 
 export interface SupplierDeliverablesSummary {
-  completed: number;
-  total: number;
+  completed: nuemerging businessr;
+  total: nuemerging businessr;
   items?: SupplierDeliverableItem[];
 }
 
@@ -1040,7 +1040,7 @@ export interface TBMNCSupplierDoc {
   location?: string;
   website?: string;
   stage: SupplierReadinessStageId;
-  progress: number;
+  progress: nuemerging businessr;
   assignedAffiliateIds: string[];
   capabilities: string[];
   certifications: string[];
@@ -1085,10 +1085,10 @@ export interface GHLIntegrationDoc {
   lastSyncAt?: Timestamp;
   lastSyncStatus: 'success' | 'error' | 'pending' | 'never';
   lastSyncError?: string;
-  totalContactsSynced: number;
-  totalOpportunitiesSynced: number;
+  totalContactsSynced: nuemerging businessr;
+  totalOpportunitiesSynced: nuemerging businessr;
   // Rate Limiting
-  rateLimitRemaining?: number;
+  rateLimitRemaining?: nuemerging businessr;
   rateLimitReset?: Timestamp;
   // Metadata
   createdBy: string;
@@ -1105,13 +1105,13 @@ export interface GHLSyncLogDoc {
   syncType: 'contacts' | 'opportunities' | 'calendars' | 'pipelines' | 'campaigns' | 'full';
   status: 'started' | 'in_progress' | 'completed' | 'failed';
   // Statistics
-  recordsProcessed: number;
-  recordsSuccessful: number;
-  recordsFailed: number;
+  recordsProcessed: nuemerging businessr;
+  recordsSuccessful: nuemerging businessr;
+  recordsFailed: nuemerging businessr;
   // Timing
   startedAt: Timestamp;
   completedAt?: Timestamp;
-  duration?: number;
+  duration?: nuemerging businessr;
   // Errors
   errors: Array<{
     recordId?: string;
@@ -1120,10 +1120,10 @@ export interface GHLSyncLogDoc {
   }>;
   // Summary
   summary?: {
-    contactsCreated: number;
-    contactsUpdated: number;
-    opportunitiesCreated: number;
-    opportunitiesUpdated: number;
+    contactsCreated: nuemerging businessr;
+    contactsUpdated: nuemerging businessr;
+    opportunitiesCreated: nuemerging businessr;
+    opportunitiesUpdated: nuemerging businessr;
   };
   // Metadata
   triggeredBy: string;
@@ -1194,25 +1194,25 @@ export interface CalendarEventDoc {
 /** 1-to-1 Scheduling Queue Item */
 export interface OneToOneQueueItemDoc {
   id: string;
-  // Team member to schedule with
-  teamMemberId: string;
-  teamMemberName: string;
-  teamMemberEmail: string;
-  teamMemberExpertise?: string;
-  teamMemberAvatar?: string;
+  // Team meemerging businessr to schedule with
+  teamMeemerging businessrId: string;
+  teamMeemerging businessrName: string;
+  teamMeemerging businessrEmail: string;
+  teamMeemerging businessrExpertise?: string;
+  teamMeemerging businessrAvatar?: string;
   // Queue status
   status: 'queued' | 'scheduled' | 'completed' | 'cancelled';
   // Scheduling details (when scheduled)
   scheduledDate?: Timestamp;
   scheduledTime?: string;
-  duration?: number; // minutes
+  duration?: nuemerging businessr; // minutes
   location?: string;
   meetingType?: 'virtual' | 'in-person';
   calendarEventId?: string;
   // Notes
   notes?: string;
   // Priority/order
-  priority: number;
+  priority: nuemerging businessr;
   // Who added this to queue
   addedBy: string;
   addedByName?: string;
@@ -1224,10 +1224,10 @@ export interface OneToOneQueueItemDoc {
 }
 
 // ============================================================================
-// Team Member Availability & Booking Types
+// Team Meemerging businessr Availability & Booking Types
 // ============================================================================
 
-/** Weekly availability slot for a team member */
+/** Weekly availability slot for a team meemerging businessr */
 export interface AvailabilitySlot {
   dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday, 6 = Saturday
   startTime: string; // HH:mm format
@@ -1235,12 +1235,12 @@ export interface AvailabilitySlot {
   isEnabled: boolean;
 }
 
-/** Team member availability settings */
-export interface TeamMemberAvailabilityDoc {
-  id: string; // Same as team member ID
-  teamMemberId: string;
-  teamMemberName: string;
-  teamMemberEmail: string;
+/** Team meemerging businessr availability settings */
+export interface TeamMeemerging businessrAvailabilityDoc {
+  id: string; // Same as team meemerging businessr ID
+  teamMeemerging businessrId: string;
+  teamMeemerging businessrName: string;
+  teamMeemerging businessrEmail: string;
   // Booking page settings
   bookingSlug: string; // Unique URL slug for booking page
   bookingTitle?: string; // Custom title for booking page
@@ -1249,16 +1249,16 @@ export interface TeamMemberAvailabilityDoc {
   // Availability slots
   weeklyAvailability: AvailabilitySlot[];
   // Meeting settings
-  defaultMeetingDuration: number; // minutes
-  allowedDurations: number[]; // e.g., [30, 45, 60]
-  bufferBetweenMeetings: number; // minutes
-  maxAdvanceBookingDays: number; // How far in advance can book
-  minAdvanceBookingHours: number; // Minimum notice required
+  defaultMeetingDuration: nuemerging businessr; // minutes
+  allowedDurations: nuemerging businessr[]; // e.g., [30, 45, 60]
+  bufferBetweenMeetings: nuemerging businessr; // minutes
+  maxAdvanceBookingDays: nuemerging businessr; // How far in advance can book
+  minAdvanceBookingHours: nuemerging businessr; // Minimum notice required
   // Meeting types
   meetingTypes: Array<{
     id: string;
     name: string;
-    duration: number;
+    duration: nuemerging businessr;
     description?: string;
     location?: string;
     isVirtual: boolean;
@@ -1278,10 +1278,10 @@ export interface TeamMemberAvailabilityDoc {
 /** Booking made by a client */
 export interface BookingDoc {
   id: string;
-  // Team member being booked
-  teamMemberId: string;
-  teamMemberName: string;
-  teamMemberEmail: string;
+  // Team meemerging businessr being booked
+  teamMeemerging businessrId: string;
+  teamMeemerging businessrName: string;
+  teamMeemerging businessrEmail: string;
   // Client info
   clientName: string;
   clientEmail: string;
@@ -1294,7 +1294,7 @@ export interface BookingDoc {
   date: string; // YYYY-MM-DD
   startTime: string; // HH:mm
   endTime: string; // HH:mm
-  duration: number; // minutes
+  duration: nuemerging businessr; // minutes
   timezone: string;
   // Location
   isVirtual: boolean;
@@ -1352,8 +1352,8 @@ export interface SoftwareKeyDoc {
   activatedAt?: Timestamp;
   expiresAt?: Timestamp;
   // Usage limits
-  maxActivations?: number;        // Max number of devices/sessions
-  currentActivations: number;
+  maxActivations?: nuemerging businessr;        // Max nuemerging businessr of devices/sessions
+  currentActivations: nuemerging businessr;
   // Metadata
   createdBy: string;
   createdAt: Timestamp;
@@ -1419,8 +1419,8 @@ export interface WhiteLabelDeploymentDoc {
     type: LicenseType;
     startDate: Timestamp;
     endDate?: Timestamp;
-    maxUsers?: number;
-    maxAffiliates?: number;
+    maxUsers?: nuemerging businessr;
+    maxAffiliates?: nuemerging businessr;
     softwareKeys: string[];
   };
   // Feature Overrides
@@ -1454,10 +1454,10 @@ export interface MattermostPlaybookDoc {
   teamName?: string;
   type: "reminder" | "rock" | "level10" | "recurring" | "custom";
   recurrence?: "daily" | "weekly" | "biweekly" | "monthly";
-  // Assigned team members (SVP Platform IDs)
-  assignedMemberIds: string[];
+  // Assigned team meemerging businessrs (SVP Platform IDs)
+  assignedMeemerging businessrIds: string[];
   // Mattermost user IDs
-  mattermostMemberIds: string[];
+  mattermostMeemerging businessrIds: string[];
   // Checklist configuration
   checklists: {
     title: string;
@@ -1468,7 +1468,7 @@ export interface MattermostPlaybookDoc {
   // Notification settings
   notificationsEnabled: boolean;
   broadcastChannelId?: string;
-  reminderIntervalSeconds?: number;
+  reminderIntervalSeconds?: nuemerging businessr;
   // Metadata
   createdBy: string;
   createdAt: Timestamp;
@@ -1488,23 +1488,23 @@ export interface MattermostPlaybookRunDoc {
   channelId?: string; // Mattermost channel created for the run
   // Owner
   ownerUserId: string; // Mattermost user ID
-  ownerMemberId?: string; // SVP Platform team member ID
+  ownerMeemerging businessrId?: string; // SVP Platform team meemerging businessr ID
   // Status tracking
   status: "in_progress" | "finished" | "archived";
   currentStatus?: string;
   // Checklist progress
   checklistProgress: {
-    checklistIndex: number;
+    checklistIndex: nuemerging businessr;
     title: string;
-    totalItems: number;
-    completedItems: number;
+    totalItems: nuemerging businessr;
+    completedItems: nuemerging businessr;
   }[];
-  totalTasks: number;
-  completedTasks: number;
-  completionPercentage: number;
-  // Assigned members
-  assignedMemberIds: string[];
-  mattermostMemberIds: string[];
+  totalTasks: nuemerging businessr;
+  completedTasks: nuemerging businessr;
+  completionPercentage: nuemerging businessr;
+  // Assigned meemerging businessrs
+  assignedMeemerging businessrIds: string[];
+  mattermostMeemerging businessrIds: string[];
   // Timestamps
   startedAt: Timestamp;
   endedAt?: Timestamp;
@@ -1518,18 +1518,18 @@ export interface TransactionDoc extends BaseDocument {
   userId: string;
   userName: string;
   userEmail: string;
-  amount: number;
+  amount: nuemerging businessr;
   currency: string;
   status: "pending" | "succeeded" | "failed" | "refunded";
   stripePaymentIntentId: string;
   stripeCustomerId?: string;
   
   // Categorization and Tagging
-  type: "membership" | "event_ticket" | "sponsorship" | "pursuit_pack" | "partial_payment" | "other";
+  type: "meemerging businessrship" | "event_ticket" | "sponsorship" | "pursuit_pack" | "partial_payment" | "other";
   tags: string[];
   
   // Linkages
-  entityType: "membership" | "event" | "sponsorship" | "pursuit" | "organization";
+  entityType: "meemerging businessrship" | "event" | "sponsorship" | "pursuit" | "organization";
   entityId: string;
   entityName?: string;
   
@@ -1544,13 +1544,13 @@ export interface TransactionDoc extends BaseDocument {
 /** Payment Plan document for tracking balances and installments */
 export interface PaymentPlanDoc extends BaseDocument {
   userId: string;
-  entityType: "event" | "sponsorship" | "membership" | "other";
+  entityType: "event" | "sponsorship" | "meemerging businessrship" | "other";
   entityId: string;
   entityName: string;
   
-  totalAmount: number;
-  paidAmount: number;
-  remainingBalance: number;
+  totalAmount: nuemerging businessr;
+  paidAmount: nuemerging businessr;
+  remainingBalance: nuemerging businessr;
   currency: string;
   
   status: "active" | "completed" | "overdue" | "cancelled";
@@ -1562,7 +1562,7 @@ export interface PaymentPlanDoc extends BaseDocument {
   
   installments: Array<{
     id: string;
-    amount: number;
+    amount: nuemerging businessr;
     status: "pending" | "paid" | "overdue";
     dueDate: Timestamp;
     paidAt?: Timestamp;
@@ -1593,7 +1593,7 @@ export const COLLECTIONS = {
   NOTES: "notes",
   MILESTONES: "milestones",
   ROCK_MILESTONES: "rockMilestones",
-  TEAM_MEMBERS: "teamMembers",
+  TEAM_MEemerging businessRS: "teamMeemerging businessrs",
   TRACTION_SCORECARD_METRICS: "tractionScorecardMetrics",
   TRACTION_ISSUES: "tractionIssues",
   TRACTION_TODOS: "tractionTodos",
@@ -1624,7 +1624,7 @@ export const COLLECTIONS = {
   EOS_GWC_SCORES: "eosGWCscores", // Gets it, Wants it, Capacity to do it
   EOS_CORE_VALUES: "eosCoreValues",
   // KDM Consortium Platform Collections
-  MEMBERSHIPS: "memberships",
+  MEemerging businessRSHIPS: "meemerging businessrships",
   TICKETS: "tickets",
   PROMO_CODES: "promoCodes",
   SPONSORS: "sponsors",
@@ -1654,7 +1654,7 @@ export const COLLECTIONS = {
   TBMNC_SUPPLIERS: "tbmncSuppliers",
   // Traction/EOS Collections (already defined above, removed duplicates)
   TRACTION_ROCKS: "tractionRocks",
-  TRACTION_TEAM_MEMBERS: "tractionTeamMembers",
+  TRACTION_TEAM_MEemerging businessRS: "tractionTeamMeemerging businessrs",
   // GoHighLevel Integration Collections
   GHL_INTEGRATIONS: "gohighlevelIntegrations",
   GHL_SYNC_LOGS: "gohighlevelSyncLogs",
@@ -1662,8 +1662,8 @@ export const COLLECTIONS = {
   GHL_IMPORTED_WORKFLOWS: "ghlImportedWorkflows",
   // 1-to-1 Scheduling Queue
   ONE_TO_ONE_QUEUE: "oneToOneQueue",
-  // Team Member Availability & Bookings
-  TEAM_MEMBER_AVAILABILITY: "teamMemberAvailability",
+  // Team Meemerging businessr Availability & Bookings
+  TEAM_MEemerging businessR_AVAILABILITY: "teamMeemerging businessrAvailability",
   BOOKINGS: "bookings",
   // Software License Keys (already defined above, removed duplicate)
   KEY_ACTIVATIONS: "keyActivations",
@@ -1767,8 +1767,8 @@ export const tbmncSuppliersCollection = () => getCollection<TBMNCSupplierDoc>(CO
 // Strategic Partners collection reference
 export const strategicPartnersCollection = () => getCollection<StrategicPartnerDoc>(COLLECTIONS.STRATEGIC_PARTNERS);
 
-// Team Members collection reference
-export const teamMembersCollection = () => getCollection<TeamMemberDoc>(COLLECTIONS.TEAM_MEMBERS);
+// Team Meemerging businessrs collection reference
+export const teamMeemerging businessrsCollection = () => getCollection<TeamMeemerging businessrDoc>(COLLECTIONS.TEAM_MEemerging businessRS);
 
 // Platform Settings collection reference
 export const platformSettingsCollection = () => getCollection<PlatformSettingsDoc>(COLLECTIONS.PLATFORM_SETTINGS);
@@ -1779,7 +1779,7 @@ export const tractionScorecardMetricsCollection = () => getCollection<TractionSc
 export const tractionIssuesCollection = () => getCollection<TractionIssueDoc>(COLLECTIONS.TRACTION_ISSUES);
 export const tractionTodosCollection = () => getCollection<TractionTodoDoc>(COLLECTIONS.TRACTION_TODOS);
 export const tractionMeetingsCollection = () => getCollection<TractionMeetingDoc>(COLLECTIONS.TRACTION_MEETINGS);
-export const tractionTeamMembersCollection = () => getCollection<TractionTeamMemberDoc>(COLLECTIONS.TRACTION_TEAM_MEMBERS);
+export const tractionTeamMeemerging businessrsCollection = () => getCollection<TractionTeamMeemerging businessrDoc>(COLLECTIONS.TRACTION_TEAM_MEemerging businessRS);
 
 // ============================================================================
 // Subcollection Helpers
@@ -1885,7 +1885,7 @@ export const generateId = (collectionName: string): string | null => {
  * AFFILIATE NETWORKING SYSTEM
  * ===========================
  * /affiliateBiographies/{bioId}
- *   - AffiliateBiographyDoc (Member Bio Sheet)
+ *   - AffiliateBiographyDoc (Meemerging businessr Bio Sheet)
  * 
  * /gainsProfiles/{profileId}
  *   - GainsProfileDoc (Goals, Accomplishments, Interests, Networks, Skills)
@@ -1912,7 +1912,7 @@ export const generateId = (collectionName: string): string | null => {
  * SECURITY RULES CONSIDERATIONS
  * =============================
  * - Users can only read/write their own user document
- * - Organization members can read organization data
+ * - Organization meemerging businessrs can read organization data
  * - Admins have full access to all collections
  * - Affiliates can only access assigned opportunities/projects
  * - Documents inherit permissions from parent entity
@@ -1926,7 +1926,7 @@ export const generateId = (collectionName: string): string | null => {
  * - activities: entityType + entityId + createdAt (composite)
  * - actionItems: assigneeId + status + dueDate (composite)
  * - rocks: ownerId + quarter (composite)
- * - memberships: userId + status (composite)
+ * - meemerging businessrships: userId + status (composite)
  * - tickets: eventId + status (composite)
  * - pursuits: status + publishedAt (composite)
  */
@@ -1935,13 +1935,13 @@ export const generateId = (collectionName: string): string | null => {
 // KDM CONSORTIUM PLATFORM EXTENSIONS
 // ============================================================================
 
-/** Membership document for KDM Consortium */
-export interface MembershipDoc extends BaseDocument {
+/** Meemerging businessrship document for KDM Consortium */
+export interface Meemerging businessrshipDoc extends BaseDocument {
   userId: string;
   tier: "core-capture" | "pursuit-pack" | "custom";
   status: "active" | "past_due" | "cancelled" | "trialing";
   billingCycle: "monthly" | "annual";
-  amount: number;
+  amount: nuemerging businessr;
   stripeSubscriptionId: string;
   stripeCustomerId: string;
   currentPeriodStart: Timestamp;
@@ -1949,9 +1949,9 @@ export interface MembershipDoc extends BaseDocument {
   cancelAtPeriodEnd: boolean;
   trialEnd?: Timestamp;
   metadata: {
-    pursuitPackCredits?: number;
-    conciergeHoursUsed?: number;
-    conciergeHoursLimit?: number;
+    pursuitPackCredits?: nuemerging businessr;
+    conciergeHoursUsed?: nuemerging businessr;
+    conciergeHoursLimit?: nuemerging businessr;
   };
 }
 
@@ -1962,7 +1962,7 @@ export interface TicketDoc extends BaseDocument {
   userName: string;
   userEmail: string;
   ticketType: string;
-  price: number;
+  price: nuemerging businessr;
   status: "pending" | "paid" | "cancelled" | "refunded";
   stripePaymentIntentId: string;
   qrCode: string;
@@ -1970,7 +1970,7 @@ export interface TicketDoc extends BaseDocument {
   checkedInAt?: Timestamp;
   checkedInBy?: string;
   promoCode?: string;
-  discount?: number;
+  discount?: nuemerging businessr;
   attendeeInfo?: {
     company?: string;
     title?: string;
@@ -1985,12 +1985,12 @@ export interface PromoCodeDoc extends BaseDocument {
   code: string;
   description: string;
   discountType: "percentage" | "fixed";
-  discountValue: number;
-  maxUses?: number;
-  usedCount: number;
+  discountValue: nuemerging businessr;
+  maxUses?: nuemerging businessr;
+  usedCount: nuemerging businessr;
   validFrom: Timestamp;
   validUntil: Timestamp;
-  applicableTo: "all" | "events" | "memberships";
+  applicableTo: "all" | "events" | "meemerging businessrships";
   eventIds?: string[];
   isActive: boolean;
 }
@@ -2002,7 +2002,7 @@ export interface SponsorDoc extends BaseDocument {
   contactEmail: string;
   contactPhone: string;
   tier: "platinum" | "gold" | "silver" | "bronze" | "custom";
-  amount: number;
+  amount: nuemerging businessr;
   status: "prospect" | "committed" | "paid" | "fulfilled" | "inactive";
   benefits: string[];
   benefitsFulfilled: string[];
@@ -2016,9 +2016,9 @@ export interface SponsorDoc extends BaseDocument {
   sponsorshipPeriodStart: Timestamp;
   sponsorshipPeriodEnd: Timestamp;
   analytics?: {
-    impressions: number;
-    clicks: number;
-    leads: number;
+    impressions: nuemerging businessr;
+    clicks: nuemerging businessr;
+    leads: nuemerging businessr;
   };
 }
 
@@ -2030,18 +2030,18 @@ export interface PursuitBriefDoc extends BaseDocument {
   agency: string;
   naicsCode: string;
   setAside?: string;
-  estimatedValue: number;
+  estimatedValue: nuemerging businessr;
   dueDate: Timestamp;
   requiredCapabilities: string[];
   requiredCompliance: string[];
   geographicPreference?: string;
   status: "published" | "team-forming" | "proposal-active" | "submitted" | "won" | "lost" | "archived";
-  teamMembers: string[];
-  interestedMembers: string[];
+  teamMeemerging businessrs: string[];
+  interestedMeemerging businessrs: string[];
   publishedAt: Timestamp;
   publishedBy: string;
   solicitation?: {
-    number: string;
+    nuemerging businessr: string;
     url?: string;
     type: string;
   };
@@ -2061,9 +2061,9 @@ export interface BuyerDoc extends BaseDocument {
   lastContactDate?: Timestamp;
   nextFollowUpDate?: Timestamp;
   relationshipStrength: "cold" | "warm" | "hot";
-  briefingsAttended: number;
-  meetingsHeld: number;
-  opportunitiesShared: number;
+  briefingsAttended: nuemerging businessr;
+  meetingsHeld: nuemerging businessr;
+  opportunitiesShared: nuemerging businessr;
   notes?: string;
 }
 
@@ -2072,26 +2072,26 @@ export interface SettlementDoc extends BaseDocument {
   periodStart: Timestamp;
   periodEnd: Timestamp;
   programRevenues: {
-    membershipDues: number;
-    eventTickets: number;
-    sponsorFees: number;
-    pursuitPacks: number;
-    other: number;
-    total: number;
+    meemerging businessrshipDues: nuemerging businessr;
+    eventTickets: nuemerging businessr;
+    sponsorFees: nuemerging businessr;
+    pursuitPacks: nuemerging businessr;
+    other: nuemerging businessr;
+    total: nuemerging businessr;
   };
   directProgramCosts: {
-    processorFees: number;
-    chargebacks: number;
-    refunds: number;
-    fraudLosses: number;
-    thirdPartyCosts: number;
-    total: number;
+    processorFees: nuemerging businessr;
+    chargebacks: nuemerging businessr;
+    refunds: nuemerging businessr;
+    fraudLosses: nuemerging businessr;
+    thirdPartyCosts: nuemerging businessr;
+    total: nuemerging businessr;
   };
-  platformRunCostAllowance: number;
-  costRecoveryPool: number;
-  netProgramRevenue: number;
-  kdmShare: number;
-  vplusShare: number;
+  platformRunCostAllowance: nuemerging businessr;
+  costRecoveryPool: nuemerging businessr;
+  netProgramRevenue: nuemerging businessr;
+  kdmShare: nuemerging businessr;
+  vplusShare: nuemerging businessr;
   status: "draft" | "pending" | "approved" | "paid";
   pdfUrl?: string;
   notes?: string;
@@ -2116,16 +2116,16 @@ export interface ProofPackDoc extends BaseDocument {
   status: "draft" | "submitted" | "approved" | "rejected";
   
   // Pack Health scoring
-  packHealthScore: number; // 0-100
+  packHealthScore: nuemerging businessr; // 0-100
   packHealthBreakdown?: {
-    completeness: number; // 40% weight
-    expirationStatus: number; // 30% weight
-    documentQuality: number; // 20% weight
-    gapRemediation: number; // 10% weight
+    completeness: nuemerging businessr; // 40% weight
+    expirationStatus: nuemerging businessr; // 30% weight
+    documentQuality: nuemerging businessr; // 20% weight
+    gapRemediation: nuemerging businessr; // 10% weight
   };
   
   // Documents (stored as base64 in subcollection or chunked documents)
-  documentCount: number;
+  documentCount: nuemerging businessr;
   categories: string[]; // Certifications, Financial, Past Performance, etc.
   
   // QA Review
@@ -2147,7 +2147,7 @@ export interface ProofPackDoc extends BaseDocument {
   visibility: "private" | "partner-only" | "buyer-ready";
   
   // Version tracking
-  version: number;
+  version: nuemerging businessr;
   
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -2173,7 +2173,7 @@ export interface LeadDoc extends BaseDocument {
   
   // Routing and assignment
   status: "new" | "contacted" | "qualified" | "converted";
-  assignedTo?: string; // Partner or team member ID
+  assignedTo?: string; // Partner or team meemerging businessr ID
   routingReason?: string;
   
   // Pipeline tracking
@@ -2182,7 +2182,7 @@ export interface LeadDoc extends BaseDocument {
   convertedAt?: Timestamp;
   
   // Activity tracking
-  contactAttempts: number;
+  contactAttempts: nuemerging businessr;
   notes?: string;
   
   createdAt: Timestamp;
@@ -2222,12 +2222,12 @@ export interface IntroductionDoc extends BaseDocument {
   
   // Conversion tracking
   conversionStage?: string;
-  estimatedDealValue?: number;
+  estimatedDealValue?: nuemerging businessr;
   
   // Feedback
   buyerFeedback?: {
-    qualityRating: number; // 1-5
-    relevanceRating: number; // 1-5
+    qualityRating: nuemerging businessr; // 1-5
+    relevanceRating: nuemerging businessr; // 1-5
     comments?: string;
     willPursue: boolean;
   };
@@ -2249,26 +2249,26 @@ export interface CohortDoc extends BaseDocument {
   
   // Schedule
   startDate: Timestamp;
-  duration: number; // weeks (typically 12)
+  duration: nuemerging businessr; // weeks (typically 12)
   
   // Enrollment
-  maxParticipants: number;
-  currentParticipants: number;
+  maxParticipants: nuemerging businessr;
+  currentParticipants: nuemerging businessr;
   enrolledSmeIds: string[];
   
   // Pricing
-  price: number;
+  price: nuemerging businessr;
   currency: string;
   allowPartialPayment: boolean;
   
   // Curriculum
   weeklyModules: Array<{
-    weekNumber: number;
+    weekNuemerging businessr: nuemerging businessr;
     title: string;
     description?: string;
     releaseDate: Timestamp;
     status: "locked" | "available" | "completed";
-    materialsCount: number;
+    materialsCount: nuemerging businessr;
   }>;
   
   // Status
@@ -2319,10 +2319,10 @@ export interface ContentDoc extends BaseDocument {
   coBrandingPartnerId?: string;
   
   // Analytics
-  views: number;
-  clicks: number;
-  shares: number;
-  conversions: number;
+  views: nuemerging businessr;
+  clicks: nuemerging businessr;
+  shares: nuemerging businessr;
+  conversions: nuemerging businessr;
   
   // Categorization
   category?: string;
@@ -2349,22 +2349,22 @@ export interface RevenueAttributionDoc extends BaseDocument {
   periodEnd: Timestamp;
   
   // Revenue breakdown
-  totalRevenue: number;
-  platformFee: number; // 10% default
-  platformFeePercentage: number;
-  netRevenue: number;
+  totalRevenue: nuemerging businessr;
+  platformFee: nuemerging businessr; // 10% default
+  platformFeePercentage: nuemerging businessr;
+  netRevenue: nuemerging businessr;
   
   // Attribution by type
   revenueByType: {
-    leadGeneration: number;
-    serviceDelivery: number;
-    introductions: number;
-    other: number;
+    leadGeneration: nuemerging businessr;
+    serviceDelivery: nuemerging businessr;
+    introductions: nuemerging businessr;
+    other: nuemerging businessr;
   };
   
   // Partner distribution
-  partnerShare: number;
-  partnerSharePercentage: number;
+  partnerShare: nuemerging businessr;
+  partnerSharePercentage: nuemerging businessr;
   
   // Settlement status
   status: "pending" | "calculated" | "approved" | "paid" | "disputed";
@@ -2405,14 +2405,14 @@ export interface RoutingRuleDoc extends BaseDocument {
   partnerName: string;
   
   // Priority and capacity
-  priority: number; // Higher number = higher priority
+  priority: nuemerging businessr; // Higher nuemerging businessr = higher priority
   isActive: boolean;
-  maxCapacity?: number; // Max leads per period
-  currentLoad: number;
+  maxCapacity?: nuemerging businessr; // Max leads per period
+  currentLoad: nuemerging businessr;
   
   // Conditions
   conditions?: {
-    minPackHealth?: number;
+    minPackHealth?: nuemerging businessr;
     requiredCertifications?: string[];
     geographicRestrictions?: string[];
   };
@@ -2436,8 +2436,8 @@ export interface AttributionEventDoc extends BaseDocument {
   eventType: "lead_generated" | "service_delivered" | "introduction_facilitated" | "conversion_completed";
   
   // Revenue information
-  revenueAmount: number;
-  attributionPercentage: number; // Partner's share of this event
+  revenueAmount: nuemerging businessr;
+  attributionPercentage: nuemerging businessr; // Partner's share of this event
   
   // Source tracking
   source: string;
@@ -2467,10 +2467,10 @@ export interface EventDocKDMExtensions {
   isTicketed?: boolean;
   ticketTypes?: {
     name: string;
-    price: number;
+    price: nuemerging businessr;
     description?: string;
-    maxQuantity?: number;
-    soldCount: number;
+    maxQuantity?: nuemerging businessr;
+    soldCount: nuemerging businessr;
   }[];
   sponsorIds?: string[];
   speakerIds?: string[];

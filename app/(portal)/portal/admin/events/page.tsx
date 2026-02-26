@@ -796,7 +796,7 @@ export default function EventsAdminPage() {
                     <Label htmlFor="maxAttendees">Max Attendees</Label>
                     <Input
                       id="maxAttendees"
-                      type="number"
+                      type="nuemerging businessr"
                       value={formData.maxAttendees}
                       onChange={(e) => setFormData({ ...formData, maxAttendees: e.target.value })}
                       placeholder="Leave empty for unlimited"
