@@ -1,0 +1,125 @@
+{
+  "channel": {
+    "name": "IAEOZ Summit",
+    "url": "https://www.youtube.com/@iaeozsummit",
+    "description": "Innovation in Agriculture and Energy Opportunity Zone Summit - fostering collaborations to address systemic barriers in rural communities co-located with HBCUs in Opportunity Zones",
+    "crawled_at": "2025-02-25"
+  },
+  "videos_by_year": {
+    "2024": [
+      {
+        "id": "4HpGxG-DNb8",
+        "title": "IAEOZ Summit 2024 - KEYNOTE Daniel Whitley USDA",
+        "url": "https://www.youtube.com/watch?v=4HpGxG-DNb8",
+        "description": "Joyce Hunter interview with Daniel Whitley. Daniel Whitley began serving as the Administrator of the U.S. Department of Agriculture's Foreign Agricultural Service.",
+        "year": 2024,
+        "type": "keynote",
+        "speaker": "Daniel Whitley",
+        "organization": "USDA",
+        "interviewer": "Joyce Hunter"
+      }
+    ],
+    "2023": [
+      {
+        "id": "jHBgzgT_pwM",
+        "title": "IAEOZ Summit 2023 - Jim Beddows",
+        "url": "https://www.youtube.com/watch?v=jHBgzgT_pwM",
+        "description": "IAEOZ Summit 2023 presentation by Jim Beddows",
+        "year": 2023,
+        "type": "presentation",
+        "speaker": "Jim Beddows",
+        "organization": null,
+        "interviewer": null
+      },
+      {
+        "id": "HH3slpzjWBE",
+        "title": "IAEOZ Summit 2023 - Honorable Kimberly McClain",
+        "url": "https://www.youtube.com/watch?v=HH3slpzjWBE",
+        "description": "IAEOZ Summit 2023 presentation by Honorable Kimberly McClain",
+        "year": 2023,
+        "type": "presentation",
+        "speaker": "Honorable Kimberly McClain",
+        "organization": null,
+        "interviewer": null
+      }
+    ],
+    "2022": [],
+    "2021": [
+      {
+        "id": "O_Q0GBvtk1s",
+        "title": "IAEOZ Summit 2021 - Keynote Jessica Bergeron Operation Hope",
+        "url": "https://www.youtube.com/watch?v=O_Q0GBvtk1s",
+        "description": "IAEOZ Summit 2021 Keynote address by Jessica Bergeron from Operation Hope",
+        "year": 2021,
+        "type": "keynote",
+        "speaker": "Jessica Bergeron",
+        "organization": "Operation Hope",
+        "interviewer": null
+      },
+      {
+        "id": "WZrgEftZWMQ",
+        "title": "The Role of Artificial Intelligence in Agriculture with Joyce Hunter",
+        "url": "https://www.youtube.com/watch?v=WZrgEftZWMQ",
+        "description": "Joyce Hunter discusses the role of artificial intelligence in today's agricultural landscape and what the future holds.",
+        "year": 2021,
+        "type": "interview",
+        "speaker": "Joyce Hunter",
+        "organization": "IAEOZ Summit",
+        "interviewer": null
+      },
+      {
+        "id": "kqjqxEA7qE8",
+        "title": "Agriculture is More Than Beverly Hillbillies & Green Acres | Joyce Hunter | TEDxHarrisburg",
+        "url": "https://www.youtube.com/watch?v=kqjqxEA7qE8",
+        "description": "Evolving the agriculture pipeline by recruiting through STEAM data science summer camps for underserved communities.",
+        "year": 2021,
+        "type": "ted_talk",
+        "speaker": "Joyce Hunter",
+        "organization": "TEDx / IAEOZ",
+        "interviewer": null
+      }
+    ]
+  },
+  "speakers": [
+    {
+      "name": "Daniel Whitley",
+      "organization": "USDA Foreign Agricultural Service",
+      "role": "Administrator",
+      "videos": ["4HpGxG-DNb8"]
+    },
+    {
+      "name": "Jim Beddows",
+      "organization": null,
+      "role": "Speaker",
+      "videos": ["jHBgzgT_pwM"]
+    },
+    {
+      "name": "Honorable Kimberly McClain",
+      "organization": null,
+      "role": "Speaker",
+      "videos": ["HH3slpzjWBE"]
+    },
+    {
+      "name": "Jessica Bergeron",
+      "organization": "Operation Hope",
+      "role": "Keynote Speaker",
+      "videos": ["O_Q0GBvtk1s"]
+    },
+    {
+      "name": "Joyce Hunter",
+      "organization": "IAEOZ Summit",
+      "role": "Interviewer / Speaker",
+      "videos": ["4HpGxG-DNb8", "WZrgEftZWMQ", "kqjqxEA7qE8"]
+    }
+  ],
+  "statistics": {
+    "total_videos_found": 6,
+    "years_covered": [2021, 2023, 2024],
+    "videos_by_year_count": {
+      "2021": 3,
+      "2022": 0,
+      "2023": 2,
+      "2024": 1
+    }
+  }
+}

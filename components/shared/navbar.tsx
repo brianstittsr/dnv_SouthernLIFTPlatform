@@ -28,6 +28,7 @@ import {
   Package,
   Video,
   BookOpen,
+  Play,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -72,6 +73,7 @@ const resources = [
   { title: "Products", href: "/products", icon: Package },
   { title: "News & Insights", href: "/news", icon: Newspaper },
   { title: "Media & Press", href: "/media", icon: Video },
+  { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "Opportunities", href: "/opportunities", icon: Briefcase },
   { title: "FAQ", href: "/faq", icon: FileText },
   { title: "Events", href: "/events", icon: Calendar },
