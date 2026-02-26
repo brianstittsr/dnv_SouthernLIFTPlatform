@@ -361,7 +361,7 @@ export default function IAEOZSummitPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {data.speakers.map((speaker) => (
+            {data.speakers?.map((speaker) => (
               <Card
                 key={speaker.name}
                 className="hover:shadow-md transition-all cursor-pointer"
