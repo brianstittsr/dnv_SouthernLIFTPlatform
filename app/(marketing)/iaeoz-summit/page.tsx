@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Metadata } from "next";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -295,11 +293,10 @@ export default function IAEOZSummitPage() {
                       >
                         {/* Thumbnail */}
                         <div className="aspect-video bg-muted relative overflow-hidden">
-                          <Image
+                          <img
                             src={getYouTubeThumbnail(video.id)}
                             alt={video.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                             <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
