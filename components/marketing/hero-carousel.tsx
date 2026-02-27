@@ -15,6 +15,7 @@ export interface HeroSlide {
   id: string;
   badge: string;
   headline: string;
+  middleLine?: string; // Optional 3rd line between headline and highlightedText
   highlightedText: string;
   subheadline: string;
   benefits: string[];
@@ -49,8 +50,9 @@ const defaultSlides: HeroSlide[] = [
   {
     id: "0",
     badge: "Strategic Partnership Announcement",
-    headline: "Strategic Value+",
-    highlightedText: "&\nKDM Associates",
+    headline: "KDM & Associates",
+    middleLine: "&",
+    highlightedText: "Strategic Value+",
     subheadline: "Two industry leaders unite to deliver unparalleled support for small emerging businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
     benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
     primaryCta: { text: "Discover the Partnership", href: "/about" },
@@ -86,14 +88,14 @@ const defaultSlides: HeroSlide[] = [
 
 interface HeroCarouselProps {
   slides?: HeroSlide[];
-  autoPlayInterval?: nuemerging businessr;
+  autoPlayInterval?: number;
 }
 
 export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(propSlides || defaultSlides);
   const [isLoading, setIsLoading] = useState(!propSlides);
   const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
-  const [resolvedBgImages, setResolvedBgImages] = useState<Record<nuemerging businessr, string>>({});
+  const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
   const [contentVisible, setContentVisible] = useState(false);
 
   // Load slides and gallery images from Firebase on mount
@@ -112,7 +114,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       const images = await listImages("hero");
       setGalleryImages(images);
       // Pre-load base64 data URLs for each image
-      const dataUrls: Record<nuemerging businessr, string> = {};
+      const dataUrls: Record<number, string> = {};
       for (let i = 0; i < images.length; i++) {
         const dataUrl = await getImageDataUrl(images[i].id);
         if (dataUrl) dataUrls[i] = dataUrl;
@@ -154,7 +156,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
     setCurrentIndex((prev) => (prev - 1 + publishedSlides.length) % publishedSlides.length);
   }, [publishedSlides.length]);
 
-  const goToSlide = useCallback((index: nuemerging businessr) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
     setIsAutoPlaying(false);
     // Resume auto-play after 10 seconds of inactivity
@@ -217,10 +219,15 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
             {/* Headline */}
             <h1 className={cn(
               "text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl whitespace-pre-line",
-              currentSlide.highlightOnSecondLine && "flex flex-col items-center"
+              (currentSlide.highlightOnSecondLine || currentSlide.middleLine) && "flex flex-col items-center"
             )}>
               {currentSlide.headline}
-              {currentSlide.highlightOnSecondLine ? (
+              {currentSlide.middleLine ? (
+                <>
+                  <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.middleLine}</span>
+                  <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.highlightedText}</span>
+                </>
+              ) : currentSlide.highlightOnSecondLine ? (
                 <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.highlightedText}</span>
               ) : (
                 <> <span className="text-primary" style={{ textShadow: '0 0 4px white, 0 0 8px white, 0 0 12px white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white' }}>{currentSlide.highlightedText}</span></>

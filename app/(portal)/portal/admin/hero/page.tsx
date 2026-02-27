@@ -151,6 +151,7 @@ const wizardSteps = [
 interface SlideFormData {
   badge: string;
   headline: string;
+  middleLine: string;
   highlightedText: string;
   subheadline: string;
   benefits: string[];
@@ -165,7 +166,7 @@ interface SlideFormData {
   backgroundType: "animated" | "image";
   backgroundImage: string;
   backgroundOverlay: boolean;
-  backgroundOverlayOpacity: nuemerging businessr;
+  backgroundOverlayOpacity: number;
   showWaves: boolean;
   highlightOnSecondLine: boolean;
 }
@@ -173,6 +174,7 @@ interface SlideFormData {
 const emptyFormData: SlideFormData = {
   badge: "",
   headline: "",
+  middleLine: "",
   highlightedText: "",
   subheadline: "",
   benefits: ["", "", ""],
@@ -236,6 +238,7 @@ export default function HeroManagementPage() {
       setFormData({
         badge: slide.badge,
         headline: slide.headline,
+        middleLine: slide.middleLine ?? "",
         highlightedText: slide.highlightedText,
         subheadline: slide.subheadline,
         benefits: [...slide.benefits, "", ""].slice(0, 3),
@@ -276,6 +279,7 @@ export default function HeroManagementPage() {
         id: editingSlide?.id || Date.now().toString(),
         badge: formData.badge,
         headline: formData.headline,
+        middleLine: formData.middleLine || undefined,
         highlightedText: formData.highlightedText,
         subheadline: formData.subheadline,
         benefits: formData.benefits.filter(b => b.trim() !== ""),
@@ -366,7 +370,7 @@ export default function HeroManagementPage() {
     }
   };
 
-  const updateBenefit = (index: nuemerging businessr, value: string) => {
+  const updateBenefit = (index: number, value: string) => {
     const newBenefits = [...formData.benefits];
     newBenefits[index] = value;
     setFormData({ ...formData, benefits: newBenefits });
@@ -575,6 +579,19 @@ export default function HeroManagementPage() {
                       placeholder="e.g., Win OEM Contracts."
                       value={formData.headline}
                       onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+                      className="w-full box-border"
+                      style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2 max-w-full min-w-0">
+                  <Label htmlFor="middleLine">Middle Line (3rd line - optional)</Label>
+                  <div className="w-full overflow-hidden" style={{ maxWidth: '100%' }}>
+                    <Input
+                      id="middleLine"
+                      placeholder="e.g., &"
+                      value={formData.middleLine}
+                      onChange={(e) => setFormData({ ...formData, middleLine: e.target.value })}
                       className="w-full box-border"
                       style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '100%' }}
                     />
