@@ -48,7 +48,7 @@ export interface PopupConfig {
   description: string;
   buttonText: string;
   successMessage: string;
-  triggerDelay: nuemerging businessr; // seconds before auto-showing (0 = never auto-show)
+  triggerDelay: number; // seconds before auto-showing (0 = never auto-show)
   showOnPages: string[]; // which pages to show on, empty = all
   position: "bottom-right" | "bottom-left" | "center";
   fields: PopupField[];
