@@ -45,6 +45,7 @@ const initialSlides: HeroSlide[] = [
     id: "1",
     badge: "Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence",
     headline: "Win OEM Contracts.",
+    middleLine: "&",
     highlightedText: "Transform",
     subheadline: "We help small- and mid-sized U.S. manufacturers become qualified suppliers through ISO certification, operational readiness, and supplier development.",
     benefits: ["OEM Supplier Qualification", "ISO/QMS Certification", "Industry 4.0 Ready"],
