@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
           <p>We've received your request for an introductory session and one of our government contracting experts will contact you within 24 hours.</p>
           <p><strong>What happens next?</strong></p>
           <ul>
-            <li>A meemerging businessr of our team will review your information</li>
+            <li>A member of our team will review your information</li>
             <li>We'll reach out to schedule your session</li>
             <li>You'll receive a customized assessment of your contracting readiness</li>
           </ul>
