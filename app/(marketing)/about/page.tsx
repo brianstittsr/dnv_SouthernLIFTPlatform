@@ -170,12 +170,9 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
                     <Factory className="h-6 w-6 text-secondary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4">Manufacturing + Government Contracting</h3>
+                  <h3 className="text-xl font-bold mb-4">Manufacturing + Gov Con = America First</h3>
                   <p className="text-muted-foreground">
-                    This partnership specifically addresses the unique intersection of manufacturing 
-                    operations and government procurement. We help manufacturing firms navigate 
-                    complex federal requirements while optimizing their production capabilities 
-                    to meet stringent government standards and deliverables.
+                    The V+ and KDM partnership was purpose-built for the intersection where manufacturing excellence meets federal procurement — a space where most firms struggle and few succeed. Together, we dramatically expand the number of manufacturing firms equipped to navigate complex federal requirements, optimize production capabilities, and consistently meet the stringent standards and deliverables that government contracts demand.
                   </p>
                 </CardContent>
               </Card>
