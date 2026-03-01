@@ -99,9 +99,7 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
                 <p className="text-muted-foreground">
-                  A thriving ecosystem where every capable minority-owned business 
-                  has the opportunity to become a qualified government contractor, creating jobs, 
-                  strengthening supply chains, and driving economic growth across the nation.
+                  A thriving digital ecosystem where every capable small business has a clear pathway to grow into a mid-sized enterprise and ultimately become a valued partner to large primes and a successful government contractor, creating jobs, strengthening supply chains, and driving economic growth across the nation.
                 </p>
               </CardContent>
             </Card>
@@ -118,23 +116,16 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg max-w-none">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                In an exciting development for the large Prime Government Contractors community, 
-                the Minority Business Development Agency (MBDA) network, and small, emerging, 
-                and emerging small businesses across the country, the MBDA Federal 
-                Procurement Center (FPC) is officially transitioning its operations to KDM & Associates, LLC.
+                On April 30, 2025, KDM & Associates, LLC took a bold step - privatizing the mission of the Department of Commerce&apos;s Minority Business Development Agency (MBDA) to deliver expanded, value-added support directly to the large Prime Government Contractor community.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                This transition marks a strategic realignment, bringing new leadership, fresh 
-                initiatives, and stronger partnerships to better support the escalating demand 
-                for shovel-ready, small and emerging businesses to address the Nation&apos;s supply 
-                chain requirements. Historical data confirms that small and minority owned 
-                businesses have consistently faced barriers to entry in the Federal acquisition sector.
+                With a broader and more focused mandate, KDM directed its primary attention to the U.S. manufacturing, critical minerals, defense, and Opportunity Zone sectors — building on its foundation as the nation&apos;s most recently awarded Federal Procurement Center (FPC) since July 2021. This evolution reflects a deepened commitment to capacity building for the nation&apos;s most eligible and shovel-worthy small businesses.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                KDM & Associates, LLC is a business development, government affairs, and public 
-                relations firm focused on helping our clients navigate the government procurement 
-                process and win government contracts. We help our clients not only win more contracts, 
-                but help firms provide more effective and efficient solutions to their clients and customers.
+                This privatization marks a strategic realignment — bringing new leadership, fresh initiatives, and stronger partnerships to more effectively meet the escalating demand for supply chain-ready small businesses that can address the nation&apos;s most critical procurement needs. Historical data confirms that small businesses have consistently faced significant barriers to entry in the federal acquisition sector. KDM exists to change that.
+              </p>
+              <p className="text-muted-foreground text-lg leading-relaxed mt-6">
+                KDM & Associates, LLC is a business development, government affairs, and public relations firm dedicated to helping clients successfully navigate the government procurement process and win more contracts. Beyond the win, we help our clients deliver more effective and efficient solutions — creating lasting value for both their customers and our federal partners.
               </p>
             </div>
           </div>
