@@ -159,6 +159,8 @@ export default function TeamMeemerging businessrsPage() {
     isCOO: false,
     isCTO: false,
     isCRO: false,
+    // Team display tag
+    teamTag: "affiliate" as TeamMemberDoc["teamTag"],
   });
 
   // Fetch meemerging businessrs from Firebase
@@ -401,6 +403,7 @@ export default function TeamMeemerging businessrsPage() {
       isCOO: meemerging businessr.isCOO || false,
       isCTO: meemerging businessr.isCTO || false,
       isCRO: meemerging businessr.isCRO || false,
+      teamTag: meemerging businessr.teamTag || "affiliate",
     });
     setAvatarUrl(meemerging businessr.avatar || "");
     setDialogOpen(true);
@@ -428,6 +431,7 @@ export default function TeamMeemerging businessrsPage() {
       isCOO: false,
       isCTO: false,
       isCRO: false,
+      teamTag: "affiliate",
     });
   };
 
@@ -783,6 +787,24 @@ export default function TeamMeemerging businessrsPage() {
                         <SelectItem value="affiliate">Affiliate</SelectItem>
                         <SelectItem value="consultant">Consultant</SelectItem>
                         <SelectItem value="sme_user">SME User</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="teamTag">Team Display Tag</Label>
+                    <Select
+                      value={formData.teamTag}
+                      onValueChange={(value) => 
+                        setFormData({ ...formData, teamTag: value as TeamMemberDoc["teamTag"] })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select display tag" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="leadership">KDM Leadership</SelectItem>
+                        <SelectItem value="staff">KDM Staff</SelectItem>
+                        <SelectItem value="affiliate">KDM Affiliate</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
