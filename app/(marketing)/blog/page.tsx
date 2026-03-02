@@ -76,7 +76,7 @@ const categoryColors: Record<BlogCategory, string> = {
   "U.S. Manufacturing": "bg-blue-100 text-blue-800",
   "Critical Minerals": "bg-emerald-100 text-emerald-800",
   "Defense Contracting & CMMC": "bg-purple-100 text-purple-800",
-  "Access to Capital": "bg-aemerging businessr-100 text-aemerging businessr-800",
+  "Access to Capital": "bg-amber-100 text-amber-800",
   "Opportunity Zones": "bg-rose-100 text-rose-800",
   "Cross-Cutting Strategic Topics": "bg-cyan-100 text-cyan-800",
   "Thought Leadership & Case Studies": "bg-indigo-100 text-indigo-800",

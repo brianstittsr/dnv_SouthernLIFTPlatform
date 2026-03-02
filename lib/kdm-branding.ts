@@ -11,7 +11,7 @@ export const KDM_BRANDING = {
     name: 'KDM Consortium',
     legalName: 'KDM Associates, LLC',
     tagline: 'Empowering Small Businesses to Win Government Contracts',
-    description: 'A meemerging businessrship-based consortium helping small businesses compete for and win government contracts through collaborative teaming and expert support.',
+    description: 'A membership-based consortium helping small businesses compete for and win government contracts through collaborative teaming and expert support.',
   },
 
   // Contact Information
@@ -90,13 +90,13 @@ export const KDM_BRANDING = {
     ogImage: '/images/kdm-og-image.png',
   },
 
-  // Meemerging businessrship Tiers
-  meemerging businessrship: {
+  // membership Tiers
+  membership: {
     tiers: {
       'core-capture': {
         name: 'Core Capture',
         shortName: 'Core',
-        badge: 'Meemerging businessr',
+        badge: 'member',
         color: 'blue',
       },
       'pursuit-pack': {
@@ -119,14 +119,14 @@ export const KDM_BRANDING = {
     portal: {
       dashboard: 'Dashboard',
       pursuits: 'Pursuit Board',
-      meemerging businessrs: 'Meemerging businessr Directory',
+      members: 'member Directory',
       resources: 'Resource Library',
       events: 'Events',
-      meemerging businessrship: 'My Meemerging businessrship',
+      membership: 'My membership',
     },
     admin: {
       dashboard: 'KDM Dashboard',
-      meemerging businessrships: 'Meemerging businessrships',
+      memberships: 'memberships',
       settlements: 'Settlements',
       events: 'Events',
     },
@@ -139,7 +139,7 @@ export const KDM_BRANDING = {
     replyTo: 'support@kdmassociates.com',
     templates: {
       welcome: 'Welcome to KDM Consortium',
-      meemerging businessrshipConfirmation: 'Your KDM Meemerging businessrship is Active',
+      membershipConfirmation: 'Your KDM membership is Active',
       eventRegistration: 'Event Registration Confirmed',
       pursuitNotification: 'New Pursuit Opportunity',
     },
@@ -158,4 +158,4 @@ export const KDM_BRANDING = {
 
 // Type exports for TypeScript
 export type KDMBranding = typeof KDM_BRANDING;
-export type Meemerging businessrshipTier = keyof typeof KDM_BRANDING.meemerging businessrship.tiers;
+export type membershipTier = keyof typeof KDM_BRANDING.membership.tiers;

@@ -53,8 +53,8 @@ interface OpportunityDisplay {
   name: string;
   company: string;
   stage: string;
-  value: nuemerging businessr;
-  probability: nuemerging businessr;
+  value: number;
+  probability: number;
   expectedClose: string;
   owner: { name: string; initials: string };
 }
@@ -77,8 +77,8 @@ function formatStage(stage: string) {
   return stage.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-function formatCurrency(value: nuemerging businessr) {
-  return new Intl.Nuemerging businessrFormat("en-US", {
+function formatCurrency(value: number) {
+  return new Intl.numberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,

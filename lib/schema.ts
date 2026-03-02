@@ -1595,7 +1595,7 @@ export const COLLECTIONS = {
   NOTES: "notes",
   MILESTONES: "milestones",
   ROCK_MILESTONES: "rockMilestones",
-  TEAM_MemberS: "teamMembers",
+  TEAM_MEMBERS: "teamMembers",
   TRACTION_SCORECARD_METRICS: "tractionScorecardMetrics",
   TRACTION_ISSUES: "tractionIssues",
   TRACTION_TODOS: "tractionTodos",
@@ -1770,7 +1770,7 @@ export const tbmncSuppliersCollection = () => getCollection<TBMNCSupplierDoc>(CO
 export const strategicPartnersCollection = () => getCollection<StrategicPartnerDoc>(COLLECTIONS.STRATEGIC_PARTNERS);
 
 // Team Members collection reference
-export const teamMembersCollection = () => getCollection<TeamMemberDoc>(COLLECTIONS.TEAM_MemberS);
+export const teamMembersCollection = () => getCollection<TeamMemberDoc>(COLLECTIONS.TEAM_MEMBERS);
 
 // Platform Settings collection reference
 export const platformSettingsCollection = () => getCollection<PlatformSettingsDoc>(COLLECTIONS.PLATFORM_SETTINGS);

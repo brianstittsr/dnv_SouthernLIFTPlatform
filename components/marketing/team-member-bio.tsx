@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Linkedin } from "lucide-react";
 import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
 
-interface TeamMeemerging businessr {
+interface Teammember {
   id: string;
   name: string;
   title: string;
@@ -18,36 +18,36 @@ interface TeamMeemerging businessr {
   linkedin?: string;
 }
 
-interface TeamMeemerging businessrBioProps {
-  meemerging businessr: TeamMeemerging businessr;
+interface TeammemberBioProps {
+  member: Teammember;
 }
 
-export function TeamMeemerging businessrBio({ meemerging businessr }: TeamMeemerging businessrBioProps) {
+export function TeammemberBio({ member }: TeammemberBioProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadMeemerging businessrImage();
-  }, [meemerging businessr.imageName]);
+    loadmemberImage();
+  }, [member.imageName]);
 
   function findMatch(images: { id: string; name: string }[]) {
-    const meemerging businessrImageNameLower = meemerging businessr.imageName.toLowerCase();
-    const meemerging businessrNameLower = meemerging businessr.name.toLowerCase();
-    const nameParts = meemerging businessr.name.split(" ");
+    const memberImageNameLower = member.imageName.toLowerCase();
+    const memberNameLower = member.name.toLowerCase();
+    const nameParts = member.name.split(" ");
     const firstName = nameParts[0].toLowerCase();
     const lastName = nameParts[nameParts.length - 1].toLowerCase();
     return images.find((img) => {
       const n = img.name.toLowerCase();
-      if (n === meemerging businessrImageNameLower) return true;
-      if (n.includes(meemerging businessrImageNameLower)) return true;
+      if (n === memberImageNameLower) return true;
+      if (n.includes(memberImageNameLower)) return true;
       if (n.includes(`${lastName}_${firstName}`)) return true;
-      if (n.replace(/_/g, " ").includes(meemerging businessrNameLower)) return true;
+      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
       if (n.includes(firstName) && n.includes(lastName)) return true;
       return false;
     });
   }
 
-  async function loadMeemerging businessrImage() {
+  async function loadmemberImage() {
     try {
       setIsLoading(true);
       let images = await listImages("team");
@@ -63,12 +63,12 @@ export function TeamMeemerging businessrBio({ meemerging businessr }: TeamMeemer
           return;
         }
       }
-      if (meemerging businessr.staticImageUrl) {
-        setImageUrl(meemerging businessr.staticImageUrl);
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
       }
     } catch (error) {
-      if (meemerging businessr.staticImageUrl) {
-        setImageUrl(meemerging businessr.staticImageUrl);
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
       }
     } finally {
       setIsLoading(false);
@@ -85,21 +85,21 @@ export function TeamMeemerging businessrBio({ meemerging businessr }: TeamMeemer
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={imageUrl}
-                alt={meemerging businessr.name}
+                alt={member.name}
                 className="w-full h-full object-cover object-top"
               />
             ) : (
               <span className="text-primary text-6xl font-semibold">
-                {meemerging businessr.initials}
+                {member.initials}
               </span>
             )}
           </div>
           <div className="text-center md:text-left">
-            <h2 className="text-2xl font-bold mb-2">{meemerging businessr.name}</h2>
-            <p className="text-lg text-primary font-medium mb-3">{meemerging businessr.title}</p>
-            {meemerging businessr.linkedin && (
+            <h2 className="text-2xl font-bold mb-2">{member.name}</h2>
+            <p className="text-lg text-primary font-medium mb-3">{member.title}</p>
+            {member.linkedin && (
               <Button variant="outline" size="sm" asChild>
-                <a href={meemerging businessr.linkedin} target="_blank" rel="noopener noreferrer">
+                <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
                   <Linkedin className="h-4 w-4 mr-2" />
                   LinkedIn Profile
                 </a>
@@ -111,7 +111,7 @@ export function TeamMeemerging businessrBio({ meemerging businessr }: TeamMeemer
         {/* Biography Column */}
         <div className="prose prose-lg max-w-none">
           <div className="text-muted-foreground space-y-4">
-            {meemerging businessr.fullBio.split('\n\n').map((paragraph, index) => (
+            {member.fullBio.split('\n\n').map((paragraph, index) => (
               <p key={index} className="leading-relaxed">
                 {paragraph}
               </p>

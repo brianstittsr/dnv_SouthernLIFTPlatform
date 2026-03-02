@@ -16,7 +16,7 @@ export interface WhatWorksArticle {
   tags: string[];
   featuredImage?: string;
   videoUrl?: string;
-  videoEemerging businessdId?: string; // YouTube video ID
+  videoEmbedId?: string; // YouTube video ID
   podcastUrl?: string;
   duration?: string;
   featured?: boolean;
@@ -50,7 +50,7 @@ This conversation highlights the critical intersection of minority business deve
     tags: ['Energy', 'Sustainability', 'Microgrids', 'Carbon Reduction', 'Job Creation', 'MBDA'],
     featuredImage: '/images/what-works/kiemerging businessrly-johnston-podcast.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example1',
-    videoEemerging businessdId: 'example1',
+    videoEmbedId: 'example1',
     duration: '45:30',
     featured: true
   },
@@ -81,7 +81,7 @@ Miranda's story serves as an inspiration for women entrepreneurs navigating the 
     tags: ['Women in Business', 'International Womens Month', 'Leadership', 'Mentorship', 'Federal Contracting'],
     featuredImage: '/images/what-works/miranda-bouldin.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example2',
-    videoEemerging businessdId: 'example2',
+    videoEmbedId: 'example2',
     duration: '38:15'
   },
   {
@@ -112,7 +112,7 @@ Gaurrav's experience demonstrates that with the right combination of innovation,
     tags: ['Technology', 'Entrepreneurship', 'Innovation', 'Federal Contracting', 'Startups'],
     featuredImage: '/images/what-works/gaurrav-bhat.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example3',
-    videoEemerging businessdId: 'example3',
+    videoEmbedId: 'example3',
     duration: '52:20',
     featured: true
   },
@@ -228,7 +228,7 @@ Subscribe to receive monthly updates and never miss an opportunity to grow your 
 ### Community Spotlight
 - emerging business of the Month feature
 - Partnership success story
-- New meemerging businessr introductions
+- New member introductions
 
 ## Resources
 

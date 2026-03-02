@@ -91,7 +91,7 @@ interface EventFormData {
   tags: string;
   isTicketed: boolean;
   isFree: boolean;
-  maxAttendees: nuemerging businessr;
+  maxAttendees: number;
   registrationDeadline: string;
   ticketTypes: TicketTypeForm[];
 }
@@ -99,11 +99,11 @@ interface EventFormData {
 interface TicketTypeForm {
   name: string;
   description: string;
-  price: nuemerging businessr;
+  price: number;
   currency: string;
-  quantity: nuemerging businessr;
+  quantity: number;
   benefits: string;
-  earlyBirdPrice?: nuemerging businessr;
+  earlyBirdPrice?: number;
   earlyBirdDeadline?: string;
 }
 
@@ -154,7 +154,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateStep = (step: nuemerging businessr): boolean => {
+  const validateStep = (step: number): boolean => {
     const newErrors: Record<string, string> = {};
 
     switch (step) {
@@ -299,7 +299,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
     }
   };
 
-  const updateTicketType = (index: nuemerging businessr, field: keyof TicketTypeForm, value: any) => {
+  const updateTicketType = (index: number, field: keyof TicketTypeForm, value: any) => {
     const updated = [...form.ticketTypes];
     updated[index] = { ...updated[index], [field]: value };
     setForm({ ...form, ticketTypes: updated });
@@ -315,7 +315,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
     });
   };
 
-  const removeTicketType = (index: nuemerging businessr) => {
+  const removeTicketType = (index: number) => {
     if (form.ticketTypes.length > 1) {
       setForm({
         ...form,
@@ -678,7 +678,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
                   <div className="space-y-2">
                     <Label>Max Attendees</Label>
                     <Input
-                      type="nuemerging businessr"
+                      type="number"
                       value={form.maxAttendees}
                       onChange={(e) => setForm({ ...form, maxAttendees: parseInt(e.target.value) || 0 })}
                     />
@@ -730,7 +730,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
                           <div className="space-y-2">
                             <Label>Price {form.isFree ? "(Free)" : "*"}</Label>
                             <Input
-                              type="nuemerging businessr"
+                              type="number"
                               value={form.isFree ? 0 : ticket.price}
                               onChange={(e) => updateTicketType(index, "price", parseFloat(e.target.value) || 0)}
                               disabled={form.isFree}
@@ -750,7 +750,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
                           <div className="space-y-2">
                             <Label>Quantity Available</Label>
                             <Input
-                              type="nuemerging businessr"
+                              type="number"
                               value={ticket.quantity}
                               onChange={(e) => updateTicketType(index, "quantity", parseInt(e.target.value) || 0)}
                             />
@@ -759,7 +759,7 @@ export function EventCreationWizard({ open, onOpenChange, onEventCreated }: Even
                             <div className="space-y-2">
                               <Label>Early Bird Price</Label>
                               <Input
-                                type="nuemerging businessr"
+                                type="number"
                                 value={ticket.earlyBirdPrice || ""}
                                 onChange={(e) => updateTicketType(index, "earlyBirdPrice", parseFloat(e.target.value) || undefined)}
                                 placeholder="Optional"

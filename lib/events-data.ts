@@ -20,17 +20,17 @@ export interface Event {
     zipCode?: string;
     country: string;
     coordinates?: {
-      lat: nuemerging businessr;
-      lng: nuemerging businessr;
+      lat: number;
+      lng: number;
     };
   };
   category: 'Conference' | 'Workshop' | 'Webinar' | 'Networking' | 'Training' | 'Summit' | 'Other';
   registrationUrl?: string;
   registrationDeadline?: Date;
-  capacity?: nuemerging businessr;
-  registered?: nuemerging businessr;
+  capacity?: number;
+  registered?: number;
   isFree: boolean;
-  price?: nuemerging businessr;
+  price?: number;
   featuredImage?: string;
   organizer: string;
   contactEmail?: string;

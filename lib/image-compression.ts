@@ -6,15 +6,15 @@
 export interface CompressedImage {
   base64Data: string;
   mimeType: string;
-  width: nuemerging businessr;
-  height: nuemerging businessr;
-  size: nuemerging businessr;
+  width: number;
+  height: number;
+  size: number;
 }
 
 export interface CompressionOptions {
-  maxSizeMB?: nuemerging businessr;
-  maxWidthOrHeight?: nuemerging businessr;
-  quality?: nuemerging businessr;
+  maxSizeMB?: number;
+  maxWidthOrHeight?: number;
+  quality?: number;
   maintainAspectRatio?: boolean;
 }
 
@@ -263,7 +263,7 @@ function compressProfilePhotoElement(
 /**
  * Format file size for display
  */
-export function formatFileSize(bytes: nuemerging businessr): string {
+export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
   
   const k = 1024;

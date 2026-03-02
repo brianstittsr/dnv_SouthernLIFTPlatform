@@ -88,7 +88,7 @@ export default function NewCohortPage() {
     }
   }
 
-  const formatCurrency = (cents: nuemerging businessr) => {
+  const formatCurrency = (cents: number) => {
     return (cents / 100).toFixed(2);
   };
 
@@ -231,7 +231,7 @@ export default function NewCohortPage() {
               <Label htmlFor="duration">Duration (weeks)</Label>
               <Input
                 id="duration"
-                type="nuemerging businessr"
+                type="number"
                 value={formData.estimatedDurationWeeks}
                 onChange={(e) =>
                   setFormData({ ...formData, estimatedDurationWeeks: parseInt(e.target.value) || 12 })
@@ -246,7 +246,7 @@ export default function NewCohortPage() {
               <Label htmlFor="maxParticipants">Max Participants</Label>
               <Input
                 id="maxParticipants"
-                type="nuemerging businessr"
+                type="number"
                 value={formData.maxParticipants}
                 onChange={(e) =>
                   setFormData({ ...formData, maxParticipants: parseInt(e.target.value) || 50 })
@@ -287,7 +287,7 @@ export default function NewCohortPage() {
               <Label htmlFor="price">Price (USD)</Label>
               <Input
                 id="price"
-                type="nuemerging businessr"
+                type="number"
                 step="0.01"
                 value={formatCurrency(formData.priceInCents)}
                 onChange={(e) =>
@@ -300,7 +300,7 @@ export default function NewCohortPage() {
               <Label htmlFor="comparePrice">Compare At Price (USD)</Label>
               <Input
                 id="comparePrice"
-                type="nuemerging businessr"
+                type="number"
                 step="0.01"
                 value={formatCurrency(formData.compareAtPriceInCents)}
                 onChange={(e) =>

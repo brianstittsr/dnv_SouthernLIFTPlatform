@@ -770,7 +770,7 @@ export default function ApolloSearchPage() {
             ? `${person.city}, ${person.state}` 
             : person.country || "Unknown",
           email: person.email || undefined,
-          phone: person.phone_nuemerging businessrs?.[0]?.sanitized_nuemerging businessr || undefined,
+          phone: person.phone_numbers?.[0]?.sanitized_number || undefined,
           linkedIn: person.linkedin_url || undefined,
           companySize: person.organization?.estimated_num_employees 
             ? `${person.organization.estimated_num_employees} employees` 
@@ -814,7 +814,7 @@ export default function ApolloSearchPage() {
         id: generateMessageId(),
         role: "assistant",
         content: results.length > 0
-          ? `✅ **Found ${results.length} people** at "${companyName}"${titleFilter ? ` with title matching "${titleFilter}"` : ""}.\n\nYou can purchase email or phone nuemerging businessrs for any contact below.`
+          ? `✅ **Found ${results.length} people** at "${companyName}"${titleFilter ? ` with title matching "${titleFilter}"` : ""}.\n\nYou can purchase email or phone numbers for any contact below.`
           : `🔍 **No results found** for "${companyName}"${titleFilter ? ` with title "${titleFilter}"` : ""}. Try a different company name or remove the title filter.`,
         timestamp: new Date(),
         searchCriteria,
@@ -1948,7 +1948,7 @@ export default function ApolloSearchPage() {
                       <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="text-lg font-medium">No purchased contacts yet</h3>
                       <p className="text-sm text-muted-foreground">
-                        Purchase email or phone nuemerging businessrs from search results to see them here
+                        Purchase email or phone numbers from search results to see them here
                       </p>
                     </div>
                   ) : (

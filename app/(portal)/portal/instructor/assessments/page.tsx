@@ -37,16 +37,16 @@ interface Assessment {
   cohortTitle: string;
   instructorId: string;
   status: "draft" | "published" | "completed";
-  totalQuestions: nuemerging businessr;
-  passingScore: nuemerging businessr;
-  timeLimit: nuemerging businessr | null;
-  attempts: nuemerging businessr;
+  totalQuestions: number;
+  passingScore: number;
+  timeLimit: number | null;
+  attempts: number;
   dueDate: any;
   createdAt: any;
   updatedAt: any;
-  submissions: nuemerging businessr;
-  averageScore: nuemerging businessr;
-  completionRate: nuemerging businessr;
+  submissions: number;
+  averageScore: number;
+  completionRate: number;
 }
 
 export default function AssessmentsPage() {

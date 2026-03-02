@@ -7,7 +7,7 @@ export interface PageSection {
   id: string;
   name: string;
   type: string;
-  order: nuemerging businessr;
+  order: number;
   isEditable: boolean;
 }
 
@@ -60,7 +60,7 @@ const MARKETING_PAGES: PageRegistryEntry[] = [
     path: "/team",
     name: "Team",
     category: "marketing",
-    description: "Meet our team meemerging businessrs",
+    description: "Meet our team members",
     sections: [
       { id: "hero", name: "Team Hero", type: "hero", order: 1, isEditable: true },
       { id: "leadership", name: "Leadership Team", type: "team", order: 2, isEditable: true },
@@ -145,16 +145,16 @@ const MARKETING_PAGES: PageRegistryEntry[] = [
     ],
   },
   {
-    id: "meemerging businessrship",
-    path: "/meemerging businessrship",
-    name: "Meemerging businessrship",
+    id: "membership",
+    path: "/membership",
+    name: "membership",
     category: "marketing",
-    description: "Meemerging businessrship tiers and benefits",
+    description: "membership tiers and benefits",
     sections: [
-      { id: "hero", name: "Meemerging businessrship Hero", type: "hero", order: 1, isEditable: true },
-      { id: "tiers", name: "Meemerging businessrship Tiers", type: "pricing", order: 2, isEditable: true },
-      { id: "benefits", name: "Meemerging businessr Benefits", type: "features", order: 3, isEditable: true },
-      { id: "testimonials", name: "Meemerging businessr Testimonials", type: "testimonials", order: 4, isEditable: true },
+      { id: "hero", name: "membership Hero", type: "hero", order: 1, isEditable: true },
+      { id: "tiers", name: "membership Tiers", type: "pricing", order: 2, isEditable: true },
+      { id: "benefits", name: "member Benefits", type: "features", order: 3, isEditable: true },
+      { id: "testimonials", name: "member Testimonials", type: "testimonials", order: 4, isEditable: true },
       { id: "cta", name: "Join Now", type: "cta", order: 5, isEditable: true },
     ],
   },
@@ -313,7 +313,7 @@ const MARKETING_PAGES: PageRegistryEntry[] = [
     sections: [
       { id: "hero", name: "Register Hero", type: "hero", order: 1, isEditable: true },
       { id: "form", name: "Registration Form", type: "form", order: 2, isEditable: true },
-      { id: "benefits", name: "Meemerging businessr Benefits", type: "features", order: 3, isEditable: true },
+      { id: "benefits", name: "member Benefits", type: "features", order: 3, isEditable: true },
     ],
   },
   // Product-specific pages

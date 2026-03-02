@@ -37,17 +37,17 @@ interface PursuitBrief {
   agency: string;
   naicsCode: string;
   setAside?: string;
-  estimatedValue: nuemerging businessr;
+  estimatedValue: number;
   dueDate: Timestamp;
   requiredCapabilities: string[];
   requiredCompliance: string[];
   geographicPreference?: string;
   status: 'published' | 'team-forming' | 'proposal-phase' | 'submitted' | 'won' | 'lost' | 'cancelled';
-  teamMeemerging businessrs: string[];
-  interestedMeemerging businessrs: string[];
+  teammembers: string[];
+  interestedmembers: string[];
   publishedAt: Timestamp;
   solicitation?: {
-    nuemerging businessr: string;
+    number: string;
     url: string;
   };
 }
@@ -119,9 +119,9 @@ export default function PursuitsPage() {
 
     // Filter by tab
     if (activeTab === 'interested') {
-      filtered = filtered.filter(p => p.interestedMeemerging businessrs?.includes(profile.id || ''));
+      filtered = filtered.filter(p => p.interestedmembers?.includes(profile.id || ''));
     } else if (activeTab === 'my-team') {
-      filtered = filtered.filter(p => p.teamMeemerging businessrs?.includes(profile.id || ''));
+      filtered = filtered.filter(p => p.teammembers?.includes(profile.id || ''));
     } else if (activeTab === 'open') {
       filtered = filtered.filter(p => p.status === 'published' || p.status === 'team-forming');
     }
@@ -199,7 +199,7 @@ export default function PursuitsPage() {
     return diffDays;
   };
 
-  const formatCurrency = (value: nuemerging businessr) => {
+  const formatCurrency = (value: number) => {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
     } else if (value >= 1000) {
@@ -306,9 +306,9 @@ export default function PursuitsPage() {
             const statusConfig = STATUS_CONFIG[pursuit.status];
             const StatusIcon = statusConfig.icon;
             const daysUntilDue = getDaysUntilDue(pursuit.dueDate);
-            const isInterested = pursuit.interestedMeemerging businessrs?.includes(profile.id || '');
-            const isOnTeam = pursuit.teamMeemerging businessrs?.includes(profile.id || '');
-            const teamProgress = pursuit.teamMeemerging businessrs?.length || 0;
+            const isInterested = pursuit.interestedmembers?.includes(profile.id || '');
+            const isOnTeam = pursuit.teammembers?.includes(profile.id || '');
+            const teamProgress = pursuit.teammembers?.length || 0;
 
             return (
               <Card key={pursuit.id} className="hover:shadow-lg transition-shadow">
@@ -387,7 +387,7 @@ export default function PursuitsPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-muted-foreground" />
-                        <span>{pursuit.interestedMeemerging businessrs?.length || 0} interested</span>
+                        <span>{pursuit.interestedmembers?.length || 0} interested</span>
                       </div>
                     </div>
                   </div>

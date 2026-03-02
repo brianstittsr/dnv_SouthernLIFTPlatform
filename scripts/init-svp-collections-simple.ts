@@ -43,23 +43,23 @@ async function initializeCollections() {
     });
     console.log('✅ platformSettings created\n');
 
-    // 2. Team Meemerging businessrs
-    console.log('📝 Creating teamMeemerging businessrs collection...');
-    await setDoc(doc(db, 'teamMeemerging businessrs', '_placeholder'), {
+    // 2. Team members
+    console.log('📝 Creating teammembers collection...');
+    await setDoc(doc(db, 'teammembers', '_placeholder'), {
       _placeholder: true,
       createdAt: now,
-      note: 'Placeholder document. Delete after adding real team meemerging businessrs.',
+      note: 'Placeholder document. Delete after adding real team members.',
     });
-    console.log('✅ teamMeemerging businessrs collection created\n');
+    console.log('✅ teammembers collection created\n');
 
-    // 3. Meemerging businessrships
-    console.log('📝 Creating meemerging businessrships collection...');
-    await setDoc(doc(db, 'meemerging businessrships', '_placeholder'), {
+    // 3. memberships
+    console.log('📝 Creating memberships collection...');
+    await setDoc(doc(db, 'memberships', '_placeholder'), {
       _placeholder: true,
       createdAt: now,
-      note: 'Placeholder document. Delete after adding real meemerging businessrships.',
+      note: 'Placeholder document. Delete after adding real memberships.',
     });
-    console.log('✅ meemerging businessrships collection created\n');
+    console.log('✅ memberships collection created\n');
 
     // 4. Proof Packs
     console.log('📝 Creating proofPacks collection...');
@@ -204,8 +204,8 @@ async function initializeCollections() {
     console.log('✨ All SVP Platform collections initialized successfully!\n');
     console.log('📋 Collections created:');
     console.log('   ✅ platformSettings (with global config)');
-    console.log('   ✅ teamMeemerging businessrs');
-    console.log('   ✅ meemerging businessrships');
+    console.log('   ✅ teammembers');
+    console.log('   ✅ memberships');
     console.log('   ✅ proofPacks');
     console.log('   ✅ smeSubscriptions');
     console.log('   ✅ partnerLeads');

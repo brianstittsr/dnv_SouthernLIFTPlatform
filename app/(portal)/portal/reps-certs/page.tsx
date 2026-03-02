@@ -148,7 +148,7 @@ interface RepsCertDocument {
   name: string;
   fileName?: string;
   fileData?: string; // base64
-  fileSize?: nuemerging businessr;
+  fileSize?: number;
   mimeType?: string;
   status: "pending" | "uploaded" | "verified" | "rejected";
   uploadedAt?: Date;
@@ -159,7 +159,7 @@ interface RepsCertDocument {
 interface RepsCertsData {
   id?: string;
   userId: string;
-  overallCompletion: nuemerging businessr;
+  overallCompletion: number;
   isEligibleForContracts: boolean;
   documents: RepsCertDocument[];
   lastUpdated: Date;
@@ -417,7 +417,7 @@ export default function RepsCertsPage() {
     }
   };
 
-  const getHealthColor = (score: nuemerging businessr) => {
+  const getHealthColor = (score: number) => {
     if (score >= 70) return "text-green-600";
     if (score >= 40) return "text-yellow-600";
     return "text-red-600";

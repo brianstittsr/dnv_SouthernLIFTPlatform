@@ -72,7 +72,7 @@ export async function checkPaymentReminders() {
 
         if (userEmail) {
           await sendTemplatedEmail("paymentReminder" as any, userEmail, {
-            name: userSnap.docs[0]?.data()?.name || "Meemerging businessr",
+            name: userSnap.docs[0]?.data()?.name || "member",
             entityName: plan.entityName,
             remainingBalance: plan.remainingBalance,
             dueDate: eventDate.toLocaleDateString(),

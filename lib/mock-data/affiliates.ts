@@ -15,8 +15,8 @@ import type {
 
 // Helper to create timestamps
 const now = () => Timestamp.now();
-const daysAgo = (days: nuemerging businessr) => Timestamp.fromDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
-const daysFromNow = (days: nuemerging businessr) => Timestamp.fromDate(new Date(Date.now() + days * 24 * 60 * 60 * 1000));
+const daysAgo = (days: number) => Timestamp.fromDate(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
+const daysFromNow = (days: number) => Timestamp.fromDate(new Date(Date.now() + days * 24 * 60 * 60 * 1000));
 
 // ============================================================================
 // Mock Users (Affiliates)
@@ -42,7 +42,7 @@ export const mockAffiliateUsers = [
 ];
 
 // ============================================================================
-// Affiliate Biographies (Meemerging businessr Bio Sheets)
+// Affiliate Biographies (member Bio Sheets)
 // ============================================================================
 
 export const mockBiographies: AffiliateBiographyDoc[] = [

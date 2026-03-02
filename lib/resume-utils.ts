@@ -8,7 +8,7 @@ const MAX_RESUME_SIZE = 900 * 1024; // 900KB to stay under 1MB Firebase limit
 export async function compressAndConvertResume(file: File): Promise<{
   base64Data: string;
   fileName: string;
-  fileSize: nuemerging businessr;
+  fileSize: number;
 }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -131,7 +131,7 @@ export function validateResumeFile(file: File): { valid: boolean; error?: string
   return { valid: true };
 }
 
-export function formatFileSize(bytes: nuemerging businessr): string {
+export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB'];

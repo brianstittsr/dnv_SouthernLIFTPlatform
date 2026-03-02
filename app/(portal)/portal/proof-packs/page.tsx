@@ -16,9 +16,9 @@ interface ProofPack {
   title: string;
   description: string;
   status: string;
-  documentCount: nuemerging businessr;
+  documentCount: number;
   packHealth: {
-    overallScore: nuemerging businessr;
+    overallScore: number;
     isEligibleForIntroductions: boolean;
   };
   updatedAt: any;
@@ -143,7 +143,7 @@ export default function ProofPacksPage() {
     router.push("/portal/proof-packs/create");
   };
 
-  const getHealthColor = (score: nuemerging businessr) => {
+  const getHealthColor = (score: number) => {
     if (score >= 70) return "text-green-600";
     if (score >= 40) return "text-yellow-600";
     return "text-red-600";

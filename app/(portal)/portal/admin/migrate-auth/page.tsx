@@ -4,7 +4,7 @@
  * One-Time Migration Script Page
  * 
  * This admin page runs a migration to link existing Firebase Auth accounts
- * with matching Team Meemerging businessr records by email address.
+ * with matching Team member records by email address.
  * 
  * This should only be run ONCE to migrate existing data.
  */
@@ -35,24 +35,24 @@ import {
 } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
-import { findTeamMeemerging businessrByEmail, linkAuthToTeamMeemerging businessr } from "@/lib/auth-team-meemerging businessr-link";
+import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { findTeammemberByEmail, linkAuthToTeammember } from "@/lib/auth-team-member-link";
 
 interface MigrationResult {
   email: string;
   uid: string;
-  teamMeemerging businessrId: string | null;
-  teamMeemerging businessrName: string | null;
+  teammemberId: string | null;
+  teammemberName: string | null;
   status: "linked" | "already_linked" | "not_found" | "error";
   message: string;
 }
 
 interface MigrationStats {
-  total: nuemerging businessr;
-  linked: nuemerging businessr;
-  alreadyLinked: nuemerging businessr;
-  notFound: nuemerging businessr;
-  errors: nuemerging businessr;
+  total: number;
+  linked: number;
+  alreadyLinked: number;
+  notFound: number;
+  errors: number;
 }
 
 export default function MigrateAuthPage() {
@@ -89,39 +89,39 @@ export default function MigrateAuthPage() {
 
     try {
       // Note: In a real implementation, you would need Firebase Admin SDK
-      // to list all auth users. For client-side, we'll work with Team Meemerging businessrs
+      // to list all auth users. For client-side, we'll work with Team members
       // that have emails and check if they need linking.
       
-      // Get all Team Meemerging businessrs
-      const teamMeemerging businessrsSnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS));
-      const teamMeemerging businessrs: TeamMeemerging businessrDoc[] = [];
+      // Get all Team members
+      const teammembersSnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
+      const teammembers: TeammemberDoc[] = [];
       
-      teamMeemerging businessrsSnapshot.forEach((docSnap) => {
-        teamMeemerging businessrs.push({ id: docSnap.id, ...docSnap.data() } as TeamMeemerging businessrDoc);
+      teammembersSnapshot.forEach((docSnap) => {
+        teammembers.push({ id: docSnap.id, ...docSnap.data() } as TeammemberDoc);
       });
 
-      migrationStats.total = teamMeemerging businessrs.length;
+      migrationStats.total = teammembers.length;
 
-      // Process each Team Meemerging businessr
-      for (const meemerging businessr of teamMeemerging businessrs) {
+      // Process each Team member
+      for (const member of teammembers) {
         const result: MigrationResult = {
-          email: meemerging businessr.emailPrimary,
-          uid: meemerging businessr.firebaseUid || "",
-          teamMeemerging businessrId: meemerging businessr.id,
-          teamMeemerging businessrName: `${meemerging businessr.firstName} ${meemerging businessr.lastName}`,
+          email: member.emailPrimary,
+          uid: member.firebaseUid || "",
+          teammemberId: member.id,
+          teammemberName: `${member.firstName} ${member.lastName}`,
           status: "not_found",
           message: "",
         };
 
         try {
-          if (meemerging businessr.firebaseUid) {
+          if (member.firebaseUid) {
             // Already linked
             result.status = "already_linked";
-            result.uid = meemerging businessr.firebaseUid;
+            result.uid = member.firebaseUid;
             result.message = "Already linked to Firebase Auth";
             migrationStats.alreadyLinked++;
           } else {
-            // Not linked - this Team Meemerging businessr doesn't have a Firebase Auth account yet
+            // Not linked - this Team member doesn't have a Firebase Auth account yet
             // They will be linked when they sign up/sign in
             result.status = "not_found";
             result.message = "No Firebase Auth account linked - will link on next sign-in";
@@ -165,7 +165,7 @@ export default function MigrateAuthPage() {
         <div>
           <h1 className="text-3xl font-bold">Auth Migration Tool</h1>
           <p className="text-muted-foreground">
-            Link Firebase Auth accounts with Team Meemerging businessr records
+            Link Firebase Auth accounts with Team member records
           </p>
         </div>
       </div>
@@ -174,8 +174,8 @@ export default function MigrateAuthPage() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Important</AlertTitle>
         <AlertDescription>
-          This tool checks the status of Firebase Auth linking for all Team Meemerging businessrs.
-          Team Meemerging businessrs without a linked Firebase Auth account will be automatically
+          This tool checks the status of Firebase Auth linking for all Team members.
+          Team members without a linked Firebase Auth account will be automatically
           linked when they sign in with a matching email address.
         </AlertDescription>
       </Alert>
@@ -192,7 +192,7 @@ export default function MigrateAuthPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Team Meemerging businessrs
+              Total Team members
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -250,7 +250,7 @@ export default function MigrateAuthPage() {
         <CardHeader>
           <CardTitle>Run Migration Check</CardTitle>
           <CardDescription>
-            Check the linking status of all Team Meemerging businessrs with Firebase Auth
+            Check the linking status of all Team members with Firebase Auth
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -284,7 +284,7 @@ export default function MigrateAuthPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Team Meemerging businessr</TableHead>
+                    <TableHead>Team member</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Firebase UID</TableHead>
                     <TableHead>Status</TableHead>
@@ -295,7 +295,7 @@ export default function MigrateAuthPage() {
                   {results.map((result, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">
-                        {result.teamMeemerging businessrName || "-"}
+                        {result.teammemberName || "-"}
                       </TableCell>
                       <TableCell className="text-sm">
                         {result.email}

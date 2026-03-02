@@ -37,8 +37,8 @@ interface AttributionEvent {
   smeId: string;
   buyerId: string | null;
   eventType: "lead_generated" | "service_delivered" | "introduction_facilitated" | "conversion_completed";
-  revenueAmount: nuemerging businessr;
-  attributionPercentage: nuemerging businessr;
+  revenueAmount: number;
+  attributionPercentage: number;
   source: string | null;
   dealId: string | null;
   notes: string | null;
@@ -53,13 +53,13 @@ interface RevenueSettlement {
   partnerId: string;
   periodStart: any;
   periodEnd: any;
-  grossRevenue: nuemerging businessr;
-  platformFeePercentage: nuemerging businessr;
-  platformFeeAmount: nuemerging businessr;
-  netRevenue: nuemerging businessr;
-  eventCount: nuemerging businessr;
+  grossRevenue: number;
+  platformFeePercentage: number;
+  platformFeeAmount: number;
+  netRevenue: number;
+  eventCount: number;
   eventIds: string[];
-  eventsByType: Record<string, nuemerging businessr>;
+  eventsByType: Record<string, number>;
   status: "calculated" | "paid";
   settlementDate: any;
   createdAt: any;
@@ -448,7 +448,7 @@ export default function RevenueDashboardPage() {
                 <Label htmlFor="revenueAmount">Revenue Amount *</Label>
                 <Input
                   id="revenueAmount"
-                  type="nuemerging businessr"
+                  type="number"
                   step="0.01"
                   placeholder="0.00"
                   value={formData.revenueAmount}
@@ -459,7 +459,7 @@ export default function RevenueDashboardPage() {
                 <Label htmlFor="attributionPercentage">Attribution % *</Label>
                 <Input
                   id="attributionPercentage"
-                  type="nuemerging businessr"
+                  type="number"
                   min="0"
                   max="100"
                   placeholder="100"

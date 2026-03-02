@@ -19,8 +19,8 @@ export interface Proposal {
   startDate: string;
   endDate: string;
   fundingSource: string;
-  referenceNuemerging businessr: string;
-  totalBudget: nuemerging businessr;
+  referencenumber: string;
+  totalBudget: number;
   status: ProposalStatus;
   organizationId?: string;
   
@@ -58,12 +58,12 @@ export interface Proposal {
   sections?: ProposalSection[];
   
   // Grant Specific Fields
-  grantAmount?: nuemerging businessr;
-  grantAmountAwarded?: nuemerging businessr;
+  grantAmount?: number;
+  grantAmountAwarded?: number;
   grantingOrganization?: string;
   grantProgramName?: string;
   matchingFundsRequired?: boolean;
-  matchingFundsAmount?: nuemerging businessr;
+  matchingFundsAmount?: number;
   grantStatus?: 'applied' | 'under_review' | 'awarded' | 'declined' | 'completed';
   
   // OEM Supplier Readiness Fields
@@ -107,7 +107,7 @@ export interface ReportingRequirement {
 export interface ProposalSection {
   id: string;
   title: string;
-  order: nuemerging businessr;
+  order: number;
   content: string;
   isEditable: boolean;
   responseRequired: boolean;
@@ -123,7 +123,7 @@ export interface ResearchWebsite {
   url: string;
   status: 'pending' | 'crawling' | 'crawled' | 'error';
   crawledAt?: string;
-  pagesCrawled?: nuemerging businessr;
+  pagesCrawled?: number;
   extractedData?: WebsiteCrawlResult;
 }
 
@@ -143,7 +143,7 @@ export interface WebsiteCrawlResult {
 export interface ResearchDocument {
   id: string;
   name: string;
-  size: nuemerging businessr;
+  size: number;
   type: string;
   uploadedAt: string;
   analyzed: boolean;
@@ -185,7 +185,7 @@ export interface CapabilityAssessment {
 export interface Capability {
   name: string;
   description: string;
-  relevanceScore: nuemerging businessr;
+  relevanceScore: number;
   evidence: string[];
 }
 
@@ -193,7 +193,7 @@ export interface CertificationAnalysis {
   current: CertificationStatus[];
   required: CertificationStatus[];
   gaps: CertificationGap[];
-  timeline: { certification: string; estimatedMonths: nuemerging businessr; estimatedCost: string }[];
+  timeline: { certification: string; estimatedMonths: number; estimatedCost: string }[];
 }
 
 export interface CertificationStatus {
@@ -216,15 +216,15 @@ export interface CertificationGap {
 
 export interface OpportunityMatrix {
   opportunities: Opportunity[];
-  totalEstimatedValue: { low: nuemerging businessr; high: nuemerging businessr };
-  readinessScore: nuemerging businessr;
+  totalEstimatedValue: { low: number; high: number };
+  readinessScore: number;
 }
 
 export interface Opportunity {
   id: string;
   name: string;
   description: string;
-  estimatedAnnualValue: { low: nuemerging businessr; high: nuemerging businessr };
+  estimatedAnnualValue: { low: number; high: number };
   readiness: 'ready' | 'needs_certification' | 'needs_development' | 'not_applicable';
   requirements: string[];
   timeline: string;
@@ -271,7 +271,7 @@ export interface Slide {
   insight?: string;
   insightHighlight?: string;
   notes?: string;
-  order: nuemerging businessr;
+  order: number;
 }
 
 export interface AutomatedCommunication {
@@ -299,7 +299,7 @@ export interface DocumentTemplate {
   type: TemplateType;
   description?: string;
   fileName: string;
-  fileSize: nuemerging businessr;
+  fileSize: number;
   fileType: string;
   uploadedAt: string;
   uploadedBy?: string;
@@ -329,7 +329,7 @@ export interface Agreement {
   effectiveDate: string;
   expirationDate?: string;
   terms: string;
-  totalValue?: nuemerging businessr;
+  totalValue?: number;
   status: AgreementStatus;
   linkedProposalId?: string;
   
@@ -364,7 +364,7 @@ export interface Signer {
   name: string;
   email: string;
   role: string;
-  order?: nuemerging businessr;
+  order?: number;
   signedAt?: Date;
   status: SignerStatus;
 }
@@ -455,10 +455,10 @@ export interface FormField {
 }
 
 export interface FieldValidation {
-  min?: nuemerging businessr;
-  max?: nuemerging businessr;
-  minLength?: nuemerging businessr;
-  maxLength?: nuemerging businessr;
+  min?: number;
+  max?: number;
+  minLength?: number;
+  maxLength?: number;
   pattern?: string;
   customMessage?: string;
 }
@@ -478,7 +478,7 @@ export interface Dataset {
 export interface DatasetField {
   id: string;
   name: string;
-  type: 'string' | 'nuemerging businessr' | 'boolean' | 'date' | 'array';
+  type: 'string' | 'number' | 'boolean' | 'date' | 'array';
   required: boolean;
 }
 
@@ -486,7 +486,7 @@ export interface DatasetField {
 // DASHBOARD METRICS
 // ============================================
 
-export type MetricVisualization = 'nuemerging businessr' | 'percentage' | 'currency' | 'ratio';
+export type MetricVisualization = 'number' | 'percentage' | 'currency' | 'ratio';
 export type MetricStatus = 'success' | 'warning' | 'danger' | 'info';
 export type MetricTrend = 'up' | 'down' | 'flat';
 
@@ -494,8 +494,8 @@ export interface DashboardMetric {
   id: string;
   name: string;
   description?: string;
-  value: nuemerging businessr | string;
-  target?: nuemerging businessr | string;
+  value: number | string;
+  target?: number | string;
   unit?: string;
   status?: MetricStatus;
   trend?: MetricTrend;
@@ -527,7 +527,7 @@ export interface ProposalDocument {
   type: string;
   url: string;
   uploadedAt: Date;
-  size: nuemerging businessr;
+  size: number;
 }
 
 // ============================================
@@ -546,10 +546,10 @@ export interface DocumentAnalysisResult {
     title: string;
     description: string;
     fundingSource: string;
-    referenceNuemerging businessr: string;
+    referencenumber: string;
     startDate: string;
     endDate: string;
-    totalBudget: nuemerging businessr;
+    totalBudget: number;
     entities: Array<{
       name: string;
       role: string;
@@ -590,7 +590,7 @@ export interface DocumentAnalysisResult {
     specialRequirements: string;
   };
   extractedText?: string;
-  extractedTextLength?: nuemerging businessr;
+  extractedTextLength?: number;
 }
 
 export interface ChartConfig {
@@ -640,7 +640,7 @@ export interface NDASection {
   id: string;
   title: string;
   content: string;
-  order: nuemerging businessr;
+  order: number;
   isEditable: boolean;
   isRequired: boolean;
   placeholders?: NDAPlaceholder[];
@@ -736,7 +736,7 @@ export const NDA_STATUSES: { value: NDAStatus; label: string; color: string }[] 
 // ============================================
 
 export interface ProposalWizardState {
-  currentStep: nuemerging businessr;
+  currentStep: number;
   proposalData: Partial<Proposal>;
   analysisResult?: DocumentAnalysisResult;
   isAnalyzing: boolean;
@@ -745,7 +745,7 @@ export interface ProposalWizardState {
 }
 
 export interface AgreementWizardState {
-  currentStep: nuemerging businessr;
+  currentStep: number;
   agreementData: Partial<Agreement>;
   isSaving: boolean;
   errors: Record<string, string>;
@@ -826,7 +826,7 @@ export const FIELD_TYPES = [
   { value: 'text', label: 'Single Line Text', category: 'text' },
   { value: 'textarea', label: 'Multi-line Text', category: 'text' },
   { value: 'email', label: 'Email', category: 'text' },
-  { value: 'phone', label: 'Phone Nuemerging businessr', category: 'text' },
+  { value: 'phone', label: 'Phone number', category: 'text' },
   { value: 'url', label: 'Website URL', category: 'text' },
   { value: 'password', label: 'Password', category: 'text' },
   
@@ -849,7 +849,7 @@ export const FIELD_TYPES = [
   { value: 'date-range', label: 'Date Range', category: 'datetime' },
   
   // Numeric
-  { value: 'nuemerging businessr', label: 'Nuemerging businessr', category: 'numeric' },
+  { value: 'number', label: 'number', category: 'numeric' },
   { value: 'currency', label: 'Currency', category: 'numeric' },
   { value: 'percentage', label: 'Percentage', category: 'numeric' },
   

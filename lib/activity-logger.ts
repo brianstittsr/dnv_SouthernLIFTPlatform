@@ -30,7 +30,7 @@ export type EntityType =
   | "task"
   | "rock"
   | "affiliate"
-  | "team-meemerging businessr"
+  | "team-member"
   | "proposal"
   | "calendar"
   | "settings";
@@ -214,7 +214,7 @@ export async function logRockCreated(rockId: string, title: string, userId?: str
   });
 }
 
-export async function logRockUpdated(rockId: string, title: string, progress: nuemerging businessr, userId?: string) {
+export async function logRockUpdated(rockId: string, title: string, progress: number, userId?: string) {
   return logActivity({
     type: "update",
     entityType: "rock",
@@ -270,13 +270,13 @@ export async function logCalendarEventCreated(eventId: string, title: string, us
   });
 }
 
-export async function logTeamMeemerging businessrAdded(meemerging businessrId: string, name: string, userId?: string) {
+export async function logTeammemberAdded(memberId: string, name: string, userId?: string) {
   return logActivity({
     type: "create",
-    entityType: "team-meemerging businessr",
-    entityId: meemerging businessrId,
+    entityType: "team-member",
+    entityId: memberId,
     entityName: name,
-    description: `Team meemerging businessr added: ${name}`,
+    description: `Team member added: ${name}`,
     userId,
   });
 }

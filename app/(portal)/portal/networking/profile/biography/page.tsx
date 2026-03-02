@@ -202,7 +202,7 @@ export default function BiographyPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Meemerging businessr Biography</h1>
+            <h1 className="text-3xl font-bold">member Biography</h1>
             <p className="text-muted-foreground">
               Help other affiliates get to know you and your business
             </p>
@@ -291,7 +291,7 @@ export default function BiographyPage() {
               <Label htmlFor="yearsInBusiness">Years in Business</Label>
               <Input
                 id="yearsInBusiness"
-                type="nuemerging businessr"
+                type="number"
                 placeholder="e.g., 15"
                 value={form.yearsInBusiness}
                 onChange={(e) => updateField("yearsInBusiness", e.target.value)}

@@ -18,12 +18,12 @@ interface ProjectDisplay {
   name: string;
   client: string;
   status: string;
-  progress: nuemerging businessr;
+  progress: number;
   startDate: string;
   endDate: string;
   teamIds: string[];
-  milestonesCompleted: nuemerging businessr;
-  milestonesTotal: nuemerging businessr;
+  milestonesCompleted: number;
+  milestonesTotal: number;
 }
 
 function getStatusBadge(status: string) {

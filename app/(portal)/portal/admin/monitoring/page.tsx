@@ -37,39 +37,39 @@ import { mockSystemHealth, mockSystemMetrics, mockUptimeRecords } from "@/lib/mo
 
 interface SystemHealth {
   isHealthy: boolean;
-  uptimePercentage: nuemerging businessr;
-  apiResponseTime95p: nuemerging businessr;
-  errorRate: nuemerging businessr;
-  concurrentUsers: nuemerging businessr;
+  uptimePercentage: number;
+  apiResponseTime95p: number;
+  errorRate: number;
+  concurrentUsers: number;
 }
 
 interface SystemMetric {
   id: string;
   timestamp: any;
-  apiResponseTime95p: nuemerging businessr;
-  apiResponseTimeAvg: nuemerging businessr;
-  apiRequestCount: nuemerging businessr;
-  errorCount: nuemerging businessr;
-  errorRate: nuemerging businessr;
+  apiResponseTime95p: number;
+  apiResponseTimeAvg: number;
+  apiRequestCount: number;
+  errorCount: number;
+  errorRate: number;
   recentErrors: Array<{
     timestamp: any;
     endpoint: string;
     error: string;
-    statusCode: nuemerging businessr;
+    statusCode: number;
   }>;
-  uptimePercentage: nuemerging businessr;
+  uptimePercentage: number;
   isHealthy: boolean;
-  dbQueryCount: nuemerging businessr;
-  dbQueryTimeAvg: nuemerging businessr;
-  dbQueryTime95p: nuemerging businessr;
-  concurrentUsers: nuemerging businessr;
+  dbQueryCount: number;
+  dbQueryTimeAvg: number;
+  dbQueryTime95p: number;
+  concurrentUsers: number;
 }
 
 interface UptimeRecord {
   date: string;
-  uptimePercentage: nuemerging businessr;
-  totalDowntimeMinutes: nuemerging businessr;
-  incidentCount: nuemerging businessr;
+  uptimePercentage: number;
+  totalDowntimeMinutes: number;
+  incidentCount: number;
 }
 
 export default function MonitoringPage() {
@@ -216,7 +216,7 @@ export default function MonitoringPage() {
     }
   };
 
-  const getUptimeColor = (uptime: nuemerging businessr) => {
+  const getUptimeColor = (uptime: number) => {
     if (uptime >= 99.9) return "text-green-600";
     if (uptime >= 99.0) return "text-yellow-600";
     return "text-red-600";

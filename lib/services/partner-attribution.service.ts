@@ -39,7 +39,7 @@ export interface PartnerContribution {
   partnerId: ConsortiumPartnerId;
   partnerName: string;
   contributionType: ContributionType;
-  percentage: nuemerging businessr;
+  percentage: number;
 }
 
 // ============================================================================
@@ -134,7 +134,7 @@ function getDefaultAttributions(): PartnerContribution[] {
 }
 
 /**
- * Get partner from team meemerging businessr assignment
+ * Get partner from team member assignment
  */
 async function getPartnerFromAssignment(assignedTo: string): Promise<{ partnerId: ConsortiumPartnerId; name: string } | null> {
   if (!db) return null;
@@ -149,14 +149,14 @@ async function getPartnerFromAssignment(assignedTo: string): Promise<{ partnerId
       return { partnerId: data.partnerId, name: data.displayName };
     }
 
-    // Check team meemerging businessrs collection
-    const teamMeemerging businessrRef = doc(db, COLLECTIONS.TEAM_MEemerging businessRS, assignedTo);
-    const teamMeemerging businessrSnap = await getDoc(teamMeemerging businessrRef);
+    // Check team members collection
+    const teammemberRef = doc(db, COLLECTIONS.TEAM_memberS, assignedTo);
+    const teammemberSnap = await getDoc(teammemberRef);
     
-    if (teamMeemerging businessrSnap.exists()) {
-      const data = teamMeemerging businessrSnap.data();
-      // Map team meemerging businessr to partner based on company/role
-      const partnerId = mapTeamMeemerging businessrToPartner(data);
+    if (teammemberSnap.exists()) {
+      const data = teammemberSnap.data();
+      // Map team member to partner based on company/role
+      const partnerId = mapTeammemberToPartner(data);
       if (partnerId) {
         return { partnerId, name: CONSORTIUM_PARTNERS[partnerId].displayName };
       }
@@ -170,11 +170,11 @@ async function getPartnerFromAssignment(assignedTo: string): Promise<{ partnerId
 }
 
 /**
- * Map team meemerging businessr to consortium partner
+ * Map team member to consortium partner
  */
-function mapTeamMeemerging businessrToPartner(teamMeemerging businessr: any): ConsortiumPartnerId | null {
-  const company = (teamMeemerging businessr.company || '').toLowerCase();
-  const expertise = (teamMeemerging businessr.expertise || '').toLowerCase();
+function mapTeammemberToPartner(teammember: any): ConsortiumPartnerId | null {
+  const company = (teammember.company || '').toLowerCase();
+  const expertise = (teammember.expertise || '').toLowerCase();
 
   if (company.includes('strategic value') || company.includes('v+') || company.includes('vplus')) {
     return 'vplus';
@@ -246,7 +246,7 @@ async function getServiceDeliveryPartners(
         }
         break;
 
-      case 'meemerging businessrship':
+      case 'membership':
       case 'event_ticket':
       case 'sponsorship':
       default:
@@ -312,7 +312,7 @@ async function getIntroductionPartner(clientId: string): Promise<PartnerContribu
  * Calculate commissions for all attributed partners
  */
 export function calculateCommissions(
-  totalAmount: nuemerging businessr,
+  totalAmount: number,
   attributions: PartnerContribution[],
   commissionTiers?: CommissionTierDoc[]
 ): PartnerAttributionItem[] {
@@ -344,9 +344,9 @@ export function calculateCommissions(
  */
 function getPartnerCommissionRate(
   partnerId: ConsortiumPartnerId,
-  totalAmount: nuemerging businessr,
+  totalAmount: number,
   commissionTiers?: CommissionTierDoc[]
-): nuemerging businessr {
+): number {
   if (!commissionTiers || commissionTiers.length === 0) {
     return 100; // Default to 100% of attributed amount
   }
@@ -385,7 +385,7 @@ export async function savePartnerCommissions(data: {
   clientName: string;
   clientEmail: string;
   transactionType: string;
-  totalAmount: nuemerging businessr;
+  totalAmount: number;
   currency: string;
   attributions: PartnerAttributionItem[];
 }): Promise<string | null> {
@@ -522,7 +522,7 @@ export async function getPartnerCommissions(
     status?: CommissionStatus;
     startDate?: Date;
     endDate?: Date;
-    limit?: nuemerging businessr;
+    limit?: number;
   }
 ): Promise<PartnerAttributionDoc[]> {
   if (!db) return [];

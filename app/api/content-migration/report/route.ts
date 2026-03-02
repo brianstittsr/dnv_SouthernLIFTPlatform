@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       .collection("pages")
       .get();
 
-    const pagesByType: Record<string, nuemerging businessr> = {};
+    const pagesByType: Record<string, number> = {};
     let totalWordCount = 0;
 
     pagesSnapshot.docs.forEach((doc) => {
@@ -89,12 +89,12 @@ export async function GET(req: NextRequest) {
       siteUrl: string;
       crawlDate: string;
       summary: {
-        totalPages: nuemerging businessr;
-        pagesByType: Record<string, nuemerging businessr>;
-        totalImages: nuemerging businessr;
-        totalVideos: nuemerging businessr;
-        totalDocuments: nuemerging businessr;
-        totalWordCount: nuemerging businessr;
+        totalPages: number;
+        pagesByType: Record<string, number>;
+        totalImages: number;
+        totalVideos: number;
+        totalDocuments: number;
+        totalWordCount: number;
       };
       contentAudit: {
         highValuePages: string[];

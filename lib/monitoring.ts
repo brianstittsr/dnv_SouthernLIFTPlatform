@@ -16,36 +16,36 @@ export interface SystemMetric {
   timestamp: Timestamp;
   
   // API Performance
-  apiResponseTime95p: nuemerging businessr; // 95th percentile in ms
-  apiResponseTimeAvg: nuemerging businessr; // Average in ms
-  apiRequestCount: nuemerging businessr;
+  apiResponseTime95p: number; // 95th percentile in ms
+  apiResponseTimeAvg: number; // Average in ms
+  apiRequestCount: number;
   
   // Error Tracking
-  errorCount: nuemerging businessr;
-  errorRate: nuemerging businessr; // Percentage
+  errorCount: number;
+  errorRate: number; // Percentage
   recentErrors: Array<{
     timestamp: Timestamp;
     endpoint: string;
     error: string;
-    statusCode: nuemerging businessr;
+    statusCode: number;
   }>;
   
   // Uptime
-  uptimePercentage: nuemerging businessr; // 0-100
+  uptimePercentage: number; // 0-100
   isHealthy: boolean;
   
   // Database Performance
-  dbQueryCount: nuemerging businessr;
-  dbQueryTimeAvg: nuemerging businessr; // Average in ms
-  dbQueryTime95p: nuemerging businessr; // 95th percentile in ms
+  dbQueryCount: number;
+  dbQueryTimeAvg: number; // Average in ms
+  dbQueryTime95p: number; // 95th percentile in ms
   
   // User Activity
-  concurrentUsers: nuemerging businessr;
-  activeUsers: nuemerging businessr;
+  concurrentUsers: number;
+  activeUsers: number;
   
   // System Resources
-  memoryUsage?: nuemerging businessr; // MB
-  cpuUsage?: nuemerging businessr; // Percentage
+  memoryUsage?: number; // MB
+  cpuUsage?: number; // Percentage
   
   createdAt: Timestamp;
 }
@@ -53,9 +53,9 @@ export interface SystemMetric {
 export interface UptimeRecord {
   id: string;
   date: string; // YYYY-MM-DD
-  uptimePercentage: nuemerging businessr;
-  totalDowntimeMinutes: nuemerging businessr;
-  incidentCount: nuemerging businessr;
+  uptimePercentage: number;
+  totalDowntimeMinutes: number;
+  incidentCount: number;
   createdAt: Timestamp;
 }
 
@@ -68,8 +68,8 @@ export interface UptimeRecord {
  */
 export async function recordApiMetric(
   endpoint: string,
-  responseTime: nuemerging businessr,
-  statusCode: nuemerging businessr,
+  responseTime: number,
+  statusCode: number,
   error?: string
 ): Promise<void> {
   try {
@@ -92,7 +92,7 @@ export async function recordApiMetric(
 export async function recordDbMetric(
   collection: string,
   operation: string,
-  queryTime: nuemerging businessr
+  queryTime: number
 ): Promise<void> {
   try {
     await db.collection("dbMetrics").add({
@@ -201,7 +201,7 @@ export async function aggregateSystemMetrics(): Promise<void> {
  * Update daily uptime record
  */
 async function updateDailyUptime(
-  currentUptime: nuemerging businessr,
+  currentUptime: number,
   hasIncident: boolean
 ): Promise<void> {
   try {
@@ -278,7 +278,7 @@ export async function getSystemMetrics(
 /**
  * Get uptime records for a time range
  */
-export async function getUptimeRecords(days: nuemerging businessr = 30): Promise<UptimeRecord[]> {
+export async function getUptimeRecords(days: number = 30): Promise<UptimeRecord[]> {
   try {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
@@ -302,10 +302,10 @@ export async function getUptimeRecords(days: nuemerging businessr = 30): Promise
  */
 export async function getCurrentSystemHealth(): Promise<{
   isHealthy: boolean;
-  uptimePercentage: nuemerging businessr;
-  apiResponseTime95p: nuemerging businessr;
-  errorRate: nuemerging businessr;
-  concurrentUsers: nuemerging businessr;
+  uptimePercentage: number;
+  apiResponseTime95p: number;
+  errorRate: number;
+  concurrentUsers: number;
 }> {
   try {
     const latestMetricSnapshot = await db

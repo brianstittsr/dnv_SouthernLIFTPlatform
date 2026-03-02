@@ -28,7 +28,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/schema';
 
-interface Meemerging businessr {
+interface member {
   id: string;
   userId: string;
   companyName: string;
@@ -92,9 +92,9 @@ const CERTIFICATION_OPTIONS = [
   'GSA Schedule',
 ];
 
-export default function Meemerging businessrDirectoryPage() {
-  const [meemerging businessrs, setMeemerging businessrs] = useState<Meemerging businessr[]>([]);
-  const [filteredMeemerging businessrs, setFilteredMeemerging businessrs] = useState<Meemerging businessr[]>([]);
+export default function memberDirectoryPage() {
+  const [members, setmembers] = useState<member[]>([]);
+  const [filteredmembers, setFilteredmembers] = useState<member[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [tierFilter, setTierFilter] = useState('all');
@@ -103,35 +103,35 @@ export default function Meemerging businessrDirectoryPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
-    fetchMeemerging businessrs();
+    fetchmembers();
   }, []);
 
   useEffect(() => {
-    filterMeemerging businessrs();
-  }, [meemerging businessrs, searchQuery, tierFilter, capabilityFilter, certificationFilter]);
+    filtermembers();
+  }, [members, searchQuery, tierFilter, capabilityFilter, certificationFilter]);
 
-  const fetchMeemerging businessrs = async () => {
+  const fetchmembers = async () => {
     if (!db) return;
 
     try {
-      // Fetch active meemerging businessrships
-      const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
+      // Fetch active memberships
+      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
       const q = query(
-        meemerging businessrshipsRef,
+        membershipsRef,
         where('status', 'in', ['active', 'trialing']),
         orderBy('createdAt', 'desc')
       );
 
       const snapshot = await getDocs(q);
       
-      // For demo purposes, create sample meemerging businessr data
+      // For demo purposes, create sample member data
       // In production, this would join with user/organization data
-      const meemerging businessrsData: Meemerging businessr[] = snapshot.docs.map((doc, index) => {
+      const membersData: member[] = snapshot.docs.map((doc, index) => {
         const data = doc.data();
         return {
           id: doc.id,
           userId: data.userId,
-          companyName: `Meemerging businessr Company ${index + 1}`,
+          companyName: `member Company ${index + 1}`,
           contactName: `Contact Person ${index + 1}`,
           contactEmail: `contact${index + 1}@example.com`,
           tier: data.tier || 'core-capture',
@@ -144,9 +144,9 @@ export default function Meemerging businessrDirectoryPage() {
         };
       });
 
-      // If no real meemerging businessrs, add sample data for demo
-      if (meemerging businessrsData.length === 0) {
-        const sampleMeemerging businessrs: Meemerging businessr[] = [
+      // If no real members, add sample data for demo
+      if (membersData.length === 0) {
+        const samplemembers: member[] = [
           {
             id: '1',
             userId: 'user1',
@@ -224,19 +224,19 @@ export default function Meemerging businessrDirectoryPage() {
             description: 'Healthcare technology solutions and medical device development for VA and DoD.',
           },
         ];
-        setMeemerging businessrs(sampleMeemerging businessrs);
+        setmembers(samplemembers);
       } else {
-        setMeemerging businessrs(meemerging businessrsData);
+        setmembers(membersData);
       }
     } catch (error) {
-      console.error('Error fetching meemerging businessrs:', error);
+      console.error('Error fetching members:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const filterMeemerging businessrs = () => {
-    let filtered = [...meemerging businessrs];
+  const filtermembers = () => {
+    let filtered = [...members];
 
     // Filter by search query
     if (searchQuery) {
@@ -265,7 +265,7 @@ export default function Meemerging businessrDirectoryPage() {
       filtered = filtered.filter(m => m.certifications.includes(certificationFilter));
     }
 
-    setFilteredMeemerging businessrs(filtered);
+    setFilteredmembers(filtered);
   };
 
   if (loading) {
@@ -281,15 +281,15 @@ export default function Meemerging businessrDirectoryPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Meemerging businessr Directory</h1>
+          <h1 className="text-3xl font-bold">member Directory</h1>
           <p className="text-muted-foreground">
-            Connect with consortium meemerging businessrs and find teaming partners
+            Connect with consortium members and find teaming partners
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-lg px-4 py-2">
             <Users className="h-4 w-4 mr-2" />
-            {meemerging businessrs.length} Active Meemerging businessrs
+            {members.length} Active members
           </Badge>
         </div>
       </div>
@@ -364,32 +364,32 @@ export default function Meemerging businessrDirectoryPage() {
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground">
-        Showing {filteredMeemerging businessrs.length} of {meemerging businessrs.length} meemerging businessrs
+        Showing {filteredmembers.length} of {members.length} members
       </div>
 
-      {/* Meemerging businessr Cards */}
-      {filteredMeemerging businessrs.length === 0 ? (
+      {/* member Cards */}
+      {filteredmembers.length === 0 ? (
         <Card className="p-12 text-center">
           <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No meemerging businessrs found</h3>
+          <h3 className="text-lg font-medium mb-2">No members found</h3>
           <p className="text-muted-foreground">
             Try adjusting your search or filters.
           </p>
         </Card>
       ) : viewMode === 'grid' ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMeemerging businessrs.map(meemerging businessr => {
-            const tierConfig = TIER_CONFIG[meemerging businessr.tier];
+          {filteredmembers.map(member => {
+            const tierConfig = TIER_CONFIG[member.tier];
             const TierIcon = tierConfig.icon;
 
             return (
-              <Card key={meemerging businessr.id} className="hover:shadow-lg transition-shadow">
+              <Card key={member.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={meemerging businessr.logoUrl} />
+                      <AvatarImage src={member.logoUrl} />
                       <AvatarFallback className="bg-primary/10 text-primary">
-                        {meemerging businessr.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                        {member.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <Badge className={tierConfig.color}>
@@ -397,42 +397,42 @@ export default function Meemerging businessrDirectoryPage() {
                       {tierConfig.label}
                     </Badge>
                   </div>
-                  <CardTitle className="text-lg mt-2">{meemerging businessr.companyName}</CardTitle>
-                  <CardDescription>{meemerging businessr.contactName}</CardDescription>
+                  <CardTitle className="text-lg mt-2">{member.companyName}</CardTitle>
+                  <CardDescription>{member.contactName}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {meemerging businessr.location && (
+                  {member.location && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4" />
-                      {meemerging businessr.location}
+                      {member.location}
                     </div>
                   )}
 
                   {/* Certifications */}
                   <div className="flex flex-wrap gap-1">
-                    {meemerging businessr.certifications.slice(0, 3).map(cert => (
+                    {member.certifications.slice(0, 3).map(cert => (
                       <Badge key={cert} variant="outline" className="text-xs">
                         <Shield className="h-3 w-3 mr-1" />
                         {cert}
                       </Badge>
                     ))}
-                    {meemerging businessr.certifications.length > 3 && (
+                    {member.certifications.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{meemerging businessr.certifications.length - 3}
+                        +{member.certifications.length - 3}
                       </Badge>
                     )}
                   </div>
 
                   {/* Capabilities */}
                   <div className="flex flex-wrap gap-1">
-                    {meemerging businessr.capabilities.slice(0, 2).map(cap => (
+                    {member.capabilities.slice(0, 2).map(cap => (
                       <Badge key={cap} variant="secondary" className="text-xs">
                         {cap}
                       </Badge>
                     ))}
-                    {meemerging businessr.capabilities.length > 2 && (
+                    {member.capabilities.length > 2 && (
                       <Badge variant="secondary" className="text-xs">
-                        +{meemerging businessr.capabilities.length - 2}
+                        +{member.capabilities.length - 2}
                       </Badge>
                     )}
                   </div>
@@ -440,12 +440,12 @@ export default function Meemerging businessrDirectoryPage() {
                   {/* Contact Actions */}
                   <div className="flex gap-2 pt-2">
                     <Button variant="outline" size="sm" className="flex-1" asChild>
-                      <a href={`mailto:${meemerging businessr.contactEmail}`}>
+                      <a href={`mailto:${member.contactEmail}`}>
                         <Mail className="h-4 w-4 mr-1" />
                         Email
                       </a>
                     </Button>
-                    <Link href={`/portal/meemerging businessrs/${meemerging businessr.id}`} className="flex-1">
+                    <Link href={`/portal/members/${member.id}`} className="flex-1">
                       <Button variant="default" size="sm" className="w-full">
                         View Profile
                       </Button>
@@ -458,46 +458,46 @@ export default function Meemerging businessrDirectoryPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredMeemerging businessrs.map(meemerging businessr => {
-            const tierConfig = TIER_CONFIG[meemerging businessr.tier];
+          {filteredmembers.map(member => {
+            const tierConfig = TIER_CONFIG[member.tier];
             const TierIcon = tierConfig.icon;
 
             return (
-              <Card key={meemerging businessr.id} className="hover:shadow-md transition-shadow">
+              <Card key={member.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-14 w-14">
-                      <AvatarImage src={meemerging businessr.logoUrl} />
+                      <AvatarImage src={member.logoUrl} />
                       <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                        {meemerging businessr.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                        {member.companyName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold truncate">{meemerging businessr.companyName}</h3>
+                        <h3 className="font-semibold truncate">{member.companyName}</h3>
                         <Badge className={tierConfig.color}>
                           <TierIcon className="h-3 w-3 mr-1" />
                           {tierConfig.label}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">{meemerging businessr.contactName}</p>
+                      <p className="text-sm text-muted-foreground">{member.contactName}</p>
                       <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                        {meemerging businessr.location && (
+                        {member.location && (
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
-                            {meemerging businessr.location}
+                            {member.location}
                           </span>
                         )}
                         <span className="flex items-center gap-1">
                           <Shield className="h-3 w-3" />
-                          {meemerging businessr.certifications.length} certifications
+                          {member.certifications.length} certifications
                         </span>
                       </div>
                     </div>
 
                     <div className="hidden md:flex flex-wrap gap-1 max-w-xs">
-                      {meemerging businessr.capabilities.slice(0, 3).map(cap => (
+                      {member.capabilities.slice(0, 3).map(cap => (
                         <Badge key={cap} variant="secondary" className="text-xs">
                           {cap}
                         </Badge>
@@ -506,11 +506,11 @@ export default function Meemerging businessrDirectoryPage() {
 
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm" asChild>
-                        <a href={`mailto:${meemerging businessr.contactEmail}`}>
+                        <a href={`mailto:${member.contactEmail}`}>
                           <Mail className="h-4 w-4" />
                         </a>
                       </Button>
-                      <Link href={`/portal/meemerging businessrs/${meemerging businessr.id}`}>
+                      <Link href={`/portal/members/${member.id}`}>
                         <Button variant="default" size="sm">
                           View
                         </Button>

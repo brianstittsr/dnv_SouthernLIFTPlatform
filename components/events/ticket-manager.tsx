@@ -50,14 +50,14 @@ interface TicketType {
   eventId: string;
   name: string;
   description: string;
-  price: nuemerging businessr;
+  price: number;
   currency: string;
-  available: nuemerging businessr;
-  sold: nuemerging businessr;
+  available: number;
+  sold: number;
   benefits: string[];
-  earlyBirdPrice?: nuemerging businessr;
+  earlyBirdPrice?: number;
   earlyBirdDeadline?: Timestamp;
-  order: nuemerging businessr;
+  order: number;
   isVisible: boolean;
   featured: boolean;
   purchaseUrl?: string;
@@ -68,11 +68,11 @@ interface TicketType {
 interface TicketFormData {
   name: string;
   description: string;
-  price: nuemerging businessr;
+  price: number;
   currency: string;
-  available: nuemerging businessr;
+  available: number;
   benefits: string;
-  earlyBirdPrice: nuemerging businessr | undefined;
+  earlyBirdPrice: number | undefined;
   earlyBirdDeadline: string;
   isVisible: boolean;
   featured: boolean;
@@ -279,12 +279,12 @@ export function TicketManager({ eventId, eventName }: TicketManagerProps) {
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2"><Label>Name *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="General Admission" /></div>
-              <div className="space-y-2"><Label>Price</Label><Input type="nuemerging businessr" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} /></div>
+              <div className="space-y-2"><Label>Price</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} /></div>
             </div>
             <div className="space-y-2"><Label>Description</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2"><Label>Available Qty</Label><Input type="nuemerging businessr" value={form.available} onChange={(e) => setForm({ ...form, available: parseInt(e.target.value) || 0 })} /></div>
-              <div className="space-y-2"><Label>Early Bird Price</Label><Input type="nuemerging businessr" value={form.earlyBirdPrice || ""} onChange={(e) => setForm({ ...form, earlyBirdPrice: parseFloat(e.target.value) || undefined })} /></div>
+              <div className="space-y-2"><Label>Available Qty</Label><Input type="number" value={form.available} onChange={(e) => setForm({ ...form, available: parseInt(e.target.value) || 0 })} /></div>
+              <div className="space-y-2"><Label>Early Bird Price</Label><Input type="number" value={form.earlyBirdPrice || ""} onChange={(e) => setForm({ ...form, earlyBirdPrice: parseFloat(e.target.value) || undefined })} /></div>
               <div className="space-y-2"><Label>Early Bird Deadline</Label><Input type="date" value={form.earlyBirdDeadline} onChange={(e) => setForm({ ...form, earlyBirdDeadline: e.target.value })} /></div>
             </div>
             <div className="space-y-2"><Label>Benefits (one per line)</Label><Textarea value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} rows={3} placeholder="Access to all sessions&#10;Networking lunch" /></div>

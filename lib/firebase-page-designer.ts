@@ -47,7 +47,7 @@ export interface PageSection {
   id: string;
   name: string;
   type: SectionType;
-  order: nuemerging businessr;
+  order: number;
   isEditable: boolean;
 }
 
@@ -106,7 +106,7 @@ export interface PageDesign {
   pageId: string;
   pageName: string;
   content: DesignContent;
-  version: nuemerging businessr;
+  version: number;
   status: "draft" | "published" | "archived";
   createdBy: string;
   createdAt: Date;
@@ -119,7 +119,7 @@ export interface DesignHistory {
   designId: string;
   pageId: string;
   content: DesignContent;
-  version: nuemerging businessr;
+  version: number;
   changeDescription?: string;
   createdBy: string;
   createdAt: Date;
@@ -132,7 +132,7 @@ export interface LayoutTemplate {
   category: string;
   sectionType: SectionType;
   content: SectionDesign;
-  popularity: nuemerging businessr;
+  popularity: number;
   isDefault: boolean;
   createdBy: string;
   createdAt: Date;
@@ -165,7 +165,7 @@ export interface UXReview {
   id?: string;
   pageId: string;
   designId: string;
-  overallScore: nuemerging businessr;
+  overallScore: number;
   categories: {
     visualHierarchy: CategoryScore;
     contentClarity: CategoryScore;
@@ -182,7 +182,7 @@ export interface UXReview {
 }
 
 export interface CategoryScore {
-  score: nuemerging businessr;
+  score: number;
   feedback: string;
   improvements: string[];
 }
@@ -207,10 +207,10 @@ export interface AccessibilityIssue {
 }
 
 export interface BrandMetrics {
-  colorConsistency: nuemerging businessr;
-  toneConsistency: nuemerging businessr;
-  messagingAlignment: nuemerging businessr;
-  visualIdentity: nuemerging businessr;
+  colorConsistency: number;
+  toneConsistency: number;
+  messagingAlignment: number;
+  visualIdentity: number;
 }
 
 // ============================================================================

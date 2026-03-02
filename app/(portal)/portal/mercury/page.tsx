@@ -44,17 +44,17 @@ interface MercuryAccount {
   name: string;
   status: string;
   type: string;
-  routingNuemerging businessr: string;
-  accountNuemerging businessr: string;
-  currentBalance: nuemerging businessr;
-  availableBalance: nuemerging businessr;
+  routingnumber: string;
+  accountnumber: string;
+  currentBalance: number;
+  availableBalance: number;
   kind: string;
   createdAt: string;
 }
 
 interface MercuryTransaction {
   id: string;
-  amount: nuemerging businessr;
+  amount: number;
   bankDescription: string | null;
   counterpartyName: string;
   createdAt: string;
@@ -148,8 +148,8 @@ export default function MercuryPage() {
     }
   };
 
-  const formatCurrency = (amount: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat("en-US", {
+  const formatCurrency = (amount: number) => {
+    return new Intl.numberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(amount);
@@ -369,12 +369,12 @@ export default function MercuryPage() {
                         <p className="text-xl font-semibold">{formatCurrency(account.availableBalance)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Routing Nuemerging businessr</p>
-                        <p className="font-mono">{account.routingNuemerging businessr}</p>
+                        <p className="text-sm text-muted-foreground">Routing number</p>
+                        <p className="font-mono">{account.routingnumber}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Account Nuemerging businessr</p>
-                        <p className="font-mono">••••{account.accountNuemerging businessr.slice(-4)}</p>
+                        <p className="text-sm text-muted-foreground">Account number</p>
+                        <p className="font-mono">••••{account.accountnumber.slice(-4)}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -506,7 +506,7 @@ export default function MercuryPage() {
               Mercury Bank
               <ExternalLink className="h-3 w-3" />
             </a>
-            {" "}• Banking services provided through Choice Financial Group and Column N.A., Meemerging businessrs FDIC
+            {" "}• Banking services provided through Choice Financial Group and Column N.A., members FDIC
           </p>
         </CardContent>
       </Card>

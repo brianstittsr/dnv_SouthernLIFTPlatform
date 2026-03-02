@@ -185,18 +185,18 @@ export async function releaseSeat(
     currentParticipants: increment(-1),
   });
   
-  // Update meemerging businessrship status
-  const meemerging businessrshipQuery = query(
-    collection(db, "cohort_meemerging businessrships"),
+  // Update membership status
+  const membershipQuery = query(
+    collection(db, "cohort_memberships"),
     where("userId", "==", userId),
     where("cohortId", "==", cohortId),
     limit(1)
   );
-  const meemerging businessrshipSnap = await getDocs(meemerging businessrshipQuery);
+  const membershipSnap = await getDocs(membershipQuery);
   
-  if (!meemerging businessrshipSnap.empty) {
-    const meemerging businessrshipDoc = meemerging businessrshipSnap.docs[0];
-    await updateDoc(meemerging businessrshipDoc.ref, {
+  if (!membershipSnap.empty) {
+    const membershipDoc = membershipSnap.docs[0];
+    await updateDoc(membershipDoc.ref, {
       status: "dropped",
       droppedAt: Timestamp.now(),
     });
@@ -212,7 +212,7 @@ export async function releaseSeat(
 export async function getWaitlistPosition(
   userId: string,
   cohortId: string
-): Promise<nuemerging businessr | null> {
+): Promise<number | null> {
   if (!db) throw new Error("Firebase not initialized");
   
   const waitlistQuery = query(

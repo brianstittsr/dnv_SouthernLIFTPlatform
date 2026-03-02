@@ -22,11 +22,11 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-const MEemerging businessRSHIP_TIERS = [
+const memberSHIP_TIERS = [
   {
     id: 'core-capture',
-    name: 'Core Capture Meemerging businessr',
-    description: 'Full access to the KDM Consortium platform and all meemerging businessr benefits',
+    name: 'Core Capture member',
+    description: 'Full access to the KDM Consortium platform and all member benefits',
     monthlyPrice: 1750,
     annualPrice: 18900, // ~10% discount
     popular: true,
@@ -36,7 +36,7 @@ const MEemerging businessRSHIP_TIERS = [
       'Proposal orchestration support',
       'Monthly buyer briefings',
       'Resource library access',
-      'Meemerging businessr directory listing',
+      'member directory listing',
       'Compliance badge display',
       '2 hours concierge support/month',
       'Priority pursuit notifications',
@@ -117,14 +117,14 @@ const BENEFITS = [
   },
 ];
 
-export default function Meemerging businessrshipPage() {
+export default function membershipPage() {
   const router = useRouter();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
 
   const handleSelectPlan = async (tierId: string) => {
     if (tierId === 'custom') {
-      router.push('/contact?subject=Enterprise%20Meemerging businessrship');
+      router.push('/contact?subject=Enterprise%20membership');
       return;
     }
 
@@ -133,7 +133,7 @@ export default function Meemerging businessrshipPage() {
     try {
       // In production, this would check auth and redirect to checkout
       // For now, redirect to a signup flow
-      router.push(`/meemerging businessrship/signup?tier=${tierId}&billing=${isAnnual ? 'annual' : 'monthly'}`);
+      router.push(`/membership/signup?tier=${tierId}&billing=${isAnnual ? 'annual' : 'monthly'}`);
     } catch (error) {
       console.error('Error selecting plan:', error);
     } finally {
@@ -141,8 +141,8 @@ export default function Meemerging businessrshipPage() {
     }
   };
 
-  const formatPrice = (price: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatPrice = (price: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
@@ -186,7 +186,7 @@ export default function Meemerging businessrshipPage() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {MEemerging businessRSHIP_TIERS.map((tier) => {
+            {memberSHIP_TIERS.map((tier) => {
               const TierIcon = tier.icon;
               const price = isAnnual && tier.annualPrice ? tier.annualPrice : tier.monthlyPrice;
               
@@ -316,19 +316,19 @@ export default function Meemerging businessrshipPage() {
           
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-semibold mb-2">What is included in the Core Capture meemerging businessrship?</h3>
+              <h3 className="font-semibold mb-2">What is included in the Core Capture membership?</h3>
               <p className="text-muted-foreground">
-                Core Capture meemerging businessrs get full access to our opportunity intelligence platform, 
+                Core Capture members get full access to our opportunity intelligence platform, 
                 team assembly tools, proposal support resources, monthly buyer briefings, 
                 and 2 hours of concierge support per month.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-semibold mb-2">Can I cancel my meemerging businessrship anytime?</h3>
+              <h3 className="font-semibold mb-2">Can I cancel my membership anytime?</h3>
               <p className="text-muted-foreground">
-                Yes, you can cancel your meemerging businessrship at any time. Monthly meemerging businessrships will remain 
-                active until the end of the current billing period. Annual meemerging businessrships are 
+                Yes, you can cancel your membership at any time. Monthly memberships will remain 
+                active until the end of the current billing period. Annual memberships are 
                 non-refundable but will remain active until the end of the year.
               </p>
             </div>
@@ -369,7 +369,7 @@ export default function Meemerging businessrshipPage() {
               variant="secondary"
               onClick={() => handleSelectPlan('core-capture')}
             >
-              Start Your Meemerging businessrship
+              Start Your membership
             </Button>
             <Link href="/contact">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">

@@ -218,20 +218,20 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
 
   const customerId = subscription.customer as string;
   
-  // Find meemerging businessrship by customer ID
-  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-  const q = query(meemerging businessrshipsRef, where('stripeCustomerId', '==', customerId));
+  // Find membership by customer ID
+  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
-    console.error('No meemerging businessrship found for customer:', customerId);
+    console.error('No membership found for customer:', customerId);
     return;
   }
 
-  const meemerging businessrshipDoc = snapshot.docs[0];
-  const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipDoc.id);
+  const membershipDoc = snapshot.docs[0];
+  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
 
-  await updateDoc(meemerging businessrshipRef, {
+  await updateDoc(membershipRef, {
     stripeSubscriptionId: subscription.id,
     status: subscription.status === 'trialing' ? 'trialing' : 'active',
     currentPeriodStart: Timestamp.fromMillis((subscription as any).current_period_start * 1000),
@@ -239,7 +239,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     updatedAt: Timestamp.now(),
   });
 
-  console.log('Subscription created for meemerging businessrship:', meemerging businessrshipDoc.id);
+  console.log('Subscription created for membership:', membershipDoc.id);
 }
 
 /**
@@ -248,17 +248,17 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   if (!db) return;
 
-  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-  const q = query(meemerging businessrshipsRef, where('stripeSubscriptionId', '==', subscription.id));
+  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const q = query(membershipsRef, where('stripeSubscriptionId', '==', subscription.id));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
-    console.error('No meemerging businessrship found for subscription:', subscription.id);
+    console.error('No membership found for subscription:', subscription.id);
     return;
   }
 
-  const meemerging businessrshipDoc = snapshot.docs[0];
-  const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipDoc.id);
+  const membershipDoc = snapshot.docs[0];
+  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
 
   // Map Stripe status to our status
   let status: 'active' | 'past_due' | 'cancelled' | 'trialing' = 'active';
@@ -266,7 +266,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   else if (subscription.status === 'past_due') status = 'past_due';
   else if (subscription.status === 'canceled' || subscription.status === 'unpaid') status = 'cancelled';
 
-  await updateDoc(meemerging businessrshipRef, {
+  await updateDoc(membershipRef, {
     status,
     currentPeriodStart: Timestamp.fromMillis((subscription as any).current_period_start * 1000),
     currentPeriodEnd: Timestamp.fromMillis((subscription as any).current_period_end * 1000),
@@ -274,7 +274,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     updatedAt: Timestamp.now(),
   });
 
-  console.log('Subscription updated for meemerging businessrship:', meemerging businessrshipDoc.id);
+  console.log('Subscription updated for membership:', membershipDoc.id);
 }
 
 /**
@@ -283,25 +283,25 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   if (!db) return;
 
-  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-  const q = query(meemerging businessrshipsRef, where('stripeSubscriptionId', '==', subscription.id));
+  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const q = query(membershipsRef, where('stripeSubscriptionId', '==', subscription.id));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
-    console.error('No meemerging businessrship found for subscription:', subscription.id);
+    console.error('No membership found for subscription:', subscription.id);
     return;
   }
 
-  const meemerging businessrshipDoc = snapshot.docs[0];
-  const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipDoc.id);
+  const membershipDoc = snapshot.docs[0];
+  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
 
-  await updateDoc(meemerging businessrshipRef, {
+  await updateDoc(membershipRef, {
     status: 'cancelled',
     cancelAtPeriodEnd: false,
     updatedAt: Timestamp.now(),
   });
 
-  console.log('Subscription cancelled for meemerging businessrship:', meemerging businessrshipDoc.id);
+  console.log('Subscription cancelled for membership:', membershipDoc.id);
 }
 
 /**
@@ -312,26 +312,26 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
   const customerId = invoice.customer as string;
 
-  // Find meemerging businessrship
-  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-  const q = query(meemerging businessrshipsRef, where('stripeCustomerId', '==', customerId));
+  // Find membership
+  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) return;
 
-  const meemerging businessrshipDoc = snapshot.docs[0];
-  const meemerging businessrshipData = meemerging businessrshipDoc.data();
+  const membershipDoc = snapshot.docs[0];
+  const membershipData = membershipDoc.data();
 
   // Send payment confirmation email
-  if (invoice.customer_email && meemerging businessrshipData.userId) {
+  if (invoice.customer_email && membershipData.userId) {
     try {
-      const userSnap = await getDocs(query(collection(db, COLLECTIONS.USERS), where('id', '==', meemerging businessrshipData.userId)));
-      const userName = userSnap.docs[0]?.data()?.name || 'Meemerging businessr';
+      const userSnap = await getDocs(query(collection(db, COLLECTIONS.USERS), where('id', '==', membershipData.userId)));
+      const userName = userSnap.docs[0]?.data()?.name || 'member';
 
       await sendTemplatedEmail('paymentConfirmation', invoice.customer_email, {
         name: userName,
         amount: invoice.amount_paid,
-        description: `KDM Consortium Meemerging businessrship - ${meemerging businessrshipData.tier}`,
+        description: `KDM Consortium membership - ${membershipData.tier}`,
         receiptUrl: invoice.hosted_invoice_url || undefined,
       });
     } catch (emailError) {
@@ -350,17 +350,17 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
   const customerId = invoice.customer as string;
 
-  // Find and update meemerging businessrship status
-  const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-  const q = query(meemerging businessrshipsRef, where('stripeCustomerId', '==', customerId));
+  // Find and update membership status
+  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) return;
 
-  const meemerging businessrshipDoc = snapshot.docs[0];
-  const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipDoc.id);
+  const membershipDoc = snapshot.docs[0];
+  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
 
-  await updateDoc(meemerging businessrshipRef, {
+  await updateDoc(membershipRef, {
     status: 'past_due',
     updatedAt: Timestamp.now(),
   });
@@ -444,21 +444,21 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     await processPartnerCommissions(session, transaction, metadata);
   }
 
-  // 4. Original meemerging businessrship logic
+  // 4. Original membership logic
   const customerId = session.customer as string;
   const subscriptionId = session.subscription as string;
 
   if (session.mode === 'subscription' && subscriptionId) {
-    // Update meemerging businessrship with subscription ID
-    const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-    const q = query(meemerging businessrshipsRef, where('stripeCustomerId', '==', customerId));
+    // Update membership with subscription ID
+    const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+    const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
     const snapshot = await getDocs(q);
 
     if (!snapshot.empty) {
-      const meemerging businessrshipDoc = snapshot.docs[0];
-      const meemerging businessrshipRef = doc(db, COLLECTIONS.MEemerging businessRSHIPS, meemerging businessrshipDoc.id);
+      const membershipDoc = snapshot.docs[0];
+      const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
 
-      await updateDoc(meemerging businessrshipRef, {
+      await updateDoc(membershipRef, {
         stripeSubscriptionId: subscriptionId,
         status: 'active',
         updatedAt: Timestamp.now(),
@@ -469,7 +469,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         try {
           const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000';
           await sendTemplatedEmail('welcome', session.customer_email, {
-            name: session.customer_details?.name || 'Meemerging businessr',
+            name: session.customer_details?.name || 'member',
             loginUrl: `${baseUrl}/portal`,
           });
         } catch (emailError) {
@@ -477,7 +477,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         }
       }
 
-      console.log('Checkout completed for meemerging businessrship:', meemerging businessrshipDoc.id);
+      console.log('Checkout completed for membership:', membershipDoc.id);
     }
   }
 }

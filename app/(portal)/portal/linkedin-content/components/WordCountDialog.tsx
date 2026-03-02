@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { BarChart3 } from "lucide-react";
 import { WordCountStats } from "../types";
-import { formatNuemerging businessr } from "../utils/wordCount";
+import { formatnumber } from "../utils/wordCount";
 
 interface WordCountDialogProps {
   stats: WordCountStats;
@@ -51,7 +51,7 @@ export function WordCountDialog({
               className="bg-muted/50 rounded-lg p-4 text-center"
             >
               <p className="text-2xl font-bold text-primary">
-                {formatNuemerging businessr(item.value)}
+                {formatnumber(item.value)}
               </p>
               <p className="text-sm text-muted-foreground">{item.label}</p>
             </div>

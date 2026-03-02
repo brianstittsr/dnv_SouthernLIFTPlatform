@@ -32,7 +32,7 @@ export async function createSubscriptionLead(
     dfy: "DFY (Done For You)",
   };
 
-  const tierPrices: Record<string, nuemerging businessr> = {
+  const tierPrices: Record<string, number> = {
     diy: 99,
     dwy: 299,
     dfy: 599,
@@ -290,8 +290,8 @@ This lead has been automatically pushed to the SVP CRM.
  * Get leads with filtering and pagination
  */
 export async function getLeads(
-  options: LeadFilterOptions & { limit?: nuemerging businessr; offset?: nuemerging businessr } = {}
-): Promise<{ leads: LeadListItem[]; total: nuemerging businessr }> {
+  options: LeadFilterOptions & { limit?: number; offset?: number } = {}
+): Promise<{ leads: LeadListItem[]; total: number }> {
   let query: FirebaseFirestore.Query = db.collection(LEADS_COLLECTION);
 
   // Apply filters

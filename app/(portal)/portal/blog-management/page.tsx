@@ -51,7 +51,7 @@ interface BlogPostItem {
   date: string;
   category: BlogCategory;
   tags: string[];
-  readTime: nuemerging businessr;
+  readTime: number;
   source?: string;
 }
 

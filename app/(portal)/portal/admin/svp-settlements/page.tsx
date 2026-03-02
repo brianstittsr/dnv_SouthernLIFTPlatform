@@ -35,7 +35,7 @@ export default function SVPSettlementsPage() {
       period: "Q4 2025",
       status: "paid",
       paidDate: "2026-01-15",
-      invoiceNuemerging businessr: "INV-2026-001"
+      invoicenumber: "INV-2026-001"
     },
     {
       id: "SET-002",
@@ -44,7 +44,7 @@ export default function SVPSettlementsPage() {
       period: "Q4 2025",
       status: "pending",
       paidDate: null,
-      invoiceNuemerging businessr: "INV-2026-002"
+      invoicenumber: "INV-2026-002"
     },
     {
       id: "SET-003",
@@ -53,7 +53,7 @@ export default function SVPSettlementsPage() {
       period: "Q4 2025",
       status: "processing",
       paidDate: null,
-      invoiceNuemerging businessr: "INV-2026-003"
+      invoicenumber: "INV-2026-003"
     },
     {
       id: "SET-004",
@@ -62,7 +62,7 @@ export default function SVPSettlementsPage() {
       period: "Q3 2025",
       status: "paid",
       paidDate: "2025-10-15",
-      invoiceNuemerging businessr: "INV-2025-045"
+      invoicenumber: "INV-2025-045"
     }
   ]);
 
@@ -117,8 +117,8 @@ export default function SVPSettlementsPage() {
     );
   };
 
-  const formatCurrency = (amount: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatCurrency = (amount: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
@@ -268,7 +268,7 @@ export default function SVPSettlementsPage() {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span>ID: {settlement.id}</span>
                           <span>•</span>
-                          <span>{settlement.invoiceNuemerging businessr}</span>
+                          <span>{settlement.invoicenumber}</span>
                           <span>•</span>
                           <span>Period: {settlement.period}</span>
                           {settlement.paidDate && (

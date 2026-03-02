@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     // Default: fetch days
     const daysRef = collection(db, COLLECTIONS.EVENT_DAYS);
-    const q = query(daysRef, where('eventId', '==', eventId), orderBy('dayNuemerging businessr', 'asc'));
+    const q = query(daysRef, where('eventId', '==', eventId), orderBy('daynumber', 'asc'));
     const snapshot = await getDocs(q);
     const days = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -80,8 +80,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'dayId and title are required for sessions' }, { status: 400 });
       }
 
-      const [sh, sm] = (startTime || '09:00').split(':').map(Nuemerging businessr);
-      const [eh, em] = (endTime || '10:00').split(':').map(Nuemerging businessr);
+      const [sh, sm] = (startTime || '09:00').split(':').map(number);
+      const [eh, em] = (endTime || '10:00').split(':').map(number);
       const duration = (eh * 60 + em) - (sh * 60 + sm);
 
       const sessionData = {
@@ -107,12 +107,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Default: create day
-    const { date, dayNuemerging businessr, dayName, theme } = data;
+    const { date, daynumber, dayName, theme } = data;
     
     const dayData = {
       eventId,
       date: date ? Timestamp.fromDate(new Date(date)) : Timestamp.now(),
-      dayNuemerging businessr: dayNuemerging businessr || 1,
+      daynumber: daynumber || 1,
       dayName: dayName || 'Day 1',
       theme: theme || '',
       createdAt: Timestamp.now(),

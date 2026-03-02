@@ -91,17 +91,17 @@ function Calendar({
           defaultClassNames.weekday
         ),
         week: cn("flex w-full mt-2", defaultClassNames.week),
-        week_nuemerging businessr_header: cn(
+        week_number_header: cn(
           "select-none w-(--cell-size)",
-          defaultClassNames.week_nuemerging businessr_header
+          defaultClassNames.week_number_header
         ),
-        week_nuemerging businessr: cn(
+        week_number: cn(
           "text-[0.8rem] select-none text-muted-foreground",
-          defaultClassNames.week_nuemerging businessr
+          defaultClassNames.week_number
         ),
         day: cn(
           "relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none",
-          props.showWeekNuemerging businessr
+          props.showWeeknumber
             ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
             : "[&:first-child[data-selected=true]_button]:rounded-l-md",
           defaultClassNames.day
@@ -159,7 +159,7 @@ function Calendar({
           )
         },
         DayButton: CalendarDayButton,
-        WeekNuemerging businessr: ({ children, ...props }) => {
+        Weeknumber: ({ children, ...props }) => {
           return (
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">

@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2025-12-15.clover",
 });
 
-const TIER_PRICES: Record<string, nuemerging businessr> = {
+const TIER_PRICES: Record<string, number> = {
   diy: 9900, // $99.00 in cents
   dwy: 29900, // $299.00 in cents
   dfy: 59900, // $599.00 in cents

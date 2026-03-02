@@ -224,7 +224,7 @@ export function useCalendarEvents() {
 
   // Get upcoming events
   const getUpcomingEvents = useCallback(
-    (limit: nuemerging businessr = 10): CalendarEvent[] => {
+    (limit: number = 10): CalendarEvent[] => {
       const now = new Date();
       return events
         .filter((event) => event.startDate >= now)
@@ -282,8 +282,8 @@ export function useCalendarEvents() {
       endTime: string;
       attendees?: string[];
     }) => {
-      const [startHour, startMin] = meeting.startTime.split(":").map(Nuemerging businessr);
-      const [endHour, endMin] = meeting.endTime.split(":").map(Nuemerging businessr);
+      const [startHour, startMin] = meeting.startTime.split(":").map(number);
+      const [endHour, endMin] = meeting.endTime.split(":").map(number);
 
       const startDate = new Date(meeting.date);
       startDate.setHours(startHour, startMin, 0, 0);

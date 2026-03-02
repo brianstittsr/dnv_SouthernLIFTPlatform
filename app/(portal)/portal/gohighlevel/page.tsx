@@ -80,8 +80,8 @@ interface GHLIntegration {
   lastSyncStatus: 'success' | 'error' | 'pending' | 'never';
   lastSyncAt?: string;
   lastSyncError?: string;
-  totalContactsSynced: nuemerging businessr;
-  totalOpportunitiesSynced: nuemerging businessr;
+  totalContactsSynced: number;
+  totalOpportunitiesSynced: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -91,18 +91,18 @@ interface SyncLog {
   integrationId: string;
   syncType: string;
   status: string;
-  recordsProcessed: nuemerging businessr;
-  recordsSuccessful: nuemerging businessr;
-  recordsFailed: nuemerging businessr;
+  recordsProcessed: number;
+  recordsSuccessful: number;
+  recordsFailed: number;
   startedAt: string;
   completedAt?: string;
-  duration?: nuemerging businessr;
+  duration?: number;
   errors: Array<{ error: string }>;
 }
 
 interface WorkflowStep {
   type: 'email' | 'sms' | 'wait' | 'condition' | 'tag';
-  delay?: nuemerging businessr;
+  delay?: number;
   delayUnit?: string;
   subject?: string;
   content: string;

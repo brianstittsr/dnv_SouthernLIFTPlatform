@@ -192,7 +192,7 @@ export const mockSettlements = [
     period: "Q4 2025",
     status: "paid",
     paidDate: "2026-01-15",
-    invoiceNuemerging businessr: "INV-2026-001",
+    invoicenumber: "INV-2026-001",
   },
   {
     id: "SET-002",
@@ -202,7 +202,7 @@ export const mockSettlements = [
     period: "Q4 2025",
     status: "pending",
     paidDate: null,
-    invoiceNuemerging businessr: "INV-2026-002",
+    invoicenumber: "INV-2026-002",
   },
   {
     id: "SET-003",
@@ -212,7 +212,7 @@ export const mockSettlements = [
     period: "Q4 2025",
     status: "processing",
     paidDate: null,
-    invoiceNuemerging businessr: "INV-2026-003",
+    invoicenumber: "INV-2026-003",
   },
   {
     id: "SET-004",
@@ -222,7 +222,7 @@ export const mockSettlements = [
     period: "Q3 2025",
     status: "paid",
     paidDate: "2025-10-15",
-    invoiceNuemerging businessr: "INV-2025-045",
+    invoicenumber: "INV-2025-045",
   },
 ];
 

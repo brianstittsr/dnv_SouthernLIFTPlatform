@@ -52,7 +52,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, doc, updateDoc, Timestamp, addDoc } from "firebase/firestore";
-import { COLLECTIONS, type TeamMeemerging businessrDoc, type StrategicPartnerDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeammemberDoc, type StrategicPartnerDoc } from "@/lib/schema";
 import { toast } from "sonner";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { logActivity } from "@/lib/activity-logger";
@@ -60,7 +60,7 @@ import { logActivity } from "@/lib/activity-logger";
 // Unified contact type for display
 interface UnifiedContact {
   id: string;
-  source: "team_meemerging businessr" | "strategic_partner" | "user";
+  source: "team_member" | "strategic_partner" | "user";
   firstName: string;
   lastName: string;
   email: string;
@@ -100,7 +100,7 @@ const INVITATION_TEMPLATE = {
 function getContactTypeBadges(contact: UnifiedContact) {
   const badges: { label: string; variant: "default" | "secondary" | "outline" | "destructive" }[] = [];
   
-  if (contact.source === "team_meemerging businessr") {
+  if (contact.source === "team_member") {
     if (contact.role === "affiliate") {
       badges.push({ label: "Affiliate", variant: "default" });
     } else if (contact.role === "team") {
@@ -162,11 +162,11 @@ export default function ContactsTab() {
     try {
       const allContacts: UnifiedContact[] = [];
 
-      // Fetch Team Meemerging businessrs (includes affiliates)
-      const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
+      // Fetch Team members (includes affiliates)
+      const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
       const teamSnapshot = await getDocs(query(teamRef));
       teamSnapshot.forEach((doc) => {
-        const data = doc.data() as TeamMeemerging businessrDoc;
+        const data = doc.data() as TeammemberDoc;
         const contactTypes: string[] = [];
         if (data.role === "affiliate") contactTypes.push("affiliate");
         if (data.role === "team") contactTypes.push("team");
@@ -176,7 +176,7 @@ export default function ContactsTab() {
 
         allContacts.push({
           id: doc.id,
-          source: "team_meemerging businessr",
+          source: "team_member",
           firstName: data.firstName || "",
           lastName: data.lastName || "",
           email: data.emailPrimary || "",
@@ -289,7 +289,7 @@ export default function ContactsTab() {
       // Log activity
       await logActivity({
         type: "create",
-        entityType: "team-meemerging businessr",
+        entityType: "team-member",
         entityId: user.id,
         entityName: `${user.firstName} ${user.lastName}`,
         description: `Added ${user.firstName} ${user.lastName} as a contact`,
@@ -359,8 +359,8 @@ export default function ContactsTab() {
     
     setIsUpdating(true);
     try {
-      const collectionName = contact.source === "team_meemerging businessr" 
-        ? COLLECTIONS.TEAM_MEemerging businessRS 
+      const collectionName = contact.source === "team_member" 
+        ? COLLECTIONS.TEAM_memberS 
         : COLLECTIONS.STRATEGIC_PARTNERS;
       
       const docRef = doc(db, collectionName, contact.id);
@@ -375,7 +375,7 @@ export default function ContactsTab() {
       // Log activity
       await logActivity({
         type: "update",
-        entityType: contact.source === "team_meemerging businessr" ? "team-meemerging businessr" : "organization",
+        entityType: contact.source === "team_member" ? "team-member" : "organization",
         entityId: contact.id,
         entityName: `${contact.firstName} ${contact.lastName}`,
         description: newIsClient 
@@ -558,7 +558,7 @@ export default function ContactsTab() {
                 <SelectItem value="affiliates">Affiliates</SelectItem>
                 <SelectItem value="partners">Partners</SelectItem>
                 <SelectItem value="clients">Clients</SelectItem>
-                <SelectItem value="team">Team Meemerging businessrs</SelectItem>
+                <SelectItem value="team">Team members</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -572,7 +572,7 @@ export default function ContactsTab() {
             {typeFilter === "all" ? "All Contacts" : 
              typeFilter === "affiliates" ? "Affiliates" :
              typeFilter === "partners" ? "Partners" :
-             typeFilter === "clients" ? "Clients" : "Team Meemerging businessrs"}
+             typeFilter === "clients" ? "Clients" : "Team members"}
           </CardTitle>
           <CardDescription>
             {filteredContacts.length} contact{filteredContacts.length !== 1 ? "s" : ""} found

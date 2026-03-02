@@ -203,7 +203,7 @@ export default function ProfilePage() {
       consulting: true,
     },
     certifications: [],
-    meemerging businessrSince: "2024-01-15",
+    memberSince: "2024-01-15",
   });
 
   const [newExpertise, setNewExpertise] = useState("");
@@ -356,12 +356,12 @@ export default function ProfilePage() {
         updatedAt: now,
       });
       
-      // 2. Update Team Meemerging businessr if linked
+      // 2. Update Team member if linked
       if (userProfile.id && userProfile.id !== auth.currentUser.uid) {
-        // If there's a linked team meemerging businessr, update it
+        // If there's a linked team member, update it
         try {
-          const teamMeemerging businessrRef = doc(db, "team_meemerging businessrs", userProfile.id);
-          await updateDoc(teamMeemerging businessrRef, {
+          const teammemberRef = doc(db, "team_members", userProfile.id);
+          await updateDoc(teammemberRef, {
             firstName: profile.firstName,
             lastName: profile.lastName,
             mobile: profile.phone,
@@ -373,7 +373,7 @@ export default function ProfilePage() {
             updatedAt: now,
           });
         } catch (error) {
-          console.log("No team meemerging businessr to update or error:", error);
+          console.log("No team member to update or error:", error);
         }
       }
       
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                   {profile.firstName || userProfile.firstName} {profile.lastName || userProfile.lastName}
                 </h2>
                 <Badge variant="secondary">
-                  {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "Meemerging businessr"}
+                  {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "member"}
                 </Badge>
               </div>
               <p className="text-muted-foreground">{profile.title || "Add your professional title"}</p>
@@ -477,7 +477,7 @@ export default function ProfilePage() {
                 )}
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Meemerging businessr since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
+                  member since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
                 </span>
               </div>
               {/* Quick Stats - Hidden: One-to-Ones, Certifications, Recordings */}
@@ -622,10 +622,10 @@ export default function ProfilePage() {
                 <Shield className="h-8 w-8 text-primary" />
                 <div>
                   <p className="font-medium">
-                    {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "Meemerging businessr"}
+                    {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "member"}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {svpRoleDescriptions[userProfile.svpRole as keyof typeof svpRoleDescriptions] || svpRoleDescriptions[profile.role as keyof typeof svpRoleDescriptions] || "Platform meemerging businessr"}
+                    {svpRoleDescriptions[userProfile.svpRole as keyof typeof svpRoleDescriptions] || svpRoleDescriptions[profile.role as keyof typeof svpRoleDescriptions] || "Platform member"}
                   </p>
                 </div>
               </div>
@@ -1146,7 +1146,7 @@ export default function ProfilePage() {
               <CardTitle>SVP Tools</CardTitle>
               <CardDescription>
                 Access Strategic Value+ platform tools based on your role
-                {(profile.role === "team_meemerging businessr" || profile.role === "admin") && (
+                {(profile.role === "team_member" || profile.role === "admin") && (
                   <Badge variant="secondary" className="ml-2">Team Access</Badge>
                 )}
                 {profile.role === "affiliate" && (
@@ -1157,7 +1157,7 @@ export default function ProfilePage() {
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
                 {svpTools.map((tool) => {
-                  const isTeamOrAdmin = profile.role === "team_meemerging businessr" || profile.role === "admin";
+                  const isTeamOrAdmin = profile.role === "team_member" || profile.role === "admin";
                   const hasAccess = isTeamOrAdmin ? tool.teamAccess : tool.affiliateAccess;
                   const isGrayedOut = !hasAccess;
 
@@ -1269,7 +1269,7 @@ export default function ProfilePage() {
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
                 {premiumAITools.map((tool) => {
-                  const isTeamOrAdmin = profile.role === "team_meemerging businessr" || profile.role === "admin";
+                  const isTeamOrAdmin = profile.role === "team_member" || profile.role === "admin";
                   const hasAccess = isTeamOrAdmin ? tool.teamAccess : tool.affiliateAccess;
                   const isGrayedOut = !hasAccess;
 

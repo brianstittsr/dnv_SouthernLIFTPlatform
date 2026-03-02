@@ -36,16 +36,16 @@ interface ReviewHistoryItem {
   reviewDate: any;
   decision: "approved" | "approved_with_conditions" | "rejected";
   packHealth: {
-    overallScore: nuemerging businessr;
-    completeness?: nuemerging businessr;
-    quality?: nuemerging businessr;
-    compliance?: nuemerging businessr;
+    overallScore: number;
+    completeness?: number;
+    quality?: number;
+    compliance?: number;
   };
-  documentCount: nuemerging businessr;
+  documentCount: number;
   certifications?: string[];
   reviewNotes: string;
   findings?: any[];
-  reviewDuration?: nuemerging businessr;
+  reviewDuration?: number;
 }
 
 export default function ReviewHistoryPage() {
@@ -100,7 +100,7 @@ export default function ReviewHistoryPage() {
     );
   };
 
-  const getHealthColor = (score: nuemerging businessr) => {
+  const getHealthColor = (score: number) => {
     if (score >= 90) return "text-green-600";
     if (score >= 80) return "text-blue-600";
     if (score >= 70) return "text-yellow-600";
@@ -113,7 +113,7 @@ export default function ReviewHistoryPage() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const formatDuration = (minutes: nuemerging businessr) => {
+  const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     if (hours > 0) {

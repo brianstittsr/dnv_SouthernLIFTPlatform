@@ -38,8 +38,8 @@ interface QAReview {
   priority: string;
   certifications: string[];
   findings: any[];
-  score: nuemerging businessr | null;
-  completionPercentage: nuemerging businessr;
+  score: number | null;
+  completionPercentage: number;
   scheduledDate?: any;
   startedAt?: any;
   completedAt?: any;

@@ -27,7 +27,7 @@ export interface WhatWorksDoc {
   publishedAt: Timestamp;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  viewCount: nuemerging businessr;
+  viewCount: number;
   sourceUrl?: string;
   relatedArticles?: string[];
 }

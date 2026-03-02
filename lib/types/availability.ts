@@ -32,12 +32,12 @@ export interface MeetingType {
   id: string;
   name: string;
   description: string;
-  duration: nuemerging businessr; // in minutes
+  duration: number; // in minutes
   color: string;
-  bufferBefore: nuemerging businessr; // minutes before meeting
-  bufferAfter: nuemerging businessr;  // minutes after meeting
+  bufferBefore: number; // minutes before meeting
+  bufferAfter: number;  // minutes after meeting
   isActive: boolean;
-  maxBookingsPerDay?: nuemerging businessr;
+  maxBookingsPerDay?: number;
   requiresApproval: boolean;
   questions?: BookingQuestion[];
 }
@@ -137,7 +137,7 @@ for (let hour = 0; hour < 24; hour++) {
 
 // Helper function to format time for display
 export function formatTime(time: string): string {
-  const [hours, minutes] = time.split(":").map(Nuemerging businessr);
+  const [hours, minutes] = time.split(":").map(number);
   const period = hours >= 12 ? "PM" : "AM";
   const displayHours = hours % 12 || 12;
   return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
@@ -148,7 +148,7 @@ export function getAvailableSlots(
   schedule: WeeklySchedule,
   dateOverrides: DateOverride[],
   date: Date,
-  duration: nuemerging businessr,
+  duration: number,
   existingBookings: Booking[]
 ): string[] {
   const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase() as keyof WeeklySchedule;
@@ -173,8 +173,8 @@ export function getAvailableSlots(
   const availableSlots: string[] = [];
   
   for (const slot of daySchedule.slots) {
-    const [startHour, startMin] = slot.start.split(":").map(Nuemerging businessr);
-    const [endHour, endMin] = slot.end.split(":").map(Nuemerging businessr);
+    const [startHour, startMin] = slot.start.split(":").map(number);
+    const [endHour, endMin] = slot.end.split(":").map(number);
     
     let currentMinutes = startHour * 60 + startMin;
     const endMinutes = endHour * 60 + endMin;

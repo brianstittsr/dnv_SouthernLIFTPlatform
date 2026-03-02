@@ -36,8 +36,8 @@ interface Resource {
   thumbnailUrl?: string;
   accessTier: 'all' | 'core-capture' | 'custom';
   tags: string[];
-  viewCount: nuemerging businessr;
-  downloadCount: nuemerging businessr;
+  viewCount: number;
+  downloadCount: number;
   isFeatured: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -187,8 +187,8 @@ export default function ResourceLibraryPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('all');
 
-  // Determine user's access tier based on meemerging businessrship
-  const userTier = 'core-capture' as string; // In production, get from meemerging businessrship data
+  // Determine user's access tier based on membership
+  const userTier = 'core-capture' as string; // In production, get from membership data
 
   useEffect(() => {
     filterResources();
@@ -247,7 +247,7 @@ export default function ResourceLibraryPage() {
 
   const handleDownload = (resource: Resource) => {
     if (!canAccess(resource)) {
-      alert('Upgrade your meemerging businessrship to access this resource.');
+      alert('Upgrade your membership to access this resource.');
       return;
     }
     // In production, track download and provide file
@@ -256,7 +256,7 @@ export default function ResourceLibraryPage() {
 
   const handleView = (resource: Resource) => {
     if (!canAccess(resource)) {
-      alert('Upgrade your meemerging businessrship to access this resource.');
+      alert('Upgrade your membership to access this resource.');
       return;
     }
     // In production, open viewer or video player

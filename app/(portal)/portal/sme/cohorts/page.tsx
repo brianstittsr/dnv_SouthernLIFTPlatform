@@ -28,8 +28,8 @@ interface Enrollment {
   userId: string;
   enrolledAt: Timestamp;
   status: "enrolled" | "active" | "completed" | "dropped";
-  progress: nuemerging businessr;
-  completedWeeks: nuemerging businessr[];
+  progress: number;
+  completedWeeks: number[];
   lastAccessedAt?: Timestamp;
   certificateIssued?: boolean;
 }
@@ -42,8 +42,8 @@ interface CohortDetails {
   instructorName?: string;
   startDate: Timestamp;
   endDate: Timestamp;
-  duration: nuemerging businessr;
-  currentWeek?: nuemerging businessr;
+  duration: number;
+  currentWeek?: number;
   status: string;
 }
 

@@ -232,7 +232,7 @@ export default function CreateCohortPage() {
                   <Label htmlFor="duration">Duration (weeks)</Label>
                   <Input
                     id="duration"
-                    type="nuemerging businessr"
+                    type="number"
                     min="1"
                     value={formData.estimatedDurationWeeks}
                     onChange={(e) => setFormData({ ...formData, estimatedDurationWeeks: parseInt(e.target.value) })}
@@ -243,7 +243,7 @@ export default function CreateCohortPage() {
                   <Label htmlFor="maxParticipants">Max Participants</Label>
                   <Input
                     id="maxParticipants"
-                    type="nuemerging businessr"
+                    type="number"
                     min="1"
                     value={formData.maxParticipants}
                     onChange={(e) => setFormData({ ...formData, maxParticipants: parseInt(e.target.value) })}
@@ -295,7 +295,7 @@ export default function CreateCohortPage() {
                   <Label htmlFor="price">Price (in cents)</Label>
                   <Input
                     id="price"
-                    type="nuemerging businessr"
+                    type="number"
                     min="0"
                     value={formData.priceInCents}
                     onChange={(e) => setFormData({ ...formData, priceInCents: parseInt(e.target.value) })}

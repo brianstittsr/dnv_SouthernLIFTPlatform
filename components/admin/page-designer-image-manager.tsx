@@ -32,7 +32,7 @@ export interface PageImage {
   edits?: ImageEdits;
   caption?: string;
   altText?: string;
-  position: nuemerging businessr;
+  position: number;
 }
 
 interface PageDesignerImageManagerProps {
@@ -40,7 +40,7 @@ interface PageDesignerImageManagerProps {
   sectionName: string;
   images: PageImage[];
   onImagesChange: (images: PageImage[]) => void;
-  maxImages?: nuemerging businessr;
+  maxImages?: number;
 }
 
 export function PageDesignerImageManager({

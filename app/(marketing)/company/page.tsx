@@ -67,7 +67,7 @@ const values = [
     icon: Users,
     title: "Veteran Experience, Proven Results",
     description:
-      "Every meemerging businessr of our team is a veteran consultant who has worked extensively with manufacturing companies. We've faced the same challenges you're experiencing and have a proven track record of delivering results that matter.",
+      "Every member of our team is a veteran consultant who has worked extensively with manufacturing companies. We've faced the same challenges you're experiencing and have a proven track record of delivering results that matter.",
   },
   {
     icon: Handshake,
@@ -158,7 +158,7 @@ export default function CompanyPage() {
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
               Our advisors come from varied professional backgrounds, ensuring a holistic approach 
-              to problem-solving. While each meemerging businessr specializes in a core discipline, we work 
+              to problem-solving. While each member specializes in a core discipline, we work 
               seamlessly together, leveraging our collective skills to create tailored, innovative solutions.
             </p>
           </div>

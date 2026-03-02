@@ -59,7 +59,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import type { 
   MailChimpList, 
-  MailChimpMeemerging businessr, 
+  MailChimpmember, 
   MailChimpCampaign 
 } from '@/lib/mailchimp';
 
@@ -67,7 +67,7 @@ interface AccountInfo {
   account_id: string;
   account_name: string;
   email: string;
-  total_subscribers: nuemerging businessr;
+  total_subscribers: number;
 }
 
 export default function MailChimpAdminPage() {
@@ -76,9 +76,9 @@ export default function MailChimpAdminPage() {
   const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
   const [lists, setLists] = useState<MailChimpList[]>([]);
   const [selectedList, setSelectedList] = useState<string>('');
-  const [meemerging businessrs, setMeemerging businessrs] = useState<MailChimpMeemerging businessr[]>([]);
+  const [members, setmembers] = useState<MailChimpmember[]>([]);
   const [campaigns, setCampaigns] = useState<MailChimpCampaign[]>([]);
-  const [meemerging businessrsLoading, setMeemerging businessrsLoading] = useState(false);
+  const [membersLoading, setmembersLoading] = useState(false);
   const [campaignsLoading, setCampaignsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [addSubscriberOpen, setAddSubscriberOpen] = useState(false);
@@ -97,7 +97,7 @@ export default function MailChimpAdminPage() {
 
   useEffect(() => {
     if (selectedList) {
-      fetchMeemerging businessrs(selectedList);
+      fetchmembers(selectedList);
     }
   }, [selectedList]);
 
@@ -137,18 +137,18 @@ export default function MailChimpAdminPage() {
     }
   };
 
-  const fetchMeemerging businessrs = async (listId: string) => {
-    setMeemerging businessrsLoading(true);
+  const fetchmembers = async (listId: string) => {
+    setmembersLoading(true);
     try {
-      const response = await fetch(`/api/mailchimp?action=meemerging businessrs&listId=${listId}&count=100`);
+      const response = await fetch(`/api/mailchimp?action=members&listId=${listId}&count=100`);
       if (response.ok) {
         const data = await response.json();
-        setMeemerging businessrs(data.meemerging businessrs || []);
+        setmembers(data.members || []);
       }
     } catch (error) {
-      console.error('Failed to fetch meemerging businessrs:', error);
+      console.error('Failed to fetch members:', error);
     } finally {
-      setMeemerging businessrsLoading(false);
+      setmembersLoading(false);
     }
   };
 
@@ -188,7 +188,7 @@ export default function MailChimpAdminPage() {
         toast.success('Subscriber added successfully');
         setAddSubscriberOpen(false);
         setNewSubscriber({ email: '', firstName: '', lastName: '', company: '', phone: '' });
-        fetchMeemerging businessrs(selectedList);
+        fetchmembers(selectedList);
       } else {
         const error = await response.json();
         toast.error(error.error || 'Failed to add subscriber');
@@ -212,7 +212,7 @@ export default function MailChimpAdminPage() {
 
       if (response.ok) {
         toast.success('Subscriber unsubscribed');
-        fetchMeemerging businessrs(selectedList);
+        fetchmembers(selectedList);
       } else {
         const error = await response.json();
         toast.error(error.error || 'Failed to unsubscribe');
@@ -254,10 +254,10 @@ export default function MailChimpAdminPage() {
     }
   };
 
-  const filteredMeemerging businessrs = meemerging businessrs.filter(meemerging businessr => 
-    meemerging businessr.email_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    meemerging businessr.merge_fields.FNAME?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    meemerging businessr.merge_fields.LNAME?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredmembers = members.filter(member => 
+    member.email_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.merge_fields.FNAME?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.merge_fields.LNAME?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const selectedListData = lists.find(l => l.id === selectedList);
@@ -389,7 +389,7 @@ export default function MailChimpAdminPage() {
                 <div>
                   <CardTitle>Subscribers</CardTitle>
                   <CardDescription>
-                    {selectedListData ? `${selectedListData.name} - ${selectedListData.stats.meemerging businessr_count} subscribers` : 'Select an audience'}
+                    {selectedListData ? `${selectedListData.name} - ${selectedListData.stats.member_count} subscribers` : 'Select an audience'}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -502,7 +502,7 @@ export default function MailChimpAdminPage() {
                 </div>
               </div>
 
-              {meemerging businessrsLoading ? (
+              {membersLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </div>
@@ -519,25 +519,25 @@ export default function MailChimpAdminPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredMeemerging businessrs.length === 0 ? (
+                    {filteredmembers.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                           No subscribers found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredMeemerging businessrs.map((meemerging businessr) => (
-                        <TableRow key={meemerging businessr.id}>
-                          <TableCell className="font-medium">{meemerging businessr.email_address}</TableCell>
+                      filteredmembers.map((member) => (
+                        <TableRow key={member.id}>
+                          <TableCell className="font-medium">{member.email_address}</TableCell>
                           <TableCell>
-                            {meemerging businessr.merge_fields.FNAME || meemerging businessr.merge_fields.LNAME
-                              ? `${meemerging businessr.merge_fields.FNAME || ''} ${meemerging businessr.merge_fields.LNAME || ''}`.trim()
+                            {member.merge_fields.FNAME || member.merge_fields.LNAME
+                              ? `${member.merge_fields.FNAME || ''} ${member.merge_fields.LNAME || ''}`.trim()
                               : '-'}
                           </TableCell>
-                          <TableCell>{meemerging businessr.merge_fields.COMPANY || '-'}</TableCell>
-                          <TableCell>{getStatusBadge(meemerging businessr.status)}</TableCell>
+                          <TableCell>{member.merge_fields.COMPANY || '-'}</TableCell>
+                          <TableCell>{getStatusBadge(member.status)}</TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {new Date(meemerging businessr.timestamp_signup).toLocaleDateString()}
+                            {new Date(member.timestamp_signup).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -547,9 +547,9 @@ export default function MailChimpAdminPage() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                {meemerging businessr.status === 'subscribed' && (
+                                {member.status === 'subscribed' && (
                                   <DropdownMenuItem 
-                                    onClick={() => handleUnsubscribe(meemerging businessr.email_address)}
+                                    onClick={() => handleUnsubscribe(member.email_address)}
                                     className="text-destructive"
                                   >
                                     Unsubscribe
@@ -663,7 +663,7 @@ export default function MailChimpAdminPage() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-2xl font-bold text-primary">
-                        {list.stats.meemerging businessr_count.toLocaleString()}
+                        {list.stats.member_count.toLocaleString()}
                       </div>
                       <div className="text-muted-foreground">Subscribers</div>
                     </div>

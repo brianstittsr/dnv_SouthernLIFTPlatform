@@ -329,7 +329,7 @@ export default function ConsortiumHeroAdminPage() {
                     <Label htmlFor="order">Order</Label>
                     <Input
                       id="order"
-                      type="nuemerging businessr"
+                      type="number"
                       value={formData.order}
                       onChange={(e) =>
                         setFormData({ ...formData, order: parseInt(e.target.value) || 0 })

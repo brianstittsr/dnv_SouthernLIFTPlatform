@@ -264,7 +264,7 @@ export default function SavedSMEsPage() {
                         <span className="text-sm font-medium">Certifications</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {sme.certifications.slice(0, 3).map((cert: string, idx: nuemerging businessr) => (
+                        {sme.certifications.slice(0, 3).map((cert: string, idx: number) => (
                           <Badge key={idx} variant="outline" className="text-xs">
                             {cert}
                           </Badge>
@@ -285,7 +285,7 @@ export default function SavedSMEsPage() {
                         <span className="text-sm font-medium">Tags</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {saved.tags.map((tag: string, idx: nuemerging businessr) => (
+                        {saved.tags.map((tag: string, idx: number) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
                             {tag}
                           </Badge>

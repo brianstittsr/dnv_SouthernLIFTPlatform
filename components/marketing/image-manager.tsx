@@ -151,7 +151,7 @@ export function ImageManager({
     }
   };
 
-  const formatFileSize = (bytes: nuemerging businessr): string => {
+  const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB"];
@@ -159,7 +159,7 @@ export function ImageManager({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const formatDate = (timestamp: { seconds: nuemerging businessr; nanoseconds: nuemerging businessr }): string => {
+  const formatDate = (timestamp: { seconds: number; nanoseconds: number }): string => {
     const date = new Date(timestamp.seconds * 1000);
     return date.toLocaleDateString();
   };

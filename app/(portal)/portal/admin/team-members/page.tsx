@@ -69,13 +69,13 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { listImages, getImage, base64ToDataUrl, type ImageMetadata } from "@/lib/firebase-images";
-import { COLLECTIONS, type TeamMeemerging businessrDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
-import { logTeamMeemerging businessrAdded, logActivity } from "@/lib/activity-logger";
+import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
+import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
 import Link from "next/link";
 
-// Seed data for Team Meemerging businessrs
-const seedTeamMeemerging businessrs: Omit<TeamMeemerging businessrDoc, "id" | "createdAt" | "updatedAt">[] = [
+// Seed data for Team members
+const seedTeamMembers: Omit<TeamMemberDoc, "id" | "createdAt" | "updatedAt">[] = [
   { firstName: "Al", lastName: "Lenac", emailPrimary: "al@manufacftureresults.com", emailSecondary: "albertlenac@gmail.com", mobile: "(973) 723-7448", expertise: "R&D Tax Credits", role: "affiliate", status: "active" },
   { firstName: "Alex", lastName: "West", emailPrimary: "alex@itscnow.com", mobile: "(518) 801-7315", expertise: "Cybersecurity Consulting", role: "affiliate", status: "active" },
   { firstName: "Alysha", lastName: "Campbell", emailPrimary: "alysha@cultureshifthr.com", expertise: "Human Resources", role: "affiliate", status: "active" },
@@ -121,12 +121,12 @@ const seedTeamMeemerging businessrs: Omit<TeamMeemerging businessrDoc, "id" | "c
   { firstName: "Vishnu", lastName: "Rajan", emailPrimary: "vrthenorth@gmail.com", expertise: "AI App Builder", role: "affiliate", status: "active" },
 ];
 
-export default function TeamMeemerging businessrsPage() {
-  const [meemerging businessrs, setMeemerging businessrs] = useState<TeamMeemerging businessrDoc[]>([]);
+export default function TeammembersPage() {
+  const [members, setMembers] = useState<TeamMemberDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingMeemerging businessr, setEditingMeemerging businessr] = useState<TeamMeemerging businessrDoc | null>(null);
+  const [editingMember, setEditingMember] = useState<TeamMemberDoc | null>(null);
   const [seeding, setSeeding] = useState(false);
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
@@ -152,7 +152,7 @@ export default function TeamMeemerging businessrsPage() {
     bio: "",
     linkedIn: "",
     website: "",
-    role: "affiliate" as TeamMeemerging businessrDoc["role"],
+    role: "affiliate" as TeamMemberDoc["role"],
     status: "active" as "active" | "inactive" | "pending",
     // Leadership flags
     isCEO: false,
@@ -163,8 +163,8 @@ export default function TeamMeemerging businessrsPage() {
     teamTag: "affiliate" as TeamMemberDoc["teamTag"],
   });
 
-  // Fetch meemerging businessrs from Firebase
-  const fetchMeemerging businessrs = async () => {
+  // Fetch members from Firebase
+  const fetchMembers = async () => {
     if (!db) {
       console.error("Firebase not initialized");
       setLoading(false);
@@ -172,23 +172,23 @@ export default function TeamMeemerging businessrsPage() {
     }
     setLoading(true);
     try {
-      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS));
-      const meemerging businessrsData: TeamMeemerging businessrDoc[] = [];
+      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
+      const membersData: TeamMemberDoc[] = [];
       querySnapshot.forEach((docSnap) => {
-        meemerging businessrsData.push({ id: docSnap.id, ...docSnap.data() } as TeamMeemerging businessrDoc);
+        membersData.push({ id: docSnap.id, ...docSnap.data() } as TeamMemberDoc);
       });
       // Sort by last name (handle undefined values)
-      meemerging businessrsData.sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''));
-      setMeemerging businessrs(meemerging businessrsData);
+      membersData.sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''));
+      setMembers(membersData);
     } catch (error) {
-      console.error("Error fetching meemerging businessrs:", error);
+      console.error("Error fetching members:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMeemerging businessrs();
+    fetchMembers();
     fetchSchedulingQueue();
   }, []);
 
@@ -237,25 +237,25 @@ export default function TeamMeemerging businessrsPage() {
       alert("Firebase not initialized. Check your environment variables.");
       return;
     }
-    if (!confirm(`This will import ${seedTeamMeemerging businessrs.length} team meemerging businessrs. Continue?`)) return;
+    if (!confirm(`This will import ${seedTeamMembers.length} team members. Continue?`)) return;
     
     setSeeding(true);
     try {
       const batch = writeBatch(db);
-      const collectionRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
+      const collectionRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
       
-      for (const meemerging businessr of seedTeamMeemerging businessrs) {
+      for (const member of seedTeamMembers) {
         const docRef = doc(collectionRef);
         batch.set(docRef, {
-          ...meemerging businessr,
+          ...member,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
       }
       
       await batch.commit();
-      await fetchMeemerging businessrs();
-      alert(`Successfully imported ${seedTeamMeemerging businessrs.length} team meemerging businessrs!`);
+      await fetchMembers();
+      alert(`Successfully imported ${seedTeamMembers.length} team members!`);
     } catch (error) {
       console.error("Error seeding data:", error);
       alert("Error importing data. Check console for details.");
@@ -264,15 +264,15 @@ export default function TeamMeemerging businessrsPage() {
     }
   };
 
-  // Add or update meemerging businessr
-  const handleSaveMeemerging businessr = async () => {
+  // Add or update member
+  const handleSaveMember = async () => {
     if (!db) {
       alert("Firebase not initialized");
       return;
     }
     try {
-      if (editingMeemerging businessr) {
-        const docRef = doc(db, COLLECTIONS.TEAM_MEemerging businessRS, editingMeemerging businessr.id);
+      if (editingMember) {
+        const docRef = doc(db, COLLECTIONS.TEAM_MEMBERS, editingMember.id);
         await updateDoc(docRef, {
           ...formData,
           ...(avatarUrl ? { avatar: avatarUrl } : {}),
@@ -281,33 +281,33 @@ export default function TeamMeemerging businessrsPage() {
         // Log activity
         await logActivity({
           type: "update",
-          entityType: "team-meemerging businessr",
-          entityId: editingMeemerging businessr.id,
+          entityType: "team-member",
+          entityId: editingMember.id,
           entityName: `${formData.firstName} ${formData.lastName}`,
-          description: `Team meemerging businessr updated: ${formData.firstName} ${formData.lastName}`,
+          description: `Team member updated: ${formData.firstName} ${formData.lastName}`,
         });
       } else {
-        const docRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEemerging businessRS), {
+        const docRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
           ...formData,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
         // Log activity
-        await logTeamMeemerging businessrAdded(docRef.id, `${formData.firstName} ${formData.lastName}`);
+        await logTeammemberAdded(docRef.id, `${formData.firstName} ${formData.lastName}`);
       }
       setDialogOpen(false);
       resetForm();
-      await fetchMeemerging businessrs();
+      await fetchMembers();
     } catch (error) {
-      console.error("Error saving meemerging businessr:", error);
-      alert("Error saving meemerging businessr. Check console for details.");
+      console.error("Error saving member:", error);
+      alert("Error saving member. Check console for details.");
     }
   };
 
-  // Update all meemerging businessrs' website from email domain
+  // Update all members' website from email domain
   const updateWebsitesFromEmail = async () => {
     if (!db) return;
-    if (!confirm("This will update the website field for all team meemerging businessrs (without existing websites) based on their email domain. Continue?")) return;
+    if (!confirm("This will update the website field for all team members (without existing websites) based on their email domain. Continue?")) return;
     
     // Personal email domains to exclude
     const personalDomains = [
@@ -322,26 +322,26 @@ export default function TeamMeemerging businessrsPage() {
       let skippedPersonal = 0;
       let skippedExisting = 0;
       
-      for (const meemerging businessr of meemerging businessrs) {
-        // Check if meemerging businessr has an email and no website (or empty website)
-        const hasEmail = meemerging businessr.emailPrimary && meemerging businessr.emailPrimary.includes("@");
-        const hasWebsite = meemerging businessr.website && meemerging businessr.website.trim().length > 0;
+      for (const member of members) {
+        // Check if member has an email and no website (or empty website)
+        const hasEmail = member.emailPrimary && member.emailPrimary.includes("@");
+        const hasWebsite = member.website && member.website.trim().length > 0;
         
         if (hasEmail && !hasWebsite) {
-          const emailDomain = meemerging businessr.emailPrimary.split("@")[1]?.toLowerCase();
+          const emailDomain = member.emailPrimary.split("@")[1]?.toLowerCase();
           
           // Check if it's a personal email domain
           const isPersonalDomain = personalDomains.some(pd => emailDomain === pd || emailDomain?.endsWith(`.${pd}`));
           
           if (emailDomain && !isPersonalDomain) {
             const website = `https://www.${emailDomain}`;
-            const docRef = doc(db, COLLECTIONS.TEAM_MEemerging businessRS, meemerging businessr.id);
+            const docRef = doc(db, COLLECTIONS.TEAM_MEMBERS, member.id);
             batch.update(docRef, { website, updatedAt: Timestamp.now() });
             updateCount++;
-            console.log(`Updating ${meemerging businessr.firstName} ${meemerging businessr.lastName}: ${website}`);
+            console.log(`Updating ${member.firstName} ${member.lastName}: ${website}`);
           } else if (isPersonalDomain) {
             skippedPersonal++;
-            console.log(`Skipped personal email: ${meemerging businessr.firstName} ${meemerging businessr.lastName} (${emailDomain})`);
+            console.log(`Skipped personal email: ${member.firstName} ${member.lastName} (${emailDomain})`);
           }
         } else if (hasWebsite) {
           skippedExisting++;
@@ -350,10 +350,10 @@ export default function TeamMeemerging businessrsPage() {
       
       if (updateCount > 0) {
         await batch.commit();
-        alert(`Updated ${updateCount} team meemerging businessrs with website URLs.\nSkipped: ${skippedExisting} with existing websites, ${skippedPersonal} with personal emails.`);
-        await fetchMeemerging businessrs();
+        alert(`Updated ${updateCount} team members with website URLs.\nSkipped: ${skippedExisting} with existing websites, ${skippedPersonal} with personal emails.`);
+        await fetchMembers();
       } else {
-        alert(`No meemerging businessrs needed website updates.\nSkipped: ${skippedExisting} with existing websites, ${skippedPersonal} with personal emails.`);
+        alert(`No members needed website updates.\nSkipped: ${skippedExisting} with existing websites, ${skippedPersonal} with personal emails.`);
       }
     } catch (error) {
       console.error("Error updating websites:", error);
@@ -361,56 +361,56 @@ export default function TeamMeemerging businessrsPage() {
     }
   };
 
-  // Delete meemerging businessr
-  const handleDeleteMeemerging businessr = async (id: string, meemerging businessrName: string) => {
+  // Delete member
+  const handleDeleteMember = async (id: string, memberName: string) => {
     if (!db) return;
-    if (!confirm("Are you sure you want to delete this team meemerging businessr?")) return;
+    if (!confirm("Are you sure you want to delete this team member?")) return;
     try {
-      await deleteDoc(doc(db, COLLECTIONS.TEAM_MEemerging businessRS, id));
+      await deleteDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, id));
       // Log activity
       await logActivity({
         type: "delete",
-        entityType: "team-meemerging businessr",
+        entityType: "team-member",
         entityId: id,
-        entityName: meemerging businessrName,
-        description: `Team meemerging businessr removed: ${meemerging businessrName}`,
+        entityName: memberName,
+        description: `Team member removed: ${memberName}`,
       });
-      await fetchMeemerging businessrs();
+      await fetchMembers();
     } catch (error) {
-      console.error("Error deleting meemerging businessr:", error);
+      console.error("Error deleting member:", error);
     }
   };
 
-  // Edit meemerging businessr
-  const handleEditMeemerging businessr = (meemerging businessr: TeamMeemerging businessrDoc) => {
-    setEditingMeemerging businessr(meemerging businessr);
+  // Edit member
+  const handleEditMember = (member: TeamMemberDoc) => {
+    setEditingMember(member);
     setFormData({
-      firstName: meemerging businessr.firstName,
-      lastName: meemerging businessr.lastName,
-      emailPrimary: meemerging businessr.emailPrimary,
-      emailSecondary: meemerging businessr.emailSecondary || "",
-      mobile: meemerging businessr.mobile || "",
-      expertise: meemerging businessr.expertise,
-      title: meemerging businessr.title || "",
-      company: meemerging businessr.company || "",
-      location: meemerging businessr.location || "",
-      bio: meemerging businessr.bio || "",
-      linkedIn: meemerging businessr.linkedIn || "",
-      website: meemerging businessr.website || "",
-      role: meemerging businessr.role,
-      status: meemerging businessr.status,
-      isCEO: meemerging businessr.isCEO || false,
-      isCOO: meemerging businessr.isCOO || false,
-      isCTO: meemerging businessr.isCTO || false,
-      isCRO: meemerging businessr.isCRO || false,
-      teamTag: meemerging businessr.teamTag || "affiliate",
+      firstName: member.firstName,
+      lastName: member.lastName,
+      emailPrimary: member.emailPrimary,
+      emailSecondary: member.emailSecondary || "",
+      mobile: member.mobile || "",
+      expertise: member.expertise,
+      title: member.title || "",
+      company: member.company || "",
+      location: member.location || "",
+      bio: member.bio || "",
+      linkedIn: member.linkedIn || "",
+      website: member.website || "",
+      role: member.role,
+      status: member.status,
+      isCEO: member.isCEO || false,
+      isCOO: member.isCOO || false,
+      isCTO: member.isCTO || false,
+      isCRO: member.isCRO || false,
+      teamTag: member.teamTag || "affiliate",
     });
-    setAvatarUrl(meemerging businessr.avatar || "");
+    setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
   };
 
   const resetForm = () => {
-    setEditingMeemerging businessr(null);
+    setEditingMember(null);
     setAvatarUrl("");
     setFormData({
       firstName: "",
@@ -436,18 +436,18 @@ export default function TeamMeemerging businessrsPage() {
   };
 
   // 1-to-1 Scheduling functions
-  const addToSchedulingList = async (meemerging businessr: TeamMeemerging businessrDoc) => {
+  const addToSchedulingList = async (member: TeamMemberDoc) => {
     if (!db) return;
     // Check if already in queue
-    if (schedulingList.find(m => m.teamMeemerging businessrId === meemerging businessr.id)) return;
+    if (schedulingList.find(m => m.teammemberId === member.id)) return;
     
     try {
       const queueItem: Omit<OneToOneQueueItemDoc, 'id'> = {
-        teamMeemerging businessrId: meemerging businessr.id,
-        teamMeemerging businessrName: `${meemerging businessr.firstName} ${meemerging businessr.lastName}`,
-        teamMeemerging businessrEmail: meemerging businessr.emailPrimary,
-        teamMeemerging businessrExpertise: meemerging businessr.expertise || '',
-        teamMeemerging businessrAvatar: meemerging businessr.avatar || '',
+        teammemberId: member.id,
+        teammemberName: `${member.firstName} ${member.lastName}`,
+        teammemberEmail: member.emailPrimary,
+        teammemberExpertise: member.expertise || '',
+        teammemberAvatar: member.avatar || '',
         status: 'queued',
         priority: schedulingList.length + 1,
         addedBy: 'current-user', // TODO: Get actual user ID
@@ -475,12 +475,12 @@ export default function TeamMeemerging businessrsPage() {
     }
   };
 
-  const isInSchedulingList = (meemerging businessrId: string) => {
-    return schedulingList.some(m => m.teamMeemerging businessrId === meemerging businessrId);
+  const isInSchedulingList = (memberId: string) => {
+    return schedulingList.some(m => m.teammemberId === memberId);
   };
 
-  const getQueueItemId = (meemerging businessrId: string) => {
-    const item = schedulingList.find(m => m.teamMeemerging businessrId === meemerging businessrId);
+  const getQueueItemId = (memberId: string) => {
+    const item = schedulingList.find(m => m.teammemberId === memberId);
     return item?.id;
   };
 
@@ -498,16 +498,16 @@ export default function TeamMeemerging businessrsPage() {
     }
   };
 
-  // Filter meemerging businessrs
-  const filteredMeemerging businessrs = meemerging businessrs.filter((meemerging businessr) => {
+  // Filter members
+  const filteredmembers = members.filter((member) => {
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch = 
-      (meemerging businessr.firstName || '').toLowerCase().includes(searchLower) ||
-      (meemerging businessr.lastName || '').toLowerCase().includes(searchLower) ||
-      (meemerging businessr.emailPrimary || '').toLowerCase().includes(searchLower) ||
-      (meemerging businessr.expertise || '').toLowerCase().includes(searchLower);
+      (member.firstName || '').toLowerCase().includes(searchLower) ||
+      (member.lastName || '').toLowerCase().includes(searchLower) ||
+      (member.emailPrimary || '').toLowerCase().includes(searchLower) ||
+      (member.expertise || '').toLowerCase().includes(searchLower);
     
-    const matchesRole = roleFilter === "all" || meemerging businessr.role === roleFilter;
+    const matchesRole = roleFilter === "all" || member.role === roleFilter;
     
     return matchesSearch && matchesRole;
   });
@@ -516,9 +516,9 @@ export default function TeamMeemerging businessrsPage() {
     return `${(firstName || '')[0] || ""}${(lastName || '')[0] || ""}`.toUpperCase();
   };
 
-  const getAvatarSrc = (meemerging businessr: TeamMeemerging businessrDoc): string => {
-    if (meemerging businessr.avatar) return meemerging businessr.avatar;
-    const email = (meemerging businessr.emailPrimary || "").trim().toLowerCase();
+  const getAvatarSrc = (member: TeamMemberDoc): string => {
+    if (member.avatar) return member.avatar;
+    const email = (member.emailPrimary || "").trim().toLowerCase();
     let hash = 0;
     for (let i = 0; i < email.length; i++) {
       hash = ((hash << 5) - hash) + email.charCodeAt(i);
@@ -553,28 +553,28 @@ export default function TeamMeemerging businessrsPage() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
             <span>Admin</span>
             <ChevronRight className="h-4 w-4" />
-            <span>Team Meemerging businessrs</span>
+            <span>Team members</span>
           </div>
-          <h1 className="text-3xl font-bold">Team Meemerging businessrs</h1>
+          <h1 className="text-3xl font-bold">Team members</h1>
           <p className="text-muted-foreground">
-            Manage SVP team meemerging businessrs, affiliates, and consultants
+            Manage SVP team members, affiliates, and consultants
           </p>
         </div>
         <div className="flex gap-2">
-          {meemerging businessrs.length > 0 && (
+          {members.length > 0 && (
             <Button variant="outline" onClick={updateWebsitesFromEmail}>
               <Globe className="mr-2 h-4 w-4" />
               Update Websites
             </Button>
           )}
-          {meemerging businessrs.length === 0 && (
+          {members.length === 0 && (
             <Button variant="outline" onClick={handleSeedData} disabled={seeding}>
               {seeding ? (
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Upload className="mr-2 h-4 w-4" />
               )}
-              Import {seedTeamMeemerging businessrs.length} Meemerging businessrs
+              Import {seedTeamMembers.length} members
             </Button>
           )}
           <Dialog open={dialogOpen} onOpenChange={(open) => {
@@ -584,18 +584,18 @@ export default function TeamMeemerging businessrsPage() {
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Meemerging businessr
+                Add member
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
-                  {editingMeemerging businessr ? "Edit Team Meemerging businessr" : "Add Team Meemerging businessr"}
+                  {editingMember ? "Edit Team member" : "Add Team member"}
                 </DialogTitle>
                 <DialogDescription>
-                  {editingMeemerging businessr 
-                    ? "Update the team meemerging businessr's information below."
-                    : "Enter the details for the new team meemerging businessr."}
+                  {editingMember 
+                    ? "Update the team member's information below."
+                    : "Enter the details for the new team member."}
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -604,7 +604,7 @@ export default function TeamMeemerging businessrsPage() {
                   <Label>Profile Photo</Label>
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16 border-2 border-muted">
-                      <AvatarImage src={avatarUrl || (editingMeemerging businessr ? getAvatarSrc(editingMeemerging businessr) : undefined)} />
+                      <AvatarImage src={avatarUrl || (editingMember ? getAvatarSrc(editingMember) : undefined)} />
                       <AvatarFallback className="text-lg">
                         {getInitials(formData.firstName, formData.lastName)}
                       </AvatarFallback>
@@ -689,14 +689,14 @@ export default function TeamMeemerging businessrsPage() {
                       ) : (
                         <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
                           {galleryImages.map((img) => {
-                            const linkedMeemerging businessr = meemerging businessrs.find((m) => m.avatar === img.id);
+                            const linkedmember = members.find((m) => m.avatar === img.id);
                             const isSelected = avatarUrl === img.id;
                             return (
                               <GalleryImageTile
                                 key={img.id}
                                 img={img}
                                 isSelected={isSelected}
-                                linkedMeemerging businessrName={linkedMeemerging businessr ? `${linkedMeemerging businessr.firstName} ${linkedMeemerging businessr.lastName}` : undefined}
+                                linkedmemberName={linkedmember ? `${linkedmember.firstName} ${linkedmember.lastName}` : undefined}
                                 onSelect={async (id) => {
                                   const full = await getImage(id);
                                   if (full) {
@@ -775,7 +775,7 @@ export default function TeamMeemerging businessrsPage() {
                     <Select
                       value={formData.role}
                       onValueChange={(value) => 
-                        setFormData({ ...formData, role: value as TeamMeemerging businessrDoc["role"] })
+                        setFormData({ ...formData, role: value as TeamMemberDoc["role"] })
                       }
                     >
                       <SelectTrigger>
@@ -900,7 +900,7 @@ export default function TeamMeemerging businessrsPage() {
                 <div className="space-y-3 p-4 border rounded-lg bg-muted/50">
                   <Label className="text-sm font-medium">Leadership Roles (for About/Leadership pages)</Label>
                   <p className="text-xs text-muted-foreground mb-3">
-                    Check the boxes below to display this team meemerging businessr on the About and Leadership pages with the corresponding role.
+                    Check the boxes below to display this team member on the About and Leadership pages with the corresponding role.
                   </p>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2">
@@ -958,8 +958,8 @@ export default function TeamMeemerging businessrsPage() {
                 <Button variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleSaveMeemerging businessr} disabled={!formData.firstName || !formData.lastName || !formData.emailPrimary || !formData.expertise}>
-                  {editingMeemerging businessr ? "Update Meemerging businessr" : "Add Meemerging businessr"}
+                <Button onClick={handleSaveMember} disabled={!formData.firstName || !formData.lastName || !formData.emailPrimary || !formData.expertise}>
+                  {editingMember ? "Update member" : "Add member"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -971,10 +971,10 @@ export default function TeamMeemerging businessrsPage() {
       <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Meemerging businessrs</CardTitle>
+            <CardTitle className="text-sm font-medium">Total members</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{meemerging businessrs.length}</div>
+            <div className="text-2xl font-bold">{members.length}</div>
             <p className="text-xs text-muted-foreground">In the network</p>
           </CardContent>
         </Card>
@@ -984,7 +984,7 @@ export default function TeamMeemerging businessrsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {meemerging businessrs.filter((m) => m.role === "admin").length}
+              {members.filter((m) => m.role === "admin").length}
             </div>
             <p className="text-xs text-muted-foreground">Platform admins</p>
           </CardContent>
@@ -995,9 +995,9 @@ export default function TeamMeemerging businessrsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {meemerging businessrs.filter((m) => m.role === "team").length}
+              {members.filter((m) => m.role === "team").length}
             </div>
-            <p className="text-xs text-muted-foreground">Core team meemerging businessrs</p>
+            <p className="text-xs text-muted-foreground">Core team members</p>
           </CardContent>
         </Card>
         <Card>
@@ -1006,7 +1006,7 @@ export default function TeamMeemerging businessrsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {meemerging businessrs.filter((m) => m.role === "affiliate").length}
+              {members.filter((m) => m.role === "affiliate").length}
             </div>
             <p className="text-xs text-muted-foreground">Network affiliates</p>
           </CardContent>
@@ -1017,7 +1017,7 @@ export default function TeamMeemerging businessrsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {meemerging businessrs.filter((m) => m.status === "active").length}
+              {members.filter((m) => m.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">Currently active</p>
           </CardContent>
@@ -1077,7 +1077,7 @@ export default function TeamMeemerging businessrsPage() {
         </CardContent>
       </Card>
 
-      {/* Meemerging businessrs Content */}
+      {/* members Content */}
       {loading ? (
         <Card>
           <CardContent className="py-8">
@@ -1086,25 +1086,25 @@ export default function TeamMeemerging businessrsPage() {
             </div>
           </CardContent>
         </Card>
-      ) : filteredMeemerging businessrs.length === 0 ? (
+      ) : filteredmembers.length === 0 ? (
         <Card>
           <CardContent className="py-8">
             <div className="text-center">
               <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No team meemerging businessrs found</h3>
+              <h3 className="text-lg font-medium">No team members found</h3>
               <p className="text-muted-foreground mb-4">
-                {meemerging businessrs.length === 0 
-                  ? "Get started by importing the initial team meemerging businessr data."
+                {members.length === 0 
+                  ? "Get started by importing the initial team member data."
                   : "Try adjusting your search or filter."}
               </p>
-              {meemerging businessrs.length === 0 && (
+              {members.length === 0 && (
                 <Button onClick={handleSeedData} disabled={seeding}>
                   {seeding ? (
                     <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <Upload className="mr-2 h-4 w-4" />
                   )}
-                  Import {seedTeamMeemerging businessrs.length} Meemerging businessrs
+                  Import {seedTeamMembers.length} members
                 </Button>
               )}
             </div>
@@ -1116,7 +1116,7 @@ export default function TeamMeemerging businessrsPage() {
           <CardHeader>
             <CardTitle>Team Directory</CardTitle>
             <CardDescription>
-              {filteredMeemerging businessrs.length} meemerging businessr{filteredMeemerging businessrs.length !== 1 ? "s" : ""} found
+              {filteredmembers.length} member{filteredmembers.length !== 1 ? "s" : ""} found
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -1134,25 +1134,25 @@ export default function TeamMeemerging businessrsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredMeemerging businessrs.map((meemerging businessr) => (
-                    <TableRow key={meemerging businessr.id}>
+                  {filteredmembers.map((member) => (
+                    <TableRow key={member.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9">
-                            <AvatarImage src={getAvatarSrc(meemerging businessr)} />
+                            <AvatarImage src={getAvatarSrc(member)} />
                             <AvatarFallback className="text-xs">
-                              {getInitials(meemerging businessr.firstName, meemerging businessr.lastName)}
+                              {getInitials(member.firstName, member.lastName)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
                             <button
-                              onClick={() => handleEditMeemerging businessr(meemerging businessr)}
+                              onClick={() => handleEditMember(member)}
                               className="font-medium hover:underline text-left text-primary"
                             >
-                              {meemerging businessr.firstName} {meemerging businessr.lastName}
+                              {member.firstName} {member.lastName}
                             </button>
-                            {meemerging businessr.title && (
-                              <p className="text-xs text-muted-foreground">{meemerging businessr.title}</p>
+                            {member.title && (
+                              <p className="text-xs text-muted-foreground">{member.title}</p>
                             )}
                           </div>
                         </div>
@@ -1161,34 +1161,34 @@ export default function TeamMeemerging businessrsPage() {
                         <div className="space-y-1">
                           <div className="flex items-center gap-1 text-sm">
                             <Mail className="h-3 w-3 text-muted-foreground" />
-                            <a href={`mailto:${meemerging businessr.emailPrimary}`} className="hover:underline">
-                              {meemerging businessr.emailPrimary}
+                            <a href={`mailto:${member.emailPrimary}`} className="hover:underline">
+                              {member.emailPrimary}
                             </a>
                           </div>
-                          {meemerging businessr.mobile && (
+                          {member.mobile && (
                             <div className="flex items-center gap-1 text-sm text-muted-foreground">
                               <Phone className="h-3 w-3" />
-                              {meemerging businessr.mobile}
+                              {member.mobile}
                             </div>
                           )}
                         </div>
                       </TableCell>
                       <TableCell className="hidden lg:table-cell max-w-xs">
-                        <p className="text-sm truncate" title={meemerging businessr.expertise}>
-                          {meemerging businessr.expertise}
+                        <p className="text-sm truncate" title={member.expertise}>
+                          {member.expertise}
                         </p>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {meemerging businessr.website ? (
+                        {member.website ? (
                           <a
-                            href={meemerging businessr.website.startsWith('http') ? meemerging businessr.website : `https://${meemerging businessr.website}`}
+                            href={member.website.startsWith('http') ? member.website : `https://${member.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 text-sm text-primary hover:underline"
                           >
                             <Globe className="h-3 w-3" />
                             <span className="truncate max-w-[120px]">
-                              {meemerging businessr.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                              {member.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                             </span>
                             <ExternalLink className="h-3 w-3" />
                           </a>
@@ -1196,14 +1196,14 @@ export default function TeamMeemerging businessrsPage() {
                           <span className="text-muted-foreground text-sm">—</span>
                         )}
                       </TableCell>
-                      <TableCell>{getRoleBadge(meemerging businessr.role)}</TableCell>
+                      <TableCell>{getRoleBadge(member.role)}</TableCell>
                       <TableCell>
-                        {meemerging businessr.status === "active" ? (
+                        {member.status === "active" ? (
                           <Badge variant="outline" className="text-green-600 border-green-600">
                             <UserCheck className="h-3 w-3 mr-1" />
                             Active
                           </Badge>
-                        ) : meemerging businessr.status === "pending" ? (
+                        ) : member.status === "pending" ? (
                           <Badge variant="outline" className="text-yellow-600 border-yellow-600">
                             Pending
                           </Badge>
@@ -1217,31 +1217,31 @@ export default function TeamMeemerging businessrsPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Button
-                            variant={isInSchedulingList(meemerging businessr.id) ? "secondary" : "ghost"}
+                            variant={isInSchedulingList(member.id) ? "secondary" : "ghost"}
                             size="icon"
                             onClick={() => {
-                              const queueItemId = getQueueItemId(meemerging businessr.id);
+                              const queueItemId = getQueueItemId(member.id);
                               if (queueItemId) {
                                 removeFromSchedulingList(queueItemId);
                               } else {
-                                addToSchedulingList(meemerging businessr);
+                                addToSchedulingList(member);
                               }
                             }}
-                            title={isInSchedulingList(meemerging businessr.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
+                            title={isInSchedulingList(member.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
                           >
-                            <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(meemerging businessr.id) ? "text-primary" : ""}`} />
+                            <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(member.id) ? "text-primary" : ""}`} />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleEditMeemerging businessr(meemerging businessr)}
+                            onClick={() => handleEditMember(member)}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleDeleteMeemerging businessr(meemerging businessr.id, `${meemerging businessr.firstName} ${meemerging businessr.lastName}`)}
+                            onClick={() => handleDeleteMember(member.id, `${member.firstName} ${member.lastName}`)}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -1257,55 +1257,55 @@ export default function TeamMeemerging businessrsPage() {
       ) : (
         /* Card View */
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredMeemerging businessrs.map((meemerging businessr) => (
-            <Card key={meemerging businessr.id} className="overflow-hidden">
+          {filteredmembers.map((member) => (
+            <Card key={member.id} className="overflow-hidden">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={getAvatarSrc(meemerging businessr)} />
+                      <AvatarImage src={getAvatarSrc(member)} />
                       <AvatarFallback>
-                        {getInitials(meemerging businessr.firstName, meemerging businessr.lastName)}
+                        {getInitials(member.firstName, member.lastName)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <CardTitle className="text-lg">
-                        {meemerging businessr.firstName} {meemerging businessr.lastName}
+                        {member.firstName} {member.lastName}
                       </CardTitle>
-                      {meemerging businessr.title && (
-                        <CardDescription>{meemerging businessr.title}</CardDescription>
+                      {member.title && (
+                        <CardDescription>{member.title}</CardDescription>
                       )}
                     </div>
                   </div>
-                  {getRoleBadge(meemerging businessr.role)}
+                  {getRoleBadge(member.role)}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Expertise</p>
-                  <p className="text-sm">{meemerging businessr.expertise}</p>
+                  <p className="text-sm">{member.expertise}</p>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-sm">
                     <Mail className="h-3 w-3 text-muted-foreground" />
-                    <a href={`mailto:${meemerging businessr.emailPrimary}`} className="hover:underline truncate">
-                      {meemerging businessr.emailPrimary}
+                    <a href={`mailto:${member.emailPrimary}`} className="hover:underline truncate">
+                      {member.emailPrimary}
                     </a>
                   </div>
-                  {meemerging businessr.mobile && (
+                  {member.mobile && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Phone className="h-3 w-3" />
-                      {meemerging businessr.mobile}
+                      {member.mobile}
                     </div>
                   )}
                 </div>
                 <div className="flex items-center justify-between pt-2">
-                  {meemerging businessr.status === "active" ? (
+                  {member.status === "active" ? (
                     <Badge variant="outline" className="text-green-600 border-green-600">
                       <UserCheck className="h-3 w-3 mr-1" />
                       Active
                     </Badge>
-                  ) : meemerging businessr.status === "pending" ? (
+                  ) : member.status === "pending" ? (
                     <Badge variant="outline" className="text-yellow-600 border-yellow-600">
                       Pending
                     </Badge>
@@ -1317,31 +1317,31 @@ export default function TeamMeemerging businessrsPage() {
                   )}
                   <div className="flex gap-1">
                     <Button
-                      variant={isInSchedulingList(meemerging businessr.id) ? "secondary" : "outline"}
+                      variant={isInSchedulingList(member.id) ? "secondary" : "outline"}
                       size="sm"
                       onClick={() => {
-                        const queueItemId = getQueueItemId(meemerging businessr.id);
+                        const queueItemId = getQueueItemId(member.id);
                         if (queueItemId) {
                           removeFromSchedulingList(queueItemId);
                         } else {
-                          addToSchedulingList(meemerging businessr);
+                          addToSchedulingList(member);
                         }
                       }}
-                      title={isInSchedulingList(meemerging businessr.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
+                      title={isInSchedulingList(member.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
                     >
-                      <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(meemerging businessr.id) ? "text-primary" : ""}`} />
+                      <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(member.id) ? "text-primary" : ""}`} />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleEditMeemerging businessr(meemerging businessr)}
+                      onClick={() => handleEditMember(member)}
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDeleteMeemerging businessr(meemerging businessr.id, `${meemerging businessr.firstName} ${meemerging businessr.lastName}`)}
+                      onClick={() => handleDeleteMember(member.id, `${member.firstName} ${member.lastName}`)}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -1374,8 +1374,8 @@ export default function TeamMeemerging businessrsPage() {
             {schedulingList.length === 0 ? (
               <div className="text-center py-6 text-muted-foreground">
                 <CalendarPlus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No meemerging businessrs added yet</p>
-                <p className="text-xs">Click the calendar icon on any meemerging businessr to add them</p>
+                <p className="text-sm">No members added yet</p>
+                <p className="text-xs">Click the calendar icon on any member to add them</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -1386,17 +1386,17 @@ export default function TeamMeemerging businessrsPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={queueItem.teamMeemerging businessrAvatar} />
+                        <AvatarImage src={queueItem.teammemberAvatar} />
                         <AvatarFallback className="text-xs">
-                          {(queueItem.teamMeemerging businessrName || '').split(' ').filter(n => n).map(n => n[0]).join('')}
+                          {(queueItem.teammemberName || '').split(' ').filter(n => n).map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">
-                          {queueItem.teamMeemerging businessrName}
+                          {queueItem.teammemberName}
                         </p>
                         <p className="text-xs text-muted-foreground truncate max-w-[180px]">
-                          {queueItem.teamMeemerging businessrExpertise}
+                          {queueItem.teammemberExpertise}
                         </p>
                       </div>
                     </div>
@@ -1450,11 +1450,11 @@ export default function TeamMeemerging businessrsPage() {
 interface GalleryImageTileProps {
   img: ImageMetadata;
   isSelected: boolean;
-  linkedMeemerging businessrName?: string;
+  linkedmemberName?: string;
   onSelect: (id: string) => Promise<void>;
 }
 
-function GalleryImageTile({ img, isSelected, linkedMeemerging businessrName, onSelect }: GalleryImageTileProps) {
+function GalleryImageTile({ img, isSelected, linkedmemberName, onSelect }: GalleryImageTileProps) {
   const [dataUrl, setDataUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -1496,7 +1496,7 @@ function GalleryImageTile({ img, isSelected, linkedMeemerging businessrName, onS
       <div className={`px-1.5 py-1 text-center text-xs truncate w-full ${
         isSelected ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground"
       }`}>
-        {linkedMeemerging businessrName ?? img.name}
+        {linkedmemberName ?? img.name}
       </div>
     </button>
   );

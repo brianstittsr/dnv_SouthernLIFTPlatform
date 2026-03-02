@@ -48,7 +48,7 @@ export const AI_EMPLOYEE_CONFIGS: Record<AIEmployeeRole, Omit<AIEmployee, "id" |
 
 **Communication Style:**
 - Provide clear, actionable financial insights
-- Use specific nuemerging businessrs and percentages when making recommendations
+- Use specific numbers and percentages when making recommendations
 - Always consider the manufacturing context in your advice
 - Explain complex financial concepts in accessible terms
 - Highlight risks and opportunities with quantified impact

@@ -4,8 +4,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-import { getTeamMeemerging businessrByAuthUid, findAndLinkTeamMeemerging businessr } from "@/lib/auth-team-meemerging businessr-link";
-import type { TeamMeemerging businessrDoc } from "@/lib/schema";
+import { getTeammemberByAuthUid, findAndLinkTeammember } from "@/lib/auth-team-member-link";
+import type { TeammemberDoc } from "@/lib/schema";
 
 // User profile fields
 export interface UserProfile {
@@ -19,7 +19,7 @@ export interface UserProfile {
   location: string;
   bio: string;
   avatarUrl: string;
-  role: "admin" | "affiliate" | "customer" | "team_meemerging businessr";
+  role: "admin" | "affiliate" | "customer" | "team_member";
   
   // SVP Platform role
   svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor";
@@ -61,7 +61,7 @@ const defaultProfile: UserProfile = {
   location: "",
   bio: "",
   avatarUrl: "",
-  role: "team_meemerging businessr",
+  role: "team_member",
   isAffiliate: false,
   affiliateOnboardingComplete: false,
   affiliateAgreementSigned: false,
@@ -83,7 +83,7 @@ const defaultProfile: UserProfile = {
 };
 
 // Calculate profile completion percentage
-export function calculateProfileCompletion(profile: UserProfile): nuemerging businessr {
+export function calculateProfileCompletion(profile: UserProfile): number {
   const requiredFields = [
     profile.firstName,
     profile.lastName,
@@ -100,7 +100,7 @@ export function calculateProfileCompletion(profile: UserProfile): nuemerging bus
 }
 
 // Calculate affiliate networking profile completion
-export function calculateNetworkingCompletion(profile: UserProfile): nuemerging businessr {
+export function calculateNetworkingCompletion(profile: UserProfile): number {
   if (!profile.isAffiliate) return 100;
   
   const networkingFields = [
@@ -127,24 +127,24 @@ export function isProfileComplete(profile: UserProfile): boolean {
   return calculateProfileCompletion(profile) === 100;
 }
 
-// Check if User Profile and Team Meemerging businessr data are synced
-export function areProfilesSynced(profile: UserProfile, teamMeemerging businessr: TeamMeemerging businessrDoc | null): boolean {
-  // If no team meemerging businessr linked, only check if user profile is complete
-  if (!teamMeemerging businessr) {
+// Check if User Profile and Team member data are synced
+export function areProfilesSynced(profile: UserProfile, teammember: TeammemberDoc | null): boolean {
+  // If no team member linked, only check if user profile is complete
+  if (!teammember) {
     return isProfileComplete(profile);
   }
   
-  // Check if all key fields match between User Profile and Team Meemerging businessr
+  // Check if all key fields match between User Profile and Team member
   const fieldsMatch = 
-    profile.firstName === (teamMeemerging businessr.firstName || "") &&
-    profile.lastName === (teamMeemerging businessr.lastName || "") &&
-    profile.phone === (teamMeemerging businessr.mobile || "") &&
-    profile.company === (teamMeemerging businessr.company || "") &&
-    profile.jobTitle === (teamMeemerging businessr.title || "") &&
-    profile.location === (teamMeemerging businessr.location || "") &&
-    profile.bio === (teamMeemerging businessr.bio || "");
+    profile.firstName === (teammember.firstName || "") &&
+    profile.lastName === (teammember.lastName || "") &&
+    profile.phone === (teammember.mobile || "") &&
+    profile.company === (teammember.company || "") &&
+    profile.jobTitle === (teammember.title || "") &&
+    profile.location === (teammember.location || "") &&
+    profile.bio === (teammember.bio || "");
   
-  // Profiles are synced if user profile is complete AND fields match team meemerging businessr
+  // Profiles are synced if user profile is complete AND fields match team member
   return isProfileComplete(profile) && fieldsMatch;
 }
 
@@ -153,37 +153,37 @@ export function needsAffiliateOnboarding(profile: UserProfile): boolean {
   return profile.isAffiliate && !profile.affiliateOnboardingComplete;
 }
 
-// Map TeamMeemerging businessrDoc to UserProfile
-function mapTeamMeemerging businessrToProfile(teamMeemerging businessr: TeamMeemerging businessrDoc): Partial<UserProfile> {
-  // Map team meemerging businessr role to SVP role
+// Map TeammemberDoc to UserProfile
+function mapTeammemberToProfile(teammember: TeammemberDoc): Partial<UserProfile> {
+  // Map team member role to SVP role
   let svpRole: UserProfile["svpRole"] = undefined;
-  if (teamMeemerging businessr.role === "sme_user") {
+  if (teammember.role === "sme_user") {
     svpRole = "sme_user";
-  } else if (teamMeemerging businessr.role === "admin") {
+  } else if (teammember.role === "admin") {
     svpRole = "platform_admin";
-  } else if (teamMeemerging businessr.role === "affiliate" || teamMeemerging businessr.role === "consultant") {
+  } else if (teammember.role === "affiliate" || teammember.role === "consultant") {
     svpRole = "partner_user";
-  } else if (teamMeemerging businessr.role === "team") {
-    svpRole = "partner_user"; // Default for team meemerging businessrs
+  } else if (teammember.role === "team") {
+    svpRole = "partner_user"; // Default for team members
   }
   
   return {
-    id: teamMeemerging businessr.id,
-    email: teamMeemerging businessr.emailPrimary || "",
-    firstName: teamMeemerging businessr.firstName || "",
-    lastName: teamMeemerging businessr.lastName || "",
-    phone: teamMeemerging businessr.mobile || "",
-    company: teamMeemerging businessr.company || "",
-    jobTitle: teamMeemerging businessr.title || "",
-    location: teamMeemerging businessr.location || "",
-    bio: teamMeemerging businessr.bio || "",
-    avatarUrl: teamMeemerging businessr.avatar || "",
-    role: teamMeemerging businessr.role === "admin" ? "admin" : 
-          teamMeemerging businessr.role === "affiliate" ? "affiliate" : 
-          teamMeemerging businessr.role === "consultant" ? "affiliate" : 
-          teamMeemerging businessr.role === "sme_user" ? "team_meemerging businessr" : "team_meemerging businessr",
+    id: teammember.id,
+    email: teammember.emailPrimary || "",
+    firstName: teammember.firstName || "",
+    lastName: teammember.lastName || "",
+    phone: teammember.mobile || "",
+    company: teammember.company || "",
+    jobTitle: teammember.title || "",
+    location: teammember.location || "",
+    bio: teammember.bio || "",
+    avatarUrl: teammember.avatar || "",
+    role: teammember.role === "admin" ? "admin" : 
+          teammember.role === "affiliate" ? "affiliate" : 
+          teammember.role === "consultant" ? "affiliate" : 
+          teammember.role === "sme_user" ? "team_member" : "team_member",
     svpRole,
-    isAffiliate: teamMeemerging businessr.role === "affiliate" || teamMeemerging businessr.role === "consultant",
+    isAffiliate: teammember.role === "affiliate" || teammember.role === "consultant",
   };
 }
 
@@ -192,8 +192,8 @@ interface UserProfileContextType {
   profile: UserProfile;
   setProfile: (profile: UserProfile) => void;
   updateProfile: (updates: Partial<UserProfile>) => void;
-  profileCompletion: nuemerging businessr;
-  networkingCompletion: nuemerging businessr;
+  profileCompletion: number;
+  networkingCompletion: number;
   isComplete: boolean;
   needsOnboarding: boolean;
   showProfileWizard: boolean;
@@ -204,7 +204,7 @@ interface UserProfileContextType {
   getInitials: () => string;
   isLoading: boolean;
   isAuthenticated: boolean;
-  linkedTeamMeemerging businessr: TeamMeemerging businessrDoc | null;
+  linkedTeammember: TeammemberDoc | null;
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
@@ -215,14 +215,14 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [showAffiliateOnboarding, setShowAffiliateOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [linkedTeamMeemerging businessr, setLinkedTeamMeemerging businessr] = useState<TeamMeemerging businessrDoc | null>(null);
+  const [linkedTeammember, setLinkedTeammember] = useState<TeammemberDoc | null>(null);
 
   const profileCompletion = calculateProfileCompletion(profile);
   const networkingCompletion = calculateNetworkingCompletion(profile);
   const isComplete = isProfileComplete(profile);
   const needsOnboarding = needsAffiliateOnboarding(profile);
 
-  // Listen to Firebase Auth state and fetch linked Team Meemerging businessr
+  // Listen to Firebase Auth state and fetch linked Team member
   useEffect(() => {
     if (!auth) {
       console.warn("Firebase Auth not initialized");
@@ -260,20 +260,20 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
             }
           }
           
-          // Try to find and link Team Meemerging businessr by UID first, then by email
-          let teamMeemerging businessr = await getTeamMeemerging businessrByAuthUid(firebaseUser.uid);
+          // Try to find and link Team member by UID first, then by email
+          let teammember = await getTeammemberByAuthUid(firebaseUser.uid);
           
-          if (!teamMeemerging businessr && firebaseUser.email) {
+          if (!teammember && firebaseUser.email) {
             // Try to find and link by email
-            teamMeemerging businessr = await findAndLinkTeamMeemerging businessr(firebaseUser.email, firebaseUser.uid);
+            teammember = await findAndLinkTeammember(firebaseUser.email, firebaseUser.uid);
           }
           
-          if (teamMeemerging businessr) {
-            console.log("Linked Team Meemerging businessr found:", teamMeemerging businessr.id, teamMeemerging businessr.firstName, teamMeemerging businessr.lastName);
-            setLinkedTeamMeemerging businessr(teamMeemerging businessr);
+          if (teammember) {
+            console.log("Linked Team member found:", teammember.id, teammember.firstName, teammember.lastName);
+            setLinkedTeammember(teammember);
             
-            // Map Team Meemerging businessr data to profile, but prioritize user document data
-            const mappedProfile = mapTeamMeemerging businessrToProfile(teamMeemerging businessr);
+            // Map Team member data to profile, but prioritize user document data
+            const mappedProfile = mapTeammemberToProfile(teammember);
             setProfile((prev) => ({
               ...prev,
               ...mappedProfile,
@@ -294,8 +294,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
               updatedAt: new Date().toISOString(),
             }));
           } else {
-            console.log("No linked Team Meemerging businessr found for user:", firebaseUser.email);
-            setLinkedTeamMeemerging businessr(null);
+            console.log("No linked Team member found for user:", firebaseUser.email);
+            setLinkedTeammember(null);
             // Set profile from user document or Firebase Auth
             setProfile((prev) => ({
               ...prev,
@@ -316,11 +316,11 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
             }));
           }
         } catch (error) {
-          console.error("Error fetching Team Meemerging businessr:", error);
+          console.error("Error fetching Team member:", error);
         }
       } else {
         setIsAuthenticated(false);
-        setLinkedTeamMeemerging businessr(null);
+        setLinkedTeammember(null);
         setProfile(defaultProfile);
       }
       
@@ -330,8 +330,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  // Check if profiles are synced (User Profile matches Team Meemerging businessr)
-  const profilesSynced = areProfilesSynced(profile, linkedTeamMeemerging businessr);
+  // Check if profiles are synced (User Profile matches Team member)
+  const profilesSynced = areProfilesSynced(profile, linkedTeammember);
 
   // Check if wizards should be shown after profile is loaded
   useEffect(() => {
@@ -346,7 +346,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     } else if (needsOnboarding) {
       setShowAffiliateOnboarding(true);
     }
-  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeamMeemerging businessr]);
+  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeammember]);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setProfile((prev) => ({
@@ -392,7 +392,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         getInitials,
         isLoading,
         isAuthenticated,
-        linkedTeamMeemerging businessr,
+        linkedTeammember,
       }}
     >
       {children}

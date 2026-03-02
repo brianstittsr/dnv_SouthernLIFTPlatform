@@ -35,7 +35,7 @@ const stats = [
   },
 ];
 
-function AnimatedCounter({ value, suffix, prefix }: { value: nuemerging businessr; suffix: string; prefix?: string }) {
+function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: string; prefix?: string }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {

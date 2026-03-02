@@ -40,12 +40,12 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
   
   content_release: {
     type: "content_release",
-    title: "New Content Available - Week {{weekNuemerging businessr}}",
-    message: "Week {{weekNuemerging businessr}} materials for {{cohortTitle}} are now available.",
+    title: "New Content Available - Week {{weeknumber}}",
+    message: "Week {{weeknumber}} materials for {{cohortTitle}} are now available.",
     emailSubject: "New Content Released - {{cohortTitle}}",
     emailBody: `
       <h2>New Content Available!</h2>
-      <p>Week {{weekNuemerging businessr}} materials for {{cohortTitle}} are now available.</p>
+      <p>Week {{weeknumber}} materials for {{cohortTitle}} are now available.</p>
       <p><strong>Module:</strong> {{moduleTitle}}</p>
       <p><strong>Sessions:</strong> {{sessionCount}}</p>
       <p><a href="{{cohortUrl}}">Access Content Now</a></p>
@@ -102,7 +102,7 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     emailBody: `
       <h2>Your Certificate is Ready!</h2>
       <p>Congratulations on completing {{cohortTitle}}!</p>
-      <p><strong>Certificate Nuemerging businessr:</strong> {{certificateNuemerging businessr}}</p>
+      <p><strong>Certificate number:</strong> {{certificatenumber}}</p>
       <p><strong>Issued Date:</strong> {{issuedDate}}</p>
       <p><a href="{{certificateUrl}}">Download Certificate</a></p>
       <p><a href="{{verifyUrl}}">Verify Certificate</a></p>
@@ -260,11 +260,11 @@ export async function sendEnrollmentConfirmation(
 export async function sendContentReleaseNotification(
   cohortId: string,
   moduleData: any,
-  sessionCount: nuemerging businessr
+  sessionCount: number
 ): Promise<void> {
   await sendNotification(cohortId, null, "content_release", {
     cohortTitle: moduleData.cohortTitle,
-    weekNuemerging businessr: moduleData.weekNuemerging businessr,
+    weeknumber: moduleData.weeknumber,
     moduleTitle: moduleData.title,
     sessionCount,
     cohortUrl: `${process.env.NEXT_PUBLIC_APP_URL}/portal/cohorts/${cohortId}`,
@@ -281,10 +281,10 @@ export async function sendCertificateNotification(
 ): Promise<void> {
   await sendNotification(cohortId, userId, "certificate_issued", {
     cohortTitle: certificateData.cohortTitle,
-    certificateNuemerging businessr: certificateData.certificateNuemerging businessr,
+    certificatenumber: certificateData.certificatenumber,
     issuedDate: certificateData.issuedAt?.toDate().toLocaleDateString(),
     certificateUrl: `${process.env.NEXT_PUBLIC_APP_URL}/portal/certificates/${certificateData.id}`,
-    verifyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/verify-certificate/${certificateData.certificateNuemerging businessr}`,
+    verifyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/verify-certificate/${certificateData.certificatenumber}`,
   });
 }
 

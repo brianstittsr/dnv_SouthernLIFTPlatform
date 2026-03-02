@@ -13,7 +13,7 @@ export interface ProofPack {
   submissionMetadata: {
     submissionDate: Timestamp;
     lastUpdateDate: Timestamp;
-    version: nuemerging businessr;
+    version: number;
     status: 'draft' | 'submitted' | 'approved' | 'needs_revision';
   };
 
@@ -58,9 +58,9 @@ export interface ProofPack {
 
   // Business Identifiers
   businessIdentifiers: {
-    samNuemerging businessr?: string;
+    samnumber?: string;
     cageCode?: string;
-    dunsNuemerging businessr?: string;
+    dunsnumber?: string;
     primaryNaicsCode?: string;
     primaryNaicsDefinition?: string;
   };
@@ -91,7 +91,7 @@ export interface ProofPack {
   needsInterests: {
     helpLookingFor: string[];
     servicesInterestedIn: string[];
-    nuemerging businessrOneNeed?: string;
+    numberOneNeed?: string;
     certificationsLoansInterested: string[];
   };
 
@@ -140,9 +140,9 @@ export interface ProofPackFormData {
   websiteUrl?: string;
 
   // Business Identifiers
-  samNuemerging businessr?: string;
+  samnumber?: string;
   cageCode?: string;
-  dunsNuemerging businessr?: string;
+  dunsnumber?: string;
   primaryNaicsCode?: string;
 
   // Financials & Capacity
@@ -164,7 +164,7 @@ export interface ProofPackFormData {
   // Needs & Interests
   helpLookingFor: string[];
   servicesInterestedIn: string[];
-  nuemerging businessrOneNeed?: string;
+  numberOneNeed?: string;
   certificationsLoansInterested: string[];
 
   // Targeting

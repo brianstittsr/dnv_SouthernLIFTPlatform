@@ -39,8 +39,8 @@ interface SmeClient {
   contactPhone: string;
   partnerId: string;
   partnerSince: any;
-  activeIntroductions: nuemerging businessr;
-  totalRevenue: nuemerging businessr;
+  activeIntroductions: number;
+  totalRevenue: number;
   lastActivity: any;
   createdAt: any;
 }
@@ -110,8 +110,8 @@ export default function MySMEClientsPage() {
     );
   };
 
-  const formatCurrency = (value: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+  const formatCurrency = (value: number) => {
+    return new Intl.numberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   const formatDate = (timestamp: any) => {

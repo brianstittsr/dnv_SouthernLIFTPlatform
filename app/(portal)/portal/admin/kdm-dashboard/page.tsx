@@ -28,38 +28,38 @@ import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/
 import { COLLECTIONS } from '@/lib/schema';
 
 interface DashboardMetrics {
-  totalMeemerging businessrs: nuemerging businessr;
-  activeMeemerging businessrs: nuemerging businessr;
-  newMeemerging businessrsThisMonth: nuemerging businessr;
-  meemerging businessrGrowth: nuemerging businessr;
-  totalRevenue: nuemerging businessr;
-  revenueThisMonth: nuemerging businessr;
-  revenueGrowth: nuemerging businessr;
-  totalEvents: nuemerging businessr;
-  upcomingEvents: nuemerging businessr;
-  ticketsSold: nuemerging businessr;
-  ticketRevenue: nuemerging businessr;
-  totalPursuits: nuemerging businessr;
-  activePursuits: nuemerging businessr;
-  pursuitWinRate: nuemerging businessr;
-  totalSponsors: nuemerging businessr;
-  sponsorRevenue: nuemerging businessr;
+  totalmembers: number;
+  activemembers: number;
+  newmembersThisMonth: number;
+  memberGrowth: number;
+  totalRevenue: number;
+  revenueThisMonth: number;
+  revenueGrowth: number;
+  totalEvents: number;
+  upcomingEvents: number;
+  ticketsSold: number;
+  ticketRevenue: number;
+  totalPursuits: number;
+  activePursuits: number;
+  pursuitWinRate: number;
+  totalSponsors: number;
+  sponsorRevenue: number;
 }
 
 interface RecentActivity {
   id: string;
-  type: 'meemerging businessrship' | 'ticket' | 'pursuit' | 'sponsor';
+  type: 'membership' | 'ticket' | 'pursuit' | 'sponsor';
   description: string;
-  amount?: nuemerging businessr;
+  amount?: number;
   timestamp: Date;
 }
 
 export default function KDMDashboardPage() {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
-    totalMeemerging businessrs: 0,
-    activeMeemerging businessrs: 0,
-    newMeemerging businessrsThisMonth: 0,
-    meemerging businessrGrowth: 0,
+    totalmembers: 0,
+    activemembers: 0,
+    newmembersThisMonth: 0,
+    memberGrowth: 0,
     totalRevenue: 0,
     revenueThisMonth: 0,
     revenueGrowth: 0,
@@ -93,13 +93,13 @@ export default function KDMDashboardPage() {
       const startDate = subDays(now, parseInt(dateRange));
       const monthStart = startOfMonth(now);
 
-      // Fetch meemerging businessrships
-      const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-      const meemerging businessrshipsSnapshot = await getDocs(meemerging businessrshipsRef);
-      const meemerging businessrships = meemerging businessrshipsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Fetch memberships
+      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const membershipsSnapshot = await getDocs(membershipsRef);
+      const memberships = membershipsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      const activeMeemerging businessrs = meemerging businessrships.filter((m: any) => m.status === 'active' || m.status === 'trialing').length;
-      const newThisMonth = meemerging businessrships.filter((m: any) => {
+      const activemembers = memberships.filter((m: any) => m.status === 'active' || m.status === 'trialing').length;
+      const newThisMonth = memberships.filter((m: any) => {
         const createdAt = m.createdAt?.toDate?.() || new Date(0);
         return createdAt >= monthStart;
       }).length;
@@ -109,7 +109,7 @@ export default function KDMDashboardPage() {
       const ticketsSnapshot = await getDocs(ticketsRef);
       const tickets = ticketsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const paidTickets = tickets.filter((t: any) => t.status === 'paid');
-      const ticketRevenue = paidTickets.reduce((sum: nuemerging businessr, t: any) => sum + (t.price || 0), 0);
+      const ticketRevenue = paidTickets.reduce((sum: number, t: any) => sum + (t.price || 0), 0);
 
       // Fetch events
       const eventsRef = collection(db, COLLECTIONS.EVENTS);
@@ -137,20 +137,20 @@ export default function KDMDashboardPage() {
       const sponsorsSnapshot = await getDocs(sponsorsRef);
       const sponsors = sponsorsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const paidSponsors = sponsors.filter((s: any) => s.status === 'paid');
-      const sponsorRevenue = paidSponsors.reduce((sum: nuemerging businessr, s: any) => sum + (s.amount || 0), 0);
+      const sponsorRevenue = paidSponsors.reduce((sum: number, s: any) => sum + (s.amount || 0), 0);
 
       // Calculate total revenue
-      const meemerging businessrshipRevenue = meemerging businessrships
+      const membershipRevenue = memberships
         .filter((m: any) => m.status === 'active')
-        .reduce((sum: nuemerging businessr, m: any) => sum + (m.amount || 0), 0);
+        .reduce((sum: number, m: any) => sum + (m.amount || 0), 0);
 
       setMetrics({
-        totalMeemerging businessrs: meemerging businessrships.length,
-        activeMeemerging businessrs,
-        newMeemerging businessrsThisMonth: newThisMonth,
-        meemerging businessrGrowth: meemerging businessrships.length > 0 ? (newThisMonth / meemerging businessrships.length) * 100 : 0,
-        totalRevenue: meemerging businessrshipRevenue + ticketRevenue + sponsorRevenue,
-        revenueThisMonth: meemerging businessrshipRevenue, // Simplified
+        totalmembers: memberships.length,
+        activemembers,
+        newmembersThisMonth: newThisMonth,
+        memberGrowth: memberships.length > 0 ? (newThisMonth / memberships.length) * 100 : 0,
+        totalRevenue: membershipRevenue + ticketRevenue + sponsorRevenue,
+        revenueThisMonth: membershipRevenue, // Simplified
         revenueGrowth: 12.5, // Would need historical data
         totalEvents: events.length,
         upcomingEvents,
@@ -166,11 +166,11 @@ export default function KDMDashboardPage() {
       // Build recent activity
       const activities: RecentActivity[] = [];
       
-      meemerging businessrships.slice(0, 3).forEach((m: any) => {
+      memberships.slice(0, 3).forEach((m: any) => {
         activities.push({
           id: m.id,
-          type: 'meemerging businessrship',
-          description: `New ${m.tier} meemerging businessrship`,
+          type: 'membership',
+          description: `New ${m.tier} membership`,
           amount: m.amount,
           timestamp: m.createdAt?.toDate?.() || new Date(),
         });
@@ -198,10 +198,10 @@ export default function KDMDashboardPage() {
 
   const setSampleData = () => {
     setMetrics({
-      totalMeemerging businessrs: 47,
-      activeMeemerging businessrs: 42,
-      newMeemerging businessrsThisMonth: 8,
-      meemerging businessrGrowth: 17.0,
+      totalmembers: 47,
+      activemembers: 42,
+      newmembersThisMonth: 8,
+      memberGrowth: 17.0,
       totalRevenue: 125750,
       revenueThisMonth: 28500,
       revenueGrowth: 12.5,
@@ -217,18 +217,18 @@ export default function KDMDashboardPage() {
     });
 
     setRecentActivity([
-      { id: '1', type: 'meemerging businessrship', description: 'New Core Capture meemerging businessrship - TechForward Solutions', amount: 175000, timestamp: new Date() },
+      { id: '1', type: 'membership', description: 'New Core Capture membership - TechForward Solutions', amount: 175000, timestamp: new Date() },
       { id: '2', type: 'ticket', description: 'Ticket sold - Government Contracting Summit', amount: 15000, timestamp: subDays(new Date(), 1) },
       { id: '3', type: 'pursuit', description: 'New pursuit published - DoD IT Modernization', timestamp: subDays(new Date(), 1) },
       { id: '4', type: 'sponsor', description: 'Sponsor payment received - Gold Tier', amount: 1000000, timestamp: subDays(new Date(), 2) },
-      { id: '5', type: 'meemerging businessrship', description: 'New Pursuit Pack meemerging businessrship - BuildRight Construction', amount: 50000, timestamp: subDays(new Date(), 3) },
+      { id: '5', type: 'membership', description: 'New Pursuit Pack membership - BuildRight Construction', amount: 50000, timestamp: subDays(new Date(), 3) },
     ]);
 
     setLoading(false);
   };
 
-  const formatCurrency = (value: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatCurrency = (value: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
@@ -238,7 +238,7 @@ export default function KDMDashboardPage() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'meemerging businessrship': return <Users className="h-4 w-4" />;
+      case 'membership': return <Users className="h-4 w-4" />;
       case 'ticket': return <Ticket className="h-4 w-4" />;
       case 'pursuit': return <Target className="h-4 w-4" />;
       case 'sponsor': return <Building2 className="h-4 w-4" />;
@@ -306,17 +306,17 @@ export default function KDMDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Active Meemerging businessrs */}
+        {/* Active members */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Meemerging businessrs</CardTitle>
+            <CardTitle className="text-sm font-medium">Active members</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.activeMeemerging businessrs}</div>
+            <div className="text-2xl font-bold">{metrics.activemembers}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <ArrowUpRight className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+{metrics.newMeemerging businessrsThisMonth}</span>
+              <span className="text-green-500">+{metrics.newmembersThisMonth}</span>
               <span className="ml-1">new this month</span>
             </div>
           </CardContent>
@@ -366,7 +366,7 @@ export default function KDMDashboardPage() {
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Meemerging businessrship Dues</span>
+                  <span>membership Dues</span>
                   <span className="font-medium">{formatCurrency(metrics.revenueThisMonth)}</span>
                 </div>
                 <Progress value={60} className="h-2" />
@@ -440,27 +440,27 @@ export default function KDMDashboardPage() {
 
       {/* Detailed Stats */}
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Meemerging businessrship Stats */}
+        {/* membership Stats */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Meemerging businessrship Stats</CardTitle>
+            <CardTitle className="text-lg">membership Stats</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Total Meemerging businessrs</span>
-              <span className="font-medium">{metrics.totalMeemerging businessrs}</span>
+              <span className="text-muted-foreground">Total members</span>
+              <span className="font-medium">{metrics.totalmembers}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Active</span>
-              <span className="font-medium text-green-600">{metrics.activeMeemerging businessrs}</span>
+              <span className="font-medium text-green-600">{metrics.activemembers}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">New This Month</span>
-              <span className="font-medium">{metrics.newMeemerging businessrsThisMonth}</span>
+              <span className="font-medium">{metrics.newmembersThisMonth}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Growth Rate</span>
-              <span className="font-medium text-green-600">+{metrics.meemerging businessrGrowth.toFixed(1)}%</span>
+              <span className="font-medium text-green-600">+{metrics.memberGrowth.toFixed(1)}%</span>
             </div>
           </CardContent>
         </Card>
@@ -524,7 +524,7 @@ export default function KDMDashboardPage() {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" asChild>
-              <a href="/portal/admin/meemerging businessrships">Manage Meemerging businessrships</a>
+              <a href="/portal/admin/memberships">Manage memberships</a>
             </Button>
             <Button variant="outline" asChild>
               <a href="/portal/admin/events">Manage Events</a>

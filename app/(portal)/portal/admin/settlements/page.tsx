@@ -45,26 +45,26 @@ interface Settlement {
   periodStart: Timestamp;
   periodEnd: Timestamp;
   programRevenues: {
-    meemerging businessrshipDues: nuemerging businessr;
-    eventTickets: nuemerging businessr;
-    sponsorFees: nuemerging businessr;
-    pursuitPacks: nuemerging businessr;
-    other: nuemerging businessr;
-    total: nuemerging businessr;
+    membershipDues: number;
+    eventTickets: number;
+    sponsorFees: number;
+    pursuitPacks: number;
+    other: number;
+    total: number;
   };
   directProgramCosts: {
-    processorFees: nuemerging businessr;
-    chargebacks: nuemerging businessr;
-    refunds: nuemerging businessr;
-    fraudLosses: nuemerging businessr;
-    thirdPartyCosts: nuemerging businessr;
-    total: nuemerging businessr;
+    processorFees: number;
+    chargebacks: number;
+    refunds: number;
+    fraudLosses: number;
+    thirdPartyCosts: number;
+    total: number;
   };
-  platformRunCostAllowance: nuemerging businessr;
-  costRecoveryPool: nuemerging businessr;
-  netProgramRevenue: nuemerging businessr;
-  kdmShare: nuemerging businessr;
-  vplusShare: nuemerging businessr;
+  platformRunCostAllowance: number;
+  costRecoveryPool: number;
+  netProgramRevenue: number;
+  kdmShare: number;
+  vplusShare: number;
   status: 'draft' | 'pending' | 'approved' | 'paid';
   pdfUrl?: string;
   notes?: string;
@@ -128,12 +128,12 @@ export default function SettlementsAdminPage() {
       const periodEnd = endOfMonth(subMonths(now, i));
       const periodStart = startOfMonth(subMonths(now, i));
       
-      const meemerging businessrshipDues = 7500000 + Math.floor(Math.random() * 2000000);
+      const membershipDues = 7500000 + Math.floor(Math.random() * 2000000);
       const eventTickets = 1500000 + Math.floor(Math.random() * 500000);
       const sponsorFees = 2000000 + Math.floor(Math.random() * 1000000);
       const pursuitPacks = 500000 + Math.floor(Math.random() * 300000);
       const other = Math.floor(Math.random() * 100000);
-      const total = meemerging businessrshipDues + eventTickets + sponsorFees + pursuitPacks + other;
+      const total = membershipDues + eventTickets + sponsorFees + pursuitPacks + other;
 
       const processorFees = Math.floor(total * 0.029);
       const chargebacks = Math.floor(Math.random() * 50000);
@@ -153,7 +153,7 @@ export default function SettlementsAdminPage() {
         periodStart: Timestamp.fromDate(periodStart),
         periodEnd: Timestamp.fromDate(periodEnd),
         programRevenues: {
-          meemerging businessrshipDues,
+          membershipDues,
           eventTickets,
           sponsorFees,
           pursuitPacks,
@@ -214,7 +214,7 @@ export default function SettlementsAdminPage() {
           periodStart: periodStart.toISOString(),
           periodEnd: periodEnd.toISOString(),
           programRevenues: {
-            meemerging businessrshipDues: 0,
+            membershipDues: 0,
             eventTickets: 0,
             sponsorFees: 0,
             pursuitPacks: 0,
@@ -239,8 +239,8 @@ export default function SettlementsAdminPage() {
     }
   };
 
-  const formatCurrency = (value: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatCurrency = (value: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
@@ -468,8 +468,8 @@ export default function SettlementsAdminPage() {
                 <h4 className="font-medium mb-3">Program Revenues</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Meemerging businessrship Dues</span>
-                    <span>{formatCurrency(selectedSettlement.programRevenues.meemerging businessrshipDues)}</span>
+                    <span>membership Dues</span>
+                    <span>{formatCurrency(selectedSettlement.programRevenues.membershipDues)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Event Tickets</span>

@@ -372,26 +372,26 @@ class ContentCrawler {
   private extractVideos(html: string, parentUrl: string): VideoAsset[] {
     const videos: VideoAsset[] = [];
 
-    // YouTube eemerging businessds
-    const youtubeRegex = /(?:youtube\.com\/eemerging businessd\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
+    // YouTube Embeds
+    const youtubeRegex = /(?:youtube\.com\/Embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
     const youtubeMatches = html.matchAll(youtubeRegex);
     for (const match of youtubeMatches) {
       videos.push({
         id: this.generateId('vid'),
         platform: 'youtube',
         url: `https://www.youtube.com/watch?v=${match[1]}`,
-        eemerging businessdCode: `<iframe src="https://www.youtube.com/eemerging businessd/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
+        EmbedCode: `<iframe src="https://www.youtube.com/Embed/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
         videoId: match[1],
         thumbnailUrl: `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`,
         title: null,
         description: null,
         duration: null,
         parentPageUrl: parentUrl,
-        context: 'eemerging businessdded',
+        context: 'Embedded',
       });
     }
 
-    // Vimeo eemerging businessds
+    // Vimeo Embeds
     const vimeoRegex = /vimeo\.com\/(?:video\/)?(\d+)/gi;
     const vimeoMatches = html.matchAll(vimeoRegex);
     for (const match of vimeoMatches) {
@@ -399,14 +399,14 @@ class ContentCrawler {
         id: this.generateId('vid'),
         platform: 'vimeo',
         url: `https://vimeo.com/${match[1]}`,
-        eemerging businessdCode: `<iframe src="https://player.vimeo.com/video/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
+        EmbedCode: `<iframe src="https://player.vimeo.com/video/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
         videoId: match[1],
         thumbnailUrl: null,
         title: null,
         description: null,
         duration: null,
         parentPageUrl: parentUrl,
-        context: 'eemerging businessdded',
+        context: 'Embedded',
       });
     }
 
@@ -419,14 +419,14 @@ class ContentCrawler {
           id: this.generateId('vid'),
           platform: 'self-hosted',
           url: this.resolveUrl(match[1], parentUrl),
-          eemerging businessdCode: null,
+          EmbedCode: null,
           videoId: null,
           thumbnailUrl: null,
           title: null,
           description: null,
           duration: null,
           parentPageUrl: parentUrl,
-          context: 'eemerging businessdded',
+          context: 'Embedded',
         });
       }
     }
@@ -741,7 +741,7 @@ class ContentCrawler {
   }
 
   private generateMigrationReport(): MigrationReport {
-    const pagesByType: Record<string, nuemerging businessr> = {};
+    const pagesByType: Record<string, number> = {};
     this.crawledPages.forEach(page => {
       pagesByType[page.pageType] = (pagesByType[page.pageType] || 0) + 1;
     });
@@ -994,7 +994,7 @@ ${report.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}
 
   private extractVideoUrls(html: string): string[] {
     const urls: string[] = [];
-    const youtubeRegex = /(?:youtube\.com\/eemerging businessd\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
+    const youtubeRegex = /(?:youtube\.com\/Embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
     const matches = html.matchAll(youtubeRegex);
     for (const match of matches) {
       urls.push(`https://www.youtube.com/watch?v=${match[1]}`);
@@ -1035,7 +1035,7 @@ ${report.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}
       .trim();
   }
 
-  private countWords(html: string): nuemerging businessr {
+  private countWords(html: string): number {
     const text = this.stripHtml(html);
     return text.split(/\s+/).filter(Boolean).length;
   }
@@ -1130,7 +1130,7 @@ ${report.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}
     console.error(`  ❌ Error: ${message}`);
   }
 
-  private delay(ms: nuemerging businessr): Promise<void> {
+  private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

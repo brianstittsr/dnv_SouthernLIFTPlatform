@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 interface KdmLogoAnimatedProps {
   /** Width of the logo in px. Height scales proportionally. */
-  width?: nuemerging businessr;
+  width?: number;
   /** If true, renders without animation (instant display). */
   static?: boolean;
   className?: string;
@@ -65,7 +65,7 @@ const OUTER_NODE_LIST = [
   NODES.botRight,
 ];
 
-function makeLineAnim(delay: nuemerging businessr, isStatic: boolean) {
+function makeLineAnim(delay: number, isStatic: boolean) {
   return {
     initial: { pathLength: 0, opacity: 0 },
     animate: {
@@ -74,13 +74,13 @@ function makeLineAnim(delay: nuemerging businessr, isStatic: boolean) {
       transition: { 
         duration: 0.5, 
         delay,
-        ease: [0.22, 1, 0.36, 1] as [nuemerging businessr, nuemerging businessr, nuemerging businessr, nuemerging businessr]
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number]
       },
     },
   };
 }
 
-function makeNodeAnim(delay: nuemerging businessr, isStatic: boolean) {
+function makeNodeAnim(delay: number, isStatic: boolean) {
   return {
     initial: { opacity: 0, scale: 0 },
     animate: {
@@ -97,7 +97,7 @@ function makeNodeAnim(delay: nuemerging businessr, isStatic: boolean) {
   };
 }
 
-function makeFadeUpAnim(delay: nuemerging businessr, isStatic: boolean) {
+function makeFadeUpAnim(delay: number, isStatic: boolean) {
   return {
     initial: { opacity: 0, y: 20, filter: "blur(10px)" },
     animate: {
@@ -107,7 +107,7 @@ function makeFadeUpAnim(delay: nuemerging businessr, isStatic: boolean) {
       transition: { 
         duration: 0.6, 
         delay,
-        ease: [0.22, 1, 0.36, 1] as [nuemerging businessr, nuemerging businessr, nuemerging businessr, nuemerging businessr]
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number]
       },
     },
   };

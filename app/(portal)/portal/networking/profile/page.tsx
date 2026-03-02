@@ -40,7 +40,7 @@ interface ProfileSection {
 const profileSectionsConfig = [
   {
     id: "biography",
-    title: "Meemerging businessr Biography",
+    title: "member Biography",
     description: "Your business and personal information to help others know you better",
     icon: User,
     href: "/portal/networking/profile/biography",
@@ -68,11 +68,11 @@ const profileSectionsConfig = [
     description: "Your network of complementary businesses and referral partners",
     icon: Users,
     href: "/portal/networking/profile/contact-sphere",
-    fields: ["Sphere Name", "Top 10 Meemerging businessrs", "Top 3 Professions Needed"],
+    fields: ["Sphere Name", "Top 10 members", "Top 3 Professions Needed"],
     collection: COLLECTIONS.CONTACT_SPHERES,
     checkComplete: (data: Record<string, unknown>) => {
-      const meemerging businessrs = data.meemerging businessrs as Array<{ name?: string }> | undefined;
-      return !!(data.sphereName && meemerging businessrs && meemerging businessrs.filter(m => m?.name).length >= 3);
+      const members = data.members as Array<{ name?: string }> | undefined;
+      return !!(data.sphereName && members && members.filter(m => m?.name).length >= 3);
     },
   },
   {

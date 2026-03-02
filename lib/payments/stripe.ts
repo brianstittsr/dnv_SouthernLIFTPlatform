@@ -22,8 +22,8 @@ export interface CreateCheckoutSessionParams {
   items: {
     name: string;
     description?: string;
-    price: nuemerging businessr; // in cents
-    quantity: nuemerging businessr;
+    price: number; // in cents
+    quantity: number;
     metadata?: Record<string, string>;
   }[];
   customerEmail?: string;
@@ -33,7 +33,7 @@ export interface CreateCheckoutSessionParams {
 }
 
 export interface CreatePaymentIntentParams {
-  amount: nuemerging businessr; // in cents
+  amount: number; // in cents
   currency?: string;
   customerEmail?: string;
   description?: string;
@@ -48,7 +48,7 @@ export interface StripeCustomer {
 }
 
 // Helper functions
-export function formatAmountForStripe(amount: nuemerging businessr, currency: string = 'usd'): nuemerging businessr {
+export function formatAmountForStripe(amount: number, currency: string = 'usd'): number {
   // Stripe expects amounts in smallest currency unit (cents for USD)
   const zeroDecimalCurrencies = ['bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'ugx', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'];
   if (zeroDecimalCurrencies.includes(currency.toLowerCase())) {
@@ -57,7 +57,7 @@ export function formatAmountForStripe(amount: nuemerging businessr, currency: st
   return Math.round(amount * 100);
 }
 
-export function formatAmountFromStripe(amount: nuemerging businessr, currency: string = 'usd'): nuemerging businessr {
+export function formatAmountFromStripe(amount: number, currency: string = 'usd'): number {
   const zeroDecimalCurrencies = ['bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf', 'krw', 'mga', 'pyg', 'rwf', 'ugx', 'vnd', 'vuv', 'xaf', 'xof', 'xpf'];
   if (zeroDecimalCurrencies.includes(currency.toLowerCase())) {
     return amount;
@@ -168,7 +168,7 @@ export async function createCustomer(email: string, name?: string, metadata?: Re
   }
 }
 
-export async function createRefund(paymentIntentId: string, amount?: nuemerging businessr, reason?: string): Promise<Stripe.Refund | null> {
+export async function createRefund(paymentIntentId: string, amount?: number, reason?: string): Promise<Stripe.Refund | null> {
   if (!stripe) return null;
 
   try {
@@ -183,7 +183,7 @@ export async function createRefund(paymentIntentId: string, amount?: nuemerging 
   }
 }
 
-export async function listPayments(limit: nuemerging businessr = 100, startingAfter?: string): Promise<Stripe.PaymentIntent[]> {
+export async function listPayments(limit: number = 100, startingAfter?: string): Promise<Stripe.PaymentIntent[]> {
   if (!stripe) return [];
 
   try {

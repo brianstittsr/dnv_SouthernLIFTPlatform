@@ -33,10 +33,10 @@ interface ImageEditorProps {
 }
 
 export interface ImageEdits {
-  scale: nuemerging businessr;
-  positionX: nuemerging businessr;
-  positionY: nuemerging businessr;
-  rotation: nuemerging businessr;
+  scale: number;
+  positionX: number;
+  positionY: number;
+  rotation: number;
   objectFit: "cover" | "contain" | "fill";
   width?: string;
   height?: string;

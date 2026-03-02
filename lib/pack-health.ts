@@ -11,16 +11,16 @@
 import { Timestamp } from "firebase-admin/firestore";
 
 export interface PackHealthScore {
-  overallScore: nuemerging businessr;
-  completenessScore: nuemerging businessr;
-  expirationScore: nuemerging businessr;
-  qualityScore: nuemerging businessr;
-  remediationScore: nuemerging businessr;
+  overallScore: number;
+  completenessScore: number;
+  expirationScore: number;
+  qualityScore: number;
+  remediationScore: number;
   breakdown: {
-    completeness: { weight: nuemerging businessr; score: nuemerging businessr; weighted: nuemerging businessr };
-    expiration: { weight: nuemerging businessr; score: nuemerging businessr; weighted: nuemerging businessr };
-    quality: { weight: nuemerging businessr; score: nuemerging businessr; weighted: nuemerging businessr };
-    remediation: { weight: nuemerging businessr; score: nuemerging businessr; weighted: nuemerging businessr };
+    completeness: { weight: number; score: number; weighted: number };
+    expiration: { weight: number; score: number; weighted: number };
+    quality: { weight: number; score: number; weighted: number };
+    remediation: { weight: number; score: number; weighted: number };
   };
   isEligibleForIntroductions: boolean;
   calculatedAt: Timestamp;
@@ -31,7 +31,7 @@ export interface Document {
   fileName: string;
   category: string;
   mimeType: string;
-  fileSize: nuemerging businessr;
+  fileSize: number;
   expirationDate?: Timestamp;
   uploadedAt: Timestamp;
   metadata?: {
@@ -69,7 +69,7 @@ const WEIGHTS = {
 /**
  * Calculate completeness score based on document coverage
  */
-function calculateCompletenessScore(documents: Document[]): nuemerging businessr {
+function calculateCompletenessScore(documents: Document[]): number {
   if (documents.length === 0) return 0;
 
   const categoriesWithDocs = new Set(documents.map((d) => d.category));
@@ -89,7 +89,7 @@ function calculateCompletenessScore(documents: Document[]): nuemerging businessr
 /**
  * Calculate expiration score based on document freshness
  */
-function calculateExpirationScore(documents: Document[]): nuemerging businessr {
+function calculateExpirationScore(documents: Document[]): number {
   if (documents.length === 0) return 0;
 
   const now = Date.now();
@@ -128,7 +128,7 @@ function calculateExpirationScore(documents: Document[]): nuemerging businessr {
 /**
  * Calculate quality score based on document metadata and completeness
  */
-function calculateQualityScore(documents: Document[]): nuemerging businessr {
+function calculateQualityScore(documents: Document[]): number {
   if (documents.length === 0) return 0;
 
   let qualityPoints = 0;
@@ -167,7 +167,7 @@ function calculateQualityScore(documents: Document[]): nuemerging businessr {
 /**
  * Calculate remediation score based on gap closure
  */
-function calculateRemediationScore(gaps: GapItem[]): nuemerging businessr {
+function calculateRemediationScore(gaps: GapItem[]): number {
   if (gaps.length === 0) return 100; // No gaps = perfect score
 
   const acknowledgedOrNA = gaps.filter(
@@ -294,22 +294,22 @@ export function identifyGaps(documents: Document[]): GapItem[] {
  * Get remediation action items sorted by impact
  */
 export function getRemediationActions(
-  currentScore: nuemerging businessr,
+  currentScore: number,
   documents: Document[],
   gaps: GapItem[]
 ): Array<{
   id: string;
   description: string;
-  estimatedImpact: nuemerging businessr;
+  estimatedImpact: number;
   effortLevel: "low" | "medium" | "high";
-  priority: nuemerging businessr;
+  priority: number;
 }> {
   const actions: Array<{
     id: string;
     description: string;
-    estimatedImpact: nuemerging businessr;
+    estimatedImpact: number;
     effortLevel: "low" | "medium" | "high";
-    priority: nuemerging businessr;
+    priority: number;
   }> = [];
 
   // High-impact: Add documents to missing categories

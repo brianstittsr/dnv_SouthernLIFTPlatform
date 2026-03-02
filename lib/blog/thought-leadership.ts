@@ -145,9 +145,9 @@ The government contracting landscape changes constantly. Businesses that don't a
 - Market conditions (reshoring, new priorities)
 - Competition (new entrants, consolidation)
 
-## The $12 Billion in Nuemerging businessrs
+## The $12 Billion in numbers
 
-### Impact by the Nuemerging businessrs
+### Impact by the numbers
 - **Businesses supported:** 5,000+
 - **Contract awards facilitated:** $12+ billion
 - **Jobs created or sustained:** 50,000+
@@ -540,14 +540,14 @@ ${BLOG_CTA}`
   {
     slug: "what-works-real-results-vkdm-consortium-model",
     title: "What Works: Real Results from the V+KDM Consortium Model",
-    excerpt: "The V+KDM Consortium model is delivering measurable results for meemerging businessr businesses. Here's how the model works and what meemerging businessrs are achieving.",
+    excerpt: "The V+KDM Consortium model is delivering measurable results for member businesses. Here's how the model works and what members are achieving.",
     author: "KDM & Associates",
     date: "2026-01-12",
     category: "Thought Leadership & Case Studies",
     tags: ["V+KDM", "Consortium", "Results", "Case Study", "Model"],
     readTime: 9,
     imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
-    content: `The V+KDM Consortium represents a new model for small business government contracting—one that combines the manufacturing expertise of Strategic Value Plus (V+) with the government contracting capabilities of KDM & Associates. This article examines how the model works and the results it's delivering for meemerging businessr businesses.
+    content: `The V+KDM Consortium represents a new model for small business government contracting—one that combines the manufacturing expertise of Strategic Value Plus (V+) with the government contracting capabilities of KDM & Associates. This article examines how the model works and the results it's delivering for member businesses.
 
 ## The V+KDM Model
 
@@ -569,19 +569,19 @@ The V+KDM Consortium solves these challenges through collective action:
 
 **Combined Capabilities**
 - Manufacturing expertise (V+) + contracting expertise (KDM)
-- Multiple meemerging businessr companies covering diverse capabilities
+- Multiple member companies covering diverse capabilities
 - Aggregated capacity for larger opportunities
 - Complementary skills and certifications
 
 **Network Effects**
-- Meemerging businessr-to-meemerging businessr referrals and teaming
+- member-to-member referrals and teaming
 - Shared intelligence on opportunities and trends
 - Collective past performance for consortium bids
 - Amplified voice in industry and policy discussions
 
 ## How the Consortium Works
 
-### Meemerging businessrship Tiers
+### membership Tiers
 
 **Explorer (Entry Level)**
 - Access to training and resources
@@ -605,17 +605,17 @@ The V+KDM Consortium solves these challenges through collective action:
 
 ### The Platform
 The KDM Consortium Platform provides:
-- **Meemerging businessr profiles** with verified capabilities
+- **member profiles** with verified capabilities
 - **Opportunity matching** based on NAICS codes and certifications
 - **Teaming tools** for forming pursuit teams
 - **Document sharing** for proposals and compliance
-- **Performance tracking** for meemerging businessr development
+- **Performance tracking** for member development
 - **Communication tools** for collaboration
 
 ### The Process
 
 **Step 1: Assessment**
-New meemerging businessrs undergo a comprehensive readiness assessment covering:
+New members undergo a comprehensive readiness assessment covering:
 - Current capabilities and certifications
 - Government contracting experience
 - Financial health and stability
@@ -631,7 +631,7 @@ Based on the assessment, a customized development plan is created:
 - Milestone timeline
 
 **Step 3: Capability Building**
-Meemerging businessrs receive support to build capabilities:
+members receive support to build capabilities:
 - CMMC certification assistance
 - Quality system development
 - Proposal writing training
@@ -639,15 +639,15 @@ Meemerging businessrs receive support to build capabilities:
 - Technology adoption support
 
 **Step 4: Market Entry**
-Prepared meemerging businessrs begin pursuing opportunities:
+Prepared members begin pursuing opportunities:
 - Targeted opportunity identification
-- Teaming with complementary meemerging businessrs
+- Teaming with complementary members
 - Proposal development support
 - Relationship facilitation with buyers and primes
 - Bid/no-bid decision support
 
 **Step 5: Execution Support**
-After winning contracts, meemerging businessrs receive:
+After winning contracts, members receive:
 - Contract administration guidance
 - Quality assurance support
 - Compliance monitoring
@@ -658,25 +658,25 @@ After winning contracts, meemerging businessrs receive:
 
 ### Consortium Performance (Illustrative)
 
-**Meemerging businessr Growth**
-- Meemerging businessrs reporting revenue growth: **78%**
+**member Growth**
+- members reporting revenue growth: **78%**
 - Average revenue increase: **35% within 2 years**
-- Meemerging businessrs winning first government contract: **65% within 12 months**
-- Meemerging businessrs achieving CMMC certification: **85% within 6 months of starting**
+- members winning first government contract: **65% within 12 months**
+- members achieving CMMC certification: **85% within 6 months of starting**
 
 **Contract Success**
-- Consortium meemerging businessr win rate: **32%** (vs. industry average of 15-20%)
+- Consortium member win rate: **32%** (vs. industry average of 15-20%)
 - Average first contract value: **$250,000**
 - Total consortium contract value: Growing year-over-year
 - Repeat contract rate: **70%+**
 
 **Capability Development**
-- Meemerging businessrs completing CMMC Level 1: **90%+**
-- Meemerging businessrs achieving quality certification: **75%+**
-- Meemerging businessrs registered on SAM.gov: **100%**
-- Meemerging businessrs with active prime contractor relationships: **60%+**
+- members completing CMMC Level 1: **90%+**
+- members achieving quality certification: **75%+**
+- members registered on SAM.gov: **100%**
+- members with active prime contractor relationships: **60%+**
 
-### Meemerging businessr Success Stories
+### member Success Stories
 
 **Precision Manufacturer — Southeast**
 - Joined consortium with zero government experience
@@ -692,7 +692,7 @@ After winning contracts, meemerging businessrs receive:
 
 **Metal Fabricator — Midwest**
 - Struggling to compete as individual small business
-- Joined consortium and teamed with complementary meemerging businessrs
+- Joined consortium and teamed with complementary members
 - Won $2.1M IDIQ contract as consortium team
 - Individual share: $600,000 over 3 years
 
@@ -703,7 +703,7 @@ After winning contracts, meemerging businessrs receive:
 |--------|----------------------|------------------|
 | Relationship | Transactional | Partnership |
 | Duration | Project-based | Ongoing |
-| Cost | High hourly rates | Meemerging businessrship-based |
+| Cost | High hourly rates | membership-based |
 | Support | Individual | Community |
 | Opportunities | Advice only | Active facilitation |
 | Scale | One company | Network effect |
@@ -721,7 +721,7 @@ After winning contracts, meemerging businessrs receive:
 ## The Future of the Consortium
 
 ### Growing the Network
-- Expanding meemerging businessrship across all 50 states
+- Expanding membership across all 50 states
 - Adding specialized manufacturing capabilities
 - Building international partnerships
 - Developing sector-specific sub-consortia
@@ -745,19 +745,19 @@ After winning contracts, meemerging businessrs receive:
 2. Complete the initial readiness questionnaire
 3. Schedule an introductory consultation
 4. Receive your readiness assessment
-5. Select your meemerging businessrship tier
+5. Select your membership tier
 6. Begin your development journey
 
 ### For Government Buyers
 1. Access the consortium's verified supplier database
-2. Post requirements for meemerging businessr matching
+2. Post requirements for member matching
 3. Review pre-vetted supplier capabilities
 4. Streamline your small business procurement
 5. Meet your small business contracting goals
 
 ## Conclusion
 
-The V+KDM Consortium model is proving that small manufacturers don't have to go it alone in government contracting. By combining capabilities, sharing resources, and leveraging collective strength, consortium meemerging businessrs are winning contracts faster, growing revenue more quickly, and building more sustainable defense businesses than they could individually.
+The V+KDM Consortium model is proving that small manufacturers don't have to go it alone in government contracting. By combining capabilities, sharing resources, and leveraging collective strength, consortium members are winning contracts faster, growing revenue more quickly, and building more sustainable defense businesses than they could individually.
 
 ${BLOG_CTA}`
   },
@@ -775,7 +775,7 @@ ${BLOG_CTA}`
 
 ## The Small Business Defense Ecosystem
 
-### By the Nuemerging businessrs
+### By the numbers
 - **300,000+** companies in the defense industrial base
 - **75%+** are small businesses
 - **$170+ billion** in annual small business defense contract awards

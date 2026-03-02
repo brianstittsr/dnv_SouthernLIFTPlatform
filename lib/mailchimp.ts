@@ -18,17 +18,17 @@ export interface MailChimpList {
     country: string;
   };
   stats: {
-    meemerging businessr_count: nuemerging businessr;
-    unsubscribe_count: nuemerging businessr;
-    cleaned_count: nuemerging businessr;
-    campaign_count: nuemerging businessr;
-    open_rate: nuemerging businessr;
-    click_rate: nuemerging businessr;
+    member_count: number;
+    unsubscribe_count: number;
+    cleaned_count: number;
+    campaign_count: number;
+    open_rate: number;
+    click_rate: number;
   };
   date_created: string;
 }
 
-export interface MailChimpMeemerging businessr {
+export interface MailChimpmember {
   id: string;
   email_address: string;
   status: 'subscribed' | 'unsubscribed' | 'cleaned' | 'pending' | 'transactional';
@@ -39,7 +39,7 @@ export interface MailChimpMeemerging businessr {
     COMPANY?: string;
     [key: string]: string | undefined;
   };
-  tags: { id: nuemerging businessr; name: string }[];
+  tags: { id: number; name: string }[];
   timestamp_signup: string;
   timestamp_opt: string;
   last_changed: string;
@@ -51,12 +51,12 @@ export interface MailChimpCampaign {
   create_time: string;
   send_time: string | null;
   status: 'save' | 'paused' | 'schedule' | 'sending' | 'sent';
-  emails_sent: nuemerging businessr;
+  emails_sent: number;
   content_type: string;
   recipients: {
     list_id: string;
     list_name: string;
-    recipient_count: nuemerging businessr;
+    recipient_count: number;
   };
   settings: {
     subject_line: string;
@@ -66,17 +66,17 @@ export interface MailChimpCampaign {
     reply_to: string;
   };
   report_summary?: {
-    opens: nuemerging businessr;
-    unique_opens: nuemerging businessr;
-    open_rate: nuemerging businessr;
-    clicks: nuemerging businessr;
-    subscriber_clicks: nuemerging businessr;
-    click_rate: nuemerging businessr;
+    opens: number;
+    unique_opens: number;
+    open_rate: number;
+    clicks: number;
+    subscriber_clicks: number;
+    click_rate: number;
   };
 }
 
 export interface MailChimpTag {
-  id: nuemerging businessr;
+  id: number;
   name: string;
 }
 
@@ -147,7 +147,7 @@ export class MailChimpClient {
     account_id: string;
     account_name: string;
     email: string;
-    total_subscribers: nuemerging businessr;
+    total_subscribers: number;
   }> {
     return this.request('/');
   }
@@ -157,7 +157,7 @@ export class MailChimpClient {
   /**
    * Get all lists/audiences
    */
-  async getLists(): Promise<{ lists: MailChimpList[]; total_items: nuemerging businessr }> {
+  async getLists(): Promise<{ lists: MailChimpList[]; total_items: number }> {
     return this.request('/lists?count=100');
   }
 
@@ -196,29 +196,29 @@ export class MailChimpClient {
     });
   }
 
-  // ============ Meemerging businessrs (Subscribers) ============
+  // ============ members (Subscribers) ============
 
   /**
-   * Get meemerging businessrs of a list
+   * Get members of a list
    */
-  async getMeemerging businessrs(
+  async getmembers(
     listId: string,
-    options?: { count?: nuemerging businessr; offset?: nuemerging businessr; status?: string }
-  ): Promise<{ meemerging businessrs: MailChimpMeemerging businessr[]; total_items: nuemerging businessr }> {
+    options?: { count?: number; offset?: number; status?: string }
+  ): Promise<{ members: MailChimpmember[]; total_items: number }> {
     const params = new URLSearchParams();
     if (options?.count) params.set('count', options.count.toString());
     if (options?.offset) params.set('offset', options.offset.toString());
     if (options?.status) params.set('status', options.status);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return this.request(`/lists/${listId}/meemerging businessrs${query}`);
+    return this.request(`/lists/${listId}/members${query}`);
   }
 
   /**
    * Add a subscriber to a list
    */
-  async addSubscriber(listId: string, data: AddSubscriberData): Promise<MailChimpMeemerging businessr> {
-    const meemerging businessrData = {
+  async addSubscriber(listId: string, data: AddSubscriberData): Promise<MailChimpmember> {
+    const memberData = {
       email_address: data.email,
       status: data.status || 'subscribed',
       merge_fields: {
@@ -230,9 +230,9 @@ export class MailChimpClient {
       tags: data.tags || [],
     };
 
-    return this.request(`/lists/${listId}/meemerging businessrs`, {
+    return this.request(`/lists/${listId}/members`, {
       method: 'POST',
-      body: JSON.stringify(meemerging businessrData),
+      body: JSON.stringify(memberData),
     });
   }
 
@@ -243,12 +243,12 @@ export class MailChimpClient {
     listId: string,
     subscriberHash: string,
     data: Partial<AddSubscriberData>
-  ): Promise<MailChimpMeemerging businessr> {
-    const meemerging businessrData: Record<string, unknown> = {};
+  ): Promise<MailChimpmember> {
+    const memberData: Record<string, unknown> = {};
     
-    if (data.status) meemerging businessrData.status = data.status;
+    if (data.status) memberData.status = data.status;
     if (data.firstName || data.lastName || data.phone || data.company) {
-      meemerging businessrData.merge_fields = {
+      memberData.merge_fields = {
         ...(data.firstName && { FNAME: data.firstName }),
         ...(data.lastName && { LNAME: data.lastName }),
         ...(data.phone && { PHONE: data.phone }),
@@ -256,9 +256,9 @@ export class MailChimpClient {
       };
     }
 
-    return this.request(`/lists/${listId}/meemerging businessrs/${subscriberHash}`, {
+    return this.request(`/lists/${listId}/members/${subscriberHash}`, {
       method: 'PATCH',
-      body: JSON.stringify(meemerging businessrData),
+      body: JSON.stringify(memberData),
     });
   }
 
@@ -266,7 +266,7 @@ export class MailChimpClient {
    * Delete/archive a subscriber
    */
   async deleteSubscriber(listId: string, subscriberHash: string): Promise<void> {
-    await this.request(`/lists/${listId}/meemerging businessrs/${subscriberHash}`, {
+    await this.request(`/lists/${listId}/members/${subscriberHash}`, {
       method: 'DELETE',
     });
   }
@@ -279,7 +279,7 @@ export class MailChimpClient {
     subscriberHash: string,
     tags: string[]
   ): Promise<void> {
-    await this.request(`/lists/${listId}/meemerging businessrs/${subscriberHash}/tags`, {
+    await this.request(`/lists/${listId}/members/${subscriberHash}/tags`, {
       method: 'POST',
       body: JSON.stringify({
         tags: tags.map(name => ({ name, status: 'active' })),
@@ -293,10 +293,10 @@ export class MailChimpClient {
    * Get all campaigns
    */
   async getCampaigns(options?: {
-    count?: nuemerging businessr;
-    offset?: nuemerging businessr;
+    count?: number;
+    offset?: number;
     status?: string;
-  }): Promise<{ campaigns: MailChimpCampaign[]; total_items: nuemerging businessr }> {
+  }): Promise<{ campaigns: MailChimpCampaign[]; total_items: number }> {
     const params = new URLSearchParams();
     if (options?.count) params.set('count', options.count.toString());
     if (options?.offset) params.set('offset', options.offset.toString());
@@ -347,7 +347,7 @@ export class MailChimpClient {
   /**
    * Get all tags for a list
    */
-  async getTags(listId: string): Promise<{ tags: MailChimpTag[]; total_items: nuemerging businessr }> {
+  async getTags(listId: string): Promise<{ tags: MailChimpTag[]; total_items: number }> {
     return this.request(`/lists/${listId}/tag-search`);
   }
 

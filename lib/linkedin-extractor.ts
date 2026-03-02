@@ -15,8 +15,8 @@ export interface LinkedInArticle {
   publishedDate: string;
   url: string;
   tags: string[];
-  likes?: nuemerging businessr;
-  comments?: nuemerging businessr;
+  likes?: number;
+  comments?: number;
   imageUrl?: string;
   source: "url-extract" | "manual-paste" | "html-parse";
   extractedAt: string;
@@ -27,7 +27,7 @@ export interface ExtractionResult {
   articles: LinkedInArticle[];
   profileName?: string;
   profileUrl?: string;
-  totalFound: nuemerging businessr;
+  totalFound: number;
   error?: string;
   method: "puppeteer" | "fetch" | "manual";
 }

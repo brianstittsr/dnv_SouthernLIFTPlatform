@@ -88,7 +88,7 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="dunsUei">DUNS/UEI Nuemerging businessr *</Label>
+          <Label htmlFor="dunsUei">DUNS/UEI number *</Label>
           <Input
             id="dunsUei"
             value={formData.dunsUei}
@@ -170,7 +170,7 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="employeeCount">Nuemerging businessr of Employees</Label>
+          <Label htmlFor="employeeCount">number of Employees</Label>
           <Select
             value={formData.employeeCount}
             onValueChange={(value) => setFormData({ ...formData, employeeCount: value })}

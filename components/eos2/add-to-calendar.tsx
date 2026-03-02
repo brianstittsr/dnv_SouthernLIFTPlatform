@@ -120,7 +120,7 @@ interface RockReminderCalendarProps {
   description: string;
   owner: string;
   dueDate: Date;
-  progress: nuemerging businessr;
+  progress: number;
   variant?: "default" | "outline" | "ghost" | "secondary";
   size?: "default" | "sm" | "lg" | "icon";
 }

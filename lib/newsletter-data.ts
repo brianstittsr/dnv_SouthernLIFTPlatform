@@ -86,7 +86,7 @@ export const newsletters: Newsletter[] = [
     content: {
       sections: [
         {
-          title: '2024 By The Nuemerging businessrs',
+          title: '2024 By The numbers',
           content: 'This year, the MBDA Federal Procurement Center helped minority-owned businesses secure over $500 million in federal contracts, supporting thousands of jobs and driving economic growth in underserved communities.'
         },
         {

@@ -56,7 +56,7 @@ export function HeroCarousel() {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  const goToSlide = (index: nuemerging businessr) => {
+  const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
 

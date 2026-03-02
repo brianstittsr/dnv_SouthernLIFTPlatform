@@ -31,7 +31,7 @@ const CRON_SECRET = process.env.CRON_SECRET;
 
 interface CheckResult {
   type: string;
-  count: nuemerging businessr;
+  count: number;
   items: string[];
 }
 

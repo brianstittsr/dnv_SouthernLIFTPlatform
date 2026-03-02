@@ -6,7 +6,7 @@ IMPORTANT RULES:
 1. Extract ONLY information that exists in the document - do not fabricate data
 2. Use exact organization names as written in the document
 3. Convert all dates to YYYY-MM-DD format
-4. Convert all budgets to nuemerging businessrs (remove $ and commas)
+4. Convert all budgets to numbers (remove $ and commas)
 5. If information is not found, use reasonable defaults or leave empty
 6. Detect the document type based on content
 
@@ -17,7 +17,7 @@ Return a JSON object with this exact structure:
     "title": "Document title or project name",
     "description": "Brief description of the project/proposal",
     "fundingSource": "Name of funding organization",
-    "referenceNuemerging businessr": "Grant nuemerging businessr, contract nuemerging businessr, or reference ID",
+    "referencenumber": "Grant number, contract number, or reference ID",
     "startDate": "YYYY-MM-DD",
     "endDate": "YYYY-MM-DD",
     "totalBudget": 0,
@@ -59,7 +59,7 @@ Return a JSON object with this exact structure:
             "id": "field_1",
             "name": "field_name",
             "label": "Field Label",
-            "type": "text" | "textarea" | "email" | "phone" | "date" | "nuemerging businessr" | "select" | "checkbox" | "radio",
+            "type": "text" | "textarea" | "email" | "phone" | "date" | "number" | "select" | "checkbox" | "radio",
             "required": true,
             "options": ["Option 1", "Option 2"]
           }
@@ -78,7 +78,7 @@ Return a JSON object with this exact structure:
           "value": 0,
           "target": 100,
           "unit": "%",
-          "visualization": "nuemerging businessr" | "percentage" | "currency" | "ratio"
+          "visualization": "number" | "percentage" | "currency" | "ratio"
         }
       ],
       "charts": [
@@ -211,7 +211,7 @@ function generateMockAnalysis(text: string, documentType?: string | null) {
     title: "Sample Project Proposal",
     description: "This is a sample analysis. Configure your OpenAI API key for full document analysis.",
     fundingSource: "Federal Government",
-    referenceNuemerging businessr: `REF-${Date.now().toString().slice(-6)}`,
+    referencenumber: `REF-${Date.now().toString().slice(-6)}`,
     startDate: startDate.toISOString().split("T")[0],
     endDate: endDate.toISOString().split("T")[0],
     totalBudget: 250000,
@@ -286,7 +286,7 @@ function generateMockAnalysis(text: string, documentType?: string | null) {
         fields: [
           { id: "f1", name: "reporting_period", label: "Reporting Period", type: "select", required: true, options: ["Q1", "Q2", "Q3", "Q4"] },
           { id: "f2", name: "milestones_completed", label: "Milestones Completed", type: "textarea", required: true },
-          { id: "f3", name: "budget_spent", label: "Budget Spent", type: "nuemerging businessr", required: true },
+          { id: "f3", name: "budget_spent", label: "Budget Spent", type: "number", required: true },
           { id: "f4", name: "challenges", label: "Challenges Encountered", type: "textarea", required: false },
         ],
         datasetFields: ["reporting_period", "milestones_completed", "budget_spent", "challenges"],
@@ -309,7 +309,7 @@ function generateMockAnalysis(text: string, documentType?: string | null) {
       description: "Real-time project performance tracking",
       metrics: [
         { id: "m1", name: "Budget Utilization", description: "Percentage of budget spent", value: 0, target: 100, unit: "%", visualization: "percentage" },
-        { id: "m2", name: "Milestones Completed", description: "Nuemerging businessr of completed milestones", value: 0, target: 4, unit: "", visualization: "nuemerging businessr" },
+        { id: "m2", name: "Milestones Completed", description: "number of completed milestones", value: 0, target: 4, unit: "", visualization: "number" },
         { id: "m3", name: "Participant Satisfaction", description: "Average satisfaction score", value: 0, target: 90, unit: "%", visualization: "percentage" },
       ],
       charts: [

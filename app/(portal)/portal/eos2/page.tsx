@@ -83,12 +83,12 @@ import {
   Issue,
   Todo,
   Meeting,
-  TeamMeemerging businessr,
+  Teammember,
 } from "@/lib/hooks/use-eos2-data";
 import { PlaybookGenerator } from "@/components/mattermost/playbook-generator";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 
 interface ChatMessage {
   id: string;
@@ -104,14 +104,14 @@ type MetricForm = Omit<ScorecardMetric, "id" | "ownerId"> & { ownerId?: string }
 type IssueForm = Omit<Issue, "id" | "ownerId"> & { ownerId?: string };
 type TodoForm = Omit<Todo, "id" | "ownerId"> & { ownerId?: string };
 type MeetingForm = Omit<Meeting, "id">;
-type TeamMeemerging businessrForm = Omit<TeamMeemerging businessr, "id">;
+type TeammemberForm = Omit<Teammember, "id">;
 
 const emptyRock: RockForm = { title: "", description: "", owner: "", dueDate: "", status: "on-track", progress: 0, quarter: "Q1 2025" };
 const emptyMetric: MetricForm = { name: "", goal: 0, actual: 0, owner: "", trend: "flat", unit: "" };
 const emptyIssue: IssueForm = { title: "", description: "", priority: "medium", identifiedDate: new Date().toISOString().split("T")[0], owner: "", status: "open" };
 const emptyTodo: TodoForm = { title: "", description: "", owner: "", dueDate: "", status: "not-started", createdDate: new Date().toISOString().split("T")[0] };
 const emptyMeeting: MeetingForm = { date: new Date().toISOString().split("T")[0], startTime: "09:00", endTime: "10:30", attendees: [], rating: 8, issuesSolved: 0, rocksReviewed: false, scorecardReviewed: false, todoCompletionRate: 0 };
-const emptyTeamMeemerging businessr: TeamMeemerging businessrForm = { name: "", role: "", category: "team", getsIt: null, wantsIt: null, capacityToDoIt: null, rightSeat: null };
+const emptyTeammember: TeammemberForm = { name: "", role: "", category: "team", getsIt: null, wantsIt: null, capacityToDoIt: null, rightSeat: null };
 
 export default function TractionDashboardPage() {
   // Use Firestore data hook
@@ -140,9 +140,9 @@ export default function TractionDashboardPage() {
     addMeeting: addMeetingToDb,
     updateMeeting: updateMeetingInDb,
     deleteMeeting: deleteMeetingFromDb,
-    addTeamMeemerging businessr: addTeamMeemerging businessrToDb,
-    updateTeamMeemerging businessr: updateTeamMeemerging businessrInDb,
-    deleteTeamMeemerging businessr: deleteTeamMeemerging businessrFromDb,
+    addTeammember: addTeammemberToDb,
+    updateTeammember: updateTeammemberInDb,
+    deleteTeammember: deleteTeammemberFromDb,
   } = useTractionData();
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -160,7 +160,7 @@ export default function TractionDashboardPage() {
   const [showIssueForm, setShowIssueForm] = useState(false);
   const [showTodoForm, setShowTodoForm] = useState(false);
   const [showMeetingForm, setShowMeetingForm] = useState(false);
-  const [showTeamMeemerging businessrForm, setShowTeamMeemerging businessrForm] = useState(false);
+  const [showTeammemberForm, setShowTeammemberForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Edit states
@@ -169,7 +169,7 @@ export default function TractionDashboardPage() {
   const [editingIssue, setEditingIssue] = useState<Issue | null>(null);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
-  const [editingTeamMeemerging businessr, setEditingTeamMeemerging businessr] = useState<TeamMeemerging businessr | null>(null);
+  const [editingTeammember, setEditingTeammember] = useState<Teammember | null>(null);
 
   // Form data states
   const [rockForm, setRockForm] = useState<RockForm>(emptyRock);
@@ -177,48 +177,48 @@ export default function TractionDashboardPage() {
   const [issueForm, setIssueForm] = useState<IssueForm>(emptyIssue);
   const [todoForm, setTodoForm] = useState<TodoForm>(emptyTodo);
   const [meetingForm, setMeetingForm] = useState<MeetingForm>(emptyMeeting);
-  const [teamMeemerging businessrForm, setTeamMeemerging businessrForm] = useState<TeamMeemerging businessrForm>(emptyTeamMeemerging businessr);
+  const [teammemberForm, setTeammemberForm] = useState<TeammemberForm>(emptyTeammember);
 
   // Delete state
   const [deleteTarget, setDeleteTarget] = useState<{ type: string; id: string; name: string } | null>(null);
 
-  // Main team meemerging businessrs from teamMeemerging businessrs collection (filtered for role "team")
-  const [mainTeamMeemerging businessrs, setMainTeamMeemerging businessrs] = useState<{ id: string; name: string }[]>([]);
+  // Main team members from teammembers collection (filtered for role "team")
+  const [mainTeammembers, setMainTeammembers] = useState<{ id: string; name: string }[]>([]);
 
-  // Load team meemerging businessrs from main teamMeemerging businessrs collection
+  // Load team members from main teammembers collection
   useEffect(() => {
-    const loadMainTeamMeemerging businessrs = async () => {
+    const loadMainTeammembers = async () => {
       if (!db) return;
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEemerging businessRS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         
-        const meemerging businessrs: { id: string; name: string }[] = [];
+        const members: { id: string; name: string }[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeamMeemerging businessrDoc;
-          // Only include meemerging businessrs with role "team"
+          const data = doc.data() as TeamMemberDoc;
+          // Only include members with role "team"
           if (data.role === "team") {
             const firstName = data.firstName || "";
             const lastName = data.lastName || "";
-            meemerging businessrs.push({
+            members.push({
               id: doc.id,
               name: `${firstName} ${lastName}`.trim() || "Unknown",
             });
           }
         });
-        setMainTeamMeemerging businessrs(meemerging businessrs);
+        setMainTeammembers(members);
       } catch (error) {
-        console.error("Error loading main team meemerging businessrs:", error);
+        console.error("Error loading main team members:", error);
       }
     };
     
-    loadMainTeamMeemerging businessrs();
+    loadMainTeammembers();
   }, []);
 
-  // Team meemerging businessr names for dropdowns - use main team meemerging businessrs if available, fallback to traction team
-  const teamMeemerging businessrNames = mainTeamMeemerging businessrs.length > 0 
-    ? mainTeamMeemerging businessrs.map(t => t.name)
+  // Team member names for dropdowns - use main team members if available, fallback to traction team
+  const teammemberNames = mainTeammembers.length > 0 
+    ? mainTeammembers.map(t => t.name)
     : team.filter(t => t.category === "team").map(t => t.name);
 
   const calculateOverallHealth = () => {
@@ -388,7 +388,7 @@ export default function TractionDashboardPage() {
   // CRUD Operations for Meetings
   const openAddMeeting = () => {
     setEditingMeeting(null);
-    setMeetingForm({ ...emptyMeeting, date: new Date().toISOString().split("T")[0], attendees: teamMeemerging businessrNames });
+    setMeetingForm({ ...emptyMeeting, date: new Date().toISOString().split("T")[0], attendees: teammemberNames });
     setShowMeetingForm(true);
   };
 
@@ -413,32 +413,32 @@ export default function TractionDashboardPage() {
     await deleteMeetingFromDb(id);
   };
 
-  // CRUD Operations for Team Meemerging businessrs
-  const openAddTeamMeemerging businessr = () => {
-    setEditingTeamMeemerging businessr(null);
-    setTeamMeemerging businessrForm(emptyTeamMeemerging businessr);
-    setShowTeamMeemerging businessrForm(true);
+  // CRUD Operations for Team members
+  const openAddTeammember = () => {
+    setEditingTeammember(null);
+    setTeammemberForm(emptyTeammember);
+    setShowTeammemberForm(true);
   };
 
-  const openEditTeamMeemerging businessr = (meemerging businessr: TeamMeemerging businessr) => {
-    setEditingTeamMeemerging businessr(meemerging businessr);
-    setTeamMeemerging businessrForm({ name: meemerging businessr.name, role: meemerging businessr.role, category: meemerging businessr.category, getsIt: meemerging businessr.getsIt, wantsIt: meemerging businessr.wantsIt, capacityToDoIt: meemerging businessr.capacityToDoIt, rightSeat: meemerging businessr.rightSeat });
-    setShowTeamMeemerging businessrForm(true);
+  const openEditTeammember = (member: Teammember) => {
+    setEditingTeammember(member);
+    setTeammemberForm({ name: member.name, role: member.role, category: member.category, getsIt: member.getsIt, wantsIt: member.wantsIt, capacityToDoIt: member.capacityToDoIt, rightSeat: member.rightSeat });
+    setShowTeammemberForm(true);
   };
 
-  const saveTeamMeemerging businessr = async () => {
-    if (!teamMeemerging businessrForm.name || !teamMeemerging businessrForm.role) return;
-    if (editingTeamMeemerging businessr) {
-      await updateTeamMeemerging businessrInDb(editingTeamMeemerging businessr.id, teamMeemerging businessrForm);
+  const saveTeammember = async () => {
+    if (!teammemberForm.name || !teammemberForm.role) return;
+    if (editingTeammember) {
+      await updateTeammemberInDb(editingTeammember.id, teammemberForm);
     } else {
-      await addTeamMeemerging businessrToDb(teamMeemerging businessrForm);
+      await addTeammemberToDb(teammemberForm);
     }
-    setShowTeamMeemerging businessrForm(false);
-    setTeamMeemerging businessrForm(emptyTeamMeemerging businessr);
+    setShowTeammemberForm(false);
+    setTeammemberForm(emptyTeammember);
   };
 
-  const deleteTeamMeemerging businessr = async (id: string) => {
-    await deleteTeamMeemerging businessrFromDb(id);
+  const deleteTeammember = async (id: string) => {
+    await deleteTeammemberFromDb(id);
   };
 
   // Delete confirmation
@@ -455,7 +455,7 @@ export default function TractionDashboardPage() {
       case "issue": await deleteIssue(deleteTarget.id); break;
       case "todo": await deleteTodo(deleteTarget.id); break;
       case "meeting": await deleteMeeting(deleteTarget.id); break;
-      case "team": await deleteTeamMeemerging businessr(deleteTarget.id); break;
+      case "team": await deleteTeammember(deleteTarget.id); break;
     }
     setShowDeleteConfirm(false);
     setDeleteTarget(null);
@@ -552,8 +552,8 @@ export default function TractionDashboardPage() {
         <Card className="max-w-lg w-full">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-aemerging businessr-100">
-                <AlertTriangle className="h-6 w-6 text-aemerging businessr-600" />
+              <div className="p-2 rounded-lg bg-amber-100">
+                <AlertTriangle className="h-6 w-6 text-amber-600" />
               </div>
               <div>
                 <CardTitle>Database Not Connected</CardTitle>
@@ -1079,7 +1079,7 @@ export default function TractionDashboardPage() {
                             <div className="space-y-3">
                               <div className="flex justify-between items-center">
                                 <span className="text-sm font-medium">Future Date:</span>
-                                <span className="text-sm">Deceemerging businessr 16, 2028</span>
+                                <span className="text-sm">December 16, 2028</span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span className="text-sm font-medium">Revenue:</span>
@@ -1122,7 +1122,7 @@ export default function TractionDashboardPage() {
                           <div className="space-y-3">
                             <div className="flex justify-between items-center border-b pb-2">
                               <span className="text-sm font-medium">Future Date:</span>
-                              <span className="text-sm text-blue-600">Deceemerging businessr 12, 2026</span>
+                              <span className="text-sm text-blue-600">December 12, 2026</span>
                             </div>
                             <div className="flex justify-between items-center border-b pb-2">
                               <span className="text-sm font-medium">Revenue:</span>
@@ -1347,8 +1347,8 @@ export default function TractionDashboardPage() {
           <TabsContent value="people" className="flex-1 m-0 min-h-0 overflow-hidden">
             <ScrollArea className="h-full">
               <div className="p-6 space-y-6">
-                <div className="flex justify-between items-center"><div><h2 className="text-lg font-semibold">People Analyzer (GWC)</h2><p className="text-sm text-muted-foreground">Right people in the right seats</p></div><Button onClick={openAddTeamMeemerging businessr}><Plus className="h-4 w-4 mr-2" />Add Team Meemerging businessr</Button></div>
-                <Card><CardContent className="pt-6"><Table><TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Role</TableHead><TableHead>Category</TableHead><TableHead className="text-center">Gets It</TableHead><TableHead className="text-center">Wants It</TableHead><TableHead className="text-center">Capacity</TableHead><TableHead className="text-center">Right Seat</TableHead><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader><TableBody>{team.map(meemerging businessr => (<TableRow key={meemerging businessr.id}><TableCell className="font-medium">{meemerging businessr.name}</TableCell><TableCell>{meemerging businessr.role}</TableCell><TableCell><Badge variant={meemerging businessr.category === "team" ? "default" : "secondary"} className="capitalize">{meemerging businessr.category}</Badge></TableCell><TableCell className="text-center">{meemerging businessr.getsIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : meemerging businessr.getsIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{meemerging businessr.wantsIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : meemerging businessr.wantsIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{meemerging businessr.capacityToDoIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : meemerging businessr.capacityToDoIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{meemerging businessr.rightSeat === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : meemerging businessr.rightSeat === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-right"><Button variant="ghost" size="icon" onClick={() => openEditTeamMeemerging businessr(meemerging businessr)}><Edit className="h-4 w-4" /></Button><Button variant="ghost" size="icon" onClick={() => confirmDelete("team", meemerging businessr.id, meemerging businessr.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button></TableCell></TableRow>))}</TableBody></Table></CardContent></Card>
+                <div className="flex justify-between items-center"><div><h2 className="text-lg font-semibold">People Analyzer (GWC)</h2><p className="text-sm text-muted-foreground">Right people in the right seats</p></div><Button onClick={openAddTeammember}><Plus className="h-4 w-4 mr-2" />Add Team member</Button></div>
+                <Card><CardContent className="pt-6"><Table><TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Role</TableHead><TableHead>Category</TableHead><TableHead className="text-center">Gets It</TableHead><TableHead className="text-center">Wants It</TableHead><TableHead className="text-center">Capacity</TableHead><TableHead className="text-center">Right Seat</TableHead><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader><TableBody>{team.map(member => (<TableRow key={member.id}><TableCell className="font-medium">{member.name}</TableCell><TableCell>{member.role}</TableCell><TableCell><Badge variant={member.category === "team" ? "default" : "secondary"} className="capitalize">{member.category}</Badge></TableCell><TableCell className="text-center">{member.getsIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : member.getsIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{member.wantsIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : member.wantsIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{member.capacityToDoIt === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : member.capacityToDoIt === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-center">{member.rightSeat === true ? <CheckCircle className="h-5 w-5 text-green-600 mx-auto" /> : member.rightSeat === false ? <XCircle className="h-5 w-5 text-red-600 mx-auto" /> : <Minus className="h-5 w-5 text-gray-400 mx-auto" />}</TableCell><TableCell className="text-right"><Button variant="ghost" size="icon" onClick={() => openEditTeammember(member)}><Edit className="h-4 w-4" /></Button><Button variant="ghost" size="icon" onClick={() => confirmDelete("team", member.id, member.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button></TableCell></TableRow>))}</TableBody></Table></CardContent></Card>
               </div>
             </ScrollArea>
           </TabsContent>
@@ -1410,7 +1410,7 @@ export default function TractionDashboardPage() {
                 <Label htmlFor="rock-owner">Owner *</Label>
                 <Select value={rockForm.owner} onValueChange={(v) => setRockForm({ ...rockForm, owner: v })}>
                   <SelectTrigger><SelectValue placeholder="Select owner" /></SelectTrigger>
-                  <SelectContent>{teamMeemerging businessrNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{teammemberNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -1473,7 +1473,7 @@ export default function TractionDashboardPage() {
                 <Label htmlFor="metric-owner">Owner *</Label>
                 <Select value={metricForm.owner} onValueChange={(v) => setMetricForm({ ...metricForm, owner: v })}>
                   <SelectTrigger><SelectValue placeholder="Select owner" /></SelectTrigger>
-                  <SelectContent>{teamMeemerging businessrNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{teammemberNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -1492,11 +1492,11 @@ export default function TractionDashboardPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="metric-goal">Goal *</Label>
-                <Input id="metric-goal" type="nuemerging businessr" placeholder="Target value" value={metricForm.goal || ""} onChange={(e) => setMetricForm({ ...metricForm, goal: Nuemerging businessr(e.target.value) })} />
+                <Input id="metric-goal" type="number" placeholder="Target value" value={metricForm.goal || ""} onChange={(e) => setMetricForm({ ...metricForm, goal: Number(e.target.value) })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="metric-actual">Actual</Label>
-                <Input id="metric-actual" type="nuemerging businessr" placeholder="Current value" value={metricForm.actual || ""} onChange={(e) => setMetricForm({ ...metricForm, actual: Nuemerging businessr(e.target.value) })} />
+                <Input id="metric-actual" type="number" placeholder="Current value" value={metricForm.actual || ""} onChange={(e) => setMetricForm({ ...metricForm, actual: Number(e.target.value) })} />
               </div>
             </div>
             <div className="space-y-2">
@@ -1535,7 +1535,7 @@ export default function TractionDashboardPage() {
                 <Label htmlFor="issue-owner">Owner *</Label>
                 <Select value={issueForm.owner} onValueChange={(v) => setIssueForm({ ...issueForm, owner: v })}>
                   <SelectTrigger><SelectValue placeholder="Select owner" /></SelectTrigger>
-                  <SelectContent>{teamMeemerging businessrNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{teammemberNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -1592,7 +1592,7 @@ export default function TractionDashboardPage() {
                 <Label htmlFor="todo-owner">Owner *</Label>
                 <Select value={todoForm.owner} onValueChange={(v) => setTodoForm({ ...todoForm, owner: v })}>
                   <SelectTrigger><SelectValue placeholder="Select owner" /></SelectTrigger>
-                  <SelectContent>{teamMeemerging businessrNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{teammemberNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -1648,11 +1648,11 @@ export default function TractionDashboardPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="meeting-issues">Issues Solved</Label>
-                <Input id="meeting-issues" type="nuemerging businessr" min={0} value={meetingForm.issuesSolved} onChange={(e) => setMeetingForm({ ...meetingForm, issuesSolved: Nuemerging businessr(e.target.value) })} />
+                <Input id="meeting-issues" type="number" min={0} value={meetingForm.issuesSolved} onChange={(e) => setMeetingForm({ ...meetingForm, issuesSolved: Number(e.target.value) })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="meeting-todos">To-Do Completion %</Label>
-                <Input id="meeting-todos" type="nuemerging businessr" min={0} max={100} value={meetingForm.todoCompletionRate} onChange={(e) => setMeetingForm({ ...meetingForm, todoCompletionRate: Nuemerging businessr(e.target.value) })} />
+                <Input id="meeting-todos" type="number" min={0} max={100} value={meetingForm.todoCompletionRate} onChange={(e) => setMeetingForm({ ...meetingForm, todoCompletionRate: Number(e.target.value) })} />
               </div>
             </div>
             <div className="flex items-center gap-6">
@@ -1673,27 +1673,27 @@ export default function TractionDashboardPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Team Meemerging businessr Form Dialog */}
-      <Dialog open={showTeamMeemerging businessrForm} onOpenChange={setShowTeamMeemerging businessrForm}>
+      {/* Team member Form Dialog */}
+      <Dialog open={showTeammemberForm} onOpenChange={setShowTeammemberForm}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingTeamMeemerging businessr ? "Edit Team Meemerging businessr" : "Add Team Meemerging businessr"}</DialogTitle>
+            <DialogTitle>{editingTeammember ? "Edit Team member" : "Add Team member"}</DialogTitle>
             <DialogDescription>People Analyzer - GWC Assessment</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="meemerging businessr-name">Name *</Label>
-                <Input id="meemerging businessr-name" placeholder="Full name" value={teamMeemerging businessrForm.name} onChange={(e) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, name: e.target.value })} />
+                <Label htmlFor="member-name">Name *</Label>
+                <Input id="member-name" placeholder="Full name" value={teammemberForm.name} onChange={(e) => setTeammemberForm({ ...teammemberForm, name: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="meemerging businessr-role">Role *</Label>
-                <Input id="meemerging businessr-role" placeholder="e.g., VP Sales" value={teamMeemerging businessrForm.role} onChange={(e) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, role: e.target.value })} />
+                <Label htmlFor="member-role">Role *</Label>
+                <Input id="member-role" placeholder="e.g., VP Sales" value={teammemberForm.role} onChange={(e) => setTeammemberForm({ ...teammemberForm, role: e.target.value })} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="meemerging businessr-category">Category</Label>
-              <Select value={teamMeemerging businessrForm.category} onValueChange={(v: TeamMeemerging businessr["category"]) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, category: v })}>
+              <Label htmlFor="member-category">Category</Label>
+              <Select value={teammemberForm.category} onValueChange={(v: Teammember["category"]) => setTeammemberForm({ ...teammemberForm, category: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="team">Team (appears in owner dropdowns)</SelectItem>
@@ -1708,7 +1708,7 @@ export default function TractionDashboardPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Gets It</Label>
-                  <Select value={teamMeemerging businessrForm.getsIt === null ? "null" : teamMeemerging businessrForm.getsIt.toString()} onValueChange={(v) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, getsIt: v === "null" ? null : v === "true" })}>
+                  <Select value={teammemberForm.getsIt === null ? "null" : teammemberForm.getsIt.toString()} onValueChange={(v) => setTeammemberForm({ ...teammemberForm, getsIt: v === "null" ? null : v === "true" })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="null">Not Assessed</SelectItem>
@@ -1719,7 +1719,7 @@ export default function TractionDashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Wants It</Label>
-                  <Select value={teamMeemerging businessrForm.wantsIt === null ? "null" : teamMeemerging businessrForm.wantsIt.toString()} onValueChange={(v) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, wantsIt: v === "null" ? null : v === "true" })}>
+                  <Select value={teammemberForm.wantsIt === null ? "null" : teammemberForm.wantsIt.toString()} onValueChange={(v) => setTeammemberForm({ ...teammemberForm, wantsIt: v === "null" ? null : v === "true" })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="null">Not Assessed</SelectItem>
@@ -1730,7 +1730,7 @@ export default function TractionDashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Capacity to Do It</Label>
-                  <Select value={teamMeemerging businessrForm.capacityToDoIt === null ? "null" : teamMeemerging businessrForm.capacityToDoIt.toString()} onValueChange={(v) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, capacityToDoIt: v === "null" ? null : v === "true" })}>
+                  <Select value={teammemberForm.capacityToDoIt === null ? "null" : teammemberForm.capacityToDoIt.toString()} onValueChange={(v) => setTeammemberForm({ ...teammemberForm, capacityToDoIt: v === "null" ? null : v === "true" })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="null">Not Assessed</SelectItem>
@@ -1741,7 +1741,7 @@ export default function TractionDashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Right Seat</Label>
-                  <Select value={teamMeemerging businessrForm.rightSeat === null ? "null" : teamMeemerging businessrForm.rightSeat.toString()} onValueChange={(v) => setTeamMeemerging businessrForm({ ...teamMeemerging businessrForm, rightSeat: v === "null" ? null : v === "true" })}>
+                  <Select value={teammemberForm.rightSeat === null ? "null" : teammemberForm.rightSeat.toString()} onValueChange={(v) => setTeammemberForm({ ...teammemberForm, rightSeat: v === "null" ? null : v === "true" })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="null">Not Assessed</SelectItem>
@@ -1754,8 +1754,8 @@ export default function TractionDashboardPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowTeamMeemerging businessrForm(false)}>Cancel</Button>
-            <Button onClick={saveTeamMeemerging businessr} disabled={!teamMeemerging businessrForm.name || !teamMeemerging businessrForm.role}><Save className="h-4 w-4 mr-2" />Save Team Meemerging businessr</Button>
+            <Button variant="outline" onClick={() => setShowTeammemberForm(false)}>Cancel</Button>
+            <Button onClick={saveTeammember} disabled={!teammemberForm.name || !teammemberForm.role}><Save className="h-4 w-4 mr-2" />Save Team member</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

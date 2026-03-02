@@ -39,19 +39,19 @@ interface Cohort {
   instructorId: string;
   startDate: any;
   endDate: any;
-  duration: nuemerging businessr;
-  maxParticipants: nuemerging businessr;
-  currentEnrollment: nuemerging businessr;
+  duration: number;
+  maxParticipants: number;
+  currentEnrollment: number;
   status: "scheduled" | "active" | "completed" | "cancelled";
   level: string;
-  completedSessions: nuemerging businessr;
-  totalSessions: nuemerging businessr;
-  averageAttendance?: nuemerging businessr;
-  averageScore?: nuemerging businessr;
+  completedSessions: number;
+  totalSessions: number;
+  averageAttendance?: number;
+  averageScore?: number;
   upcomingSession?: {
     date: any;
     topic: string;
-    duration: nuemerging businessr;
+    duration: number;
   };
   createdAt: any;
   updatedAt: any;
@@ -141,8 +141,8 @@ export default function InstructorDashboardPage() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const formatCurrency = (amount: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat("en-US", {
+  const formatCurrency = (amount: number) => {
+    return new Intl.numberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
@@ -150,7 +150,7 @@ export default function InstructorDashboardPage() {
     }).format(amount);
   };
 
-  const getProgressPercentage = (completed: nuemerging businessr, total: nuemerging businessr) => {
+  const getProgressPercentage = (completed: number, total: number) => {
     return Math.round((completed / total) * 100);
   };
 

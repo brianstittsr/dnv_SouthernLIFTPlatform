@@ -223,7 +223,7 @@ function SettingsPageContent() {
     hiddenItems: [],
     roleVisibility: {
       admin: [],
-      "team-meemerging businessr": [],
+      "team-member": [],
       affiliate: [],
       client: [],
       viewer: [],
@@ -233,7 +233,7 @@ function SettingsPageContent() {
   // Available roles for visibility settings
   const VISIBILITY_ROLES = [
     { value: "admin", label: "Admin" },
-    { value: "team-meemerging businessr", label: "Team Meemerging businessr" },
+    { value: "team-member", label: "Team member" },
     { value: "affiliate", label: "Affiliate" },
     { value: "client", label: "Client" },
     { value: "viewer", label: "Viewer" },
@@ -321,7 +321,7 @@ function SettingsPageContent() {
               hiddenItems: data.navigationSettings.hiddenItems || [],
               roleVisibility: data.navigationSettings.roleVisibility || {
                 admin: [],
-                "team-meemerging businessr": [],
+                "team-member": [],
                 affiliate: [],
                 client: [],
                 viewer: [],

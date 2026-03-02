@@ -478,16 +478,16 @@ Whether you're a **small manufacturer seeking capital for defense market entry**
     tags: ["NMSDC", "Minority Business", "Capital", "Certification", "Supply Chain"],
     readTime: 9,
     imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
-    content: `The National Minority Supplier Development Council (NMSDC) is one of the most powerful resources available to minority-owned businesses. With a network of over 15,000 certified minority business enterprises (emerging businesss) and 1,500+ corporate meemerging businessrs, NMSDC certification opens doors to billions of dollars in procurement opportunities and growth capital.
+    content: `The National Minority Supplier Development Council (NMSDC) is one of the most powerful resources available to minority-owned businesses. With a network of over 15,000 certified minority business enterprises (emerging businesss) and 1,500+ corporate members, NMSDC certification opens doors to billions of dollars in procurement opportunities and growth capital.
 
 ## What Is NMSDC?
 
 NMSDC is a non-profit organization that connects minority-owned businesses with corporate supply chains. Founded in 1972, it operates through a network of 23 regional affiliate councils across the United States.
 
 ### Key Statistics
-- **$400+ billion** in annual procurement through NMSDC corporate meemerging businessrs
+- **$400+ billion** in annual procurement through NMSDC corporate members
 - **15,000+** certified emerging businesss
-- **1,500+** corporate meemerging businessrs (Fortune 500 and major companies)
+- **1,500+** corporate members (Fortune 500 and major companies)
 - **23** regional affiliate councils
 - **50+ years** of advancing minority business development
 
@@ -530,7 +530,7 @@ A lending institution specifically for NMSDC-certified emerging businesss.
 - Relationship-based lending
 
 ### 2. Corporate Supplier Development Programs
-Many NMSDC corporate meemerging businessrs offer financial support to emerging business suppliers:
+Many NMSDC corporate members offer financial support to emerging business suppliers:
 - **Early payment programs** — Accelerated payment terms
 - **Supply chain financing** — Discounted financing based on corporate credit
 - **Direct investment** — Equity or debt investment in strategic suppliers
@@ -576,7 +576,7 @@ NMSDC advocates for minority business interests:
 ## Leveraging NMSDC for Defense Contracting
 
 ### The Connection
-Many defense prime contractors are NMSDC corporate meemerging businessrs:
+Many defense prime contractors are NMSDC corporate members:
 - Boeing
 - Lockheed Martin
 - Raytheon Technologies
@@ -631,7 +631,7 @@ The 8(a) program is a 9-year business development program administered by the SB
 
 ### Social Disadvantage
 You must demonstrate social disadvantage based on:
-- Meemerging businessrship in a designated group (Black, Hispanic, Native American, Asian Pacific American, Subcontinent Asian American)
+- membership in a designated group (Black, Hispanic, Native American, Asian Pacific American, Subcontinent Asian American)
 - OR individual circumstances of disadvantage (with supporting evidence)
 
 ### Economic Disadvantage
@@ -1228,7 +1228,7 @@ A 2-3 page overview that includes:
 ## Best Practices
 
 ### 1. Accuracy Above All
-- Ensure all nuemerging businessrs tie across documents
+- Ensure all numbers tie across documents
 - Reconcile financial statements to tax returns
 - Verify contract values and terms
 - Cross-reference all data points
@@ -1236,7 +1236,7 @@ A 2-3 page overview that includes:
 ### 2. Professional Presentation
 - Use consistent formatting throughout
 - Include a table of contents
-- Nuemerging businessr all pages
+- number all pages
 - Use clear headers and labels
 - Include a cover page with company branding
 

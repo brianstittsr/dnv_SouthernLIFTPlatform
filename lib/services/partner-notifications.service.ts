@@ -62,7 +62,7 @@ export async function notifyPartners(
   transactionDetails?: {
     transactionId: string;
     clientName: string;
-    totalAmount: nuemerging businessr;
+    totalAmount: number;
   }
 ): Promise<void> {
   for (const commission of commissions) {
@@ -106,7 +106,7 @@ async function sendCommissionPendingEmail(
   transactionDetails?: {
     transactionId: string;
     clientName: string;
-    totalAmount: nuemerging businessr;
+    totalAmount: number;
   }
 ): Promise<void> {
   const expectedPayoutDate = new Date();
@@ -139,7 +139,7 @@ async function sendCommissionApprovedEmail(
   transactionDetails?: {
     transactionId: string;
     clientName: string;
-    totalAmount: nuemerging businessr;
+    totalAmount: number;
   }
 ): Promise<void> {
   await sendTemplatedEmail('partnerCommissionApproved', partner.contactEmail, {
@@ -161,7 +161,7 @@ async function sendCommissionPaidEmail(
   transactionDetails?: {
     transactionId: string;
     clientName: string;
-    totalAmount: nuemerging businessr;
+    totalAmount: number;
   }
 ): Promise<void> {
   await sendTemplatedEmail('partnerCommissionPaid', partner.contactEmail, {
@@ -184,7 +184,7 @@ async function sendCommissionFailedEmail(
   transactionDetails?: {
     transactionId: string;
     clientName: string;
-    totalAmount: nuemerging businessr;
+    totalAmount: number;
   }
 ): Promise<void> {
   await sendTemplatedEmail('partnerCommissionFailed', partner.contactEmail, {
@@ -227,8 +227,8 @@ export async function alertAdmins(
 // Helper Functions
 // ============================================================================
 
-function formatCurrency(amount: nuemerging businessr): string {
-  return new Intl.Nuemerging businessrFormat('en-US', {
+function formatCurrency(amount: number): string {
+  return new Intl.numberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   }).format(amount);

@@ -254,7 +254,7 @@ export default function AccessibilityPage() {
       <section className="py-8 border-t">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-muted-foreground">
-            This accessibility statement was last updated on Deceemerging businessr 7, 2024.
+            This accessibility statement was last updated on December 7, 2024.
           </p>
         </div>
       </section>

@@ -20,13 +20,13 @@ interface Cohort {
   facilitatorName: string;
   cohortStartDate: any;
   cohortEndDate: any;
-  maxParticipants: nuemerging businessr;
-  currentParticipants: nuemerging businessr;
-  estimatedDurationWeeks: nuemerging businessr;
+  maxParticipants: number;
+  currentParticipants: number;
+  estimatedDurationWeeks: number;
   status: string;
   difficultyLevel: string;
-  priceInCents: nuemerging businessr;
-  compareAtPriceInCents?: nuemerging businessr;
+  priceInCents: number;
+  compareAtPriceInCents?: number;
   isFree: boolean;
   tags?: string[];
   thumbnailUrl?: string;
@@ -78,8 +78,8 @@ export default function CohortCatalogPage() {
     }
   };
 
-  const formatPrice = (cents: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatPrice = (cents: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(cents / 100);

@@ -316,7 +316,7 @@ export async function getCohortTemplates() {
  */
 export async function duplicateForNextSession(
   cohortId: string,
-  weeksOffset: nuemerging businessr = 12
+  weeksOffset: number = 12
 ): Promise<string> {
   if (!db) throw new Error("Firebase not initialized");
 
@@ -334,12 +334,12 @@ export async function duplicateForNextSession(
   const newStart = new Date(originalStart);
   newStart.setDate(newStart.getDate() + weeksOffset * 7);
 
-  // Generate new title with session nuemerging businessr
+  // Generate new title with session number
   const sessionMatch = cohort.title.match(/Session (\d+)/);
-  const sessionNuemerging businessr = sessionMatch ? parseInt(sessionMatch[1]) + 1 : 2;
+  const sessionnumber = sessionMatch ? parseInt(sessionMatch[1]) + 1 : 2;
   const newTitle = sessionMatch
-    ? cohort.title.replace(/Session \d+/, `Session ${sessionNuemerging businessr}`)
-    : `${cohort.title} - Session ${sessionNuemerging businessr}`;
+    ? cohort.title.replace(/Session \d+/, `Session ${sessionnumber}`)
+    : `${cohort.title} - Session ${sessionnumber}`;
 
   return cloneCohort({
     sourceCohortId: cohortId,

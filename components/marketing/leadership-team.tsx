@@ -8,9 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Linkedin, Mail, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, or } from "firebase/firestore";
-import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
 
-interface LeadershipMeemerging businessr {
+interface Leadershipmember {
   id: string;
   name: string;
   role: string;
@@ -21,11 +21,11 @@ interface LeadershipMeemerging businessr {
   leadershipRole: "CEO" | "COO" | "CTO" | "CRO";
 }
 
-// Fallback data if Firebase is not configured or no leadership meemerging businessrs found
-const fallbackTeam: LeadershipMeemerging businessr[] = [
+// Fallback data if Firebase is not configured or no leadership members found
+const fallbackTeam: Leadershipmember[] = [
   {
     id: "1",
-    name: "Leadership Team Meemerging businessr",
+    name: "Leadership Team member",
     role: "CEO & Founder",
     bio: "20+ years in manufacturing consulting and supplier development.",
     avatar: "/team/ceo.jpg",
@@ -68,7 +68,7 @@ const fallbackTeam: LeadershipMeemerging businessr[] = [
 const roleOrder = { CEO: 1, COO: 2, CTO: 3, CRO: 4 };
 
 export function LeadershipTeam() {
-  const [team, setTeam] = useState<LeadershipMeemerging businessr[]>([]);
+  const [team, setTeam] = useState<Leadershipmember[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -80,12 +80,12 @@ export function LeadershipTeam() {
       }
 
       try {
-        // Query for team meemerging businessrs with any leadership flag set
-        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS));
-        const leadershipMeemerging businessrs: LeadershipMeemerging businessr[] = [];
+        // Query for team members with any leadership flag set
+        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
+        const leadershipmembers: Leadershipmember[] = [];
 
         querySnapshot.forEach((doc) => {
-          const data = doc.data() as TeamMeemerging businessrDoc;
+          const data = doc.data() as TeammemberDoc;
           
           // Check if any leadership flag is set
           if (data.isCEO || data.isCOO || data.isCTO || data.isCRO) {
@@ -107,7 +107,7 @@ export function LeadershipTeam() {
               roleTitle = "Chief Revenue Officer";
             }
 
-            leadershipMeemerging businessrs.push({
+            leadershipmembers.push({
               id: doc.id,
               name: `${data.firstName} ${data.lastName}`,
               role: roleTitle,
@@ -121,10 +121,10 @@ export function LeadershipTeam() {
         });
 
         // Sort by role order (CEO first, then COO, CTO, CRO)
-        leadershipMeemerging businessrs.sort((a, b) => roleOrder[a.leadershipRole] - roleOrder[b.leadershipRole]);
+        leadershipmembers.sort((a, b) => roleOrder[a.leadershipRole] - roleOrder[b.leadershipRole]);
 
-        if (leadershipMeemerging businessrs.length > 0) {
-          setTeam(leadershipMeemerging businessrs);
+        if (leadershipmembers.length > 0) {
+          setTeam(leadershipmembers);
         } else {
           setTeam(fallbackTeam);
         }
@@ -149,31 +149,31 @@ export function LeadershipTeam() {
 
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-      {team.map((meemerging businessr) => (
-        <Card key={meemerging businessr.id} className="overflow-hidden">
+      {team.map((member) => (
+        <Card key={member.id} className="overflow-hidden">
           <CardContent className="p-6 text-center">
             <Avatar className="h-24 w-24 mx-auto mb-4">
-              <AvatarImage src={meemerging businessr.avatar} />
+              <AvatarImage src={member.avatar} />
               <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
-                {meemerging businessr.name
+                {member.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
-            <h3 className="text-lg font-semibold">{meemerging businessr.name}</h3>
-            <p className="text-primary text-sm font-medium">{meemerging businessr.role}</p>
-            <p className="text-muted-foreground text-sm mt-2">{meemerging businessr.bio}</p>
+            <h3 className="text-lg font-semibold">{member.name}</h3>
+            <p className="text-primary text-sm font-medium">{member.role}</p>
+            <p className="text-muted-foreground text-sm mt-2">{member.bio}</p>
             <div className="flex justify-center gap-2 mt-4">
-              {meemerging businessr.linkedIn && meemerging businessr.linkedIn !== "#" && (
+              {member.linkedIn && member.linkedIn !== "#" && (
                 <Button variant="ghost" size="icon" asChild>
-                  <Link href={meemerging businessr.linkedIn} target="_blank" rel="noopener noreferrer">
+                  <Link href={member.linkedIn} target="_blank" rel="noopener noreferrer">
                     <Linkedin className="h-4 w-4" />
                   </Link>
                 </Button>
               )}
               <Button variant="ghost" size="icon" asChild>
-                <Link href={`mailto:${meemerging businessr.email}`}>
+                <Link href={`mailto:${member.email}`}>
                   <Mail className="h-4 w-4" />
                 </Link>
               </Button>

@@ -131,8 +131,8 @@ const mainNavItems = [
     badge: "3",
   },
   {
-    title: "Meemerging businessr Directory",
-    href: "/portal/meemerging businessrs",
+    title: "member Directory",
+    href: "/portal/members",
     icon: Users,
     badge: "KDM",
   },
@@ -156,8 +156,8 @@ const workItems = [
     badge: "KDM",
   },
   {
-    title: "My Meemerging businessrship",
-    href: "/portal/meemerging businessrship",
+    title: "My membership",
+    href: "/portal/membership",
     icon: UserCheck,
     badge: "KDM",
   },
@@ -276,8 +276,8 @@ const adminItems = [
     badge: "New",
   },
   {
-    title: "Meemerging businessrships",
-    href: "/portal/admin/meemerging businessrships",
+    title: "memberships",
+    href: "/portal/admin/memberships",
     icon: Users,
     badge: "KDM",
   },
@@ -288,8 +288,8 @@ const adminItems = [
     badge: "KDM",
   },
   {
-    title: "Team Meemerging businessrs",
-    href: "/portal/admin/team-meemerging businessrs",
+    title: "Team members",
+    href: "/portal/admin/team-members",
     icon: UserCog,
   },
   {
@@ -625,7 +625,7 @@ const aiItems = [
 const AVAILABLE_ROLES = [
   // Platform roles
   { value: "admin", label: "Admin" },
-  { value: "team_meemerging businessr", label: "Team Meemerging businessr" },
+  { value: "team_member", label: "Team member" },
   { value: "affiliate", label: "Affiliate" },
   { value: "client", label: "Client" },
   { value: "viewer", label: "Viewer" },

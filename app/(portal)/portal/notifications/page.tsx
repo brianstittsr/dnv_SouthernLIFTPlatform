@@ -59,7 +59,7 @@ function getActivityIcon(type: string) {
       return <FileText className="h-4 w-4" />;
     case "project":
       return <FolderKanban className="h-4 w-4" />;
-    case "team-meemerging businessr":
+    case "team-member":
     case "affiliate":
       return <Users className="h-4 w-4" />;
     case "task":

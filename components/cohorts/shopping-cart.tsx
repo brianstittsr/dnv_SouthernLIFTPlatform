@@ -21,8 +21,8 @@ export function ShoppingCartButton() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const formatPrice = (cents: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatPrice = (cents: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(cents / 100);

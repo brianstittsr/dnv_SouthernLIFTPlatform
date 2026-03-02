@@ -28,12 +28,12 @@ export interface HeroSlide {
     href: string;
   };
   isPublished: boolean;
-  order: nuemerging businessr;
+  order: number;
   // Background options
   backgroundType?: "animated" | "image";
   backgroundImage?: string;
   backgroundOverlay?: boolean;
-  backgroundOverlayOpacity?: nuemerging businessr; // 0-100
+  backgroundOverlayOpacity?: number; // 0-100
   // Appearance toggles
   fullScreenBg?: boolean;
   showRibbon?: boolean;

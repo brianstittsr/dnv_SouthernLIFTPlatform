@@ -21,8 +21,8 @@ export default function InitCollectionsPage() {
 
   const collectionsToCreate = [
     { name: "platformSettings", docId: "global", data: { navigationSettings: { hiddenItems: [], roleVisibility: {} } } },
-    { name: "teamMeemerging businessrs", docId: "_placeholder", data: { _placeholder: true, note: "Delete after adding real team meemerging businessrs" } },
-    { name: "meemerging businessrships", docId: "_placeholder", data: { _placeholder: true, note: "Delete after adding real meemerging businessrships" } },
+    { name: "teammembers", docId: "_placeholder", data: { _placeholder: true, note: "Delete after adding real team members" } },
+    { name: "memberships", docId: "_placeholder", data: { _placeholder: true, note: "Delete after adding real memberships" } },
     { name: "proofPacks", docId: "_placeholder", data: { _placeholder: true, note: "Proof Packs collection" } },
     { name: "smeSubscriptions", docId: "_placeholder", data: { _placeholder: true, note: "SME Subscriptions collection" } },
     { name: "partnerLeads", docId: "_placeholder", data: { _placeholder: true, note: "Partner Leads collection" } },

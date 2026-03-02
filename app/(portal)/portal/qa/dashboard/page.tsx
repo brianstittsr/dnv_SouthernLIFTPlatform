@@ -43,8 +43,8 @@ interface QAReview {
     requirement: string;
     status: "open" | "resolved";
   }>;
-  score: nuemerging businessr | null;
-  completionPercentage: nuemerging businessr;
+  score: number | null;
+  completionPercentage: number;
   scheduledDate: any;
   startedAt?: any;
   completedAt?: any;
@@ -174,7 +174,7 @@ export default function QADashboardPage() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const getScoreColor = (score: nuemerging businessr | null) => {
+  const getScoreColor = (score: number | null) => {
     if (score === null) return "text-gray-600";
     if (score >= 90) return "text-green-600";
     if (score >= 75) return "text-blue-600";

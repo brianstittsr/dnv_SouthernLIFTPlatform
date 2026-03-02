@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 
-const TIER_INFO: Record<string, { name: string; price: nuemerging businessr }> = {
+const TIER_INFO: Record<string, { name: string; price: number }> = {
   diy: { name: "DIY (Do It Yourself)", price: 99 },
   dwy: { name: "DWY (Done With You)", price: 299 },
   dfy: { name: "DFY (Done For You)", price: 599 },

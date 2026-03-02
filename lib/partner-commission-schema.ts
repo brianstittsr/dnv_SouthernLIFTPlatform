@@ -40,7 +40,7 @@ export type ContributionType =
   | 'introduction'
   | 'platform_fee';
 
-export const DEFAULT_ATTRIBUTION_PERCENTAGES: Record<ContributionType, nuemerging businessr> = {
+export const DEFAULT_ATTRIBUTION_PERCENTAGES: Record<ContributionType, number> = {
   lead_generation: 20,
   service_delivery: 50,
   introduction: 20,
@@ -77,35 +77,35 @@ export interface PartnerProfileDoc {
   paypalEmail?: string;
   bankAccountInfo?: {
     bankName: string;
-    accountNuemerging businessr: string; // Last 4 digits only for display
-    routingNuemerging businessr: string; // Last 4 digits only for display
+    accountnumber: string; // Last 4 digits only for display
+    routingnumber: string; // Last 4 digits only for display
   };
   
   // Payout Settings
   autoPayoutEnabled: boolean;
-  minimumPayoutAmount: nuemerging businessr; // Minimum amount before payout
+  minimumPayoutAmount: number; // Minimum amount before payout
   payoutFrequency: 'immediate' | 'weekly' | 'biweekly' | 'monthly';
-  holdPeriodDays: nuemerging businessr; // Days to hold before payout (default 7)
+  holdPeriodDays: number; // Days to hold before payout (default 7)
   
   // Commission Configuration
   commissionTierId?: string; // Reference to commission tier
-  customCommissionRate?: nuemerging businessr; // Override rate if set
+  customCommissionRate?: number; // Override rate if set
   
   // Attribution Rules
   attributionRules: {
     contributionType: ContributionType;
-    percentage: nuemerging businessr;
+    percentage: number;
     isActive: boolean;
   }[];
   
   // Statistics (denormalized for quick access)
   stats: {
-    totalEarnings: nuemerging businessr;
-    pendingCommissions: nuemerging businessr;
-    paidCommissions: nuemerging businessr;
-    totalTransactions: nuemerging businessr;
+    totalEarnings: number;
+    pendingCommissions: number;
+    paidCommissions: number;
+    totalTransactions: number;
     lastPayoutDate?: Timestamp;
-    lastPayoutAmount?: nuemerging businessr;
+    lastPayoutAmount?: number;
   };
   
   // Status
@@ -126,8 +126,8 @@ export interface PartnerAttributionItem {
   partnerId: ConsortiumPartnerId;
   partnerName: string;
   contributionType: ContributionType;
-  percentage: nuemerging businessr; // Attribution percentage
-  amount: nuemerging businessr; // Calculated commission amount
+  percentage: number; // Attribution percentage
+  amount: number; // Calculated commission amount
   status: CommissionStatus;
   notifiedAt?: Timestamp;
   paidAt?: Timestamp;
@@ -149,17 +149,17 @@ export interface PartnerAttributionDoc {
   clientEmail: string;
   
   // Transaction Details
-  transactionType: 'meemerging businessrship' | 'event_ticket' | 'sponsorship' | 'pursuit_pack' | 'cohort' | 'service' | 'other';
-  totalAmount: nuemerging businessr;
+  transactionType: 'membership' | 'event_ticket' | 'sponsorship' | 'pursuit_pack' | 'cohort' | 'service' | 'other';
+  totalAmount: number;
   currency: string;
   
   // Attributions
   attributions: PartnerAttributionItem[];
   
   // Totals
-  totalCommissions: nuemerging businessr;
-  platformFee: nuemerging businessr;
-  netAmount: nuemerging businessr;
+  totalCommissions: number;
+  platformFee: number;
+  netAmount: number;
   
   // Status
   overallStatus: 'pending' | 'partially_paid' | 'fully_paid';
@@ -180,13 +180,13 @@ export interface CommissionTierDoc {
   tier: 'standard' | 'premium' | 'elite' | 'custom';
   
   // Rate Configuration
-  baseRate: nuemerging businessr; // Base commission rate percentage
-  minRevenue: nuemerging businessr; // Minimum revenue threshold
-  maxRevenue: nuemerging businessr | null; // Maximum revenue threshold (null = no limit)
+  baseRate: number; // Base commission rate percentage
+  minRevenue: number; // Minimum revenue threshold
+  maxRevenue: number | null; // Maximum revenue threshold (null = no limit)
   
   // Bonus Configuration
-  bonusRate?: nuemerging businessr; // Additional bonus rate for high performers
-  bonusThreshold?: nuemerging businessr; // Revenue threshold to qualify for bonus
+  bonusRate?: number; // Additional bonus rate for high performers
+  bonusThreshold?: number; // Revenue threshold to qualify for bonus
   
   // Partner Assignments
   assignedPartnerIds: ConsortiumPartnerId[];
@@ -214,7 +214,7 @@ export interface PayoutDoc {
   partnerProfileId: string;
   
   // Payout Details
-  amount: nuemerging businessr;
+  amount: number;
   currency: string;
   paymentMethod: PaymentMethod;
   
@@ -228,7 +228,7 @@ export interface PayoutDoc {
   
   // Commission References
   commissionIds: string[]; // Attribution IDs included in this payout
-  commissionCount: nuemerging businessr;
+  commissionCount: number;
   
   // Timing
   scheduledDate: Timestamp;
@@ -237,7 +237,7 @@ export interface PayoutDoc {
   
   // Error Handling
   failureReason?: string;
-  retryCount: nuemerging businessr;
+  retryCount: number;
   lastRetryAt?: Timestamp;
   
   // Approval (for manual payouts)
@@ -259,18 +259,18 @@ export interface RevenueSharingConfigDoc {
   id: string;
   
   // Default Attribution Percentages
-  defaultAttributionPercentages: Record<ContributionType, nuemerging businessr>;
+  defaultAttributionPercentages: Record<ContributionType, number>;
   
   // Platform Settings
-  platformFeePercentage: nuemerging businessr;
-  minimumPayoutAmount: nuemerging businessr;
-  defaultHoldPeriodDays: nuemerging businessr;
+  platformFeePercentage: number;
+  minimumPayoutAmount: number;
+  defaultHoldPeriodDays: number;
   
   // Payout Settings
   autoPayoutEnabled: boolean;
   payoutSchedule: 'immediate' | 'daily' | 'weekly' | 'biweekly' | 'monthly';
-  payoutDayOfWeek?: nuemerging businessr; // 0-6 for weekly
-  payoutDayOfMonth?: nuemerging businessr; // 1-31 for monthly
+  payoutDayOfWeek?: number; // 0-6 for weekly
+  payoutDayOfMonth?: number; // 1-31 for monthly
   
   // Notification Settings
   notifyOnPending: boolean;
@@ -320,17 +320,17 @@ export const DEFAULT_REVENUE_SHARING_CONFIG: Omit<RevenueSharingConfigDoc, 'id' 
 export interface CommissionSummary {
   partnerId: ConsortiumPartnerId;
   partnerName: string;
-  totalPending: nuemerging businessr;
-  totalPaid: nuemerging businessr;
-  totalEarnings: nuemerging businessr;
-  transactionCount: nuemerging businessr;
+  totalPending: number;
+  totalPaid: number;
+  totalEarnings: number;
+  transactionCount: number;
   lastPayoutDate?: Date;
 }
 
 export interface PayoutSummary {
-  totalPending: nuemerging businessr;
-  totalProcessing: nuemerging businessr;
-  totalCompleted: nuemerging businessr;
-  totalFailed: nuemerging businessr;
+  totalPending: number;
+  totalProcessing: number;
+  totalCompleted: number;
+  totalFailed: number;
   upcomingPayouts: PayoutDoc[];
 }

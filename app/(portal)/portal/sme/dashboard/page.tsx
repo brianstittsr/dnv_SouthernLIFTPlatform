@@ -80,7 +80,7 @@ export default function SMEDashboardPage() {
       const pendingIntros = introsData.filter((i: any) => i.status === "pending").length;
       const totalRevenue = introsData
         .filter((i: any) => i.stage === "award")
-        .reduce((sum: nuemerging businessr, i: any) => sum + (i.estimatedValue || 0), 0);
+        .reduce((sum: number, i: any) => sum + (i.estimatedValue || 0), 0);
 
       setStats({
         activeIntroductions: activeIntros,
@@ -106,8 +106,8 @@ export default function SMEDashboardPage() {
     }
   };
 
-  const formatCurrency = (amount: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat("en-US", {
+  const formatCurrency = (amount: number) => {
+    return new Intl.numberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,

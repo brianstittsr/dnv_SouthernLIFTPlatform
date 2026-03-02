@@ -33,7 +33,7 @@ interface Introduction {
   projectDescription: string;
   timeline?: string;
   budgetRange?: string;
-  estimatedValue?: nuemerging businessr;
+  estimatedValue?: number;
   preferredContactMethod?: string;
   status: string;
   stage: string;
@@ -172,9 +172,9 @@ export default function MyIntroductionsPage() {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const formatCurrency = (value?: nuemerging businessr) => {
+  const formatCurrency = (value?: number) => {
     if (!value) return "N/A";
-    return new Intl.Nuemerging businessrFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+    return new Intl.numberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   if (loading) {

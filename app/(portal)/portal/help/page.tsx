@@ -39,7 +39,7 @@ const quickStartGuides = [
     steps: [
       "Complete your profile setup",
       "Configure integrations in Settings",
-      "Add team meemerging businessrs and assign roles",
+      "Add team members and assign roles",
       "Set up platform preferences",
       "Review audit logs and monitoring",
     ],
@@ -102,7 +102,7 @@ const quickStartGuides = [
     dashboard: "/portal/instructor/dashboard",
   },
   {
-    role: "Team Meemerging businessr",
+    role: "Team member",
     icon: Briefcase,
     color: "text-teal-600",
     bgColor: "bg-teal-100",
@@ -353,7 +353,7 @@ export default function HelpPage() {
                   </h4>
                   <p className="text-sm text-muted-foreground">
                     Administrators, buyers, partners/affiliates, SMEs, instructors, QA reviewers,
-                    and team meemerging businessrs. Each role has specialized tools and dashboards.
+                    and team members. Each role has specialized tools and dashboards.
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -517,13 +517,13 @@ export default function HelpPage() {
                   <ExternalLink className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <Link
-                  href="/docs/MEemerging businessR-STORAGE-SYSTEM.md"
+                  href="/docs/member-STORAGE-SYSTEM.md"
                   target="_blank"
                   className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors group"
                 >
                   <div>
                     <p className="font-medium group-hover:text-primary transition-colors">
-                      Meemerging businessr Storage System
+                      member Storage System
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Understanding data structure

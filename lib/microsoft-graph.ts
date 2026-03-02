@@ -23,7 +23,7 @@ export interface MSGraphConfig {
 export interface MSGraphTokens {
   accessToken: string;
   refreshToken?: string;
-  expiresAt: nuemerging businessr;
+  expiresAt: number;
 }
 
 // Email Types
@@ -74,22 +74,22 @@ export interface MSCalendarEvent {
   isOnlineMeeting?: boolean;
   onlineMeetingProvider?: "teamsForBusiness" | "skypeForBusiness" | "skypeForConsumer";
   recurrence?: MSRecurrence;
-  reminderMinutesBeforeStart?: nuemerging businessr;
+  reminderMinutesBeforeStart?: number;
 }
 
 export interface MSRecurrence {
   pattern: {
     type: "daily" | "weekly" | "absoluteMonthly" | "relativeMonthly" | "absoluteYearly" | "relativeYearly";
-    interval: nuemerging businessr;
+    interval: number;
     daysOfWeek?: ("sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday")[];
-    dayOfMonth?: nuemerging businessr;
-    month?: nuemerging businessr;
+    dayOfMonth?: number;
+    month?: number;
   };
   range: {
-    type: "endDate" | "noEnd" | "nuemerging businessred";
+    type: "endDate" | "noEnd" | "numbered";
     startDate: string;
     endDate?: string;
-    nuemerging businessrOfOccurrences?: nuemerging businessr;
+    numberOfOccurrences?: number;
   };
 }
 
@@ -116,19 +116,19 @@ export interface SPListItem {
 export interface SPDriveItem {
   id: string;
   name: string;
-  size: nuemerging businessr;
+  size: number;
   webUrl: string;
   createdDateTime: string;
   lastModifiedDateTime: string;
   file?: { mimeType: string };
-  folder?: { childCount: nuemerging businessr };
+  folder?: { childCount: number };
 }
 
 // OneDrive Types
 export interface ODFile {
   id: string;
   name: string;
-  size: nuemerging businessr;
+  size: number;
   webUrl: string;
   downloadUrl?: string;
   mimeType?: string;
@@ -143,7 +143,7 @@ export interface ODFolder {
   id: string;
   name: string;
   webUrl: string;
-  childCount: nuemerging businessr;
+  childCount: number;
 }
 
 // API Response types
@@ -220,7 +220,7 @@ export class MicrosoftGraphClient {
 
   async getEmails(
     folder: string = "inbox",
-    top: nuemerging businessr = 10,
+    top: number = 10,
     filter?: string
   ): Promise<MSGraphResponse<{ value: MSEmail[] }>> {
     let endpoint = `/me/mailFolders/${folder}/messages?$top=${top}&$orderby=receivedDateTime desc`;
@@ -254,7 +254,7 @@ export class MicrosoftGraphClient {
     calendarId?: string,
     startDateTime?: string,
     endDateTime?: string,
-    top: nuemerging businessr = 50
+    top: number = 50
   ): Promise<MSGraphResponse<{ value: MSCalendarEvent[] }>> {
     const calendar = calendarId ? `/calendars/${calendarId}` : "";
     let endpoint = `/me${calendar}/events?$top=${top}&$orderby=start/dateTime`;

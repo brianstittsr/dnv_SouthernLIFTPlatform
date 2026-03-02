@@ -424,14 +424,14 @@ export async function sendEmail(params: EmailParams): Promise<EmailResponse> {
 
 export const emailTemplates = {
   /**
-   * Welcome email for new meemerging businessrs
+   * Welcome email for new members
    */
   welcome: (params: { name: string; loginUrl: string }) => ({
     subject: 'Welcome to KDM Consortium!',
     html: `
       <h1>Welcome to KDM Consortium, ${params.name}!</h1>
-      <p>We're excited to have you as a meemerging businessr of our government contracting consortium.</p>
-      <p>Your meemerging businessrship gives you access to:</p>
+      <p>We're excited to have you as a member of our government contracting consortium.</p>
+      <p>Your membership gives you access to:</p>
       <ul>
         <li>Curated opportunity intelligence</li>
         <li>Best-fit team assembly</li>
@@ -443,13 +443,13 @@ export const emailTemplates = {
       <p>If you have any questions, please don't hesitate to reach out to our support team.</p>
       <p>Best regards,<br>The KDM Consortium Team</p>
     `,
-    text: `Welcome to KDM Consortium, ${params.name}! We're excited to have you as a meemerging businessr. Access your portal at: ${params.loginUrl}`,
+    text: `Welcome to KDM Consortium, ${params.name}! We're excited to have you as a member. Access your portal at: ${params.loginUrl}`,
   }),
 
   /**
    * Payment confirmation
    */
-  paymentConfirmation: (params: { name: string; amount: nuemerging businessr; description: string; receiptUrl?: string }) => ({
+  paymentConfirmation: (params: { name: string; amount: number; description: string; receiptUrl?: string }) => ({
     subject: 'Payment Confirmation - KDM Consortium',
     html: `
       <h1>Payment Received</h1>
@@ -529,7 +529,7 @@ export const emailTemplates = {
     pursuitTitle: string; 
     agency: string;
     dueDate: string;
-    estimatedValue: nuemerging businessr;
+    estimatedValue: number;
     pursuitUrl: string;
   }) => ({
     subject: `New Opportunity: ${params.pursuitTitle}`,
@@ -557,7 +557,7 @@ export const emailTemplates = {
     name: string; 
     pursuitTitle: string; 
     dueDate: string;
-    daysRemaining: nuemerging businessr;
+    daysRemaining: number;
     proposalUrl: string;
   }) => ({
     subject: `Reminder: ${params.pursuitTitle} Due in ${params.daysRemaining} Days`,
@@ -604,26 +604,26 @@ export const emailTemplates = {
   }),
 
   /**
-   * Meemerging businessrship renewal reminder
+   * membership renewal reminder
    */
-  meemerging businessrshipRenewal: (params: { 
+  membershipRenewal: (params: { 
     name: string; 
     renewalDate: string;
-    amount: nuemerging businessr;
+    amount: number;
     updatePaymentUrl: string;
   }) => ({
-    subject: 'Meemerging businessrship Renewal Reminder',
+    subject: 'membership Renewal Reminder',
     html: `
-      <h1>Meemerging businessrship Renewal</h1>
+      <h1>membership Renewal</h1>
       <p>Hi ${params.name},</p>
-      <p>Your KDM Consortium meemerging businessrship will renew on <strong>${params.renewalDate}</strong>.</p>
+      <p>Your KDM Consortium membership will renew on <strong>${params.renewalDate}</strong>.</p>
       <p><strong>Renewal Amount:</strong> $${(params.amount / 100).toFixed(2)}</p>
       <p>Your payment method on file will be charged automatically. If you need to update your payment information, please click below:</p>
       <p><a href="${params.updatePaymentUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Update Payment Method</a></p>
-      <p>Thank you for being a valued meemerging businessr of the KDM Consortium!</p>
+      <p>Thank you for being a valued member of the KDM Consortium!</p>
       <p>Best regards,<br>The KDM Consortium Team</p>
     `,
-    text: `Your meemerging businessrship renews on ${params.renewalDate} for $${(params.amount / 100).toFixed(2)}. Update payment at: ${params.updatePaymentUrl}`,
+    text: `Your membership renews on ${params.renewalDate} for $${(params.amount / 100).toFixed(2)}. Update payment at: ${params.updatePaymentUrl}`,
   }),
 
   /**
@@ -632,7 +632,7 @@ export const emailTemplates = {
   paymentReminder: (params: { 
     name: string; 
     entityName: string; 
-    remainingBalance: nuemerging businessr; 
+    remainingBalance: number; 
     dueDate: string; 
     paymentUrl: string; 
   }) => ({
@@ -661,7 +661,7 @@ export const emailTemplates = {
     clientName: string;
     amount: string;
     contributionType: string;
-    percentage: nuemerging businessr;
+    percentage: number;
     totalTransactionAmount: string;
     expectedPayoutDate: string;
     transactionId: string;

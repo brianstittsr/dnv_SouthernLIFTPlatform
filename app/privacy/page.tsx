@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p className="text-muted-foreground mb-6">
-            Last updated: Deceemerging businessr 2024
+            Last updated: December 2024
           </p>
 
           <section className="mb-8">
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold mb-4">2. Information We Collect</h2>
             <p>We may collect the following types of information:</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
-              <li><strong>Personal Information:</strong> Name, email address, phone nuemerging businessr, company name, and job title</li>
+              <li><strong>Personal Information:</strong> Name, email address, phone number, company name, and job title</li>
               <li><strong>Account Information:</strong> Login credentials and account preferences</li>
               <li><strong>Usage Data:</strong> Information about how you use our platform</li>
               <li><strong>Technical Data:</strong> IP address, browser type, and device information</li>

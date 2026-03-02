@@ -45,8 +45,8 @@ interface SharedProofPack {
   description: string;
   documents: ProofPackDocument[];
   tags: string[];
-  viewCount: nuemerging businessr;
-  downloadCount: nuemerging businessr;
+  viewCount: number;
+  downloadCount: number;
 }
 
 export default function SharedProofPacksPage() {

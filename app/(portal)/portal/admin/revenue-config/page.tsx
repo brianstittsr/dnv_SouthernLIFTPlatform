@@ -75,7 +75,7 @@ const mockPartnerCommissions: PartnerAttributionDoc[] = [
     clientId: "client-1",
     clientName: "ABC Manufacturing",
     clientEmail: "contact@abcmfg.com",
-    transactionType: "meemerging businessrship",
+    transactionType: "membership",
     totalAmount: 5000,
     currency: "USD",
     attributions: [
@@ -258,14 +258,14 @@ export default function RevenueConfigPage() {
   // Transactions state
   interface StripeTransaction {
     id: string;
-    amount: nuemerging businessr;
+    amount: number;
     currency: string;
     status: string;
     type: string;
     description: string | null;
     customerEmail: string | null;
     customerName: string | null;
-    created: nuemerging businessr;
+    created: number;
     metadata: Record<string, string>;
     source: 'stripe' | 'firestore';
     stripePaymentIntentId?: string;
@@ -551,7 +551,7 @@ export default function RevenueConfigPage() {
     }
   };
 
-  const formatDate = (timestamp: nuemerging businessr) => {
+  const formatDate = (timestamp: number) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -579,9 +579,9 @@ export default function RevenueConfigPage() {
     }
   };
 
-  const formatCurrency = (amount: nuemerging businessr | null) => {
+  const formatCurrency = (amount: number | null) => {
     if (amount === null) return "No limit";
-    return new Intl.Nuemerging businessrFormat('en-US', {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0
@@ -1106,7 +1106,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Minimum Payout ($)</Label>
                       <Input 
-                        type="nuemerging businessr"
+                        type="number"
                         className="mt-1" 
                         value={editingPartner.minimumPayoutAmount}
                         onChange={(e) => setEditingPartner({ ...editingPartner, minimumPayoutAmount: parseInt(e.target.value) || 0 })}
@@ -1115,7 +1115,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Hold Period (days)</Label>
                       <Input 
-                        type="nuemerging businessr"
+                        type="number"
                         className="mt-1" 
                         value={editingPartner.holdPeriodDays}
                         onChange={(e) => setEditingPartner({ ...editingPartner, holdPeriodDays: parseInt(e.target.value) || 0 })}
@@ -1432,7 +1432,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Lead Generation</Label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Input type="nuemerging businessr" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.lead_generation} className="bg-white" />
+                        <Input type="number" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.lead_generation} className="bg-white" />
                         <span className="text-muted-foreground">%</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">Partner who sourced the lead</p>
@@ -1440,7 +1440,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Service Delivery</Label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Input type="nuemerging businessr" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.service_delivery} className="bg-white" />
+                        <Input type="number" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.service_delivery} className="bg-white" />
                         <span className="text-muted-foreground">%</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">Partner delivering the service</p>
@@ -1448,7 +1448,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Introduction</Label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Input type="nuemerging businessr" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.introduction} className="bg-white" />
+                        <Input type="number" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.introduction} className="bg-white" />
                         <span className="text-muted-foreground">%</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">Partner who made the introduction</p>
@@ -1456,7 +1456,7 @@ export default function RevenueConfigPage() {
                     <div>
                       <Label>Platform Fee</Label>
                       <div className="flex items-center gap-2 mt-1">
-                        <Input type="nuemerging businessr" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.platform_fee} className="bg-white" />
+                        <Input type="number" defaultValue={DEFAULT_ATTRIBUTION_PERCENTAGES.platform_fee} className="bg-white" />
                         <span className="text-muted-foreground">%</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">KDM Platform operational fee</p>
@@ -1471,14 +1471,14 @@ export default function RevenueConfigPage() {
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
                       <Label>Default Hold Period (days)</Label>
-                      <Input type="nuemerging businessr" defaultValue="7" className="mt-1" />
+                      <Input type="number" defaultValue="7" className="mt-1" />
                       <p className="text-xs text-muted-foreground mt-1">Days before commission is eligible for payout</p>
                     </div>
                     <div>
                       <Label>Minimum Payout Amount</Label>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-muted-foreground">$</span>
-                        <Input type="nuemerging businessr" defaultValue="100" />
+                        <Input type="number" defaultValue="100" />
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">Minimum balance required for payout</p>
                     </div>

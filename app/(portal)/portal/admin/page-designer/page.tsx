@@ -1208,7 +1208,7 @@ export default function PageDesignerV2() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {uxReview.recommendations.map((rec: any, index: nuemerging businessr) => (
+                    {uxReview.recommendations.map((rec: any, index: number) => (
                       <Card key={index}>
                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between">

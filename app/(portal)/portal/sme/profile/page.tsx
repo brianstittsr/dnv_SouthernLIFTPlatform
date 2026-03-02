@@ -161,8 +161,8 @@ export default function SmeProfilePage() {
       
       if (userProfile.id && userProfile.id !== auth.currentUser.uid) {
         try {
-          const teamMeemerging businessrRef = doc(db, "team_meemerging businessrs", userProfile.id);
-          await updateDoc(teamMeemerging businessrRef, {
+          const teammemberRef = doc(db, "team_members", userProfile.id);
+          await updateDoc(teammemberRef, {
             firstName: profile.firstName,
             lastName: profile.lastName,
             mobile: profile.phone,
@@ -174,7 +174,7 @@ export default function SmeProfilePage() {
             updatedAt: now,
           });
         } catch (error) {
-          console.log("No team meemerging businessr to update or error:", error);
+          console.log("No team member to update or error:", error);
         }
       }
       
@@ -284,7 +284,7 @@ export default function SmeProfilePage() {
                 )}
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Meemerging businessr since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
+                  member since {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }) : "N/A"}
                 </span>
               </div>
             </div>

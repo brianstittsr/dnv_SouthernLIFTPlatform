@@ -197,7 +197,7 @@ export default function QAManagementPage() {
           <Card>
             <CardHeader>
               <CardTitle>QA Reviewers</CardTitle>
-              <CardDescription>Manage quality assurance team meemerging businessrs</CardDescription>
+              <CardDescription>Manage quality assurance team members</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

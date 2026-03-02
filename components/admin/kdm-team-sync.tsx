@@ -9,8 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-// KDM Team meemerging businessrs from the marketing page
-const kdmTeamMeemerging businessrs = [
+// KDM Team members from the marketing page
+const kdmTeammembers = [
   {
     id: "keith-moore",
     firstName: "Keith",
@@ -164,7 +164,7 @@ const kdmTeamMeemerging businessrs = [
 ];
 
 interface SyncStatus {
-  meemerging businessr: string;
+  member: string;
   status: "pending" | "syncing" | "synced" | "error";
   message?: string;
 }
@@ -172,19 +172,19 @@ interface SyncStatus {
 export function KdmTeamSync() {
   const [syncStatus, setSyncStatus] = useState<SyncStatus[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [existingMeemerging businessrs, setExistingMeemerging businessrs] = useState<string[]>([]);
+  const [existingmembers, setExistingmembers] = useState<string[]>([]);
   const [showSyncPanel, setShowSyncPanel] = useState(false);
 
   useEffect(() => {
-    checkExistingMeemerging businessrs();
+    checkExistingmembers();
   }, []);
 
-  async function checkExistingMeemerging businessrs() {
+  async function checkExistingmembers() {
     if (!db) return;
     
     try {
       const q = query(
-        collection(db, COLLECTIONS.TEAM_MEemerging businessRS),
+        collection(db, COLLECTIONS.TEAM_memberS),
         where("status", "==", "active")
       );
       const snapshot = await getDocs(q);
@@ -192,18 +192,18 @@ export function KdmTeamSync() {
         const data = doc.data();
         return `${data.firstName?.toLowerCase()}-${data.lastName?.toLowerCase()}`;
       });
-      setExistingMeemerging businessrs(existing);
+      setExistingmembers(existing);
       
-      // Check if any KDM meemerging businessrs are missing
-      const missing = kdmTeamMeemerging businessrs.filter(
-        meemerging businessr => !existing.includes(`${meemerging businessr.firstName.toLowerCase()}-${meemerging businessr.lastName.toLowerCase()}`)
+      // Check if any KDM members are missing
+      const missing = kdmTeammembers.filter(
+        member => !existing.includes(`${member.firstName.toLowerCase()}-${member.lastName.toLowerCase()}`)
       );
       
       if (missing.length > 0) {
         setShowSyncPanel(true);
       }
     } catch (error) {
-      console.error("Error checking existing meemerging businessrs:", error);
+      console.error("Error checking existing members:", error);
     }
   }
 
@@ -214,21 +214,21 @@ export function KdmTeamSync() {
     }
 
     setIsSyncing(true);
-    setSyncStatus(kdmTeamMeemerging businessrs.map(m => ({ meemerging businessr: `${m.firstName} ${m.lastName}`, status: "pending" })));
+    setSyncStatus(kdmTeammembers.map(m => ({ member: `${m.firstName} ${m.lastName}`, status: "pending" })));
 
-    for (let i = 0; i < kdmTeamMeemerging businessrs.length; i++) {
-      const meemerging businessr = kdmTeamMeemerging businessrs[i];
+    for (let i = 0; i < kdmTeammembers.length; i++) {
+      const member = kdmTeammembers[i];
       
       setSyncStatus(prev => prev.map((s, idx) => 
         idx === i ? { ...s, status: "syncing" } : s
       ));
 
       try {
-        // Check if meemerging businessr already exists by name
+        // Check if member already exists by name
         const q = query(
-          collection(db, COLLECTIONS.TEAM_MEemerging businessRS),
-          where("firstName", "==", meemerging businessr.firstName),
-          where("lastName", "==", meemerging businessr.lastName)
+          collection(db, COLLECTIONS.TEAM_memberS),
+          where("firstName", "==", member.firstName),
+          where("lastName", "==", member.lastName)
         );
         const snapshot = await getDocs(q);
 
@@ -239,31 +239,31 @@ export function KdmTeamSync() {
           continue;
         }
 
-        // Create new team meemerging businessr
-        const teamMeemerging businessrData = {
-          firstName: meemerging businessr.firstName,
-          lastName: meemerging businessr.lastName,
-          emailPrimary: meemerging businessr.emailPrimary,
-          expertise: meemerging businessr.expertise,
-          title: meemerging businessr.title,
-          bio: meemerging businessr.bio,
-          role: meemerging businessr.role,
+        // Create new team member
+        const teammemberData = {
+          firstName: member.firstName,
+          lastName: member.lastName,
+          emailPrimary: member.emailPrimary,
+          expertise: member.expertise,
+          title: member.title,
+          bio: member.bio,
+          role: member.role,
           status: "active",
-          isCEO: meemerging businessr.isCEO || false,
-          isCOO: meemerging businessr.isCOO || false,
-          isCTO: meemerging businessr.isCTO || false,
-          isCRO: meemerging businessr.isCRO || false,
+          isCEO: member.isCEO || false,
+          isCOO: member.isCOO || false,
+          isCTO: member.isCTO || false,
+          isCRO: member.isCRO || false,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         };
 
-        await addDoc(collection(db, COLLECTIONS.TEAM_MEemerging businessRS), teamMeemerging businessrData);
+        await addDoc(collection(db, COLLECTIONS.TEAM_memberS), teammemberData);
 
         setSyncStatus(prev => prev.map((s, idx) => 
           idx === i ? { ...s, status: "synced", message: "Created" } : s
         ));
       } catch (error) {
-        console.error(`Error syncing ${meemerging businessr.firstName} ${meemerging businessr.lastName}:`, error);
+        console.error(`Error syncing ${member.firstName} ${member.lastName}:`, error);
         setSyncStatus(prev => prev.map((s, idx) => 
           idx === i ? { ...s, status: "error", message: "Failed to create" } : s
         ));
@@ -273,21 +273,21 @@ export function KdmTeamSync() {
     setIsSyncing(false);
     toast.success("KDM Team sync completed!");
     
-    // Refresh existing meemerging businessrs list
-    checkExistingMeemerging businessrs();
+    // Refresh existing members list
+    checkExistingmembers();
   }
 
-  const missingCount = kdmTeamMeemerging businessrs.filter(
-    meemerging businessr => !existingMeemerging businessrs.includes(`${meemerging businessr.firstName.toLowerCase()}-${meemerging businessr.lastName.toLowerCase()}`)
+  const missingCount = kdmTeammembers.filter(
+    member => !existingmembers.includes(`${member.firstName.toLowerCase()}-${member.lastName.toLowerCase()}`)
   ).length;
 
-  if (!showSyncPanel && existingMeemerging businessrs.length > 0) {
+  if (!showSyncPanel && existingmembers.length > 0) {
     return (
       <Card className="bg-green-50 border-green-200">
         <CardContent className="pt-6">
           <div className="flex items-center gap-2 text-green-700">
             <CheckCircle className="h-5 w-5" />
-            <p className="font-medium">All KDM team meemerging businessrs are synced!</p>
+            <p className="font-medium">All KDM team members are synced!</p>
           </div>
         </CardContent>
       </Card>
@@ -303,8 +303,8 @@ export function KdmTeamSync() {
         </CardTitle>
         <CardDescription>
           {missingCount > 0 
-            ? `Found ${missingCount} team meemerging businessr${missingCount !== 1 ? "s" : ""} from the KDM website that ${missingCount !== 1 ? "are" : "is"} not in the admin system.`
-            : "Check and sync KDM team meemerging businessrs to the admin system."
+            ? `Found ${missingCount} team member${missingCount !== 1 ? "s" : ""} from the KDM website that ${missingCount !== 1 ? "are" : "is"} not in the admin system.`
+            : "Check and sync KDM team members to the admin system."
           }
         </CardDescription>
       </CardHeader>
@@ -313,7 +313,7 @@ export function KdmTeamSync() {
           <div className="space-y-2">
             {syncStatus.map((status, idx) => (
               <div key={idx} className="flex items-center justify-between py-1">
-                <span className="text-sm">{status.meemerging businessr}</span>
+                <span className="text-sm">{status.member}</span>
                 <div className="flex items-center gap-2">
                   {status.status === "pending" && <span className="text-xs text-muted-foreground">Pending</span>}
                   {status.status === "syncing" && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
@@ -339,7 +339,7 @@ export function KdmTeamSync() {
           ) : (
             <>
               <RefreshCw className="mr-2 h-4 w-4" />
-              Sync {missingCount} Missing Meemerging businessr{missingCount !== 1 ? "s" : ""}
+              Sync {missingCount} Missing member{missingCount !== 1 ? "s" : ""}
             </>
           )}
         </Button>

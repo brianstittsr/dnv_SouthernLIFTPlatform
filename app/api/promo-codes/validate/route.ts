@@ -90,10 +90,10 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (promoData.applicableTo === 'meemerging businessrships' && eventId) {
+    if (promoData.applicableTo === 'memberships' && eventId) {
       return NextResponse.json({
         valid: false,
-        message: 'This promo code is only valid for meemerging businessrships'
+        message: 'This promo code is only valid for memberships'
       });
     }
 

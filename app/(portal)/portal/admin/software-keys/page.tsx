@@ -377,7 +377,7 @@ export default function SoftwareKeysPage() {
                   <Label htmlFor="maxActivations">Max Activations</Label>
                   <Input
                     id="maxActivations"
-                    type="nuemerging businessr"
+                    type="number"
                     placeholder="Unlimited"
                     value={formData.maxActivations}
                     onChange={(e) => setFormData(prev => ({ ...prev, maxActivations: e.target.value }))}

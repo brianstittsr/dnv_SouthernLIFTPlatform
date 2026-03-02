@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 
 // Circular progress component
-function CircularProgress({ percentage, size = 100, strokeWidth = 8 }: { percentage: nuemerging businessr; size?: nuemerging businessr; strokeWidth?: nuemerging businessr }) {
+function CircularProgress({ percentage, size = 100, strokeWidth = 8 }: { percentage: number; size?: number; strokeWidth?: number }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (percentage / 100) * circumference;
@@ -175,8 +175,8 @@ export function AffiliateOnboardingWizard() {
     setIsSaving(true);
     
     try {
-      // Create Team Meemerging businessr document in Firebase
-      const teamMeemerging businessrData = {
+      // Create Team member document in Firebase
+      const teammemberData = {
         firstName: profile.firstName,
         lastName: profile.lastName,
         emailPrimary: profile.email,
@@ -204,14 +204,14 @@ export function AffiliateOnboardingWizard() {
         updatedAt: Timestamp.now(),
       };
 
-      // Save to Firebase team_meemerging businessrs collection
+      // Save to Firebase team_members collection
       if (!db) {
         throw new Error("Firebase not initialized");
       }
-      const teamMeemerging businessrsRef = collection(db, "team_meemerging businessrs");
-      const docRef = await addDoc(teamMeemerging businessrsRef, teamMeemerging businessrData);
+      const teammembersRef = collection(db, "team_members");
+      const docRef = await addDoc(teammembersRef, teammemberData);
       
-      console.log("Team Meemerging businessr created with ID:", docRef.id);
+      console.log("Team member created with ID:", docRef.id);
 
       // Update local profile state
       updateProfile({

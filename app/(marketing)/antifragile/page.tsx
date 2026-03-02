@@ -193,7 +193,7 @@ export default function AntiFragilePage() {
                         <Input id="title" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Nuemerging businessr</Label>
+                        <Label htmlFor="phone">Phone number</Label>
                         <Input id="phone" type="tel" />
                       </div>
                       <div className="space-y-2">
@@ -230,7 +230,7 @@ export default function AntiFragilePage() {
                       <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold mb-2">Thank You!</h3>
                       <p className="text-muted-foreground">
-                        We've received your request. A meemerging businessr of our team will contact you 
+                        We've received your request. A member of our team will contact you 
                         within 24 hours to schedule your discovery call.
                       </p>
                     </div>

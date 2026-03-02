@@ -46,23 +46,23 @@ async function initializeCollections() {
     });
     console.log('✅ platformSettings created\n');
 
-    // 2. Team Meemerging businessrs (empty collection marker)
-    console.log('📝 Creating teamMeemerging businessrs collection...');
-    await db.collection('teamMeemerging businessrs').doc('_placeholder').set({
+    // 2. Team members (empty collection marker)
+    console.log('📝 Creating teammembers collection...');
+    await db.collection('teammembers').doc('_placeholder').set({
       _placeholder: true,
       createdAt: Timestamp.now(),
-      note: 'This is a placeholder document to create the collection. Delete after adding real team meemerging businessrs.',
+      note: 'This is a placeholder document to create the collection. Delete after adding real team members.',
     });
-    console.log('✅ teamMeemerging businessrs collection created\n');
+    console.log('✅ teammembers collection created\n');
 
-    // 3. Meemerging businessrships (empty collection marker)
-    console.log('📝 Creating meemerging businessrships collection...');
-    await db.collection('meemerging businessrships').doc('_placeholder').set({
+    // 3. memberships (empty collection marker)
+    console.log('📝 Creating memberships collection...');
+    await db.collection('memberships').doc('_placeholder').set({
       _placeholder: true,
       createdAt: Timestamp.now(),
-      note: 'This is a placeholder document to create the collection. Delete after adding real meemerging businessrships.',
+      note: 'This is a placeholder document to create the collection. Delete after adding real memberships.',
     });
-    console.log('✅ meemerging businessrships collection created\n');
+    console.log('✅ memberships collection created\n');
 
     // 4. SVP Collections - Proof Packs
     console.log('📝 Creating proofPacks collection...');
@@ -207,8 +207,8 @@ async function initializeCollections() {
     console.log('✨ All SVP Platform collections initialized successfully!\n');
     console.log('📋 Collections created:');
     console.log('   - platformSettings (with global config)');
-    console.log('   - teamMeemerging businessrs');
-    console.log('   - meemerging businessrships');
+    console.log('   - teammembers');
+    console.log('   - memberships');
     console.log('   - proofPacks');
     console.log('   - smeSubscriptions');
     console.log('   - partnerLeads');

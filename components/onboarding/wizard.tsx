@@ -37,7 +37,7 @@ export function OnboardingWizard({
   const router = useRouter();
   const { profile } = useUserProfile();
   const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState<Set<nuemerging businessr>>(new Set());
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isValidating, setIsValidating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -105,7 +105,7 @@ export function OnboardingWizard({
     }
   };
 
-  const saveProgress = async (stepIndex: nuemerging businessr) => {
+  const saveProgress = async (stepIndex: number) => {
     if (!db || !profile.id) return;
 
     try {

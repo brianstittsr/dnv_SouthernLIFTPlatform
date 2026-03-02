@@ -240,7 +240,7 @@ export function ProofPackOnboardingWizard({ isOpen, onClose }: ProofPackOnboardi
 
               <div className="bg-aemerging businessr-50 dark:bg-aemerging businessr-950/50 p-4 rounded-lg">
                 <p className="text-sm">
-                  <strong>Remeemerging businessr:</strong> Buyers cannot request an introduction to you without a verified Proof Pack. It's your ticket to opportunities.
+                  <strong>Remember:</strong> Buyers cannot request an introduction to you without a verified Proof Pack. It's your ticket to opportunities.
                 </p>
               </div>
             </div>

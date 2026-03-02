@@ -288,7 +288,7 @@ function extractArticlesFromPage(
     });
   }
 
-  // Also try parsing eemerging businessdded post content
+  // Also try parsing Embedded post content
   const parsedArticles = parseArticlesFromHtml(html);
   for (const parsed of parsedArticles) {
     if (parsed.title && parsed.content) {

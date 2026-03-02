@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 interface BookingNotificationRequest {
   bookingId: string;
-  teamMeemerging businessrName: string;
-  teamMeemerging businessrEmail: string;
+  teammemberName: string;
+  teammemberEmail: string;
   clientName: string;
   clientEmail: string;
   meetingType: string;
   date: string;
   time: string;
-  duration: nuemerging businessr;
+  duration: number;
   notes?: string;
 }
 
@@ -18,8 +18,8 @@ export async function POST(request: NextRequest) {
     const body: BookingNotificationRequest = await request.json();
     const {
       bookingId,
-      teamMeemerging businessrName,
-      teamMeemerging businessrEmail,
+      teammemberName,
+      teammemberEmail,
       clientName,
       clientEmail,
       meetingType,
@@ -38,16 +38,16 @@ export async function POST(request: NextRequest) {
     // For now, we'll log the notification and return success
     console.log("=== BOOKING NOTIFICATION ===");
     console.log(`Booking ID: ${bookingId}`);
-    console.log(`Team Meemerging businessr: ${teamMeemerging businessrName} (${teamMeemerging businessrEmail})`);
+    console.log(`Team member: ${teammemberName} (${teammemberEmail})`);
     console.log(`Client: ${clientName} (${clientEmail})`);
     console.log(`Meeting: ${meetingType}`);
     console.log(`Date/Time: ${date} at ${time} (${duration} min)`);
     if (notes) console.log(`Notes: ${notes}`);
     console.log("============================");
 
-    // Email to team meemerging businessr
-    const teamMeemerging businessrEmailContent = {
-      to: teamMeemerging businessrEmail,
+    // Email to team member
+    const teammemberEmailContent = {
+      to: teammemberEmail,
       subject: `New Booking: ${meetingType} with ${clientName}`,
       html: `
         <h2>New Meeting Booked</h2>
@@ -67,13 +67,13 @@ export async function POST(request: NextRequest) {
     // Email to client
     const clientEmailContent = {
       to: clientEmail,
-      subject: `Booking Confirmed: ${meetingType} with ${teamMeemerging businessrName}`,
+      subject: `Booking Confirmed: ${meetingType} with ${teammemberName}`,
       html: `
         <h2>Your Meeting is Confirmed!</h2>
         <p>Hi ${clientName},</p>
         <p>Your meeting has been successfully scheduled:</p>
         <ul>
-          <li><strong>Meeting with:</strong> ${teamMeemerging businessrName}</li>
+          <li><strong>Meeting with:</strong> ${teammemberName}</li>
           <li><strong>Meeting Type:</strong> ${meetingType}</li>
           <li><strong>Date:</strong> ${date}</li>
           <li><strong>Time:</strong> ${time}</li>
@@ -87,14 +87,14 @@ export async function POST(request: NextRequest) {
     // TODO: Implement actual email sending
     // Example with Resend:
     // const resend = new Resend(process.env.RESEND_API_KEY);
-    // await resend.emails.send(teamMeemerging businessrEmailContent);
+    // await resend.emails.send(teammemberEmailContent);
     // await resend.emails.send(clientEmailContent);
 
     return NextResponse.json({
       success: true,
       message: "Notification logged successfully",
       emails: {
-        teamMeemerging businessr: teamMeemerging businessrEmailContent,
+        teammember: teammemberEmailContent,
         client: clientEmailContent,
       },
     });

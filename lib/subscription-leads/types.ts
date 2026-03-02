@@ -23,7 +23,7 @@ export interface SubscriptionLead {
   // Subscription Information
   tier: SubscriptionTier;
   tierName: string;
-  price: nuemerging businessr;
+  price: number;
   subscriptionStatus: "pending" | "active" | "cancelled" | "past_due";
   
   // Contact Information
@@ -52,7 +52,7 @@ export interface SubscriptionLead {
   proofPackContext?: {
     packId?: string;
     packName?: string;
-    packHealth?: nuemerging businessr;
+    packHealth?: number;
     capabilities: string[];
     certifications: string[];
     naicsCodes?: string[];
@@ -69,7 +69,7 @@ export interface SubscriptionLead {
   
   // Follow-up Tracking
   followUp: {
-    emailsSent: nuemerging businessr;
+    emailsSent: number;
     lastContactedAt?: string;
     nextFollowUpAt?: string;
     notes: LeadNote[];
@@ -150,7 +150,7 @@ export interface SVPLeadPayload {
   industry: string;
   source: string;
   tier: string;
-  monthlyValue: nuemerging businessr;
+  monthlyValue: number;
   status: string;
   notes?: string;
   capabilities?: string[];
@@ -172,10 +172,10 @@ export interface LeadEmailData {
   contactEmail: string;
   tier: string;
   tierName: string;
-  price: nuemerging businessr;
+  price: number;
   industry: string;
   userType: string;
-  proofPackHealth?: nuemerging businessr;
+  proofPackHealth?: number;
   capabilities?: string[];
   certifications?: string[];
   createdAt: string;

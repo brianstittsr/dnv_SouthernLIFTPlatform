@@ -54,8 +54,8 @@ export type WebhookEventType =
   | "todo_completed"
   | "todo_overdue"
   | "level10_meeting_logged"
-  | "team_meemerging businessr_added"
-  | "team_meemerging businessr_gwc_updated";
+  | "team_member_added"
+  | "team_member_gwc_updated";
 
 export interface WebhookEvent {
   type: WebhookEventType;
@@ -90,8 +90,8 @@ export const WEBHOOK_EVENTS: WebhookEvent[] = [
   { type: "todo_completed", label: "To-Do Completed", description: "When a to-do is marked complete", enabled: false, category: "traction" },
   { type: "todo_overdue", label: "To-Do Overdue", description: "When a to-do passes its due date", enabled: true, category: "traction" },
   { type: "level10_meeting_logged", label: "Level 10 Meeting Logged", description: "When a Level 10 meeting is recorded", enabled: true, category: "traction" },
-  { type: "team_meemerging businessr_added", label: "Team Meemerging businessr Added", description: "When a new team meemerging businessr is added", enabled: true, category: "traction" },
-  { type: "team_meemerging businessr_gwc_updated", label: "GWC Assessment Updated", description: "When a team meemerging businessr's GWC is updated", enabled: false, category: "traction" },
+  { type: "team_member_added", label: "Team member Added", description: "When a new team member is added", enabled: true, category: "traction" },
+  { type: "team_member_gwc_updated", label: "GWC Assessment Updated", description: "When a team member's GWC is updated", enabled: false, category: "traction" },
 ];
 
 /**
@@ -170,7 +170,7 @@ function formatEventMessage(
             { title: "Company", value: String(data.company || "N/A"), short: true },
             { title: "Contact", value: String(data.contact || "N/A"), short: true },
             { title: "Source", value: String(data.source || "N/A"), short: true },
-            { title: "Value", value: data.value ? `$${Nuemerging businessr(data.value).toLocaleString()}` : "TBD", short: true },
+            { title: "Value", value: data.value ? `$${number(data.value).toLocaleString()}` : "TBD", short: true },
           ],
           footer: "SVP Platform • Lead Management",
         }],
@@ -186,7 +186,7 @@ function formatEventMessage(
             { title: "Deal", value: String(data.dealName || "N/A"), short: true },
             { title: "New Status", value: String(data.newStatus || "N/A"), short: true },
             { title: "Previous Status", value: String(data.previousStatus || "N/A"), short: true },
-            { title: "Value", value: data.value ? `$${Nuemerging businessr(data.value).toLocaleString()}` : "N/A", short: true },
+            { title: "Value", value: data.value ? `$${number(data.value).toLocaleString()}` : "N/A", short: true },
           ],
           footer: "SVP Platform • Pipeline",
         }],
@@ -252,7 +252,7 @@ function formatEventMessage(
             { title: "Prospect", value: String(data.prospect || "N/A"), short: true },
             { title: "Company", value: String(data.company || "N/A"), short: true },
             { title: "SVP Referral", value: data.isSvpReferral ? "Yes ⭐" : "No", short: true },
-            { title: "Est. Value", value: data.value ? `$${Nuemerging businessr(data.value).toLocaleString()}` : "TBD", short: true },
+            { title: "Est. Value", value: data.value ? `$${number(data.value).toLocaleString()}` : "TBD", short: true },
           ],
           footer: "SVP Platform • Referral Network",
         }],
@@ -400,9 +400,9 @@ function formatEventMessage(
           fields: [
             { title: "Metric", value: String(data.name || "N/A"), short: true },
             { title: "Owner", value: String(data.owner || "N/A"), short: true },
-            { title: "Goal", value: `${data.unit || ""}${Nuemerging businessr(data.goal || 0).toLocaleString()}`, short: true },
-            { title: "Actual", value: `${data.unit || ""}${Nuemerging businessr(data.actual || 0).toLocaleString()}`, short: true },
-            { title: "Gap", value: `${data.unit || ""}${Nuemerging businessr((data.goal as nuemerging businessr) - (data.actual as nuemerging businessr)).toLocaleString()}`, short: true },
+            { title: "Goal", value: `${data.unit || ""}${number(data.goal || 0).toLocaleString()}`, short: true },
+            { title: "Actual", value: `${data.unit || ""}${number(data.actual || 0).toLocaleString()}`, short: true },
+            { title: "Gap", value: `${data.unit || ""}${number((data.goal as number) - (data.actual as number)).toLocaleString()}`, short: true },
             { title: "Trend", value: String(data.trend || "flat"), short: true },
           ],
           footer: "SVP Platform • Traction Dashboard • Review in Level 10",
@@ -419,8 +419,8 @@ function formatEventMessage(
           fields: [
             { title: "Metric", value: String(data.name || "N/A"), short: true },
             { title: "Owner", value: String(data.owner || "N/A"), short: true },
-            { title: "Goal", value: `${data.unit || ""}${Nuemerging businessr(data.goal || 0).toLocaleString()}`, short: true },
-            { title: "Actual", value: `${data.unit || ""}${Nuemerging businessr(data.actual || 0).toLocaleString()}`, short: true },
+            { title: "Goal", value: `${data.unit || ""}${number(data.goal || 0).toLocaleString()}`, short: true },
+            { title: "Actual", value: `${data.unit || ""}${number(data.actual || 0).toLocaleString()}`, short: true },
           ],
           footer: "SVP Platform • Traction Dashboard • Great Work! 🌟",
         }],
@@ -529,11 +529,11 @@ function formatEventMessage(
         }],
       };
 
-    case "team_meemerging businessr_added":
+    case "team_member_added":
       return {
         ...baseConfig,
         icon_emoji: ":busts_in_silhouette:",
-        text: `### 👥 Team Meemerging businessr Added`,
+        text: `### 👥 Team member Added`,
         attachments: [{
           color: "#9b59b6",
           fields: [
@@ -545,7 +545,7 @@ function formatEventMessage(
         }],
       };
 
-    case "team_meemerging businessr_gwc_updated":
+    case "team_member_gwc_updated":
       const gwcStatus = (data.getsIt && data.wantsIt && data.capacityToDoIt) ? "✅ All Yes" : "⚠️ Needs Review";
       return {
         ...baseConfig,
@@ -554,7 +554,7 @@ function formatEventMessage(
         attachments: [{
           color: (data.getsIt && data.wantsIt && data.capacityToDoIt) ? "#27ae60" : "#f39c12",
           fields: [
-            { title: "Team Meemerging businessr", value: String(data.name || "N/A"), short: true },
+            { title: "Team member", value: String(data.name || "N/A"), short: true },
             { title: "Role", value: String(data.role || "N/A"), short: true },
             { title: "Gets It", value: data.getsIt === true ? "✅" : data.getsIt === false ? "❌" : "—", short: true },
             { title: "Wants It", value: data.wantsIt === true ? "✅" : data.wantsIt === false ? "❌" : "—", short: true },
@@ -618,7 +618,7 @@ export interface PlaybookChecklistItem {
   command?: string;
   description?: string;
   assignee_id?: string;
-  due_date?: nuemerging businessr; // Unix timestamp in milliseconds
+  due_date?: number; // Unix timestamp in milliseconds
 }
 
 export interface PlaybookChecklist {
@@ -633,12 +633,12 @@ export interface PlaybookConfig {
   create_public_playbook_run?: boolean;
   public?: boolean;
   checklists: PlaybookChecklist[];
-  meemerging businessr_ids: string[];
+  member_ids: string[];
   invited_user_ids?: string[];
   invite_users_enabled?: boolean;
   default_owner_id?: string;
   default_owner_enabled?: boolean;
-  reminder_timer_default_seconds?: nuemerging businessr;
+  reminder_timer_default_seconds?: number;
   broadcast_channel_ids?: string[];
   announcement_channel_id?: string;
   announcement_channel_enabled?: boolean;
@@ -657,12 +657,12 @@ export interface MattermostPlaybookResponse {
   title: string;
   description: string;
   team_id: string;
-  create_at: nuemerging businessr;
-  delete_at: nuemerging businessr;
-  num_stages: nuemerging businessr;
-  num_steps: nuemerging businessr;
+  create_at: number;
+  delete_at: number;
+  num_stages: number;
+  num_steps: number;
   checklists: PlaybookChecklist[];
-  meemerging businessr_ids: string[];
+  member_ids: string[];
 }
 
 export interface MattermostPlaybookRunResponse {
@@ -672,8 +672,8 @@ export interface MattermostPlaybookRunResponse {
   owner_user_id: string;
   team_id: string;
   channel_id: string;
-  create_at: nuemerging businessr;
-  end_at: nuemerging businessr;
+  create_at: number;
+  end_at: number;
   playbook_id: string;
   checklists: PlaybookChecklist[];
   current_status: string;
@@ -828,15 +828,15 @@ export async function getMattermostTeams(
 }
 
 /**
- * Generate a reminder playbook for team meemerging businessrs
+ * Generate a reminder playbook for team members
  */
 export function generateReminderPlaybook(
   title: string,
   description: string,
   teamId: string,
-  meemerging businessrIds: string[],
+  memberIds: string[],
   tasks: { title: string; description?: string; assigneeId?: string }[],
-  reminderSeconds: nuemerging businessr = 86400 // Default 24 hours
+  reminderSeconds: number = 86400 // Default 24 hours
 ): PlaybookConfig {
   const checklist: PlaybookChecklist = {
     title: "Reminder Tasks",
@@ -854,10 +854,10 @@ export function generateReminderPlaybook(
     create_public_playbook_run: false,
     public: true,
     checklists: [checklist],
-    meemerging businessr_ids: meemerging businessrIds,
-    invited_user_ids: meemerging businessrIds,
+    member_ids: memberIds,
+    invited_user_ids: memberIds,
     invite_users_enabled: true,
-    default_owner_id: meemerging businessrIds[0],
+    default_owner_id: memberIds[0],
     default_owner_enabled: true,
     reminder_timer_default_seconds: reminderSeconds,
   };
@@ -871,7 +871,7 @@ export function generateRockPlaybook(
   rockDescription: string,
   teamId: string,
   ownerId: string,
-  meemerging businessrIds: string[],
+  memberIds: string[],
   milestones: { title: string; description?: string }[]
 ): PlaybookConfig {
   const checklist: PlaybookChecklist = {
@@ -890,7 +890,7 @@ export function generateRockPlaybook(
     create_public_playbook_run: false,
     public: true,
     checklists: [checklist],
-    meemerging businessr_ids: meemerging businessrIds,
+    member_ids: memberIds,
     invited_user_ids: [ownerId],
     invite_users_enabled: true,
     default_owner_id: ownerId,
@@ -904,14 +904,14 @@ export function generateRockPlaybook(
  */
 export function generateLevel10Playbook(
   teamId: string,
-  meemerging businessrIds: string[],
+  memberIds: string[],
   facilitatorId: string
 ): PlaybookConfig {
   const checklists: PlaybookChecklist[] = [
     {
       title: "Segue (5 min)",
       items: [
-        { title: "Share personal and professional good news", description: "Each team meemerging businessr shares one personal and one professional good news item" },
+        { title: "Share personal and professional good news", description: "Each team member shares one personal and one professional good news item" },
       ],
     },
     {
@@ -956,7 +956,7 @@ export function generateLevel10Playbook(
       items: [
         { title: "Recap To-Dos", description: "Review all new To-Dos created during the meeting" },
         { title: "Cascading messages", description: "Identify any messages to communicate to the organization" },
-        { title: "Rate the meeting", description: "Each meemerging businessr rates the meeting 1-10" },
+        { title: "Rate the meeting", description: "Each member rates the meeting 1-10" },
       ],
     },
   ];
@@ -968,8 +968,8 @@ export function generateLevel10Playbook(
     create_public_playbook_run: false,
     public: true,
     checklists,
-    meemerging businessr_ids: meemerging businessrIds,
-    invited_user_ids: meemerging businessrIds,
+    member_ids: memberIds,
+    invited_user_ids: memberIds,
     invite_users_enabled: true,
     default_owner_id: facilitatorId,
     default_owner_enabled: true,
@@ -1138,8 +1138,8 @@ export async function checkPlaybookItem(
   serverUrl: string,
   token: string,
   runId: string,
-  checklistIndex: nuemerging businessr,
-  itemIndex: nuemerging businessr
+  checklistIndex: number,
+  itemIndex: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const response = await fetch("/api/mattermost/playbooks", {
@@ -1172,7 +1172,7 @@ export function generateRecurringPlaybook(
   title: string,
   description: string,
   teamId: string,
-  meemerging businessrIds: string[],
+  memberIds: string[],
   tasks: { title: string; description?: string; assigneeId?: string }[],
   recurrence: "daily" | "weekly" | "biweekly" | "monthly",
   broadcastChannelId?: string
@@ -1200,10 +1200,10 @@ export function generateRecurringPlaybook(
     create_public_playbook_run: false,
     public: true,
     checklists: [checklist],
-    meemerging businessr_ids: meemerging businessrIds,
-    invited_user_ids: meemerging businessrIds,
+    member_ids: memberIds,
+    invited_user_ids: memberIds,
     invite_users_enabled: true,
-    default_owner_id: meemerging businessrIds[0],
+    default_owner_id: memberIds[0],
     default_owner_enabled: true,
     reminder_timer_default_seconds: reminderSeconds,
   };

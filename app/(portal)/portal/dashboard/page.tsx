@@ -22,13 +22,13 @@ import {
 } from "lucide-react";
 
 interface DashboardStats {
-  proofPacksCount: nuemerging businessr;
-  activeLeadsCount: nuemerging businessr;
-  introductionsCount: nuemerging businessr;
-  upcomingEventsCount: nuemerging businessr;
-  profileCompleteness: nuemerging businessr;
+  proofPacksCount: number;
+  activeLeadsCount: number;
+  introductionsCount: number;
+  upcomingEventsCount: number;
+  profileCompleteness: number;
   subscriptionTier: string;
-  packHealthAverage: nuemerging businessr;
+  packHealthAverage: number;
 }
 
 export default function DashboardPage() {

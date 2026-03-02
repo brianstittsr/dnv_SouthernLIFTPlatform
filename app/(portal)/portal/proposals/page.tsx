@@ -142,7 +142,7 @@ const emptyProposal: Partial<Proposal> = {
   startDate: "",
   endDate: "",
   fundingSource: "",
-  referenceNuemerging businessr: "",
+  referencenumber: "",
   totalBudget: 0,
   status: "draft",
   collaboratingEntities: [],
@@ -318,7 +318,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
       });
       const result = await response.json();
       if (result.success && result.milestones) {
-        const newMilestones = result.milestones.map((m: any, i: nuemerging businessr) => ({
+        const newMilestones = result.milestones.map((m: any, i: number) => ({
           id: `milestone-ai-${Date.now()}-${i}`,
           name: m.name,
           description: m.description,
@@ -441,9 +441,9 @@ Make it clear, professional, and highlight the value proposition and expected ou
           startDate: result.data.startDate || prev.startDate,
           endDate: result.data.endDate || prev.endDate,
           fundingSource: result.data.fundingSource || prev.fundingSource,
-          referenceNuemerging businessr: result.data.referenceNuemerging businessr || prev.referenceNuemerging businessr,
+          referencenumber: result.data.referencenumber || prev.referencenumber,
           totalBudget: result.data.totalBudget || prev.totalBudget,
-          collaboratingEntities: result.data.entities?.map((e: any, i: nuemerging businessr) => ({
+          collaboratingEntities: result.data.entities?.map((e: any, i: number) => ({
             id: `entity-${i}`,
             name: e.name,
             role: e.role,
@@ -452,7 +452,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
             contactEmail: e.contactInfo?.split(",")[1]?.trim() || "",
             responsibilities: [e.responsibilities],
           })) || prev.collaboratingEntities,
-          dataCollectionMethods: result.data.dataCollectionMethods?.map((m: any, i: nuemerging businessr) => ({
+          dataCollectionMethods: result.data.dataCollectionMethods?.map((m: any, i: number) => ({
             id: `method-${i}`,
             name: m.name,
             description: m.description,
@@ -461,7 +461,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
             dataPoints: m.dataPoints || [],
             tools: m.tools ? [m.tools] : [],
           })) || prev.dataCollectionMethods,
-          projectMilestones: result.data.milestones?.map((m: any, i: nuemerging businessr) => ({
+          projectMilestones: result.data.milestones?.map((m: any, i: number) => ({
             id: `milestone-${i}`,
             name: m.name,
             description: m.description,
@@ -470,7 +470,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
             responsibleParties: m.responsibleParties || [],
             dependencies: m.dependencies || [],
           })) || prev.projectMilestones,
-          formTemplates: result.data.forms?.map((f: any, i: nuemerging businessr) => ({
+          formTemplates: result.data.forms?.map((f: any, i: number) => ({
             id: `form-${i}`,
             name: f.name,
             description: f.description,
@@ -1201,13 +1201,13 @@ Make it clear, professional, and highlight the value proposition and expected ou
             </CardContent>
           </Card>
 
-          <Card className="border-aemerging businessr-200 bg-aemerging businessr-50">
+          <Card className="border-amber-200 bg-amber-50">
             <CardContent className="pt-4">
               <div className="flex items-start gap-3">
-                <Lightbulb className="h-5 w-5 text-aemerging businessr-600 mt-0.5" />
+                <Lightbulb className="h-5 w-5 text-amber-600 mt-0.5" />
                 <div>
-                  <p className="font-medium text-aemerging businessr-800">Template Usage</p>
-                  <p className="text-sm text-aemerging businessr-700 mt-1">
+                  <p className="font-medium text-amber-800">Template Usage</p>
+                  <p className="text-sm text-amber-700 mt-1">
                     Templates are used for <strong>NDAs, MOUs, Contracts, and Agreements</strong> only. 
                     RFIs, RFPs, Grants, and OEM Supplier Readiness documents do not use templates as they 
                     are generated from uploaded source documents or created from scratch.
@@ -1686,11 +1686,11 @@ Make it clear, professional, and highlight the value proposition and expected ou
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Reference Nuemerging businessr</Label>
+                      <Label>Reference number</Label>
                       <Input
-                        placeholder="Grant/Contract nuemerging businessr"
-                        value={proposalData.referenceNuemerging businessr || ""}
-                        onChange={(e) => setProposalData({ ...proposalData, referenceNuemerging businessr: e.target.value })}
+                        placeholder="Grant/Contract number"
+                        value={proposalData.referencenumber || ""}
+                        onChange={(e) => setProposalData({ ...proposalData, referencenumber: e.target.value })}
                       />
                     </div>
                   </div>
@@ -1739,7 +1739,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                         </Button>
                       </div>
                       <Input
-                        type="nuemerging businessr"
+                        type="number"
                         placeholder="0"
                         value={proposalData.totalBudget || ""}
                         onChange={(e) => setProposalData({ ...proposalData, totalBudget: parseFloat(e.target.value) || 0 })}
@@ -1749,15 +1749,15 @@ Make it clear, professional, and highlight the value proposition and expected ou
 
                   {/* RFI/RFP Notice */}
                   {(proposalData.type === "rfi_response" || proposalData.type === "rfp_response") && (
-                    <Card className="border-aemerging businessr-200 bg-aemerging businessr-50">
+                    <Card className="border-amber-200 bg-amber-50">
                       <CardContent className="pt-4">
                         <div className="flex items-start gap-3">
-                          <AlertCircle className="h-5 w-5 text-aemerging businessr-600 mt-0.5" />
+                          <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                           <div>
-                            <p className="font-medium text-aemerging businessr-800">
+                            <p className="font-medium text-amber-800">
                               {proposalData.type === "rfi_response" ? "Request for Information (RFI)" : "Request for Proposal (RFP)"} Response
                             </p>
-                            <p className="text-sm text-aemerging businessr-700 mt-1">
+                            <p className="text-sm text-amber-700 mt-1">
                               AI will analyze this document to extract entities, deliverables, milestones, and reporting requirements. 
                               Use the &quot;Enhance with AI&quot; buttons to improve your responses.
                             </p>
@@ -1808,7 +1808,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                         <div className="space-y-2">
                           <Label>Grant Amount Requested ($)</Label>
                           <Input
-                            type="nuemerging businessr"
+                            type="number"
                             placeholder="0"
                             value={proposalData.grantAmount || ""}
                             onChange={(e) => setProposalData({ ...proposalData, grantAmount: parseFloat(e.target.value) || 0 })}
@@ -1833,7 +1833,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                           <div className="space-y-2">
                             <Label>Matching Funds Amount ($)</Label>
                             <Input
-                              type="nuemerging businessr"
+                              type="number"
                               placeholder="0"
                               value={proposalData.matchingFundsAmount || ""}
                               onChange={(e) => setProposalData({ ...proposalData, matchingFundsAmount: parseFloat(e.target.value) || 0 })}
@@ -1976,7 +1976,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                                 />
                               ) : placeholder.includes("years") ? (
                                 <Input
-                                  type="nuemerging businessr"
+                                  type="number"
                                   min="1"
                                   max="99"
                                   placeholder={placeholder === "term_years" ? "2" : "5"}
@@ -1997,13 +1997,13 @@ Make it clear, professional, and highlight the value proposition and expected ou
                     </Card>
                   )}
 
-                  <Card className="border-aemerging businessr-200 bg-aemerging businessr-50">
+                  <Card className="border-amber-200 bg-amber-50">
                     <CardContent className="pt-4">
                       <div className="flex items-start gap-3">
-                        <Shield className="h-5 w-5 text-aemerging businessr-600 mt-0.5" />
+                        <Shield className="h-5 w-5 text-amber-600 mt-0.5" />
                         <div>
-                          <p className="font-medium text-aemerging businessr-800">Countersigner</p>
-                          <p className="text-sm text-aemerging businessr-700 mt-1">
+                          <p className="font-medium text-amber-800">Countersigner</p>
+                          <p className="text-sm text-amber-700 mt-1">
                             After the signer completes their signature, the NDA will automatically be sent to 
                             <strong> Nelinia Varenas (nelinia@strategicvalueplus.com)</strong> for countersignature.
                           </p>
@@ -3095,13 +3095,13 @@ Make it clear, professional, and highlight the value proposition and expected ou
                   </div>
 
                   {/* MOVIE Framework Info */}
-                  <Card className="border-aemerging businessr-200 bg-aemerging businessr-50">
+                  <Card className="border-amber-200 bg-amber-50">
                     <CardContent className="pt-4">
                       <div className="flex items-start gap-3">
-                        <Lightbulb className="h-5 w-5 text-aemerging businessr-600 mt-0.5" />
+                        <Lightbulb className="h-5 w-5 text-amber-600 mt-0.5" />
                         <div>
-                          <p className="font-medium text-aemerging businessr-800">McKinsey MOVIE Framework</p>
-                          <ul className="text-sm text-aemerging businessr-700 mt-2 space-y-1">
+                          <p className="font-medium text-amber-800">McKinsey MOVIE Framework</p>
+                          <ul className="text-sm text-amber-700 mt-2 space-y-1">
                             <li><strong>M</strong>essage - Lead with the key insight in the title</li>
                             <li><strong>O</strong>rganize - Group supporting data into 2-3 categories</li>
                             <li><strong>V</strong>isualize - Turn data into charts and visuals</li>
@@ -3147,10 +3147,10 @@ Make it clear, professional, and highlight the value proposition and expected ou
                           <div className="space-y-4">
                             <h2 className="text-2xl font-bold">{slides[currentSlideIndex]?.title}</h2>
                             {slides[currentSlideIndex]?.insight && (
-                              <div className="p-3 bg-aemerging businessr-500/20 border border-aemerging businessr-500/50 rounded-lg">
-                                <p className="text-aemerging businessr-300 font-medium">
+                              <div className="p-3 bg-amber-500/20 border border-amber-500/50 rounded-lg">
+                                <p className="text-amber-300 font-medium">
                                   {slides[currentSlideIndex]?.insightHighlight && (
-                                    <span className="text-aemerging businessr-400 font-bold mr-2">
+                                    <span className="text-amber-400 font-bold mr-2">
                                       {slides[currentSlideIndex].insightHighlight}
                                     </span>
                                   )}
@@ -3165,7 +3165,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                               <ul className="space-y-2">
                                 {slides[currentSlideIndex].bullets?.map((bullet, i) => (
                                   <li key={i} className="flex items-start gap-2 text-slate-300">
-                                    <span className="text-aemerging businessr-400">•</span>
+                                    <span className="text-amber-400">•</span>
                                     {bullet}
                                   </li>
                                 ))}

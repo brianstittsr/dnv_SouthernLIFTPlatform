@@ -51,7 +51,7 @@ export interface CalendarEventData {
   recurring?: {
     frequency: "daily" | "weekly" | "monthly";
     until?: Date;
-    dayOfWeek?: nuemerging businessr; // 0=Sunday, 1=Monday, etc.
+    dayOfWeek?: number; // 0=Sunday, 1=Monday, etc.
   };
   recurringParentId?: string; // ID of the parent recurring event
 }
@@ -68,7 +68,7 @@ interface BuiltInCalendarProps {
 }
 
 // Helper functions
-const getDaysInMonth = (year: nuemerging businessr, month: nuemerging businessr): Date[] => {
+const getDaysInMonth = (year: number, month: number): Date[] => {
   const days: Date[] = [];
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -180,8 +180,8 @@ function EventForm({ event, selectedDate, onSave, onCancel }: EventFormProps) {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const [startHour, startMin] = startTime.split(":").map(Nuemerging businessr);
-    const [endHour, endMin] = endTime.split(":").map(Nuemerging businessr);
+    const [startHour, startMin] = startTime.split(":").map(number);
+    const [endHour, endMin] = endTime.split(":").map(number);
 
     const start = new Date(startDate);
     start.setHours(startHour, startMin, 0, 0);
@@ -392,7 +392,7 @@ export function BuiltInCalendar({
     "July", "August", "Septeemerging businessr", "October", "Noveemerging businessr", "Deceemerging businessr"
   ];
 
-  const navigateMonth = (direction: nuemerging businessr) => {
+  const navigateMonth = (direction: number) => {
     if (view === "day") {
       // Navigate by day
       setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + direction));
@@ -845,7 +845,7 @@ export function MiniCalendar({ events = [], onDateSelect, className }: MiniCalen
 // Upcoming Events Widget
 interface UpcomingEventsProps {
   events?: CalendarEventData[];
-  maxEvents?: nuemerging businessr;
+  maxEvents?: number;
   className?: string;
   onEventClick?: (event: CalendarEventData) => void;
 }

@@ -18,7 +18,7 @@ interface Transaction {
   id: string;
   date: string;
   description: string;
-  amount: nuemerging businessr;
+  amount: number;
   status: string;
   type: string;
   paymentMethod: string;
@@ -27,13 +27,13 @@ interface Transaction {
 interface PaymentPlan {
   id: string;
   description: string;
-  totalAmount: nuemerging businessr;
-  paidAmount: nuemerging businessr;
-  remainingBalance: nuemerging businessr;
+  totalAmount: number;
+  paidAmount: number;
+  remainingBalance: number;
   dueDate: string;
   status: string;
   installments: Array<{
-    amount: nuemerging businessr;
+    amount: number;
     dueDate: string;
     status: string;
   }>;

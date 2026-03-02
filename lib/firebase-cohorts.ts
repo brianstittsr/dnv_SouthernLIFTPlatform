@@ -20,7 +20,7 @@ export const COHORT_COLLECTIONS = {
   COHORTS: "cohorts",
   COHORT_MODULES: "cohort_modules",
   SESSIONS: "cohort_sessions",
-  MEemerging businessRSHIPS: "cohort_meemerging businessrships",
+  memberSHIPS: "cohort_memberships",
   SESSION_PROGRESS: "cohort_session_progress",
   LIVE_TRAININGS: "cohort_live_trainings",
   TRAINING_REGISTRATIONS: "cohort_training_registrations",
@@ -78,7 +78,7 @@ export async function getCohorts(options: {
   isPublished?: boolean;
   difficultyLevel?: string;
   isFree?: boolean;
-  limit?: nuemerging businessr;
+  limit?: number;
   orderBy?: string;
   orderDirection?: 'asc' | 'desc';
 } = {}) {
@@ -352,12 +352,12 @@ export async function deleteSession(sessionId: string) {
   await deleteDoc(docRef);
 }
 
-// ==================== MEemerging businessRSHIP OPERATIONS ====================
+// ==================== memberSHIP OPERATIONS ====================
 
 export async function joinCohort(userId: string, cohortId: string, role: string = "participant") {
   if (!db) throw new Error("Firebase not initialized");
   
-  const meemerging businessrshipData = {
+  const membershipData = {
     userId,
     cohortId,
     cohortRole: role,
@@ -369,7 +369,7 @@ export async function joinCohort(userId: string, cohortId: string, role: string 
     status: "active",
   };
   
-  const docRef = await addDoc(collection(db, COHORT_COLLECTIONS.MEemerging businessRSHIPS), meemerging businessrshipData);
+  const docRef = await addDoc(collection(db, COHORT_COLLECTIONS.memberSHIPS), membershipData);
   
   // Increment participant count
   const cohortRef = doc(db, COHORT_COLLECTIONS.COHORTS, cohortId);
@@ -380,11 +380,11 @@ export async function joinCohort(userId: string, cohortId: string, role: string 
   return docRef.id;
 }
 
-export async function getMeemerging businessrship(userId: string, cohortId: string) {
+export async function getmembership(userId: string, cohortId: string) {
   if (!db) throw new Error("Firebase not initialized");
   
   const q = query(
-    collection(db, COHORT_COLLECTIONS.MEemerging businessRSHIPS),
+    collection(db, COHORT_COLLECTIONS.memberSHIPS),
     where("userId", "==", userId),
     where("cohortId", "==", cohortId),
     limit(1)
@@ -397,11 +397,11 @@ export async function getMeemerging businessrship(userId: string, cohortId: stri
   return { id: doc.id, ...doc.data() };
 }
 
-export async function getCohortMeemerging businessrships(cohortId: string) {
+export async function getCohortmemberships(cohortId: string) {
   if (!db) throw new Error("Firebase not initialized");
   
   const q = query(
-    collection(db, COHORT_COLLECTIONS.MEemerging businessRSHIPS),
+    collection(db, COHORT_COLLECTIONS.memberSHIPS),
     where("cohortId", "==", cohortId),
     orderBy("enrolledAt", "desc")
   );
@@ -419,7 +419,7 @@ export async function issueCertificate(data: {
   userName: string;
   facilitatorName: string;
   completionDate: Timestamp;
-  certificateNuemerging businessr: string;
+  certificatenumber: string;
 }) {
   if (!db) throw new Error("Firebase not initialized");
   
@@ -459,12 +459,12 @@ export async function getCohortCertificates(cohortId: string) {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
-export async function verifyCertificate(certificateNuemerging businessr: string) {
+export async function verifyCertificate(certificatenumber: string) {
   if (!db) throw new Error("Firebase not initialized");
   
   const q = query(
     collection(db, COHORT_COLLECTIONS.CERTIFICATES),
-    where("certificateNuemerging businessr", "==", certificateNuemerging businessr),
+    where("certificatenumber", "==", certificatenumber),
     where("status", "==", "active"),
     limit(1)
   );
@@ -476,7 +476,7 @@ export async function verifyCertificate(certificateNuemerging businessr: string)
   return { id: doc.id, ...doc.data() };
 }
 
-export function generateCertificateNuemerging businessr(): string {
+export function generateCertificatenumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `CERT-${timestamp}-${random}`;

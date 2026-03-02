@@ -76,7 +76,7 @@ export async function getBlogPostsByCategory(category: BlogCategory): Promise<Bl
   return all.filter((post) => post.category === category);
 }
 
-export async function getFeaturedBlogPosts(count: nuemerging businessr = 3): Promise<BlogPost[]> {
+export async function getFeaturedBlogPosts(count: number = 3): Promise<BlogPost[]> {
   const all = await getAllBlogPosts();
   return all.slice(0, count);
 }

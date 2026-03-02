@@ -11,7 +11,7 @@ export {
   getAvailablePages,
   getNewsArticles,
   getArticlesByCategory,
-  getTeamMeemerging businessrs,
+  getTeammembers,
   getServices,
   getContactInfo,
   getSocialMediaLinks,
@@ -29,7 +29,7 @@ export type {
   PageSection,
   ServiceItem,
   StatItem,
-  TeamMeemerging businessr,
+  Teammember,
   NewsArticle,
   ArticlesIndex,
 } from '../../lib/content/kdm-content-loader';
@@ -62,4 +62,4 @@ export const PAGE_SLUGS = [
   'faq',
 ] as const;
 
-export type PageSlug = typeof PAGE_SLUGS[nuemerging businessr];
+export type PageSlug = typeof PAGE_SLUGS[number];

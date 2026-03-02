@@ -30,7 +30,7 @@ export interface CrawlStep {
   label: string;
   status: "pending" | "in_progress" | "completed" | "error";
   detail?: string;
-  count?: nuemerging businessr;
+  count?: number;
 }
 
 interface CrawlProgressModalProps {

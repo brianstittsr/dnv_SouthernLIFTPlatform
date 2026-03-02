@@ -26,7 +26,7 @@ interface SME {
   certifications: string[];
   capabilities: string[];
   packHealth: {
-    overallScore: nuemerging businessr;
+    overallScore: number;
   };
   proofPackId: string;
 }
@@ -162,7 +162,7 @@ export default function BuyerDirectoryPage() {
     return true;
   });
 
-  const getHealthColor = (score: nuemerging businessr) => {
+  const getHealthColor = (score: number) => {
     if (score >= 80) return "text-green-600";
     if (score >= 70) return "text-blue-600";
     return "text-yellow-600";

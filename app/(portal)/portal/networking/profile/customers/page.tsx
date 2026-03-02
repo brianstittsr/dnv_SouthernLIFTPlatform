@@ -99,7 +99,7 @@ export default function CustomersPage() {
     loadCustomers();
   }, []);
 
-  const updateCustomer = (index: nuemerging businessr, field: keyof Customer, value: string | boolean) => {
+  const updateCustomer = (index: number, field: keyof Customer, value: string | boolean) => {
     setForm((prev) => {
       const newCustomers = [...prev.customers];
       newCustomers[index] = { ...newCustomers[index], [field]: value };

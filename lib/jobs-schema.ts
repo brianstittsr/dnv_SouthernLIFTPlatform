@@ -14,8 +14,8 @@ export interface JobPosting {
   employmentType: 'Full-time' | 'Part-time' | 'Contract' | 'Internship';
   experienceLevel: 'Entry Level' | 'Mid Level' | 'Senior Level' | 'Executive';
   salaryRange?: {
-    min: nuemerging businessr;
-    max: nuemerging businessr;
+    min: number;
+    max: number;
     currency: string;
   };
   description: string;
@@ -32,7 +32,7 @@ export interface JobPosting {
   createdBy: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  applicationCount?: nuemerging businessr;
+  applicationCount?: number;
 }
 
 export interface JobApplication {
@@ -51,7 +51,7 @@ export interface JobApplication {
   resume: {
     type: 'upload' | 'paste';
     fileName?: string;
-    fileSize?: nuemerging businessr;
+    fileSize?: number;
     base64Data?: string; // Compressed resume as base64
     textContent?: string; // Pasted resume text
   };
@@ -75,8 +75,8 @@ export interface JobFormData {
   employmentType: JobPosting['employmentType'];
   experienceLevel: JobPosting['experienceLevel'];
   salaryRange?: {
-    min: nuemerging businessr;
-    max: nuemerging businessr;
+    min: number;
+    max: number;
     currency: string;
   };
   description: string;
@@ -189,6 +189,6 @@ export const COMMON_BENEFITS = [
   'Life Insurance',
   'Disability Insurance',
   'Commuter Benefits',
-  'Gym Meemerging businessrship',
+  'Gym membership',
   'Employee Assistance Program'
 ];

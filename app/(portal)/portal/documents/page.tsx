@@ -55,7 +55,7 @@ interface Document {
   name: string;
   type: string;
   size: string;
-  sizeBytes: nuemerging businessr;
+  sizeBytes: number;
   folder: string;
   uploadedBy: string;
   uploadedAt: string;
@@ -66,7 +66,7 @@ interface Document {
 
 interface FolderCount {
   name: string;
-  count: nuemerging businessr;
+  count: number;
 }
 
 function getFileIcon(type: string) {
@@ -95,7 +95,7 @@ function formatDate(dateString: string) {
   });
 }
 
-function formatFileSize(bytes: nuemerging businessr): string {
+function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
@@ -157,7 +157,7 @@ export default function DocumentsPage() {
         setDocuments(docs);
 
         // Calculate folder counts
-        const folderCounts: Record<string, nuemerging businessr> = {};
+        const folderCounts: Record<string, number> = {};
         docs.forEach((doc) => {
           folderCounts[doc.folder] = (folderCounts[doc.folder] || 0) + 1;
         });

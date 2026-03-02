@@ -24,12 +24,12 @@ interface SponsorshipPackage {
   eventId: string;
   name: string;
   tier: SponsorshipTier;
-  price: nuemerging businessr;
+  price: number;
   currency: string;
   benefits: string[];
-  maxSponsors: nuemerging businessr;
-  currentSponsors: nuemerging businessr;
-  order: nuemerging businessr;
+  maxSponsors: number;
+  currentSponsors: number;
+  order: number;
   isVisible: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -48,7 +48,7 @@ interface Sponsor {
   tier: SponsorshipTier;
   paymentStatus: "pending" | "paid" | "refunded";
   isVisible: boolean;
-  order: nuemerging businessr;
+  order: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -56,9 +56,9 @@ interface Sponsor {
 interface PackageFormData {
   name: string;
   tier: SponsorshipTier;
-  price: nuemerging businessr;
+  price: number;
   benefits: string;
-  maxSponsors: nuemerging businessr;
+  maxSponsors: number;
   isVisible: boolean;
 }
 
@@ -251,8 +251,8 @@ export function SponsorManager({ eventId }: SponsorManagerProps) {
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4"><div className="space-y-2"><Label>Name *</Label><Input value={packageForm.name} onChange={(e) => setPackageForm({ ...packageForm, name: e.target.value })} /></div>
               <div className="space-y-2"><Label>Tier</Label><Select value={packageForm.tier} onValueChange={(v) => setPackageForm({ ...packageForm, tier: v as SponsorshipTier })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{Object.entries(SPONSORSHIP_TIER_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent></Select></div></div>
-            <div className="grid grid-cols-2 gap-4"><div className="space-y-2"><Label>Price</Label><Input type="nuemerging businessr" value={packageForm.price} onChange={(e) => setPackageForm({ ...packageForm, price: parseFloat(e.target.value) || 0 })} /></div>
-              <div className="space-y-2"><Label>Max Sponsors</Label><Input type="nuemerging businessr" value={packageForm.maxSponsors} onChange={(e) => setPackageForm({ ...packageForm, maxSponsors: parseInt(e.target.value) || 1 })} /></div></div>
+            <div className="grid grid-cols-2 gap-4"><div className="space-y-2"><Label>Price</Label><Input type="number" value={packageForm.price} onChange={(e) => setPackageForm({ ...packageForm, price: parseFloat(e.target.value) || 0 })} /></div>
+              <div className="space-y-2"><Label>Max Sponsors</Label><Input type="number" value={packageForm.maxSponsors} onChange={(e) => setPackageForm({ ...packageForm, maxSponsors: parseInt(e.target.value) || 1 })} /></div></div>
             <div className="space-y-2"><Label>Benefits (one per line)</Label><Textarea value={packageForm.benefits} onChange={(e) => setPackageForm({ ...packageForm, benefits: e.target.value })} rows={4} /></div>
             <div className="flex items-center gap-2"><Switch checked={packageForm.isVisible} onCheckedChange={(v) => setPackageForm({ ...packageForm, isVisible: v })} /><Label>Visible</Label></div>
           </div>

@@ -50,7 +50,7 @@ export async function processPartnerPayouts(
     attributionId: string;
     partnerId: ConsortiumPartnerId;
     partnerName: string;
-    amount: nuemerging businessr;
+    amount: number;
     contributionType: string;
   }>
 ): Promise<void> {
@@ -169,7 +169,7 @@ export async function processPartnerPayouts(
  */
 async function executePayoutByMethod(
   partner: PartnerProfileDoc,
-  amount: nuemerging businessr,
+  amount: number,
   payoutId: string
 ): Promise<boolean> {
   try {
@@ -207,7 +207,7 @@ async function executePayoutByMethod(
  */
 async function processStripeConnectPayout(
   partner: PartnerProfileDoc,
-  amount: nuemerging businessr,
+  amount: number,
   payoutId: string
 ): Promise<boolean> {
   if (!partner.stripeConnectAccountId) {
@@ -259,7 +259,7 @@ async function processStripeConnectPayout(
  */
 async function processPayPalPayout(
   partner: PartnerProfileDoc,
-  amount: nuemerging businessr,
+  amount: number,
   payoutId: string
 ): Promise<boolean> {
   if (!partner.paypalEmail) {
@@ -294,10 +294,10 @@ async function createPayoutRecord(data: {
   partnerId: ConsortiumPartnerId;
   partnerName: string;
   partnerProfileId: string;
-  amount: nuemerging businessr;
+  amount: number;
   paymentMethod: string;
   commissionIds: string[];
-  holdPeriodDays: nuemerging businessr;
+  holdPeriodDays: number;
   requiresApproval: boolean;
 }): Promise<string | null> {
   if (!db) return null;
@@ -432,7 +432,7 @@ export async function getPendingPayouts(): Promise<PayoutDoc[]> {
  */
 export async function getPartnerPayoutHistory(
   partnerId: ConsortiumPartnerId,
-  limit?: nuemerging businessr
+  limit?: number
 ): Promise<PayoutDoc[]> {
   if (!db) return [];
 

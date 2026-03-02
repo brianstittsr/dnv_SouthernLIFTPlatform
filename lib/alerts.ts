@@ -16,20 +16,20 @@ export interface AlertConfig {
   id: string;
   
   // Alert thresholds
-  apiResponseTimeThreshold: nuemerging businessr; // ms (default: 500)
-  errorRateThreshold: nuemerging businessr; // percentage (default: 1)
-  uptimeThreshold: nuemerging businessr; // percentage (default: 99.9)
-  dbQueryTimeThreshold: nuemerging businessr; // ms (default: 1000)
+  apiResponseTimeThreshold: number; // ms (default: 500)
+  errorRateThreshold: number; // percentage (default: 1)
+  uptimeThreshold: number; // percentage (default: 99.9)
+  dbQueryTimeThreshold: number; // ms (default: 1000)
   
   // Alert conditions
-  consecutiveMinutesRequired: nuemerging businessr; // default: 5
+  consecutiveMinutesRequired: number; // default: 5
   
   // Notification settings
   emailEnabled: boolean;
   adminEmails: string[];
   
   // Alert cooldown (prevent spam)
-  cooldownMinutes: nuemerging businessr; // default: 30
+  cooldownMinutes: number; // default: 30
   
   isActive: boolean;
   updatedAt: Timestamp;
@@ -41,8 +41,8 @@ export interface Alert {
   severity: "warning" | "critical";
   
   // Metric details
-  currentValue: nuemerging businessr;
-  threshold: nuemerging businessr;
+  currentValue: number;
+  threshold: number;
   
   // Alert metadata
   message: string;
@@ -70,9 +70,9 @@ export interface AlertHistory {
   type: string;
   triggeredAt: Timestamp;
   resolvedAt?: Timestamp;
-  duration?: nuemerging businessr; // minutes
-  maxValue: nuemerging businessr;
-  threshold: nuemerging businessr;
+  duration?: number; // minutes
+  maxValue: number;
+  threshold: number;
 }
 
 // ============================================================================
@@ -205,9 +205,9 @@ export async function checkAndTriggerAlerts(): Promise<void> {
  */
 async function checkConsecutiveViolation(
   type: Alert["type"],
-  currentValue: nuemerging businessr,
-  threshold: nuemerging businessr,
-  consecutiveMinutes: nuemerging businessr,
+  currentValue: number,
+  threshold: number,
+  consecutiveMinutes: number,
   config: AlertConfig
 ): Promise<void> {
   try {
@@ -292,8 +292,8 @@ async function checkConsecutiveViolation(
  */
 async function triggerAlert(
   type: Alert["type"],
-  currentValue: nuemerging businessr,
-  threshold: nuemerging businessr,
+  currentValue: number,
+  threshold: number,
   config: AlertConfig
 ): Promise<void> {
   try {
@@ -352,8 +352,8 @@ async function triggerAlert(
  */
 function getSeverity(
   type: Alert["type"],
-  currentValue: nuemerging businessr,
-  threshold: nuemerging businessr
+  currentValue: number,
+  threshold: number
 ): Alert["severity"] {
   const ratio = type === "uptime"
     ? (threshold - currentValue) / threshold
@@ -367,8 +367,8 @@ function getSeverity(
  */
 function getAlertMessage(
   type: Alert["type"],
-  currentValue: nuemerging businessr,
-  threshold: nuemerging businessr
+  currentValue: number,
+  threshold: number
 ): string {
   switch (type) {
     case "api_response_time":

@@ -129,10 +129,10 @@ export default function AllCohortsPage() {
     );
   };
 
-  const formatCurrency = (amount: nuemerging businessr) => {
+  const formatCurrency = (amount: number) => {
     // Handle cents (priceInCents) or dollars
     const dollars = amount > 1000 ? amount / 100 : amount;
-    return new Intl.Nuemerging businessrFormat('en-US', {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0

@@ -23,8 +23,8 @@ export interface CrawlCallbacks {
 
 export interface CrawlOptions {
   targetUrl: string;
-  maxPages: nuemerging businessr;
-  crawlDelay: nuemerging businessr;
+  maxPages: number;
+  crawlDelay: number;
   downloadImages: boolean;
   downloadDocuments: boolean;
   authToken: string;
@@ -313,26 +313,26 @@ export class ClientCrawler {
   private extractVideos(html: string, parentUrl: string): VideoAsset[] {
     const videos: VideoAsset[] = [];
 
-    // YouTube eemerging businessds
-    const youtubeRegex = /(?:youtube\.com\/eemerging businessd\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
+    // YouTube Embeds
+    const youtubeRegex = /(?:youtube\.com\/Embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/gi;
     const youtubeMatches = html.matchAll(youtubeRegex);
     for (const match of youtubeMatches) {
       videos.push({
         id: this.generateId("vid"),
         platform: "youtube",
         url: `https://www.youtube.com/watch?v=${match[1]}`,
-        eemerging businessdCode: `<iframe src="https://www.youtube.com/eemerging businessd/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
+        EmbedCode: `<iframe src="https://www.youtube.com/Embed/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
         videoId: match[1],
         thumbnailUrl: `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`,
         title: null,
         description: null,
         duration: null,
         parentPageUrl: parentUrl,
-        context: "eemerging businessdded",
+        context: "Embedded",
       });
     }
 
-    // Vimeo eemerging businessds
+    // Vimeo Embeds
     const vimeoRegex = /vimeo\.com\/(?:video\/)?(\d+)/gi;
     const vimeoMatches = html.matchAll(vimeoRegex);
     for (const match of vimeoMatches) {
@@ -340,14 +340,14 @@ export class ClientCrawler {
         id: this.generateId("vid"),
         platform: "vimeo",
         url: `https://vimeo.com/${match[1]}`,
-        eemerging businessdCode: `<iframe src="https://player.vimeo.com/video/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
+        EmbedCode: `<iframe src="https://player.vimeo.com/video/${match[1]}" frameborder="0" allowfullscreen></iframe>`,
         videoId: match[1],
         thumbnailUrl: null,
         title: null,
         description: null,
         duration: null,
         parentPageUrl: parentUrl,
-        context: "eemerging businessdded",
+        context: "Embedded",
       });
     }
 
@@ -573,7 +573,7 @@ export class ClientCrawler {
       .trim();
   }
 
-  private countWords(html: string): nuemerging businessr {
+  private countWords(html: string): number {
     const text = this.stripHtml(html);
     return text.split(/\s+/).filter(Boolean).length;
   }
@@ -627,7 +627,7 @@ export class ClientCrawler {
     this.callbacks.onError(url, message);
   }
 
-  private delay(ms: nuemerging businessr): Promise<void> {
+  private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

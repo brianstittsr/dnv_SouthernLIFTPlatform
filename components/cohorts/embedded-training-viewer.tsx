@@ -24,7 +24,7 @@ interface Session {
   videoUrl?: string;
   contentUrl?: string;
   textContent?: string;
-  durationMinutes?: nuemerging businessr;
+  durationMinutes?: number;
   isPreview: boolean;
   isCompleted?: boolean;
 }
@@ -33,23 +33,23 @@ interface Module {
   id: string;
   title: string;
   description?: string;
-  weekNuemerging businessr: nuemerging businessr;
+  weeknumber: number;
   sessions: Session[];
 }
 
-interface Eemerging businessddedTrainingViewerProps {
+interface EmbeddedTrainingViewerProps {
   modules: Module[];
   currentSessionId?: string;
   onSessionComplete?: (sessionId: string) => void;
   isEnrolled?: boolean;
 }
 
-export function Eemerging businessddedTrainingViewer({ 
+export function EmbeddedTrainingViewer({ 
   modules, 
   currentSessionId,
   onSessionComplete,
   isEnrolled = false 
-}: Eemerging businessddedTrainingViewerProps) {
+}: EmbeddedTrainingViewerProps) {
   const [selectedSession, setSelectedSession] = useState<Session | null>(
     currentSessionId 
       ? modules.flatMap(m => m.sessions).find(s => s.id === currentSessionId) || null
@@ -88,7 +88,7 @@ export function Eemerging businessddedTrainingViewer({
         <div className="aspect-video w-full">
           <iframe
             className="w-full h-full rounded-lg"
-            src={`https://www.youtube.com/eemerging businessd/${videoId}`}
+            src={`https://www.youtube.com/Embed/${videoId}`}
             title={session.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -272,7 +272,7 @@ export function Eemerging businessddedTrainingViewer({
           {modules.map((module) => (
             <div key={module.id} className="space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline">Week {module.weekNuemerging businessr}</Badge>
+                <Badge variant="outline">Week {module.weeknumber}</Badge>
                 <h4 className="font-semibold text-sm">{module.title}</h4>
               </div>
               <div className="space-y-1 pl-4">

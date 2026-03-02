@@ -31,11 +31,11 @@ interface Cohort {
   instructorName?: string;
   startDate: Timestamp;
   endDate: Timestamp;
-  duration: nuemerging businessr;
-  maxParticipants: nuemerging businessr;
-  currentEnrollment: nuemerging businessr;
+  duration: number;
+  maxParticipants: number;
+  currentEnrollment: number;
   status: "draft" | "published" | "active" | "completed" | "archived";
-  price: nuemerging businessr;
+  price: number;
   level: "beginner" | "intermediate" | "advanced";
 }
 

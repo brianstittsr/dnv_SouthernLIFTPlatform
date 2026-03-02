@@ -20,7 +20,7 @@ interface ScrapedSupplier {
 
 interface ScrapeResult {
   suppliers: ScrapedSupplier[];
-  totalResults: nuemerging businessr;
+  totalResults: number;
   isLiveData: boolean;
   error?: string;
   isAuthenticated?: boolean;

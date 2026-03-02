@@ -50,7 +50,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, query, orderBy, Timestamp } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/schema';
 
-interface Meemerging businessrship {
+interface membership {
   id: string;
   userId: string;
   userName?: string;
@@ -58,7 +58,7 @@ interface Meemerging businessrship {
   tier: 'core-capture' | 'pursuit-pack' | 'custom';
   status: 'active' | 'trialing' | 'past_due' | 'cancelled';
   billingCycle: 'monthly' | 'annual';
-  amount: nuemerging businessr;
+  amount: number;
   stripeSubscriptionId: string;
   stripeCustomerId: string;
   currentPeriodStart: Timestamp;
@@ -80,25 +80,25 @@ const TIER_CONFIG = {
   'custom': { label: 'Custom', color: 'bg-purple-100 text-purple-800' },
 };
 
-export default function Meemerging businessrshipsAdminPage() {
-  const [meemerging businessrships, setMeemerging businessrships] = useState<Meemerging businessrship[]>([]);
-  const [filteredMeemerging businessrships, setFilteredMeemerging businessrships] = useState<Meemerging businessrship[]>([]);
+export default function membershipsAdminPage() {
+  const [memberships, setmemberships] = useState<membership[]>([]);
+  const [filteredmemberships, setFilteredmemberships] = useState<membership[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [tierFilter, setTierFilter] = useState('all');
-  const [selectedMeemerging businessrship, setSelectedMeemerging businessrship] = useState<Meemerging businessrship | null>(null);
+  const [selectedmembership, setSelectedmembership] = useState<membership | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
   useEffect(() => {
-    fetchMeemerging businessrships();
+    fetchmemberships();
   }, []);
 
   useEffect(() => {
-    filterMeemerging businessrships();
-  }, [meemerging businessrships, searchQuery, statusFilter, tierFilter]);
+    filtermemberships();
+  }, [memberships, searchQuery, statusFilter, tierFilter]);
 
-  const fetchMeemerging businessrships = async () => {
+  const fetchmemberships = async () => {
     if (!db) {
       // Sample data for demo
       setSampleData();
@@ -106,38 +106,38 @@ export default function Meemerging businessrshipsAdminPage() {
     }
 
     try {
-      const meemerging businessrshipsRef = collection(db, COLLECTIONS.MEemerging businessRSHIPS);
-      const q = query(meemerging businessrshipsRef, orderBy('createdAt', 'desc'));
+      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const q = query(membershipsRef, orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
 
-      const meemerging businessrshipsData = snapshot.docs.map(doc => ({
+      const membershipsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Meemerging businessrship[];
+      })) as membership[];
 
-      // Fetch user details for each meemerging businessrship
-      for (const meemerging businessrship of meemerging businessrshipsData) {
+      // Fetch user details for each membership
+      for (const membership of membershipsData) {
         try {
-          const userRef = doc(db, COLLECTIONS.USERS, meemerging businessrship.userId);
+          const userRef = doc(db, COLLECTIONS.USERS, membership.userId);
           const userSnap = await getDocs(query(collection(db, COLLECTIONS.USERS)));
-          const user = userSnap.docs.find(d => d.id === meemerging businessrship.userId);
+          const user = userSnap.docs.find(d => d.id === membership.userId);
           if (user) {
             const userData = user.data();
-            meemerging businessrship.userName = userData.name;
-            meemerging businessrship.userEmail = userData.email;
+            membership.userName = userData.name;
+            membership.userEmail = userData.email;
           }
         } catch (error) {
           console.error('Error fetching user:', error);
         }
       }
 
-      if (meemerging businessrshipsData.length === 0) {
+      if (membershipsData.length === 0) {
         setSampleData();
       } else {
-        setMeemerging businessrships(meemerging businessrshipsData);
+        setmemberships(membershipsData);
       }
     } catch (error) {
-      console.error('Error fetching meemerging businessrships:', error);
+      console.error('Error fetching memberships:', error);
       setSampleData();
     } finally {
       setLoading(false);
@@ -146,7 +146,7 @@ export default function Meemerging businessrshipsAdminPage() {
 
   const setSampleData = () => {
     const now = new Date();
-    const sampleMeemerging businessrships: Meemerging businessrship[] = [
+    const samplememberships: membership[] = [
       {
         id: '1',
         userId: 'user1',
@@ -228,12 +228,12 @@ export default function Meemerging businessrshipsAdminPage() {
         createdAt: Timestamp.fromDate(new Date(now.getFullYear(), now.getMonth() - 6, 5)),
       },
     ];
-    setMeemerging businessrships(sampleMeemerging businessrships);
+    setmemberships(samplememberships);
     setLoading(false);
   };
 
-  const filterMeemerging businessrships = () => {
-    let filtered = [...meemerging businessrships];
+  const filtermemberships = () => {
+    let filtered = [...memberships];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -252,29 +252,29 @@ export default function Meemerging businessrshipsAdminPage() {
       filtered = filtered.filter(m => m.tier === tierFilter);
     }
 
-    setFilteredMeemerging businessrships(filtered);
+    setFilteredmemberships(filtered);
   };
 
-  const handleCancelMeemerging businessrship = async (immediate: boolean) => {
-    if (!selectedMeemerging businessrship) return;
+  const handleCancelmembership = async (immediate: boolean) => {
+    if (!selectedmembership) return;
 
     try {
-      const response = await fetch(`/api/meemerging businessrships/${selectedMeemerging businessrship.id}?immediate=${immediate}`, {
+      const response = await fetch(`/api/memberships/${selectedmembership.id}?immediate=${immediate}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        fetchMeemerging businessrships();
+        fetchmemberships();
         setShowCancelDialog(false);
-        setSelectedMeemerging businessrship(null);
+        setSelectedmembership(null);
       }
     } catch (error) {
-      console.error('Error cancelling meemerging businessrship:', error);
+      console.error('Error cancelling membership:', error);
     }
   };
 
-  const formatCurrency = (value: nuemerging businessr) => {
-    return new Intl.Nuemerging businessrFormat('en-US', {
+  const formatCurrency = (value: number) => {
+    return new Intl.numberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
@@ -283,13 +283,13 @@ export default function Meemerging businessrshipsAdminPage() {
   };
 
   const getStats = () => {
-    const active = meemerging businessrships.filter(m => m.status === 'active').length;
-    const trialing = meemerging businessrships.filter(m => m.status === 'trialing').length;
-    const pastDue = meemerging businessrships.filter(m => m.status === 'past_due').length;
-    const mrr = meemerging businessrships
+    const active = memberships.filter(m => m.status === 'active').length;
+    const trialing = memberships.filter(m => m.status === 'trialing').length;
+    const pastDue = memberships.filter(m => m.status === 'past_due').length;
+    const mrr = memberships
       .filter(m => m.status === 'active' && m.billingCycle === 'monthly')
       .reduce((sum, m) => sum + m.amount, 0);
-    const arr = meemerging businessrships
+    const arr = memberships
       .filter(m => m.status === 'active')
       .reduce((sum, m) => sum + (m.billingCycle === 'monthly' ? m.amount * 12 : m.amount), 0);
 
@@ -311,14 +311,14 @@ export default function Meemerging businessrshipsAdminPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Meemerging businessrship Management</h1>
+          <h1 className="text-3xl font-bold">membership Management</h1>
           <p className="text-muted-foreground">
-            Manage consortium meemerging businessrships and subscriptions
+            Manage consortium memberships and subscriptions
           </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Add Meemerging businessr
+          Add member
         </Button>
       </div>
 
@@ -326,7 +326,7 @@ export default function Meemerging businessrshipsAdminPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Meemerging businessrs</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active members</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{stats.active}</div>
@@ -401,13 +401,13 @@ export default function Meemerging businessrshipsAdminPage() {
         </div>
       </div>
 
-      {/* Meemerging businessrships Table */}
+      {/* memberships Table */}
       <Card>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Meemerging businessr</TableHead>
+                <TableHead>member</TableHead>
                 <TableHead>Tier</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Billing</TableHead>
@@ -417,17 +417,17 @@ export default function Meemerging businessrshipsAdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredMeemerging businessrships.map(meemerging businessrship => {
-                const statusConfig = STATUS_CONFIG[meemerging businessrship.status];
-                const tierConfig = TIER_CONFIG[meemerging businessrship.tier];
+              {filteredmemberships.map(membership => {
+                const statusConfig = STATUS_CONFIG[membership.status];
+                const tierConfig = TIER_CONFIG[membership.tier];
                 const StatusIcon = statusConfig.icon;
 
                 return (
-                  <TableRow key={meemerging businessrship.id}>
+                  <TableRow key={membership.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{meemerging businessrship.userName || 'Unknown'}</p>
-                        <p className="text-sm text-muted-foreground">{meemerging businessrship.userEmail}</p>
+                        <p className="font-medium">{membership.userName || 'Unknown'}</p>
+                        <p className="text-sm text-muted-foreground">{membership.userEmail}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -438,14 +438,14 @@ export default function Meemerging businessrshipsAdminPage() {
                         <StatusIcon className="h-3 w-3 mr-1" />
                         {statusConfig.label}
                       </Badge>
-                      {meemerging businessrship.cancelAtPeriodEnd && (
+                      {membership.cancelAtPeriodEnd && (
                         <p className="text-xs text-red-500 mt-1">Cancels at period end</p>
                       )}
                     </TableCell>
-                    <TableCell className="capitalize">{meemerging businessrship.billingCycle}</TableCell>
-                    <TableCell>{formatCurrency(meemerging businessrship.amount)}</TableCell>
+                    <TableCell className="capitalize">{membership.billingCycle}</TableCell>
+                    <TableCell>{formatCurrency(membership.amount)}</TableCell>
                     <TableCell>
-                      {format(meemerging businessrship.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
+                      {format(membership.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
@@ -471,11 +471,11 @@ export default function Meemerging businessrshipsAdminPage() {
                           <DropdownMenuItem 
                             className="text-red-600"
                             onClick={() => {
-                              setSelectedMeemerging businessrship(meemerging businessrship);
+                              setSelectedmembership(membership);
                               setShowCancelDialog(true);
                             }}
                           >
-                            Cancel Meemerging businessrship
+                            Cancel membership
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -492,31 +492,31 @@ export default function Meemerging businessrshipsAdminPage() {
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Cancel Meemerging businessrship</DialogTitle>
+            <DialogTitle>Cancel membership</DialogTitle>
             <DialogDescription>
-              Are you sure you want to cancel the meemerging businessrship for {selectedMeemerging businessrship?.userName}?
+              Are you sure you want to cancel the membership for {selectedmembership?.userName}?
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-sm text-muted-foreground">
-              Choose how to cancel this meemerging businessrship:
+              Choose how to cancel this membership:
             </p>
             <div className="space-y-2">
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                onClick={() => handleCancelMeemerging businessrship(false)}
+                onClick={() => handleCancelmembership(false)}
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Cancel at period end
                 <span className="ml-auto text-xs text-muted-foreground">
-                  {selectedMeemerging businessrship && format(selectedMeemerging businessrship.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
+                  {selectedmembership && format(selectedmembership.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
                 </span>
               </Button>
               <Button 
                 variant="destructive" 
                 className="w-full justify-start"
-                onClick={() => handleCancelMeemerging businessrship(true)}
+                onClick={() => handleCancelmembership(true)}
               >
                 <XCircle className="h-4 w-4 mr-2" />
                 Cancel immediately
@@ -525,7 +525,7 @@ export default function Meemerging businessrshipsAdminPage() {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setShowCancelDialog(false)}>
-              Keep Meemerging businessrship
+              Keep membership
             </Button>
           </DialogFooter>
         </DialogContent>

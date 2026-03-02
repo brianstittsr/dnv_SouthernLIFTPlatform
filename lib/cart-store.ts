@@ -5,10 +5,10 @@ export interface CartItem {
   cohortId: string;
   title: string;
   slug: string;
-  priceInCents: nuemerging businessr;
-  compareAtPriceInCents?: nuemerging businessr;
+  priceInCents: number;
+  compareAtPriceInCents?: number;
   thumbnailUrl?: string;
-  estimatedDurationWeeks: nuemerging businessr;
+  estimatedDurationWeeks: number;
   difficultyLevel: string;
 }
 
@@ -17,8 +17,8 @@ interface CartStore {
   addItem: (item: CartItem) => void;
   removeItem: (cohortId: string) => void;
   clearCart: () => void;
-  getTotalPrice: () => nuemerging businessr;
-  getTotalSavings: () => nuemerging businessr;
+  getTotalPrice: () => number;
+  getTotalSavings: () => number;
   isInCart: (cohortId: string) => boolean;
 }
 

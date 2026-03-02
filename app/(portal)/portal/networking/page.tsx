@@ -46,7 +46,7 @@ import {
 import { cn } from "@/lib/utils";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeamMeemerging businessrDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
 
 // Expertise categories for filtering
 const expertiseCategories = [
@@ -60,7 +60,7 @@ const expertiseCategories = [
   { id: "legal-ip", name: "Legal & IP", color: "bg-gray-500", keywords: ["intellectual property", "broker", "privacy", "legal"] },
 ];
 
-// Helper function to categorize a team meemerging businessr based on their expertise
+// Helper function to categorize a team member based on their expertise
 function categorizeExpertise(expertise: string): string[] {
   const lowerExpertise = expertise.toLowerCase();
   return expertiseCategories
@@ -82,13 +82,13 @@ interface OneToOneRequest {
 }
 
 export default function NetworkingPage() {
-  const [teamMeemerging businessrs, setTeamMeemerging businessrs] = useState<TeamMeemerging businessrDoc[]>([]);
+  const [teammembers, setTeammembers] = useState<TeammemberDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
-  const [selectedMeemerging businessr, setSelectedMeemerging businessr] = useState<TeamMeemerging businessrDoc | null>(null);
+  const [selectedmember, setSelectedmember] = useState<TeammemberDoc | null>(null);
   const [oneToOnes, setOneToOnes] = useState<OneToOneRequest[]>([]);
   const [requestForm, setRequestForm] = useState({
     targetType: "affiliate" as "affiliate" | "leadership",
@@ -99,63 +99,63 @@ export default function NetworkingPage() {
     notes: "",
   });
 
-  // Fetch team meemerging businessrs from Firebase
+  // Fetch team members from Firebase
   useEffect(() => {
-    const fetchTeamMeemerging businessrs = async () => {
+    const fetchTeammembers = async () => {
       if (!db) {
         setLoading(false);
         return;
       }
       try {
-        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEemerging businessRS));
-        const meemerging businessrs: TeamMeemerging businessrDoc[] = [];
+        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
+        const members: TeammemberDoc[] = [];
         querySnapshot.forEach((docSnap) => {
-          meemerging businessrs.push({ id: docSnap.id, ...docSnap.data() } as TeamMeemerging businessrDoc);
+          members.push({ id: docSnap.id, ...docSnap.data() } as TeammemberDoc);
         });
         // Sort by name
-        meemerging businessrs.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
-        setTeamMeemerging businessrs(meemerging businessrs);
+        members.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
+        setTeammembers(members);
       } catch (error) {
-        console.error("Error fetching team meemerging businessrs:", error);
+        console.error("Error fetching team members:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchTeamMeemerging businessrs();
+    fetchTeammembers();
   }, []);
 
-  // Filter team meemerging businessrs
-  const filteredMeemerging businessrs = teamMeemerging businessrs.filter((meemerging businessr) => {
-    // Only show active meemerging businessrs
-    if (meemerging businessr.status !== "active") return false;
+  // Filter team members
+  const filteredmembers = teammembers.filter((member) => {
+    // Only show active members
+    if (member.status !== "active") return false;
     
     // Role filter
-    if (roleFilter !== "all" && meemerging businessr.role !== roleFilter) return false;
+    if (roleFilter !== "all" && member.role !== roleFilter) return false;
     
     // Search filter
-    const fullName = `${meemerging businessr.firstName} ${meemerging businessr.lastName}`.toLowerCase();
+    const fullName = `${member.firstName} ${member.lastName}`.toLowerCase();
     const matchesSearch =
       fullName.includes(searchQuery.toLowerCase()) ||
-      (meemerging businessr.company?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      meemerging businessr.expertise.toLowerCase().includes(searchQuery.toLowerCase());
+      (member.company?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+      member.expertise.toLowerCase().includes(searchQuery.toLowerCase());
     
     // Category filter
-    const meemerging businessrCategories = categorizeExpertise(meemerging businessr.expertise);
-    const matchesCategory = !selectedCategory || meemerging businessrCategories.includes(selectedCategory);
+    const memberCategories = categorizeExpertise(member.expertise);
+    const matchesCategory = !selectedCategory || memberCategories.includes(selectedCategory);
     
     return matchesSearch && matchesCategory;
   });
 
   // Get leadership team (admin and team roles)
-  const leadershipTeam = teamMeemerging businessrs.filter(m => (m.role === "admin" || m.role === "team") && m.status === "active");
+  const leadershipTeam = teammembers.filter(m => (m.role === "admin" || m.role === "team") && m.status === "active");
 
   // Get affiliates only
-  const affiliatesOnly = teamMeemerging businessrs.filter(m => m.role === "affiliate" && m.status === "active");
+  const affiliatesOnly = teammembers.filter(m => m.role === "affiliate" && m.status === "active");
 
-  const openRequestDialog = (meemerging businessr?: TeamMeemerging businessrDoc) => {
-    if (meemerging businessr) {
-      setSelectedMeemerging businessr(meemerging businessr);
-      setRequestForm({ ...requestForm, targetType: "affiliate", targetId: meemerging businessr.id });
+  const openRequestDialog = (member?: TeammemberDoc) => {
+    if (member) {
+      setSelectedmember(member);
+      setRequestForm({ ...requestForm, targetType: "affiliate", targetId: member.id });
     }
     setIsRequestDialogOpen(true);
   };
@@ -166,7 +166,7 @@ export default function NetworkingPage() {
       requesterId: "current-user",
       requesterName: "You",
       targetId: requestForm.targetId,
-      targetName: selectedMeemerging businessr ? `${selectedMeemerging businessr.firstName} ${selectedMeemerging businessr.lastName}` : "",
+      targetName: selectedmember ? `${selectedmember.firstName} ${selectedmember.lastName}` : "",
       status: "pending",
       proposedDate: `${requestForm.proposedDate}T${requestForm.proposedTime}:00`,
       topic: requestForm.topic,
@@ -182,7 +182,7 @@ export default function NetworkingPage() {
       topic: "",
       notes: "",
     });
-    setSelectedMeemerging businessr(null);
+    setSelectedmember(null);
   };
 
   const getInitials = (firstName: string, lastName: string) => {
@@ -204,7 +204,7 @@ export default function NetworkingPage() {
         <div>
           <h1 className="text-3xl font-bold">Affiliate Networking</h1>
           <p className="text-muted-foreground">
-            Connect with team meemerging businessrs and affiliates through One-to-One networking meetings
+            Connect with team members and affiliates through One-to-One networking meetings
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -230,8 +230,8 @@ export default function NetworkingPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{teamMeemerging businessrs.filter(m => m.status === "active").length}</div>
-            <p className="text-xs text-muted-foreground">Active meemerging businessrs</p>
+            <div className="text-2xl font-bold">{teammembers.filter(m => m.status === "active").length}</div>
+            <p className="text-xs text-muted-foreground">Active members</p>
           </CardContent>
         </Card>
         <Card>
@@ -253,7 +253,7 @@ export default function NetworkingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">{leadershipTeam.length}</div>
-            <p className="text-xs text-muted-foreground">Core team meemerging businessrs</p>
+            <p className="text-xs text-muted-foreground">Core team members</p>
           </CardContent>
         </Card>
         <Card>
@@ -271,12 +271,12 @@ export default function NetworkingPage() {
 
       <Tabs defaultValue="directory" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="directory">Meemerging businessr Directory</TabsTrigger>
+          <TabsTrigger value="directory">member Directory</TabsTrigger>
           <TabsTrigger value="one-to-ones">My One-to-Ones</TabsTrigger>
           <TabsTrigger value="leadership">Leadership Team</TabsTrigger>
         </TabsList>
 
-        {/* Meemerging businessr Directory */}
+        {/* member Directory */}
         <TabsContent value="directory" className="space-y-6">
           {/* Search and Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
@@ -340,60 +340,60 @@ export default function NetworkingPage() {
 
           {/* Results count */}
           <p className="text-sm text-muted-foreground">
-            Showing {filteredMeemerging businessrs.length} of {teamMeemerging businessrs.filter(m => m.status === "active").length} meemerging businessrs
+            Showing {filteredmembers.length} of {teammembers.filter(m => m.status === "active").length} members
           </p>
 
-          {/* Meemerging businessrs Grid */}
+          {/* members Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredMeemerging businessrs.map((meemerging businessr) => {
-              const meemerging businessrCategories = categorizeExpertise(meemerging businessr.expertise);
+            {filteredmembers.map((member) => {
+              const memberCategories = categorizeExpertise(member.expertise);
               return (
-                <Card key={meemerging businessr.id} className="hover:shadow-lg transition-shadow">
+                <Card key={member.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start gap-4">
                       <Avatar className="h-12 w-12">
                         <AvatarFallback className="bg-primary/10 text-primary">
-                          {getInitials(meemerging businessr.firstName, meemerging businessr.lastName)}
+                          {getInitials(member.firstName, member.lastName)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <CardTitle className="text-lg">{meemerging businessr.firstName} {meemerging businessr.lastName}</CardTitle>
-                        <CardDescription className="truncate">{meemerging businessr.expertise}</CardDescription>
+                        <CardTitle className="text-lg">{member.firstName} {member.lastName}</CardTitle>
+                        <CardDescription className="truncate">{member.expertise}</CardDescription>
                       </div>
-                      <Badge variant={meemerging businessr.role === "admin" ? "default" : meemerging businessr.role === "team" ? "secondary" : "outline"}>
-                        {meemerging businessr.role}
+                      <Badge variant={member.role === "admin" ? "default" : member.role === "team" ? "secondary" : "outline"}>
+                        {member.role}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2 text-sm">
-                      {meemerging businessr.company && (
+                      {member.company && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Building2 className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{meemerging businessr.company}</span>
+                          <span className="truncate">{member.company}</span>
                         </div>
                       )}
-                      {meemerging businessr.location && (
+                      {member.location && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <MapPin className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{meemerging businessr.location}</span>
+                          <span className="truncate">{member.location}</span>
                         </div>
                       )}
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Mail className="h-4 w-4 flex-shrink-0" />
-                        <span className="truncate">{meemerging businessr.emailPrimary}</span>
+                        <span className="truncate">{member.emailPrimary}</span>
                       </div>
-                      {meemerging businessr.mobile && (
+                      {member.mobile && (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Phone className="h-4 w-4 flex-shrink-0" />
-                          <span>{meemerging businessr.mobile}</span>
+                          <span>{member.mobile}</span>
                         </div>
                       )}
                     </div>
 
-                    {meemerging businessrCategories.length > 0 && (
+                    {memberCategories.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {meemerging businessrCategories.slice(0, 2).map((catId) => {
+                        {memberCategories.slice(0, 2).map((catId) => {
                           const cat = expertiseCategories.find((c) => c.id === catId);
                           return cat ? (
                             <Badge key={catId} variant="secondary" className="text-xs">
@@ -404,15 +404,15 @@ export default function NetworkingPage() {
                       </div>
                     )}
 
-                    {meemerging businessr.bio && (
+                    {member.bio && (
                       <p className="text-sm text-muted-foreground line-clamp-2">
-                        {meemerging businessr.bio}
+                        {member.bio}
                       </p>
                     )}
 
                     <Button
                       className="w-full"
-                      onClick={() => openRequestDialog(meemerging businessr)}
+                      onClick={() => openRequestDialog(member)}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
                       Request One-to-One
@@ -423,11 +423,11 @@ export default function NetworkingPage() {
             })}
           </div>
 
-          {filteredMeemerging businessrs.length === 0 && (
+          {filteredmembers.length === 0 && (
             <Card>
               <CardContent className="p-8 text-center">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No meemerging businessrs found</h3>
+                <h3 className="text-lg font-medium mb-2">No members found</h3>
                 <p className="text-muted-foreground">
                   Try adjusting your search or filters
                 </p>
@@ -444,7 +444,7 @@ export default function NetworkingPage() {
                 <Handshake className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">No One-to-Ones scheduled</h3>
                 <p className="text-muted-foreground mb-4">
-                  Start networking by requesting a One-to-One meeting with a team meemerging businessr or affiliate
+                  Start networking by requesting a One-to-One meeting with a team member or affiliate
                 </p>
                 <Button onClick={() => openRequestDialog()}>
                   <UserPlus className="mr-2 h-4 w-4" />
@@ -529,7 +529,7 @@ export default function NetworkingPage() {
             <CardHeader>
               <CardTitle>Request One-to-One with Leadership</CardTitle>
               <CardDescription>
-                Schedule a meeting with Strategic Value+ leadership team meemerging businessrs
+                Schedule a meeting with Strategic Value+ leadership team members
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -573,31 +573,31 @@ export default function NetworkingPage() {
           <DialogHeader>
             <DialogTitle>Request One-to-One Meeting</DialogTitle>
             <DialogDescription>
-              {selectedMeemerging businessr
-                ? `Schedule a networking meeting with ${selectedMeemerging businessr.firstName} ${selectedMeemerging businessr.lastName}`
+              {selectedmember
+                ? `Schedule a networking meeting with ${selectedmember.firstName} ${selectedmember.lastName}`
                 : "Select who you'd like to meet with"}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            {!selectedMeemerging businessr && (
+            {!selectedmember && (
               <div className="space-y-2">
-                <Label>Select Team Meemerging businessr</Label>
+                <Label>Select Team member</Label>
                 <Select
                   value={requestForm.targetId}
                   onValueChange={(v) => {
                     setRequestForm({ ...requestForm, targetId: v });
-                    const meemerging businessr = teamMeemerging businessrs.find(m => m.id === v);
-                    if (meemerging businessr) setSelectedMeemerging businessr(meemerging businessr);
+                    const member = teammembers.find(m => m.id === v);
+                    if (member) setSelectedmember(member);
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Choose a team meemerging businessr" />
+                    <SelectValue placeholder="Choose a team member" />
                   </SelectTrigger>
                   <SelectContent>
-                    {teamMeemerging businessrs.filter(m => m.status === "active").map((meemerging businessr) => (
-                      <SelectItem key={meemerging businessr.id} value={meemerging businessr.id}>
-                        {meemerging businessr.firstName} {meemerging businessr.lastName} - {meemerging businessr.expertise}
+                    {teammembers.filter(m => m.status === "active").map((member) => (
+                      <SelectItem key={member.id} value={member.id}>
+                        {member.firstName} {member.lastName} - {member.expertise}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -665,7 +665,7 @@ export default function NetworkingPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => {
               setIsRequestDialogOpen(false);
-              setSelectedMeemerging businessr(null);
+              setSelectedmember(null);
             }}>
               Cancel
             </Button>

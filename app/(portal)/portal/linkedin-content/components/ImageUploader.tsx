@@ -55,7 +55,7 @@ export function ImageUploader({ images, onImagesChange }: ImageUploaderProps) {
   );
 
   const removeImage = useCallback(
-    (index: nuemerging businessr) => {
+    (index: number) => {
       onImagesChange(images.filter((_, i) => i !== index));
     },
     [images, onImagesChange]

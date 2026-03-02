@@ -192,7 +192,7 @@ const tools = [
     name: "PDF Handwriting OCR",
     description: "Convert handwritten PDFs to structured JSON data with spreadsheet view",
     icon: FileText,
-    color: "bg-aemerging businessr-500",
+    color: "bg-amber-500",
     price: "$0.10/page",
     purchasePrice: "$29",
     features: [

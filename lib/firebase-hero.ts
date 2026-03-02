@@ -152,7 +152,7 @@ export interface StoredImage {
   imageUrl: string; // Firebase Storage download URL
   storagePath: string; // Firebase Storage path for deletion
   contentType: string;
-  size: nuemerging businessr;
+  size: number;
   createdAt: Timestamp;
   usedBy: string[]; // slide IDs using this image
 }

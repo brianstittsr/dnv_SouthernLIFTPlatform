@@ -21,11 +21,11 @@ export interface BlogArticle {
     state?: string;
     country: string;
     coordinates?: {
-      lat: nuemerging businessr;
-      lng: nuemerging businessr;
+      lat: number;
+      lng: number;
     };
   };
-  readTime?: nuemerging businessr;
+  readTime?: number;
 }
 
 export const blogArticles: BlogArticle[] = [
@@ -695,7 +695,7 @@ For manufacturers beginning or accelerating their environmental journey, structu
 
 **Technology Deployment:** Invest in transformative technologies based on thorough evaluation of business case, technical feasibility, and implementation risks.
 
-**Process Integration:** Eemerging businessd environmental considerations into standard operating procedures, procurement processes, and decision-making frameworks.
+**Process Integration:** Embed environmental considerations into standard operating procedures, procurement processes, and decision-making frameworks.
 
 **Performance Monitoring:** Establish metrics, tracking systems, and review processes to monitor progress and identify course corrections.
 
