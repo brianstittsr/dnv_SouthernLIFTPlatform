@@ -42,7 +42,7 @@ import {
 import { useTractionData, Rock, Milestone } from "@/lib/hooks/use-eos2-data";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { toast } from "sonner";
 
 // Helper to get initials from name
@@ -162,7 +162,7 @@ export default function RocksPage() {
         
         const members: { id: string; name: string }[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeammemberDoc;
+          const data = doc.data() as TeamMemberDoc;
           if (data.role === "team") {
             members.push({
               id: doc.id,
