@@ -161,6 +161,8 @@ export default function TeammembersPage() {
     isCRO: false,
     // Team display tag
     teamTag: "affiliate" as TeamMemberDoc["teamTag"],
+    // Display order within team tag
+    displayOrder: 0,
   });
 
   // Fetch members from Firebase
@@ -404,6 +406,7 @@ export default function TeammembersPage() {
       isCTO: member.isCTO || false,
       isCRO: member.isCRO || false,
       teamTag: member.teamTag || "affiliate",
+      displayOrder: member.displayOrder || 0,
     });
     setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
@@ -432,6 +435,7 @@ export default function TeammembersPage() {
       isCTO: false,
       isCRO: false,
       teamTag: "affiliate",
+      displayOrder: 0,
     });
   };
 
@@ -808,6 +812,20 @@ export default function TeammembersPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="displayOrder">Display Order (within Team Display Tag)</Label>
+                  <Input
+                    id="displayOrder"
+                    type="number"
+                    value={formData.displayOrder}
+                    onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                    min="0"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Lower numbers appear first. Use this to control the order of team members within each display tag (Leadership, Staff, Affiliate).
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="expertise">Expertise *</Label>

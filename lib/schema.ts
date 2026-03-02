@@ -594,6 +594,8 @@ export interface TeamMemberDoc {
   isCRO?: boolean;
   // Team display tags for grouping on public team page
   teamTag?: "leadership" | "staff" | "affiliate";
+  // Display order within team tag (for sorting team members within each tag)
+  displayOrder?: number;
   // Additional flags - Affiliates/Suppliers can also be Clients
   isClient?: boolean; // Can this affiliate/team Member also be served as a client?
   clientSince?: Timestamp; // When they became a client
