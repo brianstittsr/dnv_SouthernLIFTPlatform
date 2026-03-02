@@ -214,9 +214,9 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // Team members - allow linked users to update their own record
+    // Team members - allow public read for active members on public pages, authenticated for admin
     match /teamMembers/{memberId} {
-      allow read: if isAuthenticated();
+      allow read: if true; // Public read for team page display (filter active in app)
       allow create: if isAdmin();
       allow update: if isAdmin() || isLinkedTeamMember(memberId);
       allow delete: if isAdmin();
