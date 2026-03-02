@@ -96,7 +96,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   const [isLoading, setIsLoading] = useState(!propSlides);
   const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
   const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
-  const [contentVisible, setContentVisible] = useState(false);
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
 
   // Load slides and gallery images from Firebase on mount
   useEffect(() => {
@@ -104,10 +104,32 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       loadSlidesFromFirebase();
     }
     loadGalleryImages();
-    // Delay content fade-in slightly so background renders first
-    const t = setTimeout(() => setContentVisible(true), 120);
-    return () => clearTimeout(t);
   }, [propSlides]);
+
+  // Preload all background images to prevent layout shift
+  useEffect(() => {
+    if (Object.keys(resolvedBgImages).length > 0 || slides.some(s => s.backgroundImage)) {
+      const imagesToPreload = slides
+        .filter(s => s.backgroundImage || resolvedBgImages[slides.indexOf(s)])
+        .map(s => s.backgroundImage || resolvedBgImages[slides.indexOf(s)])
+        .filter(Boolean);
+
+      if (imagesToPreload.length > 0) {
+        Promise.all(
+          imagesToPreload.map(src => {
+            return new Promise((resolve) => {
+              const img = new window.Image();
+              img.onload = resolve;
+              img.onerror = resolve;
+              img.src = src!;
+            });
+          })
+        ).then(() => setImagesPreloaded(true));
+      } else {
+        setImagesPreloaded(true);
+      }
+    }
+  }, [slides, resolvedBgImages]);
 
   const loadGalleryImages = async () => {
     try {
@@ -206,7 +228,6 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       
       <div
         className="relative z-30 py-20 md:py-32 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
-        style={{ opacity: contentVisible ? 1 : 0, transition: "opacity 0.5s ease" }}
       >
         <div className="mx-auto max-w-4xl text-center">
           {/* Slide Content with Fade Animation */}
