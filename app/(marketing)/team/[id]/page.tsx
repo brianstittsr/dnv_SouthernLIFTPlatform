@@ -21,7 +21,7 @@ interface DisplayMember {
   staticImageUrl?: string;
   bio: string;
   fullBio?: string;
-  linkedin?: string;
+  linkedIn?: string;
   teamTag?: string;
   avatar?: string;
 }
@@ -60,7 +60,7 @@ export default function TeamMemberPage() {
             staticImageUrl: data.avatar,
             bio: data.bio || `${data.expertise || "KDM Team Member"}`,
             fullBio: data.bio,
-            linkedin: data.linkedin,
+            linkedIn: data.linkedIn,
             teamTag: data.teamTag || "affiliate",
             avatar: data.avatar,
           });
