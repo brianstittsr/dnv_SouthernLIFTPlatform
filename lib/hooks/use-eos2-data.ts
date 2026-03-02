@@ -20,7 +20,7 @@ import {
   TractionIssueDoc,
   TractionTodoDoc,
   TractionMeetingDoc,
-  TractionTeammemberDoc,
+  TractionTeamMemberDoc,
 } from "@/lib/schema";
 import {
   notifyRockCreated,
@@ -320,13 +320,13 @@ export function useTractionData() {
 
       // Subscribe to Team members
       const teamQuery = query(
-        collection(db, COLLECTIONS.TRACTION_TEAM_memberS),
+        collection(db, COLLECTIONS.TRACTION_TEAM_MemberS),
         orderBy("name", "asc")
       );
       unsubscribers.push(
         onSnapshot(teamQuery, (snapshot) => {
           const data = snapshot.docs.map((doc) => {
-            const d = doc.data() as TractionTeammemberDoc;
+            const d = doc.data() as TractionTeamMemberDoc;
             return {
               id: doc.id,
               name: d.name,
@@ -686,7 +686,7 @@ export function useTractionData() {
   const addTeammember = useCallback(async (member: Omit<Teammember, "id">) => {
     if (!db) return;
     const now = Timestamp.now();
-    await addDoc(collection(db, COLLECTIONS.TRACTION_TEAM_memberS), {
+    await addDoc(collection(db, COLLECTIONS.TRACTION_TEAM_MemberS), {
       name: member.name,
       role: member.role,
       category: member.category,
@@ -696,7 +696,7 @@ export function useTractionData() {
       rightSeat: member.rightSeat,
       createdAt: now,
       updatedAt: now,
-    } as Omit<TractionTeammemberDoc, "id">);
+    } as Omit<TractionTeamMemberDoc, "id">);
     
     // Send webhook notification
     notifyTeammemberAdded({
@@ -716,12 +716,12 @@ export function useTractionData() {
     if (member.wantsIt !== undefined) updateData.wantsIt = member.wantsIt;
     if (member.capacityToDoIt !== undefined) updateData.capacityToDoIt = member.capacityToDoIt;
     if (member.rightSeat !== undefined) updateData.rightSeat = member.rightSeat;
-    await updateDoc(doc(db, COLLECTIONS.TRACTION_TEAM_memberS, id), updateData);
+    await updateDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MemberS, id), updateData);
   }, []);
 
   const deleteTeammember = useCallback(async (id: string) => {
     if (!db) return;
-    await deleteDoc(doc(db, COLLECTIONS.TRACTION_TEAM_memberS, id));
+    await deleteDoc(doc(db, COLLECTIONS.TRACTION_TEAM_MemberS, id));
   }, []);
 
   return {

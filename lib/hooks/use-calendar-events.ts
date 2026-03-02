@@ -282,8 +282,8 @@ export function useCalendarEvents() {
       endTime: string;
       attendees?: string[];
     }) => {
-      const [startHour, startMin] = meeting.startTime.split(":").map(number);
-      const [endHour, endMin] = meeting.endTime.split(":").map(number);
+      const [startHour, startMin] = meeting.startTime.split(":").map(Number);
+      const [endHour, endMin] = meeting.endTime.split(":").map(Number);
 
       const startDate = new Date(meeting.date);
       startDate.setHours(startHour, startMin, 0, 0);

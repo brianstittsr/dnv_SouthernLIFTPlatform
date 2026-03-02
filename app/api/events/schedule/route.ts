@@ -80,8 +80,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'dayId and title are required for sessions' }, { status: 400 });
       }
 
-      const [sh, sm] = (startTime || '09:00').split(':').map(number);
-      const [eh, em] = (endTime || '10:00').split(':').map(number);
+      const [sh, sm] = (startTime || '09:00').split(':').map(Number);
+      const [eh, em] = (endTime || '10:00').split(':').map(Number);
       const duration = (eh * 60 + em) - (sh * 60 + sm);
 
       const sessionData = {

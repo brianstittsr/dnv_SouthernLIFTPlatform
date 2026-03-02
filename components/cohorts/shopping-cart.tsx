@@ -22,7 +22,7 @@ export function ShoppingCartButton() {
   const [loading, setLoading] = useState(false);
 
   const formatPrice = (cents: number) => {
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(cents / 100);

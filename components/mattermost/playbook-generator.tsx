@@ -54,7 +54,7 @@ import {
 import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy, doc, getDoc, addDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc, type PlatformSettingsDoc, type MattermostPlaybookDoc, type MattermostPlaybookRunDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc, type PlatformSettingsDoc, type MattermostPlaybookDoc, type MattermostPlaybookRunDoc } from "@/lib/schema";
 import {
   createPlaybook,
   startPlaybookRun,
@@ -157,7 +157,7 @@ export function PlaybookGenerator() {
         
         const members: Teammember[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeammemberDoc;
+          const data = doc.data() as TeamMemberDoc;
           const firstName = data.firstName || "";
           const lastName = data.lastName || "";
           members.push({
@@ -425,8 +425,8 @@ export function PlaybookGenerator() {
             teamName: selectedTeamName,
             type: playbookType,
             recurrence: playbookType === "recurring" ? recurrence : undefined,
-            assignedmemberIds: selectedmembers,
-            mattermostmemberIds: memberIds,
+            assignedMemberIds: selectedmembers,
+            mattermostMemberIds: memberIds,
             checklists: config.checklists.map(c => ({
               title: c.title,
               items: c.items.map(i => ({ title: i.title, description: i.description })),
@@ -494,7 +494,7 @@ export function PlaybookGenerator() {
             teamId: selectedTeam,
             channelId: result.run.channel_id,
             ownerUserId: memberIds[0],
-            ownermemberId: selectedmembers[0],
+            ownerMemberId: selectedmembers[0],
             status: "in_progress",
             currentStatus: result.run.current_status,
             checklistProgress: selectedPlaybook.checklists?.map((c, idx) => ({
@@ -506,8 +506,8 @@ export function PlaybookGenerator() {
             totalTasks: selectedPlaybook.num_steps || 0,
             completedTasks: 0,
             completionPercentage: 0,
-            assignedmemberIds: selectedmembers,
-            mattermostmemberIds: memberIds,
+            assignedMemberIds: selectedmembers,
+            mattermostMemberIds: memberIds,
             startedAt: Timestamp.now(),
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -578,7 +578,7 @@ export function PlaybookGenerator() {
         }
         setEnableNotifications(tracked.notificationsEnabled);
         // Set selected members from tracked data
-        setSelectedmembers(tracked.assignedmemberIds);
+        setSelectedmembers(tracked.assignedMemberIds);
       }
       
       setShowEditDialog(true);

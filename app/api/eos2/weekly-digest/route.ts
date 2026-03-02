@@ -157,7 +157,7 @@ async function gatherDigestData(): Promise<DigestData> {
     : 0;
 
   // Gather Team data
-  const teamSnapshot = await getDocs(collection(db, COLLECTIONS.TRACTION_TEAM_memberS));
+  const teamSnapshot = await getDocs(collection(db, COLLECTIONS.TRACTION_TEAM_MemberS));
   teamSnapshot.forEach((doc) => {
     const data = doc.data();
     if (data.category === "team") {

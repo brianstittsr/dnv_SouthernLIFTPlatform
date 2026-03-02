@@ -5,7 +5,7 @@ import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { getTeammemberByAuthUid, findAndLinkTeammember } from "@/lib/auth-team-member-link";
-import type { TeammemberDoc } from "@/lib/schema";
+import type { TeamMemberDoc } from "@/lib/schema";
 
 // User profile fields
 export interface UserProfile {
@@ -128,7 +128,7 @@ export function isProfileComplete(profile: UserProfile): boolean {
 }
 
 // Check if User Profile and Team member data are synced
-export function areProfilesSynced(profile: UserProfile, teammember: TeammemberDoc | null): boolean {
+export function areProfilesSynced(profile: UserProfile, teammember: TeamMemberDoc | null): boolean {
   // If no team member linked, only check if user profile is complete
   if (!teammember) {
     return isProfileComplete(profile);
@@ -153,8 +153,8 @@ export function needsAffiliateOnboarding(profile: UserProfile): boolean {
   return profile.isAffiliate && !profile.affiliateOnboardingComplete;
 }
 
-// Map TeammemberDoc to UserProfile
-function mapTeammemberToProfile(teammember: TeammemberDoc): Partial<UserProfile> {
+// Map TeamMemberDoc to UserProfile
+function mapTeammemberToProfile(teammember: TeamMemberDoc): Partial<UserProfile> {
   // Map team member role to SVP role
   let svpRole: UserProfile["svpRole"] = undefined;
   if (teammember.role === "sme_user") {
@@ -204,7 +204,7 @@ interface UserProfileContextType {
   getInitials: () => string;
   isLoading: boolean;
   isAuthenticated: boolean;
-  linkedTeammember: TeammemberDoc | null;
+  linkedTeammember: TeamMemberDoc | null;
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
@@ -215,7 +215,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [showAffiliateOnboarding, setShowAffiliateOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [linkedTeammember, setLinkedTeammember] = useState<TeammemberDoc | null>(null);
+  const [linkedTeammember, setLinkedTeammember] = useState<TeamMemberDoc | null>(null);
 
   const profileCompletion = calculateProfileCompletion(profile);
   const networkingCompletion = calculateNetworkingCompletion(profile);

@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
 
     // Create pending membership record
     const tierConfig = memberSHIP_TIERS[tier as keyof typeof memberSHIP_TIERS];
-    const membershipData: Omit<membershipDoc, 'id'> = {
+    const membershipData: Omit<MembershipDoc, 'id'> = {
       userId,
       tier: tier as 'core-capture' | 'pursuit-pack' | 'custom',
       status: 'trialing',

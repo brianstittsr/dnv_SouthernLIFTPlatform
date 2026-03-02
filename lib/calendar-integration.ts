@@ -244,8 +244,8 @@ export function createLevel10MeetingEvent(
   endTime: string,
   attendees?: string[]
 ): CalendarEvent {
-  const [startHour, startMin] = startTime.split(":").map(number);
-  const [endHour, endMin] = endTime.split(":").map(number);
+  const [startHour, startMin] = startTime.split(":").map(Number);
+  const [endHour, endMin] = endTime.split(":").map(Number);
   
   const startDate = new Date(date);
   startDate.setHours(startHour, startMin, 0, 0);

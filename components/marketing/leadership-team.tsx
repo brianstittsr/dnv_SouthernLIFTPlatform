@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Linkedin, Mail, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, or } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 
 interface Leadershipmember {
   id: string;
@@ -85,7 +85,7 @@ export function LeadershipTeam() {
         const leadershipmembers: Leadershipmember[] = [];
 
         querySnapshot.forEach((doc) => {
-          const data = doc.data() as TeammemberDoc;
+          const data = doc.data() as TeamMemberDoc;
           
           // Check if any leadership flag is set
           if (data.isCEO || data.isCOO || data.isCTO || data.isCRO) {

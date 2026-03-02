@@ -180,8 +180,8 @@ function EventForm({ event, selectedDate, onSave, onCancel }: EventFormProps) {
   const handleSubmit = () => {
     if (!title.trim()) return;
 
-    const [startHour, startMin] = startTime.split(":").map(number);
-    const [endHour, endMin] = endTime.split(":").map(number);
+    const [startHour, startMin] = startTime.split(":").map(Number);
+    const [endHour, endMin] = endTime.split(":").map(Number);
 
     const start = new Date(startDate);
     start.setHours(startHour, startMin, 0, 0);

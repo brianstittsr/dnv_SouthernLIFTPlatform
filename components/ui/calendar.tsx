@@ -101,7 +101,7 @@ function Calendar({
         ),
         day: cn(
           "relative w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none",
-          props.showWeeknumber
+          props.showWeekNumber
             ? "[&:nth-child(2)[data-selected=true]_button]:rounded-l-md"
             : "[&:first-child[data-selected=true]_button]:rounded-l-md",
           defaultClassNames.day
@@ -159,11 +159,11 @@ function Calendar({
           )
         },
         DayButton: CalendarDayButton,
-        Weeknumber: ({ children, ...props }) => {
+        WeekNumber: (props) => {
           return (
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">
-                {children}
+                {props.week.weekNumber}
               </div>
             </td>
           )

@@ -137,7 +137,7 @@ for (let hour = 0; hour < 24; hour++) {
 
 // Helper function to format time for display
 export function formatTime(time: string): string {
-  const [hours, minutes] = time.split(":").map(number);
+  const [hours, minutes] = time.split(":").map(Number);
   const period = hours >= 12 ? "PM" : "AM";
   const displayHours = hours % 12 || 12;
   return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
@@ -173,8 +173,8 @@ export function getAvailableSlots(
   const availableSlots: string[] = [];
   
   for (const slot of daySchedule.slots) {
-    const [startHour, startMin] = slot.start.split(":").map(number);
-    const [endHour, endMin] = slot.end.split(":").map(number);
+    const [startHour, startMin] = slot.start.split(":").map(Number);
+    const [endHour, endMin] = slot.end.split(":").map(Number);
     
     let currentMinutes = startHour * 60 + startMin;
     const endMinutes = endHour * 60 + endMin;
