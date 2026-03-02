@@ -184,7 +184,7 @@ export function KdmTeamSync() {
     
     try {
       const q = query(
-        collection(db, COLLECTIONS.TEAM_memberS),
+        collection(db, COLLECTIONS.TEAM_MEMBERS),
         where("status", "==", "active")
       );
       const snapshot = await getDocs(q);
@@ -226,7 +226,7 @@ export function KdmTeamSync() {
       try {
         // Check if member already exists by name
         const q = query(
-          collection(db, COLLECTIONS.TEAM_memberS),
+          collection(db, COLLECTIONS.TEAM_MEMBERS),
           where("firstName", "==", member.firstName),
           where("lastName", "==", member.lastName)
         );
@@ -257,7 +257,7 @@ export function KdmTeamSync() {
           updatedAt: Timestamp.now(),
         };
 
-        await addDoc(collection(db, COLLECTIONS.TEAM_memberS), teammemberData);
+        await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), teammemberData);
 
         setSyncStatus(prev => prev.map((s, idx) => 
           idx === i ? { ...s, status: "synced", message: "Created" } : s
