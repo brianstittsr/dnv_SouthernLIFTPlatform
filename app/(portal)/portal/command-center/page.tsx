@@ -290,14 +290,14 @@ export default function CommandCenterPage() {
         }
 
         // Fetch team members
-        const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, where("status", "==", "active"), limit(10));
         
         try {
           const teamSnapshot = await getDocs(teamQuery);
           const teamData: { initials: string; name: string }[] = [];
           teamSnapshot.forEach((doc) => {
-            const data = doc.data() as TeammemberDoc;
+            const data = doc.data() as TeamMemberDoc;
             const initials = `${(data.firstName || "")[0] || ""}${(data.lastName || "")[0] || ""}`.toUpperCase() || "??";
             teamData.push({
               initials,
