@@ -56,6 +56,15 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
   async function loadMemberImage() {
     try {
       setIsLoading(true);
+      
+      // Priority 1: Use avatar from Firestore if available
+      if (member.avatar || member.staticImageUrl) {
+        setImageUrl(member.avatar || member.staticImageUrl || null);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Priority 2: Fall back to searching Firebase Storage
       let images = await listImages("team");
       let matchingImage = findMatch(images);
       if (!matchingImage) {
@@ -69,13 +78,9 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
           return;
         }
       }
-      if (member.staticImageUrl && !imageUrl) {
-        setImageUrl(member.staticImageUrl);
-      }
     } catch (error) {
-      if (member.staticImageUrl && !imageUrl) {
-        setImageUrl(member.staticImageUrl);
-      }
+      console.error("Error loading member image:", error);
+      // Keep initials fallback
     } finally {
       setIsLoading(false);
     }
