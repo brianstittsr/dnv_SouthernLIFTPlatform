@@ -16,7 +16,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { generateCertificatenumber } from "./firebase-cohorts";
+import { generateCertificateNumber } from "./firebase-cohorts";
 
 /**
  * Mark a session as completed for a user
@@ -217,7 +217,7 @@ async function issueCohortCertificate(userId: string, cohortId: string): Promise
   if (!existingCertSnap.empty) return; // Certificate already issued
 
   // Generate certificate
-  const certificatenumber = generateCertificatenumber();
+  const certificateNumber = generateCertificateNumber();
 
   await addDoc(collection(db, "cohort_certificates"), {
     userId,
@@ -226,7 +226,7 @@ async function issueCohortCertificate(userId: string, cohortId: string): Promise
     userName: userData.displayName || userData.name || "Student",
     facilitatorName: cohortData.facilitatorName,
     completionDate: Timestamp.now(),
-    certificatenumber,
+    certificateNumber,
     issuedAt: Timestamp.now(),
     status: "active",
   });

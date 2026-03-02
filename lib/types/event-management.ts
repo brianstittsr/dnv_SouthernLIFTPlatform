@@ -325,7 +325,7 @@ export interface EventSponsorDoc {
   // Sponsorship
   packageId: string;
   tier: string;
-  custoemerging businessnefits?: string[];
+  customBenefits?: string[];
   
   // Contact
   contactName: string;
@@ -687,7 +687,7 @@ export function generateSlug(name: string): string {
 }
 
 export function formatCurrency(amount: number, currency: string = "USD"): string {
-  return new Intl.numberFormat("en-US", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
   }).format(amount);
