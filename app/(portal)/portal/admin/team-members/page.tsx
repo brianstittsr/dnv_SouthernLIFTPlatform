@@ -439,15 +439,15 @@ export default function TeammembersPage() {
   const addToSchedulingList = async (member: TeamMemberDoc) => {
     if (!db) return;
     // Check if already in queue
-    if (schedulingList.find(m => m.teammemberId === member.id)) return;
+    if (schedulingList.find(m => m.teamMemberId === member.id)) return;
     
     try {
       const queueItem: Omit<OneToOneQueueItemDoc, 'id'> = {
-        teammemberId: member.id,
-        teammemberName: `${member.firstName} ${member.lastName}`,
-        teammemberEmail: member.emailPrimary,
-        teammemberExpertise: member.expertise || '',
-        teammemberAvatar: member.avatar || '',
+        teamMemberId: member.id,
+        teamMemberName: `${member.firstName} ${member.lastName}`,
+        teamMemberEmail: member.emailPrimary,
+        teamMemberExpertise: member.expertise || '',
+        teamMemberAvatar: member.avatar || '',
         status: 'queued',
         priority: schedulingList.length + 1,
         addedBy: 'current-user', // TODO: Get actual user ID
@@ -476,11 +476,11 @@ export default function TeammembersPage() {
   };
 
   const isInSchedulingList = (memberId: string) => {
-    return schedulingList.some(m => m.teammemberId === memberId);
+    return schedulingList.some(m => m.teamMemberId === memberId);
   };
 
   const getQueueItemId = (memberId: string) => {
-    const item = schedulingList.find(m => m.teammemberId === memberId);
+    const item = schedulingList.find(m => m.teamMemberId === memberId);
     return item?.id;
   };
 
@@ -1386,17 +1386,17 @@ export default function TeammembersPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={queueItem.teammemberAvatar} />
+                        <AvatarImage src={queueItem.teamMemberAvatar} />
                         <AvatarFallback className="text-xs">
-                          {(queueItem.teammemberName || '').split(' ').filter(n => n).map(n => n[0]).join('')}
+                          {(queueItem.teamMemberName || '').split(' ').filter((n: string) => n).map((n: string) => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">
-                          {queueItem.teammemberName}
+                          {queueItem.teamMemberName}
                         </p>
                         <p className="text-xs text-muted-foreground truncate max-w-[180px]">
-                          {queueItem.teammemberExpertise}
+                          {queueItem.teamMemberExpertise}
                         </p>
                       </div>
                     </div>
