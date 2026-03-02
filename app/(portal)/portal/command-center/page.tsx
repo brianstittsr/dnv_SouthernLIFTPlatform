@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, limit, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
-import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeammemberDoc, type PlatformSettingsDoc } from "@/lib/schema";
+import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMemberDoc, type PlatformSettingsDoc } from "@/lib/schema";
 import type { CalendarEventDoc } from "@/lib/schema";
 
 // Types for dashboard data
