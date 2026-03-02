@@ -1656,6 +1656,8 @@ export const COLLECTIONS = {
   THOMASNET_SAVED_LISTS: "thomasnetSavedLists",
   // TBMNC Supplier Readiness
   TBMNC_SUPPLIERS: "tbmncSuppliers",
+  // SourceWell Solicitations
+  SOURCEWELL_SOLICITATIONS: "sourcewellSolicitations",
   // Traction/EOS Collections (already defined above, removed duplicates)
   TRACTION_ROCKS: "tractionRocks",
   TRACTION_TEAM_MemberS: "tractionTeamMembers",
