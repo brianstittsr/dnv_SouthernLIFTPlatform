@@ -350,9 +350,22 @@ export async function updateImageMetadata(
   try {
     if (!db) throw new Error("Firebase not initialized");
     
+    // Filter out undefined values to prevent Firestore errors
+    const cleanUpdates: Record<string, unknown> = {};
+    if (updates.name !== undefined) cleanUpdates.name = updates.name;
+    if (updates.description !== undefined) cleanUpdates.description = updates.description;
+    if (updates.category !== undefined) cleanUpdates.category = updates.category;
+    if (updates.tags !== undefined) cleanUpdates.tags = updates.tags;
+    if (updates.isActive !== undefined) cleanUpdates.isActive = updates.isActive;
+    
+    // Only update if there are valid changes
+    if (Object.keys(cleanUpdates).length === 0) {
+      return true; // Nothing to update
+    }
+    
     const docRef = doc(db, IMAGES_COLLECTION, imageId);
     await updateDoc(docRef, {
-      ...updates,
+      ...cleanUpdates,
       updatedAt: Timestamp.now(),
     });
     return true;
