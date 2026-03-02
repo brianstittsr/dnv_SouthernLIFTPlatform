@@ -20,7 +20,7 @@ interface DisplayMember {
   imageName: string;
   staticImageUrl?: string;
   bio: string;
-  fullBio?: string;
+  fullBio: string;
   linkedIn?: string;
   teamTag?: string;
   avatar?: string;
@@ -59,7 +59,7 @@ export default function TeamMemberPage() {
             imageName: `${data.firstName}_${data.lastName}`,
             staticImageUrl: data.avatar,
             bio: data.bio || `${data.expertise || "KDM Team Member"}`,
-            fullBio: data.bio,
+            fullBio: data.bio || "",
             linkedIn: data.linkedIn,
             teamTag: data.teamTag || "affiliate",
             avatar: data.avatar,
