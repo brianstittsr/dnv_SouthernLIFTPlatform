@@ -21,6 +21,7 @@ interface DisplayMember {
   bio: string;
   teamTag?: "leadership" | "staff" | "affiliate";
   avatar?: string;
+  displayOrder?: number;
 }
 
 function getInitials(firstName?: string, lastName?: string): string {
@@ -146,6 +147,7 @@ export default function TeamPage() {
           bio: data.bio || `${data.expertise || "KDM Team Member"}`,
           teamTag: data.teamTag || "affiliate",
           avatar: data.avatar,
+          displayOrder: data.displayOrder || 0,
         };
         switch (data.teamTag) {
           case "leadership": leadershipMembers.push(member); break;
@@ -154,10 +156,15 @@ export default function TeamPage() {
           default: affiliateMembers.push(member); break;
         }
       });
-      const sortByName = (a: DisplayMember, b: DisplayMember) => a.name.localeCompare(b.name);
-      setLeadership(leadershipMembers.sort(sortByName));
-      setStaff(staffMembers.sort(sortByName));
-      setAffiliates(affiliateMembers.sort(sortByName));
+      const sortByDisplayOrder = (a: DisplayMember, b: DisplayMember) => {
+        const orderA = a.displayOrder ?? 999;
+        const orderB = b.displayOrder ?? 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.name.localeCompare(b.name);
+      };
+      setLeadership(leadershipMembers.sort(sortByDisplayOrder));
+      setStaff(staffMembers.sort(sortByDisplayOrder));
+      setAffiliates(affiliateMembers.sort(sortByDisplayOrder));
     } catch (error) { console.error("Error fetching team members:", error); }
     finally { setLoading(false); }
   }
