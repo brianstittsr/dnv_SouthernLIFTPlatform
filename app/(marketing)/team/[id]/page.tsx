@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Mail, Loader2 } from "lucide-react";
-import { TeamMemberBio } from "@/components/marketing/team-member-bio";
+import { TeammemberBio } from "@/components/marketing/team-member-bio";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
@@ -126,7 +126,7 @@ export default function TeamMemberPage() {
       {/* Biography Section */}
       <section className="py-16 md:py-24">
         <div className="container">
-          <TeamMemberBio member={member} />
+          <TeammemberBio member={member} />
         </div>
       </section>
 
