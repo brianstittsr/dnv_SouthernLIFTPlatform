@@ -33,7 +33,7 @@ export async function findTeammemberByEmail(email: string): Promise<TeammemberDo
   }
 
   const normalizedEmail = email.toLowerCase().trim();
-  const teammembersRef = collection(db, COLLECTIONS.TEAM_memberS);
+  const teammembersRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
 
   // Check primary email
   const primaryQuery = query(
@@ -91,7 +91,7 @@ export async function linkAuthToTeammember(
   }
 
   try {
-    const teammemberRef = doc(db, COLLECTIONS.TEAM_memberS, teammemberId);
+    const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, teammemberId);
     await updateDoc(teammemberRef, {
       firebaseUid: firebaseUid,
       updatedAt: Timestamp.now(),
@@ -115,7 +115,7 @@ export async function getTeammemberByAuthUid(firebaseUid: string): Promise<Teamm
     return null;
   }
 
-  const teammembersRef = collection(db, COLLECTIONS.TEAM_memberS);
+  const teammembersRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
   const uidQuery = query(
     teammembersRef,
     where("firebaseUid", "==", firebaseUid)
