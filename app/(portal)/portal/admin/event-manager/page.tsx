@@ -470,8 +470,8 @@ export default function EventManagerPage() {
     }
     setSaving(true);
     try {
-      const [sh, sm] = sessionForm.startTime.split(":").map(number);
-      const [eh, em] = sessionForm.endTime.split(":").map(number);
+      const [sh, sm] = sessionForm.startTime.split(":").map(Number);
+      const [eh, em] = sessionForm.endTime.split(":").map(Number);
       const duration = (eh * 60 + em) - (sh * 60 + sm);
       const data = {
         eventId: selectedEvent.id,
