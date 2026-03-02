@@ -80,7 +80,7 @@ import {
   COLLECTIONS,
   type SupplierReadinessStageId,
   type TBMNCSupplierDoc,
-  type TeammemberDoc,
+  type TeamMemberDoc,
 } from "@/lib/schema";
 
 // Supplier readiness stages based on typical OEM qualification process
