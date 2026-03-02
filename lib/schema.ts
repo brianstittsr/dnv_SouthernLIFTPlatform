@@ -1626,7 +1626,7 @@ export const COLLECTIONS = {
   EOS_GWC_SCORES: "eosGWCscores", // Gets it, Wants it, Capacity to do it
   EOS_CORE_VALUES: "eosCoreValues",
   // KDM Consortium Platform Collections
-  MemberSHIPS: "Memberships",
+  MEMBERSHIPS: "memberships",
   TICKETS: "tickets",
   PROMO_CODES: "promoCodes",
   SPONSORS: "sponsors",
@@ -1928,7 +1928,7 @@ export const generateId = (collectionName: string): string | null => {
  * - activities: entityType + entityId + createdAt (composite)
  * - actionItems: assigneeId + status + dueDate (composite)
  * - rocks: ownerId + quarter (composite)
- * - Memberships: userId + status (composite)
+ * - memberships: userId + status (composite)
  * - tickets: eventId + status (composite)
  * - pursuits: status + publishedAt (composite)
  */
@@ -1992,7 +1992,7 @@ export interface PromoCodeDoc extends BaseDocument {
   usedCount: number;
   validFrom: Timestamp;
   validUntil: Timestamp;
-  applicableTo: "all" | "events" | "Memberships";
+  applicableTo: "all" | "events" | "memberships";
   eventIds?: string[];
   isActive: boolean;
 }

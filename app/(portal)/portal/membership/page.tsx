@@ -150,7 +150,7 @@ export default function MymembershipPage() {
   };
 
   const formatCurrency = (cents: number) => {
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,

@@ -219,7 +219,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
   
   // Find membership by customer ID
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
@@ -229,7 +229,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   }
 
   const membershipDoc = snapshot.docs[0];
-  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
+  const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
   await updateDoc(membershipRef, {
     stripeSubscriptionId: subscription.id,
@@ -248,7 +248,7 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   if (!db) return;
 
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const q = query(membershipsRef, where('stripeSubscriptionId', '==', subscription.id));
   const snapshot = await getDocs(q);
 
@@ -258,7 +258,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   }
 
   const membershipDoc = snapshot.docs[0];
-  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
+  const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
   // Map Stripe status to our status
   let status: 'active' | 'past_due' | 'cancelled' | 'trialing' = 'active';
@@ -283,7 +283,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   if (!db) return;
 
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const q = query(membershipsRef, where('stripeSubscriptionId', '==', subscription.id));
   const snapshot = await getDocs(q);
 
@@ -293,7 +293,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   }
 
   const membershipDoc = snapshot.docs[0];
-  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
+  const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
   await updateDoc(membershipRef, {
     status: 'cancelled',
@@ -313,7 +313,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
 
   // Find membership
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
@@ -351,14 +351,14 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
 
   // Find and update membership status
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) return;
 
   const membershipDoc = snapshot.docs[0];
-  const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
+  const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
   await updateDoc(membershipRef, {
     status: 'past_due',
@@ -450,13 +450,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   if (session.mode === 'subscription' && subscriptionId) {
     // Update membership with subscription ID
-    const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+    const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
     const q = query(membershipsRef, where('stripeCustomerId', '==', customerId));
     const snapshot = await getDocs(q);
 
     if (!snapshot.empty) {
       const membershipDoc = snapshot.docs[0];
-      const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipDoc.id);
+      const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
       await updateDoc(membershipRef, {
         stripeSubscriptionId: subscriptionId,

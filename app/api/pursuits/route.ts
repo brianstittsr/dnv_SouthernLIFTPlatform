@@ -128,8 +128,8 @@ export async function POST(request: NextRequest) {
       requiredCompliance,
       geographicPreference,
       status: 'published',
-      teammembers: [],
-      interestedmembers: [],
+      teamMembers: [],
+      interestedMembers: [],
       publishedAt: Timestamp.now(),
       publishedBy: publishedBy || 'system',
       solicitation,
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     if (notifymembers) {
       try {
         // Get active members with matching capabilities
-        const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+        const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
         const membersQuery = query(
           membershipsRef,
           where('status', '==', 'active')
@@ -288,34 +288,34 @@ export async function PATCH(request: NextRequest) {
 
     switch (action) {
       case 'express-interest':
-        if (pursuitData.interestedmembers?.includes(userId)) {
+        if (pursuitData.interestedMembers?.includes(userId)) {
           return NextResponse.json(
             { error: 'Already expressed interest' },
             { status: 400 }
           );
         }
         await updateDoc(pursuitRef, {
-          interestedmembers: [...(pursuitData.interestedmembers || []), userId],
+          interestedMembers: [...(pursuitData.interestedMembers || []), userId],
           updatedAt: Timestamp.now(),
         });
         break;
 
       case 'withdraw-interest':
         await updateDoc(pursuitRef, {
-          interestedmembers: (pursuitData.interestedmembers || []).filter((id: string) => id !== userId),
+          interestedMembers: (pursuitData.interestedMembers || []).filter((id: string) => id !== userId),
           updatedAt: Timestamp.now(),
         });
         break;
 
       case 'add-to-team':
-        if (pursuitData.teammembers?.includes(userId)) {
+        if (pursuitData.teamMembers?.includes(userId)) {
           return NextResponse.json(
             { error: 'Already on team' },
             { status: 400 }
           );
         }
         await updateDoc(pursuitRef, {
-          teammembers: [...(pursuitData.teammembers || []), userId],
+          teamMembers: [...(pursuitData.teamMembers || []), userId],
           status: pursuitData.status === 'published' ? 'team-forming' : pursuitData.status,
           updatedAt: Timestamp.now(),
         });
@@ -323,7 +323,7 @@ export async function PATCH(request: NextRequest) {
 
       case 'remove-from-team':
         await updateDoc(pursuitRef, {
-          teammembers: (pursuitData.teammembers || []).filter((id: string) => id !== userId),
+          teamMembers: (pursuitData.teamMembers || []).filter((id: string) => id !== userId),
           updatedAt: Timestamp.now(),
         });
         break;

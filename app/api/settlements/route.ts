@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       periodStart: Timestamp.fromDate(new Date(periodStart)),
       periodEnd: Timestamp.fromDate(new Date(periodEnd)),
       programRevenues: {
-        membershipDues: programRevenues.membershipDues || 0,
+        MembershipDues: programRevenues.membershipDues || 0,
         eventTickets: programRevenues.eventTickets || 0,
         sponsorFees: programRevenues.sponsorFees || 0,
         pursuitPacks: programRevenues.pursuitPacks || 0,
@@ -256,7 +256,7 @@ export async function generateSettlement(periodStart: Date, periodEnd: Date) {
   const endTimestamp = Timestamp.fromDate(periodEnd);
 
   // Aggregate membership revenue
-  const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+  const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
   const membershipsQuery = query(
     membershipsRef,
     where('status', '==', 'active')
