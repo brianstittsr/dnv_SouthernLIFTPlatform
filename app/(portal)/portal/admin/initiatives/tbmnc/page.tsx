@@ -169,7 +169,7 @@ export default function TBMNCSupplierReadinessPage() {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const [suppliers, setSuppliers] = useState<TBMNCSupplier[]>([]);
-  const [affiliates, setAffiliates] = useState<TeammemberDoc[]>([]);
+  const [affiliates, setAffiliates] = useState<TeamMemberDoc[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -181,19 +181,17 @@ export default function TBMNCSupplierReadinessPage() {
 
       setLoading(true);
       try {
-        const [supplierSnap, memberSnap] = await Promise.all([
-          getDocs(collection(db, COLLECTIONS.TBMNC_SUPPLIERS)),
-          getDocs(collection(db, COLLECTIONS.TEAM_memberS)),
-        ]);
+        const supplierSnap = await getDocs(collection(db, COLLECTIONS.TBMNC_SUPPLIERS));
+        const memberSnap = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
 
         const supplierRows: TBMNCSupplier[] = [];
         supplierSnap.forEach((d) => {
           supplierRows.push({ id: d.id, ...(d.data() as Omit<TBMNCSupplierDoc, "id">) });
         });
 
-        const memberRows: TeammemberDoc[] = [];
+        const memberRows: TeamMemberDoc[] = [];
         memberSnap.forEach((d) => {
-          memberRows.push({ id: d.id, ...(d.data() as Omit<TeammemberDoc, "id">) } as TeammemberDoc);
+          memberRows.push({ id: d.id, ...(d.data() as Omit<TeamMemberDoc, "id">) } as TeamMemberDoc);
         });
 
         setSuppliers(supplierRows);
