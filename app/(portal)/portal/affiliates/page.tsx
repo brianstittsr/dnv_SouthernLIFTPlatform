@@ -110,7 +110,7 @@ export default function AffiliatesPage() {
       if (!db) return;
       
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         
@@ -156,7 +156,7 @@ export default function AffiliatesPage() {
 
     setIsSaving(true);
     try {
-      await addDoc(collection(db, COLLECTIONS.TEAM_memberS), {
+      await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
         firstName: newAffiliate.firstName,
         lastName: newAffiliate.lastName,
         emailPrimary: newAffiliate.email,

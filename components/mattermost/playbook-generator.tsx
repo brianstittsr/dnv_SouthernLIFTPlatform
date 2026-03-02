@@ -151,7 +151,7 @@ export function PlaybookGenerator() {
         }
         
         // Load team members
-        const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         

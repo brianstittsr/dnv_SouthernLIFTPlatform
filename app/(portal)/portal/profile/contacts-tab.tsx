@@ -163,7 +163,7 @@ export default function ContactsTab() {
       const allContacts: UnifiedContact[] = [];
 
       // Fetch Team members (includes affiliates)
-      const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+      const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
       const teamSnapshot = await getDocs(query(teamRef));
       teamSnapshot.forEach((doc) => {
         const data = doc.data() as TeammemberDoc;
@@ -360,7 +360,7 @@ export default function ContactsTab() {
     setIsUpdating(true);
     try {
       const collectionName = contact.source === "team_member" 
-        ? COLLECTIONS.TEAM_memberS 
+        ? COLLECTIONS.TEAM_MEMBERS 
         : COLLECTIONS.STRATEGIC_PARTNERS;
       
       const docRef = doc(db, collectionName, contact.id);

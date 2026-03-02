@@ -166,7 +166,7 @@ export function ProfileCompletionWizard() {
 
       // 2. Update or Create Team member (teammembers collection)
       if (linkedTeammember?.id) {
-        const teammemberRef = doc(db, COLLECTIONS.TEAM_memberS, linkedTeammember.id);
+        const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeammember.id);
         await updateDoc(teammemberRef, {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -181,13 +181,13 @@ export function ProfileCompletionWizard() {
         console.log("Team member profile updated:", linkedTeammember.id);
       } else {
         // Try to find Team member by email and update
-        const teammembersRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teammembersRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const emailQuery = query(teammembersRef, where("emailPrimary", "==", formData.email));
         const snapshot = await getDocs(emailQuery);
         
         if (!snapshot.empty) {
           const teammemberDoc = snapshot.docs[0];
-          await updateDoc(doc(db, COLLECTIONS.TEAM_memberS, teammemberDoc.id), {
+          await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, teammemberDoc.id), {
             firstName: formData.firstName,
             lastName: formData.lastName,
             mobile: formData.phone,
@@ -202,7 +202,7 @@ export function ProfileCompletionWizard() {
           console.log("Team member found by email and updated:", teammemberDoc.id);
         } else {
           // Create new Team member record for this user
-          const newTeammemberRef = await addDoc(collection(db, COLLECTIONS.TEAM_memberS), {
+          const newTeammemberRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
             firebaseUid: auth.currentUser.uid,
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -293,7 +293,7 @@ export function ProfileCompletionWizard() {
         if (formData.location) teammemberUpdates.location = formData.location;
         if (formData.bio) teammemberUpdates.bio = formData.bio;
 
-        const teammemberRef = doc(db, COLLECTIONS.TEAM_memberS, linkedTeammember.id);
+        const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeammember.id);
         await updateDoc(teammemberRef, teammemberUpdates);
       }
 

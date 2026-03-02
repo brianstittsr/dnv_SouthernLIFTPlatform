@@ -150,7 +150,7 @@ async function getPartnerFromAssignment(assignedTo: string): Promise<{ partnerId
     }
 
     // Check team members collection
-    const teammemberRef = doc(db, COLLECTIONS.TEAM_memberS, assignedTo);
+    const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, assignedTo);
     const teammemberSnap = await getDoc(teammemberRef);
     
     if (teammemberSnap.exists()) {

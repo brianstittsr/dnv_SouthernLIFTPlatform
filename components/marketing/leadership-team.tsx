@@ -81,7 +81,7 @@ export function LeadershipTeam() {
 
       try {
         // Query for team members with any leadership flag set
-        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
+        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
         const leadershipmembers: Leadershipmember[] = [];
 
         querySnapshot.forEach((doc) => {

@@ -156,7 +156,7 @@ export default function RocksPage() {
     const loadTeammembers = async () => {
       if (!db) return;
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         

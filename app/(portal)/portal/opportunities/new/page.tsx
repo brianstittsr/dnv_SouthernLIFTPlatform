@@ -123,7 +123,7 @@ export default function NewOpportunityPage() {
     async function fetchAffiliates() {
       if (!db) return;
       try {
-        const teamRef = collection(db, COLLECTIONS.TEAM_memberS);
+        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
         const teamQuery = query(teamRef, orderBy("firstName"));
         const snapshot = await getDocs(teamQuery);
         const affiliateList: AffiliateOption[] = [];
