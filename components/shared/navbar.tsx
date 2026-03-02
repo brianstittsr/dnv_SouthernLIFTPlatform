@@ -70,21 +70,14 @@ const services = [
 
 const resources = [
   { title: "Blog", href: "/blog", icon: BookOpen },
-  { title: "Products", href: "/products", icon: Package },
-  { title: "News & Insights", href: "/news", icon: Newspaper },
-  { title: "Media & Press", href: "/media", icon: Video },
   { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
-  { title: "Opportunities", href: "/opportunities", icon: Briefcase },
-  { title: "FAQ", href: "/faq", icon: FileText },
   { title: "Events", href: "/events", icon: Calendar },
-  { title: "membership", href: "/membership", icon: Users },
 ];
 
 const companyLinks = [
+  { title: "Home", href: "/", icon: Globe },
   { title: "About Us", href: "/about", icon: Globe },
   { title: "KDM Team", href: "/team", icon: Users },
-  { title: "Our Work", href: "/our-work", icon: Building2 },
-  { title: "Partners", href: "/partners", icon: Users },
 ];
 
 export function Navbar() {

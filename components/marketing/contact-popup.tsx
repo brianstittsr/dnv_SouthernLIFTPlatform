@@ -65,7 +65,7 @@ export const defaultPopupConfig: PopupConfig = {
   description: "Tell us about your business and contracting goals. We'll follow up with next steps.",
   buttonText: "Schedule Session",
   successMessage: "Thank you! We'll be in touch within 24 hours.",
-  triggerDelay: 0,
+  triggerDelay: 60,
   showOnPages: [],
   position: "bottom-right",
   fields: [
