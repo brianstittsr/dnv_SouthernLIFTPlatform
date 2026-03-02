@@ -50,6 +50,15 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
   async function loadmemberImage() {
     try {
       setIsLoading(true);
+      
+      // Priority 1: Use staticImageUrl from Firestore (avatar field) if available
+      if (member.staticImageUrl) {
+        setImageUrl(member.staticImageUrl);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Priority 2: Fall back to searching Firebase Storage
       let images = await listImages("team");
       let matchingImage = findMatch(images);
       if (!matchingImage) {
@@ -63,13 +72,9 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
           return;
         }
       }
-      if (member.staticImageUrl) {
-        setImageUrl(member.staticImageUrl);
-      }
     } catch (error) {
-      if (member.staticImageUrl) {
-        setImageUrl(member.staticImageUrl);
-      }
+      console.error("Error loading team member image:", error);
+      // Keep any existing imageUrl or leave as null to show initials
     } finally {
       setIsLoading(false);
     }
