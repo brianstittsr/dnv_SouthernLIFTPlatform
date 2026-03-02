@@ -52,7 +52,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, doc, updateDoc, Timestamp, addDoc } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc, type StrategicPartnerDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc, type StrategicPartnerDoc } from "@/lib/schema";
 import { toast } from "sonner";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { logActivity } from "@/lib/activity-logger";
@@ -166,7 +166,7 @@ export default function ContactsTab() {
       const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
       const teamSnapshot = await getDocs(query(teamRef));
       teamSnapshot.forEach((doc) => {
-        const data = doc.data() as TeammemberDoc;
+        const data = doc.data() as TeamMemberDoc;
         const contactTypes: string[] = [];
         if (data.role === "affiliate") contactTypes.push("affiliate");
         if (data.role === "team") contactTypes.push("team");
