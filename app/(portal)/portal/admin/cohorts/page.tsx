@@ -132,7 +132,7 @@ export default function AllCohortsPage() {
   const formatCurrency = (amount: number) => {
     // Handle cents (priceInCents) or dollars
     const dollars = amount > 1000 ? amount / 100 : amount;
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0

@@ -106,7 +106,7 @@ export default function membershipsAdminPage() {
     }
 
     try {
-      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
       const q = query(membershipsRef, orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
 
@@ -274,7 +274,7 @@ export default function membershipsAdminPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,

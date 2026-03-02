@@ -115,7 +115,7 @@ export default function memberDirectoryPage() {
 
     try {
       // Fetch active memberships
-      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
       const q = query(
         membershipsRef,
         where('status', 'in', ['active', 'trialing']),

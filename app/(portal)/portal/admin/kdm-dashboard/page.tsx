@@ -94,7 +94,7 @@ export default function KDMDashboardPage() {
       const monthStart = startOfMonth(now);
 
       // Fetch memberships
-      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
       const membershipsSnapshot = await getDocs(membershipsRef);
       const memberships = membershipsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -228,7 +228,7 @@ export default function KDMDashboardPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,

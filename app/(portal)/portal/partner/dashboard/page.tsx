@@ -183,7 +183,7 @@ export default function PartnerDashboardPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.numberFormat("en-US", {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,

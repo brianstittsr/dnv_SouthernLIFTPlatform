@@ -18,7 +18,7 @@ import {
   orderBy,
   Timestamp 
 } from 'firebase/firestore';
-import { COLLECTIONS, membershipDoc } from '@/lib/schema';
+import { COLLECTIONS, MembershipDoc } from '@/lib/schema';
 import { 
   createStripeCustomer, 
   createCheckoutSession,
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+    const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
     let q;
 
     if (userId && status) {
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already has an active membership
-    const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+    const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
     const existingQuery = query(
       membershipsRef,
       where('userId', '==', userId),
@@ -207,7 +207,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const membershipRef = doc(db, COLLECTIONS.memberSHIPS, membershipId);
+    const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipId);
     const membershipSnap = await getDoc(membershipRef);
 
     if (!membershipSnap.exists()) {

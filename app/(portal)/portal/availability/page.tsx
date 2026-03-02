@@ -57,7 +57,7 @@ import {
 } from "lucide-react";
 import { collection, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, Timestamp, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeammemberAvailabilityDoc, type BookingDoc, type TeammemberDoc, type CalendarEventDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberAvailabilityDoc, type BookingDoc, type TeamMemberDoc, type CalendarEventDoc } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import {
   type WeeklySchedule,
@@ -166,13 +166,13 @@ export default function AvailabilityPage() {
   // Firebase & Team member state
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [currentTeammember, setCurrentTeammember] = useState<TeammemberDoc | null>(null);
-  const [availabilityDoc, setAvailabilityDoc] = useState<TeammemberAvailabilityDoc | null>(null);
+  const [currentTeammember, setCurrentTeammember] = useState<TeamMemberDoc | null>(null);
+  const [availabilityDoc, setAvailabilityDoc] = useState<TeamMemberAvailabilityDoc | null>(null);
   const [bookingSlug, setBookingSlug] = useState("");
   const [bookingTitle, setBookingTitle] = useState("");
   const [bookingDescription, setBookingDescription] = useState("");
   const [isQrDialogOpen, setIsQrDialogOpen] = useState(false);
-  const [teammembers, setTeammembers] = useState<TeammemberDoc[]>([]);
+  const [teammembers, setTeammembers] = useState<TeamMemberDoc[]>([]);
   const [selectedTeammemberId, setSelectedTeammemberId] = useState<string>("");
 
   // Get booking URL
@@ -185,10 +185,10 @@ export default function AvailabilityPage() {
   const fetchTeammembers = async () => {
     if (!db) return;
     try {
-      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
-      const members: TeammemberDoc[] = [];
+      const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
+      const members: TeamMemberDoc[] = [];
       querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data() as TeammemberDoc;
+        const data = docSnap.data() as TeamMemberDoc;
         if (data.role === 'team' || data.role === 'admin') {
           members.push({ ...data, id: docSnap.id });
         }
@@ -204,15 +204,15 @@ export default function AvailabilityPage() {
   };
 
   // Fetch availability for selected team member
-  const fetchAvailability = async (teammemberId: string) => {
-    if (!db || !teammemberId) return;
+  const fetchAvailability = async (teamMemberId: string) => {
+    if (!db || !teamMemberId) return;
     setLoading(true);
     try {
-      const docRef = doc(db, COLLECTIONS.TEAM_member_AVAILABILITY, teammemberId);
+      const docRef = doc(db, COLLECTIONS.TEAM_MEMBER_AVAILABILITY, teamMemberId);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        const data = docSnap.data() as TeammemberAvailabilityDoc;
+        const data = docSnap.data() as TeamMemberAvailabilityDoc;
         setAvailabilityDoc(data);
         setBookingSlug(data.bookingSlug || '');
         setBookingTitle(data.bookingTitle || '');
@@ -220,7 +220,7 @@ export default function AvailabilityPage() {
         setTimezone(data.timezone || 'America/New_York');
       } else {
         // Create default availability for this team member
-        const member = teammembers.find(m => m.id === teammemberId);
+        const member = teammembers.find(m => m.id === teamMemberId);
         if (member) {
           const slug = `${member.firstName.toLowerCase()}-${member.lastName.toLowerCase()}`.replace(/\s+/g, '-');
           setBookingSlug(slug);
@@ -233,7 +233,7 @@ export default function AvailabilityPage() {
       // Fetch bookings for this team member
       const bookingsQuery = query(
         collection(db, COLLECTIONS.BOOKINGS),
-        where('teammemberId', '==', teammemberId)
+        where('teamMemberId', '==', teamMemberId)
       );
       const bookingsSnapshot = await getDocs(bookingsQuery);
       const bookingsData: Booking[] = [];
@@ -243,8 +243,8 @@ export default function AvailabilityPage() {
           id: docSnap.id,
           meetingTypeId: data.meetingTypeId,
           meetingTypeName: data.meetingTypeName,
-          ownerId: data.teammemberId,
-          ownerName: data.teammemberName,
+          ownerId: data.teamMemberId,
+          ownerName: data.teamMemberName,
           guestName: data.clientName,
           guestEmail: data.clientEmail,
           date: data.date,
@@ -258,7 +258,7 @@ export default function AvailabilityPage() {
       setBookings(bookingsData);
 
       // Set current team member
-      const member = teammembers.find(m => m.id === teammemberId);
+      const member = teammembers.find(m => m.id === teamMemberId);
       setCurrentTeammember(member || null);
     } catch (error) {
       console.error("Error fetching availability:", error);
@@ -276,11 +276,11 @@ export default function AvailabilityPage() {
     
     setSaving(true);
     try {
-      const availabilityData: TeammemberAvailabilityDoc = {
+      const availabilityData: TeamMemberAvailabilityDoc = {
         id: selectedTeammemberId,
-        teammemberId: selectedTeammemberId,
-        teammemberName: `${currentTeammember.firstName} ${currentTeammember.lastName}`,
-        teammemberEmail: currentTeammember.emailPrimary,
+        teamMemberId: selectedTeammemberId,
+        teamMemberName: `${currentTeammember.firstName} ${currentTeammember.lastName}`,
+        teamMemberEmail: currentTeammember.emailPrimary,
         bookingSlug: bookingSlug,
         bookingTitle: bookingTitle,
         bookingDescription: bookingDescription,
@@ -312,7 +312,7 @@ export default function AvailabilityPage() {
         updatedAt: Timestamp.now(),
       };
 
-      await setDoc(doc(db, COLLECTIONS.TEAM_member_AVAILABILITY, selectedTeammemberId), availabilityData);
+      await setDoc(doc(db, COLLECTIONS.TEAM_MEMBER_AVAILABILITY, selectedTeammemberId), availabilityData);
       setAvailabilityDoc(availabilityData);
       alert("Availability saved successfully!");
     } catch (error) {

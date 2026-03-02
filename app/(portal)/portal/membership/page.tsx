@@ -103,7 +103,7 @@ export default function MymembershipPage() {
     }
 
     try {
-      const membershipsRef = collection(db, COLLECTIONS.memberSHIPS);
+      const membershipsRef = collection(db, COLLECTIONS.MEMBERSHIPS);
       const q = query(
         membershipsRef,
         where('userId', '==', profile.id),

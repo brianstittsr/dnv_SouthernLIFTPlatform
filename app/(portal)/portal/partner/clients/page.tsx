@@ -111,7 +111,7 @@ export default function MySMEClientsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.numberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   const formatDate = (timestamp: any) => {

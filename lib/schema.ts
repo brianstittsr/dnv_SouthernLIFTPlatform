@@ -1665,7 +1665,7 @@ export const COLLECTIONS = {
   // 1-to-1 Scheduling Queue
   ONE_TO_ONE_QUEUE: "oneToOneQueue",
   // Team Member Availability & Bookings
-  TEAM_Member_AVAILABILITY: "teamMemberAvailability",
+  TEAM_MEMBER_AVAILABILITY: "teamMemberAvailability",
   BOOKINGS: "bookings",
   // Software License Keys (already defined above, removed duplicate)
   KEY_ACTIVATIONS: "keyActivations",

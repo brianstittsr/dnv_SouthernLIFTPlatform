@@ -240,7 +240,7 @@ export default function SettlementsAdminPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,

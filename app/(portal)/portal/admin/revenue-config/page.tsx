@@ -581,7 +581,7 @@ export default function RevenueConfigPage() {
 
   const formatCurrency = (amount: number | null) => {
     if (amount === null) return "No limit";
-    return new Intl.numberFormat('en-US', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0

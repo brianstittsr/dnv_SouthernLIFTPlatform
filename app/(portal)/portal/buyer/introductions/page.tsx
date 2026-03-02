@@ -142,7 +142,7 @@ export default function MyIntroductionsPage() {
 
   const formatCurrency = (value?: number) => {
     if (!value) return "N/A";
-    return new Intl.numberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   };
 
   if (loading) {
