@@ -15,6 +15,7 @@ export function HeroCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
 
   useEffect(() => {
     const loadSlides = async () => {
@@ -47,6 +48,22 @@ export function HeroCarousel() {
 
     loadSlides();
   }, []);
+
+  useEffect(() => {
+    const preloadImages = () => {
+      slides.forEach((slide) => {
+        if (slide.backgroundImage) {
+          const img = document.createElement('img');
+          img.src = slide.backgroundImage;
+        }
+      });
+      setImagesPreloaded(true);
+    };
+
+    if (slides.length > 0) {
+      preloadImages();
+    }
+  }, [slides]);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -115,7 +132,7 @@ export function HeroCarousel() {
           </p>
 
           <h1 className={cn(
-            "text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight",
+            "text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight min-h-[8rem] md:min-h-[10rem] lg:min-h-[12rem] flex items-center justify-center",
             currentSlide.textColor === "light" ? "text-white" : "text-gray-900"
           )}>
             {currentSlide.title}
