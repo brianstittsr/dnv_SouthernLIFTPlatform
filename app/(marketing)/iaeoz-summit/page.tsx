@@ -122,7 +122,7 @@ export default function IAEOZSummitPage() {
   }, [filteredVideos]);
 
   const sortedYears = Object.keys(groupedVideos)
-    .map(number)
+    .map(Number)
     .sort((a, b) => b - a);
 
   const getYouTubeEmbedUrl = (videoId: string) => {
