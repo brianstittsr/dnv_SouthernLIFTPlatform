@@ -18,15 +18,15 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { COLLECTIONS, type TeammemberDoc } from "./schema";
+import { COLLECTIONS, type TeamMemberDoc } from "./schema";
 
 /**
  * Find a Team member by email address
  * Checks both emailPrimary and emailSecondary fields
  * @param email - Email address to search for
- * @returns TeammemberDoc if found, null otherwise
+ * @returns TeamMemberDoc if found, null otherwise
  */
-export async function findTeammemberByEmail(email: string): Promise<TeammemberDoc | null> {
+export async function findTeammemberByEmail(email: string): Promise<TeamMemberDoc | null> {
   if (!db) {
     console.error("Firebase not initialized");
     return null;
@@ -44,7 +44,7 @@ export async function findTeammemberByEmail(email: string): Promise<TeammemberDo
   
   if (!primarySnapshot.empty) {
     const docData = primarySnapshot.docs[0];
-    return { id: docData.id, ...docData.data() } as TeammemberDoc;
+    return { id: docData.id, ...docData.data() } as TeamMemberDoc;
   }
 
   // Check secondary email
@@ -56,7 +56,7 @@ export async function findTeammemberByEmail(email: string): Promise<TeammemberDo
   
   if (!secondarySnapshot.empty) {
     const docData = secondarySnapshot.docs[0];
-    return { id: docData.id, ...docData.data() } as TeammemberDoc;
+    return { id: docData.id, ...docData.data() } as TeamMemberDoc;
   }
 
   // Also check case-insensitive by fetching all and comparing
@@ -68,7 +68,7 @@ export async function findTeammemberByEmail(email: string): Promise<TeammemberDo
     const secondaryEmail = (data.emailSecondary || "").toLowerCase().trim();
     
     if (primaryEmail === normalizedEmail || secondaryEmail === normalizedEmail) {
-      return { id: docSnap.id, ...data } as TeammemberDoc;
+      return { id: docSnap.id, ...data } as TeamMemberDoc;
     }
   }
 
@@ -107,9 +107,9 @@ export async function linkAuthToTeammember(
 /**
  * Get Team member data by Firebase Auth UID
  * @param firebaseUid - The Firebase Auth UID
- * @returns TeammemberDoc if found, null otherwise
+ * @returns TeamMemberDoc if found, null otherwise
  */
-export async function getTeammemberByAuthUid(firebaseUid: string): Promise<TeammemberDoc | null> {
+export async function getTeammemberByAuthUid(firebaseUid: string): Promise<TeamMemberDoc | null> {
   if (!db) {
     console.error("Firebase not initialized");
     return null;
@@ -124,7 +124,7 @@ export async function getTeammemberByAuthUid(firebaseUid: string): Promise<Teamm
   
   if (!snapshot.empty) {
     const docData = snapshot.docs[0];
-    return { id: docData.id, ...docData.data() } as TeammemberDoc;
+    return { id: docData.id, ...docData.data() } as TeamMemberDoc;
   }
 
   return null;
@@ -135,12 +135,12 @@ export async function getTeammemberByAuthUid(firebaseUid: string): Promise<Teamm
  * This is the main function to call when a user authenticates
  * @param email - User's email address
  * @param firebaseUid - User's Firebase Auth UID
- * @returns TeammemberDoc if found and linked, null if no matching Team member
+ * @returns TeamMemberDoc if found and linked, null if no matching Team member
  */
 export async function findAndLinkTeammember(
   email: string, 
   firebaseUid: string
-): Promise<TeammemberDoc | null> {
+): Promise<TeamMemberDoc | null> {
   // First check if already linked by UID
   const existingByUid = await getTeammemberByAuthUid(firebaseUid);
   if (existingByUid) {
