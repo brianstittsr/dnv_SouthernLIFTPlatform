@@ -36,7 +36,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { logOpportunityCreated } from "@/lib/activity-logger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -128,7 +128,7 @@ export default function NewOpportunityPage() {
         const snapshot = await getDocs(teamQuery);
         const affiliateList: AffiliateOption[] = [];
         snapshot.forEach((doc) => {
-          const data = doc.data() as TeammemberDoc;
+          const data = doc.data() as TeamMemberDoc;
           // Include affiliates and consultants
           if (data.role === "affiliate" || data.role === "consultant") {
             affiliateList.push({
