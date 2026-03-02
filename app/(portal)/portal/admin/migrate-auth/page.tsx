@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { findTeammemberByEmail, linkAuthToTeammember } from "@/lib/auth-team-member-link";
 
 interface MigrationResult {
@@ -93,11 +93,11 @@ export default function MigrateAuthPage() {
       // that have emails and check if they need linking.
       
       // Get all Team members
-      const teammembersSnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
-      const teammembers: TeammemberDoc[] = [];
+      const teammembersSnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
+      const teammembers: TeamMemberDoc[] = [];
       
       teammembersSnapshot.forEach((docSnap) => {
-        teammembers.push({ id: docSnap.id, ...docSnap.data() } as TeammemberDoc);
+        teammembers.push({ id: docSnap.id, ...docSnap.data() } as TeamMemberDoc);
       });
 
       migrationStats.total = teammembers.length;
