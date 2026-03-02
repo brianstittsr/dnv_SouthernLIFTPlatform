@@ -46,7 +46,7 @@ import {
 import { cn } from "@/lib/utils";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 
 // Expertise categories for filtering
 const expertiseCategories = [
@@ -82,13 +82,13 @@ interface OneToOneRequest {
 }
 
 export default function NetworkingPage() {
-  const [teammembers, setTeammembers] = useState<TeammemberDoc[]>([]);
+  const [teammembers, setTeammembers] = useState<TeamMemberDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
-  const [selectedmember, setSelectedmember] = useState<TeammemberDoc | null>(null);
+  const [selectedmember, setSelectedmember] = useState<TeamMemberDoc | null>(null);
   const [oneToOnes, setOneToOnes] = useState<OneToOneRequest[]>([]);
   const [requestForm, setRequestForm] = useState({
     targetType: "affiliate" as "affiliate" | "leadership",
@@ -107,10 +107,10 @@ export default function NetworkingPage() {
         return;
       }
       try {
-        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_memberS));
-        const members: TeammemberDoc[] = [];
+        const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
+        const members: TeamMemberDoc[] = [];
         querySnapshot.forEach((docSnap) => {
-          members.push({ id: docSnap.id, ...docSnap.data() } as TeammemberDoc);
+          members.push({ id: docSnap.id, ...docSnap.data() } as TeamMemberDoc);
         });
         // Sort by name
         members.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
@@ -152,7 +152,7 @@ export default function NetworkingPage() {
   // Get affiliates only
   const affiliatesOnly = teammembers.filter(m => m.role === "affiliate" && m.status === "active");
 
-  const openRequestDialog = (member?: TeammemberDoc) => {
+  const openRequestDialog = (member?: TeamMemberDoc) => {
     if (member) {
       setSelectedmember(member);
       setRequestForm({ ...requestForm, targetType: "affiliate", targetId: member.id });
