@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, addDoc, query, orderBy, Timestamp } from "firebase/firestore";
-import { COLLECTIONS, type TeammemberDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { toast } from "sonner";
 
 interface AffiliateDisplay {
@@ -116,7 +116,7 @@ export default function AffiliatesPage() {
         
         const affiliateList: AffiliateDisplay[] = [];
         snapshot.docs.forEach((doc) => {
-          const data = doc.data() as TeammemberDoc;
+          const data = doc.data() as TeamMemberDoc;
           // Include all team members (affiliates, consultants, clients, team, admin)
           const firstName = data.firstName || "";
           const lastName = data.lastName || "";
