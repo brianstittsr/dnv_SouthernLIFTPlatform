@@ -5,25 +5,25 @@ import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
   services: [
-    { title: "Digital Solutions", href: "/services#digital" },
-    { title: "Technology Solutions", href: "/services#technology" },
-    { title: "Grants & RFPs", href: "/services#grants" },
-    { title: "Marketing Solutions", href: "/services#marketing" },
-    { title: "Operations/Performance", href: "/services#operations" },
-    { title: "Contracting Vehicles", href: "/services#contracting" },
+    { title: "Digital Solutions", href: "/services#digital", hidden: true },
+    { title: "Technology Solutions", href: "/services#technology", hidden: true },
+    { title: "Grants & RFPs", href: "/services#grants", hidden: true },
+    { title: "Marketing Solutions", href: "/services#marketing", hidden: true },
+    { title: "Operations/Performance", href: "/services#operations", hidden: true },
+    { title: "Contracting Vehicles", href: "/services#contracting", hidden: true },
   ],
   company: [
     { title: "About Us", href: "/about" },
     { title: "KDM Team", href: "/team" },
-    { title: "Our Work", href: "/our-work" },
-    { title: "Partners", href: "/partners" },
+    { title: "Our Work", href: "/our-work", hidden: true },
+    { title: "Partners", href: "/partners", hidden: true },
     { title: "Contact Us", href: "/contact" },
   ],
   resources: [
     { title: "Blog", href: "/blog" },
-    { title: "FAQ", href: "/faq" },
+    { title: "FAQ", href: "/faq", hidden: true },
     { title: "Events", href: "/events" },
-    { title: "membership", href: "/membership" },
+    { title: "membership", href: "/membership", hidden: true },
   ],
   legal: [
     { title: "Privacy Policy", href: "/legal/privacy-policy" },
@@ -73,7 +73,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-accent">Services</h3>
             <ul className="space-y-2">
-              {footerLinks.services.map((link) => (
+              {footerLinks.services.filter((link) => !link.hidden).map((link) => (
                 <li key={link.title}>
                   <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                     {link.title}
@@ -87,7 +87,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-accent">Company</h3>
             <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
+              {footerLinks.company.filter((link) => !link.hidden).map((link) => (
                 <li key={link.title}>
                   <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                     {link.title}
@@ -101,7 +101,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-accent">Resources</h3>
             <ul className="space-y-2">
-              {footerLinks.resources.map((link) => (
+              {footerLinks.resources.filter((link) => !link.hidden).map((link) => (
                 <li key={link.title}>
                   <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                     {link.title}
