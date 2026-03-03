@@ -325,25 +325,48 @@ export default function IndustriesPage() {
       <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-primary text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="outline" className="border-white/50 text-white mb-6">
+              Limited Consortium Membership Available
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Grow Your Business?
+              Don't Compete Alone. Win Together.
             </h2>
-            <p className="text-xl mb-8 text-white/90">
-              Join the KDM Consortium and connect with strategic partners, funding opportunities, and federal procurement pathways across your industry vertical.
+            <p className="text-xl mb-4 text-white/90">
+              Join 100+ manufacturers, defense contractors, and suppliers who've unlocked $50M+ in federal contracts through the KDM Consortium.
             </p>
+            <p className="text-lg mb-8 text-white/80">
+              Get instant access to CMMC training, federal procurement experts, capital partners, and a network of strategic allies in your industry vertical.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 mb-8 text-left">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">90%</div>
+                <div className="text-sm text-white/90">Members achieve CMMC compliance within 12 months</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">$2.5M</div>
+                <div className="text-sm text-white/90">Average federal contract value secured by members</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">24/7</div>
+                <div className="text-sm text-white/90">Access to consortium resources and expert support</div>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" asChild>
+              <Button size="lg" variant="secondary" asChild className="text-lg px-8">
                 <Link href="/consortium">
-                  Join the Consortium
+                  Join the Consortium Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
-                <Link href="/contact">
-                  Contact Us
+              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20 text-lg px-8" asChild>
+                <Link href="/training">
+                  Start CMMC Training
                 </Link>
               </Button>
             </div>
+            <p className="text-sm text-white/70 mt-6">
+              ✓ No long-term contracts  ✓ Cancel anytime  ✓ ROI guaranteed or money back
+            </p>
           </div>
         </div>
       </section>

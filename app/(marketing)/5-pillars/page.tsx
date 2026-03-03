@@ -164,25 +164,48 @@ export default function FivePillarsPage() {
       <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-primary text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="outline" className="border-white/50 text-white mb-6">
+              Exclusive Consortium Access
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Strengthen Your Position?
+              Your Competition Is Already Here. Are You?
             </h2>
-            <p className="text-xl mb-8 text-white/90">
-              Join the KDM Consortium and access comprehensive support across all 5 pillars
+            <p className="text-xl mb-4 text-white/90">
+              100+ manufacturers are leveraging all 5 pillars to win federal contracts, achieve CMMC compliance, and scale their operations.
             </p>
+            <p className="text-lg mb-8 text-white/80">
+              Stop navigating complex federal requirements alone. Get expert guidance across manufacturing, CMMC, capital access, and more.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 mb-8 text-left">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">5X</div>
+                <div className="text-sm text-white/90">Faster CMMC certification vs. going solo</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">$50M+</div>
+                <div className="text-sm text-white/90">In federal contracts secured by consortium members</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-3xl font-bold mb-2">100+</div>
+                <div className="text-sm text-white/90">Strategic partners across all 5 pillars</div>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" asChild>
+              <Button size="lg" variant="secondary" asChild className="text-lg px-8">
                 <Link href="/consortium">
-                  Join the Consortium
+                  Join the Consortium Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
-                <Link href="/contact">
-                  Schedule a Consultation
+              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20 text-lg px-8" asChild>
+                <Link href="/training">
+                  Get CMMC Certified
                 </Link>
               </Button>
             </div>
+            <p className="text-sm text-white/70 mt-6">
+              ✓ Immediate access to all 5 pillars  ✓ Expert-led CMMC training  ✓ Capital partner network
+            </p>
           </div>
         </div>
       </section>
