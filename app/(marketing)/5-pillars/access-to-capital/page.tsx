@@ -173,6 +173,33 @@ export default function AccessToCapitalPage() {
         </div>
       </section>
 
+      {/* Related Resources */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-xl font-semibold mb-6">Related Resources from Our Blog</h3>
+            <div className="grid gap-4">
+              <Link href="/blog/puerto-ricos-agricultural-sector-2025" className="p-6 border rounded-lg hover:bg-muted/30 hover:shadow-md transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <div className="font-semibold text-lg mb-2">Puerto Rico's Agricultural Sector in 2025: A Strategic Pivot Toward Resilience and Innovation</div>
+                    <div className="text-sm text-muted-foreground mb-3">
+                      Puerto Rico's agricultural sector is undergoing a pivotal transformation, driven by public policy priorities, private sector incentives, and grassroots innovation.
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Economic Development</span>
+                      <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Innovation</span>
+                      <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Agriculture</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Navigation to Other Pillars */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

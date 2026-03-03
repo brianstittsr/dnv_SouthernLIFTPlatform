@@ -172,6 +172,33 @@ export default function DefenseCMMCPage() {
         </div>
       </section>
 
+      {/* Related Resources */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-xl font-semibold mb-6">Related Resources from Our Blog</h3>
+            <div className="grid gap-4">
+              <Link href="/blog/puerto-ricos-strategic-role-federal-opportunities" className="p-6 border rounded-lg hover:bg-muted/30 hover:shadow-md transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <div className="font-semibold text-lg mb-2">Puerto Rico's Strategic Role: Federal Opportunities Emerging from Counter-Cartel Operations</div>
+                    <div className="text-sm text-muted-foreground mb-3">
+                      As the United States intensifies its efforts to combat drug cartels and transnational organized crime, Puerto Rico is emerging as a critical strategic hub.
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Federal Contracting</span>
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Security</span>
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Infrastructure</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Navigation to Other Pillars */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
