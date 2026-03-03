@@ -30,6 +30,7 @@ import {
   BookOpen,
   Play,
   Columns,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -187,6 +188,14 @@ export function Navbar() {
               <NavigationMenuLink asChild className={cn(
                 "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
               )}>
+                <Link href="/cmmc">CMMC</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild className={cn(
+                "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+              )}>
                 <Link href="/contact">Contact</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -270,6 +279,14 @@ export function Navbar() {
                 >
                   <Columns className="h-4 w-4 text-primary" />
                   5 Pillars
+                </Link>
+                <Link
+                  href="/cmmc"
+                  className="flex items-center gap-2 py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Shield className="h-4 w-4 text-primary" />
+                  CMMC
                 </Link>
                 <Link
                   href="/contact"
