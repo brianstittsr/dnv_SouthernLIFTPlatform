@@ -29,6 +29,7 @@ import {
   Video,
   BookOpen,
   Play,
+  Columns,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -178,6 +179,14 @@ export function Navbar() {
               <NavigationMenuLink asChild className={cn(
                 "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
               )}>
+                <Link href="/5-pillars">5 Pillars</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild className={cn(
+                "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+              )}>
                 <Link href="/contact">Contact</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -254,6 +263,14 @@ export function Navbar() {
                     {item.title}
                   </Link>
                 ))}
+                <Link
+                  href="/5-pillars"
+                  className="flex items-center gap-2 py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Columns className="h-4 w-4 text-primary" />
+                  5 Pillars
+                </Link>
                 <Link
                   href="/contact"
                   className="block py-2 font-medium"
