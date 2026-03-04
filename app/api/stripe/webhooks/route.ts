@@ -456,6 +456,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     if (!snapshot.empty) {
       const membershipDoc = snapshot.docs[0];
+      const membershipData = membershipDoc.data();
       const membershipRef = doc(db, COLLECTIONS.MEMBERSHIPS, membershipDoc.id);
 
       await updateDoc(membershipRef, {
@@ -463,6 +464,33 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         status: 'active',
         updatedAt: Timestamp.now(),
       });
+
+      // Update user tag from "New Lead" to "Subscribed - KDM Consortium"
+      if (membershipData.userId) {
+        const usersRef = collection(db, COLLECTIONS.USERS);
+        const userQuery = query(usersRef, where('userId', '==', membershipData.userId));
+        const userSnapshot = await getDocs(userQuery);
+        
+        if (!userSnapshot.empty) {
+          const userDoc = userSnapshot.docs[0];
+          const userRef = doc(db, COLLECTIONS.USERS, userDoc.id);
+          const userData = userDoc.data();
+          
+          // Update tags: remove "New Lead", add "Subscribed - KDM Consortium"
+          const currentTags = userData.tags || [];
+          const updatedTags = currentTags
+            .filter((tag: string) => tag !== 'New Lead')
+            .concat('Subscribed - KDM Consortium');
+          
+          await updateDoc(userRef, {
+            tags: updatedTags,
+            subscriptionTier: membershipData.tier || 'basic',
+            updatedAt: Timestamp.now(),
+          });
+          
+          console.log('User tag updated to Subscribed - KDM Consortium:', membershipData.userId);
+        }
+      }
 
       // Send welcome email
       if (session.customer_email) {

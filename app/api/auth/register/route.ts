@@ -97,6 +97,9 @@ export async function POST(req: NextRequest) {
       capabilities: [],
       serviceOfferings: [],
       
+      // Tags for CRM/tracking
+      tags: ["New Lead"],
+      
       // Subscription
       subscriptionTier: "free",
       subscriptionStatus: "active",
@@ -156,12 +159,12 @@ export async function POST(req: NextRequest) {
     // Generate custom token for auto-login
     const customToken = await auth.createCustomToken(userRecord.uid);
 
+    // Return success with redirect to profile page for new users to complete their profile
     return NextResponse.json({
-      success: true,
-      message: "Registration successful",
+      message: "User registered successfully",
       userId: userRecord.uid,
       customToken,
-      redirectTo: "/portal/dashboard",
+      redirectTo: "/portal/profile",
     });
   } catch (error: any) {
     console.error("Error registering user:", error);

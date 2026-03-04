@@ -110,7 +110,7 @@ export default function RegisterPage() {
             Create Your Account
           </CardTitle>
           <CardDescription className="text-center">
-            Join the SVP Platform to access CMMC resources and opportunities
+            Join the KDM Consortium | Connect with Small Businesses with Government Buyers
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                     <SelectValue placeholder="Select your user type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="sme">SME / Supplier (Sell products/services)</SelectItem>
+                    <SelectItem value="sme">SEMs (Small Mid-size Enterprise) business</SelectItem>
                     <SelectItem value="buyer">Buyer / Government (Purchase products/services)</SelectItem>
                     <SelectItem value="consortium_partner">Consortium Partner</SelectItem>
                     <SelectItem value="qa_reviewer">QA Reviewer</SelectItem>

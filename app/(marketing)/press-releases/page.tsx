@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Calendar, Search, Filter, FileText, Download } from 'lucide-react';
+import { Calendar, Search, Filter, FileText, Download, Paperclip, File, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -183,6 +183,39 @@ export default function PressReleasesPage() {
                   <p className="text-sm text-muted-foreground line-clamp-3">
                     {release.content.substring(0, 150)}...
                   </p>
+                  
+                  {/* Attachments */}
+                  {release.attachments && release.attachments.length > 0 && (
+                    <div className="mt-4 pt-3 border-t">
+                      <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                        <Paperclip className="h-3 w-3" />
+                        Attachments ({release.attachments.length})
+                      </p>
+                      <div className="space-y-1">
+                        {release.attachments.slice(0, 2).map(attachment => (
+                          <a
+                            key={attachment.id}
+                            href={attachment.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-xs text-primary hover:underline"
+                          >
+                            {attachment.type.startsWith('image/') ? (
+                              <Image className="h-3 w-3" />
+                            ) : (
+                              <File className="h-3 w-3" />
+                            )}
+                            <span className="truncate">{attachment.name}</span>
+                          </a>
+                        ))}
+                        {release.attachments.length > 2 && (
+                          <p className="text-xs text-muted-foreground">
+                            +{release.attachments.length - 2} more
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="pt-2">
                   <Link href={`/press-releases/${release.slug}`} className="w-full">

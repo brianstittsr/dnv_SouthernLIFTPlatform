@@ -32,6 +32,7 @@ import {
   Columns,
   Shield,
   Factory,
+  Radio,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -73,6 +74,8 @@ const services = [
 
 const resources = [
   { title: "Blog", href: "/blog", icon: BookOpen },
+  { title: "News", href: "/news", icon: Newspaper },
+  { title: "Press Releases", href: "/press-releases", icon: Radio },
   { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "Events", href: "/events", icon: Calendar },
 ];

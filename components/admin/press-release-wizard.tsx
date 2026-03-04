@@ -24,7 +24,11 @@ import {
   AlertCircle,
   X,
   Plus,
-  FileText
+  FileText,
+  Paperclip,
+  File,
+  Image,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
@@ -61,6 +65,7 @@ export function PressReleaseWizard({ initialData, onSave }: PressReleaseWizardPr
       title: 'Media Contact'
     },
     logos: initialData?.logos || [],
+    attachments: initialData?.attachments || [],
     tags: initialData?.tags || [],
     category: initialData?.category || 'Announcement',
     status: initialData?.status || 'draft'
@@ -147,6 +152,59 @@ export function PressReleaseWizard({ initialData, onSave }: PressReleaseWizardPr
       ...prev,
       logos: prev.logos.filter(logo => logo.id !== logoId)
     }));
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    const maxSize = 10 * 1024 * 1024; // 10MB max
+    
+    if (file.size > maxSize) {
+      toast.error('File size must be less than 10MB');
+      return;
+    }
+
+    try {
+      // Upload to Firebase Storage via API
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      uploadFormData.append('category', 'press-releases');
+
+      const response = await fetch('/api/upload-file', {
+        method: 'POST',
+        body: uploadFormData
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const { fileId, fileUrl } = await response.json();
+
+      setFormData(prev => ({
+        ...prev,
+        attachments: [...prev.attachments, {
+          id: fileId,
+          url: fileUrl,
+          name: file.name,
+          type: file.type,
+          size: file.size
+        }]
+      }));
+
+      toast.success('File uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file');
+    }
+  };
+
+  const handleRemoveAttachment = (attachmentId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      attachments: prev.attachments.filter(a => a.id !== attachmentId)
+    }));
+    toast.success('Attachment removed');
   };
 
   const handleAddTag = () => {
@@ -273,7 +331,7 @@ export function PressReleaseWizard({ initialData, onSave }: PressReleaseWizardPr
         {/* Main Form */}
         <div className="lg:col-span-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="basics" className="relative">
                 Basics
                 {validateStep('basics') && (
@@ -288,6 +346,7 @@ export function PressReleaseWizard({ initialData, onSave }: PressReleaseWizardPr
                 )}
               </TabsTrigger>
               <TabsTrigger value="logos">Logos</TabsTrigger>
+              <TabsTrigger value="attachments">Attachments</TabsTrigger>
               <TabsTrigger value="contact" className="relative">
                 Contact
                 {validateStep('contact') && (
@@ -540,6 +599,70 @@ export function PressReleaseWizard({ initialData, onSave }: PressReleaseWizardPr
                           </Button>
                         </div>
                       ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Attachments Tab */}
+            <TabsContent value="attachments" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Paperclip className="h-5 w-5" />
+                    File Attachments
+                  </CardTitle>
+                  <CardDescription>Upload supporting documents, PDFs, images, or other files</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="file-upload">Upload File</Label>
+                    <Input
+                      id="file-upload"
+                      type="file"
+                      onChange={handleFileUpload}
+                      className="cursor-pointer"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Max file size: 10MB. Supported: PDF, DOC, DOCX, images, etc.
+                    </p>
+                  </div>
+
+                  {formData.attachments.length > 0 && (
+                    <div className="space-y-3">
+                      <Label>Attached Files</Label>
+                      {formData.attachments.map(attachment => (
+                        <div key={attachment.id} className="flex items-center gap-4 p-3 border rounded-lg bg-muted/50">
+                          {attachment.type.startsWith('image/') ? (
+                            <Image className="h-8 w-8 text-primary" />
+                          ) : (
+                            <File className="h-8 w-8 text-primary" />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{attachment.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {(attachment.size / 1024 / 1024).toFixed(2)} MB • {attachment.type}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveAttachment(attachment.id)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {formData.attachments.length === 0 && (
+                    <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                      <Paperclip className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">No attachments yet</p>
+                      <p className="text-xs text-muted-foreground">Upload files to include with this press release</p>
                     </div>
                   )}
                 </CardContent>

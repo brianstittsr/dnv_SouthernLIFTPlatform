@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { collection, query, where, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { COLLECTIONS, type PlatformSettingsDoc } from "@/lib/schema";
-import { useUserProfile } from "@/contexts/user-profile-context";
+import { useUserProfile, isProfileComplete } from "@/contexts/user-profile-context";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -95,6 +95,7 @@ import {
   Globe,
   BookOpen,
   FileCheck,
+  Radio,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -301,6 +302,12 @@ const adminItems = [
     title: "Hero Management",
     href: "/portal/admin/hero",
     icon: ImageIcon,
+  },
+  {
+    title: "Press Releases",
+    href: "/portal/admin/press-releases",
+    icon: Radio,
+    badge: "New",
   },
   {
     title: "Contact Popup",
@@ -676,6 +683,10 @@ export function PortalSidebar() {
   const [previewRole, setPreviewRole] = useState<string | null>(null);
   const isAdmin = profile.role === "admin" || profile.svpRole === "platform_admin";
   
+  // Check if user profile is complete - if not, show only Profile navigation
+  const profileComplete = isProfileComplete(profile);
+  const isNewUser = !profileComplete;
+  
   // The effective role for filtering (either preview role or actual svpRole)
   const effectiveRole = previewRole || profile.svpRole || profile.role;
   
@@ -816,11 +827,38 @@ export function PortalSidebar() {
 
       <SidebarContent>
         {/* ============================================ */}
-        {/* SVP PLATFORM NAVIGATION SECTIONS - TOP PRIORITY */}
+        {/* NEW USER - PROFILE ONLY MODE */}
         {/* ============================================ */}
+        {isNewUser ? (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sm font-semibold text-sidebar-foreground/80">
+              Complete Your Profile
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === "/portal/profile" || pathname.startsWith("/portal/profile")}
+                    tooltip="My Profile"
+                  >
+                    <Link href="/portal/profile">
+                      <User className="h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : (
+          <>
+            {/* ============================================ */}
+            {/* SVP PLATFORM NAVIGATION SECTIONS - TOP PRIORITY */}
+            {/* ============================================ */}
 
-        {/* Vendor Section */}
-        {isSvpSectionVisible("svpSme") && (
+            {/* Vendor Section */}
+            {isSvpSectionVisible("svpSme") && (
         <Collapsible open={openSections.svpSme} onOpenChange={() => toggleSection("svpSme")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1372,6 +1410,8 @@ export function PortalSidebar() {
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
+        </>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">

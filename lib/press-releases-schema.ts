@@ -25,6 +25,13 @@ export interface PressRelease {
     name: string;
     position: 'header' | 'footer' | 'inline';
   }[];
+  attachments: {
+    id: string;
+    url: string;
+    name: string;
+    type: string;
+    size: number;
+  }[];
   tags: string[];
   category: 'Partnership' | 'Award' | 'Contract Win' | 'Event' | 'Announcement' | 'Other';
   status: 'draft' | 'published' | 'archived';
@@ -57,6 +64,13 @@ export interface PressReleaseFormData {
     url: string;
     name: string;
     position: 'header' | 'footer' | 'inline';
+  }[];
+  attachments: {
+    id: string;
+    url: string;
+    name: string;
+    type: string;
+    size: number;
   }[];
   tags: string[];
   category: PressRelease['category'];

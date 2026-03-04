@@ -8,7 +8,7 @@ import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getHeroSlides } from "@/lib/firebase-hero";
-import { listImages, getImageDataUrl, type ImageMetadata } from "@/lib/firebase-images";
+import { listHeroBackgrounds, preloadImage } from "@/lib/firebase-hero-storage";
 import { toast } from "sonner";
 
 export interface HeroSlide {
@@ -91,12 +91,26 @@ interface HeroCarouselProps {
   autoPlayInterval?: number;
 }
 
+// Add gradient animation styles
+const gradientAnimationStyles = `
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+  }
+`;
+
 export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(propSlides || defaultSlides);
   const [isLoading, setIsLoading] = useState(!propSlides);
-  const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
+  const [storageImages, setStorageImages] = useState<{id: string, url: string}[]>([]);
   const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   // Load slides and gallery images from Firebase on mount
   useEffect(() => {
@@ -109,6 +123,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   // Preload all background images to prevent layout shift
   useEffect(() => {
     if (Object.keys(resolvedBgImages).length > 0 || slides.some(s => s.backgroundImage)) {
+      setIsImageLoading(true);
       const imagesToPreload = slides
         .filter(s => s.backgroundImage || resolvedBgImages[slides.indexOf(s)])
         .map(s => s.backgroundImage || resolvedBgImages[slides.indexOf(s)])
@@ -119,31 +134,38 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
           imagesToPreload.map(src => {
             return new Promise((resolve) => {
               const img = new window.Image();
-              img.onload = resolve;
-              img.onerror = resolve;
+              img.onload = () => resolve(true);
+              img.onerror = () => resolve(false);
               img.src = src!;
             });
           })
-        ).then(() => setImagesPreloaded(true));
+        ).then(() => {
+          setImagesPreloaded(true);
+          setIsImageLoading(false);
+        });
       } else {
         setImagesPreloaded(true);
+        setIsImageLoading(false);
       }
+    } else {
+      setIsImageLoading(false);
     }
   }, [slides, resolvedBgImages]);
 
   const loadGalleryImages = async () => {
     try {
-      const images = await listImages("hero");
-      setGalleryImages(images);
-      // Pre-load base64 data URLs for each image
+      // Use Firebase Storage for faster loading
+      const images = await listHeroBackgrounds();
+      setStorageImages(images.map(img => ({ id: img.id, url: img.url })));
+      
+      // Create index mapping for slides
       const dataUrls: Record<number, string> = {};
-      for (let i = 0; i < images.length; i++) {
-        const dataUrl = await getImageDataUrl(images[i].id);
-        if (dataUrl) dataUrls[i] = dataUrl;
-      }
+      images.forEach((img, i) => {
+        dataUrls[i] = img.url;
+      });
       setResolvedBgImages(dataUrls);
     } catch (error) {
-      console.error("Failed to load gallery images:", error);
+      console.error("Failed to load gallery images from Storage:", error);
     }
   };
 
@@ -208,27 +230,41 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
     resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length];
 
   return (
-    <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#0f172a" }}>
-      
-      {/* Background Image - from slide config or Image Manager gallery */}
-      {resolvedBgImage && (
-        <>
-          <div className="absolute inset-0 z-10" key={`bg-${currentSlide.id}`}>
-            <Image
-              src={resolvedBgImage}
-              alt=""
-              fill
-              className="object-cover"
-              priority
+    <>
+      <style>{gradientAnimationStyles}</style>
+      <section className="relative overflow-hidden text-white min-h-[600px]">
+        
+        {/* Animated Gradient Background - always visible as base layer */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 animate-gradient" />
+        
+        {/* Loading Skeleton - shown while images are loading */}
+        {(isImageLoading || !imagesPreloaded) && resolvedBgImage && (
+          <div className="absolute inset-0 z-5 animate-pulse bg-gradient-to-br from-slate-800 to-slate-900" />
+        )}
+        
+        {/* Background Image - from slide config or Image Manager gallery */}
+        {resolvedBgImage && (
+          <>
+            <div 
+              className={`absolute inset-0 z-10 transition-opacity duration-700 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`} 
+              key={`bg-${currentSlide.id}`}
+            >
+              <Image
+                src={resolvedBgImage}
+                alt=""
+                fill
+                className="object-cover"
+                priority
+                sizes="100vw"
+                quality={85}
+              />
+            </div>
+            {/* Overlay for text readability */}
+            <div 
+              className={`absolute inset-0 z-20 bg-black/60 transition-opacity duration-500 ${isImageLoading ? 'opacity-0' : ''}`}
             />
-          </div>
-          {/* Overlay for text readability */}
-          <div 
-            className="absolute inset-0 z-20 bg-black"
-            style={{ opacity: (currentSlide.backgroundOverlayOpacity ?? 50) / 100 }}
-          />
-        </>
-      )}
+          </>
+        )}
       
       <div
         className="relative z-30 py-20 md:py-32 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
@@ -357,5 +393,6 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       {/* Bottom Gradient */}
       <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
+    </>
   );
 }
