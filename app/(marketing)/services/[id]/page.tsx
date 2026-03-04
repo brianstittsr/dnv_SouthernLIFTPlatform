@@ -225,12 +225,12 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="text-lg px-8 border-white text-white hover:bg-white/10"
+              variant="secondary"
+              className="text-lg px-8"
               asChild
             >
-              <Link href="/sign-up">
-                Become a KDM Member
+              <Link href="/sign-up?type=consortium">
+                Become a KDM Consortium Member
               </Link>
             </Button>
           </div>

@@ -929,6 +929,9 @@ export default function HeroManagementPage() {
                       formData.highlightOnSecondLine && "flex flex-col items-center"
                     )}>
                       {formData.headline || "Headline"}
+                      {formData.middleLine && (
+                        <div className="block">{formData.middleLine}</div>
+                      )}
                       {formData.highlightOnSecondLine ? (
                         <span className="text-primary">{formData.highlightedText || "Highlighted"}</span>
                       ) : (
