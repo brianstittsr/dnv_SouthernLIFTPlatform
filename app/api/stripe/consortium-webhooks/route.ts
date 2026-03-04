@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null };
         
         if (invoice.subscription && typeof invoice.subscription === "string") {
           const stripe = getStripe();
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null };
         
         if (invoice.subscription && typeof invoice.subscription === "string") {
           const stripe = getStripe();
