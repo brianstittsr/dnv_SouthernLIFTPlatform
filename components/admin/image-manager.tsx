@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import {
@@ -15,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -52,6 +52,10 @@ import {
   X,
   FileImage,
   RefreshCw,
+  Play,
+  Video,
+  ExternalLink,
+  Youtube,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -66,6 +70,19 @@ import {
   type ImageUploadOptions,
   SITE_IMAGE_KEYS,
 } from "@/lib/firebase-images";
+import {
+  addVideo,
+  listVideos,
+  getVideo,
+  deleteVideo,
+  updateVideoMetadata,
+  getYouTubeThumbnail,
+  extractYouTubeId,
+  type VideoCategory,
+  type VideoMetadata,
+  type VideoUploadOptions,
+  CATEGORY_OPTIONS as VIDEO_CATEGORY_OPTIONS,
+} from "@/lib/firebase-videos";
 
 const CATEGORY_OPTIONS: { value: ImageCategory; label: string }[] = [
   { value: "hero", label: "Hero" },
@@ -82,6 +99,33 @@ const CATEGORY_OPTIONS: { value: ImageCategory; label: string }[] = [
 ];
 
 export function ImageManager() {
+  const [activeTab, setActiveTab] = useState<"images" | "videos">("images");
+  
+  return (
+    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "images" | "videos")} className="space-y-6">
+      <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsTrigger value="images" className="flex items-center gap-2">
+          <ImageIcon className="h-4 w-4" />
+          Images
+        </TabsTrigger>
+        <TabsTrigger value="videos" className="flex items-center gap-2">
+          <Video className="h-4 w-4" />
+          Videos
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="images" className="space-y-6">
+        <ImagesSection />
+      </TabsContent>
+
+      <TabsContent value="videos" className="space-y-6">
+        <VideosSection />
+      </TabsContent>
+    </Tabs>
+  );
+}
+
+function ImagesSection() {
   const { profile } = useUserProfile();
   const [images, setImages] = useState<ImageMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -733,6 +777,697 @@ function ImageEditForm({ image, onSuccess }: ImageEditFormProps) {
 
       <DialogFooter>
         <Button onClick={handleUpdate} disabled={!name || isUpdating}>
+          {isUpdating ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Updating...
+            </>
+          ) : (
+            "Update"
+          )}
+        </Button>
+      </DialogFooter>
+    </>
+  );
+}
+
+// ============ VIDEO SECTION ============
+
+function VideosSection() {
+  const [videos, setVideos] = useState<VideoMetadata[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<VideoCategory | "all">("all");
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
+  useEffect(() => {
+    loadVideos();
+  }, [filterCategory]);
+
+  async function loadVideos() {
+    setIsLoading(true);
+    try {
+      const category = filterCategory === "all" ? undefined : filterCategory;
+      const loadedVideos = await listVideos(category);
+      setVideos(loadedVideos);
+    } catch (error) {
+      console.error("Error loading videos:", error);
+      toast.error("Failed to load videos");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleUploadSuccess() {
+    setUploadDialogOpen(false);
+    loadVideos();
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Video Library</h2>
+          <p className="text-sm text-muted-foreground">
+            Track YouTube videos with metadata for your site
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={loadVideos} disabled={isLoading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+          <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Youtube className="h-4 w-4 mr-2" />
+                Add Video
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <VideoUploadForm onSuccess={handleUploadSuccess} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Filter by Category</CardTitle>
+            <Select
+              value={filterCategory}
+              onValueChange={(value) => setFilterCategory(value as VideoCategory | "all")}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {VIDEO_CATEGORY_OPTIONS.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : videos.length === 0 ? (
+        <Card className="p-12">
+          <div className="text-center space-y-4">
+            <Youtube className="h-16 w-16 mx-auto text-muted-foreground" />
+            <h3 className="text-xl font-semibold">No Videos Found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              {filterCategory === "all"
+                ? "Add your first YouTube video to get started."
+                : `No videos in the "${filterCategory}" category.`}
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {videos.map((video) => (
+            <VideoCard key={video.id} video={video} onUpdate={loadVideos} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface VideoUploadFormProps {
+  onSuccess: () => void;
+}
+
+function VideoUploadForm({ onSuccess }: VideoUploadFormProps) {
+  const { profile } = useUserProfile();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [category, setCategory] = useState<VideoCategory>("other");
+  const [duration, setDuration] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
+  const [featured, setFeatured] = useState(false);
+  const [tags, setTags] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewId, setPreviewId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = extractYouTubeId(youtubeUrl);
+    setPreviewId(id);
+  }, [youtubeUrl]);
+
+  async function handleUpload() {
+    if (!title || !youtubeUrl || !profile?.id) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    const youtubeId = extractYouTubeId(youtubeUrl);
+    if (!youtubeId) {
+      toast.error("Invalid YouTube URL. Please check the link.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const options: VideoUploadOptions = {
+        title,
+        description,
+        youtubeUrl,
+        category,
+        duration,
+        publishedAt,
+        featured,
+        tags: tags ? tags.split(",").map((t) => t.trim()) : [],
+        createdBy: profile.id,
+      };
+
+      await addVideo(options);
+      toast.success("Video added successfully!");
+
+      setTitle("");
+      setDescription("");
+      setYoutubeUrl("");
+      setCategory("other");
+      setDuration("");
+      setPublishedAt("");
+      setFeatured(false);
+      setTags("");
+      setPreviewId(null);
+
+      onSuccess();
+    } catch (error: any) {
+      console.error("Error adding video:", error);
+      toast.error(error.message || "Failed to add video");
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle>Add YouTube Video</DialogTitle>
+        <DialogDescription>
+          Track a YouTube video with metadata for use on your site.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="youtubeUrl">YouTube URL *</Label>
+          <Input
+            id="youtubeUrl"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."
+            disabled={isUploading}
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Paste a YouTube video link
+          </p>
+        </div>
+
+        {previewId && (
+          <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden">
+            <img
+              src={getYouTubeThumbnail(previewId, "medium")}
+              alt="Video thumbnail preview"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <Play className="h-12 w-12 text-white" />
+            </div>
+          </div>
+        )}
+
+        <div>
+          <Label htmlFor="title">Title *</Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Video title"
+            disabled={isUploading}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="videoDescription">Description</Label>
+          <Textarea
+            id="videoDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Brief description of the video"
+            disabled={isUploading}
+            rows={2}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="videoCategory">Category *</Label>
+            <Select
+              value={category}
+              onValueChange={(value) => setCategory(value as VideoCategory)}
+              disabled={isUploading}
+            >
+              <SelectTrigger id="videoCategory">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {VIDEO_CATEGORY_OPTIONS.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="duration">Duration</Label>
+            <Input
+              id="duration"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              placeholder="e.g., 15:30"
+              disabled={isUploading}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="publishedAt">Published Date</Label>
+            <Input
+              id="publishedAt"
+              type="date"
+              value={publishedAt}
+              onChange={(e) => setPublishedAt(e.target.value)}
+              disabled={isUploading}
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 pt-6">
+            <Checkbox
+              id="featured"
+              checked={featured}
+              onCheckedChange={(checked) => setFeatured(checked as boolean)}
+              disabled={isUploading}
+            />
+            <Label htmlFor="featured" className="cursor-pointer">
+              Featured Video
+            </Label>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="videoTags">Tags</Label>
+          <Input
+            id="videoTags"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="tag1, tag2, tag3"
+            disabled={isUploading}
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Comma-separated tags for organization
+          </p>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button
+          onClick={handleUpload}
+          disabled={!title || !youtubeUrl || isUploading}
+        >
+          {isUploading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <Youtube className="h-4 w-4 mr-2" />
+              Add Video
+            </>
+          )}
+        </Button>
+      </DialogFooter>
+    </>
+  );
+}
+
+interface VideoCardProps {
+  video: VideoMetadata;
+  onUpdate: () => void;
+}
+
+function VideoCard({ video, onUpdate }: VideoCardProps) {
+  const [copiedId, setCopiedId] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  function handleCopyId() {
+    navigator.clipboard.writeText(video.id);
+    setCopiedId(true);
+    toast.success("Video ID copied to clipboard");
+    setTimeout(() => setCopiedId(false), 2000);
+  }
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    try {
+      const success = await deleteVideo(video.id);
+      if (success) {
+        toast.success("Video deleted successfully");
+        setDeleteDialogOpen(false);
+        onUpdate();
+      } else {
+        toast.error("Failed to delete video");
+      }
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      toast.error("Failed to delete video");
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  return (
+    <>
+      <Card className="overflow-hidden">
+        <div className="relative w-full aspect-video bg-muted">
+          <img
+            src={video.thumbnailUrl || getYouTubeThumbnail(video.youtubeId, "medium")}
+            alt={video.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+            <a
+              href={video.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-12 h-12 bg-red-600 rounded-full text-white hover:bg-red-700 transition-colors"
+            >
+              <Play className="h-5 w-5 ml-0.5" />
+            </a>
+          </div>
+          {video.featured && (
+            <Badge className="absolute top-2 right-2 bg-yellow-500 text-yellow-950">
+              Featured
+            </Badge>
+          )}
+          {video.duration && (
+            <Badge className="absolute bottom-2 right-2 bg-black/70 text-white">
+              {video.duration}
+            </Badge>
+          )}
+        </div>
+
+        <CardContent className="p-4 space-y-3">
+          <div>
+            <h3 className="font-semibold truncate" title={video.title}>
+              {video.title}
+            </h3>
+            {video.description && (
+              <p className="text-xs text-muted-foreground line-clamp-2">
+                {video.description}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-1">
+            <Badge variant="secondary" className="text-xs">
+              {video.category}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              {video.youtubeId}
+            </Badge>
+          </div>
+
+          {video.tags && video.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {video.tags.map((tag, idx) => (
+                <Badge key={idx} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1"
+              onClick={() => window.open(video.youtubeUrl, "_blank")}
+            >
+              <ExternalLink className="h-3 w-3 mr-1" />
+              Watch
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyId}
+            >
+              {copiedId ? (
+                <Check className="h-3 w-3" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditDialogOpen(true)}
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Video</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete &quot;{video.title}&quot;? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <VideoEditForm
+            video={video}
+            onSuccess={() => {
+              setEditDialogOpen(false);
+              onUpdate();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+interface VideoEditFormProps {
+  video: VideoMetadata;
+  onSuccess: () => void;
+}
+
+function VideoEditForm({ video, onSuccess }: VideoEditFormProps) {
+  const [title, setTitle] = useState(video.title);
+  const [description, setDescription] = useState(video.description || "");
+  const [category, setCategory] = useState<VideoCategory>(video.category);
+  const [duration, setDuration] = useState(video.duration || "");
+  const [publishedAt, setPublishedAt] = useState(video.publishedAt || "");
+  const [featured, setFeatured] = useState(video.featured);
+  const [tags, setTags] = useState(video.tags?.join(", ") || "");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  async function handleUpdate() {
+    if (!title) {
+      toast.error("Title is required");
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const success = await updateVideoMetadata(video.id, {
+        title,
+        description: description || undefined,
+        category,
+        duration: duration || undefined,
+        publishedAt: publishedAt || undefined,
+        featured,
+        tags: tags ? tags.split(",").map((t) => t.trim()) : undefined,
+      });
+
+      if (success) {
+        toast.success("Video updated successfully");
+        onSuccess();
+      } else {
+        toast.error("Failed to update video");
+      }
+    } catch (error) {
+      console.error("Error updating video:", error);
+      toast.error("Failed to update video");
+    } finally {
+      setIsUpdating(false);
+    }
+  }
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle>Edit Video</DialogTitle>
+        <DialogDescription>
+          Update video metadata. The YouTube link cannot be changed.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="space-y-4">
+        <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden">
+          <img
+            src={video.thumbnailUrl || getYouTubeThumbnail(video.youtubeId, "medium")}
+            alt={video.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <Play className="h-12 w-12 text-white" />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="editTitle">Title *</Label>
+          <Input
+            id="editTitle"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            disabled={isUpdating}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="editDescription">Description</Label>
+          <Textarea
+            id="editDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            disabled={isUpdating}
+            rows={2}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="editCategory">Category *</Label>
+            <Select
+              value={category}
+              onValueChange={(value) => setCategory(value as VideoCategory)}
+              disabled={isUpdating}
+            >
+              <SelectTrigger id="editCategory">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {VIDEO_CATEGORY_OPTIONS.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="editDuration">Duration</Label>
+            <Input
+              id="editDuration"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              disabled={isUpdating}
+              placeholder="e.g., 15:30"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="editPublishedAt">Published Date</Label>
+            <Input
+              id="editPublishedAt"
+              type="date"
+              value={publishedAt}
+              onChange={(e) => setPublishedAt(e.target.value)}
+              disabled={isUpdating}
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 pt-6">
+            <Checkbox
+              id="editFeatured"
+              checked={featured}
+              onCheckedChange={(checked) => setFeatured(checked as boolean)}
+              disabled={isUpdating}
+            />
+            <Label htmlFor="editFeatured" className="cursor-pointer">
+              Featured Video
+            </Label>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="editTags">Tags</Label>
+          <Input
+            id="editTags"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="tag1, tag2, tag3"
+            disabled={isUpdating}
+          />
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button onClick={handleUpdate} disabled={!title || isUpdating}>
           {isUpdating ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
