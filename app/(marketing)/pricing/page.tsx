@@ -1,0 +1,487 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Check,
+  Star,
+  Zap,
+  Shield,
+  Users,
+  Calendar,
+  FileText,
+  Target,
+  Building2,
+  ArrowRight,
+  Loader2,
+  GraduationCap,
+  Award,
+  Briefcase,
+  Globe,
+  TrendingUp,
+  Clock,
+  MessageSquare,
+  BookOpen,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+const PRICING_TIERS = [
+  {
+    id: "kdm-consortium",
+    name: "KDM Consortium Membership",
+    description: "Join our exclusive network of government contractors and suppliers",
+    monthlyPrice: 1250,
+    annualPrice: 13500, // ~10% discount
+    popular: true,
+    features: [
+      "Curated federal opportunity alerts",
+      "Team assembly & partner matching",
+      "Proposal development support",
+      "Monthly buyer briefings",
+      "Resource library access",
+      "Member directory listing",
+      "Compliance badge verification",
+      "2 hours concierge support/month",
+      "Priority pursuit notifications",
+      "Private workspace access",
+      "Networking events access",
+      "CMMC readiness assessment",
+    ],
+    icon: Star,
+    cta: "Join the Consortium",
+  },
+  {
+    id: "cmmc-cohort",
+    name: "CMMC Cohort Training",
+    description: "Intensive 12-week program to achieve CMMC certification readiness",
+    price: 7500,
+    isOneTime: true,
+    popular: false,
+    features: [
+      "12-week guided certification program",
+      "Expert-led training sessions",
+      "CMMC 2.0 Level 2 preparation",
+      "Documentation templates & tools",
+      "Mock assessments & gap analysis",
+      "1-on-1 mentor sessions (4 hours)",
+      "Access to certified RPOs",
+      "Ongoing alumni support group",
+      "Certification exam preparation",
+      "Compliance roadmap development",
+      "Policy & procedure creation",
+      "C3PAO referral network",
+    ],
+    icon: GraduationCap,
+    cta: "Register for Cohort",
+    href: "/portal/admin/cohorts",
+  },
+];
+
+const MEMBERSHIP_BENEFITS = [
+  {
+    icon: Target,
+    title: "Curated Opportunities",
+    description: "Get matched with pre-vetted government contracts aligned with your capabilities.",
+  },
+  {
+    icon: Users,
+    title: "Team Assembly",
+    description: "Connect with complementary businesses to form winning pursuit teams.",
+  },
+  {
+    icon: FileText,
+    title: "Proposal Support",
+    description: "Access templates, tools, and expert guidance for winning proposals.",
+  },
+  {
+    icon: Calendar,
+    title: "Buyer Briefings",
+    description: "Monthly exclusive sessions with government procurement decision-makers.",
+  },
+  {
+    icon: Shield,
+    title: "Compliance Ready",
+    description: "CMMC readiness assessment and guidance for cybersecurity compliance.",
+  },
+  {
+    icon: Zap,
+    title: "Priority Access",
+    description: "Early notifications for high-value opportunities before public release.",
+  },
+  {
+    icon: Globe,
+    title: "Network Access",
+    description: "Connect with 500+ verified contractors, suppliers, and government buyers.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Growth Resources",
+    description: "Training, webinars, and resources to grow your government contracting business.",
+  },
+];
+
+const CMMC_BENEFITS = [
+  {
+    icon: Award,
+    title: "Certification Ready",
+    description: "Complete preparation for CMMC 2.0 Level 2 certification assessment.",
+  },
+  {
+    icon: Clock,
+    title: "12-Week Program",
+    description: "Structured timeline with milestones to keep you on track for certification.",
+  },
+  {
+    icon: Users,
+    title: "Expert Mentorship",
+    description: "Learn from certified CMMC professionals and former assessors.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Alumni Network",
+    description: "Join graduates who share best practices and contracting opportunities.",
+  },
+  {
+    icon: BookOpen,
+    title: "Documentation Kit",
+    description: "Pre-built templates for policies, procedures, and compliance documentation.",
+  },
+  {
+    icon: Shield,
+    title: "C3PAO Referrals",
+    description: "Access to our network of Certified Third Party Assessment Organizations.",
+  },
+];
+
+export default function PricingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const handleSelectPlan = async (tierId: string) => {
+    const tier = PRICING_TIERS.find((t) => t.id === tierId);
+    
+    if (tierId === "cmmc-cohort" && tier?.href) {
+      router.push(tier.href);
+      return;
+    }
+
+    setLoading(tierId);
+
+    try {
+      // Redirect to Stripe checkout for KDM Consortium membership
+      router.push("/portal/payment");
+    } catch (error) {
+      console.error("Error selecting plan:", error);
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground py-20">
+        <div className="container mx-auto px-4 text-center">
+          <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30 border-none">
+            Simple, Transparent Pricing
+          </Badge>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Invest in Your Success
+          </h1>
+          <p className="text-xl text-primary-foreground/80 max-w-3xl mx-auto mb-8">
+            Join the KDM Consortium to access exclusive government contracting opportunities, 
+            or accelerate your CMMC certification with our intensive cohort program.
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing Cards */}
+      <section className="py-20 -mt-10">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {PRICING_TIERS.map((tier) => {
+              const TierIcon = tier.icon;
+
+              return (
+                <Card
+                  key={tier.id}
+                  className={`relative flex flex-col h-full ${
+                    tier.popular
+                      ? "border-2 border-primary shadow-xl scale-[1.02]"
+                      : "border border-border"
+                  }`}
+                >
+                  {tier.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                        Most Popular
+                      </Badge>
+                    </div>
+                  )}
+
+                  <CardHeader className="text-center pb-4">
+                    <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 w-fit">
+                      <TierIcon className="h-8 w-8 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">{tier.name}</CardTitle>
+                    <CardDescription className="min-h-[48px] mt-2">
+                      {tier.description}
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="flex-1">
+                    <div className="text-center mb-6">
+                      {tier.isOneTime ? (
+                        <>
+                          <div className="text-4xl font-bold">
+                            {formatPrice(tier.price!)}
+                          </div>
+                          <div className="text-muted-foreground">
+                            one-time payment
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-4xl font-bold">
+                            {formatPrice(tier.monthlyPrice!)}
+                          </div>
+                          <div className="text-muted-foreground">per month</div>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            or {formatPrice(tier.annualPrice!)} billed annually
+                            <Badge className="ml-2 bg-green-500 text-white text-xs">
+                              Save 10%
+                            </Badge>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    <Separator className="my-6" />
+
+                    <ul className="space-y-3">
+                      {tier.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+
+                  <CardFooter className="pt-4">
+                    <Button
+                      className="w-full"
+                      size="lg"
+                      variant={tier.popular ? "default" : "outline"}
+                      onClick={() => handleSelectPlan(tier.id)}
+                      disabled={loading === tier.id}
+                    >
+                      {loading === tier.id ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Membership Benefits Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Badge className="mb-4" variant="secondary">
+              KDM Consortium
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">
+              Why Join the Consortium?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              For just $1,250/month, get access to everything you need to compete 
+              and win in the federal contracting marketplace.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {MEMBERSHIP_BENEFITS.map((benefit, index) => {
+              const BenefitIcon = benefit.icon;
+              return (
+                <div key={index} className="text-center p-6 bg-background rounded-lg shadow-sm">
+                  <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 w-fit">
+                    <BenefitIcon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {benefit.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* CMMC Cohort Benefits */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Badge className="mb-4" variant="secondary">
+              CMMC Certification
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">
+              Accelerate Your CMMC Journey
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Our intensive 12-week CMMC Cohort program prepares you for certification 
+              with expert guidance, proven methodologies, and ongoing support.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {CMMC_BENEFITS.map((benefit, index) => {
+              const BenefitIcon = benefit.icon;
+              return (
+                <div key={index} className="text-center p-6 bg-muted/30 rounded-lg">
+                  <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 w-fit">
+                    <BenefitIcon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {benefit.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/portal/admin/cohorts">
+              <Button size="lg">
+                View Upcoming Cohort Dates <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Frequently Asked Questions
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-background p-6 rounded-lg shadow-sm">
+              <h3 className="font-semibold mb-2">
+                What is included in the KDM Consortium membership?
+              </h3>
+              <p className="text-muted-foreground">
+                Full access to our opportunity intelligence platform, team assembly tools, 
+                proposal support resources, monthly buyer briefings with government 
+                decision-makers, compliance badge verification, and 2 hours of concierge 
+                support per month.
+              </p>
+            </div>
+
+            <div className="bg-background p-6 rounded-lg shadow-sm">
+              <h3 className="font-semibold mb-2">
+                Can I cancel my membership anytime?
+              </h3>
+              <p className="text-muted-foreground">
+                Yes, you can cancel your monthly membership at any time. Your access 
+                will continue until the end of your current billing period. Annual 
+                memberships are non-refundable but provide a 10% savings.
+              </p>
+            </div>
+
+            <div className="bg-background p-6 rounded-lg shadow-sm">
+              <h3 className="font-semibold mb-2">
+                What is the CMMC Cohort program?
+              </h3>
+              <p className="text-muted-foreground">
+                A 12-week intensive program designed to prepare your organization for 
+                CMMC 2.0 Level 2 certification. Includes expert-led training, 
+                documentation templates, mock assessments, and 1-on-1 mentorship.
+              </p>
+            </div>
+
+            <div className="bg-background p-6 rounded-lg shadow-sm">
+              <h3 className="font-semibold mb-2">
+                Do I need to be a Consortium member to join the CMMC Cohort?
+              </h3>
+              <p className="text-muted-foreground">
+                No, the CMMC Cohort is available to all businesses. However, Consortium 
+                members receive a 20% discount on the Cohort fee.
+              </p>
+            </div>
+
+            <div className="bg-background p-6 rounded-lg shadow-sm">
+              <h3 className="font-semibold mb-2">
+                What happens after I complete the CMMC Cohort?
+              </h3>
+              <p className="text-muted-foreground">
+                Upon completion, you will receive a Certificate of Completion and be 
+                connected with our network of C3PAOs (Certified Third Party Assessment 
+                Organizations) to schedule your official CMMC assessment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Ready to Accelerate Your Growth?
+          </h2>
+          <p className="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+            Whether you are looking to join our exclusive contracting network or 
+            achieve CMMC certification, we have the program to help you succeed.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={() => handleSelectPlan("kdm-consortium")}
+            >
+              Join the Consortium
+            </Button>
+            <Link href="/portal/admin/cohorts">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10"
+              >
+                View CMMC Cohorts
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
