@@ -35,8 +35,10 @@ export default function CMMCTrainingPage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:32px_32px]" />
+      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white py-20 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* V+ and KDM Collaboration Logos */}
@@ -73,7 +75,7 @@ export default function CMMCTrainingPage() {
               Don't lose your DoD contracts. Join the KDM Consortium's proven team-based approach to achieve CMMC certification in 90-180 days—before your competitors do.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/register">
+              <Link href="/portal/payment">
                 <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-8 py-6">
                   <Award className="h-5 w-5 mr-2" />
                   Register for Next Cohort
@@ -160,7 +162,7 @@ export default function CMMCTrainingPage() {
                     <p className="text-gray-700 leading-relaxed">
                       Without current SPRS scores, validated readiness documentation, and auditable evidence, organizations face <strong>immediate ineligibility for contract awards</strong> and increased risk to existing business relationships.
                     </p>
-                    <Link href="/register">
+                    <Link href="/portal/payment">
                       <Button className="w-full mt-6 bg-red-600 hover:bg-red-700">
                         <Zap className="h-4 w-4 mr-2" />
                         Act Now - Register Today
@@ -282,7 +284,7 @@ export default function CMMCTrainingPage() {
             </Card>
 
             <div className="text-center mt-8">
-              <Link href="/register">
+              <Link href="/portal/payment">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-12 py-6">
                   <Zap className="h-5 w-5 mr-2" />
                   Register for Next CMMC Cohort - Don't Wait
@@ -438,7 +440,7 @@ export default function CMMCTrainingPage() {
                     Join us for a clear, practical roadmap to CMMC readiness and certification.
                   </p>
                 </div>
-                <Link href="/register">
+                <Link href="/portal/payment">
                   <Button size="lg" className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-12 py-6">
                     <Award className="h-5 w-5 mr-2" />
                     Register for the Next CMMC Cohort
@@ -653,7 +655,10 @@ export default function CMMCTrainingPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white">
+      <section className="py-20 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 text-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/90 via-transparent to-transparent" />
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <Badge variant="secondary" className="text-lg px-6 py-2">
@@ -668,7 +673,7 @@ export default function CMMCTrainingPage() {
               Contact our team today to schedule your <strong>free readiness assessment</strong> and learn how the KDM CMMC Accelerator can accelerate your path to DoD cyber compliance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Link href="/register">
+              <Link href="/portal/payment">
                 <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-xl px-12 py-7">
                   <Award className="h-6 w-6 mr-2" />
                   Register for the Next CMMC Cohort
