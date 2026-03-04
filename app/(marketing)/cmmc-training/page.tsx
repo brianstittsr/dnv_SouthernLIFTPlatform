@@ -38,12 +38,10 @@ export default function CMMCTrainingPage() {
       <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
         <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:32px_32px]" />
         <div className="absolute inset-0 opacity-10">
-          <Image
-            src="/cmmc-training/cybersecurity-lock.jpg"
+          <img
+            src="/cmmc-training/kdmlogo.png"
             alt="Cybersecurity Protection"
-            fill
-            className="object-cover"
-            priority
+            className="object-cover w-full h-full"
           />
         </div>
         <div className="container mx-auto px-4 relative z-10">
@@ -59,9 +57,9 @@ export default function CMMCTrainingPage() {
                   className="object-contain h-12 md:h-16 w-auto"
                 />
                 <Image
-                  src="/cmmc-training/kdm-logo.png"
+                  src="/kdm-logo.png"
                   alt="KDM & Associates"
-                  width={200}
+                  width={150}
                   height={60}
                   className="object-contain h-12 md:h-16 w-auto"
                 />
@@ -115,7 +113,7 @@ export default function CMMCTrainingPage() {
           <div className="max-w-5xl mx-auto">
             <div className="flex justify-center mb-8">
               <Image
-                src="/cmmc-training/kdm-logo.png"
+                src="/kdm-logo.png"
                 alt="KDM & Associates"
                 width={400}
                 height={80}
@@ -138,13 +136,8 @@ export default function CMMCTrainingPage() {
             <Card className="border-2 border-blue-200 bg-blue-50">
               <CardContent className="p-8">
                 <div className="grid md:grid-cols-2 gap-8">
-                  <div className="relative h-64 md:col-span-2 mb-4">
-                    <Image
-                      src="/cmmc-training/assessment-magnifying-glass.jpg"
-                      alt="CMMC Assessment and Analysis"
-                      fill
-                      className="object-cover rounded-lg"
-                    />
+                  <div className="relative h-64 md:col-span-2 mb-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
+                    <Shield className="h-24 w-24 text-blue-600" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
@@ -310,13 +303,8 @@ export default function CMMCTrainingPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-center mb-8">
-              <div className="relative w-full max-w-3xl h-64">
-                <Image
-                  src="/cmmc-training/shield-chip-protection.jpg"
-                  alt="CMMC Defense and Protection"
-                  fill
-                  className="object-cover rounded-lg"
-                />
+              <div className="relative w-full max-w-3xl h-64 bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg flex items-center justify-center">
+                <Shield className="h-32 w-32 text-yellow-400" />
               </div>
             </div>
             <div className="text-center mb-12">
