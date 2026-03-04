@@ -926,17 +926,13 @@ export default function HeroManagementPage() {
                     </Badge>
                     <h2 className={cn(
                       "text-2xl font-bold",
-                      formData.highlightOnSecondLine && "flex flex-col items-center"
+                      (formData.highlightOnSecondLine || formData.middleLine) && "flex flex-col items-center"
                     )}>
-                      {formData.headline || "Headline"}
+                      <span className="block">{formData.headline || "Headline"}</span>
                       {formData.middleLine && (
-                        <div className="block">{formData.middleLine}</div>
+                        <span className="block">{formData.middleLine}</span>
                       )}
-                      {formData.highlightOnSecondLine ? (
-                        <span className="text-primary">{formData.highlightedText || "Highlighted"}</span>
-                      ) : (
-                        <> <span className="text-primary">{formData.highlightedText || "Highlighted"}</span></>
-                      )}
+                      <span className="block text-primary">{formData.highlightedText || "Highlighted"}</span>
                     </h2>
                     <p className="mt-2 text-sm opacity-90">
                       {formData.subheadline || "Subheadline text"}

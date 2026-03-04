@@ -150,6 +150,10 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   const loadSlidesFromFirebase = async () => {
     try {
       setIsLoading(true);
+      // Add cache buster to ensure fresh data
+      const timestamp = Date.now();
+      sessionStorage.setItem("hero_slides_timestamp", timestamp.toString());
+      
       const firebaseSlides = await getHeroSlides();
       // If no slides in Firebase, use default slides
       if (firebaseSlides.length > 0) {

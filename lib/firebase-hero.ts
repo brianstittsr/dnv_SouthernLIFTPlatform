@@ -35,6 +35,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       id: doc.id,
       badge: data.badge || "",
       headline: data.headline || "",
+      middleLine: data.middleLine || "",
       highlightedText: data.highlightedText || "",
       subheadline: data.subheadline || "",
       benefits: data.benefits || [],
