@@ -76,6 +76,7 @@ const resources = [
   { title: "Blog", href: "/blog", icon: BookOpen },
   { title: "News", href: "/news", icon: Newspaper },
   { title: "Press Releases", href: "/press-releases", icon: Radio },
+  { title: "Video & Media", href: "/video-media", icon: Video },
   { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "Events", href: "/events", icon: Calendar },
   { title: "CMMC", href: "/cmmc", icon: Shield },
