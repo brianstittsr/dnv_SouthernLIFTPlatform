@@ -78,12 +78,14 @@ const resources = [
   { title: "Press Releases", href: "/press-releases", icon: Radio },
   { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "Events", href: "/events", icon: Calendar },
+  { title: "CMMC", href: "/cmmc", icon: Shield },
 ];
 
 const companyLinks = [
   { title: "Home", href: "/", icon: Globe },
   { title: "About Us", href: "/about", icon: Globe },
   { title: "KDM Team", href: "/team", icon: Users },
+  { title: "5 Pillars", href: "/5-pillars", icon: Columns },
 ];
 
 export function Navbar() {
@@ -117,37 +119,11 @@ export function Navbar() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Services</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="grid w-[800px] gap-3 p-4 md:grid-cols-3">
-                  {services.map((service) => (
-                    <div key={service.title} className="space-y-2">
-                      <Link
-                        href={service.href}
-                        className="flex items-center gap-2 font-semibold text-primary hover:underline"
-                      >
-                        <service.icon className="h-5 w-5" />
-                        {service.title}
-                      </Link>
-                      <p className="text-sm text-muted-foreground">
-                        {service.description}
-                      </p>
-                      <ul className="space-y-1">
-                        {service.items.map((item) => (
-                          <li key={item.title}>
-                            <Link
-                              href={item.href}
-                              className="text-sm text-foreground/80 hover:text-primary hover:underline"
-                            >
-                              {item.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </NavigationMenuContent>
+              <NavigationMenuLink asChild className={cn(
+                "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+              )}>
+                <Link href="/services">Services</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
@@ -192,22 +168,6 @@ export function Navbar() {
               <NavigationMenuLink asChild className={cn(
                 "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
               )}>
-                <Link href="/5-pillars">5 Pillars</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(
-                "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
-              )}>
-                <Link href="/cmmc">CMMC</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild className={cn(
-                "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
-              )}>
                 <Link href="/industries">Industries</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -244,33 +204,14 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">
             <nav className="flex flex-col gap-4 mt-8">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Services</h3>
-                {services.map((service) => (
-                  <div key={service.title} className="space-y-2">
-                    <Link
-                      href={service.href}
-                      className="flex items-center gap-2 font-medium text-primary"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <service.icon className="h-5 w-5" />
-                      {service.title}
-                    </Link>
-                    <ul className="ml-7 space-y-1">
-                      {service.items.map((item) => (
-                        <li key={item.title}>
-                          <Link
-                            href={item.href}
-                            className="text-sm text-muted-foreground hover:text-primary"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {item.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+              <div className="border-t pt-4 space-y-4">
+                <Link
+                  href="/services"
+                  className="block py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Services
+                </Link>
               </div>
 
               <div className="border-t pt-4 space-y-2">
@@ -280,6 +221,21 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                 >
                   About
+                </Link>
+                <Link
+                  href="/team"
+                  className="block py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  KDM Team
+                </Link>
+                <Link
+                  href="/5-pillars"
+                  className="flex items-center gap-2 py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Columns className="h-4 w-4 text-primary" />
+                  5 Pillars
                 </Link>
                 {resources.map((item) => (
                   <Link
@@ -292,22 +248,6 @@ export function Navbar() {
                     {item.title}
                   </Link>
                 ))}
-                <Link
-                  href="/5-pillars"
-                  className="flex items-center gap-2 py-2 font-medium"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Columns className="h-4 w-4 text-primary" />
-                  5 Pillars
-                </Link>
-                <Link
-                  href="/cmmc"
-                  className="flex items-center gap-2 py-2 font-medium"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Shield className="h-4 w-4 text-primary" />
-                  CMMC
-                </Link>
                 <Link
                   href="/industries"
                   className="flex items-center gap-2 py-2 font-medium"
