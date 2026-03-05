@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "KDM & Associates | MBDA Federal Procurement Center",
     short_name: "KDM & Associates",
     description:
-      "KDM & Associates helps minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+      "KDM & Associates helps businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     start_url: "/",
     display: "standalone",
     background_color: "#000000",

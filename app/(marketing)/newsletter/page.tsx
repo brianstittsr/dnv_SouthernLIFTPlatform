@@ -66,7 +66,7 @@ export default function NewsletterPage() {
           </h1>
           <p className="text-xl text-indigo-100 max-w-2xl">
             Stay informed with our monthly newsletters featuring insights, opportunities, and success stories 
-            from the world of minority business development and federal contracting.
+            from the world of diverse business development and federal contracting.
           </p>
         </div>
       </section>

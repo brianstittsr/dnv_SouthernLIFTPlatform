@@ -17,7 +17,7 @@ const kdmTeammembers = [
     lastName: "Moore",
     title: "CEO",
     expertise: "Government Contracting Strategy",
-    bio: "Leading KDM & Associates with a vision to empower small emerging businesses in government contracting.",
+    bio: "Leading KDM & Associates with a vision to empower diverse businesses in government contracting.",
     emailPrimary: "kmoore@kdmassociates.com",
     imageName: "Keith_Moore",
     role: "team" as const,
@@ -295,10 +295,10 @@ export function KdmTeamSync() {
   }
 
   return (
-    <Card className="border-aemerging businessr-200 bg-aemerging businessr-50/50">
+    <Card className="border-amber-200 bg-amber-50/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <RefreshCw className="h-5 w-5 text-aemerging businessr-600" />
+          <RefreshCw className="h-5 w-5 text-amber-600" />
           KDM Team Sync
         </CardTitle>
         <CardDescription>

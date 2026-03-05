@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
             </div>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-foreground">KDM & Associates</h1>
-              <p className="text-sm text-muted-foreground">Powering Growth for Emerging Businesses</p>
+              <p className="text-sm text-muted-foreground">Powering Growth for Diverse Businesses</p>
             </div>
           </Link>
         </div>

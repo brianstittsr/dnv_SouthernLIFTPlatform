@@ -24,7 +24,7 @@ const partnerBenefits = [
   {
     icon: Users,
     title: "Access to Small Business Network",
-    description: "Connect with our extensive network of small emerging businesses seeking solutions and services."
+    description: "Connect with our extensive network of small businesses seeking solutions and services."
   },
   {
     icon: Target,
@@ -115,7 +115,7 @@ export default function PartnersPage() {
               Why Partner With Us?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join a network dedicated to empowering small emerging businesses and 
+              Join a network dedicated to empowering small businesses and 
               creating mutual success in government contracting.
             </p>
           </div>

@@ -154,7 +154,7 @@ export default function WhatWorksPage() {
             What Works
           </h1>
           <p className="text-xl text-gray-700 max-w-2xl">
-            Insights, stories, and strategies from successful small emerging businesses in federal contracting. 
+            Insights, stories, and strategies from successful small businesses in federal contracting. 
             Learn what works from those who've done it.
           </p>
         </div>
@@ -283,7 +283,7 @@ export default function WhatWorksPage() {
           </h2>
           <p className="text-gray-700 mb-8 max-w-2xl mx-auto">
             Have a success story to share? We'd love to feature your journey and insights 
-            to help other small emerging businesses succeed in federal contracting.
+            to help other small businesses succeed in federal contracting.
           </p>
           <Link href="/contact">
             <Button size="lg" variant="secondary">

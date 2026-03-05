@@ -121,7 +121,7 @@ export const DEFAULT_BOILERPLATE = `About KDM & Associates
 
 KDM & Associates is a business development, government affairs, and public relations firm focused on helping clients navigate the government procurement process and win government contracts. We help our clients not only win more contracts, but help firms provide more effective and efficient solutions to their clients and customers.
 
-The MBDA Federal Procurement Center (FPC) operations have transitioned to KDM & Associates, LLC, bringing new leadership, fresh initiatives, and stronger partnerships to better support the escalating demand for shovel-ready, small and emerging businesses to address the Nation's supply chain requirements.`;
+The MBDA Federal Procurement Center (FPC) operations have transitioned to KDM & Associates, LLC, bringing new leadership, fresh initiatives, and stronger partnerships to better support the escalating demand for shovel-ready, small and diverse businesses to address the Nation's supply chain requirements.`;
 
 export const PRESS_RELEASE_CATEGORIES = [
   'Partnership',

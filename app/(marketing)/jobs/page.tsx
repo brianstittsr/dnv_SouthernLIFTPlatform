@@ -142,7 +142,7 @@ export default function JobsPage() {
             Join Our Team
           </h1>
           <p className="text-xl text-purple-100 max-w-2xl">
-            Build your career with KDM & Associates. Explore opportunities to make an impact in government contracting and minority business development.
+            Build your career with KDM & Associates. Explore opportunities to make an impact in government contracting and diverse business development.
           </p>
         </div>
       </section>

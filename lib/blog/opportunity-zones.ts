@@ -22,7 +22,7 @@ OZs are designated census tracts where new investments may be eligible for prefe
 
 **1. Capital Gains Deferral**
 - Invest capital gains into a Qualified Opportunity Fund (QOF)
-- Defer tax on the original gain until Deceemerging businessr 31, 2026, or when the investment is sold
+- Defer tax on the original gain until December 31, 2026, or when the investment is sold
 
 **2. Step-Up in Basis**
 - If held for 5+ years: 10% exclusion of deferred gain
@@ -102,7 +102,7 @@ To receive OZ tax benefits, investments must be made through a QOF:
 
 ### Qualified Opportunity Zone Business Property (QOZBP)
 Your manufacturing facility qualifies if:
-- Acquired by purchase after Deceemerging businessr 31, 2017
+- Acquired by purchase after December 31, 2017
 - Original use begins with the QOF, OR the property is substantially improved
 - Substantially all use is in an OZ
 - Used in a trade or business

@@ -198,7 +198,7 @@ export const CERTIFICATION_OPTIONS = [
   'Service-Disabled Veteran-Owned Small Business (SDVOSB)',
   'Veteran-Owned Small Business (VOSB)',
   'Small Disadvantaged Business (SDB)',
-  'Minority Business Enterprise (emerging business)',
+  'Minority Business Enterprise (MBE)',
   'Disadvantaged Business Enterprise (DBE)',
   'None',
   'Other',

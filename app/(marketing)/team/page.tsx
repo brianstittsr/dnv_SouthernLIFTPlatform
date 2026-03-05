@@ -176,7 +176,7 @@ export default function TeamPage() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="outline" className="mb-6 border-primary/50 text-primary">Our Team</Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">KDM & Associates <span className="text-primary">Team</span></h1>
-            <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">Meet the experienced professionals dedicated to helping small emerging businesses succeed in government contracting.</p>
+            <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">Meet the experienced professionals dedicated to helping small businesses succeed in government contracting.</p>
           </div>
         </div>
       </section>

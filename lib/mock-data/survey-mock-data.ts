@@ -84,11 +84,11 @@ export const mockSurveyTemplates: SurveyTemplate[] = [
           {
             id: "q7",
             type: "multiple_choice",
-            title: "Minority Business Certification",
+            title: "Diverse Business Certification",
             required: false,
             allowMultiple: true,
             options: [
-              { id: "cert1", label: "emerging business (Minority Business Enterprise)", value: "emerging business" },
+              { id: "cert1", label: "MBE (Minority Business Enterprise)", value: "mbe" },
               { id: "cert2", label: "WBE (Women Business Enterprise)", value: "wbe" },
               { id: "cert3", label: "DBE (Disadvantaged Business Enterprise)", value: "dbe" },
               { id: "cert4", label: "VOSB (Veteran-Owned Small Business)", value: "vosb" },
@@ -181,8 +181,8 @@ export const mockSurveys: Survey[] = [
   },
   {
     id: "survey-2",
-    title: "Customer Satisfaction - Deceemerging businessr 2025",
-    description: "Monthly customer satisfaction survey for Deceemerging businessr 2025",
+    title: "Customer Satisfaction - December 2025",
+    description: "Monthly customer satisfaction survey for December 2025",
     createdBy: "admin-001",
     createdByName: "Admin User",
     status: "closed",
@@ -259,7 +259,7 @@ export const mockSurveyResponses: SurveyResponse[] = [
       q3: "Doe",
       q5: "CEO",
       q6: "white",
-      q7: ["emerging business", "vosb"],
+      q7: ["mbe", "vosb"],
     },
     startedAt: Timestamp.fromDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)),
     completedAt: Timestamp.fromDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 15 * 60 * 1000)),

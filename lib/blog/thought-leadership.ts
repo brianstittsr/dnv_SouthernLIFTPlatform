@@ -411,7 +411,7 @@ ${BLOG_CTA}`
 - Analyzed USAspending.gov for machining contracts in the region
 - Identified 3 military installations within 100 miles
 - Found 5 upcoming solicitations matching capabilities
-- Researched incuemerging businessnt contractors and pricing
+- Researched incumbent contractors and pricing
 
 **Day 31-35: PTAC Engagement**
 - Connected with local Procurement Technical Assistance Center

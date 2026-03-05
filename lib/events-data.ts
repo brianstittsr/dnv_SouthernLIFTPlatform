@@ -70,7 +70,7 @@ This year's summit focuses on Puerto Rico's strategic position as a hub for sust
 
 ## Who Should Attend
 
-- emerging business/WBE/SDVOSB business owners
+- Diverse/WBE/SDVOSB business owners
 - Agriculture and energy sector professionals
 - Federal contractors and subcontractors
 - Investors and venture capitalists
@@ -154,7 +154,7 @@ This year's summit focuses on Puerto Rico's strategic position as a hub for sust
       {
         name: 'Keith Moore',
         title: 'CEO, KDM & Associates',
-        bio: 'Leading KDM & Associates with a vision to empower minority-owned businesses in government contracting.'
+        bio: 'Leading KDM & Associates with a vision to empower diverse businesses in government contracting.'
       },
       {
         name: 'Josué Rivera Castro',
@@ -223,22 +223,22 @@ This is a live, interactive session with Q&A time built in. Bring your questions
   },
   {
     id: '3',
-    slug: 'emerging business-networking-mixer-dc',
-    title: 'emerging business Networking Mixer - Washington DC',
-    description: 'Connect with fellow minority business owners, prime contractors, and federal procurement officials at our quarterly networking event.',
-    fullDescription: `Our quarterly emerging business Networking Mixer brings together minority business enterprises, prime contractors, federal procurement officials, and industry partners for an evening of meaningful connections and business development opportunities.
+    slug: 'diverse-business-networking-mixer-dc',
+    title: 'Diverse Business Networking Mixer - Washington DC',
+    description: 'Connect with fellow diverse business owners, prime contractors, and federal procurement officials at our quarterly networking event.',
+    fullDescription: `Our quarterly Diverse Business Networking Mixer brings together diverse business enterprises, prime contractors, federal procurement officials, and industry partners for an evening of meaningful connections and business development opportunities.
 
 ## Event Highlights
 
 - **Speed Networking Sessions**: Structured 5-minute meetings with potential partners
-- **Prime Contractor Showcase**: Meet major federal contractors actively seeking emerging business partners
+- **Prime Contractor Showcase**: Meet major federal contractors actively seeking diverse business partners
 - **Federal Agency Representatives**: Connect with procurement officials from key agencies
-- **Success Stories**: Hear from emerging businesss who have successfully grown their federal contracting business
+- **Success Stories**: Hear from businesses who have successfully grown their federal contracting business
 - **Open Networking**: Casual networking with appetizers and refreshments
 
 ## Who Attends
 
-- emerging business/WBE/SDVOSB business owners
+- Diverse/WBE/SDVOSB business owners
 - Prime contractors seeking subcontractors
 - Federal procurement officials
 - Economic development professionals
@@ -266,7 +266,7 @@ Space is limited to ensure quality networking opportunities. Register early to s
       }
     },
     category: 'Networking',
-    registrationUrl: 'https://kdm-assoc.com/events/register/emerging business-mixer-dc',
+    registrationUrl: 'https://kdm-assoc.com/events/register/diverse-business-mixer-dc',
     registrationDeadline: new Date('2025-10-25'),
     capacity: 150,
     registered: 98,
@@ -276,7 +276,7 @@ Space is limited to ensure quality networking opportunities. Register early to s
     organizer: 'KDM & Associates',
     contactEmail: 'events@kdm-assoc.com',
     contactPhone: '(202) 555-0100',
-    tags: ['Networking', 'emerging business', 'Federal Contracting', 'Washington DC', 'Business Development']
+    tags: ['Networking', 'Diverse Business', 'Federal Contracting', 'Washington DC', 'Business Development']
   }
 ];
 

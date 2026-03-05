@@ -50,7 +50,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
-              Helping minority-owned businesses win government contracts through 
+              Helping businesses win government contracts through 
               strategic teaming, capacity building, and mentorship.
             </p>
             <div className="flex gap-4">

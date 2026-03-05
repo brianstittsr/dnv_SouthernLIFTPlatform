@@ -312,7 +312,7 @@ export const services: Service[] = [
           "Women-Owned Small Business (WOSB) certification",
           "Service-Disabled Veteran-Owned (SDVOSB) verification",
           "HUBZone certification",
-          "Minority Business Enterprise (emerging business) certification",
+          "Minority Business Enterprise (MBE) certification",
           "State and local certifications"
         ]
       },

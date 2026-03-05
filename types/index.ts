@@ -246,3 +246,5 @@ export interface NavItem {
   badge?: string | number;
   children?: NavItem[];
 }
+
+export * from "../lib/types/webinar";

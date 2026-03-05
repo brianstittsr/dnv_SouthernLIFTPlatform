@@ -20,7 +20,7 @@ import {
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about KDM & Associates and our mission to help minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+    "Learn about KDM & Associates and our mission to help businesses win government contracts through strategic teaming, capacity building, and mentorship.",
 };
 
 const values = [
@@ -66,7 +66,7 @@ export default function AboutPage() {
               <span className="text-primary">Aggregated Resources</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Propelling the next generation of minority government contractors through 
+              Propelling the next generation of government contractors through 
               capacity building, mentorship, and strategic teaming partnerships.
             </p>
           </div>
@@ -84,7 +84,7 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
-                  To empower small and emerging businesses 
+                  To empower small and diverse businesses 
                   to compete and win government contracts by providing accessible, results-driven 
                   support services that bridge the gap between current capabilities 
                   and federal procurement requirements.

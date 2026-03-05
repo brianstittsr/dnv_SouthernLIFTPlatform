@@ -1276,7 +1276,7 @@ Domestic manufacturers can respond faster to design changes, quality issues, and
 
 The CHIPS Act is driving massive investment in domestic chip fabrication, creating demand across the supply chain:
 
-- **Precision components** for fab equipment (chaemerging businessrs, pumps, sensors)
+- **Precision components** for fab equipment (chambers, pumps, sensors)
 - **Clean room construction** and specialized HVAC equipment
 - **Specialty chemicals and gases** for semiconductor processing
 - **Testing and inspection equipment** for quality assurance

@@ -26,7 +26,7 @@ const faqs = [
       },
       {
         question: "Who can benefit from KDM services?",
-        answer: "Our services are designed for small and emerging businesses looking to enter or expand in the federal contracting space. This includes 8(a) certified businesses, WOSBs, SDVOSBs, HUBZone firms, and other small businesses seeking government contracts."
+        answer: "Our services are designed for small and diverse businesses looking to enter or expand in the federal contracting space. This includes 8(a) certified businesses, WOSBs, SDVOSBs, HUBZone firms, and other small businesses seeking government contracts."
       },
       {
         question: "How do I become a KDM & Associates client?",

@@ -46,6 +46,7 @@ import {
   Users,
   Building,
   FileText,
+  Video,
   Calendar,
   CalendarDays,
   CheckSquare,
@@ -534,6 +535,12 @@ const svpAdminItems = [
     href: "/portal/admin/svp-dashboard",
     icon: LayoutDashboard,
     badge: "SVP",
+  },
+  {
+    title: "Webinar Creator",
+    href: "/portal/admin/webinar-creator",
+    icon: Video,
+    badge: "New",
   },
   {
     title: "Subscription Leads",
@@ -1443,7 +1450,7 @@ export function PortalSidebar() {
               </SelectContent>
             </Select>
             {previewRole && (
-              <p className="text-[10px] text-aemerging businessr-600 mt-1 flex items-center gap-1">
+              <p className="text-[10px] text-amber-600 mt-1 flex items-center gap-1">
                 <Eye className="h-3 w-3" />
                 Previewing as {AVAILABLE_ROLES.find(r => r.value === previewRole)?.label}
               </p>

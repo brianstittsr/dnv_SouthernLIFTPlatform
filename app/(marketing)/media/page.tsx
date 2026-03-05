@@ -55,7 +55,7 @@ const pressReleases = [
     id: "mbda-transition",
     title: "KDM Associates Assumes MBDA Federal Procurement Center Operations",
     date: "2025-11-15",
-    excerpt: "Strategic transition brings new leadership and enhanced support for minority-owned businesses in federal contracting.",
+    excerpt: "Strategic transition brings new leadership and enhanced support for diverse businesses in federal contracting.",
     category: "Company News"
   },
   {

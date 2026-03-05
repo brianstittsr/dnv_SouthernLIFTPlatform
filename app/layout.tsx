@@ -21,10 +21,10 @@ export const metadata: Metadata = {
     template: "%s | KDM & Associates",
   },
   description:
-    "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+    "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
   keywords: [
     "government contracting",
-    "minority business enterprise",
+    "diverse business enterprise",
     "federal procurement",
     "MBDA",
     "8(a) certification",
@@ -83,13 +83,13 @@ export const metadata: Metadata = {
     siteName: "KDM & Associates",
     title: "KDM & Associates | MBDA Federal Procurement Center",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KDM & Associates - Powering Growth for Emerging Businesses",
+        alt: "KDM & Associates - Powering Growth for Diverse Businesses",
       },
     ],
   },
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KDM & Associates | MBDA Federal Procurement Center",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping minority-owned businesses win government contracts.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts.",
     images: ["/og-image.png"],
     creator: "@mbdafpcenter",
   },

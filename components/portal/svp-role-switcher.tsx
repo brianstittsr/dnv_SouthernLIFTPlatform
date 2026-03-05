@@ -176,7 +176,7 @@ export function SvpRoleSwitcher({ onRoleChange, showPreviewMode = true }: SvpRol
             )}
           </div>
           {previewRole && (
-            <Badge variant="outline" className="bg-aemerging businessr-100 text-aemerging businessr-800">
+            <Badge variant="outline" className="bg-amber-100 text-amber-800">
               <Eye className="h-3 w-3 mr-1" />
               Preview Mode
             </Badge>
@@ -236,9 +236,9 @@ export function SvpRoleSwitcher({ onRoleChange, showPreviewMode = true }: SvpRol
               )}
             </div>
             {previewRole && (
-              <Alert className="mt-3 bg-aemerging businessr-50 border-aemerging businessr-200">
-                <Eye className="h-4 w-4 text-aemerging businessr-600" />
-                <AlertDescription className="text-aemerging businessr-800">
+              <Alert className="mt-3 bg-amber-50 border-amber-200">
+                <Eye className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-800">
                   You are previewing the platform as a <strong>{SVP_ROLES.find((r) => r.value === previewRole)?.label}</strong>.
                   The sidebar will show only the sections visible to this role.
                 </AlertDescription>

@@ -1517,6 +1517,87 @@ export interface MattermostPlaybookRunDoc {
   updatedAt: Timestamp;
 }
 
+/** Mattermost Playbook Run tracking document in Firestore */
+export interface MattermostPlaybookRunDoc {
+  // ... (already exists)
+}
+
+/** Webinar document in Firestore */
+export interface WebinarDoc {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  status: "draft" | "published" | "scheduled" | "archived";
+  startTime: string;
+  duration: number;
+  timezone: string;
+  hero: {
+    headline: string;
+    subheadline: string;
+    ctaText: string;
+    backgroundImage?: string;
+    videoPreviewUrl?: string;
+  };
+  about: {
+    title: string;
+    content: string;
+    image?: string;
+  };
+  benefits: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon?: string;
+  }>;
+  speakers: Array<{
+    id: string;
+    name: string;
+    title: string;
+    bio: string;
+    imageUrl?: string;
+  }>;
+  agenda: Array<{
+    id: string;
+    time: string;
+    title: string;
+    description?: string;
+  }>;
+  faqs: Array<{
+    id: string;
+    question: string;
+    answer: string;
+  }>;
+  registration: {
+    type: "external" | "internal";
+    externalUrl?: string;
+    buttonText: string;
+  };
+  ghlIntegration?: {
+    enabled: boolean;
+    apiKey?: string;
+    locationId?: string;
+    formId?: string;
+    tags?: string[];
+  };
+  confirmation: {
+    title: string;
+    message: string;
+    videoUrl?: string;
+    nextStepsTitle?: string;
+    nextSteps: string[];
+  };
+  seo: {
+    title: string;
+    description: string;
+    keywords: string[];
+    ogImage?: string;
+  };
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  publishedAt?: Timestamp;
+}
+
 /** Transaction document for tracking all payments */
 export interface TransactionDoc extends BaseDocument {
   userId: string;
@@ -1653,7 +1734,8 @@ export const COLLECTIONS = {
   // ThomasNet Saved Suppliers
   THOMASNET_SAVED_SUPPLIERS: "thomasnetSavedSuppliers",
   // ThomasNet Saved Lists
-  THOMASNET_SAVED_LISTS: "thomasnetSavedLists",
+  THOMASNET_SAVED_LISTS: "thomasnet_saved_lists",
+  WEBINARS: "webinars",
   // TBMNC Supplier Readiness
   TBMNC_SUPPLIERS: "tbmncSuppliers",
   // SourceWell Solicitations

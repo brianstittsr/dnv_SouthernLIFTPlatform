@@ -301,9 +301,9 @@ Knowledge-based services represent significant opportunities for specialized fir
 
 **Environmental Compliance:** Construction and operations require environmental impact assessments, compliance monitoring, and remediation services.
 
-## The Minority Business Advantage
+## The Diverse Business Advantage
 
-Federal procurement policy strongly favors participation by Minority Business Enterprises (emerging businesss), and Puerto Rico presents unique advantages for qualified firms:
+Federal procurement policy strongly favors participation by Minority Business Enterprises (MBEs), and Puerto Rico presents unique advantages for qualified firms:
 
 ### 8(a) Business Development Program
 
@@ -357,7 +357,7 @@ Winning federal contracts in Puerto Rico's expanding market requires strategic p
 
 **Prime Contractor Partnerships:** Many opportunities require subcontracting relationships with established prime contractors. Identify primes working in your market space and pursue teaming arrangements.
 
-**Local Business Networks:** Engage with Puerto Rican business associations, chaemerging businessrs of commerce, and economic development organizations. These networks provide valuable connections and insights.
+**Local Business Networks:** Engage with Puerto Rican business associations, chambers of commerce, and economic development organizations. These networks provide valuable connections and insights.
 
 **Federal Procurement Technical Assistance:** The Puerto Rico Procurement Technical Assistance Center (PTAC) provides free consulting to help businesses navigate federal contracting.
 
@@ -445,7 +445,7 @@ For businesses ready to pursue these opportunities, immediate actions should inc
 
 Puerto Rico's emergence as a strategic hub for counter-cartel operations represents more than a security imperative—it signals a fundamental transformation of the island's economic landscape. The billions in federal investment flowing into the island are creating opportunities that extend far beyond the immediate security sector, building infrastructure, developing capabilities, and establishing Puerto Rico as a critical node in federal operations.
 
-For businesses, particularly minority-owned enterprises, the timing is optimal. Federal procurement policies favor diverse participation, Puerto Rico offers unique geographic and programmatic advantages, and the market is in an expansion phase with years of growth ahead.
+For businesses, particularly diverse-owned enterprises, the timing is optimal. Federal procurement policies favor diverse participation, Puerto Rico offers unique geographic and programmatic advantages, and the market is in an expansion phase with years of growth ahead.
 
 The businesses that position themselves now—building capabilities, establishing relationships, and winning initial contracts—will enjoy sustained competitive advantages as the market matures. The window for early entry is open, but it will not remain so indefinitely.
 
@@ -629,15 +629,15 @@ DOE offers multiple programs supporting manufacturing sustainability:
 
 **Industrial Assessment Centers:** Free energy assessments for small and medium manufacturers.
 
-## Opportunities for Minority-Owned Businesses
+## Opportunities for Diverse Businesses
 
-The sustainability transformation creates specific opportunities for Minority Business Enterprises (emerging businesss):
+The sustainability transformation creates specific opportunities for Minority Business Enterprises (MBEs):
 
 ### Renewable Energy Installation and Services
 
 The expanding renewable energy sector requires diverse capabilities:
 
-**Solar Installation:** emerging businesss with electrical and construction expertise can capture solar installation opportunities, particularly when located in disadvantaged communities eligible for additional incentives.
+**Solar Installation:** MBEs with electrical and construction expertise can capture solar installation opportunities, particularly when located in disadvantaged communities eligible for additional incentives.
 
 **Energy Storage:** Battery installation and integration services are in growing demand as storage deployment accelerates.
 
@@ -649,17 +649,17 @@ Manufacturers need support implementing energy efficiency:
 
 **Energy Auditing:** Assessment services identify efficiency opportunities and support incentive applications.
 
-**Implementation Contracting:** emerging businesss in HVAC, lighting, and controls can capture upgrade projects.
+**Implementation Contracting:** MBEs in HVAC, lighting, and controls can capture upgrade projects.
 
 **Commissioning and Optimization:** Ensuring systems perform as designed creates ongoing service opportunities.
 
 ### Sustainable Materials and Products
 
-Growing demand for sustainable materials benefits emerging business suppliers:
+Growing demand for sustainable materials benefits diverse business suppliers:
 
-**Recycled Content Products:** emerging businesss supplying recycled or recyclable materials gain market advantage.
+**Recycled Content Products:** MBEs supplying recycled or recyclable materials gain market advantage.
 
-**Bio-Based Materials:** Agricultural and biotechnology emerging businesss can supply bio-based manufacturing inputs.
+**Bio-Based Materials:** Agricultural and biotechnology MBEs can supply bio-based manufacturing inputs.
 
 **Sustainable Packaging:** Packaging manufacturers using recycled and recyclable materials are increasingly preferred.
 
@@ -749,7 +749,7 @@ The transformation of U.S. manufacturing toward environmental sustainability is 
 
 For manufacturers, the question is no longer whether to embrace sustainability, but how quickly and effectively to do so. Organizations that act decisively will capture competitive advantages, operational efficiencies, and market opportunities that late adopters will struggle to match.
 
-For minority-owned manufacturers, the sustainability transformation presents specific opportunities to participate in high-growth segments, leverage federal support programs, and demonstrate leadership in an evolving market. The environmental imperative aligns with broader social objectives of equitable economic development and community benefit.
+For diverse-owned manufacturers, the sustainability transformation presents specific opportunities to participate in high-growth segments, leverage federal support programs, and demonstrate leadership in an evolving market. The environmental imperative aligns with broader social objectives of equitable economic development and community benefit.
 
 The tools, technologies, and support mechanisms for sustainable manufacturing have never been more accessible. The federal government is investing billions to accelerate the transition. Market preferences increasingly favor sustainable products and suppliers. The pathway to sustainable manufacturing is clear and the time for action is now.
 

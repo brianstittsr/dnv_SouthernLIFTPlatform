@@ -122,7 +122,7 @@ export default function OurWorkPage() {
               <span className="text-primary">Small Businesses</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              We help small emerging businesses build, grow, and scale their government 
+              We help small businesses build, grow, and scale their government 
               contract revenues through strategic teaming, capacity building, and mentorship.
             </p>
           </div>

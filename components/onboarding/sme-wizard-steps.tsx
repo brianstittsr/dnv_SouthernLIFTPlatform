@@ -22,7 +22,7 @@ const certificationTypes = [
   { id: "edwosb", label: "EDWOSB" },
   { id: "sdvosb", label: "SDVOSB" },
   { id: "hubzone", label: "HUBZone" },
-  { id: "emerging business", label: "emerging business" },
+  { id: "mbe", label: "MBE" },
   { id: "other", label: "Other" },
 ];
 

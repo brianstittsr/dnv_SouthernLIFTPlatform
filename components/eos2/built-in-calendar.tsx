@@ -389,7 +389,7 @@ export function BuiltInCalendar({
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
-    "July", "August", "Septeemerging businessr", "October", "Noveemerging businessr", "Deceemerging businessr"
+    "July", "August", "September", "October", "November", "December"
   ];
 
   const navigateMonth = (direction: number) => {

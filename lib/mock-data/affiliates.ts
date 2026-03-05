@@ -50,7 +50,7 @@ export const mockBiographies: AffiliateBiographyDoc[] = [
     id: "bio-001", affiliateId: "aff-001", businessName: "Precision Manufacturing Consulting", profession: "Manufacturing Process Engineer",
     location: "Charlotte, NC", yearsInBusiness: 12, previousJobs: ["Senior Engineer at Boeing", "Process Lead at Caterpillar", "Quality Manager at Siemens"],
     spouse: "Tom Mitchell", children: "Two daughters (ages 8 and 12)", pets: "Golden Retriever named Max",
-    hobbies: ["Golf", "Wine tasting", "Hiking"], activitiesOfInterest: ["Chaemerging businessr of Commerce", "Women in Manufacturing", "Rotary Club"],
+    hobbies: ["Golf", "Wine tasting", "Hiking"], activitiesOfInterest: ["Chamber of Commerce", "Women in Manufacturing", "Rotary Club"],
     cityOfResidence: "Charlotte, NC", yearsInCity: 8, burningDesire: "To help 100 small manufacturers achieve operational excellence by 2026",
     uniqueFact: "Holds 3 patents in automated assembly processes", createdAt: daysAgo(180), updatedAt: daysAgo(5),
   },

@@ -518,7 +518,7 @@ The latest generation of manufacturing robots are:
 - Optimize facility layout and workflow
 - Test process changes virtually
 - Train operators in virtual environments
-- Support Model-Based Engineering (emerging business) requirements
+- Support Model-Based Engineering (MBE) requirements
 
 **Cost:** $50,000-$200,000 for implementation
 
@@ -1318,7 +1318,7 @@ ${BLOG_CTA}`
     tags: ["MBDA", "Federal Procurement", "Strategy", "KDM", "Legacy"],
     readTime: 8,
     imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-    content: `The Minority Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping minority-owned businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
+    content: `The Minority Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
 
 ## The MBDA Legacy
 
@@ -1449,7 +1449,7 @@ Businesses working with KDM report:
 5. **Technology integration** — AI-enhanced opportunity matching and proposal support
 
 ### What Hasn't Changed
-1. **Mission** — Empowering small and minority-owned businesses
+1. **Mission** — Empowering small and diverse businesses
 2. **Methodology** — Proven strategies refined over decades
 3. **Relationships** — Deep connections across government and industry
 4. **Commitment** — Long-term partnership, not transactional consulting
@@ -1457,7 +1457,7 @@ Businesses working with KDM report:
 
 ## Conclusion
 
-The strategies that made the MBDA Federal Procurement Center successful didn't end when operations transitioned to KDM & Associates. They evolved, expanded, and adapted to today's defense contracting landscape. For minority-owned businesses seeking government contracts, these proven strategies—now enhanced with technology and expanded partnerships—continue to deliver results.
+The strategies that made the MBDA Federal Procurement Center successful didn't end when operations transitioned to KDM & Associates. They evolved, expanded, and adapted to today's defense contracting landscape. For businesses seeking government contracts, these proven strategies—now enhanced with technology and expanded partnerships—continue to deliver results.
 
 ${BLOG_CTA}`
   }

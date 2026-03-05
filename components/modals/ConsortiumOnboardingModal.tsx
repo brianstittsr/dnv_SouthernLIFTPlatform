@@ -120,7 +120,7 @@ export function ConsortiumOnboardingModal({
 • CMMC Level 2+ certified manufacturers
 • Critical minerals suppliers (titanium, rare earth elements)
 • Opportunity Zone-based production facilities
-• SDVOSB, WOSB, and minority-owned certified vendors
+• SDVOSB, WOSB, and diverse certified vendors
 
 Complete your profile NOW to:
 → Get early access to supplier profiles before public launch

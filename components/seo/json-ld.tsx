@@ -10,7 +10,7 @@ export function OrganizationJsonLd() {
     url: "https://kdm-assoc.com",
     logo: "https://kdm-assoc.com/kdm-logo.png",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping minority-owned businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     foundingDate: "2020",
     founders: [
       {

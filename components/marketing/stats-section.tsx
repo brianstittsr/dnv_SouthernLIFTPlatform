@@ -9,7 +9,7 @@ const stats = [
     value: 475,
     suffix: "",
     icon: Building2,
-    description: "Small emerging businesses served",
+    description: "Small businesses served",
   },
   {
     label: "Shared Outcome Agreements",

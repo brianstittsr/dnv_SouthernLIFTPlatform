@@ -25,30 +25,30 @@ export interface WhatWorksArticle {
 export const whatWorksArticles: WhatWorksArticle[] = [
   {
     id: '1',
-    slug: 'mbda-fpc-podcast-series-kiemerging businessrly-johnston',
-    title: 'MBDA FPC Podcast Series – Kiemerging businessrly Johnston',
+    slug: 'mbda-fpc-podcast-series-kimberly-johnston',
+    title: 'MBDA FPC Podcast Series – Kimberly Johnston',
     excerpt: 'Timothy sits down with the President of Next Gen Energy Partners to discuss her pioneering work in Energy, from microgrids, carbon reduction to job creation.',
-    content: `Timothy sits down with the President of Next Gen Energy Partners to discuss her pioneering work in Energy, from microgrids, carbon reduction to job creation. Johnston also shares how critical her relationship is with MBDA FPC for American and Global energy sustainability.
+    content: `Timothy sits down with the President of Next Gen Energy Partners to discuss her pioneering work in Energy, from microgrids, carbon reduction to job creation. Johnston also shares how critical her relationship is with KDM & Associates for American and Global energy sustainability.
 
 ## About the Guest
 
-Kiemerging businessrly Johnston is the President of Next Gen Energy Partners, a company focused on innovative energy solutions including microgrids, carbon reduction technologies, and sustainable job creation in the energy sector.
+Kimberly Johnston is the President of Next Gen Energy Partners, a company focused on innovative energy solutions including microgrids, carbon reduction technologies, and sustainable job creation in the energy sector.
 
 ## Key Topics Discussed
 
 - **Microgrids and Energy Independence**: How distributed energy systems are transforming power delivery
 - **Carbon Reduction Strategies**: Practical approaches to reducing carbon footprints in energy production
 - **Job Creation in Clean Energy**: The economic opportunities in the renewable energy sector
-- **MBDA FPC Partnership**: How the Minority Business Development Agency Federal Procurement Center supports energy sustainability initiatives
+- **KDM & Associates Partnership**: How KDM supports energy sustainability initiatives
 
 ## Impact and Insights
 
-This conversation highlights the critical intersection of minority business development, energy innovation, and federal procurement opportunities. Johnston's work demonstrates how emerging businesss can lead in the clean energy transition while creating economic opportunities in their communities.`,
+This conversation highlights the critical intersection of business development, energy innovation, and federal procurement opportunities. Johnston's work demonstrates how businesses can lead in the clean energy transition while creating economic opportunities in their communities.`,
     author: 'KDM & Associates',
     publishedDate: new Date('2025-05-28'),
     category: 'Podcast',
     tags: ['Energy', 'Sustainability', 'Microgrids', 'Carbon Reduction', 'Job Creation', 'MBDA'],
-    featuredImage: '/images/what-works/kiemerging businessrly-johnston-podcast.jpg',
+    featuredImage: '/images/what-works/kimberly-johnston-podcast.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=example1',
     videoEmbedId: 'example1',
     duration: '45:30',
@@ -58,18 +58,18 @@ This conversation highlights the critical intersection of minority business deve
     id: '2',
     slug: 'what-works-international-womens-month-miranda-bouldin',
     title: "What Works International Women's Month – Miranda Bouldin",
-    excerpt: 'Celebrating International Women\'s Month with Miranda Bouldin, discussing her journey and contributions to minority business development.',
-    content: `In celebration of International Women's Month, we sit down with Miranda Bouldin to discuss her remarkable journey in business development and her contributions to empowering minority-owned enterprises.
+    excerpt: 'Celebrating International Women\'s Month with Miranda Bouldin, discussing her journey and contributions to diverse business development.',
+    content: `In celebration of International Women's Month, we sit down with Miranda Bouldin to discuss her remarkable journey in business development and her contributions to empowering diverse enterprises.
 
 ## About Miranda Bouldin
 
-Miranda Bouldin is a leader in business development and has been instrumental in creating pathways for minority and women-owned businesses to access federal contracting opportunities.
+Miranda Bouldin is a leader in business development and has been instrumental in creating pathways for diverse and women-owned businesses to access federal contracting opportunities.
 
 ## Key Discussion Points
 
 - **Breaking Barriers**: Overcoming challenges as a woman in government contracting
 - **Mentorship and Leadership**: The importance of supporting the next generation of women entrepreneurs
-- **Business Development Strategies**: Proven approaches for emerging businesss and WBEs to grow their federal contracting portfolios
+- **Business Development Strategies**: Proven approaches for diverse businesses and WBEs to grow their federal contracting portfolios
 - **International Women's Month**: Celebrating achievements and looking forward to continued progress
 
 ## Inspiration and Impact
@@ -105,7 +105,7 @@ Talin Labs is a technology company focused on delivering innovative solutions to
 
 ## Key Takeaways
 
-Gaurrav's experience demonstrates that with the right combination of innovation, persistence, and strategic partnerships, minority-owned tech companies can compete and win in the federal marketplace. His insights are valuable for any entrepreneur looking to break into government contracting.`,
+Gaurrav's experience demonstrates that with the right combination of innovation, persistence, and strategic partnerships, diverse tech companies can compete and win in the federal marketplace. His insights are valuable for any entrepreneur looking to break into government contracting.`,
     author: 'KDM & Associates',
     publishedDate: new Date('2024-02-10'),
     category: 'Interview',
@@ -137,7 +137,7 @@ Dr. Christi Phillips is a Director at Franklin Covey, one of the world's leading
 
 ## Practical Applications
 
-Dr. Phillips shares actionable insights that business leaders can implement immediately to improve their organizations' capacity for change. Her expertise is particularly valuable for emerging businesss looking to scale their operations and compete more effectively in the federal marketplace.
+Dr. Phillips shares actionable insights that business leaders can implement immediately to improve their organizations' capacity for change. Her expertise is particularly valuable for diverse businesses looking to scale their operations and compete more effectively in the federal marketplace.
 
 ## Key Lessons
 
@@ -157,8 +157,8 @@ Dr. Phillips shares actionable insights that business leaders can implement imme
     id: '5',
     slug: 'what-works-news-u-can-use-newsletter-june-2024',
     title: 'What Works News U Can Use Newsletter – June 2024',
-    excerpt: 'Monthly newsletter featuring the latest updates, opportunities, and insights for minority-owned businesses in federal contracting.',
-    content: `Welcome to the June 2024 edition of What Works News U Can Use, your monthly source for timely information, opportunities, and insights in federal contracting and minority business development.
+    excerpt: 'Monthly newsletter featuring the latest updates, opportunities, and insights for businesses in federal contracting.',
+    content: `Welcome to the June 2024 edition of What Works News U Can Use, your monthly source for timely information, opportunities, and insights in federal contracting and business development.
 
 ## In This Issue
 
@@ -168,7 +168,7 @@ Dr. Phillips shares actionable insights that business leaders can implement imme
 - Upcoming procurement forecasts from major agencies
 
 ### Success Stories
-- emerging business wins $15M contract with Department of Defense
+- Diverse business wins $15M contract with Department of Defense
 - Small business partnership leads to major infrastructure project
 - Veteran-owned business expands through mentor-protégé program
 
@@ -201,7 +201,7 @@ Subscribe to receive monthly updates and never miss an opportunity to grow your 
     slug: 'what-works-news-u-can-use-newsletter-may-2024',
     title: 'What Works News U Can Use Newsletter – May 2024',
     excerpt: 'May 2024 newsletter with updates on federal contracting opportunities, success stories, and upcoming events.',
-    content: `The May 2024 edition of What Works News U Can Use brings you the latest developments in federal contracting, success stories from the emerging business community, and upcoming opportunities to grow your business.
+    content: `The May 2024 edition of What Works News U Can Use brings you the latest developments in federal contracting, success stories from the diverse business community, and upcoming opportunities to grow your business.
 
 ## Highlights This Month
 
@@ -226,7 +226,7 @@ Subscribe to receive monthly updates and never miss an opportunity to grow your 
 - Understanding past performance requirements
 
 ### Community Spotlight
-- emerging business of the Month feature
+- Diverse Business of the Month feature
 - Partnership success story
 - New member introductions
 

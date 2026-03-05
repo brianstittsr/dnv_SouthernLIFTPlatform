@@ -48,9 +48,9 @@ export const KDM_BRANDING = {
       dark: 'slate-800',
     },
     accent: {
-      light: 'aemerging businessr-400',
-      DEFAULT: 'aemerging businessr-500',
-      dark: 'aemerging businessr-600',
+      light: 'amber-400',
+      DEFAULT: 'amber-500',
+      dark: 'amber-600',
     },
   },
 
@@ -60,7 +60,7 @@ export const KDM_BRANDING = {
     '--kdm-primary-light': '#3b82f6', // blue-500
     '--kdm-primary-dark': '#1d4ed8', // blue-700
     '--kdm-secondary': '#475569', // slate-600
-    '--kdm-accent': '#f59e0b', // aemerging businessr-500
+    '--kdm-accent': '#f59e0b', // amber-500
   },
 
   // Logo paths
@@ -109,7 +109,7 @@ export const KDM_BRANDING = {
         name: 'Enterprise',
         shortName: 'Enterprise',
         badge: 'Custom',
-        color: 'aemerging businessr',
+        color: 'amber',
       },
     },
   },

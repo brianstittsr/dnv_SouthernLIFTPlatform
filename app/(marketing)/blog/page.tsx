@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "CMMC certification guide",
     "government contracting insights",
     "critical minerals strategy",
-    "minority business defense contracts",
+    "diverse business defense contracts",
     "manufacturing reshoring",
     "opportunity zones investment",
     "small business capital access",
