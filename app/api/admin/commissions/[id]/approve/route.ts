@@ -6,12 +6,12 @@ import { approveManualPayout } from '@/lib/services/partner-payouts.service';
  * Approve a manual payout
  */
 export async function POST(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const body = await request.json();
+    const body = await req.json();
     const { approvedBy } = body;
 
     if (!approvedBy) {

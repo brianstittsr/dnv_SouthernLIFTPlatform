@@ -5,14 +5,14 @@ import { COLLECTIONS } from "@/lib/schema";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
       return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const docRef = doc(db, COLLECTIONS.WEBINARS, id);
     const docSnap = await getDoc(docRef);
 
@@ -37,14 +37,14 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
       return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const docRef = doc(db, COLLECTIONS.WEBINARS, id);
 
@@ -68,14 +68,14 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
       return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const docRef = doc(db, COLLECTIONS.WEBINARS, id);
     await deleteDoc(docRef);
 

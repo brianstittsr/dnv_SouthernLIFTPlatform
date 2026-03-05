@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -34,10 +34,11 @@ interface ProofPack {
   submittedAt: any;
 }
 
-export default function QAReviewPage({ params }: { params: { id: string } }) {
+export default function QAReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const useMockData = searchParams.get('mock') === 'true';
+  const { id } = React.use(params);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,12 +53,12 @@ export default function QAReviewPage({ params }: { params: { id: string } }) {
     } else {
       fetchProofPack();
     }
-  }, [params.id, useMockData]);
+  }, [id, useMockData]);
 
   const loadMockProofPack = () => {
     setLoading(true);
     // Find mock proof pack by ID
-    const mockPack = mockQAQueue.find(p => p.id === params.id);
+    const mockPack = mockQAQueue.find(p => p.id === id);
     if (mockPack) {
       // Transform mock queue item to full proof pack structure
       const fullProofPack: ProofPack = {
@@ -135,7 +136,7 @@ export default function QAReviewPage({ params }: { params: { id: string } }) {
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/proof-packs/${params.id}`, {
+      const response = await fetch(`/api/proof-packs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -186,7 +187,7 @@ export default function QAReviewPage({ params }: { params: { id: string } }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          proofPackId: params.id,
+          proofPackId: id,
           action,
           comments: comments.trim() || null,
         }),

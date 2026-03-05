@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -144,9 +144,10 @@ interface ProofPack {
   tags: string[];
 }
 
-export default function ProofPackEditorPage({ params }: { params: { id: string } }) {
+export default function ProofPackEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { id } = React.use(params);
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -164,7 +165,7 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
     } else {
       fetchProofPack();
     }
-  }, [params.id, useMockData]);
+  }, [id, useMockData]);
 
   const loadMockData = () => {
     setLoading(true);
@@ -188,7 +189,7 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch(`/api/proof-packs/${params.id}`, {
+      const response = await fetch(`/api/proof-packs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -223,7 +224,7 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          proofPackId: params.id,
+          proofPackId: id,
           title: proofPack.title,
           description: proofPack.description,
           tags: proofPack.tags,
@@ -281,7 +282,7 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
 
         const token = await currentUser.getIdToken();
 
-        const response = await fetch(`/api/proof-packs/${params.id}/documents`, {
+        const response = await fetch(`/api/proof-packs/${id}/documents`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -344,7 +345,7 @@ export default function ProofPackEditorPage({ params }: { params: { id: string }
       const token = await currentUser.getIdToken();
 
       const response = await fetch(
-        `/api/proof-packs/${params.id}/documents?documentId=${documentId}`,
+        `/api/proof-packs/${id}/documents?documentId=${documentId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

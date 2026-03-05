@@ -5,14 +5,14 @@ import { COLLECTIONS } from "@/lib/schema";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
       return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const docRef = doc(db, COLLECTIONS.WEBINARS, id);
 
     const publishData = {
