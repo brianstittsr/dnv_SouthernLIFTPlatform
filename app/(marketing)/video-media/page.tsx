@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Metadata } from "next";
 import {
   Card,
   CardContent,
@@ -44,12 +43,6 @@ import {
   type VideoCategory,
   CATEGORY_OPTIONS,
 } from "@/lib/firebase-videos";
-
-// Metadata is defined separately for Next.js App Router
-export const metadata = {
-  title: "Video & Media Library - KDM & Associates",
-  description: "Browse and search our video library featuring training, tutorials, webinars, and more.",
-};
 
 export default function VideoMediaPage() {
   const [videos, setVideos] = useState<VideoMetadata[]>([]);
