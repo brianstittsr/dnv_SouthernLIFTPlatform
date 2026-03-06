@@ -130,8 +130,8 @@ export default function SeedCurriculumPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
+      <div className="max-w-9xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Seed CMMC Curriculum</h1>
         <p className="text-muted-foreground mb-8">
           Add complete curriculum (modules and sessions) to all CMMC courses

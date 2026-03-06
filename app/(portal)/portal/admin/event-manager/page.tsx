@@ -905,7 +905,7 @@ export default function EventManagerPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto py-8 px-4 max-w-9xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Event Manager</h1>
@@ -952,7 +952,7 @@ export default function EventManagerPage() {
       )}
 
       <Dialog open={createEventDialogOpen} onOpenChange={setCreateEventDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>Create New Event</DialogTitle>
             <DialogDescription>Enter the basic details for your event</DialogDescription>

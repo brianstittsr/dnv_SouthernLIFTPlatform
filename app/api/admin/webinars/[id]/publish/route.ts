@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS } from "@/lib/schema";
+import { Timestamp } from "firebase-admin/firestore";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
-
     const { id } = await params;
-    const docRef = doc(db, COLLECTIONS.WEBINARS, id);
+    const docRef = db.collection(COLLECTIONS.WEBINARS).doc(id);
 
     const publishData = {
       status: "published",
@@ -21,7 +17,7 @@ export async function POST(
       updatedAt: Timestamp.now(),
     };
 
-    await updateDoc(docRef, publishData);
+    await docRef.update(publishData);
 
     return NextResponse.json({ 
       success: true, 

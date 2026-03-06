@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
@@ -112,18 +111,6 @@ export function HeroCarousel() {
 
       <div className="container relative z-10 py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8">
-            <Image
-              src="/KDM_Consortium_Logo.png"
-              alt="KDM Consortium"
-              width={540}
-              height={540}
-              className="mx-auto mb-6"
-              style={{ width: 'auto', height: 'auto' }}
-              priority
-            />
-          </div>
-
           <p className={cn(
             "text-lg font-medium mb-2 tracking-wide uppercase",
             currentSlide.textColor === "light" ? "text-white/80" : "text-gray-700"

@@ -43,7 +43,7 @@ export default function PlatformAnalyticsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 max-w-9xl space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">Platform Analytics</h1>

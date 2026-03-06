@@ -104,8 +104,8 @@ export default function SetupAdminPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
+      <div className="max-w-9xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <Shield className="h-8 w-8 text-primary" />
           <div>

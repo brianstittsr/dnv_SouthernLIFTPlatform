@@ -117,7 +117,7 @@ export default function WebinarWizardPage() {
   }
 
   return (
-    <div className="container mx-auto py-10 max-w-5xl space-y-8">
+    <div className="container mx-auto py-10 max-w-9xl space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => router.push("/portal/admin/webinar-creator")}>

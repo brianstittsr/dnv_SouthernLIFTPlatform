@@ -352,9 +352,9 @@ export default function KDMDashboardPage() {
       </div>
 
       {/* Revenue Breakdown & Activity */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Revenue Breakdown */}
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PieChart className="h-5 w-5" />

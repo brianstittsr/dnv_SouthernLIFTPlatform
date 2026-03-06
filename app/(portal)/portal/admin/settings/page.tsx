@@ -169,7 +169,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-8 px-4 max-w-9xl">
         <div className="flex items-center justify-center h-64">
           <p className="text-muted-foreground">Loading configuration...</p>
         </div>
@@ -178,7 +178,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">System Configuration</h1>
         <p className="text-muted-foreground mt-1">

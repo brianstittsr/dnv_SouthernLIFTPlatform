@@ -270,7 +270,7 @@ export default function ConsortiumHeroAdminPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 max-w-9xl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">Consortium Hero Slides</h1>
@@ -302,7 +302,7 @@ export default function ConsortiumHeroAdminPage() {
                 Add Slide
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingSlide ? "Edit Slide" : "Add New Slide"}

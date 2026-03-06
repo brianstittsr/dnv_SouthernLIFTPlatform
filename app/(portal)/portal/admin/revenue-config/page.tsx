@@ -631,7 +631,7 @@ export default function RevenueConfigPage() {
           loadTransactions();
         }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-6 w-full max-w-4xl">
+        <TabsList className="grid grid-cols-6 w-full max-w-9xl">
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="partners">Partners</TabsTrigger>
@@ -1024,7 +1024,7 @@ export default function RevenueConfigPage() {
 
           {/* Edit Partner Dialog */}
           <Dialog open={showEditPartnerDialog} onOpenChange={setShowEditPartnerDialog}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-5xl">
               <DialogHeader>
                 <DialogTitle>Edit Partner: {editingPartner?.displayName}</DialogTitle>
                 <DialogDescription>Update partner profile and payout settings</DialogDescription>

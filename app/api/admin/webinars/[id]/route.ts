@@ -1,31 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS } from "@/lib/schema";
+import { Timestamp } from "firebase-admin/firestore";
+import { requireAdmin } from "@/lib/auth/server-auth";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
-
+    await requireAdmin();
     const { id } = await params;
-    const docRef = doc(db, COLLECTIONS.WEBINARS, id);
-    const docSnap = await getDoc(docRef);
+    const docRef = db.collection(COLLECTIONS.WEBINARS).doc(id);
+    const docSnap = await docRef.get();
 
-    if (!docSnap.exists()) {
+    if (!docSnap.exists) {
       return NextResponse.json({ error: "Webinar not found" }, { status: 404 });
     }
 
+    const data = docSnap.data();
     const webinar = {
       id: docSnap.id,
-      ...docSnap.data(),
-      createdAt: docSnap.data().createdAt?.toDate().toISOString(),
-      updatedAt: docSnap.data().updatedAt?.toDate().toISOString(),
-      publishedAt: docSnap.data().publishedAt?.toDate().toISOString(),
+      ...data,
+      createdAt: data?.createdAt?.toDate().toISOString(),
+      updatedAt: data?.updatedAt?.toDate().toISOString(),
+      publishedAt: data?.publishedAt?.toDate().toISOString(),
     };
 
     return NextResponse.json({ data: webinar });
@@ -40,13 +39,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
-
+    await requireAdmin();
     const { id } = await params;
     const body = await req.json();
-    const docRef = doc(db, COLLECTIONS.WEBINARS, id);
+    const docRef = db.collection(COLLECTIONS.WEBINARS).doc(id);
 
     const updateData = {
       ...body,
@@ -57,7 +53,7 @@ export async function PATCH(
     delete updateData.id;
     delete updateData.createdAt;
 
-    await updateDoc(docRef, updateData);
+    await docRef.update(updateData);
 
     return NextResponse.json({ data: { id, ...updateData } });
   } catch (error: any) {
@@ -71,13 +67,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
-
+    await requireAdmin();
     const { id } = await params;
-    const docRef = doc(db, COLLECTIONS.WEBINARS, id);
-    await deleteDoc(docRef);
+    const docRef = db.collection(COLLECTIONS.WEBINARS).doc(id);
+    await docRef.delete();
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

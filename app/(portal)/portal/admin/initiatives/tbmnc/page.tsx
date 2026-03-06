@@ -483,7 +483,7 @@ export default function TBMNCSupplierReadinessPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto py-8 px-4 max-w-9xl space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -868,7 +868,7 @@ export default function TBMNCSupplierReadinessPage() {
 
       {/* Supplier Details Dialog */}
       <Dialog open={!!selectedSupplier && !isAssignAffiliateOpen} onOpenChange={() => setSelectedSupplier(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-5xl">
           {selectedSupplier && (
             <>
               <DialogHeader>
@@ -1037,7 +1037,7 @@ export default function TBMNCSupplierReadinessPage() {
 
       {/* Registration Wizard Dialog */}
       <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
+        <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle>TBMNC Supplier Registration Wizard</DialogTitle>
             <DialogDescription>

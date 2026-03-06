@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CartIcon } from "@/components/cart/cart-icon";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -98,15 +99,7 @@ export function Navbar() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex h-20 py-2 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <Image
-            src="/kdm-logo.png"
-            alt="KDM & Associates Logo"
-            width={270}
-            height={72}
-            className="h-18"
-            style={{ width: 'auto', height: 'auto' }}
-            priority
-          />
+          <span className="text-2xl font-bold text-primary">Strategic Value Plus</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -186,6 +179,7 @@ export function Navbar() {
 
         {/* CTA Buttons */}
         <div className="hidden lg:flex items-center gap-3">
+          <CartIcon />
           <Button variant="ghost" asChild>
             <Link href="/sign-in">Sign In</Link>
           </Button>

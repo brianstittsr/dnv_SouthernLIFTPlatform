@@ -361,6 +361,20 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
+    // Webinars
+    match /webinars/{webinarId} {
+      allow read: if true; // Public read for landing pages
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Transactions - Stripe payment processing
+    match /transactions/{transactionId} {
+      // Only admins can read transactions
+      allow read: if isAdmin();
+      // System writes via Admin SDK (webhooks)
+      allow write: if false;
+    }
+    
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

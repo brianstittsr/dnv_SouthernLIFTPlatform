@@ -22,7 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Save, AlertCircle } from "lucide-react";
+import { ArrowLeft, Save, AlertCircle, Loader2 } from "lucide-react";
 
 interface UserData {
   uid: string;
@@ -268,9 +268,9 @@ export default function UserDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-8 px-4 max-w-9xl">
         <div className="flex items-center justify-center h-64">
-          <p className="text-muted-foreground">Loading user...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </div>
     );
@@ -278,7 +278,7 @@ export default function UserDetailPage() {
 
   if (!user) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-8 px-4 max-w-9xl">
         <Alert variant="destructive">
           <AlertDescription>User not found</AlertDescription>
         </Alert>
@@ -295,7 +295,7 @@ export default function UserDetailPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
       <div className="mb-6">
         <Button
           variant="outline"

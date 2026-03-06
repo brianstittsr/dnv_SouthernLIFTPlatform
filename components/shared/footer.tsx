@@ -40,14 +40,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1 space-y-4">
             <Link href="/" className="flex items-center">
-              <Image
-                src="/kdm-logo.png"
-                alt="KDM & Associates Logo"
-                width={160}
-                height={40}
-                className="h-10"
-                style={{ width: 'auto', height: 'auto' }}
-              />
+              <span className="text-xl font-bold text-white">Strategic Value Plus</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
               Helping businesses win government contracts through 

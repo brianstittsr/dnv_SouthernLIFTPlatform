@@ -230,7 +230,7 @@ export default function SourcewellAdminPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 max-w-9xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">SourceWell Solicitations Admin</h1>
@@ -250,7 +250,7 @@ export default function SourcewellAdminPage() {
                 Add Solicitation
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingSolicitation ? "Edit Solicitation" : "Add New Solicitation"}

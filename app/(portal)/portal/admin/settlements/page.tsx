@@ -436,7 +436,7 @@ export default function SettlementsAdminPage() {
 
       {/* Detail Dialog */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-5xl">
           <DialogHeader>
             <DialogTitle>
               Settlement Statement - {selectedSettlement && format(selectedSettlement.periodStart.toDate(), 'MMMM yyyy')}

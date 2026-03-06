@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, addDoc, Timestamp, query, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS } from "@/lib/schema";
+import { Timestamp } from "firebase-admin/firestore";
+import { requireAdmin } from "@/lib/auth/server-auth";
 
 export async function GET(req: NextRequest) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
+    await requireAdmin();
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  try {
+    const webinarsRef = db.collection(COLLECTIONS.WEBINARS);
+    const snapshot = await webinarsRef.orderBy("createdAt", "desc").get();
 
-    const webinarsRef = collection(db, COLLECTIONS.WEBINARS);
-    const q = query(webinarsRef, orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-
-    const webinars = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate().toISOString(),
-      updatedAt: doc.data().updatedAt?.toDate().toISOString(),
-      publishedAt: doc.data().publishedAt?.toDate().toISOString(),
-    }));
+    const webinars = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate().toISOString(),
+        updatedAt: data.updatedAt?.toDate().toISOString(),
+        publishedAt: data.publishedAt?.toDate().toISOString(),
+      };
+    });
 
     return NextResponse.json({ data: webinars });
   } catch (error: any) {
@@ -30,12 +37,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
-    }
-
+    await requireAdmin();
     const body = await req.json();
-    const webinarsRef = collection(db, COLLECTIONS.WEBINARS);
+    const webinarsRef = db.collection(COLLECTIONS.WEBINARS);
 
     const now = Timestamp.now();
     const docData = {
@@ -44,10 +48,15 @@ export async function POST(req: NextRequest) {
       updatedAt: now,
     };
 
-    const docRef = await addDoc(webinarsRef, docData);
+    const docRef = await webinarsRef.add(docData);
 
     return NextResponse.json({ 
-      data: { id: docRef.id, ...body, createdAt: now.toDate().toISOString(), updatedAt: now.toDate().toISOString() } 
+      data: { 
+        id: docRef.id, 
+        ...body, 
+        createdAt: now.toDate().toISOString(), 
+        updatedAt: now.toDate().toISOString() 
+      } 
     }, { status: 201 });
   } catch (error: any) {
     console.error("Error creating webinar:", error);

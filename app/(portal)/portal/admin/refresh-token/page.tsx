@@ -57,7 +57,7 @@ export default function RefreshTokenPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-2xl">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
       <Card>
         <CardHeader>
           <CardTitle>Refresh Firebase Auth Token</CardTitle>

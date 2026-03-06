@@ -88,7 +88,7 @@ export default function InitiativesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto py-8 px-4 max-w-9xl space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

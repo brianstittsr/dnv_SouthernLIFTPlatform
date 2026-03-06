@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { PRODUCTS } from "@/lib/types/cart";
 import {
   Check,
   Star,
@@ -282,24 +284,44 @@ export default function PricingPage() {
                   </CardContent>
 
                   <CardFooter className="pt-4">
-                    <Button
-                      className="w-full"
-                      size="lg"
-                      variant={tier.popular ? "default" : "outline"}
-                      onClick={() => handleSelectPlan(tier.id)}
-                      disabled={loading === tier.id}
-                    >
-                      {loading === tier.id ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
+                    {tier.id === "kdm-consortium" ? (
+                      <AddToCartButton
+                        product={PRODUCTS.consortium}
+                        variant={tier.popular ? "default" : "outline"}
+                        size="lg"
+                        className="w-full"
+                      >
+                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                      </AddToCartButton>
+                    ) : tier.id === "cmmc-cohort" ? (
+                      <AddToCartButton
+                        product={PRODUCTS["cmmc-cohort"]}
+                        variant={tier.popular ? "default" : "outline"}
+                        size="lg"
+                        className="w-full"
+                      >
+                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                      </AddToCartButton>
+                    ) : (
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        variant={tier.popular ? "default" : "outline"}
+                        onClick={() => handleSelectPlan(tier.id)}
+                        disabled={loading === tier.id}
+                      >
+                        {loading === tier.id ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               );
@@ -463,22 +485,21 @@ export default function PricingPage() {
             achieve CMMC certification, we have the program to help you succeed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
+            <AddToCartButton
+              product={PRODUCTS.consortium}
               variant="secondary"
-              onClick={() => handleSelectPlan("kdm-consortium")}
+              size="lg"
             >
               Join the Consortium
-            </Button>
-            <Link href="/portal/admin/cohorts">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10"
-              >
-                View CMMC Cohorts
-              </Button>
-            </Link>
+            </AddToCartButton>
+            <AddToCartButton
+              product={PRODUCTS["cmmc-cohort"]}
+              variant="outline"
+              size="lg"
+              className="border-white text-white hover:bg-white/10"
+            >
+              Register for Cohort
+            </AddToCartButton>
           </div>
         </div>
       </section>

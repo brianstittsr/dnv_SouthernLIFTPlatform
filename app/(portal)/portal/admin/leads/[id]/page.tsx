@@ -238,7 +238,7 @@ export default function LeadDetailPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
       {/* Header */}
       <div className="mb-6">
         <Link href="/portal/admin/leads">

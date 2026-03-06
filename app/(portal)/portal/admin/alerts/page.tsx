@@ -204,7 +204,7 @@ export default function AlertsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 max-w-9xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Performance Alerts</h1>
         <p className="text-muted-foreground mt-1">
