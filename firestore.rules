@@ -375,6 +375,14 @@ service cloud.firestore {
       allow write: if false;
     }
     
+    // Testimonials - Client reviews and testimonials
+    match /testimonials/{testimonialId} {
+      // Public read for active testimonials (filtered in app)
+      allow read: if true;
+      // Only admins can write
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

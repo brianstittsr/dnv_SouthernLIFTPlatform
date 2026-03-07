@@ -1,56 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import Image from "next/image";
 
-const testimonials = [
-  {
-    quote:
-      "KDM & Associates helped us navigate the 8(a) certification process and connected us with prime contractors. We've since won three federal contracts worth over $2M annually.",
-    author: "Marcus Johnson",
-    title: "CEO",
-    company: "Johnson Tech Solutions",
-    industry: "IT Services",
-    employees: "Client",
-    initials: "MJ",
-  },
-  {
-    quote:
-      "The strategic teaming partnerships KDM facilitated transformed our business. We went from subcontractor to prime contractor status within 18 months.",
-    author: "Sandra Williams",
-    title: "President",
-    company: "Williams Consulting Group",
-    industry: "Professional Services",
-    employees: "Client",
-    initials: "SW",
-  },
-  {
-    quote:
-      "Their What Works approach was exactly what we needed to break into federal contracting. The team's expertise and hands-on mentorship made all the difference.",
-    author: "Roberto Martinez",
-    title: "Owner",
-    company: "Martinez Construction LLC",
-    industry: "Construction",
-    employees: "Client",
-    initials: "RM",
-  },
-  {
-    quote:
-      "KDM's proposal support and grant writing services helped us win our first NOFO award. Their guidance through the federal procurement process was invaluable.",
-    author: "Jennifer Park",
-    title: "CEO",
-    company: "Park Digital Services",
-    industry: "Technology",
-    employees: "Client",
-    initials: "JP",
-  },
-];
+interface Testimonial {
+  id: string;
+  quote: string;
+  clientName: string;
+  clientTitle: string;
+  companyName: string;
+  companyIndustry: string;
+  companyLogoUrl?: string;
+  rating: number;
+  featured: boolean;
+}
 
 export function Testimonials() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch("/api/testimonials");
+      if (!response.ok) throw new Error("Failed to fetch testimonials");
+      const data = await response.json();
+      setTestimonials(data.data || []);
+    } catch (error) {
+      console.error("Error fetching testimonials:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const next = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -60,8 +49,19 @@ export function Testimonials() {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  if (loading || testimonials.length === 0) {
+    return null;
+  }
+
+  const currentTestimonial = testimonials[currentIndex];
+  const initials = currentTestimonial.clientName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-20 md:py-28 bg-muted/30">
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -80,22 +80,43 @@ export function Testimonials() {
               <Quote className="h-12 w-12 text-primary/20 mb-6" />
               
               <blockquote className="text-xl md:text-2xl font-medium mb-8 leading-relaxed">
-                "{testimonials[currentIndex].quote}"
+                "{currentTestimonial.quote}"
               </blockquote>
 
+              {/* Rating */}
+              {currentTestimonial.rating && (
+                <div className="flex gap-1 mb-6">
+                  {Array.from({ length: currentTestimonial.rating }).map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+              )}
+
               <div className="flex items-center gap-4">
-                <Avatar className="h-14 w-14">
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {testimonials[currentIndex].initials}
-                  </AvatarFallback>
-                </Avatar>
+                {currentTestimonial.companyLogoUrl ? (
+                  <div className="relative w-14 h-14 rounded-full bg-background border-2 flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={currentTestimonial.companyLogoUrl}
+                      alt={currentTestimonial.companyName}
+                      width={48}
+                      height={48}
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <Avatar className="h-14 w-14">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
                 <div>
-                  <div className="font-semibold">{testimonials[currentIndex].author}</div>
+                  <div className="font-semibold">{currentTestimonial.clientName}</div>
                   <div className="text-sm text-muted-foreground">
-                    {testimonials[currentIndex].title}, {testimonials[currentIndex].company}
+                    {currentTestimonial.clientTitle}, {currentTestimonial.companyName}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    {testimonials[currentIndex].industry} • {testimonials[currentIndex].employees}
+                    {currentTestimonial.companyIndustry} • Client
                   </div>
                 </div>
               </div>
