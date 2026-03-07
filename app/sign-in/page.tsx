@@ -66,6 +66,18 @@ export default function SignInPage() {
           firebaseUid = userCredential.user.uid;
           userName = userCredential.user.displayName;
 
+          // Get ID token and create session cookie
+          const idToken = await userCredential.user.getIdToken();
+          const sessionResponse = await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idToken }),
+          });
+
+          if (!sessionResponse.ok) {
+            throw new Error("Failed to create session");
+          }
+
           // Check if this email matches an existing Team member and link them
           // This handles the case where a Team member exists but hasn't been linked yet
           const teammember = await findAndLinkTeammember(email, firebaseUid);
