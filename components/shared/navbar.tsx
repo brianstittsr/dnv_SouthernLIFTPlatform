@@ -99,7 +99,7 @@ export function Navbar() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex h-20 py-2 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <span className="text-2xl font-bold text-primary">Strategic Value Plus</span>
+          <span className="text-2xl font-bold text-primary">KDM & Associates</span>
         </Link>
 
         {/* Desktop Navigation */}
