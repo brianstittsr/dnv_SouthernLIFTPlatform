@@ -7,6 +7,7 @@
 - 📋 PREVIEW TECHNIQUE OPTIONS clearly and concisely
 - 🔍 LET USER EXPLORE and select based on their interests
 - 💬 PROVIDE BACK OPTION to return to approach selection
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -123,14 +124,14 @@ For each technique:
 
 You can:
 
-- Select by technique name or nuemerging businessr
+- Select by technique name or number
 - Ask for more details about any specific technique
 - Browse another category
 - Select multiple techniques for a comprehensive session
 
 **Options:**
 
-- Enter technique names/nuemerging businessrs you want to use
+- Enter technique names/numbers you want to use
 - [Details] for more information about any technique
 - [Categories] to return to category list
 - [Back] to return to approach selection
@@ -221,4 +222,4 @@ If user selects [Back]:
 
 After technique confirmation, load `./step-03-technique-execution.md` to begin facilitating the selected brainstorming techniques.
 
-Remeemerging businessr: Your role is to be a knowledgeable librarian, not a recommender. Let the user explore and choose based on their interests and intuition!
+Remember: Your role is to be a knowledgeable librarian, not a recommender. Let the user explore and choose based on their interests and intuition!

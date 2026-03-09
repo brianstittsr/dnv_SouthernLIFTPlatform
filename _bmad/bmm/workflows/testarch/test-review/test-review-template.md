@@ -7,6 +7,8 @@
 
 ---
 
+Note: This review audits existing tests; it does not generate tests.
+
 ## Executive Summary
 
 **Overall Assessment**: {Excellent | Good | Acceptable | Needs Improvement | Critical Issues}
@@ -84,10 +86,10 @@ Grade:                   {grade}
 
 {For each critical issue:}
 
-### {issue_nuemerging businessr}. {Issue Title}
+### {issue_number}. {Issue Title}
 
 **Severity**: P0 (Critical)
-**Location**: `{filename}:{line_nuemerging businessr}`
+**Location**: `{filename}:{line_number}`
 **Criterion**: {criterion_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -116,7 +118,7 @@ Grade:                   {grade}
 {Explanation of impact - flakiness risk, maintainability, reliability}
 
 **Related Violations**:
-{If similar issue appears elsewhere, note line nuemerging businessrs}
+{If similar issue appears elsewhere, note line numbers}
 
 ---
 
@@ -126,10 +128,10 @@ Grade:                   {grade}
 
 {For each recommendation:}
 
-### {rec_nuemerging businessr}. {Recommendation Title}
+### {rec_number}. {Recommendation Title}
 
 **Severity**: {P1 (High) | P2 (Medium) | P3 (Low)}
-**Location**: `{filename}:{line_nuemerging businessr}`
+**Location**: `{filename}:{line_number}`
 **Criterion**: {criterion_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -168,9 +170,9 @@ Grade:                   {grade}
 
 {For each best practice:}
 
-### {practice_nuemerging businessr}. {Best Practice Title}
+### {practice_number}. {Best Practice Title}
 
-**Location**: `{filename}:{line_nuemerging businessr}`
+**Location**: `{filename}:{line_number}`
 **Pattern**: {pattern_name}
 **Knowledge Base**: [{fragment_name}]({fragment_path})
 
@@ -335,7 +337,7 @@ See [tea-index.csv](../../../testarch/tea-index.csv) for complete knowledge base
 
 ### Violation Summary by Location
 
-{Table of all violations sorted by line nuemerging businessr:}
+{Table of all violations sorted by line number:}
 
 | Line   | Severity      | Criterion   | Issue         | Fix         |
 | ------ | ------------- | ----------- | ------------- | ----------- |

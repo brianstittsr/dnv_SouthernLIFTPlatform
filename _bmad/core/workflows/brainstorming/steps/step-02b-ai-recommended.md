@@ -7,6 +7,7 @@
 - 📋 LOAD TECHNIQUES ON-DEMAND from brain-methods.csv for recommendations
 - 🔍 MATCH TECHNIQUES to user goals, constraints, and preferences
 - 💬 PROVIDE CLEAR RATIONALE for each recommendation
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -141,7 +142,7 @@ Provide deeper insight into each recommended technique:
 
 ### 5. Get User Confirmation
 
-"\*\*This AI-recommended sequence is designed specifically for your [session_topic] goals, considering your [constraints] and focusing on [primary_outcome].
+"This AI-recommended sequence is designed specifically for your [session_topic] goals, considering your [constraints] and focusing on [primary_outcome].
 
 **Does this approach sound perfect for your session?**
 
@@ -233,4 +234,4 @@ Load `./step-03-technique-execution.md`
 
 After user confirmation, load `./step-03-technique-execution.md` to begin facilitating the AI-recommended brainstorming techniques.
 
-Remeemerging businessr: Your recommendations should demonstrate clear expertise while respecting user's final decision-making authority!
+Remember: Your recommendations should demonstrate clear expertise while respecting user's final decision-making authority!

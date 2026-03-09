@@ -10,6 +10,7 @@
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
 - 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete research
 - 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -233,4 +234,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-03-customer-pain-points.md` to analyze customer pain points, challenges, and unmet needs for {{research_topic}}.
 
-Remeemerging businessr: Always write research content to document immediately and emphasize current customer data with rigorous source verification!
+Remember: Always write research content to document immediately and emphasize current customer data with rigorous source verification!

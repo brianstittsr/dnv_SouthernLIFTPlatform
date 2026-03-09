@@ -7,6 +7,7 @@
 - 📋 LOAD TECHNIQUES ON-DEMAND from brain-methods.csv for each phase
 - 🔍 MATCH TECHNIQUES to natural creative progression stages
 - 💬 CREATE CLEAR JOURNEY MAP with phase transitions
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -81,7 +82,7 @@ Select optimal techniques for each progressive phase:
 
 - **Category:** Creative/Innovative techniques
 - **Why for Phase 1:** Perfect for generating maximum idea quantity without constraints
-- **Expected Outcome:** [Nuemerging businessr]+ raw ideas across diverse categories
+- **Expected Outcome:** [Number]+ raw ideas across diverse categories
 - **Creative Energy:** High energy, expansive thinking
 
 **Alternative if time-constrained:** [Simpler exploration technique]"
@@ -133,7 +134,7 @@ Show the full progressive flow with timing and transitions:
 **Phase 1: Expansive Exploration** ([duration])
 
 - **Technique:** [Selected technique]
-- **Goal:** Generate [nuemerging businessr]+ diverse ideas without limits
+- **Goal:** Generate [number]+ diverse ideas without limits
 - **Energy:** High, wild, boundary-breaking creativity
 
 **→ Phase Transition:** We'll review and cluster ideas before moving deeper
@@ -260,4 +261,4 @@ Load `./step-03-technique-execution.md`
 
 After user confirmation, load `./step-03-technique-execution.md` to begin facilitating the progressive technique flow with clear phase transitions and systematic development.
 
-Remeemerging businessr: Progressive flow should feel like a guided creative journey - systematic, comprehensive, and naturally leading from wild ideas to actionable plans!
+Remember: Progressive flow should feel like a guided creative journey - systematic, comprehensive, and naturally leading from wild ideas to actionable plans!

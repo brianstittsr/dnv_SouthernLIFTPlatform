@@ -15,7 +15,7 @@ description: Creates a concise project-context.md file with critical rules and p
 
 This uses **micro-file architecture** for disciplined execution:
 
-- Each step is a self-contained file with eemerging businessdded rules
+- Each step is a self-contained file with embedded rules
 - Sequential progression with user control at each step
 - Document state tracked in frontmatter
 - Focus on lean, LLM-optimized content generation
@@ -32,6 +32,7 @@ Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 - `project_name`, `output_folder`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as system-generated current datetime
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Paths
 

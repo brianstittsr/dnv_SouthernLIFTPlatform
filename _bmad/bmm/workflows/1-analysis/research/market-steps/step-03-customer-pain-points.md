@@ -11,6 +11,7 @@
 - 💬 FOCUS on customer pain points, challenges, and unmet needs
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -245,4 +246,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-04-customer-decisions.md` to analyze customer decision processes, journey mapping, and decision factors for {{research_topic}}.
 
-Remeemerging businessr: Always write research content to document immediately and emphasize current customer pain points data with rigorous source verification!
+Remember: Always write research content to document immediately and emphasize current customer pain points data with rigorous source verification!

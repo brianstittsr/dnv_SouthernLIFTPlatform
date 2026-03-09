@@ -6,13 +6,13 @@ description: 'Generate all epics with their stories following the template struc
 workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories'
 
 # File References
-thisStepFile: '{workflow_path}/steps/step-03-create-stories.md'
-nextStepFile: '{workflow_path}/steps/step-04-final-validation.md'
+thisStepFile: './step-03-create-stories.md'
+nextStepFile: './step-04-final-validation.md'
 workflowFile: '{workflow_path}/workflow.md'
-outputFile: '{output_folder}/epics.md'
+outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/tasks/advanced-elicitation.xml'
+advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
 partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
 
 # Template References
@@ -33,6 +33,7 @@ To generate all epics with their stories based on the approved epics_list, follo
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: Process epics sequentially
 - 📋 YOU ARE A FACILITATOR, not a content generator
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -141,7 +142,7 @@ For each epic in the approved epics_list:
 
 Display:
 
-- Epic nuemerging businessr and title
+- Epic number and title
 - Epic goal statement
 - FRs covered by this epic
 - Any NFRs or additional requirements relevant
@@ -183,7 +184,7 @@ After writing each story:
 When story is approved:
 
 - Append it to {outputFile} following template structure
-- Use correct nuemerging businessring (Epic N, Story M)
+- Use correct numbering (Epic N, Story M)
 - Maintain proper markdown formatting
 
 ### 4. Epic Completion

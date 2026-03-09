@@ -6,13 +6,13 @@ description: 'Design and approve the epics_list that will organize all requireme
 workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories'
 
 # File References
-thisStepFile: '{workflow_path}/steps/step-02-design-epics.md'
-nextStepFile: '{workflow_path}/steps/step-03-create-stories.md'
+thisStepFile: './step-02-design-epics.md'
+nextStepFile: './step-03-create-stories.md'
 workflowFile: '{workflow_path}/workflow.md'
-outputFile: '{output_folder}/epics.md'
+outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/tasks/advanced-elicitation.xml'
+advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
 partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
 
 # Template References
@@ -33,6 +33,7 @@ To design and get approval for the epics_list that will organize all requirement
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -113,7 +114,7 @@ For each proposed epic:
 
 1. **Epic Title**: User-centric, value-focused
 2. **User Outcome**: What users can accomplish after this epic
-3. **FR Coverage**: Which FR nuemerging businessrs this epic addresses
+3. **FR Coverage**: Which FR numbers this epic addresses
 4. **Implementation Notes**: Any technical or UX considerations
 
 **Step C: Create the epics_list**
@@ -138,7 +139,7 @@ Format the epics_list as:
 
 Display the complete epics_list to user with:
 
-- Total nuemerging businessr of epics
+- Total number of epics
 - FR coverage per epic
 - User value delivered by each epic
 - Any natural dependencies

@@ -1,7 +1,7 @@
 # Create Diagram - Workflow Instructions
 
 ```xml
-<critical>The workflow execution engine is governed by: {project_root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
 <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
 <critical>This workflow creates system architecture diagrams, ERDs, UML diagrams, or general technical diagrams in Excalidraw format.</critical>
 
@@ -42,7 +42,7 @@
 
   <step n="4" goal="Create Theme" elicit="true">
     <action>Ask: "Choose a color scheme for your diagram:"</action>
-    <action>Present nuemerging businessred options:
+    <action>Present numbered options:
       1. Professional
          - Component: #e3f2fd (light blue)
          - Database: #e8f5e9 (light green)

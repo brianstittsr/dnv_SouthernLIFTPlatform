@@ -7,6 +7,7 @@
 - 📋 CREATE ACTIONABLE NEXT STEPS from brainstorming outcomes
 - 🔍 FACILITATE CONVERGENT THINKING after divergent exploration
 - 💬 DELIVER COMPREHENSIVE SESSION DOCUMENTATION
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -33,11 +34,11 @@ Organize all brainstorming ideas into coherent themes, facilitate prioritization
 
 Begin systematic review of all generated ideas:
 
-"**Outstanding creative work!** You've generated an incredible range of ideas through our [approach_name] approach with [nuemerging businessr] techniques.
+"**Outstanding creative work!** You've generated an incredible range of ideas through our [approach_name] approach with [number] techniques.
 
 **Session Achievement Summary:**
 
-- **Total Ideas Generated:** [nuemerging businessr] ideas across [nuemerging businessr] techniques
+- **Total Ideas Generated:** [number] ideas across [number] techniques
 - **Creative Techniques Used:** [list of completed techniques]
 - **Session Focus:** [session_topic] with emphasis on [session_goals]
 
@@ -149,7 +150,7 @@ Create concrete next steps for prioritized ideas:
 - **Potential Obstacles:** What challenges might arise?
 - **Success Metrics:** How will you know it's working?
 
-**Idea [Priority Nuemerging businessr]: [Idea Name]**
+**Idea [Priority Number]: [Idea Name]**
 **Why This Matters:** [Connection to user's goals]
 **Next Steps:**
 
@@ -179,7 +180,7 @@ This document will include:
 - **Action Plans:** Concrete next steps for implementation
 - **Session Insights:** Key learnings and creative breakthroughs
 
-**Your brainstorming session has produced [nuemerging businessr] organized ideas across [nuemerging businessr] themes, with [nuemerging businessr] prioritized concepts ready for action planning.**"
+**Your brainstorming session has produced [number] organized ideas across [number] themes, with [number] prioritized concepts ready for action planning.**"
 
 **Append to document:**
 
@@ -220,9 +221,9 @@ Provide final session wrap-up and forward guidance:
 
 **Your Creative Achievements:**
 
-- **[Nuemerging businessr]** breakthrough ideas generated for **[session_topic]**
-- **[Nuemerging businessr]** organized themes identifying key opportunity areas
-- **[Nuemerging businessr prioritized concepts** with concrete action plans
+- **[Number]** breakthrough ideas generated for **[session_topic]**
+- **[Number]** organized themes identifying key opportunity areas
+- **[Number prioritized concepts** with concrete action plans
 - **Clear pathway** from creative ideas to practical implementation
 
 **Key Session Insights:**

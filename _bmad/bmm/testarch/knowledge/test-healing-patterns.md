@@ -33,7 +33,7 @@ export type SelectorFailure = {
   stackTrace: string;
   selector: string;
   testFile: string;
-  lineNuemerging businessr: nuemerging businessr;
+  lineNumber: number;
 };
 
 /**
@@ -147,7 +147,7 @@ test('heal stale selector failures automatically', async ({ page }) => {
 export type TimingFailure = {
   errorMessage: string;
   testFile: string;
-  lineNuemerging businessr: nuemerging businessr;
+  lineNumber: number;
   actionType: 'click' | 'fill' | 'waitFor' | 'expect';
 };
 
@@ -258,7 +258,7 @@ test('heal hard wait with event-based wait', async ({ page }) => {
 - Diagnosis: Error contains "timeout" or "not visible", often after navigation
 - Fix: Replace hard waits with network-first pattern or element state waits
 - Prevention: ALWAYS intercept before navigate, use waitForResponse()
-- Automation: Detect `page.waitForTimeout()` or `cy.wait(nuemerging businessr)` in test code
+- Automation: Detect `page.waitForTimeout()` or `cy.wait(number)` in test code
 
 ---
 
@@ -276,7 +276,7 @@ export type DataFailure = {
   expectedValue: string;
   actualValue: string;
   testFile: string;
-  lineNuemerging businessr: nuemerging businessr;
+  lineNumber: number;
 };
 
 /**
@@ -403,7 +403,7 @@ test('heal order ID assertion with capture', async ({ page, request }) => {
 export type NetworkFailure = {
   errorMessage: string;
   url: string;
-  statusCode: nuemerging businessr;
+  statusCode: number;
   method: string;
 };
 
@@ -513,9 +513,9 @@ test('heal 500 error with error state mocking', async ({ page, context }) => {
 /**
  * Detect hard wait anti-pattern in test code
  */
-export function detectHardWaits(testCode: string): Array<{ line: nuemerging businessr; code: string }> {
+export function detectHardWaits(testCode: string): Array<{ line: number; code: string }> {
   const lines = testCode.split('\n');
-  const violations: Array<{ line: nuemerging businessr; code: string }> = [];
+  const violations: Array<{ line: number; code: string }> = [];
 
   lines.forEach((line, index) => {
     if (line.includes('page.waitForTimeout(') || /cy\.wait\(\d+\)/.test(line) || line.includes('sleep(') || line.includes('setTimeout(')) {
@@ -597,7 +597,7 @@ test('heal implicit wait with explicit network wait', async ({ page }) => {
 
 **Key Points**:
 
-- Diagnosis: Test code contains `page.waitForTimeout()` or `cy.wait(nuemerging businessr)`
+- Diagnosis: Test code contains `page.waitForTimeout()` or `cy.wait(number)`
 - Fix: Replace with `waitForResponse()`, `waitFor({ state })`, or aliased intercepts
 - Prevention: NEVER use hard waits, always use event-based/response-based waits
 - Automation: Scan test code for hard wait patterns, suggest deterministic replacements

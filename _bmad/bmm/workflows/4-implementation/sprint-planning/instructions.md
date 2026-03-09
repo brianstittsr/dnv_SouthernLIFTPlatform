@@ -1,7 +1,7 @@
 # Sprint Planning - Sprint Status Generator
 
-<critical>The workflow execution engine is governed by: {project-root}/\_bmad/core/tasks/workflow.xml</critical>
-<critical>You MUST have already loaded and processed: {project-root}/\_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: {project-root}/_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml</critical>
 
 ## 📚 Document Discovery - Full Epic Loading
 
@@ -29,7 +29,7 @@
 
 <action>For each epic file found, extract:</action>
 
-- Epic nuemerging businessrs from headers like `## Epic 1:` or `## Epic 2:`
+- Epic numbers from headers like `## Epic 1:` or `## Epic 2:`
 - Story IDs and titles from patterns like `### Story 1.1: User Authentication`
 - Convert story format from `Epic.Story: Title` to kebab-case key: `epic-story-title`
 

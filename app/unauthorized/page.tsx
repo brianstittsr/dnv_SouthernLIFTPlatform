@@ -23,6 +23,15 @@ export default function UnauthorizedPage() {
             This page requires administrator privileges. If you believe you should have access,
             please contact your system administrator.
           </p>
+          <div className="bg-muted/50 p-4 rounded-lg border">
+            <p className="text-xs text-muted-foreground text-center">
+              <strong>Platform Admin?</strong> If you're the designated platform admin 
+              (bstitt@strategicvalueplus.com), you can grant yourself admin access at{" "}
+              <Link href="/admin-setup" className="text-primary hover:underline font-medium">
+                /admin-setup
+              </Link>
+            </p>
+          </div>
           <div className="flex flex-col gap-3 pt-4">
             <Button asChild className="w-full">
               <Link href="/portal/command-center">

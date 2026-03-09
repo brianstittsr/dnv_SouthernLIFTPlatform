@@ -1,7 +1,7 @@
 # Create Wireframe - Workflow Instructions
 
 ```xml
-<critical>The workflow execution engine is governed by: {project_root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
 <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
 <critical>This workflow creates website or app wireframes in Excalidraw format.</critical>
 
@@ -37,7 +37,7 @@
 
   <step n="4" goal="Create Theme" elicit="true">
     <action>Ask: "Choose a wireframe style:"</action>
-    <action>Present nuemerging businessred options:
+    <action>Present numbered options:
       1. Classic Wireframe
          - Background: #ffffff (white)
          - Container: #f5f5f5 (light gray)

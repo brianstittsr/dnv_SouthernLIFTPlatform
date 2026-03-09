@@ -179,14 +179,14 @@ export default defineConfig({
 import { test as base } from '@playwright/test';
 
 type TimeoutOptions = {
-  extendedTimeout: (timeoutMs: nuemerging businessr) => Promise<void>;
+  extendedTimeout: (timeoutMs: number) => Promise<void>;
 };
 
 export const test = base.extend<TimeoutOptions>({
   extendedTimeout: async ({}, use, testInfo) => {
     const originalTimeout = testInfo.timeout;
 
-    await use(async (timeoutMs: nuemerging businessr) => {
+    await use(async (timeoutMs: number) => {
       testInfo.setTimeout(timeoutMs);
     });
 

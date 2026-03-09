@@ -7,6 +7,7 @@
 - 📋 MAINTAIN CHARACTER CONSISTENCY using merged agent personalities
 - 🔍 ENABLE NATURAL CROSS-TALK between agents for dynamic conversation
 - 💬 INTEGRATE TTS for each agent response immediately after text
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -200,4 +201,4 @@ Check for exit conditions before continuing:
 
 When user selects 'E' or exit conditions are met, load `./step-03-graceful-exit.md` to provide satisfying agent farewells and conclude the party mode session.
 
-Remeemerging businessr: Orchestrate engaging, intelligent conversations while maintaining authentic agent personalities and natural interaction patterns!
+Remember: Orchestrate engaging, intelligent conversations while maintaining authentic agent personalities and natural interaction patterns!

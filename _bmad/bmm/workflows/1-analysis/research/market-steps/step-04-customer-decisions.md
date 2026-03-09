@@ -11,6 +11,7 @@
 - 💬 FOCUS on customer decision processes and journey mapping
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -255,4 +256,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-05-competitive-analysis.md` to analyze competitive landscape, market positioning, and competitive strategies for {{research_topic}}.
 
-Remeemerging businessr: Always write research content to document immediately and emphasize current customer decision data with rigorous source verification!
+Remember: Always write research content to document immediately and emphasize current customer decision data with rigorous source verification!

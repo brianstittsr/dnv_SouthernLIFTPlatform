@@ -366,7 +366,7 @@ import { FLAGS, FlagKey } from '@/utils/feature-flags';
 const LD_SDK_KEY = process.env.LD_SDK_KEY_TEST;
 const LD_API_BASE = 'https://app.launchdarkly.com/api/v2';
 
-type FlagVariation = boolean | string | nuemerging businessr | object;
+type FlagVariation = boolean | string | number | object;
 
 /**
  * Set flag variation for specific user
@@ -418,7 +418,7 @@ export async function removeFlagTarget(flagKey: FlagKey, userId: string): Promis
  * Percentage rollout helper
  * Enable flag for N% of users
  */
-export async function setFlagRolloutPercentage(flagKey: FlagKey, percentage: nuemerging businessr): Promise<void> {
+export async function setFlagRolloutPercentage(flagKey: FlagKey, percentage: number): Promise<void> {
   if (percentage < 0 || percentage > 100) {
     throw new Error('Percentage must be between 0 and 100');
   }
@@ -541,7 +541,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 type AuditResult = {
-  totalFlags: nuemerging businessr;
+  totalFlags: number;
   expiredFlags: FlagKey[];
   missingOwners: FlagKey[];
   missingDates: FlagKey[];

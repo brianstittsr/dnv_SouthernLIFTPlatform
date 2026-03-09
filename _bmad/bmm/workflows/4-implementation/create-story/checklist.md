@@ -33,7 +33,7 @@ This is a COMPETITION to create the **ULTIMATE story context** that makes LLM de
 
 ### **When Running from Create-Story Workflow:**
 
-- The `{project_root}/_bmad/core/tasks/validate-workflow.xml` framework will automatically:
+- The `{project-root}/_bmad/core/tasks/validate-workflow.xml` framework will automatically:
   - Load this checklist file
   - Load the newly created story file (`{story_file_path}`)
   - Load workflow variables from `{installed_path}/workflow.yaml`
@@ -63,7 +63,7 @@ You will systematically re-do the entire story creation process, but with a crit
 
 1. **Load the workflow configuration**: `{installed_path}/workflow.yaml` for variable inclusion
 2. **Load the story file**: `{story_file_path}` (provided by user or discovered)
-3. **Load validation framework**: `{project_root}/_bmad/core/tasks/validate-workflow.xml`
+3. **Load validation framework**: `{project-root}/_bmad/core/tasks/validate-workflow.xml`
 4. **Extract metadata**: epic_num, story_num, story_key, story_title from story file
 5. **Resolve all workflow variables**: story_dir, output_folder, epics_file, architecture_file, etc.
 6. **Understand current status**: What story implementation guidance is currently provided?
@@ -288,10 +288,10 @@ After presenting the suggestions, ask the user:
 
 Which improvements would you like me to apply to the story?
 
-**Select from the nuemerging businessred list above, or choose:**
+**Select from the numbered list above, or choose:**
 - **all** - Apply all suggested improvements
 - **critical** - Apply only critical issues
-- **select** - I'll choose specific nuemerging businessrs
+- **select** - I'll choose specific numbers
 - **none** - Keep story as-is
 - **details** - Show me more details about any suggestion
 
@@ -327,7 +327,7 @@ The story now includes comprehensive developer guidance to prevent common implem
 
 ## **💪 COMPETITIVE EXCELLENCE MINDSET**
 
-**Your goal:** Improve the story file with dev agent needed context that makes flawless implementation inevitable while being optimized for LLM developer agent consumption. Remeemerging businessr the dev agent will ONLY have this file to use.
+**Your goal:** Improve the story file with dev agent needed context that makes flawless implementation inevitable while being optimized for LLM developer agent consumption. Remember the dev agent will ONLY have this file to use.
 
 **Success Criteria:** The LLM developer agent that processes your improved story will have:
 

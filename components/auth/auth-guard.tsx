@@ -26,17 +26,20 @@ export function AuthGuard({
     if (!auth) {
       console.error("Firebase auth not initialized");
       setIsLoading(false);
+      router.push(fallbackUrl);
       return;
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
+        console.log("AuthGuard: No user logged in, redirecting to sign-in");
         setIsAuthenticated(false);
         setIsLoading(false);
-        router.push(`${fallbackUrl}?redirect=${window.location.pathname}`);
+        router.push(`${fallbackUrl}?redirect=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
 
+      console.log("AuthGuard: User authenticated:", user.email);
       setIsAuthenticated(true);
 
       // If admin is required, check user role
@@ -45,18 +48,27 @@ export function AuthGuard({
           const idTokenResult = await user.getIdTokenResult();
           const isAdmin = 
             idTokenResult.claims.role === "admin" ||
+            idTokenResult.claims.role === "platform_admin" ||
             idTokenResult.claims.svpRole === "platform_admin";
 
+          console.log("AuthGuard: Admin check -", {
+            email: user.email,
+            claims: idTokenResult.claims,
+            isAdmin
+          });
+
           if (!isAdmin) {
+            console.warn("AuthGuard: User lacks admin privileges, redirecting to unauthorized");
             setIsAuthorized(false);
             setIsLoading(false);
             router.push("/unauthorized");
             return;
           }
 
+          console.log("AuthGuard: Admin access granted");
           setIsAuthorized(true);
         } catch (error) {
-          console.error("Error checking admin status:", error);
+          console.error("AuthGuard: Error checking admin status:", error);
           setIsAuthorized(false);
           setIsLoading(false);
           router.push("/unauthorized");

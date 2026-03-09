@@ -60,7 +60,7 @@
 - File path (e.g., "server/src/api/users.ts")
 - Feature name (e.g., "authentication system")
 
-Enter your choice (nuemerging businessr or custom path):
+Enter your choice (number or custom path):
 </ask>
 
 <action>Parse user input to determine: - target_type: "folder" | "file" | "feature" | "api_group" | "component_group" - target_path: Absolute path to scan - target_name: Human-readable name for documentation - target_scope: List of all files to analyze

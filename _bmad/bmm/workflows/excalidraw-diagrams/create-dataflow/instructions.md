@@ -1,7 +1,7 @@
 # Create Data Flow Diagram - Workflow Instructions
 
 ```xml
-<critical>The workflow execution engine is governed by: {project_root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
 <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
 <critical>This workflow creates data flow diagrams (DFD) in Excalidraw format.</critical>
 
@@ -33,7 +33,7 @@
     <action>Check for existing theme.json, ask to use if exists</action>
     <check if="no existing theme">
       <action>Ask: "Choose a DFD color scheme:"</action>
-      <action>Present nuemerging businessred options:
+      <action>Present numbered options:
         1. Standard DFD
            - Process: #e3f2fd (light blue)
            - Data Store: #e8f5e9 (light green)
@@ -60,7 +60,7 @@
   </step>
 
   <step n="4" goal="Plan DFD Structure">
-    <action>List all processes with nuemerging businessrs (1.0, 2.0, etc.)</action>
+    <action>List all processes with numbers (1.0, 2.0, etc.)</action>
     <action>List all data stores (D1, D2, etc.)</action>
     <action>List all external entities</action>
     <action>Map all data flows with labels</action>
@@ -79,13 +79,13 @@
 
     <substep>Build Order:
       1. External entities (rectangles, bold border)
-      2. Processes (circles/ellipses with nuemerging businessrs)
+      2. Processes (circles/ellipses with numbers)
       3. Data stores (parallel lines or rectangles)
       4. Data flows (labeled arrows)
     </substep>
 
     <substep>DFD Rules:
-      - Processes: Nuemerging businessred (1.0, 2.0), verb phrases
+      - Processes: Numbered (1.0, 2.0), verb phrases
       - Data stores: Named (D1, D2), noun phrases
       - External entities: Named, noun phrases
       - Data flows: Labeled with data names, arrows show direction

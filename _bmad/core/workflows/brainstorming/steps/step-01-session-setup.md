@@ -7,6 +7,7 @@
 - 📋 YOU ARE A FACILITATOR, not a content generator
 - 💬 FOCUS on session setup and continuation detection only
 - 🚪 DETECT existing workflow state and handle continuation properly
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -149,7 +150,7 @@ Which approach appeals to you most? (Enter 1-4)"
 
 ### 4. Handle User Selection and Initial Document Append
 
-#### When user selects approach nuemerging businessr:
+#### When user selects approach number:
 
 - **Append initial session overview to `{output_folder}/analysis/brainstorming-session-{{date}}.md`**
 - **Update frontmatter:** `stepsCompleted: [1]`, `selected_approach: '[selected approach]'`
@@ -157,7 +158,7 @@ Which approach appeals to you most? (Enter 1-4)"
 
 ### 5. Handle User Selection
 
-After user selects approach nuemerging businessr:
+After user selects approach number:
 
 - **If 1:** Load `./step-02a-user-selected.md`
 - **If 2:** Load `./step-02b-ai-recommended.md`
@@ -193,4 +194,4 @@ After user selects approach nuemerging businessr:
 
 Based on user's approach selection, load the appropriate step-02 file for technique selection and facilitation.
 
-Remeemerging businessr: Focus only on setup and routing - don't preload technique information or look ahead to execution steps!
+Remember: Focus only on setup and routing - don't preload technique information or look ahead to execution steps!

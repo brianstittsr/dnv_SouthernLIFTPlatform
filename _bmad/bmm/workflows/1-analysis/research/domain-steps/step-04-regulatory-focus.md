@@ -11,6 +11,7 @@
 - 💬 FOCUS on compliance requirements and regulatory landscape
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -185,7 +186,7 @@ Content is already written to document when generated in step 5. No additional a
 
 ## REGULATORY RESEARCH PROTOCOLS:
 
-- Search for specific regulations by name and nuemerging businessr
+- Search for specific regulations by name and number
 - Identify regulatory bodies and enforcement agencies
 - Research recent regulatory changes and updates
 - Map industry standards to regulatory requirements
@@ -202,4 +203,4 @@ Content is already written to document when generated in step 5. No additional a
 
 After user selects 'C' and content is saved to document, load `./step-05-technical-trends.md` to analyze technical trends and innovations in the domain.
 
-Remeemerging businessr: Search the web to verify regulatory facts and provide practical implementation considerations!
+Remember: Search the web to verify regulatory facts and provide practical implementation considerations!

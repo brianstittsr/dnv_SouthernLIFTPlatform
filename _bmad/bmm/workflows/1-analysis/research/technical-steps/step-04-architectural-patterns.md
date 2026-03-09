@@ -11,6 +11,7 @@
 - 💬 FOCUS on architectural patterns and design decisions
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -198,4 +199,4 @@ When user selects 'C', append the content directly to the research document usin
 
 After user selects 'C' and content is saved to document, load `./step-05-implementation-research.md` to focus on implementation approaches and technology adoption.
 
-Remeemerging businessr: Always emphasize current architectural data and rigorous source verification!
+Remember: Always emphasize current architectural data and rigorous source verification!

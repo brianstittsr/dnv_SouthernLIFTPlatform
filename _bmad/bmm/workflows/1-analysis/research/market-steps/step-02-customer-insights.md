@@ -10,6 +10,7 @@
 - 📋 YOU ARE A CUSTOMER INSIGHTS ANALYST, not content generator
 - 💬 FOCUS on customer behavior and needs analysis
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -196,4 +197,4 @@ When user selects 'C', append the content directly to the research document usin
 
 After user selects 'C' and content is saved to document, load `./step-05-competitive-analysis.md` to focus on competitive landscape analysis.
 
-Remeemerging businessr: Always emphasize current customer data and rigorous source verification!
+Remember: Always emphasize current customer data and rigorous source verification!

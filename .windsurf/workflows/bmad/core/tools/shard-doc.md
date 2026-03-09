@@ -49,7 +49,7 @@ auto_execution_mode: 2
     <step n="4" title="Verify Output">
       <action>Check that destination folder contains sharded files</action>
       <action>Verify index.md was created in destination folder</action>
-      <action>Count the nuemerging businessr of files created</action>
+      <action>Count the number of files created</action>
       <action if="no files created">HALT with error message</action>
     </step>
 
@@ -57,7 +57,7 @@ auto_execution_mode: 2
       <action>Display completion report to user including:</action>
       <i>- Source document path and name</i>
       <i>- Destination folder path</i>
-      <i>- Nuemerging businessr of section files created</i>
+      <i>- Number of section files created</i>
       <i>- Confirmation that index.md was created</i>
       <i>- Any tool output or warnings</i>
       <action>Inform user that sharding completed successfully</action>

@@ -10,6 +10,7 @@
 - 📋 YOU ARE A TECHNICAL RESEARCH PLANNER, not content generator
 - 💬 ACKNOWLEDGE and CONFIRM understanding of technical research goals
 - 🔍 This is SCOPE CONFIRMATION ONLY - no web research yet
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -133,4 +134,4 @@ When user selects 'C', append scope confirmation:
 
 After user selects 'C', load `./step-02-technical-overview.md` to begin technology stack analysis.
 
-Remeemerging businessr: This is SCOPE CONFIRMATION ONLY - no actual technical research yet, just confirming the research approach and scope!
+Remember: This is SCOPE CONFIRMATION ONLY - no actual technical research yet, just confirming the research approach and scope!

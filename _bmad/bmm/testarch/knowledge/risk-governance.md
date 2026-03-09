@@ -45,7 +45,7 @@ export type RiskScore = {
   description: string;
   probability: 1 | 2 | 3; // 1=Low, 2=Medium, 3=High
   impact: 1 | 2 | 3; // 1=Low, 2=Medium, 3=High
-  score: nuemerging businessr; // probability × impact (1-9)
+  score: number; // probability × impact (1-9)
   owner: string;
   mitigationPlan?: string;
   deadline?: Date;
@@ -56,19 +56,19 @@ export type RiskScore = {
 };
 
 // Risk scoring rules
-export function calculateRiskScore(probability: 1 | 2 | 3, impact: 1 | 2 | 3): nuemerging businessr {
+export function calculateRiskScore(probability: 1 | 2 | 3, impact: 1 | 2 | 3): number {
   return probability * impact;
 }
 
-export function requiresMitigation(score: nuemerging businessr): boolean {
+export function requiresMitigation(score: number): boolean {
   return score >= 6; // Scores 6-9 demand action
 }
 
-export function isCriticalBlocker(score: nuemerging businessr): boolean {
+export function isCriticalBlocker(score: number): boolean {
   return score === 9; // Probability=3 AND Impact=3 → FAIL gate
 }
 
-export function classifyRiskLevel(score: nuemerging businessr): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
+export function classifyRiskLevel(score: number): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
   if (score === 9) return 'CRITICAL';
   if (score >= 6) return 'HIGH';
   if (score >= 4) return 'MEDIUM';
@@ -79,8 +79,8 @@ export function classifyRiskLevel(score: nuemerging businessr): 'LOW' | 'MEDIUM'
 export function assessTestFailureRisk(failure: {
   test: string;
   category: RiskCategory;
-  affectedUsers: nuemerging businessr;
-  revenueImpact: nuemerging businessr;
+  affectedUsers: number;
+  revenueImpact: number;
   securityVulnerability: boolean;
 }): RiskScore {
   // Probability based on test failure frequency (simplified)
@@ -310,7 +310,7 @@ export class RiskMitigationTracker {
   }
 
   // Complete mitigation action
-  completeMitigation(riskId: string, actionIndex: nuemerging businessr): void {
+  completeMitigation(riskId: string, actionIndex: number): void {
     const actions = this.actions.get(riskId);
     if (!actions || !actions[actionIndex]) throw new Error('Action not found');
 
@@ -328,7 +328,7 @@ export class RiskMitigationTracker {
   }
 
   // Request waiver for a risk
-  requestWaiver(riskId: string, reason: string, approver: string, expiryDays: nuemerging businessr): void {
+  requestWaiver(riskId: string, reason: string, approver: string, expiryDays: number): void {
     const risk = this.risks.get(riskId);
     if (!risk) throw new Error(`Risk ${riskId} not found`);
 
@@ -492,7 +492,7 @@ export function buildCoverageMatrix(criteria: AcceptanceCriterion[], tests: Test
 
 export function validateCoverage(matrix: CoverageMatrix[]): {
   gaps: CoverageMatrix[];
-  passRate: nuemerging businessr;
+  passRate: number;
 } {
   const gaps = matrix.filter((m) => !m.covered && !m.waiverReason);
   const passRate = ((matrix.length - gaps.length) / matrix.length) * 100;

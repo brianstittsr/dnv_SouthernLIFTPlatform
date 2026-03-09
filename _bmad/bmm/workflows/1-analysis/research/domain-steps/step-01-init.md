@@ -10,6 +10,7 @@
 - 📋 YOU ARE A DOMAIN RESEARCH PLANNER, not content generator
 - 💬 ACKNOWLEDGE and CONFIRM understanding of domain research goals
 - 🔍 This is SCOPE CONFIRMATION ONLY - no web research yet
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -133,4 +134,4 @@ When user selects 'C', append scope confirmation:
 
 After user selects 'C', load `./step-02-domain-analysis.md` to begin industry analysis.
 
-Remeemerging businessr: This is SCOPE CONFIRMATION ONLY - no actual domain research yet, just confirming the research approach and scope!
+Remember: This is SCOPE CONFIRMATION ONLY - no actual domain research yet, just confirming the research approach and scope!

@@ -1,6 +1,6 @@
 # Workflow Init - Project Setup Instructions
 
-<critical>The workflow execution engine is governed by: {project-root}/\_bmad/core/tasks/workflow.xml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
 <critical>You MUST have already loaded and processed: workflow-init/workflow.yaml</critical>
 <critical>Communicate in {communication_language} with {user_name}</critical>
 <critical>This workflow handles BOTH new projects AND legacy projects following the BMad Method</critical>
@@ -15,8 +15,8 @@
 - BMM artifacts: PRD, epics, architecture, UX, brief, research, brainstorm
 - Implementation: stories, sprint-status, workflow-status
 - Codebase: source directories, package files, git repo
-- Check both {output_folder} and {sprint_artifacts} locations
-  </action>
+- Check both {planning_artifacts} and {implementation_artifacts} locations
+</action>
 
 <action>Categorize into one of these states:
 
@@ -25,7 +25,7 @@
 - ACTIVE: Has stories or sprint status
 - LEGACY: Has code but no BMM artifacts
 - UNCLEAR: Mixed state needs clarification
-  </action>
+</action>
 
 <ask>What's your project called? {{#if project_name}}(Config shows: {{project_name}}){{/if}}</ask>
 <action>Store project_name</action>
@@ -68,7 +68,7 @@ Choice [1-4]</ask>
 
   <check if="choice == 2">
     <ask>Archive existing work? (y/n)</ask>
-    <action if="y">Move artifacts to {output_folder}/archive/</action>
+    <action if="y">Move artifacts to {planning_artifacts}/archive/</action>
     <output>Ready for fresh start!</output>
     <action>Continue to step 3</action>
   </check>
@@ -244,7 +244,7 @@ Happy coding! 🚀</output>
 2. 🔍 **Research** - Technical/competitive analysis
 3. 📋 **Product Brief** - Strategic product planning (recommended)
 
-Enter nuemerging businessrs (e.g., "1,3" or "all" or "none"): </ask>
+Enter numbers (e.g., "1,3" or "all" or "none"): </ask>
 </check>
 
 <check if="field_type == brownfield AND selected_track in [method, enterprise]">
@@ -254,7 +254,7 @@ Enter nuemerging businessrs (e.g., "1,3" or "all" or "none"): </ask>
 1. 🧠 **Brainstorm** - Creative exploration
 2. 🔍 **Research** - Domain analysis
 
-Enter nuemerging businessrs (e.g., "1,2" or "none"): </ask>
+Enter numbers (e.g., "1,2" or "none"): </ask>
 </check>
 
 <action>Parse selections and set:
@@ -323,10 +323,10 @@ Choice:</ask>
 
 <check if="y">
   <action>Generate YAML from template with all variables</action>
-  <action>Save to {output_folder}/bmm-workflow-status.yaml</action>
+  <action>Save to {planning_artifacts}/bmm-workflow-status.yaml</action>
   <action>Identify next workflow and agent</action>
 
-<output>✅ **Created:** {output_folder}/bmm-workflow-status.yaml
+<output>✅ **Created:** {planning_artifacts}/bmm-workflow-status.yaml
 
 **Next:** {{next_workflow_name}}
 **Agent:** {{next_agent}}

@@ -177,7 +177,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Network Retry Logic', () => {
   test('should retry on 500 error and succeed', async ({ page }) => {
     let attemptCount = 0;
-    const attemptTimestamps: nuemerging businessr[] = [];
+    const attemptTimestamps: number[] = [];
 
     // Mock API: Fail twice, succeed on third attempt
     await page.route('**/api/products', (route) => {
@@ -354,7 +354,7 @@ type ErrorLog = {
   context?: {
     endpoint?: string;
     method?: string;
-    statusCode?: nuemerging businessr;
+    statusCode?: number;
     userId?: string;
     sessionId?: string;
   };
@@ -508,7 +508,7 @@ describe('Error Telemetry', () => {
 type ErrorContext = {
   endpoint?: string;
   method?: string;
-  statusCode?: nuemerging businessr;
+  statusCode?: number;
   userId?: string;
   sessionId?: string;
   requestPayload?: any;

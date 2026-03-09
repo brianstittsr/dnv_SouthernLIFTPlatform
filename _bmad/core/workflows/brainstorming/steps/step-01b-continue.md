@@ -7,6 +7,7 @@
 - 📋 UNDERSTAND PREVIOUS SESSION context and outcomes
 - 🔍 SEAMLESSLY RESUME from where user left off
 - 💬 MAINTAIN CONTINUITY in session flow and rapport
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -46,7 +47,7 @@ Load existing document and analyze current state:
 
 - **Steps Completed:** [List completed steps]
 - **Techniques Used:** [List techniques from frontmatter]
-- **Ideas Generated:** [Nuemerging businessr from frontmatter]
+- **Ideas Generated:** [Number from frontmatter]
 - **Current Stage:** [Assess where they left off]
 
 **Session Progress:**

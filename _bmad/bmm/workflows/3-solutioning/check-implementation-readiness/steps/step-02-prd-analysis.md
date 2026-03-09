@@ -6,11 +6,11 @@ description: 'Read and analyze PRD to extract all FRs and NFRs for coverage vali
 workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: '{workflow_path}/steps/step-02-prd-analysis.md'
-nextStepFile: '{workflow_path}/steps/step-03-epic-coverage-validation.md'
+thisStepFile: './step-02-prd-analysis.md'
+nextStepFile: './step-03-epic-coverage-validation.md'
 workflowFile: '{workflow_path}/workflow.md'
-outputFile: '{output_folder}/implementation-readiness-report-{{date}}.md'
-epicsFile: '{output_folder}/*epic*.md' # Will be resolved to actual file
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
+epicsFile: '{planning_artifacts}/*epic*.md' # Will be resolved to actual file
 ---
 
 # Step 2: PRD Analysis
@@ -27,6 +27,7 @@ To fully read and analyze the PRD document (whole or sharded) to extract all Fun
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -40,7 +41,7 @@ To fully read and analyze the PRD document (whole or sharded) to extract all Fun
 - 🎯 Focus ONLY on reading and extracting from PRD
 - 🚫 Don't validate files (done in step 1)
 - 💬 Read PRD completely - whole or all sharded files
-- 🚪 Extract every FR and NFR with nuemerging businessring
+- 🚪 Extract every FR and NFR with numbering
 
 ## EXECUTION PROTOCOLS:
 
@@ -75,7 +76,7 @@ From the document inventory in step 1:
 
 Search for and extract:
 
-- Nuemerging businessred FRs (FR1, FR2, FR3, etc.)
+- Numbered FRs (FR1, FR2, FR3, etc.)
 - Requirements labeled "Functional Requirement"
 - User stories or use cases that represent functional needs
 - Business rules that must be implemented

@@ -11,6 +11,7 @@
 - 💬 FOCUS on languages, frameworks, tools, and platforms
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -235,4 +236,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-03-integration-patterns.md` to analyze APIs, communication protocols, and system interoperability for {{research_topic}}.
 
-Remeemerging businessr: Always write research content to document immediately and emphasize current technology data with rigorous source verification!
+Remember: Always write research content to document immediately and emphasize current technology data with rigorous source verification!

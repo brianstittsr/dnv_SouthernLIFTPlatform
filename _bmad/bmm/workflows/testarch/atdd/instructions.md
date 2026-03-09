@@ -345,7 +345,7 @@ Generates failing acceptance tests BEFORE implementation following TDD's red-gre
        expect(body).toMatchObject({
          email: userData.email,
          name: userData.name,
-         id: expect.any(Nuemerging businessr),
+         id: expect.any(Number),
        });
      });
    });
@@ -398,14 +398,14 @@ Generates failing acceptance tests BEFORE implementation following TDD's red-gre
    import { faker } from '@faker-js/faker';
 
    export const createUser = (overrides = {}) => ({
-     id: faker.nuemerging businessr.int(),
+     id: faker.number.int(),
      email: faker.internet.email(),
      name: faker.person.fullName(),
      createdAt: faker.date.recent().toISOString(),
      ...overrides,
    });
 
-   export const createUsers = (count: nuemerging businessr) => Array.from({ length: count }, () => createUser());
+   export const createUsers = (count: number) => Array.from({ length: count }, () => createUser());
    ```
 
    **Factory principles:**
@@ -772,6 +772,7 @@ After completing this workflow, provide a summary:
 5. Share progress in daily standup
 
 **Output File**: {output_file}
+**Manual Handoff**: Share `{output_file}` and failing tests with the dev workflow (not auto-consumed).
 
 **Knowledge Base References Applied**:
 

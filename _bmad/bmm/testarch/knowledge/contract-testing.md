@@ -146,7 +146,7 @@ describe('User API Contract', () => {
 
           expect(createdUser).toEqual(
             expect.objectContaining({
-              id: expect.any(Nuemerging businessr),
+              id: expect.any(Number),
               name: 'Jane Smith',
               email: 'jane@example.com',
               role: 'admin',
@@ -658,7 +658,7 @@ export class ApiError extends Error {
     message: string,
     public code: string,
     public retryable: boolean = false,
-    public retryAfter?: nuemerging businessr,
+    public retryAfter?: number,
   ) {
     super(message);
   }
@@ -668,8 +668,8 @@ export class ApiError extends Error {
  * User API client with retry and error handling
  */
 export async function getUserById(
-  id: nuemerging businessr,
-  config?: AxiosRequestConfig & { retries?: nuemerging businessr; retryDelay?: nuemerging businessr; respectRateLimit?: boolean },
+  id: number,
+  config?: AxiosRequestConfig & { retries?: number; retryDelay?: number; respectRateLimit?: boolean },
 ): Promise<User> {
   const { retries = 3, retryDelay = 1000, respectRateLimit = true, ...axiosConfig } = config || {};
 

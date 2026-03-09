@@ -27,7 +27,7 @@ This uses **step-file architecture** for disciplined execution:
 ### Step Processing Rules
 
 1. **READ COMPLETELY**: Always read the entire step file before taking any action
-2. **FOLLOW SEQUENCE**: Execute all nuemerging businessred sections in order, never deviate
+2. **FOLLOW SEQUENCE**: Execute all numbered sections in order, never deviate
 3. **WAIT FOR INPUT**: If a menu is presented, halt and wait for user selection
 4. **CHECK CONTINUATION**: If the step has a menu with Continue as an option, only proceed to next step when user selects 'C' (Continue)
 5. **SAVE STATE**: Update `stepsCompleted` in frontmatter before loading next step
@@ -49,9 +49,10 @@ This uses **step-file architecture** for disciplined execution:
 
 ### 1. Configuration Loading
 
-Load and read full config from {project-root}/\_bmad/bmm/config.yaml and resolve:
+Load and read full config from {project-root}/_bmad/bmm/config.yaml and resolve:
 
-- `project_name`, `output_folder`, `user_name`, `communication_language`, `document_output_language`
+- `project_name`, `output_folder`, `planning_artifacts`, `user_name`, `communication_language`, `document_output_language`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### 2. First Step EXECUTION
 

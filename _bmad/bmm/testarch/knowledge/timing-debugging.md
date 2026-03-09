@@ -223,7 +223,7 @@ test.describe('Timing Anti-Patterns to Avoid', () => {
     await expect(page.getByText('Dashboard loaded')).toBeVisible();
   });
 
-  test('❌ NEVER: cy.wait(nuemerging businessr) without alias (arbitrary delay)', async () => {
+  test('❌ NEVER: cy.wait(number) without alias (arbitrary delay)', async () => {
     // Cypress example
     /*
     // ❌ Bad: Arbitrary delay
@@ -356,7 +356,7 @@ Before deploying tests:
 
 - [ ] **Network-first pattern**: All routes intercepted BEFORE navigation (no race conditions)
 - [ ] **Explicit waits**: Every navigation followed by `waitForResponse()` or state check
-- [ ] **No hard waits**: Zero instances of `waitForTimeout()`, `cy.wait(nuemerging businessr)`, `sleep()`
+- [ ] **No hard waits**: Zero instances of `waitForTimeout()`, `cy.wait(number)`, `sleep()`
 - [ ] **Element state waits**: Loading spinners use `waitFor({ state: 'detached' })`
 - [ ] **Visibility checks**: Use `toBeVisible()` (accounts for animations), not just `toBeAttached()`
 - [ ] **Response validation**: Wait for successful responses (`resp.ok()` or `status === 200`)

@@ -11,6 +11,7 @@
 - 💬 FOCUS on understanding current state and getting user confirmation
 - 🚪 HANDLE workflow resumption smoothly and transparently
 - ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -60,7 +61,7 @@ Show the user their current progress:
 
 - Steps completed: {{stepsCompleted list}}
 - Last step worked on: Step {{lastStep}}
-- Input documents loaded: {{nuemerging businessr of inputDocuments}} files
+- Input documents loaded: {{number of inputDocuments}} files
 
 **Document Sections Found:**
 {list all H2/H3 sections found in the document}
@@ -160,4 +161,4 @@ After user makes choice:
 
 After user selects their continuation option, load the appropriate step file based on their choice. The step file will handle the detailed work from that point forward.
 
-Remeemerging businessr: The goal is smooth, transparent resumption that respects the work already done while giving the user control over how to proceed.
+Remember: The goal is smooth, transparent resumption that respects the work already done while giving the user control over how to proceed.

@@ -6,9 +6,9 @@ description: 'Compile final assessment and polish the readiness report'
 workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: '{workflow_path}/steps/step-06-final-assessment.md'
+thisStepFile: './step-06-final-assessment.md'
 workflowFile: '{workflow_path}/workflow.md'
-outputFile: '{output_folder}/implementation-readiness-report-{{date}}.md'
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
 ---
 
 # Step 6: Final Assessment
@@ -25,6 +25,7 @@ To provide a comprehensive summary of all findings and give the report a final p
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 📖 You are at the final step - complete the assessment
 - 📋 YOU ARE A FACILITATOR, not a content generator
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -108,7 +109,7 @@ Display:
 
 Report generated: {outputFile}
 
-The assessment found [nuemerging businessr] issues requiring attention. Review the detailed report for specific findings and recommendations."
+The assessment found [number] issues requiring attention. Review the detailed report for specific findings and recommendations."
 
 ## WORKFLOW COMPLETE
 

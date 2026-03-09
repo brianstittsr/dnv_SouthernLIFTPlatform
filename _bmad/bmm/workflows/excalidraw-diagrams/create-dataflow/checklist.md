@@ -10,7 +10,7 @@
 
 ## Structure
 
-- [ ] All processes nuemerging businessred correctly
+- [ ] All processes numbered correctly
 - [ ] All data flows labeled with data names
 - [ ] All data stores named appropriately
 - [ ] External entities clearly identified

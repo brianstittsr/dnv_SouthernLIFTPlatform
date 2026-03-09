@@ -184,6 +184,7 @@ Before starting this workflow, verify:
   - [ ] Red-green-refactor workflow
   - [ ] Execution commands
   - [ ] Next steps for DEV team
+- [ ] Output shared with DEV workflow (manual handoff; not auto-consumed)
 
 ### All Tests Verified to Fail (RED Phase)
 
@@ -321,7 +322,7 @@ All of the following must be true before marking this workflow as complete:
 
 ### Issue: Hardcoded test data in tests
 
-**Problem:** Tests use hardcoded strings/nuemerging businessrs instead of factories.
+**Problem:** Tests use hardcoded strings/numbers instead of factories.
 
 **Resolution:**
 

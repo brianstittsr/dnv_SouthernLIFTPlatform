@@ -9,6 +9,7 @@
 - 🔍 NO WEB RESEARCH in init - that's for later steps
 - 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete research
 - 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -178,4 +179,4 @@ This step ensures:
 
 After user confirmation and scope finalization, load `./step-02-customer-insights.md` to begin detailed market research with customer insights analysis.
 
-Remeemerging businessr: Init steps confirm understanding and scope, not generate research content!
+Remember: Init steps confirm understanding and scope, not generate research content!

@@ -11,6 +11,7 @@
 - 💬 FOCUS on key players, market share, and competitive dynamics
 - 🔍 WEB SEARCH REQUIRED - verify current facts against live sources
 - 📝 WRITE CONTENT IMMEDIATELY TO DOCUMENT
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -234,4 +235,4 @@ Content is already written to document when generated in step 4. No additional a
 
 After user selects 'C', load `./step-04-regulatory-focus.md` to analyze regulatory requirements, compliance frameworks, and legal considerations for {{research_topic}}.
 
-Remeemerging businessr: Always write research content to document immediately and search the web to verify facts!
+Remember: Always write research content to document immediately and search the web to verify facts!

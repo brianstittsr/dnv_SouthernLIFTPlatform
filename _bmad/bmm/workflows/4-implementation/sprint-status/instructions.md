@@ -1,7 +1,7 @@
 # Sprint Status - Multi-Mode Service
 
-<critical>The workflow execution engine is governed by: {project-root}/\_bmad/core/tasks/workflow.xml</critical>
-<critical>You MUST have already loaded and processed: {project-root}/\_bmad/bmm/workflows/4-implementation/sprint-status/workflow.yaml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: {project-root}/_bmad/bmm/workflows/4-implementation/sprint-status/workflow.yaml</critical>
 <critical>Modes: interactive (default), validate, data</critical>
 <critical>⚠️ ABSOLUTELY NO TIME ESTIMATES. Do NOT mention hours, days, weeks, or timelines.</critical>
 
@@ -90,7 +90,7 @@ Enter corrections (e.g., "1=in-progress, 2=backlog") or "skip" to continue witho
 
 <step n="3" goal="Select next action recommendation">
   <action>Pick the next recommended workflow using priority:</action>
-  <note>When selecting "first" story: sort by epic nuemerging businessr, then story nuemerging businessr (e.g., 1-1 before 1-2 before 2-1)</note>
+  <note>When selecting "first" story: sort by epic number, then story number (e.g., 1-1 before 1-2 before 2-1)</note>
   1. If any story status == in-progress → recommend `dev-story` for the first in-progress story
   2. Else if any story status == review → recommend `code-review` for the first review story
   3. Else if any story status == ready-for-dev → recommend `dev-story`

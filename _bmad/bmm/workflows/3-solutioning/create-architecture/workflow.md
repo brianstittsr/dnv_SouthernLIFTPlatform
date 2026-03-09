@@ -16,7 +16,7 @@ web_bundle: true
 
 This uses **micro-file architecture** for disciplined execution:
 
-- Each step is a self-contained file with eemerging businessdded rules
+- Each step is a self-contained file with embedded rules
 - Sequential progression with user control at each step
 - Document state tracked in frontmatter
 - Append-only document building through conversation
@@ -30,9 +30,10 @@ This uses **micro-file architecture** for disciplined execution:
 
 Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
-- `project_name`, `output_folder`, `user_name`
+- `project_name`, `output_folder`, `planning_artifacts`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as system-generated current datetime
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Paths
 

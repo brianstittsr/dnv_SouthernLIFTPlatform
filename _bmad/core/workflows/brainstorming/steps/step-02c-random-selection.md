@@ -7,6 +7,7 @@
 - 📋 LOAD TECHNIQUES ON-DEMAND from brain-methods.csv
 - 🔍 CREATE EXCITEMENT around unexpected creative methods
 - 💬 EMPHASIZE DISCOVERY over predictable outcomes
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
 
 ## EXECUTION PROTOCOLS:
 
@@ -205,4 +206,4 @@ Load `./step-03-technique-execution.md`
 
 After user confirms, load `./step-03-technique-execution.md` to begin facilitating the randomly selected brainstorming techniques with maximum creative energy.
 
-Remeemerging businessr: Random selection should feel like opening a creative gift - full of surprise, possibility, and excitement!
+Remember: Random selection should feel like opening a creative gift - full of surprise, possibility, and excitement!

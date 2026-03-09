@@ -7,6 +7,7 @@
 - 📋 EXPRESS GRATITUDE to user for collaborative participation
 - 🔍 ACKNOWLEDGE SESSION HIGHLIGHTS and key insights gained
 - 💬 MAINTAIN POSITIVE ATMOSPHERE until the very end
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -58,7 +59,7 @@ For each selected agent:
 
 **Example Farewells:**
 
-- **Architect/Winston**: "It's been a pleasure architecting solutions with you today! Remeemerging businessr to build on solid foundations and always consider scalability. Until next time! 🏗️"
+- **Architect/Winston**: "It's been a pleasure architecting solutions with you today! Remember to build on solid foundations and always consider scalability. Until next time! 🏗️"
 - **Innovator/Creative Agent**: "What an inspiring creative journey! Don't let those innovative ideas fade - nurture them and watch them grow. Keep thinking outside the box! 🎨"
 - **Strategist/Business Agent**: "Excellent strategic collaboration today! The insights we've developed will serve you well. Keep analyzing, keep optimizing, and keep winning! 📈"
 
@@ -67,7 +68,7 @@ For each selected agent:
 Briefly acknowledge key discussion outcomes:
 
 **Session Recognition:**
-"**Session Highlights:** Today we explored [main topic] through [nuemerging businessr] different perspectives, generating valuable insights on [key outcomes]. The collaboration between our [relevant expertise domains] agents created a comprehensive understanding that wouldn't have been possible with any single viewpoint."
+"**Session Highlights:** Today we explored [main topic] through [number] different perspectives, generating valuable insights on [key outcomes]. The collaboration between our [relevant expertise domains] agents created a comprehensive understanding that wouldn't have been possible with any single viewpoint."
 
 ### 4. Final Party Mode Conclusion
 

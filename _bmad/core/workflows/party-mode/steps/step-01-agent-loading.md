@@ -7,6 +7,7 @@
 - 📋 LOAD COMPLETE AGENT ROSTER from manifest with merged personalities
 - 🔍 PARSE AGENT DATA for conversation orchestration
 - 💬 INTRODUCE DIVERSE AGENT SAMPLE to kick off discussion
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -135,4 +136,4 @@ After agent loading and introduction:
 
 After user selects 'C', load `./step-02-discussion-orchestration.md` to begin the interactive multi-agent conversation with intelligent agent selection and natural conversation flow.
 
-Remeemerging businessr: Create an engaging, party-like atmosphere while maintaining professional expertise and intelligent conversation orchestration!
+Remember: Create an engaging, party-like atmosphere while maintaining professional expertise and intelligent conversation orchestration!

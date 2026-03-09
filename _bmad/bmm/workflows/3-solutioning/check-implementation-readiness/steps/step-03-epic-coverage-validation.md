@@ -6,10 +6,10 @@ description: 'Validate that all PRD FRs are covered in epics and stories'
 workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: '{workflow_path}/steps/step-03-epic-coverage-validation.md'
-nextStepFile: '{workflow_path}/steps/step-04-ux-alignment.md'
+thisStepFile: './step-03-epic-coverage-validation.md'
+nextStepFile: './step-04-ux-alignment.md'
 workflowFile: '{workflow_path}/workflow.md'
-outputFile: '{output_folder}/implementation-readiness-report-{{date}}.md'
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
 ---
 
 # Step 3: Epic Coverage Validation
@@ -26,6 +26,7 @@ To validate that all Functional Requirements from the PRD are captured in the ep
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -74,7 +75,7 @@ From the document inventory in step 1:
 From the epics document:
 
 - Find FR coverage mapping or list
-- Extract which FR nuemerging businessrs are claimed to be covered
+- Extract which FR numbers are claimed to be covered
 - Document which epics cover which FRs
 
 Format as:
@@ -102,7 +103,7 @@ Create coverage matrix:
 ```
 ## FR Coverage Analysis
 
-| FR Nuemerging businessr | PRD Requirement | Epic Coverage  | Status    |
+| FR Number | PRD Requirement | Epic Coverage  | Status    |
 | --------- | --------------- | -------------- | --------- |
 | FR1       | [PRD text]      | Epic X Story Y | ✓ Covered |
 | FR2       | [PRD text]      | **NOT FOUND**  | ❌ MISSING |
