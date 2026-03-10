@@ -4,6 +4,15 @@ import { TESTIMONIALS_COLLECTION } from "@/lib/schema/testimonials";
 
 export async function GET(req: NextRequest) {
   try {
+    // Check if Firebase Admin is initialized
+    if (!db) {
+      console.error("Testimonials API: Firebase Admin DB not initialized");
+      return NextResponse.json({ 
+        data: [],
+        warning: "Database not initialized" 
+      });
+    }
+
     const testimonialsRef = db.collection(TESTIMONIALS_COLLECTION);
     
     // Only return active testimonials
@@ -12,6 +21,12 @@ export async function GET(req: NextRequest) {
       .where("isActive", "==", true)
       .orderBy("displayOrder", "asc")
       .get();
+
+    // If no testimonials found, return empty array (not an error)
+    if (snapshot.empty) {
+      console.log("Testimonials API: No active testimonials found");
+      return NextResponse.json({ data: [] });
+    }
 
     const testimonials = snapshot.docs.map(doc => {
       const data = doc.data();
@@ -44,9 +59,20 @@ export async function GET(req: NextRequest) {
     // Remove internal fields before returning
     const cleanedTestimonials = testimonials.map(({ displayOrder, createdAt, ...rest }) => rest);
 
+    console.log(`Testimonials API: Returning ${cleanedTestimonials.length} testimonials`);
     return NextResponse.json({ data: cleanedTestimonials });
   } catch (error: any) {
     console.error("Error fetching testimonials:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error details:", {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    
+    // Return empty array instead of error to prevent UI breaking
+    return NextResponse.json({ 
+      data: [],
+      error: error.message 
+    }, { status: 200 }); // Changed to 200 to prevent client-side errors
   }
 }
