@@ -6,15 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Defense & CMMC Compliance | 5 Pillars | KDM & Associates",
-  description: "Helping manufacturers and suppliers prepare for CMMC compliance, navigate DoD requirements, and access defense procurement opportunities.",
+  title: "Government Contracting | 5 Pillars | KDM Consortium",
+  description: "KDM turns fragmented pursuit activity into a disciplined capture system with weekly triage, objective team assembly, proposal support, and buyer access pathways.",
 };
 
-export default function DefenseCMMCPage() {
+export default function GovernmentContractingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-green-600 via-green-700 to-green-800 text-white py-20 md:py-32">
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-20 md:py-32">
         <div className="absolute inset-0 bg-black/20" />
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -27,117 +27,204 @@ export default function DefenseCMMCPage() {
                 <Shield className="h-10 w-10 text-white" />
               </div>
               <Badge variant="outline" className="border-white/50 text-white">
-                Pillar 3
+                Pillar 1
               </Badge>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Defense & CMMC Compliance
+              Government Contracting
             </h1>
-            <p className="text-xl md:text-2xl text-white/90">
-              Preparing manufacturers and suppliers for DoD contracting success
+            <p className="text-xl md:text-2xl text-white/90 mb-8">
+              From opportunity intelligence to compliant submissions.
+            </p>
+            <p className="text-lg text-white/80">
+              KDM turns fragmented pursuit activity into a disciplined capture system with weekly triage, objective team assembly, proposal support, and buyer access pathways that help qualified teams move with more confidence.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* What KDM Brings */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none mb-12">
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                The Department of Defense requires rigorous cybersecurity standards through the Cybersecurity Maturity 
-                Model Certification (CMMC). KDM & Associates provides comprehensive support to help manufacturers and 
-                suppliers achieve compliance and access lucrative defense contracting opportunities.
-              </p>
+            <Card className="bg-blue-50 border-blue-200 mb-12">
+              <CardHeader>
+                <CardTitle className="text-2xl">Shared Promise</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg font-semibold text-blue-900">
+                  Build a more disciplined pursuit pipeline with a buyer-ready team model.
+                </p>
+              </CardContent>
+            </Card>
+
+            <h2 className="text-3xl font-bold mb-8">What KDM Brings to This Pillar</h2>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    Weekly Opportunity Triage
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Curated pursuit briefs drawn from buyer signals, public portals, and partner intelligence.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    Best-Fit Team Assembly
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Objective team assembly using capability fit, past performance relevance, compliance posture, and delivery capacity.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    Proposal Factory & Debrief Loop
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Proposal support with compliance-first workflows, review cadence, and buyer-facing discipline.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Why It Matters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Complex procurements reward preparation, proof, and coordination across multiple specialties.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Who It Serves</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Federal contractors, manufacturers entering government markets, and primes needing qualified teammates.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">What Success Looks Like</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Faster team formation, cleaner compliance matrices, stronger buyer-facing packages, and more on-time submissions.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Operating Model */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4">How KDM Turns Contracting Into a Repeatable Win Engine</h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              This operating model uses language aligned to the consortium's year-round programming and readiness-first positioning.
+            </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    Prepare for & Achieve CMMC Compliance
-                  </CardTitle>
+                  <CardTitle>Opportunity Pipeline</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Our expert-led training programs and consulting services guide you through the entire CMMC 
-                    certification process. We help you understand requirements, implement necessary controls, 
-                    and prepare for assessment to achieve certification at the appropriate level.
+                    Public portals, partner intel, OEM signals, and buyer priorities are converted into concise pursuit briefs that members can act on quickly.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    Navigate DoD Contracting Requirements
-                  </CardTitle>
+                  <CardTitle>Qualification and Fit</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Defense contracting involves complex requirements beyond CMMC. We help you understand and meet 
-                    all DoD procurement standards, including quality systems, supply chain security, and compliance 
-                    documentation requirements.
+                    Capability briefs, past performance snapshots, compliance badges, and capacity indicators help KDM match the right teams to the right pursuit.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    Strengthen Cybersecurity Posture
-                  </CardTitle>
+                  <CardTitle>Capture and Compliance</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Beyond compliance, we help you build a robust cybersecurity program that protects your business 
-                    and sensitive information. Our approach ensures you're not just checking boxes, but creating 
-                    lasting security improvements.
+                    Each pursuit follows a disciplined cadence - intake, outline, compliance matrix, draft reviews, red team, submission, and lessons learned.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    Access Defense Procurement Opportunities
-                  </CardTitle>
+                  <CardTitle>Buyer Pathways</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    CMMC certification opens doors to defense contracts worth billions of dollars. We connect you 
-                    with prime contractors, help you navigate procurement portals, and position you for success in 
-                    the defense industrial base.
+                    Monthly briefings, quarterly showcases, and targeted introductions create credible visibility without overpromising outcomes.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Platform Enablement</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    A KDM-branded portal supports profiles, opportunity boards, pursuit workspaces, reminders, and reporting dashboards.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Proof of Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Pipeline health, pursuits launched, submissions supported, debriefs captured, and wins or seats at table make progress visible.
                   </p>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="bg-green-50 border-green-200">
+            <Card className="bg-blue-50 border-blue-200">
               <CardHeader>
-                <CardTitle>Why CMMC Compliance Matters</CardTitle>
+                <CardTitle>Programming and Proof for This Pillar</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p>
-                  <strong>Market Access:</strong> CMMC certification is becoming mandatory for DoD contractors and 
-                  subcontractors. Without it, you cannot bid on or perform defense contracts.
-                </p>
-                <p>
-                  <strong>Competitive Advantage:</strong> Early certification positions you ahead of competitors and 
-                  demonstrates your commitment to security and quality.
-                </p>
-                <p>
-                  <strong>Risk Mitigation:</strong> Proper cybersecurity controls protect your business from costly 
-                  breaches, data loss, and reputational damage.
-                </p>
-                <p>
-                  <strong>Revenue Growth:</strong> Defense contracts provide stable, long-term revenue opportunities 
-                  with the world's largest customer - the U.S. Department of Defense.
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Monthly buyer briefings, curated showcases, opportunity-of-the-week publishing, and proposal workspaces reinforce a steady pursuit cadence.
                 </p>
               </CardContent>
             </Card>
@@ -146,25 +233,25 @@ export default function DefenseCMMCPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-primary text-white">
+      <section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Get CMMC Certified and DoD Ready
+              Build a More Disciplined Pursuit Pipeline
             </h2>
             <p className="text-xl mb-8 text-white/90">
-              Join our expert-led CMMC training cohorts and access comprehensive defense contracting support
+              Build a more disciplined pursuit pipeline with a buyer-ready team model.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
-                <Link href="/training">
-                  Enroll in CMMC Training
+                <Link href="/contact">
+                  Start a Conversation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
-                <Link href="/consortium">
-                  Join the KDM Consortium
+                <Link href="/5-pillars">
+                  Explore the Full Pillar
                 </Link>
               </Button>
             </div>
@@ -172,46 +259,28 @@ export default function DefenseCMMCPage() {
         </div>
       </section>
 
-      {/* Related Resources */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-xl font-semibold mb-6">Related Resources from Our Blog</h3>
-            <div className="grid gap-4">
-              <Link href="/blog/puerto-ricos-strategic-role-federal-opportunities" className="p-6 border rounded-lg hover:bg-muted/30 hover:shadow-md transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="flex-1">
-                    <div className="font-semibold text-lg mb-2">Puerto Rico's Strategic Role: Federal Opportunities Emerging from Counter-Cartel Operations</div>
-                    <div className="text-sm text-muted-foreground mb-3">
-                      As the United States intensifies its efforts to combat drug cartels and transnational organized crime, Puerto Rico is emerging as a critical strategic hub.
-                    </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Federal Contracting</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Security</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Infrastructure</span>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                </div>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Navigation to Other Pillars */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-xl font-semibold mb-6">Explore Other Pillars</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link href="/5-pillars/us-manufacturing" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 2: Manufacturing →</div>
+                <div className="text-sm text-muted-foreground">Supplier readiness and modernization</div>
+              </Link>
               <Link href="/5-pillars/critical-minerals" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 2: Critical Minerals →</div>
-                <div className="text-sm text-muted-foreground">Strategic supply chain positioning</div>
+                <div className="font-semibold">Pillar 3: Critical Minerals →</div>
+                <div className="text-sm text-muted-foreground">Strategic materials partnerships</div>
+              </Link>
+              <Link href="/5-pillars/opportunity-zones" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 4: Opportunity Zones →</div>
+                <div className="text-sm text-muted-foreground">Place-based growth</div>
               </Link>
               <Link href="/5-pillars/access-to-capital" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 4: Access to Capital →</div>
-                <div className="text-sm text-muted-foreground">Strategic funding pathways</div>
+                <div className="font-semibold">Pillar 5: Access to Capital →</div>
+                <div className="text-sm text-muted-foreground">Capital pathways</div>
               </Link>
             </div>
           </div>

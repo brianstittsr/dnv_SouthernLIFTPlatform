@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Gem, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Critical Minerals | 5 Pillars | KDM & Associates",
-  description: "Positioning U.S. supply chains around domestic sourcing, strategic partnerships, and national security priorities for critical minerals.",
+  title: "Critical Minerals | 5 Pillars | KDM Consortium",
+  description: "KDM frames critical minerals as both a supply-chain issue and a readiness issue, connecting ecosystem partners across sourcing, processing, logistics, manufacturing, and project development.",
 };
 
 export default function CriticalMineralsPage() {
@@ -27,92 +27,192 @@ export default function CriticalMineralsPage() {
                 <Gem className="h-10 w-10 text-white" />
               </div>
               <Badge variant="outline" className="border-white/50 text-white">
-                Pillar 2
+                Pillar 3
               </Badge>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               Critical Minerals
             </h1>
-            <p className="text-xl md:text-2xl text-white/90">
-              Positioning U.S. supply chains for strategic independence and national security
+            <p className="text-xl md:text-2xl text-white/90 mb-8">
+              Strategic materials, resilient supply chains, and national capability.
+            </p>
+            <p className="text-lg text-white/80">
+              KDM frames critical minerals as both a supply-chain issue and a readiness issue, connecting ecosystem partners across sourcing, processing, logistics, manufacturing, and project development.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* What KDM Brings */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none mb-12">
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Critical minerals are essential to modern technology, defense systems, and clean energy. KDM & Associates 
-                helps position U.S. supply chains to reduce foreign dependence and strengthen national security through 
-                strategic mineral sourcing and partnerships.
-              </p>
+            <Card className="bg-purple-50 border-purple-200 mb-12">
+              <CardHeader>
+                <CardTitle className="text-2xl">Shared Promise</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg font-semibold text-purple-900">
+                  Strengthen strategic materials partnerships with better visibility, alignment, and execution pathways.
+                </p>
+              </CardContent>
+            </Card>
+
+            <h2 className="text-3xl font-bold mb-8">What KDM Brings to This Pillar</h2>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
+                    Supply Chain Intelligence
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    A strategic ecosystem lens that connects material supply, processing, logistics, manufacturing, and project development.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
+                    Strategic Partner Ecosystem
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Partner orchestration that helps industrial and capital stakeholders see how opportunities fit together.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
+                    Project and Sourcing Pathways
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Narrative and proof materials that make complex projects easier to understand.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Why It Matters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Critical minerals underpin defense systems, energy infrastructure, advanced manufacturing, and long-term industrial resilience.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Who It Serves</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Mining and processing stakeholders, recyclers, manufacturers, logistics providers, developers, and capital partners.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">What Success Looks Like</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Clearer ecosystem maps, better project packaging, stronger partner alignment, and more credible pathways to downstream demand.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Operating Model */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4">How KDM Helps Critical Mineral Ecosystems Move from Discussion to Execution</h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              This operating model uses language aligned to the consortium's year-round programming and readiness-first positioning.
+            </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
-                    Domestic Sourcing & Prioritization
-                  </CardTitle>
+                  <CardTitle>Supply Chain Mapping</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    We help companies identify and develop domestic sources of critical minerals, reducing reliance on 
-                    foreign suppliers and strengthening supply chain resilience. Our expertise includes mapping domestic 
-                    capabilities and connecting suppliers with end users.
+                    KDM helps identify where the ecosystem is strong, where dependencies create risk, and where partnerships can close gaps.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
-                    Strategic Mineral Partnerships
-                  </CardTitle>
+                  <CardTitle>Project Packaging</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Through alignment with Development Finance Corporation (DFC) initiatives and other strategic 
-                    partnerships, we facilitate access to critical mineral resources while ensuring compliance with 
-                    federal requirements and national security priorities.
+                    Opportunities are translated into clear narratives, capability summaries, and readiness materials that outside partners can evaluate quickly.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
-                    Aerospace & Defense Supply Chain Support
-                  </CardTitle>
+                  <CardTitle>Partner Development</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    We provide specialized support for aerospace and defense contractors requiring critical minerals 
-                    for advanced systems. Our network ensures access to qualified suppliers who meet stringent 
-                    quality and security standards.
+                    Industrial buyers, processors, logistics partners, technology providers, and project teams can be convened around shared priorities.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-purple-600" />
-                    National Security Implications
-                  </CardTitle>
+                  <CardTitle>Readiness and Coordination</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Understanding the national security dimensions of critical mineral supply chains is essential. 
-                    We help companies navigate security requirements, comply with regulations, and contribute to 
-                    strengthening America's strategic position.
+                    Documentation, operating assumptions, compliance signals, and partner roles are clarified early so projects do not stall later.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Downstream Integration</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    The goal is not simply extraction or supply, but stronger alignment with manufacturing demand, industrial policy, and long-term market pull.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Strategic Focus Areas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Defense relevance, energy resilience, domestic processing, recycling, and supplier ecosystems create multiple lanes for coordinated growth.
                   </p>
                 </CardContent>
               </Card>
@@ -120,24 +220,11 @@ export default function CriticalMineralsPage() {
 
             <Card className="bg-purple-50 border-purple-200">
               <CardHeader>
-                <CardTitle>Why Critical Minerals Matter</CardTitle>
+                <CardTitle>Programming and Proof for This Pillar</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p>
-                  <strong>Defense Systems:</strong> Critical minerals are essential components in advanced weapons systems, 
-                  communications equipment, and defense technologies.
-                </p>
-                <p>
-                  <strong>Technology Innovation:</strong> From semiconductors to batteries, critical minerals enable the 
-                  technologies that drive modern innovation and competitiveness.
-                </p>
-                <p>
-                  <strong>Energy Independence:</strong> Clean energy technologies, including solar panels, wind turbines, 
-                  and electric vehicles, depend on reliable access to critical minerals.
-                </p>
-                <p>
-                  <strong>Supply Chain Security:</strong> Reducing dependence on potentially adversarial nations for 
-                  critical minerals is a strategic imperative for national security.
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Summit tracks, ecosystem mapping, project spotlights, and recurring thought leadership help strategic materials conversations stay connected to action.
                 </p>
               </CardContent>
             </Card>
@@ -146,25 +233,25 @@ export default function CriticalMineralsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-primary text-white">
+      <section className="py-20 bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Strengthen Your Critical Mineral Supply Chain
+              Strengthen Strategic Materials Partnerships
             </h2>
             <p className="text-xl mb-8 text-white/90">
-              Join the KDM Consortium to access strategic partnerships and navigate critical mineral sourcing
+              Strengthen strategic materials partnerships with better visibility, alignment, and execution pathways.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
-                <Link href="/consortium">
-                  Join the KDM Consortium
+                <Link href="/contact">
+                  Start a Conversation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
-                <Link href="/training">
-                  Explore CMMC Training
+                <Link href="/5-pillars">
+                  Explore the Full Pillar
                 </Link>
               </Button>
             </div>
@@ -177,14 +264,22 @@ export default function CriticalMineralsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-xl font-semibold mb-6">Explore Other Pillars</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Link href="/5-pillars/us-manufacturing" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 1: U.S. Manufacturing →</div>
-                <div className="text-sm text-muted-foreground">Strengthening domestic capacity</div>
-              </Link>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/5-pillars/defense-cmmc" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 3: Defense & CMMC →</div>
-                <div className="text-sm text-muted-foreground">DoD compliance and cybersecurity</div>
+                <div className="font-semibold">Pillar 1: Government Contracting →</div>
+                <div className="text-sm text-muted-foreground">Disciplined pursuit pipeline</div>
+              </Link>
+              <Link href="/5-pillars/us-manufacturing" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 2: Manufacturing →</div>
+                <div className="text-sm text-muted-foreground">Supplier readiness and modernization</div>
+              </Link>
+              <Link href="/5-pillars/opportunity-zones" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 4: Opportunity Zones →</div>
+                <div className="text-sm text-muted-foreground">Place-based growth</div>
+              </Link>
+              <Link href="/5-pillars/access-to-capital" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 5: Access to Capital →</div>
+                <div className="text-sm text-muted-foreground">Capital pathways</div>
               </Link>
             </div>
           </div>

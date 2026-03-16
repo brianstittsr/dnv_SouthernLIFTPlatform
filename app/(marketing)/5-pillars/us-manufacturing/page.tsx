@@ -6,11 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Factory, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "U.S. Manufacturing | 5 Pillars | KDM & Associates",
-  description: "Strengthening domestic manufacturing capacity through support for small and mid-sized manufacturers, production readiness, and strategic connections.",
+  title: "Manufacturing | 5 Pillars | KDM Consortium",
+  description: "KDM helps manufacturers strengthen quality and documentation, modernize operations, package their capabilities credibly, and engage OEM and government buyers with a clearer readiness story.",
 };
 
-export default function USManufacturingPage() {
+export default function ManufacturingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -27,92 +27,192 @@ export default function USManufacturingPage() {
                 <Factory className="h-10 w-10 text-white" />
               </div>
               <Badge variant="outline" className="border-white/50 text-white">
-                Pillar 1
+                Pillar 2
               </Badge>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              U.S. Manufacturing
+              Manufacturing
             </h1>
-            <p className="text-xl md:text-2xl text-white/90">
-              Strengthening domestic manufacturing capacity and competitiveness
+            <p className="text-xl md:text-2xl text-white/90 mb-8">
+              Supplier readiness, modernization, and enterprise alignment.
+            </p>
+            <p className="text-lg text-white/80">
+              KDM helps manufacturers strengthen quality and documentation, modernize operations, package their capabilities credibly, and engage OEM and government buyers with a clearer readiness story.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* What KDM Brings */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none mb-12">
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                American manufacturing is the backbone of our economy and national security. KDM & Associates 
-                is committed to strengthening domestic manufacturing capacity by providing comprehensive support 
-                to small and mid-sized manufacturers across the country.
-              </p>
+            <Card className="bg-blue-50 border-blue-200 mb-12">
+              <CardHeader>
+                <CardTitle className="text-2xl">Shared Promise</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg font-semibold text-blue-900">
+                  Show buyers a supplier story built on readiness, execution, and measurable progress.
+                </p>
+              </CardContent>
+            </Card>
+
+            <h2 className="text-3xl font-bold mb-8">What KDM Brings to This Pillar</h2>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    Quality and Process Readiness
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Supplier-readiness packaging built around quality systems, process discipline, and buyer confidence.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    Digital Transformation Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Operational and digital transformation support that turns readiness into visible proof.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                    OEM Qualification Pathways
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Structured pathways to OEM, prime, and public-sector conversations.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Why It Matters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Manufacturers win more when readiness, evidence, and delivery discipline are easy for buyers to understand.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">Who It Serves</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Manufacturers, contract manufacturers, industrial technology firms, and supplier partners preparing to scale.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-lg">What Success Looks Like</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Stronger capability packaging, better readiness evidence, improved supplier conversations, and faster movement toward enterprise requirements.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Operating Model */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4">How KDM Helps Manufacturers Become Easier to Source and Easier to Trust</h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              This operating model uses language aligned to the consortium's year-round programming and readiness-first positioning.
+            </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
-                    Supporting Small & Mid-Sized Manufacturers
-                  </CardTitle>
+                  <CardTitle>Supplier Readiness</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    We provide tailored support to help small and mid-sized manufacturers scale their operations, 
-                    improve efficiency, and compete in both commercial and government markets. Our expertise helps 
-                    manufacturers navigate complex procurement processes and access new opportunities.
+                    Readiness scorecards, evidence checklists, quality-system mapping, and capability proof packs help suppliers show buyers what they can deliver.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
-                    Increasing Production Readiness
-                  </CardTitle>
+                  <CardTitle>Operational Excellence</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Through strategic assessments and capacity building, we help manufacturers enhance their 
-                    production capabilities, implement quality management systems, and meet the rigorous standards 
-                    required for federal contracts and defense work.
+                    Process visibility, documentation discipline, throughput improvements, and workflow alignment strengthen day-to-day execution.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
-                    Connecting Suppliers to OEMs & Federal Buyers
-                  </CardTitle>
+                  <CardTitle>Digital Transformation</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    We bridge the gap between suppliers and Original Equipment Manufacturers (OEMs), as well as 
-                    federal procurement officers. Our extensive network and matchmaking capabilities create valuable 
-                    partnerships that drive growth and opportunity.
+                    Digital twins, dashboards, cybersecurity-aligned readiness, and analytics help manufacturers convert data into action.
                   </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
-                    Workforce Alignment for Advanced Manufacturing
-                  </CardTitle>
+                  <CardTitle>OEM and Prime Alignment</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    We help manufacturers develop and align their workforce with the skills needed for advanced 
-                    manufacturing technologies, ensuring they have the talent pipeline to support growth and innovation 
-                    in an evolving industry landscape.
+                    Capability packaging, supplier-readiness sprints, and curated introductions make enterprise conversations more productive.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Workforce and Scale</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Capacity planning, partner teaming, and delivery-model design help companies grow without losing control of quality.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>What Progress Looks Like</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Readiness milestones, buyer meetings, pilot opportunities, and improved confidence in audits, sourcing reviews, and teaming decisions.
                   </p>
                 </CardContent>
               </Card>
@@ -120,24 +220,11 @@ export default function USManufacturingPage() {
 
             <Card className="bg-blue-50 border-blue-200">
               <CardHeader>
-                <CardTitle>Why U.S. Manufacturing Matters</CardTitle>
+                <CardTitle>Programming and Proof for This Pillar</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p>
-                  <strong>Economic Security:</strong> Domestic manufacturing creates jobs, drives innovation, and 
-                  strengthens local economies across America.
-                </p>
-                <p>
-                  <strong>National Security:</strong> A robust manufacturing base is essential for defense readiness 
-                  and reducing dependence on foreign supply chains.
-                </p>
-                <p>
-                  <strong>Supply Chain Resilience:</strong> Recent global disruptions have highlighted the critical 
-                  importance of domestic manufacturing capacity and supply chain independence.
-                </p>
-                <p>
-                  <strong>Innovation Leadership:</strong> American manufacturers are at the forefront of advanced 
-                  manufacturing technologies, from automation to additive manufacturing.
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Readiness sprints, starter kits, operational templates, webinars, and supplier spotlights make manufacturing progress visible to buyers and partners.
                 </p>
               </CardContent>
             </Card>
@@ -146,54 +233,27 @@ export default function USManufacturingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-primary text-white">
+      <section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Strengthen Your Manufacturing Capabilities?
+              Show Buyers Your Supplier Story
             </h2>
             <p className="text-xl mb-8 text-white/90">
-              Join the KDM Consortium to access comprehensive manufacturing support and connect with federal opportunities
+              Show buyers a supplier story built on readiness, execution, and measurable progress.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
-                <Link href="/consortium">
-                  Join the KDM Consortium
+                <Link href="/contact">
+                  Start a Conversation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
-                <Link href="/training">
-                  Explore CMMC Training
+                <Link href="/5-pillars">
+                  Explore the Full Pillar
                 </Link>
               </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Resources */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-xl font-semibold mb-6">Related Resources from Our Blog</h3>
-            <div className="grid gap-4">
-              <Link href="/blog/us-manufacturing-environmental-progress" className="p-6 border rounded-lg hover:bg-muted/30 hover:shadow-md transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="flex-1">
-                    <div className="font-semibold text-lg mb-2">U.S. Manufacturing & Environmental Progress: A New Era of Innovation and Sustainability</div>
-                    <div className="text-sm text-muted-foreground mb-3">
-                      The U.S. manufacturing sector is undergoing a transformative shift, driven by technological innovation, environmental imperatives, and evolving consumer expectations.
-                    </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Manufacturing</span>
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Sustainability</span>
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Innovation</span>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                </div>
-              </Link>
             </div>
           </div>
         </div>
@@ -204,14 +264,22 @@ export default function USManufacturingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-xl font-semibold mb-6">Explore Other Pillars</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Link href="/5-pillars/critical-minerals" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 2: Critical Minerals →</div>
-                <div className="text-sm text-muted-foreground">Strategic supply chain positioning</div>
-              </Link>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/5-pillars/defense-cmmc" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
-                <div className="font-semibold">Pillar 3: Defense & CMMC →</div>
-                <div className="text-sm text-muted-foreground">DoD compliance and cybersecurity</div>
+                <div className="font-semibold">Pillar 1: Government Contracting →</div>
+                <div className="text-sm text-muted-foreground">Disciplined pursuit pipeline</div>
+              </Link>
+              <Link href="/5-pillars/critical-minerals" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 3: Critical Minerals →</div>
+                <div className="text-sm text-muted-foreground">Strategic materials partnerships</div>
+              </Link>
+              <Link href="/5-pillars/opportunity-zones" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 4: Opportunity Zones →</div>
+                <div className="text-sm text-muted-foreground">Place-based growth</div>
+              </Link>
+              <Link href="/5-pillars/access-to-capital" className="p-4 border rounded-lg hover:bg-white hover:shadow-md transition-all">
+                <div className="font-semibold">Pillar 5: Access to Capital →</div>
+                <div className="text-sm text-muted-foreground">Capital pathways</div>
               </Link>
             </div>
           </div>
