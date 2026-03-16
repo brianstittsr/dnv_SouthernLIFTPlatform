@@ -92,7 +92,15 @@ export default function GovernmentContractingPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80"
+                    alt="Team collaboration and assembly"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-blue-600" />
@@ -106,7 +114,15 @@ export default function GovernmentContractingPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80"
+                    alt="Document review and proposal development"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-blue-600" />

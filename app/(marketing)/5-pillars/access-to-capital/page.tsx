@@ -92,7 +92,15 @@ export default function AccessToCapitalPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=800&q=80"
+                    alt="Investor meetings and partnerships"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-amber-600" />
@@ -106,7 +114,15 @@ export default function AccessToCapitalPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"
+                    alt="Data reporting and analytics"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-amber-600" />

@@ -92,7 +92,15 @@ export default function ManufacturingPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80"
+                    alt="Digital transformation and technology"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-blue-600" />
@@ -106,7 +114,15 @@ export default function ManufacturingPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80"
+                    alt="Business partnership and collaboration"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-blue-600" />

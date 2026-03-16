@@ -92,7 +92,15 @@ export default function CriticalMineralsPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                    alt="Strategic partnership and collaboration"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-purple-600" />
@@ -106,7 +114,15 @@ export default function CriticalMineralsPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80"
+                    alt="Project planning and documentation"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-purple-600" />

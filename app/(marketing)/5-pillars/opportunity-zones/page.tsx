@@ -92,7 +92,15 @@ export default function OpportunityZonesPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=800&q=80"
+                    alt="Industrial growth and development"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-green-600" />
@@ -106,7 +114,15 @@ export default function OpportunityZonesPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="relative h-48 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80"
+                    alt="Investment and capital development"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-6 w-6 text-green-600" />
