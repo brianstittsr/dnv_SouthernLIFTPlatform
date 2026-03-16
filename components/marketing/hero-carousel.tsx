@@ -4,12 +4,15 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getHeroSlides } from "@/lib/firebase-hero";
 import { listHeroBackgrounds, preloadImage } from "@/lib/firebase-hero-storage";
 import { toast } from "sonner";
+import { useCart } from "@/lib/hooks/use-cart";
+import { PRODUCTS } from "@/lib/types/cart";
+import { useRouter } from "next/navigation";
 
 export interface HeroSlide {
   id: string;
@@ -22,6 +25,8 @@ export interface HeroSlide {
   primaryCta: {
     text: string;
     href: string;
+    action?: "add-to-cart" | "link";
+    productId?: string;
   };
   secondaryCta: {
     text: string;
@@ -89,6 +94,41 @@ const defaultSlides: HeroSlide[] = [
 interface HeroCarouselProps {
   slides?: HeroSlide[];
   autoPlayInterval?: number;
+}
+
+// Hero CTA Button Component with Cart Support
+function HeroCtaButton({ slide }: { slide: HeroSlide }) {
+  const { addItem } = useCart();
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (slide.primaryCta.action === "add-to-cart" && slide.primaryCta.productId) {
+      const product = PRODUCTS[slide.primaryCta.productId as keyof typeof PRODUCTS];
+      if (product) {
+        addItem(product, 1);
+        toast.success(`${product.name} added to cart!`);
+        router.push("/checkout-cart");
+      }
+    }
+  };
+
+  if (slide.primaryCta.action === "add-to-cart") {
+    return (
+      <Button size="lg" className="text-lg px-8" onClick={handleClick}>
+        <ShoppingCart className="mr-2 h-5 w-5" />
+        {slide.primaryCta.text}
+      </Button>
+    );
+  }
+
+  return (
+    <Button size="lg" className="text-lg px-8" asChild>
+      <Link href={slide.primaryCta.href}>
+        {slide.primaryCta.text}
+        <ArrowRight className="ml-2 h-5 w-5" />
+      </Link>
+    </Button>
+  );
 }
 
 // Add gradient animation styles
@@ -311,13 +351,16 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
             </div>
 
             {/* CTAs */}
-            <div className="mt-10 flex justify-center">
-              <Button size="lg" className="text-lg px-8" asChild>
-                <Link href={currentSlide.primaryCta.href}>
-                  {currentSlide.primaryCta.text}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+              <HeroCtaButton slide={currentSlide} />
+              {currentSlide.secondaryCta && currentSlide.secondaryCta.text && (
+                <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-slate-900" asChild>
+                  <Link href={currentSlide.secondaryCta.href}>
+                    {currentSlide.secondaryCta.text}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
 
