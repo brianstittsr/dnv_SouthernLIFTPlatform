@@ -37,7 +37,7 @@ export default function CriticalMineralsPage() {
                 <Gem className="h-10 w-10 text-white" />
               </div>
               <Badge variant="outline" className="border-white/50 text-white">
-                Pillar 3
+                Pillar 2
               </Badge>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">

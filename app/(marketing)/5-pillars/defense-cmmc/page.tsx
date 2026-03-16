@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Government Contracting | 5 Pillars | KDM Consortium",
+  title: "Government Contracting at the Department of War | 5 Pillars | KDM Consortium",
   description: "KDM turns fragmented pursuit activity into a disciplined capture system with weekly triage, objective team assembly, proposal support, and buyer access pathways.",
 };
 
@@ -37,11 +37,11 @@ export default function GovernmentContractingPage() {
                 <Shield className="h-10 w-10 text-white" />
               </div>
               <Badge variant="outline" className="border-white/50 text-white">
-                Pillar 1
+                Pillar 3
               </Badge>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Government Contracting
+              Government Contracting at the Department of War
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8">
               From opportunity intelligence to compliant submissions.
