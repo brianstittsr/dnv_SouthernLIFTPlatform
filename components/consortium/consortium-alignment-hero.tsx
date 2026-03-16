@@ -5,17 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "@/lib/hooks/use-cart";
+import { useCartStore } from "@/lib/stores/cart-store";
 import { PRODUCTS } from "@/lib/types/cart";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function ConsortiumAlignmentHero() {
-  const { addItem } = useCart();
+  const { addItem } = useCartStore();
+  const router = useRouter();
 
   const handleJoinConsortium = () => {
     const consortiumProduct = PRODUCTS['consortium'];
     addItem(consortiumProduct, 1);
     toast.success("Consortium membership added to cart!");
+    router.push("/checkout-cart");
   };
 
   return (
@@ -51,21 +54,22 @@ export function ConsortiumAlignmentHero() {
             <Button
               onClick={handleJoinConsortium}
               size="lg"
-              className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold"
+              className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold w-full sm:w-auto"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Join the Consortium - $1,250/month
             </Button>
-            <Link href="#how-it-works">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-slate-900"
-              >
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2 border-white text-white hover:bg-white hover:text-slate-900 w-full sm:w-auto"
+              asChild
+            >
+              <Link href="#how-it-works">
                 Learn How It Works
                 <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 text-left">

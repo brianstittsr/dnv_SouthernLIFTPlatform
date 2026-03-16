@@ -10,7 +10,7 @@ import Image from "next/image";
 import { getHeroSlides } from "@/lib/firebase-hero";
 import { listHeroBackgrounds, preloadImage } from "@/lib/firebase-hero-storage";
 import { toast } from "sonner";
-import { useCart } from "@/lib/hooks/use-cart";
+import { useCartStore } from "@/lib/stores/cart-store";
 import { PRODUCTS } from "@/lib/types/cart";
 import { useRouter } from "next/navigation";
 
@@ -98,7 +98,7 @@ interface HeroCarouselProps {
 
 // Hero CTA Button Component with Cart Support
 function HeroCtaButton({ slide }: { slide: HeroSlide }) {
-  const { addItem } = useCart();
+  const { addItem } = useCartStore();
   const router = useRouter();
 
   const handleClick = () => {

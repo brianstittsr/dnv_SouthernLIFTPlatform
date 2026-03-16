@@ -4,17 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useCart } from "@/lib/hooks/use-cart";
+import { useCartStore } from "@/lib/stores/cart-store";
 import { PRODUCTS } from "@/lib/types/cart";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function ConsortiumCTA() {
-  const { addItem } = useCart();
+  const { addItem } = useCartStore();
+  const router = useRouter();
 
   const handleJoinConsortium = () => {
     const consortiumProduct = PRODUCTS['consortium'];
     addItem(consortiumProduct, 1);
     toast.success("Consortium membership added to cart!");
+    router.push("/checkout-cart");
   };
 
   return (
