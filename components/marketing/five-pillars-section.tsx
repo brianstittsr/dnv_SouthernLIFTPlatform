@@ -10,7 +10,7 @@ export function FivePillarsSection() {
           {/* Left Column - Text Content */}
           <div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Five Pillars. One Aligned Engine for Growth, Readiness, and Impact.
+              Five Pillars; KDM's Strategic Engine for Readiness, Scale and Impact.
             </h2>
             <p className="text-xl text-gray-300 mb-6 leading-relaxed">
               KDM Consortium unites Government Contracting, Manufacturing, Critical Minerals, Opportunity Zones, and Access to Capital to help partners move faster, build stronger, and win together.
@@ -19,12 +19,16 @@ export function FivePillarsSection() {
               Where mission meets market and collaboration yields significant results.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
-                Partner With KDM
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Explore the Five Pillars
-              </Button>
+              <Link href="/contact">
+                <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
+                  Partner With KDM
+                </Button>
+              </Link>
+              <Link href="/5-pillars">
+                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-colors">
+                  Explore the Five Pillars
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -36,7 +40,7 @@ export function FivePillarsSection() {
             <div className="grid grid-cols-3 gap-0 border-4 border-white">
               {/* Top Row */}
               <div className="col-span-1"></div>
-              <Link href="/5-pillars/defense-cmmc" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center">
+              <Link href="/5-pillars/defense-cmmc" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
                 <div>
                   <h3 className="font-bold text-lg">Government</h3>
                   <h3 className="font-bold text-lg">Contracting</h3>
@@ -45,7 +49,7 @@ export function FivePillarsSection() {
               <div className="col-span-1"></div>
 
               {/* Middle Row */}
-              <Link href="/5-pillars/us-manufacturing" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center">
+              <Link href="/5-pillars/us-manufacturing" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
                 <h3 className="font-bold text-lg">Manufacturing</h3>
               </Link>
               <div className="col-span-1 bg-slate-100 text-slate-900 p-6 border-2 border-white flex items-center justify-center text-center">
@@ -54,7 +58,7 @@ export function FivePillarsSection() {
                   <h3 className="font-bold text-lg">Consortium</h3>
                 </div>
               </div>
-              <Link href="/5-pillars/opportunity-zones" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center">
+              <Link href="/5-pillars/opportunity-zones" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
                 <div>
                   <h3 className="font-bold text-lg">Opportunity</h3>
                   <h3 className="font-bold text-lg">Zones</h3>
@@ -63,13 +67,13 @@ export function FivePillarsSection() {
 
               {/* Bottom Row */}
               <div className="col-span-1"></div>
-              <Link href="/5-pillars/critical-minerals" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center">
+              <Link href="/5-pillars/critical-minerals" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
                 <div>
                   <h3 className="font-bold text-lg">Critical</h3>
                   <h3 className="font-bold text-lg">Minerals</h3>
                 </div>
               </Link>
-              <Link href="/5-pillars/access-to-capital" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center">
+              <Link href="/5-pillars/access-to-capital" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
                 <div>
                   <h3 className="font-bold text-lg">Access to</h3>
                   <h3 className="font-bold text-lg">Capital</h3>
@@ -77,7 +81,7 @@ export function FivePillarsSection() {
               </Link>
             </div>
             <p className="text-xs text-gray-400 mt-4 text-right italic">
-              (Graphic tiles are intentionally simplified so they render cleanly in Word. Please represent in a cyclical graphic with KDM Consortium in the middle.)
+              Click on each pillar to learn more about that area.
             </p>
           </div>
         </div>

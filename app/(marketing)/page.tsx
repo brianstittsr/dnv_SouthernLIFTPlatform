@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <>
       <HeroCarousel />
-      <ServicesOverview />
+      {/* <ServicesOverview /> */}
       <FivePillarsSection />
       <StatsSection />
       <HowItWorks />
