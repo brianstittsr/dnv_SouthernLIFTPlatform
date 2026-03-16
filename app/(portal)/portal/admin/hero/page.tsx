@@ -98,7 +98,7 @@ const initialSlides: HeroSlide[] = [
     subheadline: "Stay informed with expert insights on government contracting, certifications, and business growth strategies. Our blog features practical advice from industry leaders.",
     benefits: ["Expert Insights", "Industry Updates", "Practical Tips"],
     primaryCta: { text: "Read Our Blog", href: "/blog" },
-    secondaryCta: { text: "Subscribe", href: "/newsletter" },
+    secondaryCta: { text: "", href: "" },
     isPublished: true,
     order: 5,
   },
