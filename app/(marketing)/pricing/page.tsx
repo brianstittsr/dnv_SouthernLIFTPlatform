@@ -398,13 +398,6 @@ export default function PricingPage() {
             })}
           </div>
 
-          <div className="text-center mt-12">
-            <Link href="/portal/admin/cohorts">
-              <Button size="lg">
-                View Upcoming Cohort Dates <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -494,9 +487,9 @@ export default function PricingPage() {
             </AddToCartButton>
             <AddToCartButton
               product={PRODUCTS["cmmc-cohort"]}
-              variant="outline"
+              variant="default"
               size="lg"
-              className="border-white text-white hover:bg-white/10"
+              className="bg-white text-primary hover:bg-white/90"
             >
               Register for Cohort
             </AddToCartButton>
