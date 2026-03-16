@@ -138,7 +138,15 @@ export default function CriticalMineralsPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80"
+                    alt="Critical infrastructure and technology"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Why It Matters</CardTitle>
                 </CardHeader>
@@ -149,7 +157,15 @@ export default function CriticalMineralsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80"
+                    alt="Mining and industrial stakeholders"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Who It Serves</CardTitle>
                 </CardHeader>
@@ -160,7 +176,15 @@ export default function CriticalMineralsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+                    alt="Strategic success and project outcomes"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">What Success Looks Like</CardTitle>
                 </CardHeader>

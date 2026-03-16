@@ -138,7 +138,15 @@ export default function GovernmentContractingPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80"
+                    alt="Strategic importance and business value"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Why It Matters</CardTitle>
                 </CardHeader>
@@ -149,7 +157,15 @@ export default function GovernmentContractingPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&q=80"
+                    alt="Federal contractors and business professionals"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Who It Serves</CardTitle>
                 </CardHeader>
@@ -160,7 +176,15 @@ export default function GovernmentContractingPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
+                    alt="Success and achievement in business"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">What Success Looks Like</CardTitle>
                 </CardHeader>

@@ -138,7 +138,15 @@ export default function ManufacturingPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80"
+                    alt="Manufacturing importance and industrial strength"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Why It Matters</CardTitle>
                 </CardHeader>
@@ -149,7 +157,15 @@ export default function ManufacturingPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80"
+                    alt="Manufacturing workforce and professionals"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Who It Serves</CardTitle>
                 </CardHeader>
@@ -160,7 +176,15 @@ export default function ManufacturingPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1590650153855-d9e808231d41?w=800&q=80"
+                    alt="Manufacturing success and growth"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">What Success Looks Like</CardTitle>
                 </CardHeader>

@@ -138,7 +138,15 @@ export default function OpportunityZonesPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80"
+                    alt="Urban geography and location strategy"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Why It Matters</CardTitle>
                 </CardHeader>
@@ -149,7 +157,15 @@ export default function OpportunityZonesPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=80"
+                    alt="Community developers and stakeholders"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Who It Serves</CardTitle>
                 </CardHeader>
@@ -160,7 +176,15 @@ export default function OpportunityZonesPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80"
+                    alt="Development success and growth"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">What Success Looks Like</CardTitle>
                 </CardHeader>

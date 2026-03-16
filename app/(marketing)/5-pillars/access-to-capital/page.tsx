@@ -138,7 +138,15 @@ export default function AccessToCapitalPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80"
+                    alt="Capital importance and financial strategy"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Why It Matters</CardTitle>
                 </CardHeader>
@@ -149,7 +157,15 @@ export default function AccessToCapitalPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80"
+                    alt="Investors and financial partners"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">Who It Serves</CardTitle>
                 </CardHeader>
@@ -160,7 +176,15 @@ export default function AccessToCapitalPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border-2 overflow-hidden">
+                <div className="relative h-40 w-full">
+                  <Image
+                    src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&q=80"
+                    alt="Financial success and capital growth"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <CardHeader>
                   <CardTitle className="text-lg">What Success Looks Like</CardTitle>
                 </CardHeader>
