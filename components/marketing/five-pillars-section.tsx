@@ -104,7 +104,7 @@ export function FivePillarsSection() {
         </div>
 
         {/* Video Link */}
-        <div className="text-center bg-slate-800/50 p-8 rounded-lg border border-slate-700">
+        <div className="text-center bg-slate-800/50 p-8 rounded-lg border border-slate-700 mb-16">
           <h3 className="text-2xl font-bold mb-4">Learn More About Our Five Pillars</h3>
           <p className="text-gray-300 mb-6">Watch this video to understand how our integrated ecosystem drives growth and impact.</p>
           <a 
@@ -117,6 +117,69 @@ export function FivePillarsSection() {
             Watch Five Pillars Explanation Video
             <ArrowRight className="h-5 w-5" />
           </a>
+        </div>
+
+        {/* Why KDM and Human-Thinking Framework */}
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 rounded-lg">
+          <div className="max-w-6xl mx-auto">
+            <p className="text-amber-500 font-semibold mb-2 uppercase tracking-wide">Homepage Section</p>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+              Why KDM and the human-thinking framework
+            </h2>
+            <p className="text-lg text-slate-600 mb-12">
+              This portion of the homepage answers the natural sequence of questions: why it matters, who it serves, what works, how it works, and when it delivers results.
+            </p>
+
+            {/* Two Column Layout */}
+            <div className="grid lg:grid-cols-2 gap-8 mb-12">
+              {/* Left Column */}
+              <div>
+                <h3 className="text-amber-500 font-bold mb-3 uppercase text-sm">Why KDM Exists</h3>
+                <h4 className="text-2xl font-bold text-slate-900 mb-4">
+                  The biggest opportunities are never won in silos.
+                </h4>
+                <p className="text-slate-700 leading-relaxed">
+                  Government priorities, industrial capability, strategic resources, place-based incentives, and capital must work together. KDM Consortium aligns these forces into one coordinated system designed for execution, resilience, and shared prosperity.
+                </p>
+              </div>
+
+              {/* Right Column */}
+              <div className="bg-slate-800 text-white p-8 rounded-lg">
+                <h4 className="text-2xl font-bold mb-2">No pillar wins alone.</h4>
+                <h4 className="text-2xl font-bold mb-4">Together, they create momentum.</h4>
+                <p className="text-gray-300">Strategic ecosystem. Shared execution.</p>
+              </div>
+            </div>
+
+            {/* Four Boxes Row */}
+            <div className="grid md:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-lg border-2 border-teal-600">
+                <h3 className="text-teal-600 font-bold mb-3 uppercase text-sm">Why They Work</h3>
+                <p className="text-slate-700">Because no pillar wins alone.</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg border-2 border-teal-600">
+                <h3 className="text-teal-600 font-bold mb-3 uppercase text-sm">For Whom They Work</h3>
+                <p className="text-slate-700">For manufacturers, contractors, investors, agencies, developers, and communities.</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg border-2 border-teal-600">
+                <h3 className="text-teal-600 font-bold mb-3 uppercase text-sm">What Works</h3>
+                <p className="text-slate-700">An integrated model that turns opportunity into contracts, production, investment, and impact.</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg border-2 border-teal-600">
+                <h3 className="text-teal-600 font-bold mb-3 uppercase text-sm">How They Work</h3>
+                <p className="text-slate-700">By aligning mission, capability, resources, incentives, and funding across all five pillars.</p>
+              </div>
+            </div>
+
+            {/* When It Works Box */}
+            <div className="mt-6 bg-white p-6 rounded-lg border-2 border-teal-600">
+              <h3 className="text-teal-600 font-bold mb-3 uppercase text-sm">When It Works</h3>
+              <p className="text-slate-700">When the right partners are aligned and strategy turns into action.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
