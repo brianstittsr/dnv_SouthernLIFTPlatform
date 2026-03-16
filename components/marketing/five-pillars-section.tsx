@@ -195,36 +195,27 @@ export function FivePillarsSection() {
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 1</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Government Contracting</h3>
-              <p className="text-slate-700 mb-6">
+              <p className="text-slate-700">
                 Helping qualified teams pursue and win opportunities that support public priorities, national resilience, and long-term economic strength.
               </p>
-              <div className="bg-gray-100 p-4 rounded text-center text-red-600 font-semibold">
-                {"{INSERT KEITH VIDEO HERE}"}
-              </div>
             </div>
 
             {/* Pillar 2 - Manufacturing */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 2</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Manufacturing</h3>
-              <p className="text-slate-700 mb-6">
+              <p className="text-slate-700">
                 Advancing the capacity, capability, and modernization needed to produce more in America with speed, quality, and resilience.
               </p>
-              <div className="bg-gray-100 p-4 rounded text-center text-red-600 font-semibold">
-                {"{INSERT NEL VIDEO HERE}"}
-              </div>
             </div>
 
             {/* Pillar 3 - Critical Minerals */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 3</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Critical Minerals</h3>
-              <p className="text-slate-700 mb-6">
+              <p className="text-slate-700">
                 Supporting secure supply chains for the materials essential to defense, energy, infrastructure, and advanced industry.
               </p>
-              <div className="bg-gray-100 p-4 rounded text-center text-red-600 font-semibold">
-                {"{INSERT MARTI VIDEO HERE}"}
-              </div>
             </div>
           </div>
 
@@ -233,24 +224,18 @@ export function FivePillarsSection() {
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 4</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Opportunity Zones</h3>
-              <p className="text-slate-700 mb-6">
+              <p className="text-slate-700">
                 Connecting investment and development opportunities to places positioned for revitalization, growth, and strategic advantage.
               </p>
-              <div className="bg-gray-100 p-4 rounded text-center text-red-600 font-semibold">
-                {"{INSERT BLAKE CHRISTIAN VIDEO HERE}"}
-              </div>
             </div>
 
             {/* Pillar 5 - Access to Capital */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 5</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Access to Capital</h3>
-              <p className="text-slate-700 mb-6">
+              <p className="text-slate-700">
                 Bringing the right funding strategies, partners, and pathways together to move projects from concept to reality.
               </p>
-              <div className="bg-gray-100 p-4 rounded text-center text-red-600 font-semibold">
-                {"{INSERT KIRK VIDEO HERE}"}
-              </div>
             </div>
           </div>
 
