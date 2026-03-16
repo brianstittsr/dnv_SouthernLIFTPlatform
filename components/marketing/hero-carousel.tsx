@@ -353,14 +353,6 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
             {/* CTAs */}
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <HeroCtaButton slide={currentSlide} />
-              {currentSlide.secondaryCta && currentSlide.secondaryCta.text && (
-                <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-slate-900" asChild>
-                  <Link href={currentSlide.secondaryCta.href}>
-                    {currentSlide.secondaryCta.text}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-              )}
             </div>
           </div>
 
