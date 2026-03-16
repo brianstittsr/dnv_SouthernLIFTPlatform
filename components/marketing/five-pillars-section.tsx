@@ -24,7 +24,7 @@ export function FivePillarsSection() {
                   Partner With KDM
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-colors w-full sm:w-auto" asChild>
+              <Button size="lg" className="bg-white text-slate-900 hover:bg-gray-100 font-semibold w-full sm:w-auto" asChild>
                 <Link href="/5-pillars">
                   Explore the Five Pillars
                 </Link>
