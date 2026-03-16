@@ -29,10 +29,10 @@ export function ConsortiumAlignmentHero() {
           src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80"
           alt="Collective experts collaborating"
           fill
-          className="object-cover opacity-20"
+          className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/70 to-slate-900/70" />
       </div>
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,8 +61,7 @@ export function ConsortiumAlignmentHero() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-slate-900 w-full sm:w-auto"
+              className="bg-white text-slate-900 hover:bg-gray-100 font-semibold w-full sm:w-auto"
               asChild
             >
               <Link href="#how-it-works">
