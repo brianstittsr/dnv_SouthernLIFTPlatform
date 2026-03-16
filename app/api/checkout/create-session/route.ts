@@ -11,72 +11,114 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { items } = body;
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid cart items" },
-        { status: 400 }
-      );
-    }
+    const { items, productName, productDescription, amount, quantity, customerInfo } = body;
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
     const transactionItems: any[] = [];
     let totalAmount = 0;
+    let checkoutMode: 'payment' | 'subscription' = 'payment';
+    let successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-success?session_id={CHECKOUT_SESSION_ID}`;
+    let cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-cart`;
+    let source = 'checkout-cart';
 
-    for (const item of items) {
-      const product = PRODUCTS[item.productId as keyof typeof PRODUCTS];
-      
-      if (!product) {
-        return NextResponse.json(
-          { error: `Invalid product: ${item.productId}` },
-          { status: 400 }
-        );
-      }
-
-      const amount = Math.round(product.price * 100);
-      totalAmount += amount * item.quantity;
+    // Handle direct product purchase (e.g., CMMC Cohort)
+    if (productName && amount) {
+      const unitAmount = Math.round(amount * 100);
+      const itemQuantity = quantity || 1;
+      totalAmount = unitAmount * itemQuantity;
 
       lineItems.push({
         price_data: {
           currency: "usd",
           product_data: {
-            name: product.name,
-            description: product.description,
-            metadata: {
-              productId: product.id,
-              productType: product.type,
-            },
+            name: productName,
+            description: productDescription || '',
           },
-          unit_amount: amount,
-          recurring: product.billingPeriod === 'monthly' ? {
-            interval: 'month',
-          } : product.billingPeriod === 'annual' ? {
-            interval: 'year',
-          } : undefined,
+          unit_amount: unitAmount,
         },
-        quantity: item.quantity,
+        quantity: itemQuantity,
       });
 
       transactionItems.push({
-        productId: product.id,
-        productName: product.name,
-        quantity: item.quantity,
-        price: product.price,
+        productName,
+        quantity: itemQuantity,
+        price: amount,
       });
+
+      successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-success?session_id={CHECKOUT_SESSION_ID}&product=cmmc-cohort`;
+      cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cmmc-cohort`;
+      source = 'cmmc-cohort';
+    } 
+    // Handle cart-based checkout
+    else if (items && Array.isArray(items) && items.length > 0) {
+      for (const item of items) {
+        const product = PRODUCTS[item.productId as keyof typeof PRODUCTS];
+        
+        if (!product) {
+          return NextResponse.json(
+            { error: `Invalid product: ${item.productId}` },
+            { status: 400 }
+          );
+        }
+
+        const unitAmount = Math.round(product.price * 100);
+        totalAmount += unitAmount * item.quantity;
+
+        lineItems.push({
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: product.name,
+              description: product.description,
+              metadata: {
+                productId: product.id,
+                productType: product.type,
+              },
+            },
+            unit_amount: unitAmount,
+            recurring: product.billingPeriod === 'monthly' ? {
+              interval: 'month',
+            } : product.billingPeriod === 'annual' ? {
+              interval: 'year',
+            } : undefined,
+          },
+          quantity: item.quantity,
+        });
+
+        transactionItems.push({
+          productId: product.id,
+          productName: product.name,
+          quantity: item.quantity,
+          price: product.price,
+        });
+      }
+
+      checkoutMode = lineItems.some(item => item.price_data?.recurring) ? 'subscription' : 'payment';
+    } else {
+      return NextResponse.json(
+        { error: "Invalid request: provide either items or product details" },
+        { status: 400 }
+      );
     }
 
-    const checkoutSession = await stripe.checkout.sessions.create({
-      mode: lineItems.some(item => item.price_data?.recurring) ? 'subscription' : 'payment',
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+      mode: checkoutMode,
       line_items: lineItems,
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout-cart`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
-        source: 'checkout-cart',
+        source,
       },
       allow_promotion_codes: true,
       billing_address_collection: 'required',
-    });
+    };
+
+    // Add customer email if provided
+    if (customerInfo?.email) {
+      sessionParams.customer_email = customerInfo.email;
+    }
+
+    const checkoutSession = await stripe.checkout.sessions.create(sessionParams);
 
     if (!db) {
       console.error("Firebase Admin not initialized");
@@ -93,12 +135,14 @@ export async function POST(req: NextRequest) {
       status: 'pending',
       amount: totalAmount / 100,
       currency: 'usd',
-      customerEmail: checkoutSession.customer_email || '',
-      customerName: '',
+      customerEmail: customerInfo?.email || checkoutSession.customer_email || '',
+      customerName: customerInfo ? `${customerInfo.firstName} ${customerInfo.lastName}`.trim() : '',
+      customerInfo: customerInfo || {},
       userId: '',
       items: transactionItems,
       metadata: {
         mode: checkoutSession.mode,
+        source,
       },
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),

@@ -69,16 +69,16 @@ export default function CMMCTrainingPage() {
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               Register for the Next
-              <span className="block text-yellow-400 mt-2">CMMC Training Cohort</span>
+              <span className="block text-yellow-400 mt-2">CMMC CyberSecurity Compliance Training Cohort</span>
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Don't lose your DoD contracts. Join the KDM Consortium's proven team-based approach to achieve CMMC certification in 90-180 days—before your competitors do.
+              Don't lose your DoD contracts. Join the KDM Consortium Cohort Program and get certified in 90-180 days.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/portal/payment">
+              <Link href="/checkout/cmmc-cohort">
                 <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-8 py-6">
                   <Award className="h-5 w-5 mr-2" />
-                  Register for Next Cohort
+                  SECURE YOUR SEAT
                 </Button>
               </Link>
             </div>
@@ -100,19 +100,40 @@ export default function CMMCTrainingPage() {
         </div>
       </section>
 
-      {/* CMMC Cohort Program Section */}
+      {/* IMMEDIATE RISKS Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <div className="flex justify-center mb-8">
-              <Image
-                src="/kdm-logo.png"
-                alt="KDM & Associates"
-                width={400}
-                height={80}
-                className="object-contain"
-              />
+            <div className="text-center mb-12">
+              <Badge variant="destructive" className="mb-4">
+                <AlertTriangle className="h-4 w-4 mr-2 inline" />
+                IMMEDIATE RISKS
+              </Badge>
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <Card className="border-2 border-red-500">
+                  <CardContent className="p-6 text-center">
+                    <AlertTriangle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                    <h3 className="font-bold text-lg mb-2">Contract Disqualification</h3>
+                    <p className="text-muted-foreground">Without proper SPRS scores</p>
+                  </CardContent>
+                </Card>
+                <Card className="border-2 border-red-500">
+                  <CardContent className="p-6 text-center">
+                    <AlertTriangle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                    <h3 className="font-bold text-lg mb-2">Immediate Ineligibility</h3>
+                    <p className="text-muted-foreground">For new contract awards</p>
+                  </CardContent>
+                </Card>
+                <Card className="border-2 border-red-500">
+                  <CardContent className="p-6 text-center">
+                    <AlertTriangle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                    <h3 className="font-bold text-lg mb-2">Lost Business</h3>
+                    <p className="text-muted-foreground">Risk to existing relationships</p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
+
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">
                 <Users className="h-4 w-4 mr-2 inline" />
@@ -122,8 +143,44 @@ export default function CMMCTrainingPage() {
                 Team-Based Approach to Cybersecurity Compliance
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                The KDM Consortium brings a proven team-based methodology to CMMC compliance through structured cohorts, powered by Strategic Value Plus Solutions, LLC (V+)
+                The KDM Consortium brings a team-based approach to cybersecurity compliance through the CMMC Cohorts, powered by Strategic Value Plus Solutions, LLC (V+). We help you get ready for your third-party C3PAO assessment.
               </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <Card>
+                <CardHeader>
+                  <Zap className="h-10 w-10 text-blue-600 mb-2" />
+                  <CardTitle>Fast Track Certification</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Achieve compliance in 90-180 days with our structured cohort approach.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Users className="h-10 w-10 text-blue-600 mb-2" />
+                  <CardTitle>Team-Based Learning</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Learn alongside peers, share best practices, and achieve compliance faster as a group.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Target className="h-10 w-10 text-blue-600 mb-2" />
+                  <CardTitle>Built for SMBs</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Designed for small and mid-sized contractors — no massive consulting fees.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
 
             <Card className="border-2 border-blue-200 bg-blue-50">
@@ -162,10 +219,10 @@ export default function CMMCTrainingPage() {
                     <p className="text-gray-700 leading-relaxed">
                       Without current SPRS scores, validated readiness documentation, and auditable evidence, organizations face <strong>immediate ineligibility for contract awards</strong> and increased risk to existing business relationships.
                     </p>
-                    <Link href="/portal/payment">
+                    <Link href="/checkout/cmmc-cohort">
                       <Button className="w-full mt-6 bg-red-600 hover:bg-red-700">
                         <Zap className="h-4 w-4 mr-2" />
-                        Act Now - Register Today
+                        SECURE YOUR SEAT
                       </Button>
                     </Link>
                   </div>
@@ -284,10 +341,10 @@ export default function CMMCTrainingPage() {
             </Card>
 
             <div className="text-center mt-8">
-              <Link href="/portal/payment">
+              <Link href="/checkout/cmmc-cohort">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-12 py-6">
                   <Zap className="h-5 w-5 mr-2" />
-                  Register for Next CMMC Cohort - Don't Wait
+                  SECURE YOUR SEAT
                 </Button>
               </Link>
             </div>
@@ -440,10 +497,10 @@ export default function CMMCTrainingPage() {
                     Join us for a clear, practical roadmap to CMMC readiness and certification.
                   </p>
                 </div>
-                <Link href="/portal/payment">
+                <Link href="/checkout/cmmc-cohort">
                   <Button size="lg" className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-12 py-6">
                     <Award className="h-5 w-5 mr-2" />
-                    Register for the Next CMMC Cohort
+                    SECURE YOUR SEAT
                   </Button>
                 </Link>
                 <p className="text-sm text-blue-200 mt-4">Limited spots available per cohort. Secure your place today.</p>
