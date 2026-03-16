@@ -1,22 +1,20 @@
 import { Metadata } from "next";
 import {
-  HeroCarousel,
-  FeaturesGrid,
-  AudienceCards,
-  HowItWorks,
-  CTASection,
+  ConsortiumAlignmentHero,
+  ConsortiumAlignmentContent,
+  ConsortiumCTA,
 } from "@/components/consortium";
 
 export const metadata: Metadata = {
-  title: "KDM Consortium | Connect Small Businesses with Government Buyers",
+  title: "KDM Consortium | Boutique Network of Expert Companies",
   description:
-    "Join the KDM Consortium to connect certified small businesses with government procurement opportunities. Access training, networking, and contract support.",
+    "Join our selective consortium of 12-50 expert companies collaborating to win and deliver large government contracts in manufacturing, critical minerals, defense, and energy sectors.",
   keywords:
-    "government contracting, small business, 8(a), WOSB, SDVOSB, HUBZone, federal contracts, KDM Consortium",
+    "government contracting, consortium, manufacturing, critical minerals, defense contracts, opportunity zones, access to capital, KDM Consortium",
   openGraph: {
-    title: "KDM Consortium | Connect Small Businesses with Government Buyers",
+    title: "KDM Consortium | Boutique Network of Expert Companies",
     description:
-      "Join the KDM Consortium to connect certified small businesses with government procurement opportunities.",
+      "A selective consortium where expert companies collaborate to win and deliver large government contracts.",
     images: ["/KDM_Consortium_Logo.png"],
   },
 };
@@ -24,11 +22,9 @@ export const metadata: Metadata = {
 export default function ConsortiumPage() {
   return (
     <>
-      <HeroCarousel />
-      <FeaturesGrid />
-      <AudienceCards />
-      <HowItWorks />
-      <CTASection />
+      <ConsortiumAlignmentHero />
+      <ConsortiumAlignmentContent />
+      <ConsortiumCTA />
     </>
   );
 }
