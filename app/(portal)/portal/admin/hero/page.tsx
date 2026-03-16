@@ -110,7 +110,7 @@ const initialSlides: HeroSlide[] = [
     subheadline: "Connect with a powerful network of businesses, partners, and mentors. The KDM Consortium provides access to teaming opportunities, shared resources, and collaborative growth.",
     benefits: ["Networking Events", "Teaming Opportunities", "Mentorship Programs"],
     primaryCta: { text: "Join the Consortium", href: "/consortium" },
-    secondaryCta: { text: "Learn More", href: "/about/consortium" },
+    secondaryCta: { text: "", href: "" },
     isPublished: true,
     order: 6,
   },

@@ -19,16 +19,16 @@ export function FivePillarsSection() {
               Where mission meets market and collaboration yields significant results.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/contact">
-                <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold">
+              <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold w-full sm:w-auto" asChild>
+                <Link href="/contact">
                   Partner With KDM
-                </Button>
-              </Link>
-              <Link href="/5-pillars">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-colors">
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-colors w-full sm:w-auto" asChild>
+                <Link href="/5-pillars">
                   Explore the Five Pillars
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
 
