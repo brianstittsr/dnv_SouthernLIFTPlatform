@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,8 +30,17 @@ export default function CMMCPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-white py-20 md:py-32">
-        <div className="absolute inset-0 bg-black/10" />
+      <section className="relative text-white py-20 md:py-32">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://strategicvalueplus.com/_next/image?url=%2Fcmmc%2Fagefis-qh-mar1Tzo8-unsplash.jpg&w=750&q=75"
+            alt="CMMC Cybersecurity"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
