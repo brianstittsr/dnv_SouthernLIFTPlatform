@@ -9,7 +9,6 @@ export function FivePillarsSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           {/* Left Column - Text Content */}
           <div>
-            <p className="text-amber-400 font-semibold mb-4 uppercase tracking-wide">Homepage Mockup</p>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               Five Pillars. One Aligned Engine for Growth, Readiness, and Impact.
             </h2>
@@ -122,7 +121,6 @@ export function FivePillarsSection() {
         {/* Why KDM and Human-Thinking Framework */}
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 rounded-lg">
           <div className="max-w-6xl mx-auto">
-            <p className="text-amber-500 font-semibold mb-2 uppercase tracking-wide">Homepage Section</p>
             <h2 className="text-4xl font-bold text-slate-900 mb-4">
               Why KDM and the human-thinking framework
             </h2>
