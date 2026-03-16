@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,13 @@ import {
   FileText,
 } from "lucide-react";
 import { toast } from "sonner";
+import { StripePaymentForm } from "@/components/checkout/stripe-payment-form";
 
 export default function CMMCCohortCheckoutPage() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -50,7 +53,7 @@ export default function CMMCCohortCheckoutPage() {
     });
   };
 
-  const handleCheckout = async () => {
+  const handleContinueToPayment = async () => {
     // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.company) {
       toast.error("Please fill in all required fields");
@@ -67,34 +70,38 @@ export default function CMMCCohortCheckoutPage() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch("/api/checkout/create-session", {
+      const response = await fetch("/api/checkout/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productName: productDetails.name,
-          productDescription: productDetails.description,
           amount: productDetails.price,
-          quantity: productDetails.quantity,
           customerInfo: formData,
+          productName: productDetails.name,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session");
+        throw new Error(data.error || "Failed to create payment intent");
       }
 
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setShowPaymentForm(true);
+        // Scroll to payment form
+        setTimeout(() => {
+          document.getElementById("payment-section")?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
       } else {
-        throw new Error("No checkout URL received");
+        throw new Error("No client secret received");
       }
     } catch (error: any) {
-      console.error("Checkout error:", error);
-      toast.error(error.message || "Failed to process checkout. Please try again.");
+      console.error("Payment intent error:", error);
+      toast.error(error.message || "Failed to initialize payment. Please try again.");
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -368,24 +375,31 @@ export default function CMMCCohortCheckoutPage() {
                     </div>
                   </div>
 
-                  <Button
-                    onClick={handleCheckout}
-                    disabled={isProcessing}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-lg"
-                    size="lg"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="h-5 w-5 mr-2" />
-                        Proceed to Payment
-                      </>
-                    )}
-                  </Button>
+                  {!showPaymentForm ? (
+                    <Button
+                      onClick={handleContinueToPayment}
+                      disabled={isProcessing}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-lg"
+                      size="lg"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                          Preparing Payment...
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="h-5 w-5 mr-2" />
+                          Continue to Payment
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <div className="text-center text-sm text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-2" />
+                      Information confirmed. Complete payment below.
+                    </div>
+                  )}
 
                   <div className="space-y-2 text-xs text-muted-foreground">
                     <div className="flex items-center gap-2">
@@ -414,6 +428,17 @@ export default function CMMCCohortCheckoutPage() {
               </Card>
             </div>
           </div>
+
+          {/* Payment Form Section */}
+          {showPaymentForm && clientSecret && (
+            <div id="payment-section" className="mt-12 max-w-2xl mx-auto">
+              <StripePaymentForm
+                clientSecret={clientSecret}
+                amount={totalAmount}
+                productName={productDetails.name}
+              />
+            </div>
+          )}
         </div>
       </div>
 
