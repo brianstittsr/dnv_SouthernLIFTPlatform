@@ -59,7 +59,7 @@ export default function CMMCPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
-                <Link href="/training">
+                <Link href="/cmmc-training">
                   Join CMMC Training Cohort
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

@@ -1,4 +1,4 @@
-/**
+ /**
  * Script to add CMMC Training Cohort slide and update KDM Consortium slide
  * Run this with: npx tsx scripts/add-hero-slides.ts
  */
