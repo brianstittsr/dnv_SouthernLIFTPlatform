@@ -121,7 +121,7 @@ async function sendLeadNotificationEmail(lead: SubscriptionLead): Promise<void> 
 
     await db.collection("emailQueue").add({
       to: ["nel@strategicvalueplus.com"],
-      cc: ["info@kdm-assoc.com"],
+      cc: ["kmoore@kdm-assoc.com"],
       subject: `New ${lead.tierName} Subscription Lead - ${lead.companyName}`,
       body: htmlBody,
       textBody: textBody,

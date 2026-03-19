@@ -61,6 +61,8 @@ export default function ContactPage() {
   const [isBookingCall, setIsBookingCall] = useState(false);
   const [businessType, setBusinessType] = useState("");
   const [service, setService] = useState("");
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
   const [bookCallForm, setBookCallForm] = useState({
     firstName: "",
     lastName: "",
@@ -75,10 +77,20 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
+    
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
+    
+    // Show confirmation dialog
+    setPendingFormData(formData);
+    setShowConfirmDialog(true);
+  };
+
+  const confirmSubmit = async () => {
+    if (!pendingFormData) return;
+    
+    setIsSubmitting(true);
+    setShowConfirmDialog(false);
 
     try {
       const response = await fetch("/api/contact", {
@@ -87,17 +99,17 @@ export default function ContactPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstName: formData.get("firstName"),
-          lastName: formData.get("lastName"),
-          email: formData.get("email"),
-          phone: formData.get("phone") || undefined,
-          company: formData.get("company"),
-          jobTitle: formData.get("title") || undefined,
+          firstName: pendingFormData.get("firstName"),
+          lastName: pendingFormData.get("lastName"),
+          email: pendingFormData.get("email"),
+          phone: pendingFormData.get("phone") || undefined,
+          company: pendingFormData.get("company"),
+          jobTitle: pendingFormData.get("title") || undefined,
           businessType: businessType,
-          industry: formData.get("industry") || undefined,
+          industry: pendingFormData.get("industry") || undefined,
           service: service,
-          message: formData.get("message") || undefined,
-          newsletter: formData.get("newsletter") === "on",
+          message: pendingFormData.get("message") || undefined,
+          newsletter: pendingFormData.get("newsletter") === "on",
         }),
       });
 
@@ -111,9 +123,12 @@ export default function ContactPage() {
         description: "We'll get back to you within 24 hours.",
       });
 
-      form.reset();
+      // Reset form
+      const form = document.querySelector('form') as HTMLFormElement;
+      if (form) form.reset();
       setBusinessType("");
       setService("");
+      setPendingFormData(null);
     } catch (error) {
       console.error("Contact form error:", error);
       toast.error("Failed to submit form", {
@@ -544,6 +559,55 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Submission</DialogTitle>
+            <DialogDescription>
+              Please verify your information before submitting. We'll send a confirmation to your email address.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="rounded-lg bg-muted p-4 space-y-2">
+              <p className="text-sm">
+                <strong>Name:</strong> {pendingFormData?.get("firstName")?.toString()} {pendingFormData?.get("lastName")?.toString()}
+              </p>
+              <p className="text-sm">
+                <strong>Email:</strong> {pendingFormData?.get("email")?.toString()}
+              </p>
+              <p className="text-sm">
+                <strong>Company:</strong> {pendingFormData?.get("company")?.toString()}
+              </p>
+              <p className="text-sm">
+                <strong>Service:</strong> {service}
+              </p>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  setPendingFormData(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={confirmSubmit} disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Confirm & Submit"
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

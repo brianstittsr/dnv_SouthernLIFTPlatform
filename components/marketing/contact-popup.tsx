@@ -183,7 +183,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
         toast.error("Email notification failed", {
-          description: "Network error when sending confirmation. Please contact us directly at info@kdm-assoc.com",
+          description: "Network error when sending confirmation. Please contact us directly at kmoore@kdm-assoc.com",
           duration: 6000,
         });
       }
