@@ -111,14 +111,27 @@ export function FivePillarsSection() {
           <h3 className="text-2xl font-bold mb-4">Learn More About Our Five Pillars</h3>
           <p className="text-gray-300 mb-6">Watch this video to understand how our integrated ecosystem drives growth and impact.</p>
           <a 
-            href="https://drive.google.com/file/d/1c8mUrZhTOPyYMDHzjZ_7Qi8sc8FtvwoP/view" 
+            href="https://www.youtube.com/watch?v=Jwcmv9MTz5I" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-6 py-3 rounded-lg transition-colors"
+            className="inline-block relative group max-w-2xl mx-auto"
           >
-            <PlayCircle className="h-5 w-5" />
-            Watch Five Pillars Explanation Video
-            <ArrowRight className="h-5 w-5" />
+            <div className="relative overflow-hidden rounded-lg shadow-lg transition-transform group-hover:scale-105">
+              <img 
+                src="https://img.youtube.com/vi/Jwcmv9MTz5I/maxresdefault.jpg" 
+                alt="OGTV Critical Minerals Brief"
+                className="w-full h-auto"
+              />
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                  <PlayCircle className="h-12 w-12 text-white" />
+                </div>
+              </div>
+              <div className="absolute bottom-4 right-4 bg-black/80 text-white px-2 py-1 rounded text-sm font-semibold">
+                1:46
+              </div>
+            </div>
+            <p className="text-sm text-gray-400 mt-2">OGTV Critical Minerals Brief - Miranda Bouldin</p>
           </a>
         </div>
 
