@@ -303,7 +303,7 @@ Knowledge-based services represent significant opportunities for specialized fir
 
 ## The Diverse Business Advantage
 
-Federal procurement policy strongly favors participation by Minority Business Enterprises (MBEs), and Puerto Rico presents unique advantages for qualified firms:
+Federal procurement policy strongly favors participation by Small Business Enterprises (MBEs), and Puerto Rico presents unique advantages for qualified firms:
 
 ### 8(a) Business Development Program
 
@@ -631,7 +631,7 @@ DOE offers multiple programs supporting manufacturing sustainability:
 
 ## Opportunities for Diverse Businesses
 
-The sustainability transformation creates specific opportunities for Minority Business Enterprises (MBEs):
+The sustainability transformation creates specific opportunities for Small Business Enterprises (MBEs):
 
 ### Renewable Energy Installation and Services
 

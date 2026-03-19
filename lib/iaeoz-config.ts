@@ -54,10 +54,10 @@ export const iaeozHeroSlides: HeroSlide[] = [
   },
   {
     id: "iaeoz-4",
-    title: "Diverse Business Enterprise Success Stories",
-    subtitle: "MBE Spotlight",
+    title: "Emerging Business Enterprise Success Stories",
+    subtitle: "Emerging Business Spotlight",
     description: "Hear from successful diverse business owners and leaders sharing their journey in federal contracting and economic development.",
-    ctaText: "Watch MBE Stories",
+    ctaText: "Watch Emerging Business Stories",
     ctaLink: "#videos",
     backgroundImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80",
     backgroundColor: "bg-gradient-to-br from-purple-900/95 via-purple-800/90 to-violet-900/95",

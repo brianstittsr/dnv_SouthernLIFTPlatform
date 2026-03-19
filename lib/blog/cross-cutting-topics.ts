@@ -518,7 +518,7 @@ The latest generation of manufacturing robots are:
 - Optimize facility layout and workflow
 - Test process changes virtually
 - Train operators in virtual environments
-- Support Model-Based Engineering (MBE) requirements
+- Support Model-Based Engineering (EBE) requirements
 
 **Cost:** $50,000-$200,000 for implementation
 
@@ -1318,14 +1318,14 @@ ${BLOG_CTA}`
     tags: ["MBDA", "Federal Procurement", "Strategy", "KDM", "Legacy"],
     readTime: 8,
     imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-    content: `The Minority Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
+    content: `The Small Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
 
 ## The MBDA Legacy
 
 ### What the FPC Achieved
 Over its history, the MBDA Federal Procurement Center:
 - Facilitated **$12+ billion** in federal contract awards
-- Supported **thousands** of minority-owned businesses
+- Supported **thousands** of small businesses
 - Built relationships across **every major federal agency**
 - Developed proven methodologies for **business readiness and contract pursuit**
 - Created a network of **prime contractor partnerships**
@@ -1425,7 +1425,7 @@ Over its history, the MBDA Federal Procurement Center:
 
 ### KDM & Associates Impact
 Since transitioning from MBDA:
-- Continued support for minority-owned businesses
+- Continued support for small businesses
 - Expanded services to include manufacturing and CMMC
 - Built the V+KDM Consortium for collective impact
 - Developed digital platforms for scalable support

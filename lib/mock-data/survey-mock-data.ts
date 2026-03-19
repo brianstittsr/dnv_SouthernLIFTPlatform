@@ -88,7 +88,7 @@ export const mockSurveyTemplates: SurveyTemplate[] = [
             required: false,
             allowMultiple: true,
             options: [
-              { id: "cert1", label: "MBE (Minority Business Enterprise)", value: "mbe" },
+              { id: "cert1", label: "EBE (Emerging Business Enterprise)", value: "mbe" },
               { id: "cert2", label: "WBE (Women Business Enterprise)", value: "wbe" },
               { id: "cert3", label: "DBE (Disadvantaged Business Enterprise)", value: "dbe" },
               { id: "cert4", label: "VOSB (Veteran-Owned Small Business)", value: "vosb" },

@@ -43,7 +43,7 @@ function createV1() {
   let s2 = pptx.addSlide(); addHeader(pptx, s2, "BelPak's embedded operations model positions them as a potential Toyota Battery NC partner", 2);
   s2.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 1.0, w: 5.8, h: 2.2, fill: { color: colors.gray50 } });
   s2.addText('🎯 The Opportunity', { x: 0.7, y: 1.1, w: 5.4, h: 0.4, fontSize: 14, bold: true, color: colors.primary });
-  s2.addText('• Contract packaging and logistics\n• Embedded operations with Subaru\n• MBE certification\n• 25+ facilities nationwide', { x: 0.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
+  s2.addText('• Contract packaging and logistics\n• Embedded operations with Subaru\n• EBE certification\n• 25+ facilities nationwide', { x: 0.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
   s2.addShape(pptx.shapes.RECTANGLE, { x: 6.5, y: 1.0, w: 5.8, h: 2.2, fill: { color: 'fff5eb' } });
   s2.addText('⚠️ Key Gaps', { x: 6.7, y: 1.1, w: 5.4, h: 0.4, fontSize: 14, bold: true, color: colors.warning });
   s2.addText('• No hazmat experience\n• ISO/IATF certifications needed\n• Battery expertise gaps\n• Toyota interest unconfirmed', { x: 6.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
@@ -87,7 +87,7 @@ function createV2() {
   let s2 = pptx.addSlide(); addHeader(pptx, s2, "BelPak brings $400M revenue, 1,000 employees, and 30+ years OEM experience", 2, true);
   s2.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 1.0, w: 5.8, h: 2.2, fill: { color: colors.gray50 } });
   s2.addText('🎯 The Opportunity', { x: 0.7, y: 1.1, w: 5.4, h: 0.4, fontSize: 14, bold: true, color: colors.primary });
-  s2.addText('• Contract packaging and logistics\n• Embedded operations with Subaru\n• MBE certification\n• 25+ facilities nationwide', { x: 0.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
+  s2.addText('• Contract packaging and logistics\n• Embedded operations with Subaru\n• EBE certification\n• 25+ facilities nationwide', { x: 0.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
   s2.addShape(pptx.shapes.RECTANGLE, { x: 6.5, y: 1.0, w: 5.8, h: 2.2, fill: { color: 'fff5eb' } });
   s2.addText('⚠️ Key Gaps', { x: 6.7, y: 1.1, w: 5.4, h: 0.4, fontSize: 14, bold: true, color: colors.warning });
   s2.addText('• No hazmat experience\n• ISO/IATF certifications needed\n• Battery expertise gaps\n• Toyota interest unconfirmed', { x: 6.7, y: 1.5, w: 5.4, h: 1.6, fontSize: 12, color: colors.gray700 });
@@ -100,7 +100,7 @@ function createV2() {
   });
   s3.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 2.4, w: 11.8, h: 1.5, fill: { color: colors.gray50 } });
   s3.addText('8 Competitive Advantages', { x: 0.7, y: 2.5, w: 11.4, h: 0.3, fontSize: 14, bold: true, color: colors.primary });
-  s3.addText('1. $400M revenue | 2. 1,000+ employees | 3. 30+ years OEM | 4. Subaru relationship\n5. 25+ facilities | 6. MBE certification | 7. 99.6% OTIF | 8. 45-day standup', { x: 0.7, y: 2.9, w: 11.4, h: 0.9, fontSize: 11, color: colors.gray700 });
+  s3.addText('1. $400M revenue | 2. 1,000+ employees | 3. 30+ years OEM | 4. Subaru relationship\n5. 25+ facilities | 6. EBE certification | 7. 99.6% OTIF | 8. 45-day standup', { x: 0.7, y: 2.9, w: 11.4, h: 0.9, fontSize: 11, color: colors.gray700 });
 
   let s4 = pptx.addSlide(); addHeader(pptx, s4, "BelPak's Subaru relationship demonstrates embedded operations capability", 4);
   let s5 = pptx.addSlide(); addHeader(pptx, s5, "Toyota Battery NC presents multiple service opportunities for BelPak", 5);

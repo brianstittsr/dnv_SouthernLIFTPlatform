@@ -471,14 +471,14 @@ Whether you're a **small manufacturer seeking capital for defense market entry**
   {
     slug: "nmsdc-partnership-benefits-diverse-businesses",
     title: "NMSDC Partnership Benefits: How Diverse Businesses Access Growth Capital",
-    excerpt: "The National Minority Supplier Development Council opens doors to corporate supply chains and capital. Here's how to leverage NMSDC certification.",
+    excerpt: "The National Small Business Supplier Development Council opens doors to corporate supply chains and capital. Here's how to leverage NMSDC certification.",
     author: "KDM & Associates",
     date: "2026-01-27",
     category: "Access to Capital",
     tags: ["NMSDC", "Diverse Business", "Capital", "Certification", "Supply Chain"],
     readTime: 9,
     imageUrl: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
-    content: `The National Minority Supplier Development Council (NMSDC) is one of the most powerful resources available to diverse businesses. With a network of over 15,000 certified minority business enterprises (MBEs) and 1,500+ corporate members, NMSDC certification opens doors to billions of dollars in procurement opportunities and growth capital.
+    content: `The National Small Business Supplier Development Council (NMSDC) is one of the most powerful resources available to diverse businesses. With a network of over 15,000 certified emerging Business enterprises (EBEs) and 1,500+ corporate members, NMSDC certification opens doors to billions of dollars in procurement opportunities and growth capital.
 
 ## What Is NMSDC?
 
@@ -486,7 +486,7 @@ NMSDC is a non-profit organization that connects diverse businesses with corpora
 
 ### Key Statistics
 - **$400+ billion** in annual procurement through NMSDC corporate members
-- **15,000+** certified MBEs
+- **15,000+** certified EBEs
 - **1,500+** corporate members (Fortune 500 and major companies)
 - **23** regional affiliate councils
 - **50+ years** of advancing diverse business development
@@ -496,7 +496,7 @@ NMSDC is a non-profit organization that connects diverse businesses with corpora
 ### Who Qualifies
 To be NMSDC-certified, a business must be:
 - At least **51% owned** by a diverse individual(s)
-- **Diverse groups:** African American, Hispanic American, Asian American, Native American, and other recognized minority groups
+- **Diverse groups:** African American, Hispanic American, Asian American, Native American, and other recognized small business groups
 - A **for-profit enterprise** operating in the United States
 - **Managed and controlled** by diverse owner(s)
 
@@ -515,7 +515,7 @@ To be NMSDC-certified, a business must be:
 ## Capital Access Through NMSDC
 
 ### 1. NMSDC Business Consortium Fund
-A lending institution specifically for NMSDC-certified MBEs.
+A lending institution specifically for NMSDC-certified EBEs.
 
 **Products:**
 - **Growth loans:** $75,000 to $750,000
@@ -524,7 +524,7 @@ A lending institution specifically for NMSDC-certified MBEs.
 - **Equipment financing:** For capital expenditures
 
 **Advantages:**
-- Designed specifically for MBEs
+- Designed specifically for EBEs
 - Understands diverse business challenges
 - Flexible underwriting criteria
 - Relationship-based lending
@@ -553,17 +553,17 @@ NMSDC Centers of Excellence provide:
 ## Beyond Capital: The Full NMSDC Value Proposition
 
 ### Corporate Matchmaking
-NMSDC connects MBEs with corporate procurement teams through:
-- **Annual Conference & Exchange** — The largest minority business event in the U.S.
+NMSDC connects EBEs with corporate procurement teams through:
+- **Annual Conference & Exchange** — The largest small business event in the U.S.
 - **Regional matchmaking events** — Local opportunities throughout the year
 - **Online matchmaking platform** — Digital connections with corporate buyers
 - **Industry-specific events** — Focused on manufacturing, technology, services
 
 ### Capacity Building
-Programs to help MBEs grow:
+Programs to help EBEs grow:
 - **Advanced Management Education (AME)** — Executive education at top business schools
 - **Emerging Young Entrepreneurs** — Next-generation business leaders
-- **Corporate Plus** — Recognition for top-performing MBEs
+- **Corporate Plus** — Recognition for top-performing EBEs
 - **Diverse Business Leadership Institute** — Leadership development
 
 ### Advocacy
@@ -586,7 +586,7 @@ Many defense prime contractors are NMSDC corporate members:
 
 ### Strategy
 1. **Get NMSDC certified** to access prime contractor supplier diversity programs
-2. **Attend NMSDC events** where defense primes are seeking MBE suppliers
+2. **Attend NMSDC events** where defense primes are seeking EBE suppliers
 3. **Use NMSDC matchmaking** to connect with defense procurement teams
 4. **Leverage dual certification** — NMSDC + SBA 8(a) for maximum advantage
 5. **Access NMSDC capital** to fund defense readiness investments
@@ -918,12 +918,12 @@ Higher multiples for companies with:
 
 ### Majority Buyout
 - PE firm acquires controlling interest (51-100%)
-- Owner may retain minority stake
+- Owner may retain small stake
 - PE provides growth capital and strategic support
 - Typical hold period: 3-7 years
 
 ### Growth Equity
-- PE firm takes minority stake (20-49%)
+- PE firm takes small stake (20-49%)
 - Owner retains control
 - Capital used for specific growth initiatives
 - Less dilution but less capital
@@ -942,8 +942,8 @@ ${BLOG_CTA}`,
   },
   {
     slug: "nmsdc-certification-benefits",
-    title: "NMSDC Certification: Unlocking Opportunities for Diverse Businesses",
-    excerpt: "The National Minority Supplier Development Council (NMSDC) certification is a powerful tool for diverse businesses seeking to connect with major corporations and government agencies. Here's how to get certified and leverage the benefits.",
+    title: "NMSDC Certification: Unlocking Opportunities for Emerging Businesses",
+    excerpt: "The National Small Business Supplier Development Council certification is a powerful tool for diverse businesses seeking to connect with major corporations and government agencies. Here's how to get certified and leverage the benefits.",
     author: "KDM & Associates",
     date: "2026-01-06",
     category: "Access to Capital",

@@ -165,15 +165,15 @@ DOE offers multiple programs supporting manufacturing sustainability:
 
 **Industrial Assessment Centers:** Free energy assessments for small and medium manufacturers.
 
-## Opportunities for Minority-Owned Businesses
+## Opportunities for Emerging Businesses
 
-The sustainability transformation creates specific opportunities for Minority Business Enterprises (MBEs):
+The sustainability transformation creates specific opportunities for Emerging Business Enterprises (EBEs):
 
 ### Renewable Energy Installation and Services
 
 The expanding renewable energy sector requires diverse capabilities:
 
-**Solar Installation:** MBEs with electrical and construction expertise can capture solar installation opportunities, particularly when located in disadvantaged communities eligible for additional incentives.
+**Solar Installation:** EBEs with electrical and construction expertise can capture solar installation opportunities, particularly when located in disadvantaged communities eligible for additional incentives.
 
 **Energy Storage:** Battery installation and integration services are in growing demand as storage deployment accelerates.
 
@@ -185,17 +185,17 @@ Manufacturers need support implementing energy efficiency:
 
 **Energy Auditing:** Assessment services identify efficiency opportunities and support incentive applications.
 
-**Implementation Contracting:** MBEs in HVAC, lighting, and controls can capture upgrade projects.
+**Implementation Contracting:** EBEs in HVAC, lighting, and controls can capture upgrade projects.
 
 **Commissioning and Optimization:** Ensuring systems perform as designed creates ongoing service opportunities.
 
 ### Sustainable Materials and Products
 
-Growing demand for sustainable materials benefits MBE suppliers:
+Growing demand for sustainable materials benefits EBE suppliers:
 
-**Recycled Content Products:** MBEs supplying recycled or recyclable materials gain market advantage.
+**Recycled Content Products:** EBEs supplying recycled or recyclable materials gain market advantage.
 
-**Bio-Based Materials:** Agricultural and biotechnology MBEs can supply bio-based manufacturing inputs.
+**Bio-Based Materials:** Agricultural and biotechnology EBEs can supply bio-based manufacturing inputs.
 
 **Sustainable Packaging:** Packaging manufacturers using recycled and recyclable materials are increasingly preferred.
 
@@ -285,7 +285,7 @@ The transformation of U.S. manufacturing toward environmental sustainability is 
 
 For manufacturers, the question is no longer whether to embrace sustainability, but how quickly and effectively to do so. Organizations that act decisively will capture competitive advantages, operational efficiencies, and market opportunities that late adopters will struggle to match.
 
-For minority-owned manufacturers, the sustainability transformation presents specific opportunities to participate in high-growth segments, leverage federal support programs, and demonstrate leadership in an evolving market. The environmental imperative aligns with broader social objectives of equitable economic development and community benefit.
+For small business manufacturers, the sustainability transformation presents specific opportunities to participate in high-growth segments, leverage federal support programs, and demonstrate leadership in an evolving market. The environmental imperative aligns with broader social objectives of equitable economic development and community benefit.
 
 The tools, technologies, and support mechanisms for sustainable manufacturing have never been more accessible. The federal government is investing billions to accelerate the transition. Market preferences increasingly favor sustainable products and suppliers. The pathway to sustainable manufacturing is clear and the time for action is now.
 

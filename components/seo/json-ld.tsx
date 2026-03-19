@@ -52,7 +52,7 @@ export function OrganizationJsonLd() {
     },
     knowsAbout: [
       "Government Contracting",
-      "Minority Business Enterprise",
+      "Emerging Business Enterprise",
       "Federal Procurement",
       "8(a) Certification",
       "WOSB",

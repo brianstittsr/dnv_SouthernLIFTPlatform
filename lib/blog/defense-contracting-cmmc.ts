@@ -1482,7 +1482,7 @@ Navigate to "Entity Registration" and select "Register New Entity"
 **Business Types:**
 - Select all applicable categories
 - Small business designations
-- Socioeconomic categories (minority-owned, woman-owned, veteran-owned)
+- Socioeconomic categories (emerging business, woman-owned, veteran-owned)
 - Organization type
 
 ### Step 4: NAICS and PSC Codes
