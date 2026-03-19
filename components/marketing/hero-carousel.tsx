@@ -301,7 +301,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
             </div>
             {/* Overlay for text readability */}
             <div 
-              className={`absolute inset-0 z-20 bg-black/60 transition-opacity duration-500 ${isImageLoading ? 'opacity-0' : ''}`}
+              className={`absolute inset-0 z-20 bg-black/70 transition-opacity duration-500 ${isImageLoading ? 'opacity-0' : ''}`}
             />
           </>
         )}
