@@ -1,12 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI only if API key is available
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if OpenAI is configured
+    if (!openai) {
+      return NextResponse.json(
+        { 
+          error: 'AI press release generation is not currently available. Please contact the administrator to configure the OpenAI API key.' 
+        },
+        { status: 503 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const text = formData.get('text') as string | null;
