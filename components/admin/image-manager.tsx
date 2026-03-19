@@ -128,19 +128,25 @@ export function ImageManager() {
 function ImagesSection() {
   const { profile } = useUserProfile();
   const [images, setImages] = useState<ImageMetadata[]>([]);
+  const [filteredImages, setFilteredImages] = useState<ImageMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filterCategory, setFilterCategory] = useState<ImageCategory | "all">("all");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filterTags, setFilterTags] = useState<string[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     loadImages();
-  }, [filterCategory]);
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [images, filterCategory, searchKeyword, filterTags]);
 
   async function loadImages() {
     setIsLoading(true);
     try {
-      const category = filterCategory === "all" ? undefined : filterCategory;
-      const loadedImages = await listImages(category);
+      const loadedImages = await listImages();
       setImages(loadedImages);
     } catch (error) {
       console.error("Error loading images:", error);
@@ -149,6 +155,41 @@ function ImagesSection() {
       setIsLoading(false);
     }
   }
+
+  function applyFilters() {
+    let filtered = [...images];
+
+    // Filter by category
+    if (filterCategory !== "all") {
+      filtered = filtered.filter(image => image.category === filterCategory);
+    }
+
+    // Filter by keyword (search in name, description, and tags)
+    if (searchKeyword.trim()) {
+      const keyword = searchKeyword.toLowerCase();
+      filtered = filtered.filter(image => 
+        image.name.toLowerCase().includes(keyword) ||
+        image.description?.toLowerCase().includes(keyword) ||
+        image.tags?.some(tag => tag.toLowerCase().includes(keyword))
+      );
+    }
+
+    // Filter by tags
+    if (filterTags.length > 0) {
+      filtered = filtered.filter(image => 
+        filterTags.every(filterTag => 
+          image.tags?.some(tag => tag.toLowerCase() === filterTag.toLowerCase())
+        )
+      );
+    }
+
+    setFilteredImages(filtered);
+  }
+
+  // Get all unique tags from images
+  const allTags = Array.from(
+    new Set(images.flatMap(image => image.tags || []))
+  ).sort();
 
   function handleUploadSuccess() {
     setUploadDialogOpen(false);
@@ -185,26 +226,117 @@ function ImagesSection() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Filter by Category</CardTitle>
-            <Select
-              value={filterCategory}
-              onValueChange={(value) => setFilterCategory(value as ImageCategory | "all")}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {CATEGORY_OPTIONS.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <CardTitle>Search & Filter</CardTitle>
+          <CardDescription>
+            Filter images by keywords, category, or tags
+          </CardDescription>
         </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Keyword Search */}
+          <div>
+            <Label htmlFor="image-search">Search by Keyword</Label>
+            <Input
+              id="image-search"
+              placeholder="Search name, description, or tags..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="max-w-md"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <Label htmlFor="image-category">Category</Label>
+              <Select
+                value={filterCategory}
+                onValueChange={(value) => setFilterCategory(value as ImageCategory | "all")}
+              >
+                <SelectTrigger id="image-category" className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {CATEGORY_OPTIONS.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Tags Filter */}
+            {allTags.length > 0 && (
+              <div className="flex-1">
+                <Label>Filter by Tags</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {allTags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={filterTags.includes(tag) ? "default" : "outline"}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setFilterTags(prev => 
+                          prev.includes(tag)
+                            ? prev.filter(t => t !== tag)
+                            : [...prev, tag]
+                        );
+                      }}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Active Filters Summary */}
+          {(searchKeyword || filterCategory !== "all" || filterTags.length > 0) && (
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <span className="text-sm text-muted-foreground">Active filters:</span>
+              {searchKeyword && (
+                <Badge variant="secondary">
+                  Keyword: {searchKeyword}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setSearchKeyword("")} 
+                  />
+                </Badge>
+              )}
+              {filterCategory !== "all" && (
+                <Badge variant="secondary">
+                  Category: {filterCategory}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setFilterCategory("all")} 
+                  />
+                </Badge>
+              )}
+              {filterTags.map(tag => (
+                <Badge key={tag} variant="secondary">
+                  Tag: {tag}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setFilterTags(prev => prev.filter(t => t !== tag))} 
+                  />
+                </Badge>
+              ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchKeyword("");
+                  setFilterCategory("all");
+                  setFilterTags([]);
+                }}
+              >
+                Clear All
+              </Button>
+            </div>
+          )}
+        </CardContent>
       </Card>
 
       {Object.keys(SITE_IMAGE_KEYS).length > 0 && (
@@ -247,18 +379,33 @@ function ImagesSection() {
             <FileImage className="h-16 w-16 mx-auto text-muted-foreground" />
             <h3 className="text-xl font-semibold">No Images Found</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              {filterCategory === "all"
-                ? "Upload your first image to get started."
-                : `No images in the "${filterCategory}" category.`}
+              Upload your first image to get started.
+            </p>
+          </div>
+        </Card>
+      ) : filteredImages.length === 0 ? (
+        <Card className="p-12">
+          <div className="text-center space-y-4">
+            <FileImage className="h-16 w-16 mx-auto text-muted-foreground" />
+            <h3 className="text-xl font-semibold">No Images Match Your Filters</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Try adjusting your search criteria or clear the filters.
             </p>
           </div>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {images.map((image) => (
-            <ImageCard key={image.id} image={image} onUpdate={loadImages} />
-          ))}
-        </div>
+        <>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredImages.length} of {images.length} image{images.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredImages.map((image) => (
+              <ImageCard key={image.id} image={image} onUpdate={loadImages} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -795,19 +942,25 @@ function ImageEditForm({ image, onSuccess }: ImageEditFormProps) {
 
 function VideosSection() {
   const [videos, setVideos] = useState<VideoMetadata[]>([]);
+  const [filteredVideos, setFilteredVideos] = useState<VideoMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filterCategory, setFilterCategory] = useState<VideoCategory | "all">("all");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filterTags, setFilterTags] = useState<string[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     loadVideos();
-  }, [filterCategory]);
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [videos, filterCategory, searchKeyword, filterTags]);
 
   async function loadVideos() {
     setIsLoading(true);
     try {
-      const category = filterCategory === "all" ? undefined : filterCategory;
-      const loadedVideos = await listVideos(category);
+      const loadedVideos = await listVideos();
       setVideos(loadedVideos);
     } catch (error) {
       console.error("Error loading videos:", error);
@@ -816,6 +969,41 @@ function VideosSection() {
       setIsLoading(false);
     }
   }
+
+  function applyFilters() {
+    let filtered = [...videos];
+
+    // Filter by category
+    if (filterCategory !== "all") {
+      filtered = filtered.filter(video => video.category === filterCategory);
+    }
+
+    // Filter by keyword (search in title, description, and tags)
+    if (searchKeyword.trim()) {
+      const keyword = searchKeyword.toLowerCase();
+      filtered = filtered.filter(video => 
+        video.title.toLowerCase().includes(keyword) ||
+        video.description?.toLowerCase().includes(keyword) ||
+        video.tags?.some(tag => tag.toLowerCase().includes(keyword))
+      );
+    }
+
+    // Filter by tags
+    if (filterTags.length > 0) {
+      filtered = filtered.filter(video => 
+        filterTags.every(filterTag => 
+          video.tags?.some(tag => tag.toLowerCase() === filterTag.toLowerCase())
+        )
+      );
+    }
+
+    setFilteredVideos(filtered);
+  }
+
+  // Get all unique tags from videos
+  const allTags = Array.from(
+    new Set(videos.flatMap(video => video.tags || []))
+  ).sort();
 
   function handleUploadSuccess() {
     setUploadDialogOpen(false);
@@ -852,26 +1040,117 @@ function VideosSection() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Filter by Category</CardTitle>
-            <Select
-              value={filterCategory}
-              onValueChange={(value) => setFilterCategory(value as VideoCategory | "all")}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {VIDEO_CATEGORY_OPTIONS.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <CardTitle>Search & Filter</CardTitle>
+          <CardDescription>
+            Filter videos by keywords, category, or tags
+          </CardDescription>
         </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Keyword Search */}
+          <div>
+            <Label htmlFor="search">Search by Keyword</Label>
+            <Input
+              id="search"
+              placeholder="Search title, description, or tags..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="max-w-md"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <Label htmlFor="category">Category</Label>
+              <Select
+                value={filterCategory}
+                onValueChange={(value) => setFilterCategory(value as VideoCategory | "all")}
+              >
+                <SelectTrigger id="category" className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {VIDEO_CATEGORY_OPTIONS.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Tags Filter */}
+            {allTags.length > 0 && (
+              <div className="flex-1">
+                <Label>Filter by Tags</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {allTags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={filterTags.includes(tag) ? "default" : "outline"}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setFilterTags(prev => 
+                          prev.includes(tag)
+                            ? prev.filter(t => t !== tag)
+                            : [...prev, tag]
+                        );
+                      }}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Active Filters Summary */}
+          {(searchKeyword || filterCategory !== "all" || filterTags.length > 0) && (
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <span className="text-sm text-muted-foreground">Active filters:</span>
+              {searchKeyword && (
+                <Badge variant="secondary">
+                  Keyword: {searchKeyword}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setSearchKeyword("")} 
+                  />
+                </Badge>
+              )}
+              {filterCategory !== "all" && (
+                <Badge variant="secondary">
+                  Category: {filterCategory}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setFilterCategory("all")} 
+                  />
+                </Badge>
+              )}
+              {filterTags.map(tag => (
+                <Badge key={tag} variant="secondary">
+                  Tag: {tag}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => setFilterTags(prev => prev.filter(t => t !== tag))} 
+                  />
+                </Badge>
+              ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchKeyword("");
+                  setFilterCategory("all");
+                  setFilterTags([]);
+                }}
+              >
+                Clear All
+              </Button>
+            </div>
+          )}
+        </CardContent>
       </Card>
 
       {isLoading ? (
@@ -884,18 +1163,33 @@ function VideosSection() {
             <Youtube className="h-16 w-16 mx-auto text-muted-foreground" />
             <h3 className="text-xl font-semibold">No Videos Found</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              {filterCategory === "all"
-                ? "Add your first YouTube video to get started."
-                : `No videos in the "${filterCategory}" category.`}
+              Add your first YouTube video to get started.
+            </p>
+          </div>
+        </Card>
+      ) : filteredVideos.length === 0 ? (
+        <Card className="p-12">
+          <div className="text-center space-y-4">
+            <Youtube className="h-16 w-16 mx-auto text-muted-foreground" />
+            <h3 className="text-xl font-semibold">No Videos Match Your Filters</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Try adjusting your search criteria or clear the filters.
             </p>
           </div>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {videos.map((video) => (
-            <VideoCard key={video.id} video={video} onUpdate={loadVideos} />
-          ))}
-        </div>
+        <>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredVideos.length} of {videos.length} video{videos.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredVideos.map((video) => (
+              <VideoCard key={video.id} video={video} onUpdate={loadVideos} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

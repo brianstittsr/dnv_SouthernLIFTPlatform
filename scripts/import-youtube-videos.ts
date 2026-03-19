@@ -1,21 +1,21 @@
 /**
- * YouTube Channel Video Importer
+ * YouTube Channel Video Importer (Web Scraping)
  * 
  * This script scrapes public YouTube channel videos and imports them into Firebase.
  * Channel ID: UCViWHajhxfqcPOUmNsRxpcQ
  * 
  * Usage:
  *   npx tsx scripts/import-youtube-videos.ts
+ *   npx tsx scripts/import-youtube-videos.ts --dry-run
  * 
- * Note: This uses web scraping of public YouTube pages. For production use,
- * consider using the YouTube Data API v3 for more reliable data extraction.
+ * Note: This uses Puppeteer to render JavaScript and scrape YouTube pages.
+ * For more reliable results, consider using the YouTube Data API v3.
  */
 
-import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
 import { addVideo, getVideoByYouTubeId, type VideoCategory } from '../lib/firebase-videos';
 
-const CHANNEL_ID = 'UCViWHajhxfqcPOUmNsRxpcQ';
-const CHANNEL_URL = `https://www.youtube.com/@${CHANNEL_ID}/videos`;
+const PLAYLIST_URL = 'https://www.youtube.com/playlist?list=PLCeX8hblMSQ_VOZHT5LtPE7Lz9VN-YfG8';
 
 interface ScrapedVideo {
   videoId: string;
@@ -28,116 +28,188 @@ interface ScrapedVideo {
 }
 
 /**
- * Fetch HTML content from a URL
+ * Extract video data from YouTube playlist using Puppeteer
  */
-async function fetchPage(url: string): Promise<string> {
+async function scrapePlaylistVideos(playlistUrl: string): Promise<ScrapedVideo[]> {
+  console.log(`\n🔍 Scraping videos from playlist: ${playlistUrl}`);
+  
+  let browser;
+  
   try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-      },
+    console.log('🚀 Launching browser...');
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    
+    const page = await browser.newPage();
+    
+    // Set viewport and user agent
+    await page.setViewport({ width: 1920, height: 1080 });
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    console.log(`📡 Loading playlist: ${playlistUrl}`);
+    
+    await page.goto(playlistUrl, { 
+      waitUntil: 'domcontentloaded',
+      timeout: 30000 
+    });
+    
+    // Wait a bit for initial content to load
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // Try multiple selectors for different YouTube layouts
+    console.log('⏳ Waiting for playlist videos to load...');
+    const selectors = [
+      'ytd-playlist-video-renderer',
+      'ytd-playlist-video-list-renderer',
+      '#contents ytd-playlist-video-renderer',
+      'ytd-browse[page-subtype="playlist"]'
+    ];
+    
+    let selectorFound = false;
+    for (const selector of selectors) {
+      try {
+        await page.waitForSelector(selector, { timeout: 5000 });
+        console.log(`✓ Found content with selector: ${selector}`);
+        selectorFound = true;
+        break;
+      } catch (e) {
+        continue;
+      }
     }
-
-    return await response.text();
+    
+    if (!selectorFound) {
+      console.log('⚠️ Could not find playlist content with standard selectors. Trying alternative extraction...');
+    }
+    
+    // Scroll to load more videos
+    console.log('📜 Scrolling to load all playlist videos...');
+    await autoScroll(page);
+    
+    // Extract video data from the page
+    console.log('📊 Extracting video data...');
+    const videos = await page.evaluate(() => {
+      const extractedVideos: any[] = [];
+      
+      // Try multiple extraction strategies
+      const strategies = [
+        // Strategy 1: Standard playlist renderer
+        () => {
+          const elements = document.querySelectorAll('ytd-playlist-video-renderer');
+          elements.forEach((element) => {
+            const linkElement = element.querySelector('a#video-title');
+            if (!linkElement) return;
+            
+            const href = linkElement.getAttribute('href');
+            const videoIdMatch = href?.match(/\/watch\?v=([^&]+)/);
+            if (!videoIdMatch) return;
+            
+            const title = linkElement.textContent?.trim() || '';
+            if (!title) return;
+            
+            const thumbnailElement = element.querySelector('img');
+            const thumbnailUrl = thumbnailElement?.src || thumbnailElement?.getAttribute('src') || '';
+            
+            const durationElement = element.querySelector('ytd-thumbnail-overlay-time-status-renderer span, #text');
+            const duration = durationElement?.textContent?.trim() || '';
+            
+            extractedVideos.push({
+              videoId: videoIdMatch[1],
+              title,
+              description: '',
+              thumbnailUrl: thumbnailUrl.split('?')[0],
+              duration,
+              publishedAt: '',
+            });
+          });
+        },
+        
+        // Strategy 2: Any video link on the page
+        () => {
+          if (extractedVideos.length > 0) return; // Skip if already found
+          
+          const links = document.querySelectorAll('a[href*="/watch?v="]');
+          const seen = new Set<string>();
+          
+          links.forEach((link) => {
+            const href = link.getAttribute('href');
+            const videoIdMatch = href?.match(/\/watch\?v=([^&]+)/);
+            if (!videoIdMatch) return;
+            
+            const videoId = videoIdMatch[1];
+            if (seen.has(videoId)) return;
+            seen.add(videoId);
+            
+            const title = link.getAttribute('title') || link.textContent?.trim() || '';
+            if (!title || title.length < 3) return;
+            
+            extractedVideos.push({
+              videoId,
+              title,
+              description: '',
+              thumbnailUrl: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+              duration: '',
+              publishedAt: '',
+            });
+          });
+        }
+      ];
+      
+      // Try each strategy
+      for (const strategy of strategies) {
+        try {
+          strategy();
+          if (extractedVideos.length > 0) break;
+        } catch (e) {
+          console.error('Strategy failed:', e);
+        }
+      }
+      
+      return extractedVideos;
+    });
+    
+    console.log(`✅ Found ${videos.length} videos in playlist`);
+    
+    return videos;
+    
   } catch (error) {
-    console.error('Error fetching page:', error);
+    console.error('Error scraping playlist:', error);
     throw error;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 }
 
 /**
- * Extract video data from YouTube channel page
- * Note: YouTube uses dynamic loading, so this may need to be updated
+ * Auto-scroll the page to load more videos
  */
-async function scrapeChannelVideos(channelId: string): Promise<ScrapedVideo[]> {
-  console.log(`\n🔍 Scraping videos from channel: ${channelId}`);
-  
-  try {
-    // Try the channel videos page
-    const url = `https://www.youtube.com/channel/${channelId}/videos`;
-    console.log(`📡 Fetching: ${url}`);
-    
-    const html = await fetchPage(url);
-    
-    // YouTube embeds data in script tags as JSON
-    const videos: ScrapedVideo[] = [];
-    
-    // Look for ytInitialData in the page
-    const ytInitialDataMatch = html.match(/var ytInitialData = ({.+?});/);
-    
-    if (ytInitialDataMatch && ytInitialDataMatch[1]) {
-      try {
-        const data = JSON.parse(ytInitialDataMatch[1]);
+async function autoScroll(page: any): Promise<void> {
+  await page.evaluate(async () => {
+    await new Promise<void>((resolve) => {
+      let totalHeight = 0;
+      const distance = 100;
+      const maxScrolls = 30; // Limit scrolling
+      let scrolls = 0;
+      
+      const timer = setInterval(() => {
+        const scrollHeight = document.documentElement.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+        scrolls++;
         
-        // Navigate through the YouTube data structure
-        const tabs = data?.contents?.twoColumnBrowseResultsRenderer?.tabs || [];
-        
-        for (const tab of tabs) {
-          const tabRenderer = tab.tabRenderer;
-          if (!tabRenderer || !tabRenderer.content) continue;
-          
-          const richGrid = tabRenderer.content?.richGridRenderer;
-          if (!richGrid || !richGrid.contents) continue;
-          
-          for (const item of richGrid.contents) {
-            const videoRenderer = item.richItemRenderer?.content?.videoRenderer;
-            if (!videoRenderer) continue;
-            
-            const videoId = videoRenderer.videoId;
-            const title = videoRenderer.title?.runs?.[0]?.text || videoRenderer.title?.simpleText || '';
-            const thumbnailUrl = videoRenderer.thumbnail?.thumbnails?.[0]?.url || '';
-            
-            // Extract duration
-            let duration = '';
-            const lengthText = videoRenderer.lengthText?.simpleText;
-            if (lengthText) {
-              duration = lengthText;
-            }
-            
-            // Extract published date
-            let publishedAt = '';
-            const publishedTimeText = videoRenderer.publishedTimeText?.simpleText;
-            if (publishedTimeText) {
-              publishedAt = publishedTimeText;
-            }
-            
-            // Extract description from accessibility label or snippet
-            let description = '';
-            const descriptionSnippet = videoRenderer.descriptionSnippet?.runs?.[0]?.text;
-            if (descriptionSnippet) {
-              description = descriptionSnippet;
-            }
-            
-            if (videoId && title) {
-              videos.push({
-                videoId,
-                title,
-                description,
-                thumbnailUrl: thumbnailUrl.split('?')[0], // Remove query params
-                duration,
-                publishedAt,
-              });
-            }
-          }
+        if (totalHeight >= scrollHeight || scrolls >= maxScrolls) {
+          clearInterval(timer);
+          resolve();
         }
-      } catch (parseError) {
-        console.error('Error parsing YouTube data:', parseError);
-      }
-    }
-    
-    console.log(`✅ Found ${videos.length} videos`);
-    return videos;
-    
-  } catch (error) {
-    console.error('Error scraping channel:', error);
-    throw error;
-  }
+      }, 100);
+    });
+  });
+  
+  // Wait a bit for any lazy-loaded content
+  await new Promise(resolve => setTimeout(resolve, 2000));
 }
 
 /**
@@ -286,8 +358,8 @@ async function main() {
   const limit = args.find(arg => arg.startsWith('--limit='))?.split('=')[1];
   
   try {
-    // Scrape videos from channel
-    let videos = await scrapeChannelVideos(CHANNEL_ID);
+    // Scrape videos from playlist
+    let videos = await scrapePlaylistVideos(PLAYLIST_URL);
     
     if (!videos || videos.length === 0) {
       console.log('⚠️  No videos found. YouTube may have changed their page structure.');
@@ -318,4 +390,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-export { scrapeChannelVideos, importVideos, categorizeVideo };
+export { scrapePlaylistVideos, importVideos, categorizeVideo };

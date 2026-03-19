@@ -1,8 +1,40 @@
+'use client';
+
+import { useState } from 'react';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PlayCircle } from "lucide-react";
+import { VideoModal, extractYouTubeVideoId } from "@/components/video/video-modal";
 
 export function FivePillarsSection() {
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState('');
+  const [currentVideoTitle, setCurrentVideoTitle] = useState('');
+  const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
+
+  const openVideoModal = (videoUrl: string, title: string) => {
+    const videoId = extractYouTubeVideoId(videoUrl);
+    if (videoId) {
+      setCurrentVideoId(videoId);
+      setCurrentVideoTitle(title);
+      setVideoModalOpen(true);
+    }
+  };
+
+  const closeVideoModal = () => {
+    setVideoModalOpen(false);
+    setCurrentVideoId('');
+    setCurrentVideoTitle('');
+  };
+
+  const pillarDescriptions = {
+    'government-contracting': 'Helping qualified teams pursue and win opportunities that support public priorities, national resilience, and long-term economic strength.',
+    'manufacturing': 'Advancing the capacity, capability, and modernization needed to produce more in America with speed, quality, and resilience.',
+    'critical-minerals': 'Supporting secure supply chains for the materials essential to defense, energy, infrastructure, and advanced industry.',
+    'opportunity-zones': 'Connecting investment and development opportunities to places positioned for revitalization, growth, and strategic advantage.',
+    'access-to-capital': 'Bringing the right funding strategies, partners, and pathways together to move projects from concept to reality.'
+  };
+
   return (
     <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,57 +64,182 @@ export function FivePillarsSection() {
             </div>
           </div>
 
-          {/* Right Column - Integrated Ecosystem Diagram */}
+          {/* Right Column - Greek Pillars Diagram */}
           <div>
             <div className="text-right mb-4">
               <p className="text-sm font-semibold uppercase tracking-wide text-gray-400">Integrated Ecosystem View</p>
             </div>
-            <div className="grid grid-cols-3 gap-0 border-4 border-white">
-              {/* Top Row */}
-              <div className="col-span-1"></div>
-              <Link href="/5-pillars/defense-cmmc" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
-                <div>
-                  <h3 className="font-bold text-lg">Government</h3>
-                  <h3 className="font-bold text-lg">Contracting</h3>
-                </div>
-              </Link>
-              <div className="col-span-1"></div>
+            <div className="relative w-full max-w-2xl mx-auto">
+              {/* KDM Consortium Header */}
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
+                <div className="h-1 w-full bg-gradient-to-r from-transparent via-white to-transparent mt-2"></div>
+              </div>
 
-              {/* Middle Row */}
-              <Link href="/5-pillars/us-manufacturing" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
-                <h3 className="font-bold text-lg">Manufacturing</h3>
-              </Link>
-              <div className="col-span-1 bg-slate-100 text-slate-900 p-6 border-2 border-white flex items-center justify-center text-center">
-                <div>
-                  <h3 className="font-bold text-lg">KDM</h3>
-                  <h3 className="font-bold text-lg">Consortium</h3>
+              {/* Five Greek Pillars */}
+              <div className="flex items-end justify-center gap-3 mb-8">
+                {/* Pillar 1 - Government Contracting */}
+                <div 
+                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
+                >
+                  {/* Capital (Corinthian style top) */}
+                  <div className="bg-teal-600 border-2 border-white h-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  </div>
+                  {/* Shaft (fluted column) */}
+                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
+                    {/* Fluting effect */}
+                    <div className="absolute inset-0 opacity-30">
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
+                    </div>
+                  </div>
+                  {/* Base */}
+                  <div className="bg-teal-600 border-2 border-white h-6">
+                    <div className="h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold text-xs leading-tight">Government<br />Contracting</p>
+                  </div>
+                </div>
+
+                {/* Pillar 2 - Manufacturing */}
+                <div 
+                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
+                >
+                  <div className="bg-amber-500 border-2 border-white h-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600"></div>
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="bg-amber-600 border-x-2 border-white h-40 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500"></div>
+                    <div className="absolute inset-0 opacity-30">
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
+                    </div>
+                  </div>
+                  <div className="bg-amber-500 border-2 border-white h-6">
+                    <div className="h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold text-xs leading-tight">Manufacturing</p>
+                  </div>
+                </div>
+
+                {/* Pillar 3 - Critical Minerals */}
+                <div 
+                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
+                >
+                  <div className="bg-teal-600 border-2 border-white h-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
+                    <div className="absolute inset-0 opacity-30">
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
+                    </div>
+                  </div>
+                  <div className="bg-teal-600 border-2 border-white h-6">
+                    <div className="h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold text-xs leading-tight">Critical<br />Minerals</p>
+                  </div>
+                </div>
+
+                {/* Pillar 4 - Opportunity Zones */}
+                <div 
+                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
+                >
+                  <div className="bg-teal-600 border-2 border-white h-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
+                    <div className="absolute inset-0 opacity-30">
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
+                    </div>
+                  </div>
+                  <div className="bg-teal-600 border-2 border-white h-6">
+                    <div className="h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold text-xs leading-tight">Opportunity<br />Zones</p>
+                  </div>
+                </div>
+
+                {/* Pillar 5 - Access to Capital */}
+                <div 
+                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
+                >
+                  <div className="bg-amber-500 border-2 border-white h-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600"></div>
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="bg-amber-600 border-x-2 border-white h-40 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500"></div>
+                    <div className="absolute inset-0 opacity-30">
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
+                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
+                    </div>
+                  </div>
+                  <div className="bg-amber-500 border-2 border-white h-6">
+                    <div className="h-2 bg-white opacity-20"></div>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold text-xs leading-tight">Access to<br />Capital</p>
+                  </div>
                 </div>
               </div>
-              <Link href="/5-pillars/opportunity-zones" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
-                <div>
-                  <h3 className="font-bold text-lg">Opportunity</h3>
-                  <h3 className="font-bold text-lg">Zones</h3>
-                </div>
-              </Link>
 
-              {/* Bottom Row */}
-              <div className="col-span-1"></div>
-              <Link href="/5-pillars/critical-minerals" className="col-span-1 bg-teal-700 hover:bg-teal-600 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
-                <div>
-                  <h3 className="font-bold text-lg">Critical</h3>
-                  <h3 className="font-bold text-lg">Minerals</h3>
+              {/* Description Panel */}
+              {selectedPillar && (
+                <div className="bg-slate-800/90 border-2 border-white rounded-lg p-6 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <h4 className="text-xl font-bold text-white mb-3 capitalize">
+                    {selectedPillar.replace('-', ' ')}
+                  </h4>
+                  <p className="text-gray-300 leading-relaxed">
+                    {pillarDescriptions[selectedPillar as keyof typeof pillarDescriptions]}
+                  </p>
+                  <Link 
+                    href={`/5-pillars/${selectedPillar === 'government-contracting' ? 'defense-cmmc' : selectedPillar === 'manufacturing' ? 'us-manufacturing' : selectedPillar}`}
+                    className="inline-flex items-center gap-2 mt-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                  >
+                    Learn More <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
-              </Link>
-              <Link href="/5-pillars/access-to-capital" className="col-span-1 bg-amber-600 hover:bg-amber-500 transition-colors p-6 border-2 border-white flex items-center justify-center text-center animate-pulse hover:animate-none">
-                <div>
-                  <h3 className="font-bold text-lg">Access to</h3>
-                  <h3 className="font-bold text-lg">Capital</h3>
-                </div>
-              </Link>
+              )}
+
+              <p className="text-xs text-gray-400 text-right italic">
+                Click on each pillar to see its description.
+              </p>
             </div>
-            <p className="text-xs text-gray-400 mt-4 text-right italic">
-              Click on each pillar to learn more about that area.
-            </p>
           </div>
         </div>
 
@@ -110,16 +267,14 @@ export function FivePillarsSection() {
         <div className="text-center bg-slate-800/50 p-8 rounded-lg border border-slate-700 mb-16">
           <h3 className="text-2xl font-bold mb-4">Learn More About Our Five Pillars</h3>
           <p className="text-gray-300 mb-6">Watch this video to understand how our integrated ecosystem drives growth and impact.</p>
-          <a 
-            href="https://www.youtube.com/watch?v=Jwcmv9MTz5I" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <button 
+            onClick={() => openVideoModal('https://www.youtube.com/watch?v=6S8OCcK6Vx8', 'Learn More About Our Five Pillars')}
             className="inline-block relative group max-w-2xl mx-auto"
           >
             <div className="relative overflow-hidden rounded-lg shadow-lg transition-transform group-hover:scale-105">
               <img 
-                src="https://img.youtube.com/vi/Jwcmv9MTz5I/maxresdefault.jpg" 
-                alt="OGTV Critical Minerals Brief"
+                src="https://img.youtube.com/vi/6S8OCcK6Vx8/maxresdefault.jpg" 
+                alt="Learn More About Our Five Pillars"
                 className="w-full h-auto"
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -127,23 +282,23 @@ export function FivePillarsSection() {
                   <PlayCircle className="h-12 w-12 text-white" />
                 </div>
               </div>
-              <div className="absolute bottom-4 right-4 bg-black/80 text-white px-2 py-1 rounded text-sm font-semibold">
-                1:46
-              </div>
             </div>
-            <p className="text-sm text-gray-400 mt-2">OGTV Critical Minerals Brief - Miranda Bouldin</p>
-          </a>
+          </button>
         </div>
+
+        <VideoModal 
+          isOpen={videoModalOpen} 
+          onClose={closeVideoModal} 
+          videoId={currentVideoId} 
+          title={currentVideoTitle} 
+        />
 
         {/* Why KDM and Human-Thinking Framework */}
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 rounded-lg">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-4xl font-bold text-slate-900 mb-12">
               Why KDM and the human-thinking framework
             </h2>
-            <p className="text-lg text-slate-600 mb-12">
-              This portion of the homepage answers the natural sequence of questions: why it matters, who it serves, what works, how it works, and when it delivers results.
-            </p>
 
             {/* Two Column Layout */}
             <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -212,27 +367,81 @@ export function FivePillarsSection() {
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 1</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Government Contracting</h3>
-              <p className="text-slate-700">
+              <p className="text-slate-700 mb-4">
                 Helping qualified teams pursue and win opportunities that support public priorities, national resilience, and long-term economic strength.
               </p>
+              <button 
+                onClick={() => openVideoModal('https://www.youtube.com/watch?v=lnLlzxAhXUk', 'Government Contracting Video')}
+                className="inline-block relative group"
+              >
+                <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
+                  <img 
+                    src="https://img.youtube.com/vi/lnLlzxAhXUk/hqdefault.jpg" 
+                    alt="Government Contracting Video"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                      <PlayCircle className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">Watch Government Contracting Video</p>
+              </button>
             </div>
 
             {/* Pillar 2 - Manufacturing */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 2</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Manufacturing</h3>
-              <p className="text-slate-700">
+              <p className="text-slate-700 mb-4">
                 Advancing the capacity, capability, and modernization needed to produce more in America with speed, quality, and resilience.
               </p>
+              <button 
+                onClick={() => openVideoModal('https://www.youtube.com/watch?v=U9c0j7p73Cc', 'Manufacturing Video')}
+                className="inline-block relative group"
+              >
+                <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
+                  <img 
+                    src="https://img.youtube.com/vi/U9c0j7p73Cc/hqdefault.jpg" 
+                    alt="Manufacturing Video"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                      <PlayCircle className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">Watch Manufacturing Video</p>
+              </button>
             </div>
 
             {/* Pillar 3 - Critical Minerals */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 3</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Critical Minerals</h3>
-              <p className="text-slate-700">
+              <p className="text-slate-700 mb-4">
                 Supporting secure supply chains for the materials essential to defense, energy, infrastructure, and advanced industry.
               </p>
+              <button 
+                onClick={() => openVideoModal('https://www.youtube.com/watch?v=Jwcmv9MTz5I', 'Critical Minerals Video')}
+                className="inline-block relative group"
+              >
+                <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
+                  <img 
+                    src="https://img.youtube.com/vi/Jwcmv9MTz5I/hqdefault.jpg" 
+                    alt="Critical Minerals Video"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                      <PlayCircle className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">Watch Critical Minerals Video</p>
+              </button>
             </div>
           </div>
 
@@ -241,18 +450,54 @@ export function FivePillarsSection() {
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 4</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Opportunity Zones</h3>
-              <p className="text-slate-700">
+              <p className="text-slate-700 mb-4">
                 Connecting investment and development opportunities to places positioned for revitalization, growth, and strategic advantage.
               </p>
+              <button 
+                onClick={() => openVideoModal('https://www.youtube.com/watch?v=6S8OCcK6Vx8', 'Opportunity Zones Video')}
+                className="inline-block relative group"
+              >
+                <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
+                  <img 
+                    src="https://img.youtube.com/vi/6S8OCcK6Vx8/hqdefault.jpg" 
+                    alt="Opportunity Zones Video"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                      <PlayCircle className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">Watch Opportunity Zones Video</p>
+              </button>
             </div>
 
             {/* Pillar 5 - Access to Capital */}
             <div className="bg-white p-8 rounded-lg">
               <p className="text-teal-600 font-bold mb-2 uppercase text-sm">Pillar 5</p>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">Access to Capital</h3>
-              <p className="text-slate-700">
+              <p className="text-slate-700 mb-4">
                 Bringing the right funding strategies, partners, and pathways together to move projects from concept to reality.
               </p>
+              <button 
+                onClick={() => openVideoModal('https://www.youtube.com/watch?v=QS5IbJ65iq4', 'Access to Capital Video')}
+                className="inline-block relative group"
+              >
+                <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
+                  <img 
+                    src="https://img.youtube.com/vi/QS5IbJ65iq4/hqdefault.jpg" 
+                    alt="Access to Capital Video"
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors">
+                      <PlayCircle className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">Watch Access to Capital Video</p>
+              </button>
             </div>
           </div>
 

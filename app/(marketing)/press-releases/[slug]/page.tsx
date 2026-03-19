@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { format } from 'date-fns';
 import { Calendar, ArrowLeft, Download, Paperclip, File, Image, Share2, Printer } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -200,9 +203,9 @@ export default function PressReleaseDetailPage() {
 
               {/* Content */}
               <div className="prose prose-lg max-w-none mb-8">
-                <div className="whitespace-pre-wrap">
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                   {pressRelease.content}
-                </div>
+                </ReactMarkdown>
               </div>
 
               {/* Boilerplate */}
