@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,25 @@ import { useCartStore } from "@/lib/stores/cart-store";
 
 export function CartIcon() {
   const { getItemCount } = useCartStore();
-  const itemCount = getItemCount();
+  const [itemCount, setItemCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setItemCount(getItemCount());
+  }, [getItemCount]);
+
+  // Prevent hydration mismatch by not rendering badge until mounted
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" asChild className="relative">
+        <Link href="/checkout-cart">
+          <ShoppingCart className="h-5 w-5" />
+          <span className="sr-only">Shopping Cart</span>
+        </Link>
+      </Button>
+    );
+  }
 
   return (
     <Button variant="ghost" size="icon" asChild className="relative">
