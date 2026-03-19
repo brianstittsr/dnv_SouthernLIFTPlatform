@@ -40,6 +40,7 @@ export default function CMMCPage() {
             className="object-cover"
             priority
           />
+          <div className="absolute inset-0 bg-gray-900/40" />
         </div>
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
