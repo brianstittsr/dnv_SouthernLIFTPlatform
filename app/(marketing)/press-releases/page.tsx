@@ -138,9 +138,9 @@ export default function PressReleasesPage() {
         </div>
       </section>
 
-      {/* AI Generator Button */}
+      {/* AI Generator Button - Hidden on mobile */}
       <section className="container mx-auto px-4 pt-8">
-        <div className="flex justify-end mb-4">
+        <div className="hidden md:flex justify-end mb-4">
           <Dialog open={generatorOpen} onOpenChange={setGeneratorOpen}>
             <DialogTrigger asChild>
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
