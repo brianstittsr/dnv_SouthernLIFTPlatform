@@ -32,38 +32,51 @@ export default function PressReleaseDetailPage() {
 
   const fetchPressRelease = async () => {
     if (!db) {
-      console.error('Firebase not initialized');
+      console.error('[Press Release Detail] Firebase not initialized');
       setLoading(false);
       return;
     }
 
     try {
-      console.log('Fetching press release with slug:', slug);
+      console.log('[Press Release Detail] Fetching press release with slug:', slug);
       const releasesRef = collection(db, 'pressReleases');
-      const q = query(
-        releasesRef,
-        where('slug', '==', slug),
-        where('status', '==', 'published')
-      );
       
-      const snapshot = await getDocs(q);
-      console.log('Query results:', snapshot.size, 'documents found');
+      let snapshot;
+      try {
+        // Try with status filter first
+        const q = query(
+          releasesRef,
+          where('slug', '==', slug),
+          where('status', '==', 'published')
+        );
+        snapshot = await getDocs(q);
+        console.log('[Press Release Detail] Filtered query results:', snapshot.size, 'documents found');
+      } catch (filterError) {
+        console.error('[Press Release Detail] Filtered query failed, trying without status filter:', filterError);
+        // Fallback: try without status filter
+        const fallbackQ = query(
+          releasesRef,
+          where('slug', '==', slug)
+        );
+        snapshot = await getDocs(fallbackQ);
+        console.log('[Press Release Detail] Fallback query (no status filter) results:', snapshot.size, 'documents found');
+      }
       
       if (snapshot.empty) {
-        console.warn('No press release found for slug:', slug);
+        console.warn('[Press Release Detail] No press release found for slug:', slug);
         setPressRelease(null);
       } else {
         const doc = snapshot.docs[0];
         const data = doc.data();
-        console.log('Press release data:', data);
+        console.log('[Press Release Detail] Press release data:', data);
         setPressRelease({
           id: doc.id,
           ...data
         } as PressRelease);
       }
     } catch (error) {
-      console.error('Error fetching press release:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
+      console.error('[Press Release Detail] Error fetching press release:', error);
+      console.error('[Press Release Detail] Error details:', JSON.stringify(error, null, 2));
       toast.error('Failed to load press release');
     } finally {
       setLoading(false);
