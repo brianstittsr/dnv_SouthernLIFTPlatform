@@ -64,6 +64,16 @@ export default function PressReleasesPage() {
     try {
       console.log('[Press Releases List] Firebase initialized, querying...');
       const releasesRef = collection(db, 'pressReleases');
+      
+      // First, test query without filters to see if collection exists
+      const testQuery = query(releasesRef);
+      const testSnapshot = await getDocs(testQuery);
+      console.log('[Press Releases List] Test query (all docs):', testSnapshot.size, 'documents');
+      testSnapshot.docs.forEach(doc => {
+        console.log('[Press Releases List] Document in collection:', doc.id, 'Status:', doc.data().status);
+      });
+      
+      // Now run the actual query with filters
       const q = query(
         releasesRef,
         where('status', '==', 'published'),
@@ -71,7 +81,7 @@ export default function PressReleasesPage() {
       );
       
       const snapshot = await getDocs(q);
-      console.log('[Press Releases List] Query complete. Documents found:', snapshot.size);
+      console.log('[Press Releases List] Filtered query complete. Published documents found:', snapshot.size);
       
       const releases = snapshot.docs.map(doc => {
         const data = doc.data();
