@@ -5,7 +5,6 @@ import { StatsSection } from "@/components/marketing/stats-section";
 import { HowItWorks } from "@/components/marketing/how-it-works";
 import { Testimonials } from "@/components/marketing/testimonials";
 import { CTASection } from "@/components/marketing/cta-section";
-import { AIGeneratorSection } from "@/components/marketing/ai-generator-section";
 
 export const revalidate = 60; // Revalidate every 60 seconds to pick up hero slide changes
 
@@ -15,7 +14,7 @@ export default function HomePage() {
       <HeroCarousel />
       {/* <ServicesOverview /> */}
       <FivePillarsSection />
-      <AIGeneratorSection />
+      {/* <AIGeneratorSection /> */}
       <StatsSection />
       <HowItWorks />
       <Testimonials />
