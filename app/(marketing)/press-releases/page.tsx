@@ -219,12 +219,37 @@ export default function PressReleasesPage() {
 
         {/* Press Releases Grid */}
         {filteredReleases.length === 0 ? (
-          <div className="text-center py-12">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No press releases found</h3>
-            <p className="text-muted-foreground">
-              Check back soon for the latest news and announcements.
-            </p>
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            {/* Table Header */}
+            <div className="grid grid-cols-4 gap-4 bg-gray-50 border-b border-gray-200 p-4">
+              <div className="text-sm font-semibold text-gray-700">Title</div>
+              <div className="text-sm font-semibold text-gray-700">Category</div>
+              <div className="text-sm font-semibold text-gray-700">Date</div>
+              <div className="text-sm font-semibold text-gray-700">Actions</div>
+            </div>
+            
+            {/* Empty State */}
+            <div className="p-12 text-center">
+              <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No press releases found</h3>
+              <p className="text-muted-foreground mb-4">
+                {searchQuery || categoryFilter !== 'all' 
+                  ? 'Try adjusting your search or filter criteria.' 
+                  : 'Check back soon for the latest news and announcements.'}
+              </p>
+              {(searchQuery || categoryFilter !== 'all') && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setCategoryFilter('all');
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
