@@ -1,5 +1,3 @@
-'use client';
-
 import { HeroCarousel } from "@/components/marketing/hero-carousel";
 import { ServicesOverview } from "@/components/marketing/services-overview";
 import { FivePillarsSection } from "@/components/marketing/five-pillars-section";
