@@ -73,19 +73,30 @@ export default function PressReleasesPage() {
         console.log('[Press Releases List] Document in collection:', doc.id, 'Status:', doc.data().status);
       });
       
-      // Now run the actual query with filters
-      const q = query(
-        releasesRef,
-        where('status', '==', 'published'),
-        orderBy('releaseDate', 'desc')
-      );
-      
-      const snapshot = await getDocs(q);
-      console.log('[Press Releases List] Filtered query complete. Published documents found:', snapshot.size);
+      // Try the actual query with filters
+      let snapshot;
+      try {
+        const q = query(
+          releasesRef,
+          where('status', '==', 'published'),
+          orderBy('releaseDate', 'desc')
+        );
+        snapshot = await getDocs(q);
+        console.log('[Press Releases List] Filtered query complete. Published documents found:', snapshot.size);
+      } catch (filterError) {
+        console.error('[Press Releases List] Filtered query failed, trying without status filter:', filterError);
+        // Fallback: try without status filter
+        const fallbackQ = query(
+          releasesRef,
+          orderBy('releaseDate', 'desc')
+        );
+        snapshot = await getDocs(fallbackQ);
+        console.log('[Press Releases List] Fallback query (no status filter). Documents found:', snapshot.size);
+      }
       
       const releases = snapshot.docs.map(doc => {
         const data = doc.data();
-        console.log('[Press Releases List] Document:', doc.id, data);
+        console.log('[Press Releases List] Document:', doc.id, 'Status:', data.status, 'Title:', data.title);
         return {
           id: doc.id,
           ...data
