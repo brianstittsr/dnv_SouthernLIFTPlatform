@@ -48,12 +48,16 @@ export default function PressReleasesPage() {
   }, [pressReleases, searchQuery, categoryFilter]);
 
   const fetchPressReleases = async () => {
+    console.log('[Press Releases List] Starting fetch...');
+    
     if (!db) {
+      console.error('[Press Releases List] Firebase not initialized');
       setLoading(false);
       return;
     }
 
     try {
+      console.log('[Press Releases List] Firebase initialized, querying...');
       const releasesRef = collection(db, 'pressReleases');
       const q = query(
         releasesRef,
@@ -62,20 +66,32 @@ export default function PressReleasesPage() {
       );
       
       const snapshot = await getDocs(q);
-      const releases = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as PressRelease[];
+      console.log('[Press Releases List] Query complete. Documents found:', snapshot.size);
+      
+      const releases = snapshot.docs.map(doc => {
+        const data = doc.data();
+        console.log('[Press Releases List] Document:', doc.id, data);
+        return {
+          id: doc.id,
+          ...data
+        };
+      }) as PressRelease[];
 
+      console.log('[Press Releases List] Total releases loaded:', releases.length);
       setPressReleases(releases);
     } catch (error) {
-      console.error('Error fetching press releases:', error);
+      console.error('[Press Releases List] Error fetching press releases:', error);
+      console.error('[Press Releases List] Error details:', JSON.stringify(error, null, 2));
     } finally {
       setLoading(false);
     }
   };
 
   const filterReleases = () => {
+    console.log('[Press Releases List] Filtering releases. Total:', pressReleases.length);
+    console.log('[Press Releases List] Search query:', searchQuery);
+    console.log('[Press Releases List] Category filter:', categoryFilter);
+    
     let filtered = [...pressReleases];
 
     if (searchQuery) {
@@ -85,12 +101,15 @@ export default function PressReleasesPage() {
         release.content.toLowerCase().includes(query) ||
         release.tags.some(tag => tag.toLowerCase().includes(query))
       );
+      console.log('[Press Releases List] After search filter:', filtered.length);
     }
 
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(release => release.category === categoryFilter);
+      console.log('[Press Releases List] After category filter:', filtered.length);
     }
 
+    console.log('[Press Releases List] Final filtered count:', filtered.length);
     setFilteredReleases(filtered);
   };
 
