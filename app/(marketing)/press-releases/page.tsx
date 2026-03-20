@@ -172,45 +172,6 @@ export default function PressReleasesPage() {
         </div>
       </section>
 
-      {/* AI Generator Button - Hidden on mobile and tablets */}
-      <section className="container mx-auto px-4 pt-8">
-        <div className="hidden lg:flex justify-end mb-4">
-          <Dialog open={generatorOpen} onOpenChange={setGeneratorOpen}>
-            <DialogTrigger asChild>
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                <Sparkles className="h-5 w-5 mr-2" />
-                Generate Press Release with AI
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-2xl flex items-center gap-2">
-                  <Sparkles className="h-6 w-6 text-purple-600" />
-                  AI Press Release Generator
-                </DialogTitle>
-                <DialogDescription>
-                  Paste text or upload a document (Word, PDF, Image) to generate a professional press release.
-                </DialogDescription>
-              </DialogHeader>
-              
-              <PressReleaseGenerator
-                inputText={inputText}
-                setInputText={setInputText}
-                uploadedFile={uploadedFile}
-                setUploadedFile={setUploadedFile}
-                generatedRelease={generatedRelease}
-                setGeneratedRelease={setGeneratedRelease}
-                isGenerating={isGenerating}
-                setIsGenerating={setIsGenerating}
-                copied={copied}
-                setCopied={setCopied}
-                markdownGuideOpen={markdownGuideOpen}
-                setMarkdownGuideOpen={setMarkdownGuideOpen}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
-      </section>
 
       {/* Filters */}
       <section className="container mx-auto px-4 pb-8">
