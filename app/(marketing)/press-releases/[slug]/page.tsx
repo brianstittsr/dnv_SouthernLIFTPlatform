@@ -41,6 +41,18 @@ export default function PressReleaseDetailPage() {
       console.log('[Press Release Detail] Fetching press release with slug:', slug);
       const releasesRef = collection(db, 'pressReleases');
       
+      // First, diagnostic: check if collection is accessible at all
+      try {
+        const allDocsQuery = query(releasesRef);
+        const allDocs = await getDocs(allDocsQuery);
+        console.log('[Press Release Detail] DIAGNOSTIC - Total documents in collection:', allDocs.size);
+        allDocs.docs.forEach(doc => {
+          console.log('[Press Release Detail] DIAGNOSTIC - Doc:', doc.id, 'Slug:', doc.data().slug);
+        });
+      } catch (diagError) {
+        console.error('[Press Release Detail] DIAGNOSTIC - Cannot read collection:', diagError);
+      }
+      
       let snapshot;
       try {
         // Try with status filter first
@@ -52,14 +64,24 @@ export default function PressReleaseDetailPage() {
         snapshot = await getDocs(q);
         console.log('[Press Release Detail] Filtered query results:', snapshot.size, 'documents found');
       } catch (filterError) {
-        console.error('[Press Release Detail] Filtered query failed, trying without status filter:', filterError);
-        // Fallback: try without status filter
-        const fallbackQ = query(
-          releasesRef,
-          where('slug', '==', slug)
-        );
-        snapshot = await getDocs(fallbackQ);
-        console.log('[Press Release Detail] Fallback query (no status filter) results:', snapshot.size, 'documents found');
+        console.error('[Press Release Detail] Filtered query failed:', filterError);
+        try {
+          // Fallback: try without status filter
+          const fallbackQ = query(
+            releasesRef,
+            where('slug', '==', slug)
+          );
+          snapshot = await getDocs(fallbackQ);
+          console.log('[Press Release Detail] Fallback query (no status filter) results:', snapshot.size, 'documents found');
+        } catch (fallbackError) {
+          console.error('[Press Release Detail] Fallback query also failed:', fallbackError);
+          // Last resort: try to get any document with matching slug using collection scan
+          const allDocsQuery = query(releasesRef);
+          const allDocs = await getDocs(allDocsQuery);
+          const matching = allDocs.docs.filter(doc => doc.data().slug === slug);
+          console.log('[Press Release Detail] Collection scan found:', matching.length, 'matching documents');
+          snapshot = { docs: matching, empty: matching.length === 0 } as any;
+        }
       }
       
       if (snapshot.empty) {
