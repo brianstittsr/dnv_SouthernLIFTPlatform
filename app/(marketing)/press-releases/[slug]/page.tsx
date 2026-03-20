@@ -32,11 +32,13 @@ export default function PressReleaseDetailPage() {
 
   const fetchPressRelease = async () => {
     if (!db) {
+      console.error('Firebase not initialized');
       setLoading(false);
       return;
     }
 
     try {
+      console.log('Fetching press release with slug:', slug);
       const releasesRef = collection(db, 'pressReleases');
       const q = query(
         releasesRef,
@@ -45,18 +47,23 @@ export default function PressReleaseDetailPage() {
       );
       
       const snapshot = await getDocs(q);
+      console.log('Query results:', snapshot.size, 'documents found');
       
       if (snapshot.empty) {
+        console.warn('No press release found for slug:', slug);
         setPressRelease(null);
       } else {
         const doc = snapshot.docs[0];
+        const data = doc.data();
+        console.log('Press release data:', data);
         setPressRelease({
           id: doc.id,
-          ...doc.data()
+          ...data
         } as PressRelease);
       }
     } catch (error) {
       console.error('Error fetching press release:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       toast.error('Failed to load press release');
     } finally {
       setLoading(false);
