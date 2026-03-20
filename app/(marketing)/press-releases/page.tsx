@@ -52,6 +52,11 @@ export default function PressReleasesPage() {
     
     if (!db) {
       console.error('[Press Releases List] Firebase not initialized');
+      console.error('[Press Releases List] Firebase config:', {
+        hasApiKey: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        hasProjectId: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        hasAuthDomain: !!process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+      });
       setLoading(false);
       return;
     }
@@ -157,9 +162,9 @@ export default function PressReleasesPage() {
         </div>
       </section>
 
-      {/* AI Generator Button - Hidden on mobile */}
+      {/* AI Generator Button - Hidden on mobile and tablets */}
       <section className="container mx-auto px-4 pt-8">
-        <div className="hidden md:flex justify-end mb-4">
+        <div className="hidden lg:flex justify-end mb-4">
           <Dialog open={generatorOpen} onOpenChange={setGeneratorOpen}>
             <DialogTrigger asChild>
               <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
@@ -227,6 +232,19 @@ export default function PressReleasesPage() {
             </Select>
           </div>
         </div>
+
+        {/* Firebase Error Warning */}
+        {!db && !loading && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold text-red-900 mb-2">⚠️ Configuration Issue</h3>
+            <p className="text-red-800 mb-2">
+              Unable to connect to the database. Press releases cannot be loaded at this time.
+            </p>
+            <p className="text-sm text-red-700">
+              This may be due to missing environment variables. Please contact the administrator.
+            </p>
+          </div>
+        )}
 
         {/* Press Releases Grid */}
         {filteredReleases.length === 0 ? (
