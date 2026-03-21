@@ -37,11 +37,12 @@ export async function POST(request: NextRequest) {
     const audioBuffer = await downloadYouTubeAudio(videoId);
 
     if (!audioBuffer) {
-      console.error('[Transcribe] Failed to download audio - check if yt-dlp is installed');
+      console.error('[Transcribe] Failed to download audio - yt-dlp may not be available in this environment');
       return NextResponse.json(
         { 
-          error: 'Could not download audio from YouTube video. Make sure yt-dlp is installed on the server: pip install yt-dlp',
-          details: 'Audio download failed - this typically means yt-dlp is not installed or the video is unavailable'
+          error: 'YouTube transcription is not available in this environment',
+          details: 'The system dependency (yt-dlp) required for YouTube audio extraction is not installed. Please use the "Paste Text Directly" option instead to manually add your transcript or content.',
+          suggestion: 'Use the manual text paste option in the Content Source step'
         },
         { status: 400 }
       );
