@@ -769,6 +769,17 @@ export default function HeroManagementPage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Skip button for users without content */}
+                  <div className="pt-2 border-t">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setWizardStep(2)}
+                      className="w-full text-muted-foreground hover:text-foreground"
+                    >
+                      Skip this step (no video or text)
+                    </Button>
+                  </div>
                 </div>
               </>
             )}
