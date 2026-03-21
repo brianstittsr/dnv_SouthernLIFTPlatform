@@ -142,11 +142,12 @@ const initialSlides: HeroSlide[] = [
 
 const wizardSteps = [
   { id: 1, title: "Basic Info", description: "Badge and headline" },
-  { id: 2, title: "Content", description: "Subheadline and benefits" },
-  { id: 3, title: "Actions", description: "Call-to-action buttons" },
-  { id: 4, title: "Background", description: "Background type and image" },
-  { id: 5, title: "Styling", description: "Overlay and ribbon" },
-  { id: 6, title: "Review", description: "Preview and publish" },
+  { id: 2, title: "YouTube", description: "Transcribe from YouTube URL" },
+  { id: 3, title: "Content", description: "Subheadline and benefits" },
+  { id: 4, title: "Actions", description: "Call-to-action buttons" },
+  { id: 5, title: "Background", description: "Background type and image" },
+  { id: 6, title: "Styling", description: "Overlay and ribbon" },
+  { id: 7, title: "Review", description: "Preview and publish" },
 ];
 
 interface SlideFormData {
@@ -170,6 +171,8 @@ interface SlideFormData {
   backgroundOverlayOpacity: number;
   showWaves: boolean;
   highlightOnSecondLine: boolean;
+  youtubeUrl: string;
+  youtubeTranscript: string;
 }
 
 const emptyFormData: SlideFormData = {
@@ -193,6 +196,8 @@ const emptyFormData: SlideFormData = {
   backgroundOverlayOpacity: 40,
   showWaves: false,
   highlightOnSecondLine: false,
+  youtubeUrl: "",
+  youtubeTranscript: "",
 };
 
 export default function HeroManagementPage() {
@@ -204,6 +209,7 @@ export default function HeroManagementPage() {
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
   const [formData, setFormData] = useState<SlideFormData>(emptyFormData);
   const [showImageManager, setShowImageManager] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
   // Load slides from Firebase on mount
   useEffect(() => {
@@ -257,6 +263,8 @@ export default function HeroManagementPage() {
         backgroundOverlayOpacity: slide.backgroundOverlayOpacity ?? 40,
         showWaves: slide.showWaves ?? false,
         highlightOnSecondLine: slide.highlightOnSecondLine ?? false,
+        youtubeUrl: "",
+        youtubeTranscript: "",
       });
     } else {
       setEditingSlide(null);
@@ -375,6 +383,37 @@ export default function HeroManagementPage() {
     const newBenefits = [...formData.benefits];
     newBenefits[index] = value;
     setFormData({ ...formData, benefits: newBenefits });
+  };
+
+  const handleTranscribeYouTube = async () => {
+    if (!formData.youtubeUrl) {
+      toast.error('Please enter a YouTube URL');
+      return;
+    }
+
+    setIsTranscribing(true);
+    try {
+      const response = await fetch('/api/transcribe-youtube', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ youtubeUrl: formData.youtubeUrl }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to transcribe video');
+        return;
+      }
+
+      const data = await response.json();
+      setFormData({ ...formData, youtubeTranscript: data.transcript });
+      toast.success('Video transcribed successfully!');
+    } catch (error) {
+      console.error('Transcription error:', error);
+      toast.error('Failed to transcribe YouTube video');
+    } finally {
+      setIsTranscribing(false);
+    }
   };
 
   return (
@@ -626,6 +665,64 @@ export default function HeroManagementPage() {
             )}
 
             {wizardStep === 2 && (
+              <>
+                <div className="space-y-3">
+                  <h4 className="font-medium text-lg">YouTube Video Transcription</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Paste a YouTube URL to automatically transcribe the video and populate your content.
+                  </p>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="youtubeUrl">YouTube URL</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="youtubeUrl"
+                        placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                        value={formData.youtubeUrl}
+                        onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={() => handleTranscribeYouTube()}
+                        disabled={!formData.youtubeUrl || isTranscribing}
+                        className="whitespace-nowrap"
+                      >
+                        {isTranscribing ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Transcribing...
+                          </>
+                        ) : (
+                          'Transcribe'
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {formData.youtubeTranscript && (
+                    <div className="space-y-2">
+                      <Label>Transcribed Content Preview</Label>
+                      <div className="bg-muted p-3 rounded-lg max-h-[150px] overflow-y-auto text-sm">
+                        {formData.youtubeTranscript}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setFormData({ ...formData, subheadline: formData.youtubeTranscript });
+                          toast.success('Transcript added to subheadline');
+                        }}
+                        className="w-full"
+                      >
+                        Use as Subheadline
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {wizardStep === 3 && (
               <>
                 <div className="space-y-2">
                   <Label htmlFor="subheadline">Subheadline</Label>
