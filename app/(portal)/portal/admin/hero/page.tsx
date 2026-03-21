@@ -554,7 +554,7 @@ export default function HeroManagementPage() {
       {/* Wizard Dialog */}
       <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
         <DialogContent 
-          className="sm:max-w-[600px] p-6"
+          className="sm:max-w-[600px] p-4 sm:p-6 max-h-[90vh] overflow-y-auto"
           onInteractOutside={(e) => e.preventDefault()}
         >
           <DialogHeader>
@@ -567,12 +567,12 @@ export default function HeroManagementPage() {
           </DialogHeader>
 
           {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 gap-1 overflow-x-auto">
             {wizardSteps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
+              <div key={step.id} className="flex items-center flex-shrink-0">
                 <div
                   className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
+                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0",
                     wizardStep > step.id
                       ? "bg-primary text-primary-foreground"
                       : wizardStep === step.id
@@ -580,14 +580,15 @@ export default function HeroManagementPage() {
                       : "bg-muted text-muted-foreground"
                   )}
                 >
-                  {wizardStep > step.id ? <Check className="h-4 w-4" /> : step.id}
+                  {wizardStep > step.id ? <Check className="h-3 w-3" /> : step.id}
                 </div>
                 {index < wizardSteps.length - 1 && (
                   <div
                     className={cn(
-                      "w-12 h-1 mx-2",
+                      "h-1 flex-shrink-0",
                       wizardStep > step.id ? "bg-primary" : "bg-muted"
                     )}
+                    style={{ width: '6px' }}
                   />
                 )}
               </div>
@@ -595,7 +596,7 @@ export default function HeroManagementPage() {
           </div>
 
           {/* Step Content */}
-          <div className="space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto overflow-x-hidden px-2 w-full">
+          <div className="space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto overflow-x-hidden w-full">
             {wizardStep === 2 && (
               <>
                 <div className="space-y-2 max-w-full min-w-0">
