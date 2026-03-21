@@ -398,7 +398,9 @@ export default function HeroManagementPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        toast.error(error.error || 'Failed to transcribe video');
+        const errorMessage = error.details ? `${error.error}\n\n${error.details}` : error.error;
+        toast.error(errorMessage || 'Failed to transcribe video');
+        console.error('[Hero] Transcription error:', error);
         return;
       }
 

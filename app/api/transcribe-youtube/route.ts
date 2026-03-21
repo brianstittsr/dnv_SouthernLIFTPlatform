@@ -37,19 +37,29 @@ export async function POST(request: NextRequest) {
     const audioBuffer = await downloadYouTubeAudio(videoId);
 
     if (!audioBuffer) {
+      console.error('[Transcribe] Failed to download audio - check if yt-dlp is installed');
       return NextResponse.json(
-        { error: 'Could not download audio from YouTube video' },
+        { 
+          error: 'Could not download audio from YouTube video. Make sure yt-dlp is installed on the server: pip install yt-dlp',
+          details: 'Audio download failed - this typically means yt-dlp is not installed or the video is unavailable'
+        },
         { status: 400 }
       );
     }
+
+    console.log(`[Transcribe] Audio downloaded successfully: ${audioBuffer.length} bytes`);
 
     // Transcribe using OpenAI Whisper API
     console.log(`[Transcribe] Sending audio to OpenAI Whisper API`);
     const transcript = await transcribeWithWhisper(audioBuffer);
 
     if (!transcript) {
+      console.error('[Transcribe] Whisper transcription failed');
       return NextResponse.json(
-        { error: 'Failed to transcribe audio with OpenAI Whisper' },
+        { 
+          error: 'Failed to transcribe audio with OpenAI Whisper API',
+          details: 'The audio was downloaded but transcription failed. Check OpenAI API key and rate limits.'
+        },
         { status: 400 }
       );
     }
