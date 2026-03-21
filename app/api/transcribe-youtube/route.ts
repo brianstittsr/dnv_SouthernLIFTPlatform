@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import FormData from 'form-data';
 
 /**
  * Transcribe YouTube video using OpenAI Whisper API
@@ -157,8 +156,11 @@ async function downloadYouTubeAudio(videoId: string): Promise<Buffer | null> {
  */
 async function transcribeWithWhisper(audioBuffer: Buffer): Promise<string | null> {
   try {
+    // Convert Buffer to Uint8Array then Blob for FormData
+    const audioBlob = new Blob([new Uint8Array(audioBuffer)], { type: 'audio/mpeg' });
+    
     const form = new FormData();
-    form.append('file', audioBuffer, 'audio.mp3');
+    form.append('file', audioBlob, 'audio.mp3');
     form.append('model', 'whisper-1');
     form.append('language', 'en');
 
@@ -167,7 +169,7 @@ async function transcribeWithWhisper(audioBuffer: Buffer): Promise<string | null
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
-      body: form as any,
+      body: form,
     });
 
     if (!response.ok) {
