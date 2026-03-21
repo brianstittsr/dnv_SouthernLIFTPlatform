@@ -141,8 +141,8 @@ const initialSlides: HeroSlide[] = [
 ];
 
 const wizardSteps = [
-  { id: 1, title: "Basic Info", description: "Badge and headline" },
-  { id: 2, title: "YouTube", description: "Transcribe from YouTube URL" },
+  { id: 1, title: "Content Source", description: "Transcribe video or paste text" },
+  { id: 2, title: "Basic Info", description: "Badge and headline" },
   { id: 3, title: "Content", description: "Subheadline and benefits" },
   { id: 4, title: "Actions", description: "Call-to-action buttons" },
   { id: 5, title: "Background", description: "Background type and image" },
@@ -596,7 +596,7 @@ export default function HeroManagementPage() {
 
           {/* Step Content */}
           <div className="space-y-4 min-h-[300px] max-h-[400px] overflow-y-auto overflow-x-hidden px-2 w-full">
-            {wizardStep === 1 && (
+            {wizardStep === 2 && (
               <>
                 <div className="space-y-2 max-w-full min-w-0">
                   <Label htmlFor="badge">Badge Text</Label>
@@ -664,65 +664,116 @@ export default function HeroManagementPage() {
               </>
             )}
 
-            {wizardStep === 2 && (
+            {wizardStep === 1 && (
               <>
-                <div className="space-y-3">
-                  <h4 className="font-medium text-lg">YouTube Video Transcription</h4>
+                <div className="space-y-4">
+                  <h4 className="font-medium text-lg">Content Source</h4>
                   <p className="text-sm text-muted-foreground">
-                    Paste a YouTube URL to automatically transcribe the video and populate your content.
+                    Choose to transcribe a YouTube video or paste text directly to populate your slide content.
                   </p>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="youtubeUrl">YouTube URL</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="youtubeUrl"
-                        placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                        value={formData.youtubeUrl}
-                        onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={() => handleTranscribeYouTube()}
-                        disabled={!formData.youtubeUrl || isTranscribing}
-                        className="whitespace-nowrap"
-                      >
-                        {isTranscribing ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Transcribing...
-                          </>
-                        ) : (
-                          'Transcribe'
-                        )}
-                      </Button>
+
+                  {/* YouTube Transcription Option */}
+                  <div className="space-y-3 border rounded-lg p-4 bg-slate-50">
+                    <h5 className="font-medium">Option 1: Transcribe YouTube Video</h5>
+                    <div className="space-y-2">
+                      <Label htmlFor="youtubeUrl">YouTube URL</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="youtubeUrl"
+                          placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                          value={formData.youtubeUrl}
+                          onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                          className="flex-1"
+                        />
+                        <Button
+                          onClick={() => handleTranscribeYouTube()}
+                          disabled={!formData.youtubeUrl || isTranscribing}
+                          className="whitespace-nowrap"
+                        >
+                          {isTranscribing ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Transcribing...
+                            </>
+                          ) : (
+                            'Transcribe'
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
-                  {formData.youtubeTranscript && (
+                  {/* Manual Text Paste Option */}
+                  <div className="space-y-3 border rounded-lg p-4 bg-slate-50">
+                    <h5 className="font-medium">Option 2: Paste Text Directly</h5>
                     <div className="space-y-2">
-                      <Label>Transcribed Content Preview</Label>
-                      <div className="bg-muted p-3 rounded-lg max-h-[150px] overflow-y-auto text-sm">
-                        {formData.youtubeTranscript}
-                      </div>
+                      <Label htmlFor="pasteText">Paste your content text</Label>
+                      <Textarea
+                        id="pasteText"
+                        placeholder="Paste your video transcript, article, or any content text here..."
+                        rows={4}
+                        className="w-full resize-none"
+                        onChange={(e) => {
+                          setFormData({ ...formData, youtubeTranscript: e.target.value });
+                        }}
+                      />
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          setFormData({ ...formData, subheadline: formData.youtubeTranscript });
-                          toast.success('Transcript added to subheadline');
+                          if (formData.youtubeTranscript) {
+                            toast.success('Text ready to use');
+                          } else {
+                            toast.error('Please paste some text first');
+                          }
                         }}
                         className="w-full"
                       >
-                        Use as Subheadline
+                        Use This Text
                       </Button>
+                    </div>
+                  </div>
+
+                  {/* Preview of current transcript/text */}
+                  {formData.youtubeTranscript && (
+                    <div className="space-y-2 border rounded-lg p-4 bg-blue-50">
+                      <Label className="font-medium">Content Preview</Label>
+                      <div className="bg-white p-3 rounded border max-h-[200px] overflow-y-auto text-sm">
+                        {formData.youtubeTranscript}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setFormData({ ...formData, subheadline: formData.youtubeTranscript });
+                            toast.success('Text added to subheadline');
+                          }}
+                          className="flex-1"
+                        >
+                          Use as Subheadline
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const words = formData.youtubeTranscript.split(/\s+/);
+                            const headline = words.slice(0, 3).join(' ');
+                            setFormData({ ...formData, headline });
+                            toast.success('First 3 words added to headline');
+                          }}
+                          className="flex-1"
+                        >
+                          Use as Headline
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
               </>
             )}
 
-            {wizardStep === 3 && (
+            {wizardStep === 2 && (
               <>
                 <div className="space-y-2">
                   <Label htmlFor="subheadline">Subheadline</Label>
@@ -750,7 +801,7 @@ export default function HeroManagementPage() {
               </>
             )}
 
-            {wizardStep === 3 && (
+            {wizardStep === 4 && (
               <>
                 <div className="space-y-4">
                   <h4 className="font-medium">Primary Call-to-Action</h4>
@@ -805,7 +856,7 @@ export default function HeroManagementPage() {
               </>
             )}
 
-            {wizardStep === 4 && (
+            {wizardStep === 5 && (
               <div className="space-y-5">
                 <div className="space-y-3">
                   <h4 className="font-medium text-lg">Background Type</h4>
@@ -900,7 +951,7 @@ export default function HeroManagementPage() {
               </div>
             )}
 
-            {wizardStep === 5 && (
+            {wizardStep === 6 && (
               <div className="space-y-5">
                 <div className="space-y-3">
                   <h4 className="font-medium text-lg">Text Visibility</h4>
@@ -988,7 +1039,7 @@ export default function HeroManagementPage() {
               </div>
             )}
 
-            {wizardStep === 6 && (
+            {wizardStep === 7 && (
               <div className="space-y-4">
                 <div 
                   className="relative p-4 rounded-lg overflow-hidden min-h-[200px]"
