@@ -93,15 +93,15 @@ function extractVideoId(url: string): string | null {
 /**
  * Download audio from YouTube video using yt-dlp
  * Returns audio buffer for transcription
+ * Requires yt-dlp to be installed on the server
  */
 async function downloadYouTubeAudio(videoId: string): Promise<Buffer | null> {
   try {
-    // Use yt-dlp to download audio in MP3 format
-    // This requires yt-dlp to be installed on the server
     const { spawn } = await import('child_process');
     
     return new Promise((resolve) => {
       const chunks: Buffer[] = [];
+      let hasError = false;
       
       const process = spawn('yt-dlp', [
         '-f', 'bestaudio[ext=m4a]/bestaudio',
@@ -110,25 +110,39 @@ async function downloadYouTubeAudio(videoId: string): Promise<Buffer | null> {
         '--audio-quality', '192',
         '-o', '-',
         `https://www.youtube.com/watch?v=${videoId}`,
-      ]);
+      ], {
+        stdio: ['ignore', 'pipe', 'pipe'],
+        timeout: 300000, // 5 minute timeout
+      });
 
-      process.stdout.on('data', (chunk: Buffer) => {
+      process.stdout?.on('data', (chunk: Buffer) => {
         chunks.push(chunk);
       });
 
+      process.stderr?.on('data', (chunk: Buffer) => {
+        const error = chunk.toString();
+        console.error('[Transcribe] yt-dlp stderr:', error);
+        if (error.includes('ERROR') || error.includes('error')) {
+          hasError = true;
+        }
+      });
+
       process.on('close', (code) => {
-        if (code === 0 && chunks.length > 0) {
+        if (code === 0 && chunks.length > 0 && !hasError) {
           const audioBuffer = Buffer.concat(chunks);
           console.log(`[Transcribe] Downloaded ${audioBuffer.length} bytes of audio`);
           resolve(audioBuffer);
         } else {
-          console.error(`[Transcribe] yt-dlp failed with code ${code}`);
+          console.error(`[Transcribe] yt-dlp failed with code ${code}, hasError: ${hasError}`);
           resolve(null);
         }
       });
 
-      process.on('error', (error) => {
-        console.error('[Transcribe] Error spawning yt-dlp:', error);
+      process.on('error', (error: any) => {
+        console.error('[Transcribe] Error spawning yt-dlp:', error.message);
+        if (error.code === 'ENOENT') {
+          console.error('[Transcribe] yt-dlp not found. Install with: pip install yt-dlp');
+        }
         resolve(null);
       });
     });

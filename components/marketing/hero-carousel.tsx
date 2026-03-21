@@ -194,18 +194,24 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
 
   const loadGalleryImages = async () => {
     try {
-      // Use Firebase Storage for faster loading
-      const images = await listHeroBackgrounds();
-      setStorageImages(images.map(img => ({ id: img.id, url: img.url })));
+      // Use server-side API to avoid CORS issues with Firebase Storage
+      const response = await fetch('/api/hero-backgrounds');
+      if (!response.ok) {
+        throw new Error('Failed to fetch hero backgrounds');
+      }
+      
+      const data = await response.json();
+      const images = data.images || [];
+      setStorageImages(images.map((img: any) => ({ id: img.id, url: img.url })));
       
       // Create index mapping for slides
       const dataUrls: Record<number, string> = {};
-      images.forEach((img, i) => {
+      images.forEach((img: any, i: number) => {
         dataUrls[i] = img.url;
       });
       setResolvedBgImages(dataUrls);
     } catch (error) {
-      console.error("Failed to load gallery images from Storage:", error);
+      console.error("Failed to load gallery images:", error);
     }
   };
 
