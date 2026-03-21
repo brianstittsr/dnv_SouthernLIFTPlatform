@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import FormData from 'form-data';
 
 /**
- * Transcribe YouTube video using youtube-transcript-api
- * Extracts captions/transcripts from YouTube videos
+ * Transcribe YouTube video using OpenAI Whisper API
+ * Downloads audio from YouTube and transcribes using Whisper
  */
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +16,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: 'OpenAI API key is not configured' },
+        { status: 503 }
+      );
+    }
+
     // Extract video ID from YouTube URL
     const videoId = extractVideoId(youtubeUrl);
     if (!videoId) {
@@ -24,12 +33,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use youtube-transcript-api to get transcripts
-    const transcript = await getYouTubeTranscript(videoId);
+    // Download audio from YouTube
+    console.log(`[Transcribe] Downloading audio from YouTube video: ${videoId}`);
+    const audioBuffer = await downloadYouTubeAudio(videoId);
+
+    if (!audioBuffer) {
+      return NextResponse.json(
+        { error: 'Could not download audio from YouTube video' },
+        { status: 400 }
+      );
+    }
+
+    // Transcribe using OpenAI Whisper API
+    console.log(`[Transcribe] Sending audio to OpenAI Whisper API`);
+    const transcript = await transcribeWithWhisper(audioBuffer);
 
     if (!transcript) {
       return NextResponse.json(
-        { error: 'Could not retrieve transcript. Video may not have captions.' },
+        { error: 'Failed to transcribe audio with OpenAI Whisper' },
         { status: 400 }
       );
     }
@@ -70,81 +91,84 @@ function extractVideoId(url: string): string | null {
 }
 
 /**
- * Get YouTube transcript using the youtube-transcript-api
- * This uses a server-side approach to fetch transcripts
+ * Download audio from YouTube video using yt-dlp
+ * Returns audio buffer for transcription
  */
-async function getYouTubeTranscript(videoId: string): Promise<string | null> {
+async function downloadYouTubeAudio(videoId: string): Promise<Buffer | null> {
   try {
-    // Use the YouTube Transcript API endpoint
-    const response = await fetch(
-      `https://www.youtube.com/api/timedtext?v=${videoId}&lang=en`,
-      {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error('Failed to fetch transcript:', response.status);
-      return null;
-    }
-
-    const text = await response.text();
+    // Use yt-dlp to download audio in MP3 format
+    // This requires yt-dlp to be installed on the server
+    const { spawn } = await import('child_process');
     
-    // Parse XML response and extract text
-    const transcript = parseTranscriptXml(text);
-    return transcript;
+    return new Promise((resolve) => {
+      const chunks: Buffer[] = [];
+      
+      const process = spawn('yt-dlp', [
+        '-f', 'bestaudio[ext=m4a]/bestaudio',
+        '-x',
+        '--audio-format', 'mp3',
+        '--audio-quality', '192',
+        '-o', '-',
+        `https://www.youtube.com/watch?v=${videoId}`,
+      ]);
+
+      process.stdout.on('data', (chunk: Buffer) => {
+        chunks.push(chunk);
+      });
+
+      process.on('close', (code) => {
+        if (code === 0 && chunks.length > 0) {
+          const audioBuffer = Buffer.concat(chunks);
+          console.log(`[Transcribe] Downloaded ${audioBuffer.length} bytes of audio`);
+          resolve(audioBuffer);
+        } else {
+          console.error(`[Transcribe] yt-dlp failed with code ${code}`);
+          resolve(null);
+        }
+      });
+
+      process.on('error', (error) => {
+        console.error('[Transcribe] Error spawning yt-dlp:', error);
+        resolve(null);
+      });
+    });
   } catch (error) {
-    console.error('Error fetching transcript:', error);
+    console.error('[Transcribe] Error downloading audio:', error);
     return null;
   }
 }
 
 /**
- * Parse YouTube transcript XML format
+ * Transcribe audio using OpenAI Whisper API
  */
-function parseTranscriptXml(xml: string): string {
+async function transcribeWithWhisper(audioBuffer: Buffer): Promise<string | null> {
   try {
-    // Extract text from XML tags like <text>...</text>
-    const textRegex = /<text[^>]*>([^<]+)<\/text>/g;
-    const matches = Array.from(xml.matchAll(textRegex));
-    
-    if (matches.length === 0) {
-      return '';
+    const form = new FormData();
+    form.append('file', audioBuffer, 'audio.mp3');
+    form.append('model', 'whisper-1');
+    form.append('language', 'en');
+
+    const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: form as any,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('[Transcribe] OpenAI API error:', error);
+      return null;
     }
 
-    // Decode HTML entities and join text
-    const transcript = matches
-      .map(match => decodeHTMLEntities(match[1]))
-      .join(' ');
-
-    return transcript;
+    const data = await response.json() as { text: string };
+    console.log('[Transcribe] Transcription successful');
+    return data.text;
   } catch (error) {
-    console.error('Error parsing transcript XML:', error);
-    return '';
+    console.error('[Transcribe] Error transcribing with Whisper:', error);
+    return null;
   }
-}
-
-/**
- * Decode HTML entities
- */
-function decodeHTMLEntities(text: string): string {
-  const entities: Record<string, string> = {
-    '&amp;': '&',
-    '&lt;': '<',
-    '&gt;': '>',
-    '&quot;': '"',
-    '&#39;': "'",
-    '&nbsp;': ' ',
-  };
-
-  let decoded = text;
-  for (const [entity, char] of Object.entries(entities)) {
-    decoded = decoded.replace(new RegExp(entity, 'g'), char);
-  }
-
-  return decoded;
 }
 
 /**
