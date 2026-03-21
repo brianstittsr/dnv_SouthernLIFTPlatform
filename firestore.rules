@@ -383,6 +383,14 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Press Releases - Public read for published releases, admin write
+    match /pressReleases/{releaseId} {
+      // Public read for published press releases (filtered in app)
+      allow read: if true;
+      // Only admins can create, update, delete
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();
