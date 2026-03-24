@@ -72,11 +72,20 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
             Choose your payment method - Credit card or Buy now, pay later options available
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <p className="text-sm text-blue-900">
+              <strong>Payment Options:</strong> We accept credit cards and buy now, pay later options including Affirm, Afterpay, and Klarna.
+            </p>
+          </div>
           <PaymentElement 
             options={{
               layout: "tabs",
               paymentMethodOrder: ["card", "affirm", "afterpay_clearpay", "klarna"],
+              wallets: {
+                applePay: "auto",
+                googlePay: "auto",
+              },
             }}
           />
         </CardContent>
