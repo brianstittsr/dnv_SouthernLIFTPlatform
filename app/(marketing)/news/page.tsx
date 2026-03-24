@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,9 +69,18 @@ export default function NewsPage() {
             {featuredArticles.map((article) => (
               <Card key={article.id} className="overflow-hidden group hover:shadow-xl transition-all">
                 <div className="aspect-video bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                    <Newspaper className="h-16 w-16 text-primary/40" />
-                  </div>
+                  {article.image ? (
+                    <Image
+                      src={article.image}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <Newspaper className="h-16 w-16 text-primary/40" />
+                    </div>
+                  )}
                 </div>
                 <CardHeader>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">

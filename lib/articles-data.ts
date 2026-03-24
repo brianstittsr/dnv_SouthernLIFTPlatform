@@ -21,6 +21,7 @@ export const articles: Record<string, Article> = {
     category: "Technology & Innovation",
     author: "KDM Research Team",
     excerpt: "For years, businesses have faced numerous obstacles when it comes to accessing government contracts. However, emerging technologies are changing the game and providing a level playing field.",
+    image: "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
     content: `For years, businesses have faced numerous obstacles when it comes to accessing government contracts. These businesses often lack the resources and connections needed to compete with larger companies. However, emerging technologies are changing the game and providing a level playing field for diverse businesses.
 
 In this article, we'll explore how emerging technologies are empowering businesses in government contracting. We'll take a closer look at the challenges these businesses have faced in the past, the technologies that are helping to break down barriers, and the benefits that diverse businesses can expect to see as a result.
@@ -88,6 +89,7 @@ Emerging technologies are breaking down barriers and empowering diverse business
     category: "Finance & Capital",
     author: "KDM Financial Analysis Team",
     excerpt: "Silicon Valley Bank's collapse has sent shockwaves through the technology industry. However, in the face of this challenge, there is an opportunity for innovation and growth in diverse tech companies.",
+    image: "https://images.pexels.com/photos/3962286/pexels-photo-3962286.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
     content: `Silicon Valley Bank's collapse has sent shockwaves through the technology industry and the financial world at large. As one of the largest lenders to venture capital-backed companies, including many of the industry's best-known brands, its failure has raised concerns about the stability of the financial system and the availability of capital for small businesses, particularly for diverse tech companies. However, in the face of this challenge, there is an opportunity for innovation and growth.
 
 ## Opportunity for Alternative Funding Sources
@@ -131,6 +133,7 @@ The failure of Silicon Valley Bank, while challenging, presents an opportunity f
     category: "Compliance",
     author: "KDM Compliance Team",
     excerpt: "The Department of Defense has finalized CMMC 2.0 requirements. Learn what this means for your organization and how to prepare for certification.",
+    image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
     content: `The Department of Defense (DoD) has finalized the Cybersecurity Maturity Model Certification (CMMC) 2.0 requirements, marking a significant milestone for defense contractors. This updated framework streamlines the certification process while maintaining robust cybersecurity standards. Here's what your organization needs to know to prepare for CMMC 2.0 certification.
 
 ## What's New in CMMC 2.0
@@ -217,6 +220,7 @@ CMMC 2.0 represents a significant shift in how the DoD approaches cybersecurity 
     category: "ISO Standards",
     author: "Quality Management Team",
     excerpt: "ISO has released the draft for ISO 9001:2025. Discover the proposed changes and how they may impact your quality management system.",
+    image: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
     content: `ISO has released the draft for ISO 9001:2025, marking the first major revision to the world's most widely used quality management standard in over a decade. Organizations currently certified to ISO 9001:2015 will need to understand these proposed changes and begin planning for the transition. Here's what you need to know about the upcoming revision.
 
 ## Key Proposed Changes in ISO 9001:2025
