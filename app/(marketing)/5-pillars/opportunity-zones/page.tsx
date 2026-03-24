@@ -309,7 +309,7 @@ export default function OpportunityZonesPage() {
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20" asChild>
                 <Link href="/5-pillars">
-                  Explore the Full Pillar
+                  Explore the 5 Pillars
                 </Link>
               </Button>
             </div>
