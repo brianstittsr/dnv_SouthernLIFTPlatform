@@ -75,16 +75,30 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
         <CardContent className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
             <p className="text-sm text-blue-900">
-              <strong>Payment Options:</strong> We accept credit cards and buy now, pay later options including Affirm, Afterpay, and Klarna.
+              <strong>Payment Options:</strong> We accept credit cards, digital wallets (Apple Pay, Amazon Pay, Link), buy now, pay later (Afterpay, Klarna), bank transfers, and ACH direct debit.
             </p>
           </div>
           <PaymentElement 
             options={{
               layout: "tabs",
-              paymentMethodOrder: ["card", "affirm", "afterpay_clearpay", "klarna"],
+              paymentMethodOrder: [
+                "card",
+                "amazon_pay",
+                "apple_pay",
+                "link",
+                "afterpay_clearpay",
+                "klarna",
+                "us_bank_account",
+                "bank_transfer",
+                "bancontact",
+                "eps",
+              ],
               wallets: {
                 applePay: "auto",
-                googlePay: "auto",
+                googlePay: "never",
+              },
+              fields: {
+                billingDetails: "auto",
               },
             }}
           />
