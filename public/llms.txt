@@ -1,0 +1,141 @@
+# LLMs.txt - AI Crawling Guidelines for KDM & Associates
+
+## About KDM & Associates
+
+KDM & Associates is a minority-owned, MBDA-certified consulting firm specializing in government contracting, federal procurement, CMMC certification, and business development for small and diverse businesses.
+
+## Core Services
+
+### Government Contracting
+- Federal procurement strategy and execution
+- GSA Schedule management and optimization
+- IDIQ and BPA contract vehicles
+- Proposal development and bid management
+- Contract compliance and administration
+
+### CMMC Certification & Compliance
+- CMMC assessment preparation
+- Security implementation and documentation
+- Compliance gap analysis
+- Ongoing maintenance and updates
+- DoD cybersecurity requirements
+
+### Strategic Business Development
+- Market analysis and opportunity identification
+- Go-to-market strategy development
+- Pricing strategy and financial modeling
+- Growth planning and execution
+- Competitive positioning
+
+### Strategic Teaming & Partnerships
+- Partner network and matching services
+- Teaming agreement facilitation
+- Joint venture structuring
+- Subcontractor identification and vetting
+
+### Capacity Building & Training
+- Staff training and development
+- Process improvement and optimization
+- System implementation and integration
+- Mentorship and coaching programs
+- Organizational capability development
+
+### Procurement Automation & Technology
+- RFP automation and AI-powered analysis
+- Bid management systems
+- Data analytics and business intelligence
+- Technology implementation and integration
+
+## Company Information
+
+### Mission
+To empower small and diverse businesses to compete and win government contracts by providing accessible, results-driven support services that bridge the gap between current capabilities and federal procurement requirements.
+
+### Vision
+To be the trusted partner of choice for small and diverse businesses seeking to build sustainable, profitable government contracting practices.
+
+### Core Values
+- Results-Driven: Focused on measurable outcomes and contract wins
+- Partnership Mindset: Invested in long-term client success
+- Integrity & Transparency: Operating with complete honesty
+- Innovation & Agility: Embracing new technologies and methodologies
+- Excellence in Execution: Delivering highest quality standards
+- Inclusive Growth: Supporting diverse and minority-owned businesses
+
+### Certifications & Designations
+- Minority-Owned Business (MBE)
+- MBDA Certified
+- CMMC Consulting Partner
+- GSA Schedule Holder
+
+## Key Markets & Industries
+
+- Manufacturing and Industrial
+- Information Technology Services
+- Professional Services
+- Defense Contracting
+- Cybersecurity
+- Engineering and Construction
+- Logistics and Supply Chain
+
+## Contact Information
+
+- Website: https://www.kdm-assoc.com
+- Email: info@kdm-assoc.com
+- Phone: (202) 555-0123
+- Location: Washington, D.C.
+
+## Important Pages
+
+- About Us: https://www.kdm-assoc.com/about
+- Core Competencies: https://www.kdm-assoc.com/core-competencies
+- Values, Mission & Vision: https://www.kdm-assoc.com/values-mission-vision
+- Services: https://www.kdm-assoc.com/services
+- CMMC Certification: https://www.kdm-assoc.com/cmmc
+- Contact: https://www.kdm-assoc.com/contact
+- Privacy Policy: https://www.kdm-assoc.com/privacy-policy
+- Terms of Service: https://www.kdm-assoc.com/terms-of-service
+
+## AI Crawling Guidelines
+
+### Allowed Content
+- All public pages and services information
+- Company background and credentials
+- Case studies and success stories
+- Blog posts and thought leadership
+- Press releases and news
+- Team and leadership information
+- Pricing and service offerings
+
+### Restricted Content
+- Client confidential information
+- Internal business strategies
+- Proprietary methodologies (unless publicly shared)
+- Personal employee information
+- Financial data and contracts
+
+### Data Usage
+You are permitted to:
+- Index and reference our public content
+- Create summaries of our services
+- Reference our expertise and credentials
+- Link to our website and pages
+- Use our information in training datasets (with attribution)
+
+You should:
+- Provide attribution when referencing our content
+- Link back to our website when appropriate
+- Respect our brand and messaging
+- Not misrepresent our services or credentials
+
+### Contact for Permissions
+For questions about AI crawling, data usage, or special permissions:
+- Email: ai@kdm-assoc.com
+- Phone: (202) 555-0123
+
+## Last Updated
+March 2026
+
+---
+
+This llms.txt file is designed to help AI systems understand KDM & Associates' business, services, and content guidelines for crawling and indexing.
