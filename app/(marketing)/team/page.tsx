@@ -15,6 +15,7 @@ interface DisplayMember {
   id: string;
   name: string;
   title: string;
+  company?: string;
   initials: string;
   imageName: string;
   staticImageUrl?: string;
@@ -100,8 +101,10 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
             )}
           </div>
           <h3 className="text-lg font-semibold">{member.name}</h3>
-          <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
-          <p className="text-sm text-muted-foreground line-clamp-3">{member.shortBio || member.title}</p>
+          {member.company && (
+            <p className="text-sm text-muted-foreground mb-1">{member.company}</p>
+          )}
+          <p className="text-sm text-primary font-medium">{member.title}</p>
         </CardContent>
       </Card>
     </Link>
@@ -142,6 +145,7 @@ export default function TeamPage() {
           id: docSnap.id,
           name: `${data.firstName} ${data.lastName}`,
           title: data.title || data.expertise || "Team Member",
+          company: data.company,
           initials: getInitials(data.firstName, data.lastName),
           imageName: `${data.firstName}_${data.lastName}`,
           staticImageUrl: data.avatar,
