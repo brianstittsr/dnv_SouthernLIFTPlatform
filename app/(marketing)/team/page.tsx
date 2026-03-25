@@ -116,8 +116,12 @@ function MemberSection({ title, members }: { title: string; members: DisplayMemb
   return (
     <div className="mb-16">
       <h2 className="text-3xl font-bold tracking-tight mb-8 text-center">{title}</h2>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {members.map((member) => (<TeamMemberCard key={member.id} member={member} />))}
+      <div className="flex flex-wrap justify-center gap-6">
+        {members.map((member) => (
+          <div key={member.id} className="w-full sm:w-80">
+            <TeamMemberCard member={member} />
+          </div>
+        ))}
       </div>
     </div>
   );
