@@ -19,6 +19,7 @@ interface DisplayMember {
   imageName: string;
   staticImageUrl?: string;
   bio: string;
+  shortBio?: string;
   teamTag?: "leadership" | "staff" | "affiliate";
   avatar?: string;
   displayOrder?: number;
@@ -100,7 +101,7 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
           </div>
           <h3 className="text-lg font-semibold">{member.name}</h3>
           <p className="text-sm text-primary font-medium mb-3">{member.title}</p>
-          <p className="text-sm text-muted-foreground">{member.bio}</p>
+          <p className="text-sm text-muted-foreground line-clamp-3">{member.shortBio || member.title}</p>
         </CardContent>
       </Card>
     </Link>
@@ -145,6 +146,7 @@ export default function TeamPage() {
           imageName: `${data.firstName}_${data.lastName}`,
           staticImageUrl: data.avatar,
           bio: data.bio || `${data.expertise || "KDM Team Member"}`,
+          shortBio: data.title || data.expertise || "KDM Team Member",
           teamTag: data.teamTag || "affiliate",
           avatar: data.avatar,
           displayOrder: data.displayOrder || 0,
