@@ -15,7 +15,7 @@ interface Teammember {
   staticImageUrl?: string;
   bio: string;
   fullBio: string;
-  linkedin?: string;
+  linkedIn?: string;
 }
 
 interface TeammemberBioProps {
@@ -102,9 +102,9 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold mb-2">{member.name}</h2>
             <p className="text-lg text-primary font-medium mb-3">{member.title}</p>
-            {member.linkedin && (
+            {member.linkedIn && (
               <Button variant="outline" size="sm" asChild>
-                <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                <a href={member.linkedIn} target="_blank" rel="noopener noreferrer">
                   <Linkedin className="h-4 w-4 mr-2" />
                   LinkedIn Profile
                 </a>

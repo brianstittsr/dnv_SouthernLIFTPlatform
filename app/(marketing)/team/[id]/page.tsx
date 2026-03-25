@@ -63,7 +63,7 @@ export default function TeamMemberPage() {
             linkedIn: data.linkedIn,
             teamTag: data.teamTag || "affiliate",
             avatar: data.avatar,
-          });
+          } as DisplayMember);
         } else {
           setError(true);
         }
