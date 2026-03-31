@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
+import { getHomePageSettings } from "@/lib/firebase-home-settings";
 
 const EXCLUDED_PATHS = ["/cmmc-training"];
 
@@ -89,8 +90,34 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [showTriggerButton, setShowTriggerButton] = useState(true);
+  const [popupConfig, setPopupConfig] = useState(config);
 
   const isExcludedPath = EXCLUDED_PATHS.some(path => pathname?.startsWith(path));
+
+  // Load popup configuration from settings
+  useEffect(() => {
+    const loadPopupConfig = async () => {
+      try {
+        const settings = await getHomePageSettings();
+        setPopupConfig({
+          ...defaultPopupConfig,
+          enabled: settings.popupFormEnabled,
+          triggerDelay: settings.popupFormTriggerDelay,
+          position: settings.popupFormPosition,
+          title: settings.popupFormTitle,
+          subtitle: settings.popupFormSubtitle,
+          description: settings.popupFormDescription,
+          buttonText: settings.popupFormButtonText,
+          successMessage: settings.popupFormSuccessMessage,
+        });
+      } catch (error) {
+        console.error("Failed to load popup config:", error);
+        setPopupConfig(config);
+      }
+    };
+
+    loadPopupConfig();
+  }, [config]);
 
   useEffect(() => {
     const isBrowser = typeof window !== "undefined";
@@ -106,13 +133,13 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
         setIsOpen(true);
         sessionStorage.setItem(shownKey, "true");
       },
-      Math.max(0, config.triggerDelay) * 1000
+      Math.max(0, popupConfig.triggerDelay) * 1000
     );
 
     return () => clearTimeout(timer);
-  }, [config.triggerDelay, isExcludedPath]);
+  }, [popupConfig.triggerDelay, isExcludedPath]);
 
-  if (!config.enabled || isExcludedPath) return null;
+  if (!popupConfig.enabled || isExcludedPath) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -203,7 +230,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
   };
 
-  const enabledFields = config.fields.filter((f) => f.enabled);
+  const enabledFields = popupConfig.fields.filter((f) => f.enabled);
 
   return (
     <>
@@ -213,9 +240,9 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
           onClick={() => setIsOpen(true)}
           className={cn(
             "fixed z-50 p-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform",
-            config.position === "bottom-right" && "bottom-6 right-6",
-            config.position === "bottom-left" && "bottom-6 left-6",
-            config.position === "center" && "bottom-6 right-6"
+            popupConfig.position === "bottom-right" && "bottom-6 right-6",
+            popupConfig.position === "bottom-left" && "bottom-6 left-6",
+            popupConfig.position === "center" && "bottom-6 right-6"
           )}
           aria-label="Contact us"
         >
@@ -231,14 +258,14 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
               <span className="text-4xl font-bold text-primary">V</span>
               <sup className="text-primary text-xl">+</sup>
               <DialogTitle className="text-xl text-primary font-semibold">
-                {config.title}
+                {popupConfig.title}
               </DialogTitle>
             </div>
             <p className="text-base font-medium text-foreground">
-              {config.subtitle}
+              {popupConfig.subtitle}
             </p>
             <p className="text-sm text-muted-foreground">
-              {config.description}
+              {popupConfig.description}
             </p>
           </DialogHeader>
 
@@ -248,7 +275,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
                 <Send className="h-8 w-8 text-green-600" />
               </div>
               <p className="text-lg font-medium text-green-600">
-                {config.successMessage}
+                {popupConfig.successMessage}
               </p>
             </div>
           ) : (
@@ -300,7 +327,7 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
               ))}
 
               <Button type="submit" className="w-full" size="lg" disabled={!formData.industry}>
-                {config.buttonText}
+                {popupConfig.buttonText}
               </Button>
             </form>
           )}

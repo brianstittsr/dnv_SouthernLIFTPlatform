@@ -1693,6 +1693,7 @@ export const COLLECTIONS = {
   CONSORTIUM_HERO_SLIDES: "consortiumHeroSlides",
   CONSORTIUM_STATS: "consortiumStats",
   POPUP_CONFIG: "popupConfig",
+  HOME_PAGE_SETTINGS: "homePageSettings",
   SOFTWARE_KEYS: "softwareKeys",
   WHITE_LABEL_CONFIG: "whiteLabelConfig",
   NDA_TEMPLATES: "ndaTemplates",
@@ -2563,4 +2564,26 @@ export interface EventDocKDMExtensions {
   sponsorIds?: string[];
   speakerIds?: string[];
   recordingUrl?: string;
+}
+
+/** Home Page Settings document in Firestore */
+export interface HomePageSettingsDoc {
+  id: string;
+  // Hero Slider Settings
+  heroSliderSpeed: number; // milliseconds between slides (default: 6000)
+  heroSliderAutoPlay: boolean; // enable/disable autoplay
+  
+  // Popup Form Settings
+  popupFormEnabled: boolean; // enable/disable popup
+  popupFormTriggerDelay: number; // seconds before showing popup (default: 60)
+  popupFormPosition: "bottom-right" | "bottom-left" | "center"; // popup position
+  popupFormTitle: string;
+  popupFormSubtitle: string;
+  popupFormDescription: string;
+  popupFormButtonText: string;
+  popupFormSuccessMessage: string;
+  
+  // Metadata
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }

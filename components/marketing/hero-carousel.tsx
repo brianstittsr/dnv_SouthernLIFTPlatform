@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getHeroSlides } from "@/lib/firebase-hero";
 import { listHeroBackgrounds, preloadImage } from "@/lib/firebase-hero-storage";
+import { getHomePageSettings } from "@/lib/firebase-home-settings";
 import { toast } from "sonner";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { PRODUCTS } from "@/lib/types/cart";
@@ -151,6 +152,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   const [resolvedBgImages, setResolvedBgImages] = useState<Record<number, string>>({});
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [configuredSpeed, setConfiguredSpeed] = useState(autoPlayInterval);
 
   // Load slides and gallery images from Firebase on mount
   useEffect(() => {
@@ -158,7 +160,18 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       loadSlidesFromFirebase();
     }
     loadGalleryImages();
+    loadSettings();
   }, [propSlides]);
+
+  const loadSettings = async () => {
+    try {
+      const settings = await getHomePageSettings();
+      setConfiguredSpeed(settings.heroSliderSpeed);
+    } catch (error) {
+      console.error("Failed to load home page settings:", error);
+      setConfiguredSpeed(autoPlayInterval);
+    }
+  };
 
   // Preload all background images to prevent layout shift
   useEffect(() => {
@@ -260,9 +273,9 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   useEffect(() => {
     if (!isAutoPlaying || publishedSlides.length <= 1) return;
     
-    const interval = setInterval(goToNext, autoPlayInterval);
+    const interval = setInterval(goToNext, configuredSpeed);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, autoPlayInterval, goToNext, publishedSlides.length]);
+  }, [isAutoPlaying, configuredSpeed, goToNext, publishedSlides.length]);
 
   if (publishedSlides.length === 0) {
     return null;
