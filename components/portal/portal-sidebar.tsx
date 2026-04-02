@@ -316,6 +316,11 @@ const adminItems = [
     icon: MessageSquare,
   },
   {
+    title: "Home Page Settings",
+    href: "/portal/admin/home-settings",
+    icon: Settings,
+  },
+  {
     title: "Events",
     href: "/portal/admin/events",
     icon: CalendarClock,
