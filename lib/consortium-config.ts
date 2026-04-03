@@ -45,7 +45,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     subtitle: "CMMC Certification & Compliance",
     description: "Get CMMC certified and prepared for Department of Defense contracts. Our expert-led training ensures you meet all cybersecurity and compliance requirements.",
     ctaText: "Get DoD Ready",
-    ctaLink: "/training",
+    ctaLink: "/cmmc-training",
     backgroundImage: "/carousel/pexels-jibarofoto-2774556.webp",
     backgroundColor: "bg-gradient-to-br from-[#701a75]/95 via-[#86198f]/90 to-[#701a75]/95",
     textColor: "light",

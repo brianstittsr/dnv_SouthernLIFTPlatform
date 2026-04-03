@@ -198,7 +198,7 @@ export default function FivePillarsPage() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20 text-lg px-8" asChild>
-                <Link href="/training">
+                <Link href="/cmmc-training">
                   Get CMMC Certified
                 </Link>
               </Button>
