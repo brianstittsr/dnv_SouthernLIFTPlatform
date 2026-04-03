@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { amount, customerInfo, productName } = body;
+    const { amount, customerInfo, productName, customerId, subscriptionId } = body;
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
@@ -17,23 +17,37 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Build metadata
+    const metadata: Record<string, string> = {
+      productName: productName || "CMMC Cohort",
+      customerName: customerInfo ? `${customerInfo.firstName} ${customerInfo.lastName}` : "",
+      customerEmail: customerInfo?.email || "",
+      customerCompany: customerInfo?.company || "",
+    };
+
+    if (subscriptionId) {
+      metadata.subscriptionId = subscriptionId;
+    }
+
     // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
       amount: Math.round(amount * 100), // Convert to cents
       currency: "usd",
       automatic_payment_methods: {
         enabled: true,
         allow_redirects: "never", // Disable redirect-based payment methods for embedded form
       },
-      metadata: {
-        productName: productName || "CMMC Cohort",
-        customerName: customerInfo ? `${customerInfo.firstName} ${customerInfo.lastName}` : "",
-        customerEmail: customerInfo?.email || "",
-        customerCompany: customerInfo?.company || "",
-      },
+      metadata,
       description: productName || "CMMC Cohort Registration",
       receipt_email: customerInfo?.email,
-    });
+    };
+
+    // If we have a customerId, attach it to the payment intent
+    if (customerId) {
+      paymentIntentParams.customer = customerId;
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create(paymentIntentParams);
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,

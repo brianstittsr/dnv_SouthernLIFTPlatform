@@ -330,6 +330,7 @@ export default function CheckoutCartPage() {
                 productName={items.map((item) => item.product.name).join(", ")}
                 priceId={priceId}
                 isRecurring={isConsortiumMembership}
+                userEmail={userEmail}
               />
             </CardContent>
           </Card>
