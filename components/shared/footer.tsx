@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Twitter, Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Linkedin, Twitter, Facebook, Instagram, Mail, Phone, MapPin, Youtube } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
@@ -22,7 +22,9 @@ const footerLinks = {
   resources: [
     { title: "Blog", href: "/blog" },
     { title: "FAQ", href: "/faq", hidden: true },
-    { title: "Events", href: "/events" },
+    { title: "Events", href: "/events", hidden: true },
+    { title: "News", href: "/news", hidden: true },
+    { title: "Media & Video", href: "/media", hidden: true },
     { title: "membership", href: "/membership", hidden: true },
   ],
   legal: [
@@ -40,7 +42,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1 space-y-4">
             <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-white">Strategic Value Plus</span>
+              <span className="text-xl font-bold text-white">KDM & Associates</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
               Helping businesses win government contracts through 
@@ -50,14 +52,8 @@ export function Footer() {
               <Link href="https://www.linkedin.com/company/kdmassoc" className="text-gray-400 hover:text-primary transition-colors">
                 <Linkedin className="h-5 w-5" />
               </Link>
-              <Link href="https://www.twitter.com/mbdafpcenter" className="text-gray-400 hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-              </Link>
-              <Link href="https://www.facebook.com/mbdafpcenter/" className="text-gray-400 hover:text-primary transition-colors">
-                <Facebook className="h-5 w-5" />
-              </Link>
-              <Link href="https://www.instagram.com/mbdafpcenter" className="text-gray-400 hover:text-primary transition-colors">
-                <Instagram className="h-5 w-5" />
+              <Link href="https://www.youtube.com/@KDMConsortium" className="text-gray-400 hover:text-primary transition-colors">
+                <Youtube className="h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -113,9 +109,9 @@ export function Footer() {
                 <span>300 New Jersey Avenue NW, Washington, DC 20001</span>
               </li>
               <li>
-                <Link href="mailto:info@kdm-assoc.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+                <Link href="mailto:kmoore@kdm-assoc.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
                   <Mail className="h-4 w-4" />
-                  info@kdm-assoc.com
+                  kmoore@kdm-assoc.com
                 </Link>
               </li>
               <li>

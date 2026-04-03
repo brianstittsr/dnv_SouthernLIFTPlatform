@@ -371,12 +371,12 @@ export function FivePillarsSection() {
                 Helping qualified teams pursue and win opportunities that support public priorities, national resilience, and long-term economic strength.
               </p>
               <button 
-                onClick={() => openVideoModal('https://www.youtube.com/watch?v=lnLlzxAhXUk', 'Government Contracting Video')}
+                onClick={() => openVideoModal('https://youtu.be/YUm-heZ04Dc?si=jOsWLnWEMGu3TtV_', 'Government Contracting Video')}
                 className="inline-block relative group"
               >
                 <div className="relative overflow-hidden rounded-lg shadow-md transition-transform group-hover:scale-105 w-48">
                   <img 
-                    src="https://img.youtube.com/vi/lnLlzxAhXUk/hqdefault.jpg" 
+                    src="https://img.youtube.com/vi/YUm-heZ04Dc/hqdefault.jpg" 
                     alt="Government Contracting Video"
                     className="w-full h-auto"
                   />

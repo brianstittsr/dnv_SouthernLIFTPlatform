@@ -128,7 +128,7 @@ const DEFAULT_FORM: EventFormData = {
   venueCountry: "USA",
   venueMapUrl: "",
   organizerName: "KDM & Associates",
-  organizerEmail: "info@kdm-assoc.com",
+  organizerEmail: "kmoore@kdm-assoc.com",
   organizerPhone: "",
   featuredImage: "",
   bannerImage: "",

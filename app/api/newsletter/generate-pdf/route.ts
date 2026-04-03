@@ -224,9 +224,9 @@ function generateNewsletterHTML(newsletter: any): string {
   <div class="footer">
     <p><strong>KDM & Associates</strong></p>
     <p>Empowering Diverse Businesses in Federal Contracting</p>
-    <p>www.kdm-assoc.com | info@kdm-assoc.com</p>
+    <p>www.kdm-assoc.com | kmoore@kdm-assoc.com</p>
     <p style="margin-top: 20px; font-size: 10px;">
-      © ${new Date().getFullYear()} KDM & Associates. All rights reserved.
+      ${new Date().getFullYear()} KDM & Associates. All rights reserved.
     </p>
   </div>
 

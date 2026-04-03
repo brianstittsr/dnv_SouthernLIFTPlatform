@@ -341,11 +341,9 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <Link
-                        href="mailto:info@kdm-assoc.com"
-                        className="text-muted-foreground hover:text-primary"
-                      >
-                        info@kdm-assoc.com
+                      <Link href="mailto:kmoore@kdm-assoc.com" className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+                        <Mail className="h-5 w-5" />
+                        kmoore@kdm-assoc.com
                       </Link>
                     </div>
                   </div>

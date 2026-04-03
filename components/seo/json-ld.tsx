@@ -36,7 +36,7 @@ export function OrganizationJsonLd() {
       },
       {
         "@type": "ContactPoint",
-        email: "info@kdm-assoc.com",
+        email: "kmoore@kdm-assoc.com",
         contactType: "customer service",
       },
     ],

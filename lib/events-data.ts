@@ -100,7 +100,7 @@ This year's summit focuses on Puerto Rico's strategic position as a hub for sust
     price: 299,
     featuredImage: '/images/events/iaeoz-summit-2025.jpg',
     organizer: 'KDM & Associates',
-    contactEmail: 'info@kdm-assoc.com',
+    contactEmail: "kmoore@kdm-assoc.com",
     contactPhone: '(202) 555-0100',
     tags: ['Agriculture', 'Energy', 'Opportunity Zones', 'Puerto Rico', 'Innovation', 'Federal Contracting'],
     agenda: [
@@ -333,7 +333,7 @@ Attendees learned about:
     price: 299,
     featuredImage: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
     organizer: 'KDM & Associates',
-    contactEmail: 'info@kdm-assoc.com',
+    contactEmail: "kmoore@kdm-assoc.com",
     contactPhone: '(202) 555-0100',
     tags: ['Agriculture', 'Energy', 'Opportunity Zones', 'Puerto Rico', 'Innovation', 'Federal Contracting'],
     speakers: [
