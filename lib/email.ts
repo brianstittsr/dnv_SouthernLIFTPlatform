@@ -284,6 +284,9 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
     } else {
       // Fall back to basic auth
       console.log('Using basic authentication for SMTP');
+      console.log(`SMTP Host: ${smtpHost}, Port: ${smtpPort}, Secure: ${smtpSecure}`);
+      console.log(`Username: ${smtpUsername ? smtpUsername.substring(0, 5) + '...' : 'NOT SET'}`);
+      
       transporter = nodemailer.createTransport({
         host: smtpHost,
         port: smtpPort,
@@ -293,9 +296,10 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
           pass: smtpPassword,
         },
         tls: {
-          ciphers: 'SSLv3',
           rejectUnauthorized: false,
+          minVersion: 'TLSv1.2',
         },
+        connectionUrl: `smtp://${smtpUsername}:${smtpPassword}@${smtpHost}:${smtpPort}`,
       } as any);
     }
 
