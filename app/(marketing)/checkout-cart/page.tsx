@@ -342,6 +342,7 @@ export default function CheckoutCartPage() {
             <CardContent>
               {clientSecret ? (
                 <StripePaymentForm
+                  key={clientSecret}
                   clientSecret={clientSecret}
                   amount={total}
                   productName={items.map((item) => item.product.name).join(", ")}
