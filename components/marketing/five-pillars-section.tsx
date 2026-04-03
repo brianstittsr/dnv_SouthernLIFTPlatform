@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PlayCircle } from "lucide-react";
 import { VideoModal, extractYouTubeVideoId } from "@/components/video/video-modal";
@@ -76,143 +77,95 @@ export function FivePillarsSection() {
                 <div className="h-1 w-full bg-gradient-to-r from-transparent via-white to-transparent mt-2"></div>
               </div>
 
-              {/* Five Greek Pillars */}
-              <div className="flex items-end justify-center gap-3 mb-8">
+              {/* Five Classical Pillars */}
+              <div className="flex items-end justify-center gap-6 mb-8">
                 {/* Pillar 1 - Government Contracting */}
                 <div 
-                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
                 >
-                  {/* Capital (Corinthian style top) */}
-                  <div className="bg-teal-600 border-2 border-white h-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  <div className="relative h-48 w-20 mb-2">
+                    <Image
+                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      alt="Government Contracting Pillar"
+                      fill
+                      className="object-cover rounded-sm"
+                      priority
+                    />
                   </div>
-                  {/* Shaft (fluted column) */}
-                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
-                    {/* Fluting effect */}
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
-                    </div>
-                  </div>
-                  {/* Base */}
-                  <div className="bg-teal-600 border-2 border-white h-6">
-                    <div className="h-2 bg-white opacity-20"></div>
-                  </div>
-                  <div className="text-center mt-3">
+                  <div className="text-center">
                     <p className="text-white font-bold text-xs leading-tight">Government<br />Contracting</p>
                   </div>
                 </div>
 
                 {/* Pillar 2 - Manufacturing */}
                 <div 
-                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
                 >
-                  <div className="bg-amber-500 border-2 border-white h-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600"></div>
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  <div className="relative h-48 w-20 mb-2">
+                    <Image
+                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      alt="Manufacturing Pillar"
+                      fill
+                      className="object-cover rounded-sm"
+                    />
                   </div>
-                  <div className="bg-amber-600 border-x-2 border-white h-40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500"></div>
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
-                    </div>
-                  </div>
-                  <div className="bg-amber-500 border-2 border-white h-6">
-                    <div className="h-2 bg-white opacity-20"></div>
-                  </div>
-                  <div className="text-center mt-3">
+                  <div className="text-center">
                     <p className="text-white font-bold text-xs leading-tight">Manufacturing</p>
                   </div>
                 </div>
 
                 {/* Pillar 3 - Critical Minerals */}
                 <div 
-                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
                 >
-                  <div className="bg-teal-600 border-2 border-white h-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  <div className="relative h-48 w-20 mb-2">
+                    <Image
+                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      alt="Critical Minerals Pillar"
+                      fill
+                      className="object-cover rounded-sm"
+                    />
                   </div>
-                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
-                    </div>
-                  </div>
-                  <div className="bg-teal-600 border-2 border-white h-6">
-                    <div className="h-2 bg-white opacity-20"></div>
-                  </div>
-                  <div className="text-center mt-3">
+                  <div className="text-center">
                     <p className="text-white font-bold text-xs leading-tight">Critical<br />Minerals</p>
                   </div>
                 </div>
 
                 {/* Pillar 4 - Opportunity Zones */}
                 <div 
-                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
                 >
-                  <div className="bg-teal-600 border-2 border-white h-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-teal-500 to-teal-700"></div>
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  <div className="relative h-48 w-20 mb-2">
+                    <Image
+                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      alt="Opportunity Zones Pillar"
+                      fill
+                      className="object-cover rounded-sm"
+                    />
                   </div>
-                  <div className="bg-teal-700 border-x-2 border-white h-40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-teal-700 to-teal-600"></div>
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
-                    </div>
-                  </div>
-                  <div className="bg-teal-600 border-2 border-white h-6">
-                    <div className="h-2 bg-white opacity-20"></div>
-                  </div>
-                  <div className="text-center mt-3">
+                  <div className="text-center">
                     <p className="text-white font-bold text-xs leading-tight">Opportunity<br />Zones</p>
                   </div>
                 </div>
 
                 {/* Pillar 5 - Access to Capital */}
                 <div 
-                  className={`flex-1 cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
                 >
-                  <div className="bg-amber-500 border-2 border-white h-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600"></div>
-                    <div className="absolute top-0 left-0 right-0 h-2 bg-white opacity-20"></div>
+                  <div className="relative h-48 w-20 mb-2">
+                    <Image
+                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      alt="Access to Capital Pillar"
+                      fill
+                      className="object-cover rounded-sm"
+                    />
                   </div>
-                  <div className="bg-amber-600 border-x-2 border-white h-40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500"></div>
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[20%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[40%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[60%]"></div>
-                      <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white to-transparent ml-[80%]"></div>
-                    </div>
-                  </div>
-                  <div className="bg-amber-500 border-2 border-white h-6">
-                    <div className="h-2 bg-white opacity-20"></div>
-                  </div>
-                  <div className="text-center mt-3">
+                  <div className="text-center">
                     <p className="text-white font-bold text-xs leading-tight">Access to<br />Capital</p>
                   </div>
                 </div>
