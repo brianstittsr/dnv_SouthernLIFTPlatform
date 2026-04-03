@@ -7,6 +7,8 @@ import { StripePaymentForm } from "@/components/checkout/stripe-payment-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Trash2, ShoppingCart, ArrowLeft, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -19,11 +21,52 @@ export default function CheckoutCartPage() {
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [priceId, setPriceId] = useState<string | null>(null);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   // Check if this is a KDM Consortium Membership (recurring billing)
   const isConsortiumMembership = items.some(
     (item) => item.product.id === "kdm-consortium-membership"
   );
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!userEmail.includes("@")) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    setIsLoadingPayment(true);
+
+    try {
+      const response = await fetch("/api/checkout/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userEmail,
+          priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to create subscription");
+      }
+
+      const { clientSecret: secret, subscriptionId: subId } = await response.json();
+      setClientSecret(secret);
+      setSubscriptionId(subId);
+      setPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || null);
+      setShowEmailForm(false);
+      setShowPaymentForm(true);
+    } catch (error) {
+      console.error("Subscription creation error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to create subscription");
+    } finally {
+      setIsLoadingPayment(false);
+    }
+  };
 
   const handleProceedToPayment = async () => {
     if (items.length === 0) {
@@ -31,33 +74,14 @@ export default function CheckoutCartPage() {
       return;
     }
 
-    setIsLoadingPayment(true);
+    if (isConsortiumMembership) {
+      // For recurring billing, show email form first
+      setShowEmailForm(true);
+    } else {
+      // For one-time payments, create a payment intent
+      setIsLoadingPayment(true);
 
-    try {
-      if (isConsortiumMembership) {
-        // For recurring billing, create a subscription
-        const response = await fetch("/api/checkout/create-subscription", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "", // Will be provided in the form
-            priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
-          }),
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || "Failed to create subscription");
-        }
-
-        const { clientSecret: secret, subscriptionId: subId } = await response.json();
-        setClientSecret(secret);
-        setSubscriptionId(subId);
-        setPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || null);
-      } else {
-        // For one-time payments, create a payment intent
+      try {
         const response = await fetch("/api/checkout/create-payment-intent", {
           method: "POST",
           headers: {
@@ -76,13 +100,13 @@ export default function CheckoutCartPage() {
 
         const { clientSecret: secret } = await response.json();
         setClientSecret(secret);
+        setShowPaymentForm(true);
+      } catch (error) {
+        console.error("Payment initialization error:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
+      } finally {
+        setIsLoadingPayment(false);
       }
-
-      setShowPaymentForm(true);
-    } catch (error) {
-      console.error("Payment initialization error:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
-      setIsLoadingPayment(false);
     }
   };
 
@@ -209,7 +233,39 @@ export default function CheckoutCartPage() {
         </div>
 
         {/* Payment & Registration Section */}
-        {!showPaymentForm ? (
+        {showEmailForm ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Enter Your Email</CardTitle>
+              <CardDescription>
+                We'll use this email to set up your monthly KDM Consortium Membership subscription
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleEmailSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={userEmail}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={isLoadingPayment}
+                >
+                  {isLoadingPayment ? "Setting up subscription..." : "Continue to Payment"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        ) : !showPaymentForm ? (
           <Card>
             <CardHeader>
               <CardTitle>Ready to Checkout?</CardTitle>
