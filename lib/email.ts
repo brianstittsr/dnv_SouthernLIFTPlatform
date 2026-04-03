@@ -41,6 +41,7 @@ interface EmailResponse {
  */
 function getEmailProvider(): EmailProvider {
   // Azure SMTP (preferred - supports both OAuth and basic auth)
+  // Note: For Office 365 accounts, use smtp.office365.com instead of smtp.azurecomm.net
   if (process.env.AZURE_SMTP_HOST || process.env.AZURE_SMTP_USERNAME) {
     return 'azure_smtp';
   }
