@@ -60,8 +60,30 @@ export default function CheckoutCartPage() {
         throw new Error(error.error || "Failed to create subscription");
       }
 
-      const { clientSecret: secret, subscriptionId: subId } = await response.json();
-      setClientSecret(secret);
+      const { clientSecret: secret, subscriptionId: subId, customerId } = await response.json();
+      
+      // If we have a subscription but no clientSecret, create a payment intent
+      if (subId && !secret) {
+        console.log("Subscription created but no clientSecret, creating payment intent");
+        const piResponse = await fetch("/api/checkout/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: total,
+            productName: "KDM Consortium Membership",
+            customerId,
+            subscriptionId: subId,
+          }),
+        });
+
+        if (piResponse.ok) {
+          const piData = await piResponse.json();
+          setClientSecret(piData.clientSecret);
+        }
+      } else {
+        setClientSecret(secret);
+      }
+
       setSubscriptionId(subId);
       setPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || null);
       setShowEmailForm(false);

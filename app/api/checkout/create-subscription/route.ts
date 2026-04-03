@@ -68,10 +68,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // If no clientSecret yet, the subscription might be in pending state
+    // Return the subscription ID and customer ID - payment will be collected later
+    if (!clientSecret) {
+      console.warn("No client secret in subscription response, subscription may be pending payment");
+    }
+
     return NextResponse.json({
       subscriptionId: subscription.id,
-      clientSecret,
+      clientSecret: clientSecret || null,
       customerId: customer.id,
+      status: subscription.status,
     });
   } catch (error) {
     console.error("Subscription creation error:", error);
