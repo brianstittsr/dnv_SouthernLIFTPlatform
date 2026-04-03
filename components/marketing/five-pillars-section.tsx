@@ -86,7 +86,7 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
+                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                       alt="Government Contracting Pillar"
                       fill
                       className="object-contain"
@@ -105,7 +105,7 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
+                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                       alt="Manufacturing Pillar"
                       fill
                       className="object-contain"
@@ -123,7 +123,7 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
+                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                       alt="Critical Minerals Pillar"
                       fill
                       className="object-contain"
@@ -141,7 +141,7 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
+                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                       alt="Opportunity Zones Pillar"
                       fill
                       className="object-contain"
@@ -159,7 +159,7 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
+                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                       alt="Access to Capital Pillar"
                       fill
                       className="object-contain"
