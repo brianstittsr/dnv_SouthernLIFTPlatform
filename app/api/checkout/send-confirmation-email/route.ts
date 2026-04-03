@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase-admin";
-import { Timestamp } from "firebase-admin/firestore";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,11 +66,7 @@ export async function POST(req: NextRequest) {
       </div>
     `;
 
-    await db.collection("emailQueue").add({
-      to: [email],
-      subject: "Payment Confirmation - KDM Consortium Membership",
-      htmlBody: emailContent,
-      textBody: `
+    const textContent = `
 Payment Confirmation
 
 Dear ${firstName} ${lastName},
@@ -95,26 +90,32 @@ Log in to your account: ${process.env.NEXT_PUBLIC_APP_URL}/login
 If you have any questions about your membership or need support, please contact us at kmoore@kdm-assoc.com
 
 © 2024 KDM & Associates. All rights reserved.
-      `,
-      createdAt: Timestamp.now(),
-      status: "pending",
-      type: "payment_confirmation",
-      metadata: {
-        paymentIntentId,
-        email,
-        firstName,
-        lastName,
-      },
+    `;
+
+    // Send email immediately
+    const emailResult = await sendEmail({
+      to: email,
+      subject: "Payment Confirmation - KDM Consortium Membership",
+      html: emailContent,
+      text: textContent,
     });
 
+    if (!emailResult.success) {
+      console.error("Failed to send confirmation email:", emailResult.error);
+      return NextResponse.json(
+        { error: emailResult.error || "Failed to send confirmation email" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
-      message: "Confirmation email queued successfully",
-      emailId: paymentIntentId,
+      message: "Confirmation email sent successfully",
+      messageId: emailResult.messageId,
     });
   } catch (error) {
-    console.error("Error queuing confirmation email:", error);
+    console.error("Error sending confirmation email:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to queue email" },
+      { error: error instanceof Error ? error.message : "Failed to send email" },
       { status: 500 }
     );
   }
