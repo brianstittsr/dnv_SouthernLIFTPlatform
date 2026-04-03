@@ -349,12 +349,18 @@ export default function CheckoutCartPage() {
                   isRecurring={isConsortiumMembership}
                   userEmail={userEmail}
                 />
-              ) : (
+              ) : isLoadingPayment ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                     <p className="text-muted-foreground">Setting up your payment form...</p>
                   </div>
+                </div>
+              ) : (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-sm text-yellow-900">
+                    <strong>Payment form is ready.</strong> If you don't see the payment fields below, please refresh the page.
+                  </p>
                 </div>
               )}
             </CardContent>
