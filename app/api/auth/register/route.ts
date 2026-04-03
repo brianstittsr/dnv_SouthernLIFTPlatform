@@ -10,23 +10,47 @@ import { assignUserRole } from "@/lib/rbac";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, password, companyName, industry, userType } = body;
+    const { 
+      email, 
+      password, 
+      firstName, 
+      lastName, 
+      companyName, 
+      industry, 
+      userType,
+      membershipType,
+      paymentIntentId
+    } = body;
 
-    // Validate required fields
-    if (!email || !password || !companyName || !industry || !userType) {
-      return NextResponse.json(
-        { error: "Missing required fields: email, password, companyName, industry, userType" },
-        { status: 400 }
-      );
+    // Determine if this is a consortium membership registration or traditional registration
+    const isConsortiumMembership = membershipType === "kdm-consortium";
+    
+    // Validate required fields based on registration type
+    if (isConsortiumMembership) {
+      if (!email || !password || !firstName || !lastName) {
+        return NextResponse.json(
+          { error: "Missing required fields: email, password, firstName, lastName" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!email || !password || !companyName || !industry || !userType) {
+        return NextResponse.json(
+          { error: "Missing required fields: email, password, companyName, industry, userType" },
+          { status: 400 }
+        );
+      }
     }
 
-    // Validate userType
-    const validUserTypes = ["sme", "buyer", "consortium_partner", "qa_reviewer", "cmmc_instructor", "marketing_staff"];
-    if (!validUserTypes.includes(userType)) {
-      return NextResponse.json(
-        { error: "Invalid userType. Must be one of: " + validUserTypes.join(", ") },
-        { status: 400 }
-      );
+    // Validate userType (skip for consortium membership)
+    if (!isConsortiumMembership) {
+      const validUserTypes = ["sme", "buyer", "consortium_partner", "qa_reviewer", "cmmc_instructor", "marketing_staff"];
+      if (!validUserTypes.includes(userType)) {
+        return NextResponse.json(
+          { error: "Invalid userType. Must be one of: " + validUserTypes.join(", ") },
+          { status: 400 }
+        );
+      }
     }
 
     // Validate email format
@@ -47,70 +71,89 @@ export async function POST(req: NextRequest) {
     }
 
     // Create Firebase Auth user
+    const displayName = isConsortiumMembership 
+      ? `${firstName} ${lastName}` 
+      : companyName;
+    
     const userRecord = await auth.createUser({
       email,
       password,
-      displayName: companyName,
+      displayName,
       emailVerified: false,
     });
 
-    // Map userType to role and metadata
-    const roleMap: Record<string, { role: string; roleTag: string; label: string; prefix: string }> = {
-      sme: { role: "sme_user", roleTag: "SVP SME User (Supplier)", label: "SME / Supplier", prefix: "sme" },
-      buyer: { role: "buyer", roleTag: "SVP Buyer / Buyer (Government)", label: "Buyer / Government", prefix: "buyer" },
-      consortium_partner: { role: "consortium_partner", roleTag: "SVP Consortium Partner", label: "Consortium Partner", prefix: "partner" },
-      qa_reviewer: { role: "qa_reviewer", roleTag: "SVP QA Reviewer", label: "QA Reviewer", prefix: "qa" },
-      cmmc_instructor: { role: "cmmc_instructor", roleTag: "SVP CMMC Instructor", label: "CMMC Instructor", prefix: "instructor" },
-      marketing_staff: { role: "marketing_staff", roleTag: "SVP Marketing Staff", label: "Marketing Staff", prefix: "marketing" },
-    };
-    
-    const roleConfig = roleMap[userType];
-    const role = roleConfig.role as any;
-    const roleTag = roleConfig.roleTag;
-    const userTypeLabel = roleConfig.label;
+    // Determine role and metadata based on registration type
+    let role: string;
+    let roleTag: string;
+    let userTypeLabel: string;
+    let prefix: string;
+
+    if (isConsortiumMembership) {
+      role = "consortium_member";
+      roleTag = "KDM Consortium Member";
+      userTypeLabel = "KDM Consortium Member";
+      prefix = "member";
+    } else {
+      const roleMap: Record<string, { role: string; roleTag: string; label: string; prefix: string }> = {
+        sme: { role: "sme_user", roleTag: "SVP SME User (Supplier)", label: "SME / Supplier", prefix: "sme" },
+        buyer: { role: "buyer", roleTag: "SVP Buyer / Buyer (Government)", label: "Buyer / Government", prefix: "buyer" },
+        consortium_partner: { role: "consortium_partner", roleTag: "SVP Consortium Partner", label: "Consortium Partner", prefix: "partner" },
+        qa_reviewer: { role: "qa_reviewer", roleTag: "SVP QA Reviewer", label: "QA Reviewer", prefix: "qa" },
+        cmmc_instructor: { role: "cmmc_instructor", roleTag: "SVP CMMC Instructor", label: "CMMC Instructor", prefix: "instructor" },
+        marketing_staff: { role: "marketing_staff", roleTag: "SVP Marketing Staff", label: "Marketing Staff", prefix: "marketing" },
+      };
+      
+      const roleConfig = roleMap[userType!];
+      role = roleConfig.role;
+      roleTag = roleConfig.roleTag;
+      userTypeLabel = roleConfig.label;
+      prefix = roleConfig.prefix;
+    }
     
     // Generate tenant and user IDs
     const tenantId = `tenant_${userRecord.uid}`;
-    const entityId = `${roleConfig.prefix}_${userRecord.uid}`;
+    const entityId = `${prefix}_${userRecord.uid}`;
 
     // Create user record in Firestore
-    const userData = {
+    const userData: Record<string, any> = {
       id: entityId,
       tenantId,
       userId: userRecord.uid,
       email,
-      companyName,
-      industry,
-      userType,
       role,
       roleTag,
-      
-      // Profile information
-      description: "",
-      website: "",
-      logo: "",
-      
-      // Certifications
-      certifications: [],
-      
-      // Capabilities
-      capabilities: [],
-      serviceOfferings: [],
-      
-      // Tags for CRM/tracking
-      tags: ["New Lead"],
-      
-      // Subscription
-      subscriptionTier: "free",
-      subscriptionStatus: "active",
-      
-      // Profile completeness
-      profileCompleteness: 20, // Basic info only
-      
-      // Timestamps
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
     };
+
+    // Add consortium-specific fields
+    if (isConsortiumMembership) {
+      userData.firstName = firstName;
+      userData.lastName = lastName;
+      userData.membershipType = "kdm-consortium";
+      userData.membershipStatus = "active";
+      userData.paymentIntentId = paymentIntentId;
+      userData.tags = ["KDM Consortium Member", "Paid Member"];
+      userData.subscriptionTier = "consortium";
+      userData.subscriptionStatus = "active";
+      userData.profileCompleteness = 40;
+    } else {
+      userData.companyName = companyName;
+      userData.industry = industry;
+      userData.userType = userType;
+      userData.description = "";
+      userData.website = "";
+      userData.logo = "";
+      userData.certifications = [];
+      userData.capabilities = [];
+      userData.serviceOfferings = [];
+      userData.tags = ["New Lead"];
+      userData.subscriptionTier = "free";
+      userData.subscriptionStatus = "active";
+      userData.profileCompleteness = 20;
+    }
+
+    // Common fields
+    userData.createdAt = Timestamp.now();
+    userData.updatedAt = Timestamp.now();
 
     await db.collection("users").doc(userRecord.uid).set(userData);
 

@@ -99,134 +99,120 @@ export default function CheckoutCartPage() {
           </Button>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingCart className="h-5 w-5" />
-                  Shopping Cart ({items.length} {items.length === 1 ? "item" : "items"})
-                </CardTitle>
-                <CardDescription>Review your selected products</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.product.id}>
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{item.product.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {item.product.description}
-                        </p>
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                          {item.product.features.slice(0, 4).map((feature, idx) => (
-                            <div key={idx} className="flex items-start gap-2 text-sm">
-                              <span className="text-primary">✓</span>
-                              <span className="text-muted-foreground">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                        {item.product.features.length > 4 && (
-                          <p className="text-sm text-muted-foreground">
-                            + {item.product.features.length - 4} more features
-                          </p>
-                        )}
-                      </div>
-                      <div className="text-right space-y-2">
-                        <div className="text-2xl font-bold">
-                          {formatPrice(item.product.price)}
-                        </div>
-                        {item.product.billingPeriod && item.product.billingPeriod !== 'one-time' && (
-                          <div className="text-sm text-muted-foreground">
-                            per {item.product.billingPeriod === 'monthly' ? 'month' : 'year'}
+        {/* Shopping Cart */}
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5" />
+                Shopping Cart ({items.length} {items.length === 1 ? "item" : "items"})
+              </CardTitle>
+              <CardDescription>Review your selected products</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {items.map((item) => (
+                <div key={item.product.id}>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{item.product.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {item.product.description}
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        {item.product.features.slice(0, 4).map((feature, idx) => (
+                          <div key={idx} className="flex items-start gap-2 text-sm">
+                            <span className="text-primary">✓</span>
+                            <span className="text-muted-foreground">{feature}</span>
                           </div>
-                        )}
-                        {item.product.billingPeriod === 'one-time' && (
-                          <div className="text-sm text-muted-foreground">one-time payment</div>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeItem(item.product.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Remove
-                        </Button>
+                        ))}
                       </div>
+                      {item.product.features.length > 4 && (
+                        <p className="text-sm text-muted-foreground">
+                          + {item.product.features.length - 4} more features
+                        </p>
+                      )}
                     </div>
-                    <Separator className="mt-4" />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Order Summary & Payment */}
-          <div className="lg:col-span-1 space-y-4">
-            {!showPaymentForm ? (
-              <Card className="sticky top-4">
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    {items.map((item) => (
-                      <div key={item.product.id} className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{item.product.name}</span>
-                        <span className="font-medium">{formatPrice(item.product.price)}</span>
+                    <div className="text-right space-y-2">
+                      <div className="text-2xl font-bold">
+                        {formatPrice(item.product.price)}
                       </div>
-                    ))}
+                      {item.product.billingPeriod && item.product.billingPeriod !== 'one-time' && (
+                        <div className="text-sm text-muted-foreground">
+                          per {item.product.billingPeriod === 'monthly' ? 'month' : 'year'}
+                        </div>
+                      )}
+                      {item.product.billingPeriod === 'one-time' && (
+                        <div className="text-sm text-muted-foreground">one-time payment</div>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeItem(item.product.id)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    </div>
                   </div>
-                  <Separator />
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>{formatPrice(total)}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Secure payment processing powered by Stripe
-                  </p>
-                </CardContent>
-                <CardFooter className="flex flex-col gap-3">
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    onClick={handleProceedToPayment}
-                    disabled={isLoadingPayment}
-                  >
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    {isLoadingPayment ? "Loading..." : "Proceed to Checkout"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={clearCart}
-                    disabled={isLoadingPayment}
-                  >
-                    Clear Cart
-                  </Button>
-                </CardFooter>
-              </Card>
-            ) : clientSecret ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Payment Details</CardTitle>
-                  <CardDescription>
-                    Complete your payment to finalize your order
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <StripePaymentForm
-                    clientSecret={clientSecret}
-                    amount={total}
-                    productName={items.map((item) => item.product.name).join(", ")}
-                  />
-                </CardContent>
-              </Card>
-            ) : null}
-          </div>
+                  <Separator className="mt-4" />
+                </div>
+              ))}
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                variant="outline"
+                onClick={clearCart}
+                disabled={isLoadingPayment}
+              >
+                Clear Cart
+              </Button>
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground mb-2">Order Total</div>
+                <div className="text-2xl font-bold">{formatPrice(total)}</div>
+              </div>
+            </CardFooter>
+          </Card>
         </div>
+
+        {/* Payment & Registration Section */}
+        {!showPaymentForm ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Ready to Checkout?</CardTitle>
+              <CardDescription>
+                Click below to proceed with payment and create your KDM Consortium account
+              </CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button
+                className="w-full"
+                size="lg"
+                onClick={handleProceedToPayment}
+                disabled={isLoadingPayment}
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                {isLoadingPayment ? "Loading..." : "Proceed to Checkout"}
+              </Button>
+            </CardFooter>
+          </Card>
+        ) : clientSecret ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment Details</CardTitle>
+              <CardDescription>
+                Complete your payment to finalize your order
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <StripePaymentForm
+                clientSecret={clientSecret}
+                amount={total}
+                productName={items.map((item) => item.product.name).join(", ")}
+              />
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { Timestamp } from "firebase/firestore";
 export type UserRole =
   | "sme_user"
   | "consortium_partner"
+  | "consortium_member"
   | "qa_reviewer"
   | "buyer"
   | "cmmc_instructor"
@@ -23,6 +24,7 @@ export type UserRole =
 export const USER_ROLES: Record<UserRole, string> = {
   sme_user: "SME User",
   consortium_partner: "Consortium Partner",
+  consortium_member: "KDM Consortium Member",
   qa_reviewer: "QA Reviewer",
   buyer: "Buyer",
   cmmc_instructor: "CMMC Instructor",
@@ -106,6 +108,16 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "introduction:request",
     "introduction:read",
     "introduction:respond",
+    "cohort:read",
+    "cohort:enroll",
+    "content:read",
+    "revenue:view_own",
+    "event:read",
+  ],
+  consortium_member: [
+    "proof_pack:read",
+    "introduction:request",
+    "introduction:read",
     "cohort:read",
     "cohort:enroll",
     "content:read",

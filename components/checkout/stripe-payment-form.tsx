@@ -11,7 +11,9 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, CreditCard, Lock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, CreditCard, Lock, User, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -27,9 +29,52 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
   const elements = useElements();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = (): boolean => {
+    if (!formData.firstName.trim()) {
+      toast.error("First name is required");
+      return false;
+    }
+    if (!formData.lastName.trim()) {
+      toast.error("Last name is required");
+      return false;
+    }
+    if (!formData.email.trim() || !formData.email.includes("@")) {
+      toast.error("Valid email is required");
+      return false;
+    }
+    if (!formData.password || formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     if (!stripe || !elements) {
       return;
@@ -50,8 +95,66 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
         toast.error(error.message || "Payment failed");
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        toast.success("Payment successful!");
-        router.push(`/checkout-success?session_id=${paymentIntent.id}`);
+        try {
+          const signupResponse = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              membershipType: "kdm-consortium",
+              paymentIntentId: paymentIntent.id,
+            }),
+          });
+
+          let userId: string | null = null;
+          if (signupResponse.ok) {
+            const signupData = await signupResponse.json();
+            userId = signupData.userId;
+          } else {
+            const error = await signupResponse.json();
+            throw new Error(error.error || "Failed to create account");
+          }
+
+          await fetch("/api/checkout/record-transaction", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              paymentIntentId: paymentIntent.id,
+              userId,
+              email: formData.email,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              amount,
+              currency: "usd",
+              productName,
+              status: "succeeded",
+              membershipType: "kdm-consortium",
+            }),
+          });
+
+          await fetch("/api/checkout/send-confirmation-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: formData.email,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              paymentIntentId: paymentIntent.id,
+              amount,
+              productName,
+            }),
+          });
+
+          toast.success("Account created and payment successful!");
+          router.push(`/checkout-success?session_id=${paymentIntent.id}`);
+        } catch (signupError) {
+          console.error("Account creation error:", signupError);
+          toast.error(signupError instanceof Error ? signupError.message : "Failed to create account");
+          router.push(`/checkout-success?session_id=${paymentIntent.id}`);
+        }
       }
     } catch (err) {
       console.error("Payment error:", err);
@@ -62,6 +165,103 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Account Registration Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Create Your KDM Consortium Account
+          </CardTitle>
+          <CardDescription>
+            Set up your account to access exclusive member benefits
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name *</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="John"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                disabled={isProcessing}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name *</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Doe"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                disabled={isProcessing}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email" className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Email Address *
+            </Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="john@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              disabled={isProcessing}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password *</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleInputChange}
+                disabled={isProcessing}
+                required
+              />
+              <p className="text-xs text-muted-foreground">Min. 8 characters</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password *</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                disabled={isProcessing}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+            <p className="text-sm text-green-900">
+              ✓ You will be tagged as a <strong>KDM Consortium Member</strong> upon successful payment
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -119,7 +319,7 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
         ) : (
           <>
             <Lock className="h-5 w-5 mr-2" />
-            Pay ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            Create Account & Pay ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           </>
         )}
       </Button>
