@@ -86,10 +86,10 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
                       alt="Government Contracting Pillar"
                       fill
-                      className="object-cover rounded-sm"
+                      className="object-contain"
                       priority
                     />
                   </div>
@@ -105,10 +105,10 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
                       alt="Manufacturing Pillar"
                       fill
-                      className="object-cover rounded-sm"
+                      className="object-contain"
                     />
                   </div>
                   <div className="text-center">
@@ -123,10 +123,10 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
                       alt="Critical Minerals Pillar"
                       fill
-                      className="object-cover rounded-sm"
+                      className="object-contain"
                     />
                   </div>
                   <div className="text-center">
@@ -141,10 +141,10 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
                       alt="Opportunity Zones Pillar"
                       fill
-                      className="object-cover rounded-sm"
+                      className="object-contain"
                     />
                   </div>
                   <div className="text-center">
@@ -159,10 +159,10 @@ export function FivePillarsSection() {
                 >
                   <div className="relative h-48 w-20 mb-2">
                     <Image
-                      src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=100&h=300&fit=crop&q=80"
+                      src="https://static.vecteezy.com/system/resources/thumbnails/043/348/794/small_2x/greek-pillar-isolated-on-transparent-background-png.png"
                       alt="Access to Capital Pillar"
                       fill
-                      className="object-cover rounded-sm"
+                      className="object-contain"
                     />
                   </div>
                   <div className="text-center">
