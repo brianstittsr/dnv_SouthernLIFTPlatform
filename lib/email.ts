@@ -252,6 +252,13 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
     const smtpPassword = process.env.AZURE_SMTP_PASSWORD;
     const smtpSecure = process.env.AZURE_SMTP_SECURE === 'true';
 
+    if (!smtpUsername || !smtpPassword) {
+      return {
+        success: false,
+        error: 'SMTP credentials not configured. Set AZURE_SMTP_USERNAME and AZURE_SMTP_PASSWORD in .env.local',
+      };
+    }
+
     // Try OAuth2 first
     const accessToken = await getMicrosoftAccessToken();
     
@@ -273,8 +280,8 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
           ciphers: 'SSLv3',
           rejectUnauthorized: false,
         },
-      });
-    } else if (smtpUsername && smtpPassword) {
+      } as any);
+    } else {
       // Fall back to basic auth
       console.log('Using basic authentication for SMTP');
       transporter = nodemailer.createTransport({
@@ -289,16 +296,17 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
           ciphers: 'SSLv3',
           rejectUnauthorized: false,
         },
-      });
-    } else {
-      return {
-        success: false,
-        error: 'SMTP credentials not configured. Set SMTP_CLIENT_ID/SMTP_CLIENT_SECRET/SMTP_TENANT_ID for OAuth, or AZURE_SMTP_USERNAME/AZURE_SMTP_PASSWORD for basic auth.',
-      };
+      } as any);
     }
 
     // Verify connection
-    await transporter.verify();
+    try {
+      await transporter.verify();
+      console.log('SMTP connection verified successfully');
+    } catch (verifyError: any) {
+      console.warn('SMTP verification warning:', verifyError.message);
+      // Continue anyway - some SMTP servers don't support verify
+    }
 
     const from = params.from || getDefaultFrom();
     
@@ -306,6 +314,8 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
     const toRecipients = Array.isArray(params.to) ? params.to.join(', ') : params.to;
     const ccRecipients = params.cc ? params.cc.join(', ') : undefined;
     const bccRecipients = params.bcc ? params.bcc.join(', ') : undefined;
+
+    console.log(`Sending email to: ${toRecipients}, from: ${from.email}`);
 
     // Send mail
     const info = await transporter.sendMail({
@@ -324,8 +334,14 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
       })),
     });
 
+    console.log(`Email sent successfully. Message ID: ${info.messageId}`);
+
     // Close the connection
-    await transporter.close();
+    try {
+      await transporter.close();
+    } catch (closeError) {
+      console.warn('Warning closing SMTP connection:', closeError);
+    }
 
     return {
       success: true,
