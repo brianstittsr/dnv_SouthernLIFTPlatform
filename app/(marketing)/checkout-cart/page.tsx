@@ -62,6 +62,8 @@ export default function CheckoutCartPage() {
 
       const { clientSecret: secret, subscriptionId: subId, customerId } = await response.json();
       
+      console.log("Subscription response:", { secret, subId, customerId });
+      
       // If we have a subscription but no clientSecret, create a payment intent
       if (subId && !secret) {
         console.log("Subscription created but no clientSecret, creating payment intent");
@@ -78,10 +80,19 @@ export default function CheckoutCartPage() {
 
         if (piResponse.ok) {
           const piData = await piResponse.json();
+          console.log("Payment intent created:", piData);
           setClientSecret(piData.clientSecret);
+        } else {
+          const error = await piResponse.json();
+          console.error("Payment intent creation failed:", error);
+          throw new Error(error.error || "Failed to create payment intent");
         }
-      } else {
+      } else if (secret) {
+        console.log("Using clientSecret from subscription:", secret);
         setClientSecret(secret);
+      } else {
+        console.warn("No clientSecret available from subscription or payment intent");
+        setClientSecret(null);
       }
 
       setSubscriptionId(subId);
@@ -313,7 +324,7 @@ export default function CheckoutCartPage() {
               </Button>
             </CardFooter>
           </Card>
-        ) : clientSecret ? (
+        ) : showPaymentForm ? (
           <Card>
             <CardHeader>
               <CardTitle>Payment Details</CardTitle>
@@ -324,14 +335,23 @@ export default function CheckoutCartPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <StripePaymentForm
-                clientSecret={clientSecret}
-                amount={total}
-                productName={items.map((item) => item.product.name).join(", ")}
-                priceId={priceId}
-                isRecurring={isConsortiumMembership}
-                userEmail={userEmail}
-              />
+              {clientSecret ? (
+                <StripePaymentForm
+                  clientSecret={clientSecret}
+                  amount={total}
+                  productName={items.map((item) => item.product.name).join(", ")}
+                  priceId={priceId}
+                  isRecurring={isConsortiumMembership}
+                  userEmail={userEmail}
+                />
+              ) : (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">Setting up your payment form...</p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         ) : null}
