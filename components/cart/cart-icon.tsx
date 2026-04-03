@@ -8,14 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/lib/stores/cart-store";
 
 export function CartIcon() {
-  const { getItemCount } = useCartStore();
-  const [itemCount, setItemCount] = useState(0);
+  const itemCount = useCartStore((state) => 
+    state.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    setItemCount(getItemCount());
-  }, [getItemCount]);
+  }, []);
 
   // Prevent hydration mismatch by not rendering badge until mounted
   if (!mounted) {
