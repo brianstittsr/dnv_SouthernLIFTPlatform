@@ -41,7 +41,7 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/checkout-success?product=cmmc-cohort`,
+          return_url: `${window.location.origin}/checkout-success?session_id={PAYMENT_INTENT_ID}`,
         },
         redirect: "if_required",
       });
@@ -51,7 +51,7 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
         toast.success("Payment successful!");
-        router.push(`/checkout-success?session_id=${paymentIntent.id}&product=cmmc-cohort`);
+        router.push(`/checkout-success?session_id=${paymentIntent.id}`);
       }
     } catch (err) {
       console.error("Payment error:", err);

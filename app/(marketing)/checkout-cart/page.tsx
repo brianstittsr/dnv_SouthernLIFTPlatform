@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { StripePaymentForm } from "@/components/checkout/stripe-payment-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -13,46 +14,42 @@ import Link from "next/link";
 export default function CheckoutCartPage() {
   const router = useRouter();
   const { items, total, removeItem, updateQuantity, clearCart } = useCartStore();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
 
-  const handleCheckout = async () => {
+  const handleProceedToPayment = async () => {
     if (items.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
 
-    setIsProcessing(true);
+    setIsLoadingPayment(true);
 
     try {
-      const response = await fetch("/api/checkout/create-session", {
+      const response = await fetch("/api/checkout/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          items: items.map((item) => ({
-            productId: item.product.id,
-            quantity: item.quantity,
-          })),
+          amount: total,
+          productName: items.map((item) => item.product.name).join(", "),
         }),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create checkout session");
+        throw new Error(error.error || "Failed to create payment intent");
       }
 
-      const { url } = await response.json();
-
-      if (url) {
-        window.location.href = url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
+      const { clientSecret } = await response.json();
+      setClientSecret(clientSecret);
+      setShowPaymentForm(true);
     } catch (error) {
-      console.error("Checkout error:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to process checkout");
-      setIsProcessing(false);
+      console.error("Payment intent error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
+      setIsLoadingPayment(false);
     }
   };
 
@@ -166,50 +163,68 @@ export default function CheckoutCartPage() {
             </Card>
           </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  {items.map((item) => (
-                    <div key={item.product.id} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{item.product.name}</span>
-                      <span className="font-medium">{formatPrice(item.product.price)}</span>
-                    </div>
-                  ))}
-                </div>
-                <Separator />
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>{formatPrice(total)}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Secure payment processing powered by Stripe
-                </p>
-              </CardContent>
-              <CardFooter className="flex flex-col gap-3">
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={handleCheckout}
-                  disabled={isProcessing}
-                >
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  {isProcessing ? "Processing..." : "Proceed to Checkout"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={clearCart}
-                  disabled={isProcessing}
-                >
-                  Clear Cart
-                </Button>
-              </CardFooter>
-            </Card>
+          {/* Order Summary & Payment */}
+          <div className="lg:col-span-1 space-y-4">
+            {!showPaymentForm ? (
+              <Card className="sticky top-4">
+                <CardHeader>
+                  <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    {items.map((item) => (
+                      <div key={item.product.id} className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">{item.product.name}</span>
+                        <span className="font-medium">{formatPrice(item.product.price)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total</span>
+                    <span>{formatPrice(total)}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Secure payment processing powered by Stripe
+                  </p>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-3">
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={handleProceedToPayment}
+                    disabled={isLoadingPayment}
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    {isLoadingPayment ? "Loading..." : "Proceed to Checkout"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={clearCart}
+                    disabled={isLoadingPayment}
+                  >
+                    Clear Cart
+                  </Button>
+                </CardFooter>
+              </Card>
+            ) : clientSecret ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment Details</CardTitle>
+                  <CardDescription>
+                    Complete your payment to finalize your order
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <StripePaymentForm
+                    clientSecret={clientSecret}
+                    amount={total}
+                    productName={items.map((item) => item.product.name).join(", ")}
+                  />
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
         </div>
       </div>
