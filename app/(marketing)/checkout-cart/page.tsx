@@ -37,6 +37,12 @@ export default function CheckoutCartPage() {
       return;
     }
 
+    const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID;
+    if (!monthlyPriceId) {
+      toast.error("Stripe price not configured. Please contact support.");
+      return;
+    }
+
     setIsLoadingPayment(true);
 
     try {
@@ -45,7 +51,7 @@ export default function CheckoutCartPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: userEmail,
-          priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+          priceId: monthlyPriceId,
         }),
       });
 

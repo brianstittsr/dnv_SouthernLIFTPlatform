@@ -10,9 +10,16 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { email, priceId } = body;
 
-    if (!email || !priceId) {
+    if (!email) {
       return NextResponse.json(
-        { error: "Missing required fields: email, priceId" },
+        { error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!priceId) {
+      return NextResponse.json(
+        { error: "Price ID is required. Please ensure NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID is configured." },
         { status: 400 }
       );
     }
