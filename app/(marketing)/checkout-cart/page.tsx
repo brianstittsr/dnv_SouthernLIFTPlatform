@@ -29,6 +29,11 @@ export default function CheckoutCartPage() {
     (item) => item.product.id === "kdm-consortium-membership"
   );
 
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log("Checkout state:", { showEmailForm, showPaymentForm, clientSecret, subscriptionId });
+  }, [showEmailForm, showPaymentForm, clientSecret, subscriptionId]);
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
