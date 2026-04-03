@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 import { assignUserRole } from "@/lib/rbac";
+import type { UserRole } from "@/lib/rbac-types";
 
 /**
  * POST /api/auth/register
@@ -158,7 +159,7 @@ export async function POST(req: NextRequest) {
     await db.collection("users").doc(userRecord.uid).set(userData);
 
     // Assign role via custom claims
-    await assignUserRole(userRecord.uid, role, tenantId);
+    await assignUserRole(userRecord.uid, role as UserRole, tenantId);
 
     // Queue welcome email
     await db.collection("emailQueue").add({
