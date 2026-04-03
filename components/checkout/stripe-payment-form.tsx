@@ -22,9 +22,21 @@ interface PaymentFormProps {
   clientSecret: string;
   amount: number;
   productName: string;
+  priceId?: string | null;
+  isRecurring?: boolean;
 }
 
-function CheckoutForm({ amount, productName }: { amount: number; productName: string }) {
+function CheckoutForm({ 
+  amount, 
+  productName,
+  subscriptionId,
+  isRecurring,
+}: { 
+  amount: number; 
+  productName: string;
+  subscriptionId?: string | null;
+  isRecurring?: boolean;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -335,7 +347,13 @@ function CheckoutForm({ amount, productName }: { amount: number; productName: st
   );
 }
 
-export function StripePaymentForm({ clientSecret, amount, productName }: PaymentFormProps) {
+export function StripePaymentForm({ 
+  clientSecret, 
+  amount, 
+  productName,
+  priceId,
+  isRecurring,
+}: PaymentFormProps) {
   const options = {
     clientSecret,
     appearance: {
@@ -354,7 +372,12 @@ export function StripePaymentForm({ clientSecret, amount, productName }: Payment
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm amount={amount} productName={productName} />
+      <CheckoutForm 
+        amount={amount} 
+        productName={productName}
+        subscriptionId={priceId}
+        isRecurring={isRecurring}
+      />
     </Elements>
   );
 }

@@ -15,8 +15,15 @@ export default function CheckoutCartPage() {
   const router = useRouter();
   const { items, total, removeItem, updateQuantity, clearCart } = useCartStore();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [priceId, setPriceId] = useState<string | null>(null);
+
+  // Check if this is a KDM Consortium Membership (recurring billing)
+  const isConsortiumMembership = items.some(
+    (item) => item.product.id === "kdm-consortium-membership"
+  );
 
   const handleProceedToPayment = async () => {
     if (items.length === 0) {
@@ -27,27 +34,53 @@ export default function CheckoutCartPage() {
     setIsLoadingPayment(true);
 
     try {
-      const response = await fetch("/api/checkout/create-payment-intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: total,
-          productName: items.map((item) => item.product.name).join(", "),
-        }),
-      });
+      if (isConsortiumMembership) {
+        // For recurring billing, create a subscription
+        const response = await fetch("/api/checkout/create-subscription", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: "", // Will be provided in the form
+            priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+          }),
+        });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to create payment intent");
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Failed to create subscription");
+        }
+
+        const { clientSecret: secret, subscriptionId: subId } = await response.json();
+        setClientSecret(secret);
+        setSubscriptionId(subId);
+        setPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || null);
+      } else {
+        // For one-time payments, create a payment intent
+        const response = await fetch("/api/checkout/create-payment-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: total,
+            productName: items.map((item) => item.product.name).join(", "),
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Failed to create payment intent");
+        }
+
+        const { clientSecret: secret } = await response.json();
+        setClientSecret(secret);
       }
 
-      const { clientSecret } = await response.json();
-      setClientSecret(clientSecret);
       setShowPaymentForm(true);
     } catch (error) {
-      console.error("Payment intent error:", error);
+      console.error("Payment initialization error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to initialize payment");
       setIsLoadingPayment(false);
     }
@@ -201,7 +234,9 @@ export default function CheckoutCartPage() {
             <CardHeader>
               <CardTitle>Payment Details</CardTitle>
               <CardDescription>
-                Complete your payment to finalize your order
+                {isConsortiumMembership 
+                  ? "Complete your payment to activate your monthly KDM Consortium Membership"
+                  : "Complete your payment to finalize your order"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -209,6 +244,8 @@ export default function CheckoutCartPage() {
                 clientSecret={clientSecret}
                 amount={total}
                 productName={items.map((item) => item.product.name).join(", ")}
+                priceId={priceId}
+                isRecurring={isConsortiumMembership}
               />
             </CardContent>
           </Card>
