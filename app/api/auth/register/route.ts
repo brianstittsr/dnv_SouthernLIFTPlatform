@@ -84,24 +84,24 @@ export async function POST(req: NextRequest) {
     });
 
     // Determine role and metadata based on registration type
-    let role: string;
+    let role: UserRole;
     let roleTag: string;
     let userTypeLabel: string;
     let prefix: string;
 
     if (isConsortiumMembership) {
-      role = "consortium_member";
+      role = "consortium_member" as UserRole;
       roleTag = "KDM Consortium Member";
       userTypeLabel = "KDM Consortium Member";
       prefix = "member";
     } else {
-      const roleMap: Record<string, { role: string; roleTag: string; label: string; prefix: string }> = {
-        sme: { role: "sme_user", roleTag: "SVP SME User (Supplier)", label: "SME / Supplier", prefix: "sme" },
-        buyer: { role: "buyer", roleTag: "SVP Buyer / Buyer (Government)", label: "Buyer / Government", prefix: "buyer" },
-        consortium_partner: { role: "consortium_partner", roleTag: "SVP Consortium Partner", label: "Consortium Partner", prefix: "partner" },
-        qa_reviewer: { role: "qa_reviewer", roleTag: "SVP QA Reviewer", label: "QA Reviewer", prefix: "qa" },
-        cmmc_instructor: { role: "cmmc_instructor", roleTag: "SVP CMMC Instructor", label: "CMMC Instructor", prefix: "instructor" },
-        marketing_staff: { role: "marketing_staff", roleTag: "SVP Marketing Staff", label: "Marketing Staff", prefix: "marketing" },
+      const roleMap: Record<string, { role: UserRole; roleTag: string; label: string; prefix: string }> = {
+        sme: { role: "sme_user" as UserRole, roleTag: "SVP SME User (Supplier)", label: "SME / Supplier", prefix: "sme" },
+        buyer: { role: "buyer" as UserRole, roleTag: "SVP Buyer / Buyer (Government)", label: "Buyer / Government", prefix: "buyer" },
+        consortium_partner: { role: "consortium_partner" as UserRole, roleTag: "SVP Consortium Partner", label: "Consortium Partner", prefix: "partner" },
+        qa_reviewer: { role: "qa_reviewer" as UserRole, roleTag: "SVP QA Reviewer", label: "QA Reviewer", prefix: "qa" },
+        cmmc_instructor: { role: "cmmc_instructor" as UserRole, roleTag: "SVP CMMC Instructor", label: "CMMC Instructor", prefix: "instructor" },
+        marketing_staff: { role: "marketing_staff" as UserRole, roleTag: "SVP Marketing Staff", label: "Marketing Staff", prefix: "marketing" },
       };
       
       const roleConfig = roleMap[userType!];
