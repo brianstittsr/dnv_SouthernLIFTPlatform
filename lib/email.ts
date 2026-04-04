@@ -37,27 +37,27 @@ interface EmailResponse {
 
 /**
  * Determine which email provider to use based on environment variables
- * Priority: Azure SMTP > Microsoft Graph API > SendGrid > Resend
+ * Priority: Resend > SendGrid > Microsoft Graph API > Azure SMTP
  */
 function getEmailProvider(): EmailProvider {
-  // Azure SMTP (preferred - supports both OAuth and basic auth)
-  // Note: For Office 365 accounts, use smtp.office365.com instead of smtp.azurecomm.net
-  if (process.env.AZURE_SMTP_HOST || process.env.AZURE_SMTP_USERNAME) {
-    return 'azure_smtp';
+  // Resend (preferred - most reliable for transactional emails)
+  if (process.env.RESEND_API_KEY) {
+    return 'resend';
+  }
+  // SendGrid
+  else if (process.env.SENDGRID_API_KEY) {
+    return 'sendgrid';
   }
   // Microsoft Graph API (Office 365)
   else if (process.env.AZURE_CLIENT_ID && process.env.AZURE_CLIENT_SECRET && process.env.AZURE_TENANT_ID) {
     return 'ms_graph';
-  } 
-  // SendGrid
-  else if (process.env.SENDGRID_API_KEY) {
-    return 'sendgrid';
-  } 
-  // Resend
-  else if (process.env.RESEND_API_KEY) {
-    return 'resend';
   }
-  throw new Error('No email service configured. Set AZURE_SMTP_HOST/AZURE_SMTP_USERNAME for Azure SMTP, AZURE_CLIENT_ID/AZURE_CLIENT_SECRET/AZURE_TENANT_ID for Microsoft Graph, SENDGRID_API_KEY, or RESEND_API_KEY');
+  // Azure SMTP (fallback - supports both OAuth and basic auth)
+  // Note: For Office 365 accounts, use smtp.office365.com instead of smtp.azurecomm.net
+  else if (process.env.AZURE_SMTP_HOST || process.env.AZURE_SMTP_USERNAME) {
+    return 'azure_smtp';
+  }
+  throw new Error('No email service configured. Set RESEND_API_KEY, SENDGRID_API_KEY, AZURE_CLIENT_ID/AZURE_CLIENT_SECRET/AZURE_TENANT_ID for Microsoft Graph, or AZURE_SMTP_HOST/AZURE_SMTP_USERNAME for Azure SMTP');
 }
 
 /**
