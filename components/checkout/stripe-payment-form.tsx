@@ -270,7 +270,7 @@ function CheckoutForm({
 
           <div className="bg-green-50 border border-green-200 rounded-lg p-3">
             <p className="text-sm text-green-900">
-              ✓ You will be tagged as a <strong>KDM Consortium Member</strong> upon successful payment
+              ✓ You will be tagged as a <strong>KDM {productName.includes("CMMC") ? "CMMC Cohort Member" : "Consortium Member"}</strong> upon successful payment
             </p>
           </div>
         </CardContent>
