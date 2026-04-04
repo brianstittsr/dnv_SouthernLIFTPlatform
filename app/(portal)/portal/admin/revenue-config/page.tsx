@@ -54,6 +54,7 @@ import {
   ExternalLink,
   ArrowUpDown,
   Eye,
+  Calendar,
 } from "lucide-react";
 import { mockCommissionRates } from "@/lib/mock-data/svp-admin-mock-data";
 import { 
@@ -127,6 +128,34 @@ export default function RevenueConfigPage() {
   const [transactionSource, setTransactionSource] = useState<'stripe' | 'firestore' | 'both'>('both');
   const [selectedTransaction, setSelectedTransaction] = useState<StripeTransaction | null>(null);
   const [showTransactionDetails, setShowTransactionDetails] = useState(false);
+  
+  // Billing history state
+  interface MonthlyBillingGroup {
+    month: string;
+    totalRevenue: number;
+    totalCustomers: number;
+    records: Array<{
+      customerId: string;
+      customerName: string;
+      customerEmail: string;
+      month: string;
+      amount: number;
+      currency: string;
+      status: string;
+      invoiceId?: string;
+      subscriptionId?: string;
+      tier?: string;
+    }>;
+  }
+  const [billingHistory, setBillingHistory] = useState<MonthlyBillingGroup[]>([]);
+  const [billingSummary, setBillingSummary] = useState({
+    totalRevenue: 0,
+    uniqueCustomers: 0,
+    averageMonthlyRevenue: 0,
+    monthsIncluded: 0,
+  });
+  const [loadingBillingHistory, setLoadingBillingHistory] = useState(false);
+  const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   
   const [commissionRates, setCommissionRates] = useState<any[]>([]);
 
@@ -370,6 +399,27 @@ export default function RevenueConfigPage() {
     }
   };
 
+  const loadBillingHistory = async () => {
+    setLoadingBillingHistory(true);
+    try {
+      const response = await fetch('/api/admin/billing-history?monthsBack=12');
+      if (response.ok) {
+        const data = await response.json();
+        setBillingHistory(data.monthlyBilling || []);
+        setBillingSummary(data.summary || {
+          totalRevenue: 0,
+          uniqueCustomers: 0,
+          averageMonthlyRevenue: 0,
+          monthsIncluded: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error loading billing history:", error);
+    } finally {
+      setLoadingBillingHistory(false);
+    }
+  };
+
   const formatDate = (timestamp: number) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -439,10 +489,14 @@ export default function RevenueConfigPage() {
         if (v === 'transactions' && transactions.length === 0) {
           loadTransactions();
         }
+        if (v === 'billing-history' && billingHistory.length === 0) {
+          loadBillingHistory();
+        }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-6 w-full max-w-9xl">
+        <TabsList className="grid grid-cols-7 w-full max-w-9xl">
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="billing-history">Billing History</TabsTrigger>
           <TabsTrigger value="partners">Partners</TabsTrigger>
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="payouts">Payouts</TabsTrigger>
@@ -703,6 +757,147 @@ export default function RevenueConfigPage() {
                     ))}
                   </TableBody>
                 </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Billing History Tab */}
+        <TabsContent value="billing-history" className="mt-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-semibold">Monthly Billing History</h2>
+              <p className="text-sm text-muted-foreground">KDM Consortium subscription billing by month</p>
+            </div>
+            <Button onClick={loadBillingHistory} disabled={loadingBillingHistory}>
+              {loadingBillingHistory ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="mr-2 h-4 w-4" />
+              )}
+              Refresh
+            </Button>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-4 mb-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">{formatCurrency(billingSummary.totalRevenue)}</div>
+                <p className="text-xs text-muted-foreground">Last 12 months</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg Monthly Revenue</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatCurrency(billingSummary.averageMonthlyRevenue)}</div>
+                <p className="text-xs text-muted-foreground">Across {billingSummary.monthsIncluded} months</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Unique Customers</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{billingSummary.uniqueCustomers}</div>
+                <p className="text-xs text-muted-foreground">Active subscribers</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Months Tracked</CardTitle>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{billingSummary.monthsIncluded}</div>
+                <p className="text-xs text-muted-foreground">Historical data</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly Billing Summary</CardTitle>
+              <CardDescription>
+                Subscription billing history organized by month
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingBillingHistory ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : billingHistory.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No billing history found</p>
+                  <Button variant="outline" className="mt-4" onClick={loadBillingHistory}>
+                    Load Billing History
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {billingHistory.map((monthGroup) => (
+                    <div key={monthGroup.month} className="border rounded-lg">
+                      <button
+                        onClick={() => setExpandedMonth(expandedMonth === monthGroup.month ? null : monthGroup.month)}
+                        className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-4 flex-1">
+                          <div>
+                            <h3 className="font-semibold text-lg">{monthGroup.month}</h3>
+                            <p className="text-sm text-muted-foreground">{monthGroup.totalCustomers} customers</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">{formatCurrency(monthGroup.totalRevenue)}</p>
+                          <p className="text-xs text-muted-foreground">{monthGroup.records.length} invoices</p>
+                        </div>
+                        <ArrowUpDown className={`h-4 w-4 ml-4 transition-transform ${expandedMonth === monthGroup.month ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      {expandedMonth === monthGroup.month && (
+                        <div className="border-t p-4 bg-muted/30">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Customer Name</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Tier</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Status</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {monthGroup.records.map((record, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell className="font-medium">{record.customerName}</TableCell>
+                                  <TableCell className="text-sm">{record.customerEmail}</TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className="capitalize">{record.tier || 'unknown'}</Badge>
+                                  </TableCell>
+                                  <TableCell className="font-semibold">{formatCurrency(record.amount)}</TableCell>
+                                  <TableCell>
+                                    <Badge variant={record.status === 'paid' ? 'default' : 'secondary'}>
+                                      {record.status}
+                                    </Badge>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>
