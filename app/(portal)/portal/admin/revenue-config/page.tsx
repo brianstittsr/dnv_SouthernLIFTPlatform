@@ -53,6 +53,7 @@ import {
   Building2,
   ExternalLink,
   ArrowUpDown,
+  Eye,
 } from "lucide-react";
 import { mockCommissionRates } from "@/lib/mock-data/svp-admin-mock-data";
 import { 
@@ -124,6 +125,8 @@ export default function RevenueConfigPage() {
   });
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [transactionSource, setTransactionSource] = useState<'stripe' | 'firestore' | 'both'>('both');
+  const [selectedTransaction, setSelectedTransaction] = useState<StripeTransaction | null>(null);
+  const [showTransactionDetails, setShowTransactionDetails] = useState(false);
   
   const [commissionRates, setCommissionRates] = useState<any[]>([]);
 
@@ -674,15 +677,27 @@ export default function RevenueConfigPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {tx.source === 'stripe' && (
+                          <div className="flex items-center gap-2">
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => window.open(`https://dashboard.stripe.com/payments/${tx.id}`, '_blank')}
+                              onClick={() => {
+                                setSelectedTransaction(tx);
+                                setShowTransactionDetails(true);
+                              }}
                             >
-                              <ExternalLink className="h-4 w-4" />
+                              <Eye className="h-4 w-4" />
                             </Button>
-                          )}
+                            {tx.source === 'stripe' && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => window.open(`https://dashboard.stripe.com/payments/${tx.id}`, '_blank')}
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1326,6 +1341,137 @@ export default function RevenueConfigPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Transaction Details Modal */}
+      <Dialog open={showTransactionDetails} onOpenChange={setShowTransactionDetails}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Transaction Details</DialogTitle>
+            <DialogDescription>
+              Complete information for transaction {selectedTransaction?.id}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTransaction && (
+            <div className="space-y-6 py-4">
+              {/* Basic Information */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-muted-foreground">Transaction ID</Label>
+                  <p className="font-mono text-sm break-all">{selectedTransaction.id}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Date</Label>
+                  <p className="font-medium">{formatDate(selectedTransaction.created)}</p>
+                </div>
+              </div>
+
+              {/* Customer Information */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Customer Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Name</Label>
+                    <p className="font-medium">{selectedTransaction.customerName || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Email</Label>
+                    <p className="font-medium">{selectedTransaction.customerEmail || 'Not provided'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Details */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Transaction Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Amount</Label>
+                    <p className="font-bold text-lg">{formatCurrency(selectedTransaction.amount)} {selectedTransaction.currency}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Status</Label>
+                    <div className="mt-1">{getStatusBadge(selectedTransaction.status)}</div>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Type</Label>
+                    <p className="font-medium capitalize">{selectedTransaction.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Source</Label>
+                    <Badge variant="outline" className={selectedTransaction.source === 'stripe' ? 'border-purple-500 text-purple-600' : 'border-orange-500 text-orange-600'}>
+                      {selectedTransaction.source === 'stripe' ? 'Stripe' : 'Firestore'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedTransaction.description && (
+                <div className="border-t pt-4">
+                  <Label className="text-muted-foreground">Description</Label>
+                  <p className="font-medium">{selectedTransaction.description}</p>
+                </div>
+              )}
+
+              {/* Entity Information */}
+              {(selectedTransaction.entityType || selectedTransaction.entityName) && (
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Entity Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {selectedTransaction.entityType && (
+                      <div>
+                        <Label className="text-muted-foreground">Entity Type</Label>
+                        <p className="font-medium capitalize">{selectedTransaction.entityType}</p>
+                      </div>
+                    )}
+                    {selectedTransaction.entityName && (
+                      <div>
+                        <Label className="text-muted-foreground">Entity Name</Label>
+                        <p className="font-medium">{selectedTransaction.entityName}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Metadata */}
+              {selectedTransaction.metadata && Object.keys(selectedTransaction.metadata).length > 0 && (
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Metadata</h3>
+                  <div className="bg-muted p-3 rounded-lg text-sm space-y-2">
+                    {Object.entries(selectedTransaction.metadata).map(([key, value]) => (
+                      <div key={key} className="flex justify-between">
+                        <span className="font-medium text-muted-foreground">{key}:</span>
+                        <span className="font-mono">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stripe Payment Intent ID */}
+              {selectedTransaction.stripePaymentIntentId && (
+                <div className="border-t pt-4">
+                  <Label className="text-muted-foreground">Stripe Payment Intent ID</Label>
+                  <p className="font-mono text-sm break-all">{selectedTransaction.stripePaymentIntentId}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            {selectedTransaction?.source === 'stripe' && (
+              <Button
+                variant="outline"
+                onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedTransaction.id}`, '_blank')}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View in Stripe
+              </Button>
+            )}
+            <Button onClick={() => setShowTransactionDetails(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
