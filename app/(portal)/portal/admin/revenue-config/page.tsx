@@ -66,166 +66,8 @@ import {
   type PayoutDoc,
 } from "@/lib/partner-commission-schema";
 
-// Mock data for partner commissions
-const mockPartnerCommissions: PartnerAttributionDoc[] = [
-  {
-    id: "comm-1",
-    transactionId: "txn-001",
-    stripePaymentIntentId: "pi_123",
-    clientId: "client-1",
-    clientName: "ABC Manufacturing",
-    clientEmail: "contact@abcmfg.com",
-    transactionType: "membership",
-    totalAmount: 5000,
-    currency: "USD",
-    attributions: [
-      { partnerId: "vplus", partnerName: "Strategic Value Plus", contributionType: "service_delivery", percentage: 50, amount: 2500, status: "paid" },
-      { partnerId: "ada", partnerName: "ADA Consulting", contributionType: "lead_generation", percentage: 20, amount: 1000, status: "paid" },
-      { partnerId: "kdm-platform", partnerName: "KDM Platform Fee", contributionType: "platform_fee", percentage: 10, amount: 500, status: "paid" },
-    ],
-    totalCommissions: 4000,
-    platformFee: 500,
-    netAmount: 1000,
-    overallStatus: "fully_paid",
-    createdAt: Timestamp.fromDate(new Date("2025-01-15")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-15")),
-  },
-  {
-    id: "comm-2",
-    transactionId: "txn-002",
-    stripePaymentIntentId: "pi_456",
-    clientId: "client-2",
-    clientName: "XYZ Defense Corp",
-    clientEmail: "info@xyzdefense.com",
-    transactionType: "cohort",
-    totalAmount: 12000,
-    currency: "USD",
-    attributions: [
-      { partnerId: "vplus", partnerName: "Strategic Value Plus", contributionType: "service_delivery", percentage: 50, amount: 6000, status: "pending" },
-      { partnerId: "e3s", partnerName: "E3S Solutions", contributionType: "introduction", percentage: 20, amount: 2400, status: "pending" },
-      { partnerId: "kdm-platform", partnerName: "KDM Platform Fee", contributionType: "platform_fee", percentage: 10, amount: 1200, status: "pending" },
-    ],
-    totalCommissions: 9600,
-    platformFee: 1200,
-    netAmount: 2400,
-    overallStatus: "pending",
-    createdAt: Timestamp.fromDate(new Date("2025-01-20")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-20")),
-  },
-];
-
-const mockPartnerProfiles: PartnerProfileDoc[] = [
-  {
-    id: "partner-1",
-    partnerId: "vplus",
-    name: "V+",
-    displayName: "Strategic Value Plus",
-    contactName: "John Smith",
-    contactEmail: "john@strategicvalueplus.com",
-    paymentMethod: "stripe_connect",
-    stripeConnectAccountId: "acct_123",
-    autoPayoutEnabled: true,
-    minimumPayoutAmount: 100,
-    payoutFrequency: "weekly",
-    holdPeriodDays: 7,
-    attributionRules: [
-      { contributionType: "lead_generation", percentage: 20, isActive: true },
-      { contributionType: "service_delivery", percentage: 50, isActive: true },
-      { contributionType: "introduction", percentage: 20, isActive: true },
-    ],
-    stats: { totalEarnings: 45000, pendingCommissions: 8500, paidCommissions: 36500, totalTransactions: 28 },
-    isActive: true,
-    createdAt: Timestamp.fromDate(new Date("2024-01-01")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-20")),
-  },
-  {
-    id: "partner-2",
-    partnerId: "ada",
-    name: "ADA",
-    displayName: "ADA Consulting",
-    contactName: "Sarah Johnson",
-    contactEmail: "sarah@adaconsulting.com",
-    paymentMethod: "paypal",
-    paypalEmail: "payments@adaconsulting.com",
-    autoPayoutEnabled: false,
-    minimumPayoutAmount: 250,
-    payoutFrequency: "monthly",
-    holdPeriodDays: 14,
-    attributionRules: [
-      { contributionType: "lead_generation", percentage: 20, isActive: true },
-      { contributionType: "service_delivery", percentage: 50, isActive: true },
-      { contributionType: "introduction", percentage: 20, isActive: true },
-    ],
-    stats: { totalEarnings: 28000, pendingCommissions: 3200, paidCommissions: 24800, totalTransactions: 15 },
-    isActive: true,
-    createdAt: Timestamp.fromDate(new Date("2024-03-15")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-18")),
-  },
-  {
-    id: "partner-3",
-    partnerId: "e3s",
-    name: "E3S",
-    displayName: "E3S Solutions",
-    contactName: "Mike Davis",
-    contactEmail: "mike@e3ssolutions.com",
-    paymentMethod: "bank_transfer",
-    autoPayoutEnabled: false,
-    minimumPayoutAmount: 500,
-    payoutFrequency: "biweekly",
-    holdPeriodDays: 7,
-    attributionRules: [
-      { contributionType: "lead_generation", percentage: 20, isActive: true },
-      { contributionType: "service_delivery", percentage: 50, isActive: true },
-      { contributionType: "introduction", percentage: 20, isActive: true },
-    ],
-    stats: { totalEarnings: 18500, pendingCommissions: 2400, paidCommissions: 16100, totalTransactions: 12 },
-    isActive: true,
-    createdAt: Timestamp.fromDate(new Date("2024-06-01")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-15")),
-  },
-];
-
-const mockPayouts: PayoutDoc[] = [
-  {
-    id: "payout-1",
-    partnerId: "vplus",
-    partnerName: "Strategic Value Plus",
-    partnerProfileId: "partner-1",
-    amount: 8500,
-    currency: "USD",
-    paymentMethod: "stripe_connect",
-    status: "completed",
-    stripeTransferId: "tr_123",
-    commissionIds: ["comm-1"],
-    commissionCount: 1,
-    scheduledDate: Timestamp.fromDate(new Date("2025-01-22")),
-    completedAt: Timestamp.fromDate(new Date("2025-01-22")),
-    retryCount: 0,
-    requiresApproval: false,
-    createdAt: Timestamp.fromDate(new Date("2025-01-15")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-22")),
-  },
-  {
-    id: "payout-2",
-    partnerId: "ada",
-    partnerName: "ADA Consulting",
-    partnerProfileId: "partner-2",
-    amount: 3200,
-    currency: "USD",
-    paymentMethod: "paypal",
-    status: "pending",
-    commissionIds: ["comm-2"],
-    commissionCount: 1,
-    scheduledDate: Timestamp.fromDate(new Date("2025-01-27")),
-    retryCount: 0,
-    requiresApproval: true,
-    createdAt: Timestamp.fromDate(new Date("2025-01-20")),
-    updatedAt: Timestamp.fromDate(new Date("2025-01-20")),
-  },
-];
 
 export default function RevenueConfigPage() {
-  const [useMockData, setUseMockData] = useState(true);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("commission");
   
@@ -283,66 +125,16 @@ export default function RevenueConfigPage() {
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [transactionSource, setTransactionSource] = useState<'stripe' | 'firestore' | 'both'>('both');
   
-  const [commissionRates, setCommissionRates] = useState([
-    {
-      id: "1",
-      name: "Standard Partner",
-      tier: "Standard",
-      rate: 15,
-      minRevenue: 0,
-      maxRevenue: 100000,
-      isActive: true
-    },
-    {
-      id: "2",
-      name: "Premium Partner",
-      tier: "Premium",
-      rate: 20,
-      minRevenue: 100001,
-      maxRevenue: 500000,
-      isActive: true
-    },
-    {
-      id: "3",
-      name: "Elite Partner",
-      tier: "Elite",
-      rate: 25,
-      minRevenue: 500001,
-      maxRevenue: null,
-      isActive: true
-    }
-  ]);
+  const [commissionRates, setCommissionRates] = useState<any[]>([]);
 
   useEffect(() => {
-    if (useMockData) {
-      loadMockData();
-    } else {
-      loadRealData();
-    }
-  }, [useMockData]);
-
-  const loadMockData = () => {
-    setLoading(true);
-    setCommissionRates(mockCommissionRates);
-    setPartners(mockPartnerProfiles);
-    setCommissions(mockPartnerCommissions);
-    setPayouts(mockPayouts);
-    setCommissionSummary({
-      totalCommissions: mockPartnerCommissions.reduce((s, c) => s + c.totalCommissions, 0),
-      pendingAmount: mockPartnerCommissions
-        .filter(c => c.overallStatus === "pending")
-        .reduce((s, c) => s + c.totalCommissions, 0),
-      paidAmount: mockPartnerCommissions
-        .filter(c => c.overallStatus === "fully_paid")
-        .reduce((s, c) => s + c.totalCommissions, 0),
-      totalTransactions: mockPartnerCommissions.length,
-    });
-    setLoading(false);
-  };
+    loadRealData();
+  }, []);
 
   const loadRealData = async () => {
     if (!db) {
-      loadMockData();
+      console.error("Firebase not initialized");
+      setLoading(false);
       return;
     }
 
@@ -361,17 +153,28 @@ export default function RevenueConfigPage() {
       const partnerData = partnersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PartnerProfileDoc));
       setPartners(partnerData);
       
-      // Load commissions
+      // Load commissions - filter out test API key transactions
       const commissionsSnapshot = await getDocs(collection(db, PARTNER_COLLECTIONS.PARTNER_ATTRIBUTIONS));
-      const commissionData = commissionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PartnerAttributionDoc));
+      const commissionData = commissionsSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as PartnerAttributionDoc))
+        .filter(commission => {
+          // Only include transactions created with live production API key
+          // Filter out test_* payment intent IDs which indicate test API key usage
+          return !commission.stripePaymentIntentId?.startsWith('pi_test_');
+        });
       setCommissions(commissionData);
       
-      // Load payouts
+      // Load payouts - filter out test API key transactions
       const payoutsSnapshot = await getDocs(collection(db, PARTNER_COLLECTIONS.PAYOUTS));
-      const payoutData = payoutsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PayoutDoc));
+      const payoutData = payoutsSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as PayoutDoc))
+        .filter(payout => {
+          // Only include payouts from live production transactions
+          return !payout.stripeTransferId?.startsWith('tr_test_');
+        });
       setPayouts(payoutData);
       
-      // Calculate summary
+      // Calculate summary - only from live production transactions
       setCommissionSummary({
         totalCommissions: commissionData.reduce((s, c) => s + c.totalCommissions, 0),
         pendingAmount: commissionData
@@ -384,7 +187,6 @@ export default function RevenueConfigPage() {
       });
     } catch (error) {
       console.error("Error loading data:", error);
-      loadMockData();
     } finally {
       setLoading(false);
     }
@@ -535,14 +337,28 @@ export default function RevenueConfigPage() {
       const response = await fetch(`/api/admin/transactions?source=${transactionSource}&limit=50`);
       if (response.ok) {
         const data = await response.json();
-        setTransactions(data.transactions || []);
-        setTransactionSummary(data.summary || {
-          totalTransactions: 0,
-          totalAmount: 0,
-          pendingAmount: 0,
-          failedCount: 0,
-          succeededCount: 0,
+        
+        // Filter out test API key transactions - only show live production data
+        const liveTransactions = (data.transactions || []).filter((tx: StripeTransaction) => {
+          // Filter out test payment intents (test_* prefix indicates test API key)
+          return !tx.id?.startsWith('pi_test_') && !tx.id?.startsWith('test_');
         });
+        
+        // Recalculate summary for live transactions only
+        const liveSummary = {
+          totalTransactions: liveTransactions.length,
+          totalAmount: liveTransactions
+            .filter((tx: StripeTransaction) => tx.status === 'succeeded')
+            .reduce((sum: number, tx: StripeTransaction) => sum + tx.amount, 0),
+          pendingAmount: liveTransactions
+            .filter((tx: StripeTransaction) => tx.status === 'pending' || tx.status === 'processing')
+            .reduce((sum: number, tx: StripeTransaction) => sum + tx.amount, 0),
+          failedCount: liveTransactions.filter((tx: StripeTransaction) => tx.status === 'failed' || tx.status === 'canceled').length,
+          succeededCount: liveTransactions.filter((tx: StripeTransaction) => tx.status === 'succeeded').length,
+        };
+        
+        setTransactions(liveTransactions);
+        setTransactionSummary(liveSummary);
       }
     } catch (error) {
       console.error("Error loading transactions:", error);
@@ -604,20 +420,10 @@ export default function RevenueConfigPage() {
         <div>
           <h1 className="text-3xl font-bold mb-2">Revenue Configuration</h1>
           <p className="text-muted-foreground">
-            Configure commission rates, revenue sharing, and payment rules
+            Configure commission rates, revenue sharing, and payment rules (Live Data Only)
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="mock-data"
-              checked={useMockData}
-              onCheckedChange={setUseMockData}
-            />
-            <Label htmlFor="mock-data" className="cursor-pointer">
-              {useMockData ? "Mock Data" : "Live Data"}
-            </Label>
-          </div>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Add Commission Tier
@@ -696,9 +502,9 @@ export default function RevenueConfigPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$234,567</div>
+                <div className="text-2xl font-bold">{formatCurrency(commissionSummary.paidAmount)}</div>
                 <p className="text-xs text-muted-foreground">
-                  +18% from last month
+                  From live production transactions
                 </p>
               </CardContent>
             </Card>
@@ -706,14 +512,14 @@ export default function RevenueConfigPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Avg Commission Rate
+                  Pending Commissions
                 </CardTitle>
-                <Percent className="h-4 w-4 text-muted-foreground" />
+                <Clock className="h-4 w-4 text-yellow-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">18.5%</div>
+                <div className="text-2xl font-bold text-yellow-600">{formatCurrency(commissionSummary.pendingAmount)}</div>
                 <p className="text-xs text-muted-foreground">
-                  Across all partners
+                  Awaiting payout
                 </p>
               </CardContent>
             </Card>
@@ -723,12 +529,12 @@ export default function RevenueConfigPage() {
                 <CardTitle className="text-sm font-medium">
                   Active Partners
                 </CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">47</div>
+                <div className="text-2xl font-bold">{partners.length}</div>
                 <p className="text-xs text-muted-foreground">
-                  +5 this quarter
+                  Configured partners
                 </p>
               </CardContent>
             </Card>
@@ -740,7 +546,7 @@ export default function RevenueConfigPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-semibold">Stripe Transactions</h2>
-              <p className="text-sm text-muted-foreground">View all payment transactions from Stripe and Firestore</p>
+              <p className="text-sm text-muted-foreground">Live production transactions only (test API key transactions filtered out)</p>
             </div>
             <div className="flex items-center gap-4">
               <Select value={transactionSource} onValueChange={(v: 'stripe' | 'firestore' | 'both') => setTransactionSource(v)}>
