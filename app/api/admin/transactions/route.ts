@@ -62,7 +62,20 @@ export async function GET(request: NextRequest) {
             let customerEmail: string | null = null;
             let customerName: string | null = null;
             
-            if (pi.customer) {
+            // First, try to get name from charges (most reliable source)
+            const piAny = pi as any;
+            if (piAny.charges && piAny.charges.data && piAny.charges.data.length > 0) {
+              const charge = piAny.charges.data[0];
+              if (charge.billing_details?.name) {
+                customerName = charge.billing_details.name;
+              }
+              if (charge.billing_details?.email) {
+                customerEmail = charge.billing_details.email;
+              }
+            }
+            
+            // If no name from charges, try customer object
+            if (!customerName && pi.customer) {
               try {
                 const customer = await stripe.customers.retrieve(pi.customer as string);
                 if (customer && !customer.deleted) {
@@ -74,7 +87,7 @@ export async function GET(request: NextRequest) {
               }
             }
 
-            // Also check receipt_email
+            // Fallback to receipt_email if no email found
             if (!customerEmail && pi.receipt_email) {
               customerEmail = pi.receipt_email;
             }
