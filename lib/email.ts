@@ -362,6 +362,60 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
 }
 
 /**
+ * Send email using Resend API
+ */
+async function sendWithResend(params: EmailParams): Promise<EmailResponse> {
+  try {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    
+    if (!resendApiKey) {
+      return {
+        success: false,
+        error: 'Resend API key not configured. Set RESEND_API_KEY in .env.local',
+      };
+    }
+
+    const from = params.from || getDefaultFrom();
+    const toRecipients = Array.isArray(params.to) ? params.to : [params.to];
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: `${from.name} <${from.email}>`,
+        to: toRecipients,
+        subject: params.subject,
+        html: params.html,
+        text: params.text,
+        reply_to: params.replyTo,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Resend API error: ${error.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(`Email sent successfully via Resend. Message ID: ${data.id}`);
+
+    return {
+      success: true,
+      messageId: data.id,
+    };
+  } catch (error: any) {
+    console.error('Resend API error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to send email via Resend',
+    };
+  }
+}
+
+/**
  * Send email using SendGrid
  */
 async function sendWithSendGrid(params: EmailParams): Promise<EmailResponse> {
@@ -389,40 +443,6 @@ async function sendWithSendGrid(params: EmailParams): Promise<EmailResponse> {
     };
   } catch (error: any) {
     console.error('SendGrid error:', error);
-    return {
-      success: false,
-      error: error.message,
-    };
-  }
-}
-
-/**
- * Send email using Resend
- */
-async function sendWithResend(params: EmailParams): Promise<EmailResponse> {
-  try {
-    const { Resend } = require('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const from = params.from || getDefaultFrom();
-    const response = await resend.emails.send({
-      from: `${from.name} <${from.email}>`,
-      to: params.to,
-      subject: params.subject,
-      html: params.html,
-      text: params.text,
-      reply_to: params.replyTo,
-      cc: params.cc,
-      bcc: params.bcc,
-      attachments: params.attachments,
-    });
-
-    return {
-      success: true,
-      messageId: response.id,
-    };
-  } catch (error: any) {
-    console.error('Resend error:', error);
     return {
       success: false,
       error: error.message,

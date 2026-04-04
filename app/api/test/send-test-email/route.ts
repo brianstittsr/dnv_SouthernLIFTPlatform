@@ -13,6 +13,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log(`Sending test email to: ${email}`);
+    console.log(`Email provider being used: ${process.env.RESEND_API_KEY ? 'Resend' : 'Other'}`);
+
     const testEmail = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
