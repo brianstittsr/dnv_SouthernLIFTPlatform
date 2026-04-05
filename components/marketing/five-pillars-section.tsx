@@ -36,8 +36,24 @@ export function FivePillarsSection() {
     'access-to-capital': 'Bringing the right funding strategies, partners, and pathways together to move projects from concept to reality.'
   };
 
+  const glowStyles = `
+    @keyframes pillarGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.4));
+      }
+      50% {
+        filter: drop-shadow(0 0 16px rgba(251, 146, 60, 0.8));
+      }
+    }
+    
+    .pillar-item:hover {
+      animation: pillarGlow 2s ease-in-out infinite;
+    }
+  `;
+
   return (
     <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      <style>{glowStyles}</style>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           {/* Left Column - Text Content */}
@@ -81,7 +97,7 @@ export function FivePillarsSection() {
               <div className="flex items-end justify-center gap-6 mb-8">
                 {/* Pillar 1 - Government Contracting */}
                 <div 
-                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
                 >
                   <div className="relative h-48 w-20 mb-2">
@@ -100,7 +116,7 @@ export function FivePillarsSection() {
 
                 {/* Pillar 2 - Manufacturing */}
                 <div 
-                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
                 >
                   <div className="relative h-48 w-20 mb-2">
@@ -112,13 +128,13 @@ export function FivePillarsSection() {
                     />
                   </div>
                   <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Manufacturing</p>
+                    <p className="text-white font-bold text-xs leading-tight">Manufacturing<br />& Supply Chain</p>
                   </div>
                 </div>
 
                 {/* Pillar 3 - Critical Minerals */}
                 <div 
-                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
                 >
                   <div className="relative h-48 w-20 mb-2">
@@ -136,7 +152,7 @@ export function FivePillarsSection() {
 
                 {/* Pillar 4 - Opportunity Zones */}
                 <div 
-                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
                 >
                   <div className="relative h-48 w-20 mb-2">
@@ -154,7 +170,7 @@ export function FivePillarsSection() {
 
                 {/* Pillar 5 - Access to Capital */}
                 <div 
-                  className={`flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
                   onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
                 >
                   <div className="relative h-48 w-20 mb-2">
