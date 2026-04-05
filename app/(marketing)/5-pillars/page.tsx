@@ -5,6 +5,46 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Factory, Gem, Shield, DollarSign, MapPin, ArrowRight } from "lucide-react";
 
+const glowStyles = `
+  @keyframes pillarGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.2);
+    }
+  }
+  
+  .pillar-card {
+    transition: all 0.3s ease;
+  }
+  
+  .pillar-card:hover {
+    animation: pillarGlow 2s ease-in-out infinite;
+    transform: translateY(-4px);
+  }
+  
+  .pillar-card.blue:hover {
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.5), 0 0 60px rgba(37, 99, 235, 0.2);
+  }
+  
+  .pillar-card.purple:hover {
+    box-shadow: 0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(147, 51, 234, 0.2);
+  }
+  
+  .pillar-card.green:hover {
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.2);
+  }
+  
+  .pillar-card.orange:hover {
+    box-shadow: 0 0 30px rgba(234, 88, 12, 0.5), 0 0 60px rgba(234, 88, 12, 0.2);
+  }
+  
+  .pillar-card.red:hover {
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.5), 0 0 60px rgba(220, 38, 38, 0.2);
+  }
+`;
+
 export const metadata: Metadata = {
   title: "5 Pillars of Strategic Growth | KDM & Associates",
   description: "Discover KDM's comprehensive approach to strengthening U.S. manufacturing, critical minerals, defense compliance, capital access, and economic development.",
@@ -18,7 +58,7 @@ const pillars = [
     icon: Factory,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
-    description: "Strengthening domestic manufacturing capacity",
+    description: "Strengthening domestic manufacturing capacity and supply chain resilience",
     highlights: [
       "Supporting small and mid-sized manufacturers",
       "Increasing production readiness",
@@ -86,8 +126,18 @@ const pillars = [
 ];
 
 export default function FivePillarsPage() {
+  const getColorClass = (color: string) => {
+    if (color.includes('blue')) return 'blue';
+    if (color.includes('purple')) return 'purple';
+    if (color.includes('green')) return 'green';
+    if (color.includes('orange')) return 'orange';
+    if (color.includes('red')) return 'red';
+    return 'blue';
+  };
+
   return (
     <div className="min-h-screen">
+      <style>{glowStyles}</style>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#1e3a5f] via-[#2d4a6f] to-[#1e3a5f] text-white py-20 md:py-32">
         <div className="absolute inset-0 bg-black/20" />
@@ -127,7 +177,7 @@ export default function FivePillarsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {pillars.map((pillar, index) => (
-              <Card key={pillar.id} className="hover:shadow-lg transition-shadow h-full flex flex-col">
+              <Card key={pillar.id} className={`pillar-card ${getColorClass(pillar.color)} h-full flex flex-col`}>
                 <CardHeader>
                   <div className={`w-16 h-16 rounded-lg ${pillar.bgColor} flex items-center justify-center mb-4`}>
                     <pillar.icon className={`h-8 w-8 ${pillar.color}`} />
