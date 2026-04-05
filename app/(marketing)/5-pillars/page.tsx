@@ -24,6 +24,7 @@ const pillars = [
       "Increasing production readiness",
       "Connecting suppliers to OEMs and federal buyers",
       "Workforce alignment for advanced manufacturing",
+      "Enhancing competitiveness in global markets",
     ],
   },
   {
