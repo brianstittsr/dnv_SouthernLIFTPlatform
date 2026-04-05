@@ -125,9 +125,9 @@ export default function FivePillarsPage() {
       {/* Pillars Grid */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {pillars.map((pillar, index) => (
-              <Card key={pillar.id} className="hover:shadow-lg transition-shadow">
+              <Card key={pillar.id} className="hover:shadow-lg transition-shadow h-full flex flex-col">
                 <CardHeader>
                   <div className={`w-16 h-16 rounded-lg ${pillar.bgColor} flex items-center justify-center mb-4`}>
                     <pillar.icon className={`h-8 w-8 ${pillar.color}`} />
@@ -139,8 +139,8 @@ export default function FivePillarsPage() {
                     {pillar.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 mb-6">
+                <CardContent className="flex-1 flex flex-col">
+                  <ul className="space-y-2 mb-6 flex-1">
                     {pillar.highlights.map((highlight, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-sm">
                         <span className={`mt-1 ${pillar.color}`}>•</span>
