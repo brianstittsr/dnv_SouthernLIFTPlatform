@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
@@ -159,9 +159,39 @@ const CMMC_BENEFITS = [
   },
 ];
 
+interface MembershipTrackerStatus {
+  totalSlots: number;
+  remainingSlots: number;
+  claimedSlots: number;
+  discountActive: boolean;
+  discountDeadline: string;
+  discountPercentage: number;
+}
+
 export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [trackerStatus, setTrackerStatus] = useState<MembershipTrackerStatus | null>(null);
+  const [trackerLoading, setTrackerLoading] = useState(true);
+
+  // Fetch membership tracker status on component mount
+  useEffect(() => {
+    const fetchTrackerStatus = async () => {
+      try {
+        const response = await fetch("/api/consortium/membership-tracker");
+        if (response.ok) {
+          const data = await response.json();
+          setTrackerStatus(data);
+        }
+      } catch (error) {
+        console.error("Error fetching tracker status:", error);
+      } finally {
+        setTrackerLoading(false);
+      }
+    };
+
+    fetchTrackerStatus();
+  }, []);
 
   const handleSelectPlan = async (tierId: string) => {
     const tier = PRICING_TIERS.find((t) => t.id === tierId);
@@ -257,16 +287,39 @@ export default function PricingPage() {
                         </>
                       ) : (
                         <>
+                          {tier.id === "kdm-consortium" && trackerStatus?.discountActive && (
+                            <div className="mb-2">
+                              <div className="text-sm line-through text-muted-foreground">
+                                {formatPrice(tier.monthlyPrice!)}
+                              </div>
+                              <Badge className="bg-red-500 text-white text-xs mb-2">
+                                50% OFF - Limited Time
+                              </Badge>
+                            </div>
+                          )}
                           <div className="text-4xl font-bold">
-                            {formatPrice(tier.monthlyPrice!)}
+                            {tier.id === "kdm-consortium" && trackerStatus?.discountActive
+                              ? formatPrice(Math.floor(tier.monthlyPrice! / 2))
+                              : formatPrice(tier.monthlyPrice!)}
                           </div>
                           <div className="text-muted-foreground">per month</div>
                           <div className="text-sm text-muted-foreground mt-1">
-                            or {formatPrice(tier.annualPrice!)} billed annually
+                            or {tier.id === "kdm-consortium" && trackerStatus?.discountActive
+                              ? formatPrice(Math.floor(tier.annualPrice! / 2))
+                              : formatPrice(tier.annualPrice!)} billed annually
                             <Badge className="ml-2 bg-green-500 text-white text-xs">
-                              Save 10%
+                              {tier.id === "kdm-consortium" && trackerStatus?.discountActive
+                                ? "50% + 10% = 55% OFF"
+                                : "Save 10%"}
                             </Badge>
                           </div>
+                          {tier.id === "kdm-consortium" && trackerStatus && (
+                            <div className="text-xs text-amber-600 mt-2 font-semibold">
+                              {trackerStatus.discountActive
+                                ? `Only ${trackerStatus.remainingSlots} slots remaining (${trackerStatus.claimedSlots}/${trackerStatus.totalSlots} claimed)`
+                                : "Discount period ended"}
+                            </div>
+                          )}
                         </>
                       )}
                     </div>
