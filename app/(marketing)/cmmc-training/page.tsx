@@ -26,9 +26,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CMMC Training - KDM - E3W | Strategic Value Plus",
-  description: "Join the next CMMC training cohort. Team-based approach to cybersecurity compliance for DoD contractors. Achieve CMMC certification in 90-180 days.",
-  keywords: ["CMMC training", "CMMC certification", "DoD compliance", "cybersecurity training", "NIST 800-171", "defense contractors"],
+  title: "CMMC Level 1 Training - KDM - E3W | Strategic Value Plus",
+  description: "Join the next CMMC Level 1 training cohort. Team-based approach to cybersecurity compliance for DoD contractors. Achieve CMMC Level 1 certification in 90-180 days.",
+  keywords: ["CMMC Level 1 training", "CMMC Level 1 certification", "DoD compliance", "cybersecurity training", "NIST 800-171", "defense contractors"],
 };
 
 export default function CMMCTrainingPage() {
@@ -78,10 +78,10 @@ export default function CMMCTrainingPage() {
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               Register for the Next
-              <span className="block text-yellow-400 mt-2">CMMC CyberSecurity Compliance Training Cohort</span>
+              <span className="block text-yellow-400 mt-2">CMMC Level 1 CyberSecurity Compliance Training Cohort</span>
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Don't lose your DoD contracts. Join the KDM Consortium Cohort Program and get certified in 90-180 days.
+              Don't lose your DoD contracts. Join the KDM Consortium Cohort Program and achieve CMMC Level 1 certification in 90-180 days.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/checkout/cmmc-cohort">
@@ -149,10 +149,10 @@ export default function CMMCTrainingPage() {
                 CMMC Cohort Program
               </Badge>
               <h2 className="text-4xl font-bold mb-4">
-                Team-Based Approach to Cybersecurity Compliance
+                Team-Based Approach to CMMC Level 1 Compliance
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                The KDM Consortium brings a team-based approach to cybersecurity compliance through the CMMC Cohorts, powered by Strategic Value Plus Solutions, LLC (V+). We help you get ready for your third-party C3PAO assessment.
+                The KDM Consortium brings a team-based approach to CMMC Level 1 cybersecurity compliance through the CMMC Cohorts, powered by Strategic Value Plus Solutions, LLC (V+). We help you get ready for your third-party C3PAO assessment.
               </p>
             </div>
 
@@ -217,7 +217,7 @@ export default function CMMCTrainingPage() {
                         <div className="flex items-start gap-3">
                           <Shield className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
                           <div>
-                            <strong>Compliance Required:</strong> Level 1 and Level 2 requirements now in effect for DoD contractors
+                            <strong>Compliance Required:</strong> CMMC Level 1 requirements now in effect for DoD contractors
                           </div>
                         </div>
                       </div>
@@ -272,7 +272,7 @@ export default function CMMCTrainingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-700">
-                    DoD may require CMMC Level 1 (Self-Assessment) or Level 2 (Self/C3PAO) in solicitations. <strong>SPRS score and CMMC UID become mandatory for eligibility.</strong>
+                    DoD requires CMMC Level 1 (Self-Assessment) in solicitations. <strong>SPRS score and CMMC UID become mandatory for eligibility.</strong>
                   </p>
                 </CardContent>
               </Card>
@@ -375,9 +375,9 @@ export default function CMMCTrainingPage() {
                 <Target className="h-4 w-4 mr-2 inline" />
                 Proven Process
               </Badge>
-              <h2 className="text-4xl font-bold mb-4">Turnkey Compliance for Defense Contractors</h2>
+              <h2 className="text-4xl font-bold mb-4">Turnkey CMMC Level 1 Compliance for Defense Contractors</h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                KDM & Associates is a trusted partner of Strategic Value Plus Solutions, LLC (V+), leveraging the power of the <strong>CMMC Accelerator</strong> to deliver the Cohort Program — a turnkey solution purpose-built for small and mid-sized contractors.
+                KDM & Associates is a trusted partner of Strategic Value Plus Solutions, LLC (V+), leveraging the power of the <strong>CMMC Accelerator</strong> to deliver the Cohort Program — a turnkey solution purpose-built for small and mid-sized contractors seeking CMMC Level 1 certification.
               </p>
             </div>
 
@@ -498,12 +498,12 @@ export default function CMMCTrainingPage() {
                   <h3 className="text-2xl font-bold text-white">Proven Timeline</h3>
                 </div>
                 <p className="text-xl text-blue-100 mb-6">
-                  Manufacturers who follow a structured approach often achieve compliance in <strong className="text-yellow-400">90–180 days</strong>.
+                  Organizations who follow a structured approach often achieve CMMC Level 1 compliance in <strong className="text-yellow-400">90–180 days</strong>.
                 </p>
                 <div className="space-y-2 text-lg">
                   <p className="font-semibold text-yellow-400 text-2xl">Protect your contracts. Protect your future.</p>
                   <p className="text-blue-100">
-                    Join us for a clear, practical roadmap to CMMC readiness and certification.
+                    Join us for a clear, practical roadmap to CMMC Level 1 readiness and certification.
                   </p>
                 </div>
                 <Link href="/checkout/cmmc-cohort">
