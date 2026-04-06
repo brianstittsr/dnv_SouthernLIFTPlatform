@@ -34,8 +34,8 @@ export default function CMMCCohortPage() {
   });
 
   const productDetails = {
-    name: "KDM CMMC Cohort 2026",
-    description: "CMMC 12-Week Readiness & Compliance Cohort (Required Preparation)",
+    name: "KDM CMMC Level 1 Cohort 2026",
+    description: "CMMC Level 1 - 12-Week Readiness & Compliance Cohort (Required Preparation)",
     price: 7500.00,
     quantity: 1,
   };
@@ -132,8 +132,9 @@ export default function CMMCCohortPage() {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-2">Pay KDM Peach Freestyle Sandbox</h1>
             <p className="text-xl text-muted-foreground">
-              Complete your CMMC Cohort 2026 registration
+              Complete your CMMC Level 1 Cohort 2026 registration
             </p>
+            <Badge className="mt-4 bg-blue-600">CMMC Level 1 (L1)</Badge>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
@@ -334,8 +335,11 @@ export default function CMMCCohortPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5 text-blue-600" />
-                    What's Included in the CMMC Cohort
+                    What's Included in the CMMC Level 1 Cohort
                   </CardTitle>
+                  <CardDescription>
+                    12-Week Readiness & Compliance Program for CMMC Level 1 (L1) Certification
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
