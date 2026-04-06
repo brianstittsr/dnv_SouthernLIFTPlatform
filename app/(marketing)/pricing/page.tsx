@@ -66,7 +66,7 @@ const PRICING_TIERS = [
     features: [
       "12-week guided certification program",
       "Expert-led training sessions",
-      "CMMC 2.0 Level 2 preparation",
+      "CMMC 2.0 Level 1 preparation",
       "Documentation templates & tools",
       "Mock assessments & gap analysis",
       "1-on-1 mentor sessions (4 hours)",
