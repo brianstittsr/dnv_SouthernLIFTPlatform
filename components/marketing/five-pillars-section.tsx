@@ -55,161 +55,144 @@ export function FivePillarsSection() {
     <section className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       <style>{glowStyles}</style>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          {/* Left Column - Text Content */}
-          <div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Five Pillars; KDM's Strategic Engine for Readiness, Scale and Impact.
-            </h2>
-            <p className="text-xl text-gray-300 mb-6 leading-relaxed">
-              KDM Consortium unites Government Contracting, Manufacturing, Critical Minerals, Opportunity Zones, and Access to Capital to help partners move faster, build stronger, and win together.
-            </p>
-            <p className="text-lg text-gray-400 mb-8">
-              Where mission meets market and collaboration yields significant results.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold w-full sm:w-auto" asChild>
-                <Link href="/contact">
-                  Partner With KDM
-                </Link>
-              </Button>
-              <Button size="lg" className="bg-white text-slate-900 hover:bg-gray-100 font-semibold w-full sm:w-auto" asChild>
-                <Link href="/5-pillars">
-                  Explore the Five Pillars
-                </Link>
-              </Button>
+        {/* Centered Text Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight max-w-4xl mx-auto">
+            Five Pillars; KDM's Strategic Engine for Readiness, Scale and Impact.
+          </h2>
+          <p className="text-xl text-gray-300 mb-4 leading-relaxed max-w-3xl mx-auto">
+            KDM Consortium unites Government Contracting, Manufacturing, Critical Minerals, Opportunity Zones, and Access to Capital to help partners move faster, build stronger, and win together.
+          </p>
+          <p className="text-lg text-gray-400 mb-8 max-w-3xl mx-auto">
+            Where mission meets market and collaboration yields significant results.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold" asChild>
+              <Link href="/contact">
+                Partner With KDM
+              </Link>
+            </Button>
+            <Button size="lg" className="bg-white text-slate-900 hover:bg-gray-100 font-semibold" asChild>
+              <Link href="/5-pillars">
+                Explore the Five Pillars
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Full-Width Pillar Diagram */}
+        <div className="mb-16">
+          <p className="text-sm font-semibold uppercase tracking-wide text-gray-400 text-right mb-3">Integrated Ecosystem View</p>
+          <div className="text-center mb-10">
+            <h3 className="text-3xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent mt-3"></div>
+          </div>
+
+          {/* Five Classical Pillars */}
+          <div className="flex items-end justify-center gap-2 sm:gap-6 lg:gap-10 mb-8">
+            {/* Pillar 1 - Government Contracting */}
+            <div
+              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 flex-1 max-w-[11rem] ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+              onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
+            >
+              <div className="relative w-full h-[36rem] mb-4">
+                <Image
+                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                  alt="Government Contracting Pillar"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <p className="text-white font-bold text-sm text-center leading-snug">Government<br />Contracting</p>
+            </div>
+
+            {/* Pillar 2 - Manufacturing */}
+            <div
+              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 flex-1 max-w-[11rem] ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+              onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
+            >
+              <div className="relative w-full h-[36rem] mb-4">
+                <Image
+                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                  alt="Manufacturing Pillar"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white font-bold text-sm text-center leading-snug">Manufacturing<br />& Supply Chain</p>
+            </div>
+
+            {/* Pillar 3 - Critical Minerals */}
+            <div
+              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 flex-1 max-w-[11rem] ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+              onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
+            >
+              <div className="relative w-full h-[36rem] mb-4">
+                <Image
+                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                  alt="Critical Minerals Pillar"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white font-bold text-sm text-center leading-snug">Critical<br />Minerals</p>
+            </div>
+
+            {/* Pillar 4 - Opportunity Zones */}
+            <div
+              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 flex-1 max-w-[11rem] ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+              onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
+            >
+              <div className="relative w-full h-[36rem] mb-4">
+                <Image
+                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                  alt="Opportunity Zones Pillar"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white font-bold text-sm text-center leading-snug">Opportunity<br />Zones</p>
+            </div>
+
+            {/* Pillar 5 - Access to Capital */}
+            <div
+              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 flex-1 max-w-[11rem] ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
+              onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
+            >
+              <div className="relative w-full h-[36rem] mb-4">
+                <Image
+                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                  alt="Access to Capital Pillar"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <p className="text-white font-bold text-sm text-center leading-snug">Access to<br />Capital</p>
             </div>
           </div>
 
-          {/* Right Column - Greek Pillars Diagram */}
-          <div>
-            <div className="text-right mb-4">
-              <p className="text-sm font-semibold uppercase tracking-wide text-gray-400">Integrated Ecosystem View</p>
-            </div>
-            <div className="relative w-full max-w-2xl mx-auto">
-              {/* KDM Consortium Header */}
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
-                <div className="h-1 w-full bg-gradient-to-r from-transparent via-white to-transparent mt-2"></div>
-              </div>
-
-              {/* Five Classical Pillars */}
-              <div className="flex items-end justify-center gap-6 mb-8">
-                {/* Pillar 1 - Government Contracting */}
-                <div 
-                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-                  onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
-                >
-                  <div className="relative h-144 w-60 mb-2">
-                    <Image
-                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                      alt="Government Contracting Pillar"
-                      fill
-                      className="object-contain"
-                      priority
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Government<br />Contracting</p>
-                  </div>
-                </div>
-
-                {/* Pillar 2 - Manufacturing */}
-                <div 
-                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-                  onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
-                >
-                  <div className="relative h-144 w-60 mb-2">
-                    <Image
-                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                      alt="Manufacturing Pillar"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Manufacturing<br />& Supply Chain</p>
-                  </div>
-                </div>
-
-                {/* Pillar 3 - Critical Minerals */}
-                <div 
-                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-                  onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
-                >
-                  <div className="relative h-144 w-60 mb-2">
-                    <Image
-                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                      alt="Critical Minerals Pillar"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Critical<br />Minerals</p>
-                  </div>
-                </div>
-
-                {/* Pillar 4 - Opportunity Zones */}
-                <div 
-                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-                  onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
-                >
-                  <div className="relative h-144 w-60 mb-2">
-                    <Image
-                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                      alt="Opportunity Zones Pillar"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Opportunity<br />Zones</p>
-                  </div>
-                </div>
-
-                {/* Pillar 5 - Access to Capital */}
-                <div 
-                  className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-                  onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
-                >
-                  <div className="relative h-144 w-60 mb-2">
-                    <Image
-                      src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                      alt="Access to Capital Pillar"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold text-xs leading-tight">Access to<br />Capital</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description Panel */}
-              {selectedPillar && (
-                <div className="bg-slate-800/90 border-2 border-white rounded-lg p-6 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <h4 className="text-xl font-bold text-white mb-3 capitalize">
-                    {selectedPillar.replace('-', ' ')}
-                  </h4>
-                  <p className="text-gray-300 leading-relaxed">
-                    {pillarDescriptions[selectedPillar as keyof typeof pillarDescriptions]}
-                  </p>
-                  <Link 
-                    href={`/5-pillars/${selectedPillar === 'government-contracting' ? 'defense-cmmc' : selectedPillar === 'manufacturing' ? 'us-manufacturing' : selectedPillar}`}
-                    className="inline-flex items-center gap-2 mt-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors"
-                  >
-                    Learn More <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              )}
-
-              <p className="text-xs text-gray-400 text-right italic">
-                Click on each pillar to see its description.
+          {/* Description Panel */}
+          {selectedPillar && (
+            <div className="bg-slate-800/90 border-2 border-white/30 rounded-xl p-6 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+              <h4 className="text-xl font-bold text-white mb-3 capitalize">
+                {selectedPillar.replace(/-/g, ' ')}
+              </h4>
+              <p className="text-gray-300 leading-relaxed">
+                {pillarDescriptions[selectedPillar as keyof typeof pillarDescriptions]}
               </p>
+              <Link
+                href={`/5-pillars/${selectedPillar === 'government-contracting' ? 'defense-cmmc' : selectedPillar === 'manufacturing' ? 'us-manufacturing' : selectedPillar}`}
+                className="inline-flex items-center gap-2 mt-4 text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+              >
+                Learn More <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-          </div>
+          )}
+
+          <p className="text-xs text-gray-500 text-center italic mt-4">
+            Click on each pillar to see its description.
+          </p>
         </div>
 
         {/* Four Pillars Taglines */}
