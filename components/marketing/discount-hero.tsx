@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Clock, TrendingUp } from 'lucide-react';
+import { Zap, Clock } from 'lucide-react';
 
 interface TrackerStatus {
   remainingSlots: number;
@@ -55,117 +55,80 @@ export function DiscountHero() {
   const progressWidth = percentageClaimed;
 
   return (
-    <div className="bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white border-b border-slate-500">
-      <div className="container mx-auto px-4 py-4 sm:py-5">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-          {/* Left Column - Message */}
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="h-6 w-6" />
-              <Badge className="bg-white/20 text-white border-white/30 text-sm">
-                Limited Time Offer
-              </Badge>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-semibold mb-2 leading-tight">
-              50% OFF KDM Consortium Membership
-            </h2>
-            <p className="text-sm text-white/80 mb-4 max-w-2xl">
-              Join the first 50 members and get 50% off. Limited time offer before April 30th.
-            </p>
+    <div className="relative bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-slate-900 shadow-lg">
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(0) skewX(-12deg); }
+          100% { transform: translateX(400%) skewX(-12deg); }
+        }
+        .animate-shimmer { animation: shimmer 3s ease-in-out infinite; }
+      `}</style>
+      {/* Animated shimmer strip */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-y-0 -left-full w-1/3 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+      </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 mb-3">
-              <Button
-                asChild
-                size="sm"
-                className="bg-white text-slate-700 hover:bg-gray-100 font-semibold"
-              >
-                <Link href="/pricing">
-                  Claim Discount
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="sm"
-                variant="outline"
-                className="border-white/40 text-white hover:bg-white/10"
-              >
-                <Link href="/5-pillars">
-                  Learn More
-                </Link>
-              </Button>
-            </div>
+      <div className="relative container mx-auto px-4 py-3">
+        {/* Single-row announcement bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
 
-            {/* Countdown Stats */}
-            <div className="grid grid-cols-3 gap-2 text-sm">
-              <div className="bg-white/5 rounded p-2 border border-white/10">
-                <div className="text-lg font-bold">{trackerStatus.remainingSlots}</div>
-                <div className="text-xs text-white/70">Slots Left</div>
-              </div>
-              <div className="bg-white/5 rounded p-2 border border-white/10">
-                <div className="text-lg font-bold">{trackerStatus.claimedSlots}</div>
-                <div className="text-xs text-white/70">Claimed</div>
-              </div>
-              {daysRemaining !== null && (
-                <div className="bg-white/5 rounded p-2 border border-white/10">
-                  <div className="flex items-center gap-1">
+          {/* Left: badge + headline */}
+          <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+            <span className="inline-flex items-center gap-1.5 bg-slate-900 text-amber-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+              <Zap className="h-3.5 w-3.5" />
+              Founders Offer
+            </span>
+            <span className="text-slate-900 font-bold text-base sm:text-lg">
+              <span className="text-2xl font-extrabold">50% OFF</span> KDM Consortium Membership
+            </span>
+          </div>
+
+          {/* Center: urgency stats */}
+          <div className="flex items-center gap-4 text-slate-900 shrink-0">
+            <div className="text-center">
+              <div className="text-xl font-extrabold leading-none">{trackerStatus.remainingSlots}</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Spots Left</div>
+            </div>
+            <div className="h-8 w-px bg-slate-900/20" />
+            {daysRemaining !== null && (
+              <>
+                <div className="text-center">
+                  <div className="flex items-center gap-1 text-xl font-extrabold leading-none">
                     <Clock className="h-4 w-4" />
-                    <span className="text-lg font-bold">{daysRemaining}</span>
+                    {daysRemaining}
                   </div>
-                  <div className="text-xs text-white/70">Days</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Days Left</div>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right Column - Visual Progress */}
-          <div className="hidden lg:flex flex-1 flex-col items-center justify-center">
-            <div className="w-full max-w-xs">
-              {/* Circular Progress */}
-              <div className="relative w-32 h-32 mx-auto mb-4">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
-                  {/* Background circle */}
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="90"
-                    fill="none"
-                    stroke="rgba(255, 255, 255, 0.2)"
-                    strokeWidth="8"
-                  />
-                  {/* Progress circle */}
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="90"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="8"
-                    strokeDasharray={`${(percentageClaimed / 100) * 2 * Math.PI * 90} ${2 * Math.PI * 90}`}
-                    strokeLinecap="round"
-                    className="transition-all duration-500"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-2xl font-bold">{percentageClaimed}%</div>
-                  <div className="text-xs text-white/70">Claimed</div>
-                </div>
+                <div className="h-8 w-px bg-slate-900/20" />
+              </>
+            )}
+            {/* Progress bar */}
+            <div className="hidden md:block w-28">
+              <div className="flex justify-between text-[10px] font-semibold opacity-75 mb-1">
+                <span>{trackerStatus.claimedSlots} claimed</span>
+                <span>{trackerStatus.totalSlots}</span>
               </div>
-
-              {/* Linear Progress Bar */}
-              <div className="w-full">
-                <div className="bg-white/20 rounded-full h-2 overflow-hidden border border-white/20">
-                  <div
-                    className="bg-white h-full transition-all duration-500 rounded-full"
-                    style={{ width: `${progressWidth}%` }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-white/60 mt-1">
-                  <span>0</span>
-                  <span>50</span>
-                </div>
+              <div className="bg-slate-900/20 rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-slate-900 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${percentageClaimed}%` }}
+                />
               </div>
             </div>
           </div>
+
+          {/* Right: CTA */}
+          <div className="shrink-0">
+            <Button
+              asChild
+              className="bg-slate-900 text-amber-400 hover:bg-slate-800 font-bold px-6 py-2 text-sm shadow-md border-0 transition-transform hover:scale-105"
+            >
+              <Link href="/pricing">
+                Claim Your Spot →
+              </Link>
+            </Button>
+          </div>
+
         </div>
       </div>
     </div>
