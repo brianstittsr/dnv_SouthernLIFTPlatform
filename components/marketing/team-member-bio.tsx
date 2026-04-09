@@ -116,11 +116,18 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
         {/* Biography Column */}
         <div className="prose prose-lg max-w-none">
           <div className="text-muted-foreground space-y-4">
-            {member.fullBio.split('\n\n').map((paragraph, index) => (
-              <p key={index} className="leading-relaxed">
-                {paragraph}
+            {member.fullBio ? (
+              member.fullBio.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="leading-relaxed">
+                  {paragraph}
+                </p>
+              ))
+            ) : (
+              <p className="leading-relaxed italic">
+                Biography coming soon. {member.name} is a valued member of the KDM team,
+                bringing expertise in {member.title.toLowerCase()}.
               </p>
-            ))}
+            )}
           </div>
         </div>
       </div>
