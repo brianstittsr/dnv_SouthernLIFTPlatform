@@ -95,7 +95,7 @@ export function FivePillarsSection() {
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
               onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
             >
-              <div className="relative w-full h-[22rem]">
+              <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-[22rem]">
                 <Image
                   src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                   alt="Government Contracting Pillar"
@@ -112,7 +112,7 @@ export function FivePillarsSection() {
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
               onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
             >
-              <div className="relative w-full h-[22rem]">
+              <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-[22rem]">
                 <Image
                   src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                   alt="Manufacturing Pillar"
@@ -128,7 +128,7 @@ export function FivePillarsSection() {
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
               onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
             >
-              <div className="relative w-full h-[22rem]">
+              <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-[22rem]">
                 <Image
                   src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                   alt="Critical Minerals Pillar"
@@ -144,7 +144,7 @@ export function FivePillarsSection() {
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
               onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
             >
-              <div className="relative w-full h-[22rem]">
+              <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-[22rem]">
                 <Image
                   src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                   alt="Opportunity Zones Pillar"
@@ -160,7 +160,7 @@ export function FivePillarsSection() {
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
               onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
             >
-              <div className="relative w-full h-[22rem]">
+              <div className="relative w-full h-32 sm:h-40 md:h-48 lg:h-[22rem]">
                 <Image
                   src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
                   alt="Access to Capital Pillar"
