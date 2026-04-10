@@ -81,15 +81,15 @@ export function FivePillarsSection() {
         </div>
 
         {/* Full-Width Pillar Diagram */}
-        <div className="mb-16">
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-400 text-right mb-3">Integrated Ecosystem View</p>
-          <div className="text-center mb-10">
+        <div className="mb-8">
+          <p className="text-sm font-semibold uppercase tracking-wide text-gray-400 text-right mb-1">Integrated Ecosystem View</p>
+          <div className="text-center mb-4">
             <h3 className="text-3xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
             <div className="h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent mt-3"></div>
           </div>
 
           {/* Five Classical Pillars */}
-          <div className="grid grid-cols-5 gap-4 lg:gap-8 mb-8">
+          <div className="grid grid-cols-5 gap-2 sm:gap-4 lg:gap-6 mb-4">
             {/* Pillar 1 - Government Contracting */}
             <div
               className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
