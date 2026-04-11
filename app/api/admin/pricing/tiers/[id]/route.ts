@@ -8,9 +8,11 @@ import { doc, deleteDoc } from 'firebase/firestore';
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     if (!db) {
       return NextResponse.json(
         { error: 'Database not initialized' },
@@ -18,7 +20,7 @@ export async function DELETE(
       );
     }
 
-    const tierRef = doc(db, 'pricing_tiers', params.id);
+    const tierRef = doc(db, 'pricing_tiers', id);
     await deleteDoc(tierRef);
 
     return NextResponse.json({ success: true });
