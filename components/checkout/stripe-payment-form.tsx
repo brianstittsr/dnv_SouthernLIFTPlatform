@@ -44,6 +44,7 @@ function CheckoutForm({
   const elements = useElements();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isElementsReady, setIsElementsReady] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -92,6 +93,12 @@ function CheckoutForm({
     }
 
     if (!stripe || !elements) {
+      toast.error("Payment system is still loading. Please wait a moment and try again.");
+      return;
+    }
+
+    if (!isElementsReady) {
+      toast.error("Payment form is still initializing. Please wait...");
       return;
     }
 
@@ -294,6 +301,7 @@ function CheckoutForm({
             </p>
           </div>
           <PaymentElement 
+            onReady={() => setIsElementsReady(true)}
             options={{
               layout: "tabs",
               paymentMethodOrder: [
@@ -305,8 +313,6 @@ function CheckoutForm({
                 "klarna",
                 "us_bank_account",
                 "bank_transfer",
-                "bancontact",
-                "eps",
               ],
               wallets: {
                 applePay: "auto",
@@ -317,12 +323,18 @@ function CheckoutForm({
               },
             }}
           />
+          {!isElementsReady && (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              <span className="text-sm text-muted-foreground">Loading payment options...</span>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       <Button
         type="submit"
-        disabled={!stripe || isProcessing}
+        disabled={!stripe || !isElementsReady || isProcessing}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-lg"
         size="lg"
       >
