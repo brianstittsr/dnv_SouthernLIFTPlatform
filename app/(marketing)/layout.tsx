@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { ContactPopup } from "@/components/marketing/contact-popup";
+import { DiscountHero } from "@/components/marketing/discount-hero";
 import { OrganizationJsonLd, WebsiteJsonLd, LocalBusinessJsonLd } from "@/components/seo/json-ld";
 
 export default function MarketingLayout({
@@ -14,7 +15,8 @@ export default function MarketingLayout({
       <OrganizationJsonLd />
       <WebsiteJsonLd />
       <LocalBusinessJsonLd />
-      
+
+      <DiscountHero />
       <Navbar />
       {/* Main content landmark with skip link target - WCAG 2.4.1 */}
       <main id="main-content" className="flex-1" role="main" tabIndex={-1}>

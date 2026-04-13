@@ -83,38 +83,17 @@ export function DiscountHero() {
             </span>
           </div>
 
-          {/* Center: urgency stats */}
+          {/* Center: urgency stats - days left only */}
           <div className="flex items-center gap-4 text-slate-900 shrink-0">
-            <div className="text-center">
-              <div className="text-xl font-extrabold leading-none">{trackerStatus.remainingSlots}</div>
-              <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Spots Left</div>
-            </div>
-            <div className="h-8 w-px bg-slate-900/20" />
             {daysRemaining !== null && (
-              <>
-                <div className="text-center">
-                  <div className="flex items-center gap-1 text-xl font-extrabold leading-none">
-                    <Clock className="h-4 w-4" />
-                    {daysRemaining}
-                  </div>
-                  <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Days Left</div>
+              <div className="text-center">
+                <div className="flex items-center gap-1 text-xl font-extrabold leading-none">
+                  <Clock className="h-4 w-4" />
+                  {daysRemaining}
                 </div>
-                <div className="h-8 w-px bg-slate-900/20" />
-              </>
+                <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Days Left</div>
+              </div>
             )}
-            {/* Progress bar */}
-            <div className="hidden md:block w-28">
-              <div className="flex justify-between text-[10px] font-semibold opacity-75 mb-1">
-                <span>{trackerStatus.claimedSlots} claimed</span>
-                <span>{trackerStatus.totalSlots}</span>
-              </div>
-              <div className="bg-slate-900/20 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-slate-900 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${percentageClaimed}%` }}
-                />
-              </div>
-            </div>
           </div>
 
           {/* Right: CTA */}
