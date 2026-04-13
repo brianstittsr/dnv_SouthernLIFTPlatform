@@ -41,6 +41,19 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log("SetupIntent created:", { 
+      id: setupIntent.id, 
+      hasClientSecret: !!setupIntent.client_secret,
+      clientSecretPrefix: setupIntent.client_secret?.substring(0, 20) 
+    });
+
+    if (!setupIntent.client_secret) {
+      return NextResponse.json(
+        { error: "Stripe did not return a client secret. Please try again." },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       clientSecret: setupIntent.client_secret,
       customerId: customer.id,

@@ -115,7 +115,16 @@ function CheckoutForm({
       let confirmError: { message?: string } | null = null;
       let intentId: string | null = null;
 
+      // Validate client secret format - must contain _secret_ to be a valid client secret
+      if (!subscriptionId || !subscriptionId.includes('_secret_')) {
+        toast.error("Invalid payment session. Please go back and try again.");
+        console.error("Invalid client secret - missing _secret_ segment:", subscriptionId?.substring(0, 30));
+        setIsProcessing(false);
+        return;
+      }
+
       // Use confirmCardSetup for SetupIntent (seti_) - avoids elements/sessions API
+      console.log("confirmCardSetup clientSecret prefix:", subscriptionId?.substring(0, 25));
       const { error, setupIntent } = await stripe.confirmCardSetup(
         subscriptionId!, // clientSecret passed via subscriptionId prop in this context
         { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
