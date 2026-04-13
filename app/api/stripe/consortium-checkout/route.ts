@@ -117,6 +117,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       sessionId: checkoutSession.id,
+      url: checkoutSession.url,
       discountApplied: !!discountCouponId,
     });
   } catch (error) {

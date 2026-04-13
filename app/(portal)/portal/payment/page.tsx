@@ -6,14 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Check, Loader2 } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { toast } from "sonner";
 import { UserType, BUYER_PRICING, SUPPLIER_PRICING } from "@/lib/types/consortium";
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -84,18 +81,15 @@ export default function PaymentPage() {
         throw new Error("Failed to create checkout session");
       }
 
-      const { sessionId } = await response.json();
-      const stripe = await stripePromise;
+      const { sessionId, url } = await response.json();
 
-      if (!stripe) {
-        throw new Error("Stripe not loaded");
-      }
-
-      // Redirect to Stripe Checkout
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-
-      if (error) {
-        throw error;
+      // redirectToCheckout was removed in stripe-js v8; redirect via URL instead
+      if (url) {
+        window.location.href = url;
+      } else if (sessionId) {
+        window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
+      } else {
+        throw new Error("No checkout URL returned from server");
       }
     } catch (error) {
       console.error("Checkout error:", error);
