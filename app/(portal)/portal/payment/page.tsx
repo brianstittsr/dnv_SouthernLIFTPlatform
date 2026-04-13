@@ -92,7 +92,6 @@ export default function PaymentPage() {
       }
 
       // Redirect to Stripe Checkout
-      // @ts-expect-error - redirectToCheckout exists at runtime but types may be outdated
       const { error } = await stripe.redirectToCheckout({ sessionId });
 
       if (error) {
