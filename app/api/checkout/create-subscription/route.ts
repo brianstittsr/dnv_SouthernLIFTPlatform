@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-02-25.clover",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
   try {
@@ -68,10 +66,23 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // If no clientSecret yet, the subscription might be in pending state
-    // Return the subscription ID and customer ID - payment will be collected later
+    // If no clientSecret, create a payment intent for the subscription
     if (!clientSecret) {
-      console.warn("No client secret in subscription response, subscription may be pending payment");
+      console.log("No client secret from subscription, creating payment intent");
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(650 * 100), // Use promotional price
+        currency: "usd",
+        customer: customer.id,
+        automatic_payment_methods: {
+          enabled: true,
+          allow_redirects: "never",
+        },
+        metadata: {
+          subscriptionId: subscription.id,
+          membershipType: "kdm-consortium",
+        },
+      });
+      clientSecret = paymentIntent.client_secret;
     }
 
     return NextResponse.json({
