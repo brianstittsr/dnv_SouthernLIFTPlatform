@@ -114,7 +114,8 @@ function CheckoutForm({
       });
 
       if (error) {
-        toast.error(error.message || "Payment failed");
+        console.error("Stripe payment error:", error);
+        toast.error(error.message || "Payment failed. Please check your card details and try again.");
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
         try {
@@ -177,10 +178,27 @@ function CheckoutForm({
           toast.error(signupError instanceof Error ? signupError.message : "Failed to create account");
           router.push(`/checkout-success?session_id=${paymentIntent.id}`);
         }
+      } else if (paymentIntent) {
+        // Payment intent exists but status is not succeeded
+        console.log("Payment intent status:", paymentIntent.status);
+        const statusMessages: Record<string, string> = {
+          "requires_payment_method": "Please provide a valid payment method.",
+          "requires_confirmation": "Payment requires confirmation. Please try again.",
+          "requires_action": "Additional authentication required. Please check for 3D Secure prompts.",
+          "processing": "Payment is processing. Please wait...",
+          "canceled": "Payment was canceled. Please try again.",
+        };
+        toast.error(statusMessages[paymentIntent.status] || `Payment status: ${paymentIntent.status}. Please try again.`);
+        setIsProcessing(false);
+      } else {
+        console.error("No payment intent returned from Stripe");
+        toast.error("Payment failed. No transaction details received.");
+        setIsProcessing(false);
       }
     } catch (err) {
       console.error("Payment error:", err);
-      toast.error("An unexpected error occurred");
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      toast.error(`Payment error: ${errorMessage}. Please try again or contact support.`);
       setIsProcessing(false);
     }
   };
