@@ -98,6 +98,9 @@ export default function CheckoutCartPage() {
       } else {
         console.warn("No clientSecret available from subscription or payment intent");
         setClientSecret(null);
+        toast.error("Payment initialization failed. Please try again or contact support.");
+        setIsLoadingPayment(false);
+        return;
       }
 
       setSubscriptionId(subId);

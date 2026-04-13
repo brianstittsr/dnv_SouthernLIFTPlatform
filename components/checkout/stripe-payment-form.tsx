@@ -388,6 +388,38 @@ export function StripePaymentForm({
   isRecurring,
   userEmail,
 }: PaymentFormProps) {
+  // Validate clientSecret
+  if (!clientSecret) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <p className="text-red-800 font-medium mb-2">Payment System Error</p>
+        <p className="text-red-600 text-sm mb-4">
+          Unable to initialize payment form. The payment session may have expired.
+        </p>
+        <Button 
+          onClick={() => window.location.reload()} 
+          variant="outline"
+          className="border-red-300 text-red-700 hover:bg-red-100"
+        >
+          Refresh Page
+        </Button>
+      </div>
+    );
+  }
+
+  // Validate clientSecret format (should start with pi_)
+  if (!clientSecret.startsWith('pi_')) {
+    console.error("Invalid client secret format:", clientSecret);
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <p className="text-red-800 font-medium mb-2">Payment Configuration Error</p>
+        <p className="text-red-600 text-sm mb-4">
+          Invalid payment session. Please contact support.
+        </p>
+      </div>
+    );
+  }
+
   const options = {
     clientSecret,
     appearance: {
