@@ -1,5 +1,4 @@
 import { HeroCarousel } from "@/components/marketing/hero-carousel";
-import { DiscountHero } from "@/components/marketing/discount-hero";
 import { ServicesOverview } from "@/components/marketing/services-overview";
 import { FivePillarsSection } from "@/components/marketing/five-pillars-section";
 import { StatsSection } from "@/components/marketing/stats-section";
@@ -12,7 +11,6 @@ export const revalidate = 60; // Revalidate every 60 seconds to pick up hero sli
 export default function HomePage() {
   return (
     <>
-      <DiscountHero />
       <HeroCarousel />
       {/* <ServicesOverview /> */}
       <FivePillarsSection />
