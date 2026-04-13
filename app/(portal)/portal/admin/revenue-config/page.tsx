@@ -55,6 +55,10 @@ import {
   ArrowUpDown,
   Eye,
   Calendar,
+  Send,
+  Link,
+  Mail,
+  FileText,
 } from "lucide-react";
 import { mockCommissionRates } from "@/lib/mock-data/svp-admin-mock-data";
 import { 
@@ -158,6 +162,90 @@ export default function RevenueConfigPage() {
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   
   const [commissionRates, setCommissionRates] = useState<any[]>([]);
+
+  // Payment request states
+  interface PaymentRequest {
+    id: string;
+    amount: number;
+    currency: string;
+    status: string | null;
+    customerEmail: string | null;
+    customerName: string | null;
+    description: string | null;
+    hostedUrl: string | null;
+    paymentLinkUrl: string | null;
+    memo: string | null;
+    dueDate: string | null;
+    created: number;
+    paidAt: number | null;
+  }
+  const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [showCreateRequestDialog, setShowCreateRequestDialog] = useState(false);
+  const [sendingRequest, setSendingRequest] = useState(false);
+  const [newRequest, setNewRequest] = useState({
+    amount: "",
+    currency: "usd",
+    description: "",
+    customerEmail: "",
+    customerName: "",
+    memo: "",
+    dueDate: "",
+  });
+  const [createdRequest, setCreatedRequest] = useState<{ paymentLinkUrl?: string; hostedUrl?: string } | null>(null);
+
+  const loadPaymentRequests = async () => {
+    setLoadingRequests(true);
+    try {
+      const res = await fetch("/api/stripe/payment-request?limit=50");
+      const data = await res.json();
+      if (data.requests) setPaymentRequests(data.requests);
+    } catch (err) {
+      console.error("Failed to load payment requests:", err);
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  const handleCreateRequest = async () => {
+    if (!newRequest.amount || !newRequest.customerEmail || !newRequest.description) {
+      return;
+    }
+    setSendingRequest(true);
+    try {
+      const res = await fetch("/api/stripe/payment-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...newRequest,
+          amount: parseFloat(newRequest.amount),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setCreatedRequest({ paymentLinkUrl: data.paymentLink?.url, hostedUrl: data.invoice?.hostedUrl });
+      setPaymentRequests(prev => [{
+        id: data.invoice.id,
+        amount: parseFloat(newRequest.amount),
+        currency: newRequest.currency,
+        status: data.invoice.status,
+        customerEmail: newRequest.customerEmail,
+        customerName: newRequest.customerName || null,
+        description: newRequest.description,
+        hostedUrl: data.invoice.hostedUrl,
+        paymentLinkUrl: data.paymentLink?.url,
+        memo: newRequest.memo || null,
+        dueDate: newRequest.dueDate || null,
+        created: Date.now() / 1000,
+        paidAt: null,
+      }, ...prev]);
+      setNewRequest({ amount: "", currency: "usd", description: "", customerEmail: "", customerName: "", memo: "", dueDate: "" });
+    } catch (err) {
+      console.error("Failed to create payment request:", err);
+    } finally {
+      setSendingRequest(false);
+    }
+  };
 
   useEffect(() => {
     loadRealData();
@@ -492,8 +580,11 @@ export default function RevenueConfigPage() {
         if (v === 'billing-history' && billingHistory.length === 0) {
           loadBillingHistory();
         }
+        if (v === 'payment-requests' && paymentRequests.length === 0) {
+          loadPaymentRequests();
+        }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-7 w-full max-w-9xl">
+        <TabsList className="grid grid-cols-8 w-full max-w-9xl">
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="billing-history">Billing History</TabsTrigger>
@@ -501,6 +592,10 @@ export default function RevenueConfigPage() {
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="payouts">Payouts</TabsTrigger>
           <TabsTrigger value="sharing">Attribution</TabsTrigger>
+          <TabsTrigger value="payment-requests">
+            <Send className="h-3 w-3 mr-1" />
+            Payment Requests
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="commission" className="mt-6">
@@ -1535,6 +1630,275 @@ export default function RevenueConfigPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ── Payment Requests Tab ── */}
+        <TabsContent value="payment-requests" className="mt-6 space-y-6">
+
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Payment Requests</h2>
+              <p className="text-sm text-muted-foreground">Send a Stripe-hosted invoice or payment link to any customer by email.</p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={loadPaymentRequests} disabled={loadingRequests}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${loadingRequests ? "animate-spin" : ""}`} />
+                Refresh
+              </Button>
+              <Dialog open={showCreateRequestDialog} onOpenChange={(open) => { setShowCreateRequestDialog(open); if (!open) setCreatedRequest(null); }}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Send className="h-4 w-4 mr-2" />
+                    New Payment Request
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Create Payment Request</DialogTitle>
+                    <DialogDescription>
+                      A Stripe invoice will be emailed to the customer with a secure payment link.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  {createdRequest ? (
+                    <div className="space-y-4 py-4">
+                      <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <CheckCircle className="h-6 w-6 text-green-600 shrink-0" />
+                        <div>
+                          <p className="font-medium text-green-800">Payment request sent!</p>
+                          <p className="text-sm text-green-700">The customer received an email with a payment link.</p>
+                        </div>
+                      </div>
+                      {createdRequest.hostedUrl && (
+                        <div>
+                          <Label className="text-muted-foreground text-xs">Hosted Invoice URL</Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Input value={createdRequest.hostedUrl} readOnly className="font-mono text-xs" />
+                            <Button size="sm" variant="outline" onClick={() => window.open(createdRequest.hostedUrl!, "_blank")}>
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      {createdRequest.paymentLinkUrl && (
+                        <div>
+                          <Label className="text-muted-foreground text-xs">Direct Payment Link</Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Input value={createdRequest.paymentLinkUrl} readOnly className="font-mono text-xs" />
+                            <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(createdRequest.paymentLinkUrl!)}>
+                              <Link className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      <DialogFooter>
+                        <Button onClick={() => { setCreatedRequest(null); setShowCreateRequestDialog(false); }}>Done</Button>
+                      </DialogFooter>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 py-2">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                          <Label>Customer Email <span className="text-red-500">*</span></Label>
+                          <Input
+                            type="email"
+                            placeholder="customer@example.com"
+                            value={newRequest.customerEmail}
+                            onChange={e => setNewRequest(p => ({ ...p, customerEmail: e.target.value }))}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Label>Customer Name</Label>
+                          <Input
+                            placeholder="Full name (optional)"
+                            value={newRequest.customerName}
+                            onChange={e => setNewRequest(p => ({ ...p, customerName: e.target.value }))}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label>Amount <span className="text-red-500">*</span></Label>
+                          <div className="relative mt-1">
+                            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="number"
+                              min="0.50"
+                              step="0.01"
+                              placeholder="0.00"
+                              value={newRequest.amount}
+                              onChange={e => setNewRequest(p => ({ ...p, amount: e.target.value }))}
+                              className="pl-9"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Currency</Label>
+                          <Select value={newRequest.currency} onValueChange={v => setNewRequest(p => ({ ...p, currency: v }))}>
+                            <SelectTrigger className="mt-1">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="usd">USD — US Dollar</SelectItem>
+                              <SelectItem value="eur">EUR — Euro</SelectItem>
+                              <SelectItem value="gbp">GBP — British Pound</SelectItem>
+                              <SelectItem value="cad">CAD — Canadian Dollar</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="col-span-2">
+                          <Label>Description / Service <span className="text-red-500">*</span></Label>
+                          <Input
+                            placeholder="e.g. Consulting Services – April 2026"
+                            value={newRequest.description}
+                            onChange={e => setNewRequest(p => ({ ...p, description: e.target.value }))}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Label>Memo / Notes</Label>
+                          <Input
+                            placeholder="Internal memo or message to customer (optional)"
+                            value={newRequest.memo}
+                            onChange={e => setNewRequest(p => ({ ...p, memo: e.target.value }))}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Label>Due Date</Label>
+                          <Input
+                            type="date"
+                            value={newRequest.dueDate}
+                            onChange={e => setNewRequest(p => ({ ...p, dueDate: e.target.value }))}
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 text-xs text-muted-foreground p-3 bg-blue-50 rounded-lg">
+                        <Mail className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />
+                        <p>A Stripe invoice email will be sent automatically. The customer can pay via card through a secure hosted page.</p>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowCreateRequestDialog(false)}>Cancel</Button>
+                        <Button
+                          onClick={handleCreateRequest}
+                          disabled={sendingRequest || !newRequest.amount || !newRequest.customerEmail || !newRequest.description}
+                        >
+                          {sendingRequest ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Sending...</> : <><Send className="h-4 w-4 mr-2" />Send Request</>}
+                        </Button>
+                      </DialogFooter>
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          {/* Summary cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Total Sent", value: paymentRequests.length, icon: FileText, color: "text-blue-600" },
+              { label: "Paid", value: paymentRequests.filter(r => r.status === "paid").length, icon: CheckCircle, color: "text-green-600" },
+              { label: "Open", value: paymentRequests.filter(r => r.status === "open").length, icon: Clock, color: "text-amber-600" },
+              { label: "Total Collected", value: `$${paymentRequests.filter(r => r.status === "paid").reduce((s, r) => s + r.amount, 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "text-emerald-600" },
+            ].map(stat => (
+              <Card key={stat.label}>
+                <CardContent className="pt-5 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                      <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+                    </div>
+                    <stat.icon className={`h-8 w-8 ${stat.color} opacity-20`} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Requests table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Request History</CardTitle>
+              <CardDescription>All payment requests sent via Stripe invoices</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingRequests ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : paymentRequests.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
+                  <Send className="h-10 w-10 text-muted-foreground opacity-30" />
+                  <p className="text-muted-foreground">No payment requests yet.</p>
+                  <Button size="sm" onClick={() => setShowCreateRequestDialog(true)}>
+                    <Plus className="h-4 w-4 mr-2" />Create your first request
+                  </Button>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Due Date</TableHead>
+                      <TableHead>Sent</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paymentRequests.map(req => (
+                      <TableRow key={req.id}>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium text-sm">{req.customerName || "—"}</p>
+                            <p className="text-xs text-muted-foreground">{req.customerEmail}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm max-w-[180px] truncate">{req.description}</TableCell>
+                        <TableCell className="font-semibold text-sm">
+                          ${req.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} {req.currency.toUpperCase()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={req.status === "paid" ? "default" : req.status === "open" ? "secondary" : "outline"}
+                            className={req.status === "paid" ? "bg-green-100 text-green-800" : req.status === "open" ? "bg-amber-100 text-amber-800" : ""}>
+                            {req.status ?? "unknown"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {req.dueDate ? new Date(req.dueDate).toLocaleDateString() : "—"}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {new Date(req.created * 1000).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            {req.hostedUrl && (
+                              <Button size="sm" variant="ghost" onClick={() => window.open(req.hostedUrl!, "_blank")} title="View invoice">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {req.paymentLinkUrl && (
+                              <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(req.paymentLinkUrl!)} title="Copy payment link">
+                                <Link className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button size="sm" variant="ghost" onClick={() => window.open(`https://dashboard.stripe.com/invoices/${req.id}`, "_blank")} title="View in Stripe">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
       </Tabs>
 
       {/* Transaction Details Modal */}
