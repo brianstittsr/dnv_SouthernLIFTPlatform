@@ -284,6 +284,12 @@ const adminItems = [
     badge: "KDM",
   },
   {
+    title: "Consortium Pricing",
+    href: "/portal/admin/consortium/pricing",
+    icon: DollarSign,
+    badge: "New",
+  },
+  {
     title: "Settlements",
     href: "/portal/admin/settlements",
     icon: DollarSign,

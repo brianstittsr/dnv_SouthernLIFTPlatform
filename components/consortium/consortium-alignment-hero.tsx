@@ -13,12 +13,21 @@ import { useRouter } from "next/navigation";
 export function ConsortiumAlignmentHero() {
   const { addItem } = useCartStore();
   const router = useRouter();
+  const consortiumProduct = PRODUCTS['consortium'];
 
   const handleJoinConsortium = () => {
-    const consortiumProduct = PRODUCTS['consortium'];
     addItem(consortiumProduct, 1);
     toast.success("Consortium membership added to cart!");
     router.push("/checkout-cart");
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
   return (
@@ -57,7 +66,7 @@ export function ConsortiumAlignmentHero() {
               className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold w-full sm:w-auto"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
-              Join the Consortium - $1,250/month
+              Join the Consortium - {formatPrice(consortiumProduct.price)}/month
             </Button>
             <Button
               size="lg"
