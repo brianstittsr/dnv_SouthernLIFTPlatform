@@ -104,20 +104,57 @@ function CheckoutForm({
 
     setIsProcessing(true);
 
-    try {
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/checkout-success?session_id={PAYMENT_INTENT_ID}`,
-        },
-        redirect: "if_required",
-      });
+    // Determine intent type from client secret prefix
+    const isSetupIntent = (elements as any)._commonOptions?.clientSecret?.startsWith('seti_');
 
-      if (error) {
-        console.error("Stripe payment error:", error);
-        toast.error(error.message || "Payment failed. Please check your card details and try again.");
+    try {
+      let confirmError: { message?: string } | null = null;
+      let intentId: string | null = null;
+
+      if (isSetupIntent) {
+        // SetupIntent flow: save card, then create subscription server-side
+        const { error, setupIntent } = await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/checkout-success`,
+          },
+          redirect: "if_required",
+        });
+        confirmError = error || null;
+        if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
+          intentId = setupIntent.id;
+          // Create the subscription now that we have the payment method
+          const subResponse = await fetch("/api/checkout/confirm-subscription", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              setupIntentId: setupIntent.id,
+              paymentMethodId: setupIntent.payment_method,
+              email: formData.email,
+            }),
+          });
+          if (!subResponse.ok) {
+            const subError = await subResponse.json();
+            console.error("Subscription creation failed:", subError);
+          }
+        }
+      } else {
+        const { error, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/checkout-success`,
+          },
+          redirect: "if_required",
+        });
+        confirmError = error || null;
+        intentId = paymentIntent?.id || null;
+      }
+
+      if (confirmError) {
+        console.error("Stripe error:", confirmError);
+        toast.error(confirmError.message || "Payment failed. Please check your card details and try again.");
         setIsProcessing(false);
-      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      } else if (intentId) {
         try {
           const signupResponse = await fetch("/api/auth/register", {
             method: "POST",
@@ -128,7 +165,7 @@ function CheckoutForm({
               firstName: formData.firstName,
               lastName: formData.lastName,
               membershipType: "kdm-consortium",
-              paymentIntentId: paymentIntent.id,
+              paymentIntentId: intentId,
             }),
           });
 
@@ -145,7 +182,7 @@ function CheckoutForm({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              paymentIntentId: paymentIntent.id,
+              paymentIntentId: intentId,
               userId,
               email: formData.email,
               firstName: formData.firstName,
@@ -165,33 +202,21 @@ function CheckoutForm({
               email: formData.email,
               firstName: formData.firstName,
               lastName: formData.lastName,
-              paymentIntentId: paymentIntent.id,
+              paymentIntentId: intentId,
               amount,
               productName,
             }),
           });
 
           toast.success("Account created and payment successful!");
-          router.push(`/checkout-success?session_id=${paymentIntent.id}`);
+          router.push(`/checkout-success?session_id=${intentId}`);
         } catch (signupError) {
           console.error("Account creation error:", signupError);
           toast.error(signupError instanceof Error ? signupError.message : "Failed to create account");
-          router.push(`/checkout-success?session_id=${paymentIntent.id}`);
+          router.push(`/checkout-success?session_id=${intentId}`);
         }
-      } else if (paymentIntent) {
-        // Payment intent exists but status is not succeeded
-        console.log("Payment intent status:", paymentIntent.status);
-        const statusMessages: Record<string, string> = {
-          "requires_payment_method": "Please provide a valid payment method.",
-          "requires_confirmation": "Payment requires confirmation. Please try again.",
-          "requires_action": "Additional authentication required. Please check for 3D Secure prompts.",
-          "processing": "Payment is processing. Please wait...",
-          "canceled": "Payment was canceled. Please try again.",
-        };
-        toast.error(statusMessages[paymentIntent.status] || `Payment status: ${paymentIntent.status}. Please try again.`);
-        setIsProcessing(false);
       } else {
-        console.error("No payment intent returned from Stripe");
+        console.error("No intent ID returned from Stripe");
         toast.error("Payment failed. No transaction details received.");
         setIsProcessing(false);
       }
@@ -315,25 +340,16 @@ function CheckoutForm({
         <CardContent className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
             <p className="text-sm text-blue-900">
-              <strong>Payment Options:</strong> We accept credit cards, digital wallets (Apple Pay, Amazon Pay, Link), buy now, pay later (Afterpay, Klarna), bank transfers, and ACH direct debit.
+              <strong>Secure Payment:</strong> Enter your credit or debit card details below. Your card will be charged ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} per month for your KDM Consortium Membership.
             </p>
           </div>
           <PaymentElement 
             onReady={() => setIsElementsReady(true)}
             options={{
               layout: "tabs",
-              paymentMethodOrder: [
-                "card",
-                "amazon_pay",
-                "apple_pay",
-                "link",
-                "afterpay_clearpay",
-                "klarna",
-                "us_bank_account",
-                "bank_transfer",
-              ],
+              paymentMethodOrder: ["card"],
               wallets: {
-                applePay: "auto",
+                applePay: "never",
                 googlePay: "never",
               },
               fields: {
@@ -407,9 +423,9 @@ export function StripePaymentForm({
     );
   }
 
-  // Validate clientSecret format (should start with pi_)
-  if (!clientSecret.startsWith('pi_')) {
-    console.error("Invalid client secret format:", clientSecret);
+  // Validate clientSecret format (must start with pi_ or seti_)
+  if (!clientSecret.startsWith('pi_') && !clientSecret.startsWith('seti_')) {
+    console.error("Invalid client secret format:", clientSecret.substring(0, 10));
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
         <p className="text-red-800 font-medium mb-2">Payment Configuration Error</p>

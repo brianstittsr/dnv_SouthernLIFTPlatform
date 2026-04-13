@@ -65,45 +65,18 @@ export default function CheckoutCartPage() {
         throw new Error(error.error || "Failed to create subscription");
       }
 
-      const { clientSecret: secret, subscriptionId: subId, customerId } = await response.json();
-      
-      console.log("Subscription response:", { secret, subId, customerId });
-      
-      // If we have a subscription but no clientSecret, create a payment intent
-      if (subId && !secret) {
-        console.log("Subscription created but no clientSecret, creating payment intent");
-        const piResponse = await fetch("/api/checkout/create-payment-intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: total,
-            productName: "KDM Consortium Membership",
-            customerId,
-            subscriptionId: subId,
-          }),
-        });
+      const { clientSecret: secret, customerId, setupIntentId } = await response.json();
 
-        if (piResponse.ok) {
-          const piData = await piResponse.json();
-          console.log("Payment intent created:", piData);
-          setClientSecret(piData.clientSecret);
-        } else {
-          const error = await piResponse.json();
-          console.error("Payment intent creation failed:", error);
-          throw new Error(error.error || "Failed to create payment intent");
-        }
-      } else if (secret) {
-        console.log("Using clientSecret from subscription:", secret);
-        setClientSecret(secret);
-      } else {
-        console.warn("No clientSecret available from subscription or payment intent");
-        setClientSecret(null);
+      console.log("Setup intent response:", { secret: !!secret, customerId, setupIntentId });
+
+      if (!secret) {
         toast.error("Payment initialization failed. Please try again or contact support.");
         setIsLoadingPayment(false);
         return;
       }
 
-      setSubscriptionId(subId);
+      setClientSecret(secret);
+      setSubscriptionId(customerId); // store customerId for use after card setup
       setPriceId(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || null);
       setShowEmailForm(false);
       setShowPaymentForm(true);

@@ -15,86 +15,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!priceId) {
-      return NextResponse.json(
-        { error: "Price ID is required. Please ensure NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID is configured." },
-        { status: 400 }
-      );
-    }
-
-    // First, try to find existing customer by email
+    // Find or create customer
     let customer: Stripe.Customer | null = null;
     const customers = await stripe.customers.list({ email, limit: 1 });
-    
     if (customers.data.length > 0) {
       customer = customers.data[0];
     } else {
-      // Create new customer if doesn't exist
       customer = await stripe.customers.create({
         email,
-        metadata: {
-          source: "kdm-consortium-membership",
-        },
+        metadata: { source: "kdm-consortium-membership" },
       });
     }
 
-    // Create subscription
-    const subscription = await stripe.subscriptions.create({
+    // Use SetupIntent to collect card details first.
+    // After payment method is confirmed, we create the subscription separately.
+    // This avoids the invoice PaymentIntent 400 error with Stripe Elements.
+    const setupIntent = await stripe.setupIntents.create({
       customer: customer.id,
-      items: [
-        {
-          price: priceId,
-        },
-      ],
-      payment_behavior: "default_incomplete",
-      payment_settings: {
-        save_default_payment_method: "on_subscription",
-      },
-      expand: ["latest_invoice.payment_intent"],
+      usage: "off_session",
+      payment_method_types: ["card"],
       metadata: {
+        priceId: priceId || "",
         membershipType: "kdm-consortium",
-        source: "checkout",
+        email,
       },
     });
-
-    let clientSecret: string | null = null;
-    
-    if (subscription.latest_invoice && typeof subscription.latest_invoice !== 'string') {
-      const invoice = subscription.latest_invoice as any;
-      if (invoice.payment_intent && typeof invoice.payment_intent !== 'string') {
-        clientSecret = invoice.payment_intent.client_secret;
-      }
-    }
-
-    // If no clientSecret, create a payment intent for the subscription
-    if (!clientSecret) {
-      console.log("No client secret from subscription, creating payment intent");
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(650 * 100), // Use promotional price
-        currency: "usd",
-        customer: customer.id,
-        automatic_payment_methods: {
-          enabled: true,
-          allow_redirects: "never",
-        },
-        metadata: {
-          subscriptionId: subscription.id,
-          membershipType: "kdm-consortium",
-        },
-      });
-      clientSecret = paymentIntent.client_secret;
-    }
 
     return NextResponse.json({
-      subscriptionId: subscription.id,
-      clientSecret: clientSecret || null,
+      clientSecret: setupIntent.client_secret,
       customerId: customer.id,
-      status: subscription.status,
+      setupIntentId: setupIntent.id,
+      mode: "setup",
     });
   } catch (error) {
-    console.error("Subscription creation error:", error);
+    console.error("Setup intent creation error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create subscription" },
+      { error: error instanceof Error ? error.message : "Failed to initialize payment" },
       { status: 500 }
     );
   }
