@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
-  PaymentElement,
+  CardElement,
   Elements,
   useStripe,
   useElements,
@@ -104,50 +104,38 @@ function CheckoutForm({
 
     setIsProcessing(true);
 
-    // Determine intent type from client secret prefix
-    const isSetupIntent = (elements as any)._commonOptions?.clientSecret?.startsWith('seti_');
-
     try {
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        toast.error("Card element not found. Please refresh and try again.");
+        setIsProcessing(false);
+        return;
+      }
+
       let confirmError: { message?: string } | null = null;
       let intentId: string | null = null;
 
-      if (isSetupIntent) {
-        // SetupIntent flow: save card, then create subscription server-side
-        const { error, setupIntent } = await stripe.confirmSetup({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/checkout-success`,
-          },
-          redirect: "if_required",
+      // Use confirmCardSetup for SetupIntent (seti_) - avoids elements/sessions API
+      const { error, setupIntent } = await stripe.confirmCardSetup(
+        subscriptionId!, // clientSecret passed via subscriptionId prop in this context
+        { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
+      );
+      confirmError = error || null;
+      if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
+        intentId = setupIntent.id;
+        const subResponse = await fetch("/api/checkout/confirm-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            setupIntentId: setupIntent.id,
+            paymentMethodId: setupIntent.payment_method,
+            email: formData.email,
+          }),
         });
-        confirmError = error || null;
-        if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
-          intentId = setupIntent.id;
-          // Create the subscription now that we have the payment method
-          const subResponse = await fetch("/api/checkout/confirm-subscription", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              setupIntentId: setupIntent.id,
-              paymentMethodId: setupIntent.payment_method,
-              email: formData.email,
-            }),
-          });
-          if (!subResponse.ok) {
-            const subError = await subResponse.json();
-            console.error("Subscription creation failed:", subError);
-          }
+        if (!subResponse.ok) {
+          const subError = await subResponse.json();
+          console.error("Subscription creation failed:", subError);
         }
-      } else {
-        const { error, paymentIntent } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/checkout-success`,
-          },
-          redirect: "if_required",
-        });
-        confirmError = error || null;
-        intentId = paymentIntent?.id || null;
       }
 
       if (confirmError) {
@@ -343,24 +331,28 @@ function CheckoutForm({
               <strong>Secure Payment:</strong> Enter your credit or debit card details below. Your card will be charged ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} per month for your KDM Consortium Membership.
             </p>
           </div>
-          <PaymentElement 
-            onReady={() => setIsElementsReady(true)}
-            options={{
-              layout: "tabs",
-              paymentMethodOrder: ["card"],
-              wallets: {
-                applePay: "never",
-                googlePay: "never",
-              },
-              fields: {
-                billingDetails: "auto",
-              },
-            }}
-          />
+          <div className="border border-gray-300 rounded-lg p-4 bg-white">
+            <CardElement
+              onReady={() => setIsElementsReady(true)}
+              options={{
+                style: {
+                  base: {
+                    fontSize: "16px",
+                    color: "#1f2937",
+                    fontFamily: "system-ui, sans-serif",
+                    "::placeholder": { color: "#9ca3af" },
+                    iconColor: "#2563eb",
+                  },
+                  invalid: { color: "#ef4444", iconColor: "#ef4444" },
+                },
+                hidePostalCode: false,
+              }}
+            />
+          </div>
           {!isElementsReady && (
             <div className="flex items-center justify-center py-4">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              <span className="text-sm text-muted-foreground">Loading payment options...</span>
+              <span className="text-sm text-muted-foreground">Loading card form...</span>
             </div>
           )}
         </CardContent>
@@ -368,7 +360,7 @@ function CheckoutForm({
 
       <Button
         type="submit"
-        disabled={!stripe || !isElementsReady || isProcessing}
+        disabled={!stripe || !isElementsReady || isProcessing || !subscriptionId}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-lg"
         size="lg"
       >
@@ -423,41 +415,12 @@ export function StripePaymentForm({
     );
   }
 
-  // Validate clientSecret format (must start with pi_ or seti_)
-  if (!clientSecret.startsWith('pi_') && !clientSecret.startsWith('seti_')) {
-    console.error("Invalid client secret format:", clientSecret.substring(0, 10));
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <p className="text-red-800 font-medium mb-2">Payment Configuration Error</p>
-        <p className="text-red-600 text-sm mb-4">
-          Invalid payment session. Please contact support.
-        </p>
-      </div>
-    );
-  }
-
-  const options = {
-    clientSecret,
-    appearance: {
-      theme: "stripe" as const,
-      variables: {
-        colorPrimary: "#2563eb",
-        colorBackground: "#ffffff",
-        colorText: "#1f2937",
-        colorDanger: "#ef4444",
-        fontFamily: "system-ui, sans-serif",
-        spacingUnit: "4px",
-        borderRadius: "8px",
-      },
-    },
-  };
-
   return (
-    <Elements stripe={stripePromise} options={options}>
+    <Elements stripe={stripePromise}>
       <CheckoutForm 
         amount={amount} 
         productName={productName}
-        subscriptionId={priceId}
+        subscriptionId={clientSecret}
         isRecurring={isRecurring}
         userEmail={userEmail}
       />
