@@ -124,21 +124,42 @@ export async function DELETE(req: NextRequest) {
     // Retrieve to check current status
     const invoice = await stripe.invoices.retrieve(invoiceId);
 
-    if (invoice.status === "paid") {
-      return NextResponse.json({ error: "Cannot cancel a paid invoice" }, { status: 400 });
-    }
-
     if (invoice.status === "void") {
       return NextResponse.json({ error: "Invoice is already cancelled" }, { status: 400 });
     }
 
+    // Paid invoices: issue a credit note to mark as refunded/cancelled
+    // This is the only Stripe-supported way to "cancel" a paid invoice
+    if (invoice.status === "paid") {
+      const amountPaid = invoice.amount_paid || 0;
+      if (amountPaid > 0) {
+        // Issue a full credit note with refund for invoices with actual amount
+        await stripe.creditNotes.create({
+          invoice: invoiceId,
+          refund_amount: amountPaid,
+          memo: "Cancelled by admin",
+        });
+      } else {
+        // For $0 paid invoices, issue a $0 credit note (just marks it administratively)
+        await stripe.creditNotes.create({
+          invoice: invoiceId,
+          memo: "Cancelled by admin",
+          lines: [],
+        });
+      }
+      // Update invoice metadata to mark as admin-cancelled
+      await stripe.invoices.update(invoiceId, {
+        metadata: { admin_cancelled: "true", admin_cancelled_at: new Date().toISOString() },
+      });
+      return NextResponse.json({ success: true, status: "cancelled" });
+    }
+
     // Draft invoices can be deleted; open invoices must be voided
-    let result: Stripe.Invoice;
     if (invoice.status === "draft") {
       await stripe.invoices.del(invoiceId);
       return NextResponse.json({ success: true, status: "deleted" });
     } else {
-      result = await stripe.invoices.voidInvoice(invoiceId);
+      const result = await stripe.invoices.voidInvoice(invoiceId);
       return NextResponse.json({ success: true, status: result.status });
     }
   } catch (error) {
@@ -166,7 +187,7 @@ export async function GET(req: NextRequest) {
         id: inv.id,
         amount: (inv.amount_due || 0) / 100,
         currency: inv.currency,
-        status: inv.status,
+        status: inv.metadata?.admin_cancelled === "true" ? "cancelled" : inv.status,
         customerEmail: inv.customer_email,
         customerName: inv.customer_name,
         description: inv.description,

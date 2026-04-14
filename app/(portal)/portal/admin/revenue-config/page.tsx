@@ -222,7 +222,7 @@ export default function RevenueConfigPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setPaymentRequests(prev =>
-        prev.map(r => r.id === invoiceId ? { ...r, status: "void" } : r)
+        prev.map(r => r.id === invoiceId ? { ...r, status: data.status === "cancelled" ? "cancelled" : "void" } : r)
       );
       setConfirmCancelId(null);
     } catch (err) {
@@ -1891,12 +1891,12 @@ export default function RevenueConfigPage() {
                             className={
                               req.status === "paid" ? "bg-green-100 text-green-800 border-green-200" :
                               req.status === "open" ? "bg-amber-100 text-amber-800 border-amber-200" :
-                              req.status === "void" ? "bg-gray-100 text-gray-500 border-gray-200 line-through" :
+                              req.status === "void" || req.status === "cancelled" ? "bg-gray-100 text-gray-500 border-gray-200 line-through" :
                               "bg-gray-100 text-gray-600"
                             }
                             variant="outline"
                           >
-                            {req.status === "void" ? "cancelled" : (req.status ?? "unknown")}
+                            {(req.status === "void" || req.status === "cancelled") ? "cancelled" : (req.status ?? "unknown")}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -1920,7 +1920,7 @@ export default function RevenueConfigPage() {
                             <Button size="sm" variant="ghost" onClick={() => window.open(`https://dashboard.stripe.com/invoices/${req.id}`, "_blank")} title="View in Stripe">
                               <ExternalLink className="h-4 w-4" />
                             </Button>
-                            {(req.status === "open" || req.status === "draft") && (
+                            {(req.status === "open" || req.status === "draft" || req.status === "paid") && (
                               confirmCancelId === req.id ? (
                                 <div className="flex items-center gap-1 ml-1 border border-red-200 rounded-md px-2 py-0.5 bg-red-50">
                                   <span className="text-xs text-red-700 font-medium">Cancel?</span>
