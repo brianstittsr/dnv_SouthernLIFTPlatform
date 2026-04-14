@@ -59,6 +59,8 @@ import {
   Link,
   Mail,
   FileText,
+  XCircle,
+  Ban,
 } from "lucide-react";
 import { mockCommissionRates } from "@/lib/mock-data/svp-admin-mock-data";
 import { 
@@ -193,6 +195,8 @@ export default function RevenueConfigPage() {
     dueDate: "",
   });
   const [createdRequest, setCreatedRequest] = useState<{ paymentLinkUrl?: string; hostedUrl?: string } | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
 
   const loadPaymentRequests = async () => {
     setLoadingRequests(true);
@@ -204,6 +208,27 @@ export default function RevenueConfigPage() {
       console.error("Failed to load payment requests:", err);
     } finally {
       setLoadingRequests(false);
+    }
+  };
+
+  const handleCancelRequest = async (invoiceId: string) => {
+    setCancellingId(invoiceId);
+    try {
+      const res = await fetch("/api/stripe/payment-request", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setPaymentRequests(prev =>
+        prev.map(r => r.id === invoiceId ? { ...r, status: "void" } : r)
+      );
+      setConfirmCancelId(null);
+    } catch (err) {
+      console.error("Cancel failed:", err);
+    } finally {
+      setCancellingId(null);
     }
   };
 
@@ -1862,9 +1887,16 @@ export default function RevenueConfigPage() {
                           ${req.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} {req.currency.toUpperCase()}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={req.status === "paid" ? "default" : req.status === "open" ? "secondary" : "outline"}
-                            className={req.status === "paid" ? "bg-green-100 text-green-800" : req.status === "open" ? "bg-amber-100 text-amber-800" : ""}>
-                            {req.status ?? "unknown"}
+                          <Badge
+                            className={
+                              req.status === "paid" ? "bg-green-100 text-green-800 border-green-200" :
+                              req.status === "open" ? "bg-amber-100 text-amber-800 border-amber-200" :
+                              req.status === "void" ? "bg-gray-100 text-gray-500 border-gray-200 line-through" :
+                              "bg-gray-100 text-gray-600"
+                            }
+                            variant="outline"
+                          >
+                            {req.status === "void" ? "cancelled" : (req.status ?? "unknown")}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -1880,7 +1912,7 @@ export default function RevenueConfigPage() {
                                 <Eye className="h-4 w-4" />
                               </Button>
                             )}
-                            {req.paymentLinkUrl && (
+                            {req.paymentLinkUrl && req.status !== "void" && (
                               <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(req.paymentLinkUrl!)} title="Copy payment link">
                                 <Link className="h-4 w-4" />
                               </Button>
@@ -1888,6 +1920,40 @@ export default function RevenueConfigPage() {
                             <Button size="sm" variant="ghost" onClick={() => window.open(`https://dashboard.stripe.com/invoices/${req.id}`, "_blank")} title="View in Stripe">
                               <ExternalLink className="h-4 w-4" />
                             </Button>
+                            {(req.status === "open" || req.status === "draft") && (
+                              confirmCancelId === req.id ? (
+                                <div className="flex items-center gap-1 ml-1 border border-red-200 rounded-md px-2 py-0.5 bg-red-50">
+                                  <span className="text-xs text-red-700 font-medium">Cancel?</span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-6 px-2 text-red-600 hover:bg-red-100 hover:text-red-700"
+                                    onClick={() => handleCancelRequest(req.id)}
+                                    disabled={cancellingId === req.id}
+                                  >
+                                    {cancellingId === req.id ? <Loader2 className="h-3 w-3 animate-spin" /> : "Yes"}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-6 px-2 text-gray-500 hover:bg-gray-100"
+                                    onClick={() => setConfirmCancelId(null)}
+                                  >
+                                    No
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                  onClick={() => setConfirmCancelId(req.id)}
+                                  title="Cancel invoice"
+                                >
+                                  <XCircle className="h-4 w-4" />
+                                </Button>
+                              )
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

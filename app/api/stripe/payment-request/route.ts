@@ -112,6 +112,44 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { invoiceId } = body;
+
+    if (!invoiceId) {
+      return NextResponse.json({ error: "invoiceId is required" }, { status: 400 });
+    }
+
+    // Retrieve to check current status
+    const invoice = await stripe.invoices.retrieve(invoiceId);
+
+    if (invoice.status === "paid") {
+      return NextResponse.json({ error: "Cannot cancel a paid invoice" }, { status: 400 });
+    }
+
+    if (invoice.status === "void") {
+      return NextResponse.json({ error: "Invoice is already cancelled" }, { status: 400 });
+    }
+
+    // Draft invoices can be deleted; open invoices must be voided
+    let result: Stripe.Invoice;
+    if (invoice.status === "draft") {
+      await stripe.invoices.del(invoiceId);
+      return NextResponse.json({ success: true, status: "deleted" });
+    } else {
+      result = await stripe.invoices.voidInvoice(invoiceId);
+      return NextResponse.json({ success: true, status: result.status });
+    }
+  } catch (error) {
+    console.error("Cancel payment request error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to cancel payment request" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
