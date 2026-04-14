@@ -55,28 +55,35 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send the payment link via Stripe invoice email (optional — also returns the URL)
-    // Create an invoice and send it so the customer gets an email
-    const invoiceItem = await stripe.invoiceItems.create({
-      customer: customer.id,
-      amount: Math.round(amount * 100),
-      currency,
-      description: description || "Payment Request",
-    });
-
+    // Create invoice first (send_invoice = manual collection, never auto-charged)
     const invoice = await stripe.invoices.create({
       customer: customer.id,
       collection_method: "send_invoice",
+      auto_advance: false, // prevents Stripe from auto-finalizing or auto-charging
       days_until_due: dueDate ? Math.max(1, Math.ceil((new Date(dueDate).getTime() - Date.now()) / 86400000)) : 30,
       description: memo || description || undefined,
       metadata: {
         source: "revenue-config-payment-request",
         paymentLinkId: paymentLink.id,
         paymentLinkUrl: paymentLink.url,
+        memo: memo || "",
+        dueDate: dueDate || "",
       },
     });
 
-    const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id);
+    // Add line item scoped to this specific invoice (avoids pulling in unrelated pending items)
+    await stripe.invoiceItems.create({
+      customer: customer.id,
+      invoice: invoice.id,
+      amount: Math.round(amount * 100),
+      currency,
+      description: description || "Payment Request",
+    });
+
+    // Finalize then send — status will be 'open' (awaiting payment), never auto-paid
+    const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id, {
+      auto_advance: false,
+    });
     await stripe.invoices.sendInvoice(finalizedInvoice.id);
 
     return NextResponse.json({

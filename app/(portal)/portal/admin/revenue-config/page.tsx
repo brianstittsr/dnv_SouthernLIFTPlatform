@@ -228,7 +228,7 @@ export default function RevenueConfigPage() {
         id: data.invoice.id,
         amount: parseFloat(newRequest.amount),
         currency: newRequest.currency,
-        status: data.invoice.status,
+        status: "open", // newly sent invoice is always open (awaiting payment)
         customerEmail: newRequest.customerEmail,
         customerName: newRequest.customerName || null,
         description: newRequest.description,
