@@ -33,6 +33,41 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Search, UserPlus, Ban, Trash2, RefreshCw } from "lucide-react";
 
+// Safe date formatter that handles various Firebase timestamp formats
+function formatDate(dateValue: any): string {
+  if (!dateValue) return "—";
+  
+  try {
+    // Handle Firebase Timestamp objects
+    if (dateValue._seconds !== undefined && dateValue._nanoseconds !== undefined) {
+      return new Date(dateValue._seconds * 1000).toLocaleDateString();
+    }
+    
+    // Handle Firestore Timestamp objects with toDate method
+    if (typeof dateValue.toDate === "function") {
+      return dateValue.toDate().toLocaleDateString();
+    }
+    
+    // Handle numeric timestamps (milliseconds)
+    if (typeof dateValue === "number") {
+      return new Date(dateValue).toLocaleDateString();
+    }
+    
+    // Handle ISO strings or RFC 2822 strings (most common from Firebase Auth)
+    if (typeof dateValue === "string") {
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) {
+        return "Invalid Date";
+      }
+      return date.toLocaleDateString();
+    }
+    
+    return "—";
+  } catch {
+    return "—";
+  }
+}
+
 interface User {
   uid: string;
   email: string;
@@ -362,12 +397,10 @@ export default function AdminUsersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {formatDate(user.createdAt)}
                   </TableCell>
                   <TableCell>
-                    {user.lastSignIn
-                      ? new Date(user.lastSignIn).toLocaleDateString()
-                      : "Never"}
+                    {user.lastSignIn ? formatDate(user.lastSignIn) : "Never"}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
