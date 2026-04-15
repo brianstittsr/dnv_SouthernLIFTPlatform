@@ -144,6 +144,7 @@ function CheckoutForm({
         if (!subResponse.ok) {
           const subError = await subResponse.json();
           console.error("Subscription creation failed:", subError);
+          throw new Error(subError.error || "Payment processing failed. Please try again.");
         }
       }
 
@@ -192,7 +193,7 @@ function CheckoutForm({
             }),
           });
 
-          await fetch("/api/checkout/send-confirmation-email", {
+          const emailResult = await fetch("/api/checkout/send-confirmation-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -204,6 +205,10 @@ function CheckoutForm({
               productName,
             }),
           });
+          
+          if (!emailResult.ok) {
+            console.warn("Confirmation email failed to send - user account was still created");
+          }
 
           toast.success("Account created and payment successful!");
           router.push(`/checkout-success?session_id=${intentId}`);

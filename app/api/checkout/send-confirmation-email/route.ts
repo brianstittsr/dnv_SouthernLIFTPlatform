@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
 
+const CC_EMAILS = ["bstitt@strategicvalueplus.com", "kmoore@kdm-assoc.com"];
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -92,9 +94,10 @@ If you have any questions about your membership or need support, please contact 
 © 2024 KDM & Associates. All rights reserved.
     `;
 
-    // Send email immediately
+    // Send email immediately with CC to admins
     const emailResult = await sendEmail({
       to: email,
+      cc: CC_EMAILS,
       subject: "Payment Confirmation - KDM Consortium Membership",
       html: emailContent,
       text: textContent,
