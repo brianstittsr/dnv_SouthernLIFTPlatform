@@ -162,11 +162,12 @@ export async function POST(req: NextRequest) {
     await assignUserRole(userRecord.uid, role as UserRole, tenantId);
 
     // Queue welcome email
+    const welcomeName = isConsortiumMembership ? `${firstName} ${lastName}` : companyName;
     await db.collection("emailQueue").add({
       to: [email],
       subject: "Welcome to the SVP Platform!",
       body: `
-        <h2>Welcome to the SVP Platform, ${companyName}!</h2>
+        <h2>Welcome to the SVP Platform, ${welcomeName}!</h2>
         <p>Thank you for registering as a <strong>${userTypeLabel}</strong>. Your account has been created successfully.</p>
         <p><strong>Getting Started:</strong></p>
         <ul>
@@ -189,9 +190,9 @@ export async function POST(req: NextRequest) {
       resourceId: userRecord.uid,
       details: {
         email,
-        companyName,
-        industry,
-        userType,
+        ...(companyName ? { companyName } : {}),
+        ...(industry ? { industry } : {}),
+        ...(userType ? { userType } : {}),
         role,
         roleTag,
         subscriptionTier: "free",
