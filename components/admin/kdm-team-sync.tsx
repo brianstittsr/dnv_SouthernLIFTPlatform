@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where, addDoc, Timestamp } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, updateDoc, doc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -233,13 +233,36 @@ export function KdmTeamSync() {
         const snapshot = await getDocs(q);
 
         if (!snapshot.empty) {
-          setSyncStatus(prev => prev.map((s, idx) => 
-            idx === i ? { ...s, status: "synced", message: "Already exists" } : s
-          ));
+          // Member exists - update bio if changed
+          const existingDoc = snapshot.docs[0];
+          const existingData = existingDoc.data();
+          
+          if (existingData.bio !== member.bio || !existingData.teamTag) {
+            const teamTag = member.isCEO ? "leadership" : 
+                           member.isCOO ? "leadership" :
+                           member.role === "affiliate" ? "affiliate" : "staff";
+            await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, existingDoc.id), {
+              bio: member.bio,
+              title: member.title,
+              expertise: member.expertise,
+              teamTag,
+              updatedAt: Timestamp.now(),
+            });
+            setSyncStatus(prev => prev.map((s, idx) => 
+              idx === i ? { ...s, status: "synced", message: "Bio updated" } : s
+            ));
+          } else {
+            setSyncStatus(prev => prev.map((s, idx) => 
+              idx === i ? { ...s, status: "synced", message: "Already exists" } : s
+            ));
+          }
           continue;
         }
 
         // Create new team member
+        const teamTag = member.isCEO ? "leadership" : 
+                       member.isCOO ? "leadership" :
+                       member.role === "affiliate" ? "affiliate" : "staff";
         const teammemberData = {
           firstName: member.firstName,
           lastName: member.lastName,
@@ -248,6 +271,7 @@ export function KdmTeamSync() {
           title: member.title,
           bio: member.bio,
           role: member.role,
+          teamTag,
           status: "active",
           isCEO: member.isCEO || false,
           isCOO: member.isCOO || false,
