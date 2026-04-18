@@ -290,6 +290,12 @@ const adminItems = [
     badge: "New",
   },
   {
+    title: "Membership Tracker",
+    href: "/portal/admin/consortium/membership-tracker",
+    icon: Users,
+    badge: "New",
+  },
+  {
     title: "Settlements",
     href: "/portal/admin/settlements",
     icon: DollarSign,
