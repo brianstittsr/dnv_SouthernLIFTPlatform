@@ -225,6 +225,91 @@ export async function POST(req: NextRequest) {
 }
 
 /**
+ * PATCH /api/admin/users
+ * Update a user account (profile, role, password)
+ */
+export async function PATCH(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const token = authHeader.split("Bearer ")[1];
+    const decodedToken = await auth.verifyIdToken(token);
+    const claims = decodedToken as any;
+
+    let isAdmin = claims.role === "platform_admin";
+    if (!isAdmin) {
+      const userDoc = await db.collection("users").doc(decodedToken.uid).get();
+      const userData = userDoc.data();
+      isAdmin = userData?.role === "platform_admin" || userData?.svpRole === "platform_admin";
+    }
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { userId, displayName, firstName, lastName, role, newPassword, tenantId } = body;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Missing required field: userId" }, { status: 400 });
+    }
+
+    // Build Firebase Auth update payload
+    const authUpdate: Record<string, string | boolean> = {};
+    if (displayName !== undefined) authUpdate.displayName = displayName;
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 });
+      }
+      authUpdate.password = newPassword;
+    }
+
+    if (Object.keys(authUpdate).length > 0) {
+      await auth.updateUser(userId, authUpdate);
+    }
+
+    // Update role via custom claims if role changed
+    if (role && Object.keys(USER_ROLES).includes(role)) {
+      await assignUserRole(userId, role as UserRole, tenantId || "kdm-svp-platform");
+    }
+
+    // Update Firestore user document
+    const firestoreUpdate: Record<string, any> = { updatedAt: Timestamp.now() };
+    if (displayName !== undefined) firestoreUpdate.displayName = displayName;
+    if (firstName !== undefined) firestoreUpdate.firstName = firstName;
+    if (lastName !== undefined) firestoreUpdate.lastName = lastName;
+    if (role) {
+      firestoreUpdate.role = role;
+      firestoreUpdate.svpRole = role;
+    }
+    if (tenantId) firestoreUpdate.tenantId = tenantId;
+
+    await db.collection("users").doc(userId).set(firestoreUpdate, { merge: true });
+
+    // Audit log
+    await db.collection("auditLogs").add({
+      userId: decodedToken.uid,
+      action: "user_updated",
+      resource: "user",
+      resourceId: userId,
+      details: { role, passwordChanged: !!newPassword },
+      timestamp: Timestamp.now(),
+      createdAt: Timestamp.now(),
+    });
+
+    return NextResponse.json({ success: true, message: "User updated successfully" });
+  } catch (error: any) {
+    console.error("Error updating user:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to update user" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
  * DELETE /api/admin/users
  * Delete a user account
  */

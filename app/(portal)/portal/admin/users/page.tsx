@@ -6,6 +6,7 @@ import { auth } from "@/lib/firebase";
 import { USER_ROLES, UserRole } from "@/lib/rbac-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -23,6 +24,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -31,7 +39,20 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Search, UserPlus, Ban, Trash2, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
+import {
+  Search,
+  UserPlus,
+  Ban,
+  Trash2,
+  RefreshCw,
+  MoreHorizontal,
+  Pencil,
+  KeyRound,
+  CheckCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 // Safe date formatter that handles various Firebase timestamp formats
 function formatDate(dateValue: any): string {
@@ -100,6 +121,23 @@ export default function AdminUsersPage() {
   const [newUserRole, setNewUserRole] = useState<UserRole>("sme_user");
   const [newUserTenantId, setNewUserTenantId] = useState("kdm-svp-platform");
   const [creating, setCreating] = useState(false);
+
+  // Edit user dialog state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
+  const [editDisplayName, setEditDisplayName] = useState("");
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+  const [editRole, setEditRole] = useState<UserRole>("sme_user");
+  const [editing, setEditing] = useState(false);
+
+  // Change password dialog state
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [userForPassword, setUserForPassword] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
 
   // Delete confirmation dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -205,6 +243,91 @@ export default function AdminUsersPage() {
     }
   };
 
+  // Open edit dialog pre-filled
+  const openEditDialog = (user: User) => {
+    setUserToEdit(user);
+    setEditDisplayName(user.displayName || "");
+    setEditFirstName("");
+    setEditLastName("");
+    setEditRole((user.role as UserRole) || "sme_user");
+    setEditDialogOpen(true);
+  };
+
+  // Edit user
+  const handleEditUser = async () => {
+    if (!userToEdit) return;
+    try {
+      setEditing(true);
+      const currentUser = auth?.currentUser;
+      if (!currentUser) return;
+      const token = await currentUser.getIdToken();
+
+      const response = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          userId: userToEdit.uid,
+          displayName: editDisplayName.trim() || undefined,
+          firstName: editFirstName.trim() || undefined,
+          lastName: editLastName.trim() || undefined,
+          role: editRole,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to update user");
+      }
+
+      toast.success("User updated successfully");
+      setEditDialogOpen(false);
+      fetchUsers();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update user");
+    } finally {
+      setEditing(false);
+    }
+  };
+
+  // Change password
+  const handleChangePassword = async () => {
+    if (!userForPassword) return;
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    try {
+      setChangingPassword(true);
+      const currentUser = auth?.currentUser;
+      if (!currentUser) return;
+      const token = await currentUser.getIdToken();
+
+      const response = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: userForPassword.uid, newPassword }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to change password");
+      }
+
+      toast.success(`Password updated for ${userForPassword.email}`);
+      setPasswordDialogOpen(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to change password");
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   // Suspend/Reactivate user
   const handleToggleSuspend = async (user: User) => {
     try {
@@ -232,10 +355,11 @@ export default function AdminUsersPage() {
         throw new Error(data.error || "Failed to update user status");
       }
 
-      // Refresh user list
+      toast.success(user.disabled ? "User reactivated" : "User suspended");
       fetchUsers();
     } catch (err: any) {
-      setError(err.message || "Failed to update user status");
+      toast.error(err.message || "Failed to update user status");
+      setError(err.message || "Failed to suspend user");
     }
   };
 
@@ -403,25 +527,47 @@ export default function AdminUsersPage() {
                     {user.lastSignIn ? formatDate(user.lastSignIn) : "Never"}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleToggleSuspend(user)}
-                      >
-                        <Ban className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setUserToDelete(user);
-                          setDeleteDialogOpen(true);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEditDialog(user)}>
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Edit User
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setUserForPassword(user);
+                            setNewPassword("");
+                            setConfirmPassword("");
+                            setShowPassword(false);
+                            setPasswordDialogOpen(true);
+                          }}
+                        >
+                          <KeyRound className="h-4 w-4 mr-2" />
+                          Change Password
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleToggleSuspend(user)}>
+                          {user.disabled ? (
+                            <><CheckCircle className="h-4 w-4 mr-2 text-green-600" />Reactivate</>
+                          ) : (
+                            <><Ban className="h-4 w-4 mr-2 text-yellow-600" />Suspend</>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={() => { setUserToDelete(user); setDeleteDialogOpen(true); }}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete User
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))
@@ -451,6 +597,152 @@ export default function AdminUsersPage() {
           </div>
         )}
       </div>
+
+      {/* Edit User Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
+              Update profile details and role for{" "}
+              <span className="font-medium">{userToEdit?.email}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Display Name</Label>
+              <Input
+                value={editDisplayName}
+                onChange={(e) => setEditDisplayName(e.target.value)}
+                placeholder="Full name shown in the app"
+                className="mt-1"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>First Name</Label>
+                <Input
+                  value={editFirstName}
+                  onChange={(e) => setEditFirstName(e.target.value)}
+                  placeholder="First"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>Last Name</Label>
+                <Input
+                  value={editLastName}
+                  onChange={(e) => setEditLastName(e.target.value)}
+                  placeholder="Last"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Role</Label>
+              <Select
+                value={editRole}
+                onValueChange={(v) => setEditRole(v as UserRole)}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(USER_ROLES).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEditUser} disabled={editing}>
+              {editing ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Dialog */}
+      <Dialog
+        open={passwordDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) { setNewPassword(""); setConfirmPassword(""); }
+          setPasswordDialogOpen(open);
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription>
+              Set a new password for{" "}
+              <span className="font-medium">{userForPassword?.email}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>New Password</Label>
+              <div className="relative mt-1">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Minimum 6 characters"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  onClick={() => setShowPassword((p) => !p)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            <div>
+              <Label>Confirm Password</Label>
+              <div className="relative mt-1">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repeat new password"
+                  className="pr-10"
+                  onKeyDown={(e) => { if (e.key === "Enter") handleChangePassword(); }}
+                />
+              </div>
+              {confirmPassword && newPassword !== confirmPassword && (
+                <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+              )}
+              {confirmPassword && newPassword === confirmPassword && newPassword.length >= 6 && (
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3" /> Passwords match
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPasswordDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleChangePassword}
+              disabled={
+                changingPassword ||
+                newPassword.length < 6 ||
+                newPassword !== confirmPassword
+              }
+            >
+              {changingPassword ? "Updating..." : "Update Password"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Create User Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
