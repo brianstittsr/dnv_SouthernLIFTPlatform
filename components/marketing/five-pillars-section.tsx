@@ -80,8 +80,50 @@ export function FivePillarsSection() {
           </div>
         </div>
 
-        {/* Full-Width Pillar Diagram */}
-        <div className="mb-8">
+        {/* ── MOBILE: Flat pillar cards (no click effect) ── */}
+        <div className="block lg:hidden mb-8">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent mt-3"></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { id: 'government-contracting', title: 'Government Contracting', link: '/5-pillars/defense-cmmc' },
+              { id: 'manufacturing', title: 'Manufacturing & Supply Chain', link: '/5-pillars/us-manufacturing' },
+              { id: 'critical-minerals', title: 'Critical Minerals', link: '/5-pillars/critical-minerals' },
+              { id: 'opportunity-zones', title: 'Opportunity Zones', link: '/5-pillars/opportunity-zones' },
+              { id: 'access-to-capital', title: 'Access to Capital', link: '/5-pillars/access-to-capital' },
+            ].map((pillar) => (
+              <div key={pillar.id} className="bg-slate-800/80 border border-white/20 rounded-xl p-5 flex gap-4 items-start">
+                <div className="relative shrink-0 w-14 h-20">
+                  <Image
+                    src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                    alt={pillar.title}
+                    fill
+                    className="object-contain object-bottom"
+                  />
+                </div>
+                <div className="flex flex-col justify-between min-h-[80px]">
+                  <div>
+                    <p className="text-white font-bold text-base leading-snug mb-1">{pillar.title}</p>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      {pillarDescriptions[pillar.id as keyof typeof pillarDescriptions]}
+                    </p>
+                  </div>
+                  <Link
+                    href={pillar.link}
+                    className="inline-flex items-center gap-1 mt-3 text-amber-400 hover:text-amber-300 font-semibold text-sm transition-colors"
+                  >
+                    Learn More <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── DESKTOP: Interactive pillar diagram ── */}
+        <div className="hidden lg:block mb-8">
           <p className="text-sm font-semibold uppercase tracking-wide text-gray-400 text-right mb-1">Integrated Ecosystem View</p>
           <div className="text-center mb-4">
             <h3 className="text-3xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
@@ -89,87 +131,35 @@ export function FivePillarsSection() {
           </div>
 
           {/* Five Classical Pillars */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 lg:gap-6 mb-4">
-            {/* Pillar 1 - Government Contracting */}
-            <div
-              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'government-contracting' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-              onClick={() => setSelectedPillar(selectedPillar === 'government-contracting' ? null : 'government-contracting')}
-            >
-              <div className="relative w-full h-44 sm:h-40 md:h-48 lg:h-[22rem]">
-                <Image
-                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                  alt="Government Contracting Pillar"
-                  fill
-                  className="object-contain object-bottom"
-                  priority
-                />
+          <div className="grid grid-cols-5 gap-6 mb-4">
+            {[
+              { id: 'government-contracting', label: 'Government\nContracting' },
+              { id: 'manufacturing', label: 'Manufacturing\n& Supply Chain' },
+              { id: 'critical-minerals', label: 'Critical\nMinerals' },
+              { id: 'opportunity-zones', label: 'Opportunity\nZones' },
+              { id: 'access-to-capital', label: 'Access to\nCapital' },
+            ].map((pillar, i) => (
+              <div
+                key={pillar.id}
+                className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === pillar.id ? 'scale-110 z-10' : 'hover:scale-105'}`}
+                onClick={() => setSelectedPillar(selectedPillar === pillar.id ? null : pillar.id)}
+              >
+                <div className="relative w-full h-[22rem]">
+                  <Image
+                    src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
+                    alt={pillar.label.replace('\n', ' ')}
+                    fill
+                    className="object-contain object-bottom"
+                    priority={i === 0}
+                  />
+                </div>
+                <p className="text-white font-bold text-sm text-center leading-snug mt-3">
+                  {pillar.label.split('\n').map((line, j) => (
+                    <span key={j}>{line}{j === 0 && <br />}</span>
+                  ))}
+                </p>
               </div>
-              <p className="text-white font-bold text-sm text-center leading-snug mt-3">Government<br />Contracting</p>
-            </div>
-
-            {/* Pillar 2 - Manufacturing */}
-            <div
-              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'manufacturing' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-              onClick={() => setSelectedPillar(selectedPillar === 'manufacturing' ? null : 'manufacturing')}
-            >
-              <div className="relative w-full h-44 sm:h-40 md:h-48 lg:h-[22rem]">
-                <Image
-                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                  alt="Manufacturing Pillar"
-                  fill
-                  className="object-contain object-bottom"
-                />
-              </div>
-              <p className="text-white font-bold text-sm text-center leading-snug mt-3">Manufacturing<br />& Supply Chain</p>
-            </div>
-
-            {/* Pillar 3 - Critical Minerals */}
-            <div
-              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'critical-minerals' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-              onClick={() => setSelectedPillar(selectedPillar === 'critical-minerals' ? null : 'critical-minerals')}
-            >
-              <div className="relative w-full h-44 sm:h-40 md:h-48 lg:h-[22rem]">
-                <Image
-                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                  alt="Critical Minerals Pillar"
-                  fill
-                  className="object-contain object-bottom"
-                />
-              </div>
-              <p className="text-white font-bold text-sm text-center leading-snug mt-3">Critical<br />Minerals</p>
-            </div>
-
-            {/* Pillar 4 - Opportunity Zones */}
-            <div
-              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'opportunity-zones' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-              onClick={() => setSelectedPillar(selectedPillar === 'opportunity-zones' ? null : 'opportunity-zones')}
-            >
-              <div className="relative w-full h-44 sm:h-40 md:h-48 lg:h-[22rem]">
-                <Image
-                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                  alt="Opportunity Zones Pillar"
-                  fill
-                  className="object-contain object-bottom"
-                />
-              </div>
-              <p className="text-white font-bold text-sm text-center leading-snug mt-3">Opportunity<br />Zones</p>
-            </div>
-
-            {/* Pillar 5 - Access to Capital */}
-            <div
-              className={`pillar-item flex flex-col items-center cursor-pointer transition-all duration-500 ${selectedPillar === 'access-to-capital' ? 'scale-110 z-10' : 'hover:scale-105'}`}
-              onClick={() => setSelectedPillar(selectedPillar === 'access-to-capital' ? null : 'access-to-capital')}
-            >
-              <div className="relative w-full h-44 sm:h-40 md:h-48 lg:h-[22rem]">
-                <Image
-                  src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                  alt="Access to Capital Pillar"
-                  fill
-                  className="object-contain object-bottom"
-                />
-              </div>
-              <p className="text-white font-bold text-sm text-center leading-snug mt-3">Access to<br />Capital</p>
-            </div>
+            ))}
           </div>
 
           {/* Description Panel */}
