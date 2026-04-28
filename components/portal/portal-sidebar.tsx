@@ -78,6 +78,7 @@ import {
   CalendarClock,
   Eye,
   EyeOff,
+  MapPin,
   UserCheck,
   Mail,
   Package,
@@ -310,6 +311,12 @@ const adminItems = [
     title: "Strategic Partners",
     href: "/portal/admin/strategic-partners",
     icon: Building2,
+  },
+  {
+    title: "Zenthium Referrals",
+    href: "/portal/admin/zenthium-referrals/submissions",
+    icon: MapPin,
+    badge: "New",
   },
   {
     title: "Hero Management",

@@ -676,6 +676,36 @@ export interface ContactMessageDoc {
   convertedAt?: Timestamp;
 }
 
+/** Data Center Location Submission document in Firestore (Zenthium Referrals) */
+export interface DataCenterSubmissionDoc {
+  id: string;
+  // Site Information
+  referralTitle: string;
+  propertyName: string;
+  streetAddress?: string;
+  city: string;
+  state: string;
+  zipCode?: string;
+  country?: string;
+  coordinates?: string; // lat,lng format
+  parcelNumber?: string;
+  acreage?: number;
+  squareFootage?: number;
+  description: string;
+  // Submission metadata
+  status: "new" | "under_review" | "approved" | "rejected" | "contacted";
+  submittedBy?: string; // email or userId if logged in
+  submittedByEmail?: string;
+  assignedTo?: string; // admin userId
+  // Review notes
+  reviewNotes?: string;
+  reviewedBy?: string;
+  reviewedAt?: Timestamp;
+  // Timestamps
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 // ============================================================================
 // NDA Management Types
 // ============================================================================
@@ -1790,6 +1820,8 @@ export const COLLECTIONS = {
   REVENUE_ATTRIBUTION: "revenueAttribution",
   ROUTING_RULES: "routingRules",
   ATTRIBUTION_EVENTS: "attributionEvents",
+  // Zenthium Data Center Location Submissions
+  DATA_CENTER_SUBMISSIONS: "dataCenterSubmissions",
 } as const;
 
 // ... existing code ...
