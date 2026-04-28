@@ -676,87 +676,6 @@ export interface ContactMessageDoc {
   convertedAt?: Timestamp;
 }
 
-/** Data Center Location Submission document in Firestore (Zenthium Referrals) */
-export interface DataCenterSubmissionDoc {
-  id: string;
-
-  // ── Step 1: Site Information ──────────────────────────────────────────────
-  referralTitle: string;
-  propertyName: string;
-  streetAddress?: string;
-  city: string;
-  state: string;
-  zipCode?: string;
-  country?: string;
-  coordinates?: string;      // "lat,lng" format
-  parcelNumber?: string;
-  acreage?: number;
-  squareFootage?: number;
-  description: string;
-
-  // ── Step 2: Infrastructure ────────────────────────────────────────────────
-  powerAvailableMW?: number;           // MW available on site
-  powerSubstationDistance?: string;    // distance to nearest substation
-  fiberConnectivity?: string;          // fiber providers / dark fiber
-  waterAvailableGPM?: number;          // gallons per minute
-  naturalGasAvailable?: boolean;
-  zoningClassification?: string;       // e.g. I-1, I-2, C-3
-  floodZone?: string;                  // FEMA flood zone designation
-  environmentalNotes?: string;         // Phase I/II status, wetlands, etc.
-  buildingCondition?: string;          // existing structures condition
-  ceilingHeightFt?: number;
-  loadingDocks?: number;
-  raisedFloorAvailable?: boolean;
-  backupGeneratorAvailable?: boolean;
-  hasCoolingInfrastructure?: boolean;
-
-  // ── Step 3: Ownership & Pricing ───────────────────────────────────────────
-  ownershipType?: "fee_simple" | "leasehold" | "ground_lease" | "other";
-  askingPriceUSD?: number;
-  leasePricePerSqFtMonthly?: number;
-  saleOrLease?: "sale" | "lease" | "both";
-  propertyTaxAnnualUSD?: number;
-  incentivesAvailable?: string;        // tax abatements, grants, etc.
-  titleEncumbrances?: string;          // liens, easements, restrictions
-  closingTimelineWeeks?: number;
-
-  // ── Step 4: Contacts ──────────────────────────────────────────────────────
-  ownerFirstName?: string;
-  ownerLastName?: string;
-  ownerEmail?: string;
-  ownerPhone?: string;
-  ownerCompany?: string;
-  brokerFirstName?: string;
-  brokerLastName?: string;
-  brokerEmail?: string;
-  brokerPhone?: string;
-  brokerCompany?: string;
-  brokerLicenseNumber?: string;
-  preferredContactMethod?: "email" | "phone" | "either";
-
-  // ── Step 5: Additional Notes ──────────────────────────────────────────────
-  additionalNotes?: string;
-  documentsAvailable?: string;         // survey, Phase I, title report, etc.
-  videoTourUrl?: string;
-  aerialImageryUrl?: string;
-  nearbyDataCenters?: string;
-  developmentTimelineNotes?: string;
-  referredBy?: string;                 // who referred this submission
-
-  // ── Submission metadata ───────────────────────────────────────────────────
-  status: "new" | "under_review" | "approved" | "rejected" | "contacted";
-  submittedBy?: string;
-  submittedByEmail?: string;
-  assignedTo?: string;
-  reviewNotes?: string;
-  reviewedBy?: string;
-  reviewedAt?: Timestamp;
-
-  // ── Timestamps ────────────────────────────────────────────────────────────
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-}
-
 // ============================================================================
 // NDA Management Types
 // ============================================================================
@@ -1871,8 +1790,6 @@ export const COLLECTIONS = {
   REVENUE_ATTRIBUTION: "revenueAttribution",
   ROUTING_RULES: "routingRules",
   ATTRIBUTION_EVENTS: "attributionEvents",
-  // Zenthium Data Center Location Submissions
-  DATA_CENTER_SUBMISSIONS: "dataCenterSubmissions",
 } as const;
 
 // ... existing code ...

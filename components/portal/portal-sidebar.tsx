@@ -78,7 +78,6 @@ import {
   CalendarClock,
   Eye,
   EyeOff,
-  MapPin,
   UserCheck,
   Mail,
   Package,
@@ -98,6 +97,7 @@ import {
   BookOpen,
   FileCheck,
   Radio,
+  MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -313,12 +313,6 @@ const adminItems = [
     icon: Building2,
   },
   {
-    title: "Zenthium Referrals",
-    href: "/portal/admin/zenthium-referrals/submissions",
-    icon: MapPin,
-    badge: "New",
-  },
-  {
     title: "Hero Management",
     href: "/portal/admin/hero",
     icon: ImageIcon,
@@ -361,6 +355,12 @@ const adminItems = [
     href: "/portal/admin/contact-submissions",
     icon: Mail,
     badge: "Forms",
+  },
+  {
+    title: "Zenthium Submissions",
+    href: "/portal/admin/zenthium-referrals/submissions",
+    icon: MapPin,
+    badge: "New",
   },
 ];
 
@@ -577,6 +577,12 @@ const svpAdminItems = [
     href: "/portal/admin/contact-submissions",
     icon: Mail,
     badge: "Forms",
+  },
+  {
+    title: "Zenthium Submissions",
+    href: "/portal/admin/zenthium-referrals/submissions",
+    icon: MapPin,
+    badge: "New",
   },
   {
     title: "User Management",
