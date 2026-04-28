@@ -233,27 +233,39 @@ export function KdmTeamSync() {
         const snapshot = await getDocs(q);
 
         if (!snapshot.empty) {
-          // Member exists - update bio if changed
+          // Member exists — update structural fields only; NEVER overwrite an existing bio
           const existingDoc = snapshot.docs[0];
           const existingData = existingDoc.data();
           
-          if (existingData.bio !== member.bio || !existingData.teamTag) {
-            const teamTag = member.isCEO ? "leadership" : 
-                           member.isCOO ? "leadership" :
-                           member.role === "affiliate" ? "affiliate" : "staff";
-            await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, existingDoc.id), {
-              bio: member.bio,
+          const teamTag = member.isCEO ? "leadership" : 
+                         member.isCOO ? "leadership" :
+                         member.role === "affiliate" ? "affiliate" : "staff";
+
+          const needsUpdate =
+            !existingData.teamTag ||
+            existingData.teamTag !== teamTag ||
+            existingData.title !== member.title ||
+            existingData.expertise !== member.expertise;
+
+          if (needsUpdate) {
+            // Only update metadata — preserve the existing bio in Firestore
+            const updatePayload: Record<string, unknown> = {
               title: member.title,
               expertise: member.expertise,
               teamTag,
               updatedAt: Timestamp.now(),
-            });
+            };
+            // Only write bio if the record has none at all
+            if (!existingData.bio) {
+              updatePayload.bio = member.bio;
+            }
+            await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, existingDoc.id), updatePayload);
             setSyncStatus(prev => prev.map((s, idx) => 
-              idx === i ? { ...s, status: "synced", message: "Bio updated" } : s
+              idx === i ? { ...s, status: "synced", message: "Metadata updated" } : s
             ));
           } else {
             setSyncStatus(prev => prev.map((s, idx) => 
-              idx === i ? { ...s, status: "synced", message: "Already exists" } : s
+              idx === i ? { ...s, status: "synced", message: "Already up to date" } : s
             ));
           }
           continue;
