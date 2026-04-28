@@ -4,8 +4,8 @@ import { Timestamp } from "firebase-admin/firestore";
 
 const TRACKER_DOC_ID = "consortium-membership-tracker";
 const TRACKER_COLLECTION = "settings";
-const INITIAL_SLOTS = 50;
-const DISCOUNT_DEADLINE = new Date("2026-04-30");
+const INITIAL_SLOTS = 44;
+const DISCOUNT_DEADLINE = new Date("2026-05-31");
 
 interface MembershipTracker {
   totalSlots: number;

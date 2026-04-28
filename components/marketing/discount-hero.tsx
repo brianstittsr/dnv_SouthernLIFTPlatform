@@ -83,16 +83,32 @@ export function DiscountHero() {
             </span>
           </div>
 
-          {/* Center: urgency stats - days left only */}
-          <div className="flex items-center gap-4 text-slate-900 shrink-0">
-            {daysRemaining !== null && (
-              <div className="text-center">
-                <div className="flex items-center gap-1 text-xl font-extrabold leading-none">
-                  <Clock className="h-4 w-4" />
-                  {daysRemaining}
-                </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Days Left</div>
+          {/* Center: urgency stats */}
+          <div className="flex items-center gap-5 text-slate-900 shrink-0">
+            <div className="text-center">
+              <div className="text-xl font-extrabold leading-none">
+                {trackerStatus.totalSlots}
               </div>
+              <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Total Founders</div>
+            </div>
+            <div className="w-px h-8 bg-slate-900/20" />
+            <div className="text-center">
+              <div className="text-xl font-extrabold leading-none">
+                {trackerStatus.remainingSlots}
+              </div>
+              <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Spots Left</div>
+            </div>
+            {daysRemaining !== null && (
+              <>
+                <div className="w-px h-8 bg-slate-900/20" />
+                <div className="text-center">
+                  <div className="flex items-center gap-1 text-xl font-extrabold leading-none">
+                    <Clock className="h-4 w-4" />
+                    {daysRemaining}
+                  </div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">Days Left</div>
+                </div>
+              </>
             )}
           </div>
 
