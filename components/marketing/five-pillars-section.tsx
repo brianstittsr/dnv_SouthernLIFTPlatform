@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight, PlayCircle, Landmark, Factory, Gem, Shield, DollarSign, MapPin } from "lucide-react";
 import { VideoModal, extractYouTubeVideoId } from "@/components/video/video-modal";
 
 export function FivePillarsSection() {
@@ -80,7 +80,7 @@ export function FivePillarsSection() {
           </div>
         </div>
 
-        {/* ── MOBILE: Flat pillar cards (no click effect) ── */}
+        {/* ── MOBILE: Icon-based pillar cards ── */}
         <div className="block lg:hidden mb-8">
           <div className="text-center mb-6">
             <h3 className="text-2xl font-bold text-white tracking-wider">KDM CONSORTIUM</h3>
@@ -88,31 +88,26 @@ export function FivePillarsSection() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { id: 'government-contracting', title: 'Government Contracting', link: '/5-pillars/defense-cmmc' },
-              { id: 'manufacturing', title: 'Manufacturing & Supply Chain', link: '/5-pillars/us-manufacturing' },
-              { id: 'critical-minerals', title: 'Critical Minerals', link: '/5-pillars/critical-minerals' },
-              { id: 'opportunity-zones', title: 'Opportunity Zones', link: '/5-pillars/opportunity-zones' },
-              { id: 'access-to-capital', title: 'Access to Capital', link: '/5-pillars/access-to-capital' },
-            ].map((pillar) => (
-              <div key={pillar.id} className="bg-slate-800/80 border border-white/20 rounded-xl p-5 flex gap-4 items-start">
-                <div className="relative shrink-0 w-14 h-20">
-                  <Image
-                    src="/kdm-assets/images/greek-pillar-isolated-on-transparent-background-png.webp"
-                    alt={pillar.title}
-                    fill
-                    className="object-contain object-bottom"
-                  />
+              { id: 'government-contracting', title: 'Government Contracting', link: '/5-pillars/defense-cmmc', Icon: Landmark, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+              { id: 'manufacturing', title: 'Manufacturing & Supply Chain', link: '/5-pillars/us-manufacturing', Icon: Factory, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+              { id: 'critical-minerals', title: 'Critical Minerals', link: '/5-pillars/critical-minerals', Icon: Gem, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+              { id: 'opportunity-zones', title: 'Opportunity Zones', link: '/5-pillars/opportunity-zones', Icon: MapPin, color: 'text-red-400', bg: 'bg-red-400/10' },
+              { id: 'access-to-capital', title: 'Access to Capital', link: '/5-pillars/access-to-capital', Icon: DollarSign, color: 'text-green-400', bg: 'bg-green-400/10' },
+            ].map(({ id, title, link, Icon, color, bg }) => (
+              <div key={id} className="bg-slate-800/80 border border-white/20 rounded-xl p-5 flex gap-4 items-start">
+                {/* Icon */}
+                <div className={`shrink-0 w-12 h-12 rounded-lg ${bg} flex items-center justify-center`}>
+                  <Icon className={`h-6 w-6 ${color}`} />
                 </div>
-                <div className="flex flex-col justify-between min-h-[80px]">
-                  <div>
-                    <p className="text-white font-bold text-base leading-snug mb-1">{pillar.title}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      {pillarDescriptions[pillar.id as keyof typeof pillarDescriptions]}
-                    </p>
-                  </div>
+                {/* Content */}
+                <div className="flex flex-col flex-1 min-w-0">
+                  <p className="text-white font-bold text-base leading-snug mb-2">{title}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                    {pillarDescriptions[id as keyof typeof pillarDescriptions]}
+                  </p>
                   <Link
-                    href={pillar.link}
-                    className="inline-flex items-center gap-1 mt-3 text-amber-400 hover:text-amber-300 font-semibold text-sm transition-colors"
+                    href={link}
+                    className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-semibold text-sm transition-colors"
                   >
                     Learn More <ArrowRight className="h-3 w-3" />
                   </Link>
