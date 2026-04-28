@@ -42,34 +42,28 @@ if (!getApps().length) {
 
 const db = getFirestore();
 const DEADLINE = new Date("2026-05-31T23:59:59Z");
-const TOTAL_SLOTS = 44;
+const TOTAL_SLOTS = 50;
+const CLAIMED_SLOTS = 4;
+const REMAINING_SLOTS = 46;
 
 async function reset() {
   const ref = db.collection("settings").doc("consortium-membership-tracker");
   const snap = await ref.get();
 
+  const data = {
+    totalSlots: TOTAL_SLOTS,
+    remainingSlots: REMAINING_SLOTS,
+    claimedSlots: CLAIMED_SLOTS,
+    discountDeadline: Timestamp.fromDate(DEADLINE),
+    updatedAt: Timestamp.now(),
+  };
+
   if (!snap.exists) {
-    // Create fresh
-    await ref.set({
-      totalSlots: TOTAL_SLOTS,
-      remainingSlots: TOTAL_SLOTS,
-      claimedSlots: 0,
-      discountDeadline: Timestamp.fromDate(DEADLINE),
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-    });
-    console.log("✅ Created tracker with 44 slots, deadline May 31 2026");
+    await ref.set({ ...data, createdAt: Timestamp.now() });
   } else {
-    const existing = snap.data();
-    const claimed = existing.claimedSlots || 0;
-    await ref.update({
-      totalSlots: TOTAL_SLOTS,
-      remainingSlots: Math.max(0, TOTAL_SLOTS - claimed),
-      discountDeadline: Timestamp.fromDate(DEADLINE),
-      updatedAt: Timestamp.now(),
-    });
-    console.log(`✅ Updated tracker — totalSlots: 44, claimed: ${claimed}, remaining: ${Math.max(0, TOTAL_SLOTS - claimed)}, deadline: May 31 2026`);
+    await ref.update(data);
   }
+  console.log(`✅ Tracker set — totalSlots: ${TOTAL_SLOTS}, claimed: ${CLAIMED_SLOTS}, remaining: ${REMAINING_SLOTS}, deadline: May 31 2026`);
   process.exit(0);
 }
 
