@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -52,9 +53,12 @@ import {
   MessageSquare,
   RefreshCw,
   Building2,
-  ArrowLeft,
-  ArrowRight,
+  ChevronRight,
   Save,
+  Zap,
+  DollarSign,
+  Users,
+  FileText,
 } from "lucide-react";
 
 type SubmissionStatus = "new" | "under_review" | "approved" | "rejected" | "contacted";
@@ -79,52 +83,59 @@ const statusBadgeVariants: Record<SubmissionStatus, "default" | "secondary" | "d
   contacted: "outline",
 };
 
+function Field({ label, value }: { label: string; value?: string | number | boolean | null }) {
+  const display =
+    value === undefined || value === null || value === ""
+      ? "—"
+      : typeof value === "boolean"
+      ? value ? "Yes" : "No"
+      : String(value);
+  return (
+    <div className="space-y-1">
+      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+      <p className="text-sm">{display}</p>
+    </div>
+  );
+}
+
+function SectionHeading({ icon: Icon, title }: { icon: React.ElementType; title: string }) {
+  return (
+    <div className="flex items-center gap-2 pb-2 border-b">
+      <Icon className="h-4 w-4 text-primary" />
+      <h3 className="font-semibold text-sm uppercase tracking-wide">{title}</h3>
+    </div>
+  );
+}
+
 export default function DataCenterSubmissionsPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
 
-  // View/Edit dialog state
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [reviewNotesDraft, setReviewNotesDraft] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Form state for editing
-  const [formData, setFormData] = useState<Partial<Submission>>({});
-
-  // Fetch submissions
   const fetchSubmissions = async () => {
-    if (!db) {
-      toast.error("Database not initialized");
-      return;
-    }
+    if (!db) { toast.error("Database not initialized"); return; }
     try {
       setLoading(true);
-      const q = query(
-        collection(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS),
-        orderBy("createdAt", "desc")
-      );
+      const q = query(collection(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Submission[];
-      setSubmissions(data);
-    } catch (error) {
-      console.error("Error fetching submissions:", error);
+      setSubmissions(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as Submission[]);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load submissions");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchSubmissions();
-  }, []);
+  useEffect(() => { fetchSubmissions(); }, []);
 
-  // Filter submissions
   const filteredSubmissions = submissions.filter((sub) => {
     if (statusFilter !== "all" && sub.status !== statusFilter) return false;
     if (searchQuery) {
@@ -134,13 +145,13 @@ export default function DataCenterSubmissionsPage() {
         sub.propertyName?.toLowerCase().includes(q) ||
         sub.city?.toLowerCase().includes(q) ||
         sub.state?.toLowerCase().includes(q) ||
-        sub.submittedByEmail?.toLowerCase().includes(q)
+        sub.submittedByEmail?.toLowerCase().includes(q) ||
+        sub.ownerEmail?.toLowerCase().includes(q)
       );
     }
     return true;
   });
 
-  // Stats
   const stats = {
     total: submissions.length,
     new: submissions.filter((s) => s.status === "new").length,
@@ -149,77 +160,61 @@ export default function DataCenterSubmissionsPage() {
     rejected: submissions.filter((s) => s.status === "rejected").length,
   };
 
-  // Update status
   const updateStatus = async (submissionId: string, status: SubmissionStatus) => {
     if (!db) return;
     try {
-      const ref = doc(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS, submissionId);
-      await updateDoc(ref, {
+      await updateDoc(doc(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS, submissionId), {
         status,
         updatedAt: Timestamp.now(),
       });
       toast.success(`Status updated to ${statusLabels[status]}`);
-      setSubmissions((prev) =>
-        prev.map((s) => (s.id === submissionId ? { ...s, status } : s))
-      );
+      setSubmissions((prev) => prev.map((s) => (s.id === submissionId ? { ...s, status } : s)));
       if (selectedSubmission?.id === submissionId) {
-        setSelectedSubmission({ ...selectedSubmission, status });
+        setSelectedSubmission((prev) => prev ? { ...prev, status } : prev);
       }
-    } catch (error) {
-      console.error("Error updating status:", error);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to update status");
     }
   };
 
-  // Save review notes
   const saveReviewNotes = async () => {
     if (!db || !selectedSubmission) return;
     try {
       setSaving(true);
-      const ref = doc(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS, selectedSubmission.id);
-      await updateDoc(ref, {
-        reviewNotes: formData.reviewNotes,
+      await updateDoc(doc(db, COLLECTIONS.DATA_CENTER_SUBMISSIONS, selectedSubmission.id), {
+        reviewNotes: reviewNotesDraft,
         updatedAt: Timestamp.now(),
       });
       toast.success("Review notes saved");
       setSubmissions((prev) =>
-        prev.map((s) =>
-          s.id === selectedSubmission.id
-            ? { ...s, reviewNotes: formData.reviewNotes }
-            : s
-        )
+        prev.map((s) => (s.id === selectedSubmission.id ? { ...s, reviewNotes: reviewNotesDraft } : s))
       );
-      setSelectedSubmission({
-        ...selectedSubmission,
-        reviewNotes: formData.reviewNotes,
-      });
-      setEditMode(false);
-    } catch (error) {
-      console.error("Error saving notes:", error);
+      setSelectedSubmission((prev) => prev ? { ...prev, reviewNotes: reviewNotesDraft } : prev);
+      setEditingNotes(false);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to save notes");
     } finally {
       setSaving(false);
     }
   };
 
-  // Open view dialog
   const openViewDialog = (submission: Submission) => {
     setSelectedSubmission(submission);
-    setFormData({
-      reviewNotes: submission.reviewNotes || "",
-    });
-    setEditMode(false);
+    setReviewNotesDraft(submission.reviewNotes || "");
+    setEditingNotes(false);
     setViewDialogOpen(true);
   };
 
-  // Format date
-  const formatDate = (timestamp: Timestamp | undefined) => {
-    if (!timestamp) return "—";
-    if (typeof timestamp.toDate === "function") {
-      return timestamp.toDate().toLocaleDateString();
-    }
-    return new Date(timestamp as any).toLocaleDateString();
+  const formatDate = (ts: Timestamp | undefined) => {
+    if (!ts) return "—";
+    try {
+      return (typeof ts.toDate === "function" ? ts.toDate() : new Date(ts as any)).toLocaleDateString();
+    } catch { return "—"; }
   };
+
+  const fmt = (n?: number) => (n !== undefined && n !== null ? n.toLocaleString() : "—");
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
@@ -228,9 +223,9 @@ export default function DataCenterSubmissionsPage() {
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
             <span>Admin</span>
-            <ArrowRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" />
             <span>Zenthium Referrals</span>
-            <ArrowRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" />
             <span>Submissions</span>
           </div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -249,46 +244,22 @@ export default function DataCenterSubmissionsPage() {
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-5 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">New</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.new}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Under Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.underReview}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Approved</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
-          </CardContent>
-        </Card>
+        {[
+          { label: "Total", value: stats.total, color: "" },
+          { label: "New", value: stats.new, color: "text-blue-600" },
+          { label: "Under Review", value: stats.underReview, color: "text-yellow-600" },
+          { label: "Approved", value: stats.approved, color: "text-green-600" },
+          { label: "Rejected", value: stats.rejected, color: "text-red-600" },
+        ].map(({ label, value, color }) => (
+          <Card key={label}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">{label}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold ${color}`}>{value}</div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Filters */}
@@ -304,10 +275,7 @@ export default function DataCenterSubmissionsPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => setStatusFilter(v as SubmissionStatus | "all")}
-            >
+            <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as SubmissionStatus | "all")}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -324,13 +292,11 @@ export default function DataCenterSubmissionsPage() {
         </CardContent>
       </Card>
 
-      {/* Submissions Table */}
+      {/* Table */}
       <Card>
         <CardHeader>
           <CardTitle>Submissions</CardTitle>
-          <CardDescription>
-            Review and manage data center location submissions
-          </CardDescription>
+          <CardDescription>Review and manage data center location submissions</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -352,38 +318,38 @@ export default function DataCenterSubmissionsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Referral Title</TableHead>
-                  <TableHead>Property</TableHead>
+                  <TableHead>Property Name</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>Size</TableHead>
+                  <TableHead>Acreage / Sq Ft</TableHead>
+                  <TableHead>Power (MW)</TableHead>
+                  <TableHead>Sale / Lease</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Submitted</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSubmissions.map((submission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell className="font-medium max-w-xs truncate">
-                      {submission.referralTitle}
-                    </TableCell>
-                    <TableCell>{submission.propertyName}</TableCell>
+                {filteredSubmissions.map((sub) => (
+                  <TableRow key={sub.id}>
+                    <TableCell className="font-medium max-w-[180px] truncate">{sub.referralTitle}</TableCell>
+                    <TableCell className="max-w-[140px] truncate">{sub.propertyName}</TableCell>
+                    <TableCell className="whitespace-nowrap">{sub.city}, {sub.state} {sub.zipCode || ""}</TableCell>
                     <TableCell>
-                      {submission.city}, {submission.state}
+                      {sub.acreage ? `${sub.acreage} ac` : "—"}
+                      {sub.squareFootage ? (
+                        <div className="text-xs text-muted-foreground">{sub.squareFootage.toLocaleString()} ft²</div>
+                      ) : null}
+                    </TableCell>
+                    <TableCell>{sub.powerAvailableMW != null ? `${sub.powerAvailableMW} MW` : "—"}</TableCell>
+                    <TableCell>
+                      {sub.saleOrLease
+                        ? { sale: "Sale", lease: "Lease", both: "Sale & Lease" }[sub.saleOrLease]
+                        : "—"}
                     </TableCell>
                     <TableCell>
-                      {submission.acreage ? `${submission.acreage} acres` : "—"}
-                      {submission.squareFootage && (
-                        <div className="text-xs text-muted-foreground">
-                          {submission.squareFootage.toLocaleString()} sq ft
-                        </div>
-                      )}
+                      <Badge variant={statusBadgeVariants[sub.status]}>{statusLabels[sub.status]}</Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant={statusBadgeVariants[submission.status]}>
-                        {statusLabels[submission.status]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(submission.createdAt)}</TableCell>
+                    <TableCell className="whitespace-nowrap">{formatDate(sub.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -392,34 +358,21 @@ export default function DataCenterSubmissionsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openViewDialog(submission)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View Details
+                          <DropdownMenuItem onClick={() => openViewDialog(sub)}>
+                            <Eye className="h-4 w-4 mr-2" />View All Fields
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => updateStatus(submission.id, "under_review")}
-                          >
-                            <Clock className="h-4 w-4 mr-2" />
-                            Mark Under Review
+                          <DropdownMenuItem onClick={() => updateStatus(sub.id, "under_review")}>
+                            <Clock className="h-4 w-4 mr-2" />Mark Under Review
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => updateStatus(submission.id, "approved")}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                            Approve
+                          <DropdownMenuItem onClick={() => updateStatus(sub.id, "approved")}>
+                            <CheckCircle className="h-4 w-4 mr-2 text-green-600" />Approve
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => updateStatus(submission.id, "contacted")}
-                          >
-                            <MessageSquare className="h-4 w-4 mr-2" />
-                            Mark Contacted
+                          <DropdownMenuItem onClick={() => updateStatus(sub.id, "contacted")}>
+                            <MessageSquare className="h-4 w-4 mr-2" />Mark Contacted
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => updateStatus(submission.id, "rejected")}
-                          >
-                            <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                            Reject
+                          <DropdownMenuItem onClick={() => updateStatus(sub.id, "rejected")}>
+                            <XCircle className="h-4 w-4 mr-2 text-red-600" />Reject
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -432,198 +385,211 @@ export default function DataCenterSubmissionsPage() {
         </CardContent>
       </Card>
 
-      {/* View/Edit Dialog */}
+      {/* ── Full Detail Dialog ─────────────────────────────────────────────── */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedSubmission && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
+                <DialogTitle className="flex items-center gap-2 text-xl">
+                  <MapPin className="h-5 w-5 text-primary" />
                   {selectedSubmission.referralTitle}
                 </DialogTitle>
-                <DialogDescription>
-                  Property submission for Zenthium evaluation
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-6 py-4">
-                {/* Status Badge */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Status:</span>
+                <DialogDescription className="flex items-center gap-3">
+                  <span>{selectedSubmission.propertyName}</span>
+                  <span>·</span>
+                  <span>{selectedSubmission.city}, {selectedSubmission.state}</span>
+                  <span>·</span>
                   <Badge variant={statusBadgeVariants[selectedSubmission.status]}>
                     {statusLabels[selectedSubmission.status]}
                   </Badge>
-                </div>
+                </DialogDescription>
+              </DialogHeader>
 
-                {/* Site Information */}
+              <div className="space-y-8 py-2">
+
+                {/* ── Step 1: Site Information ── */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    Site Information
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Referral Title</Label>
-                      <p className="font-medium">{selectedSubmission.referralTitle}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Property Name</Label>
-                      <p className="font-medium">{selectedSubmission.propertyName}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label className="text-muted-foreground text-xs">Street Address</Label>
-                    <p>{selectedSubmission.streetAddress || "—"}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <Label className="text-muted-foreground text-xs">City</Label>
-                      <p>{selectedSubmission.city}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">State</Label>
-                      <p>{selectedSubmission.state}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">ZIP Code</Label>
-                      <p>{selectedSubmission.zipCode || "—"}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Country</Label>
-                      <p>{selectedSubmission.country || "—"}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Coordinates</Label>
-                      <p>{selectedSubmission.coordinates || "—"}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Parcel Number</Label>
-                      <p>{selectedSubmission.parcelNumber || "—"}</p>
-                    </div>
-                  </div>
-
+                  <SectionHeading icon={MapPin} title="Step 1 — Site Information" />
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Acreage</Label>
-                      <p>{selectedSubmission.acreage ? `${selectedSubmission.acreage} acres` : "—"}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Square Footage</Label>
-                      <p>
-                        {selectedSubmission.squareFootage
-                          ? selectedSubmission.squareFootage.toLocaleString()
-                          : "—"}
-                      </p>
-                    </div>
+                    <Field label="Referral Title" value={selectedSubmission.referralTitle} />
+                    <Field label="Property Name" value={selectedSubmission.propertyName} />
                   </div>
+                  <Field label="Street Address" value={selectedSubmission.streetAddress} />
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Field label="City" value={selectedSubmission.city} />
+                    <Field label="State" value={selectedSubmission.state} />
+                    <Field label="ZIP Code" value={selectedSubmission.zipCode} />
+                    <Field label="Country" value={selectedSubmission.country} />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Coordinates (lat,lng)" value={selectedSubmission.coordinates} />
+                    <Field label="Parcel Number" value={selectedSubmission.parcelNumber} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Acreage" value={selectedSubmission.acreage != null ? `${selectedSubmission.acreage} acres` : undefined} />
+                    <Field label="Square Footage" value={selectedSubmission.squareFootage != null ? `${fmt(selectedSubmission.squareFootage)} ft²` : undefined} />
+                  </div>
+                  <Field label="Description" value={selectedSubmission.description} />
+                </div>
 
-                  <div>
-                    <Label className="text-muted-foreground text-xs">Description</Label>
-                    <p className="text-sm mt-1 whitespace-pre-wrap">
-                      {selectedSubmission.description}
-                    </p>
+                <Separator />
+
+                {/* ── Step 2: Infrastructure ── */}
+                <div className="space-y-4">
+                  <SectionHeading icon={Zap} title="Step 2 — Infrastructure" />
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Power Available (MW)" value={selectedSubmission.powerAvailableMW} />
+                    <Field label="Substation Distance" value={selectedSubmission.powerSubstationDistance} />
+                    <Field label="Water Available (GPM)" value={selectedSubmission.waterAvailableGPM} />
+                  </div>
+                  <Field label="Fiber Connectivity" value={selectedSubmission.fiberConnectivity} />
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Natural Gas Available" value={selectedSubmission.naturalGasAvailable} />
+                    <Field label="Zoning Classification" value={selectedSubmission.zoningClassification} />
+                    <Field label="Flood Zone" value={selectedSubmission.floodZone} />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Building Condition" value={selectedSubmission.buildingCondition} />
+                    <Field label="Ceiling Height (ft)" value={selectedSubmission.ceilingHeightFt} />
+                    <Field label="Loading Docks" value={selectedSubmission.loadingDocks} />
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Field label="Raised Floor Available" value={selectedSubmission.raisedFloorAvailable} />
+                    <Field label="Backup Generator" value={selectedSubmission.backupGeneratorAvailable} />
+                    <Field label="Cooling Infrastructure" value={selectedSubmission.hasCoolingInfrastructure} />
+                  </div>
+                  <Field label="Environmental Notes" value={selectedSubmission.environmentalNotes} />
+                </div>
+
+                <Separator />
+
+                {/* ── Step 3: Ownership & Pricing ── */}
+                <div className="space-y-4">
+                  <SectionHeading icon={DollarSign} title="Step 3 — Ownership & Pricing" />
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Ownership Type" value={
+                      selectedSubmission.ownershipType
+                        ? { fee_simple: "Fee Simple", leasehold: "Leasehold", ground_lease: "Ground Lease", other: "Other" }[selectedSubmission.ownershipType]
+                        : undefined
+                    } />
+                    <Field label="Sale or Lease" value={
+                      selectedSubmission.saleOrLease
+                        ? { sale: "For Sale", lease: "For Lease", both: "Sale & Lease" }[selectedSubmission.saleOrLease]
+                        : undefined
+                    } />
+                    <Field label="Closing Timeline (weeks)" value={selectedSubmission.closingTimelineWeeks} />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Asking Price (USD)" value={selectedSubmission.askingPriceUSD != null ? `$${fmt(selectedSubmission.askingPriceUSD)}` : undefined} />
+                    <Field label="Lease Price ($/sqft/mo)" value={selectedSubmission.leasePricePerSqFtMonthly != null ? `$${selectedSubmission.leasePricePerSqFtMonthly}` : undefined} />
+                    <Field label="Annual Property Tax (USD)" value={selectedSubmission.propertyTaxAnnualUSD != null ? `$${fmt(selectedSubmission.propertyTaxAnnualUSD)}` : undefined} />
+                  </div>
+                  <Field label="Incentives Available" value={selectedSubmission.incentivesAvailable} />
+                  <Field label="Title Encumbrances" value={selectedSubmission.titleEncumbrances} />
+                </div>
+
+                <Separator />
+
+                {/* ── Step 4: Contacts ── */}
+                <div className="space-y-4">
+                  <SectionHeading icon={Users} title="Step 4 — Contacts" />
+                  <p className="text-xs font-semibold text-muted-foreground">Owner / Seller</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="First Name" value={selectedSubmission.ownerFirstName} />
+                    <Field label="Last Name" value={selectedSubmission.ownerLastName} />
+                    <Field label="Company" value={selectedSubmission.ownerCompany} />
+                    <Field label="Email" value={selectedSubmission.ownerEmail} />
+                    <Field label="Phone" value={selectedSubmission.ownerPhone} />
+                    <Field label="Preferred Contact" value={selectedSubmission.preferredContactMethod} />
+                  </div>
+                  <p className="text-xs font-semibold text-muted-foreground pt-2">Broker (if applicable)</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="First Name" value={selectedSubmission.brokerFirstName} />
+                    <Field label="Last Name" value={selectedSubmission.brokerLastName} />
+                    <Field label="Company" value={selectedSubmission.brokerCompany} />
+                    <Field label="Email" value={selectedSubmission.brokerEmail} />
+                    <Field label="Phone" value={selectedSubmission.brokerPhone} />
+                    <Field label="License Number" value={selectedSubmission.brokerLicenseNumber} />
                   </div>
                 </div>
 
-                {/* Submitter Info */}
-                <div className="border-t pt-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
-                    Submitter Information
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Submitted By</Label>
-                      <p>{selectedSubmission.submittedBy || "—"}</p>
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground text-xs">Email</Label>
-                      <p>{selectedSubmission.submittedByEmail || "—"}</p>
-                    </div>
+                <Separator />
+
+                {/* ── Step 5: Additional Notes ── */}
+                <div className="space-y-4">
+                  <SectionHeading icon={FileText} title="Step 5 — Additional Notes" />
+                  <Field label="Additional Notes" value={selectedSubmission.additionalNotes} />
+                  <Field label="Documents Available" value={selectedSubmission.documentsAvailable} />
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Video Tour URL" value={selectedSubmission.videoTourUrl} />
+                    <Field label="Aerial Imagery URL" value={selectedSubmission.aerialImageryUrl} />
                   </div>
-                  <div>
-                    <Label className="text-muted-foreground text-xs">Submission Date</Label>
-                    <p>{formatDate(selectedSubmission.createdAt)}</p>
-                  </div>
+                  <Field label="Nearby Data Centers" value={selectedSubmission.nearbyDataCenters} />
+                  <Field label="Development Timeline Notes" value={selectedSubmission.developmentTimelineNotes} />
+                  <Field label="Referred By" value={selectedSubmission.referredBy} />
                 </div>
 
-                {/* Review Notes */}
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                      Review Notes
-                    </h3>
-                    {!editMode && (
-                      <Button variant="outline" size="sm" onClick={() => setEditMode(true)}>
-                        <MessageSquare className="h-4 w-4 mr-2" />
+                <Separator />
+
+                {/* ── Admin: Review Notes ── */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <SectionHeading icon={MessageSquare} title="Admin Review Notes" />
+                    {!editingNotes && (
+                      <Button variant="outline" size="sm" onClick={() => setEditingNotes(true)}>
                         Edit Notes
                       </Button>
                     )}
                   </div>
-                  {editMode ? (
-                    <div className="space-y-3">
+                  {editingNotes ? (
+                    <div className="space-y-2">
                       <Textarea
-                        value={formData.reviewNotes || ""}
-                        onChange={(e) =>
-                          setFormData({ ...formData, reviewNotes: e.target.value })
-                        }
-                        placeholder="Add review notes here..."
+                        value={reviewNotesDraft}
+                        onChange={(e) => setReviewNotesDraft(e.target.value)}
+                        placeholder="Add internal review notes..."
                         rows={4}
                       />
                       <div className="flex gap-2">
-                        <Button onClick={saveReviewNotes} disabled={saving}>
+                        <Button onClick={saveReviewNotes} disabled={saving} size="sm">
                           <Save className="h-4 w-4 mr-2" />
                           {saving ? "Saving..." : "Save Notes"}
                         </Button>
-                        <Button variant="outline" onClick={() => setEditMode(false)}>
-                          Cancel
-                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setEditingNotes(false)}>Cancel</Button>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm">
-                      {selectedSubmission.reviewNotes || "No review notes added yet."}
+                    <p className="text-sm text-muted-foreground">
+                      {selectedSubmission.reviewNotes || "No review notes yet."}
                     </p>
                   )}
                 </div>
+
+                {/* ── Submission Metadata ── */}
+                <div className="bg-muted/40 rounded-md p-4 space-y-2">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Submission Metadata</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <Field label="Submitted By" value={selectedSubmission.submittedBy} />
+                    <Field label="Submitter Email" value={selectedSubmission.submittedByEmail} />
+                    <Field label="Submitted On" value={formatDate(selectedSubmission.createdAt)} />
+                    <Field label="Last Updated" value={formatDate(selectedSubmission.updatedAt)} />
+                  </div>
+                </div>
               </div>
 
-              <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                <div className="flex gap-2 flex-1">
-                  <Button
-                    variant="outline"
-                    onClick={() => updateStatus(selectedSubmission.id, "under_review")}
-                  >
-                    <Clock className="h-4 w-4 mr-2" />
-                    Under Review
+              <DialogFooter className="flex-col sm:flex-row gap-2 pt-2">
+                <div className="flex gap-2 flex-1 flex-wrap">
+                  <Button variant="outline" size="sm" onClick={() => updateStatus(selectedSubmission.id, "under_review")}>
+                    <Clock className="h-4 w-4 mr-1" />Under Review
                   </Button>
-                  <Button
-                    variant="default"
-                    onClick={() => updateStatus(selectedSubmission.id, "approved")}
-                  >
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Approve
+                  <Button size="sm" onClick={() => updateStatus(selectedSubmission.id, "approved")}>
+                    <CheckCircle className="h-4 w-4 mr-1" />Approve
                   </Button>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => updateStatus(selectedSubmission.id, "contacted")}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Contacted
+                  <Button variant="outline" size="sm" onClick={() => updateStatus(selectedSubmission.id, "contacted")}>
+                    <MessageSquare className="h-4 w-4 mr-1" />Contacted
                   </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => updateStatus(selectedSubmission.id, "rejected")}
-                  >
-                    <XCircle className="h-4 w-4 mr-2" />
-                    Reject
+                  <Button variant="destructive" size="sm" onClick={() => updateStatus(selectedSubmission.id, "rejected")}>
+                    <XCircle className="h-4 w-4 mr-1" />Reject
                   </Button>
                 </div>
               </DialogFooter>
