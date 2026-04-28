@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!);
+const getResend = () => process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const CC_EMAILS = ["bstitt@strategicvalueplus.com", "kmoore@kdm-assoc.com"];
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "payments@kdm-assoc.com";
@@ -117,8 +117,13 @@ async function sendPaymentConfirmation(eventType: string, data: PaymentEventData
     </div>
   `;
 
+  const resendClient = getResend();
+  if (!resendClient) {
+    console.warn("RESEND_API_KEY not set, skipping email for", eventType);
+    return;
+  }
   try {
-    const result = await resend.emails.send({
+    const result = await resendClient.emails.send({
       from: FROM_EMAIL,
       to: data.customerEmail,
       cc: CC_EMAILS,
@@ -148,7 +153,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
+    event = getStripe().webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err: any) {
     console.error("Webhook signature verification failed:", err.message);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
@@ -194,7 +199,7 @@ export async function POST(req: NextRequest) {
 
       case "payment_intent.succeeded": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        const charge = paymentIntent.latest_charge ? await stripe.charges.retrieve(paymentIntent.latest_charge as string) : null;
+        const charge = paymentIntent.latest_charge ? await getStripe().charges.retrieve(paymentIntent.latest_charge as string) : null;
         await sendPaymentConfirmation(event.type, {
           id: paymentIntent.id,
           amount: paymentIntent.amount,
