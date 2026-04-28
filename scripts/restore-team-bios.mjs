@@ -219,8 +219,29 @@ Mr. Cotton is currently Managing Partner of &lsquo;The Cotton Exchange&rsquo; (h
     ),
   },
   {
+    firstName: "Miranda",
+    lastName: "Bouldin",
+    title: "President",
+    expertise: "Contracts & Space Defense",
+    emailPrimary: "mbouldin@logicore.com",
+    role: "team",
+    teamTag: "leadership",
+    bio: cleanHtml(
+      `Miranda Bouldin is President at KDM & Associates and CEO of LogiCore, bringing deep expertise in government contracting, defense logistics, cybersecurity, and space defense.
+
+Miranda is the creator of Space Defense Brief and TechGeekette Brief — widely followed publications providing strategic insights on Space Command, Space Force, and National Defense. Her work bridges the gap between defense technology and government procurement, helping minority-owned and small businesses navigate complex federal contracting opportunities in the defense and space sectors.
+
+With a career spanning GovCon, Defense Logistics, and Cybersecurity, Miranda leverages her expertise to empower businesses with the intelligence and strategy needed to compete and win in federal markets. She is a recognized thought leader in the defense contracting community and a passionate advocate for diversity in the defense industrial base.`
+    ),
+  },
+  {
     firstName: "Gaylord",
     lastName: "Neal",
+    title: "Digital Solutions and Innovation Consultant",
+    expertise: "Managed IT Services & Business Development",
+    emailPrimary: "gneal@qmespotlight.com",
+    role: "affiliate",
+    teamTag: "affiliate",
     bio: cleanHtml(
       `30+ years in Providing Managed IT Services, Strategic Business Development, Sales Planning &amp; Execution, Building / Training High-Performance Sales Teams, Mentor-Protege Program Experts, and Supplier Diversity Contracting Consultant for businesses.
 
@@ -287,7 +308,29 @@ async function restoreBios() {
     }
 
     if (!found) {
-      console.warn(`  ⚠️  ${fullName} not found in any collection — skipping`);
+      // Create the record in teamMembers
+      try {
+        await db.collection("teamMembers").add({
+          firstName: bioData.firstName,
+          lastName: bioData.lastName,
+          bio: bioData.bio,
+          title: bioData.title || "",
+          expertise: bioData.expertise || "",
+          emailPrimary: bioData.emailPrimary || "",
+          role: bioData.role || "affiliate",
+          teamTag: bioData.teamTag || "affiliate",
+          status: "active",
+          isCEO: false,
+          isCOO: false,
+          isCTO: false,
+          isCRO: false,
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        });
+        console.log(`  ✅ Created new record for ${fullName} in 'teamMembers'`);
+      } catch (err) {
+        console.error(`  ❌ Failed to create ${fullName}:`, err.message);
+      }
     }
   }
 
