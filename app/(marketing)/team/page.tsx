@@ -102,7 +102,7 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
           </div>
           <h3 className="text-lg font-semibold">{member.name}</h3>
           {member.company && (
-            <p className="text-sm text-muted-foreground mb-1">{member.company}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-600 mb-1">{member.company}</p>
           )}
           <p className="text-sm text-primary font-medium">{member.title}</p>
           <p className="mt-3 text-sm text-primary underline underline-offset-2 hover:text-primary/80 transition-colors font-medium">
