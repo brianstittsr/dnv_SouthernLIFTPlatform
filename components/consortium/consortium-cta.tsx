@@ -54,18 +54,18 @@ export function ConsortiumCTA() {
                 <Button
                   onClick={handleJoinConsortium}
                   size="lg"
-                  className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold"
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-8"
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
                   Add to Cart & Apply Now
                 </Button>
-                <Link href="/contact">
+                <Link href="/consortium/members">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-2 border-white text-white hover:bg-white hover:text-blue-700"
+                    className="border-2 border-white text-white hover:bg-white hover:text-blue-700 px-8"
                   >
-                    Contact Us First
+                    Learn More
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Button>
                 </Link>

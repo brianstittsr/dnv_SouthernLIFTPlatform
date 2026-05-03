@@ -129,6 +129,7 @@ export default function TeammembersPage() {
   const [editingMember, setEditingMember] = useState<TeamMemberDoc | null>(null);
   const [seeding, setSeeding] = useState(false);
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [tagFilter, setTagFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
   const [schedulingList, setSchedulingList] = useState<OneToOneQueueItemDoc[]>([]);
   const [showSchedulingPanel, setShowSchedulingPanel] = useState(false);
@@ -163,6 +164,8 @@ export default function TeammembersPage() {
     teamTag: "affiliate" as TeamMemberDoc["teamTag"],
     // Display order within team tag
     displayOrder: 0,
+    // Multi-tags
+    tags: [] as string[],
   });
 
   // Fetch members from Firebase
@@ -407,6 +410,7 @@ export default function TeammembersPage() {
       isCRO: member.isCRO || false,
       teamTag: member.teamTag || "affiliate",
       displayOrder: member.displayOrder || 0,
+      tags: member.tags || [],
     });
     setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
@@ -436,6 +440,7 @@ export default function TeammembersPage() {
       isCRO: false,
       teamTag: "affiliate",
       displayOrder: 0,
+      tags: [],
     });
   };
 
@@ -512,8 +517,9 @@ export default function TeammembersPage() {
       (member.expertise || '').toLowerCase().includes(searchLower);
     
     const matchesRole = roleFilter === "all" || member.role === roleFilter;
+    const matchesTag = tagFilter === "all" || (member.tags && member.tags.includes(tagFilter));
     
-    return matchesSearch && matchesRole;
+    return matchesSearch && matchesRole && matchesTag;
   });
 
   const getInitials = (firstName?: string, lastName?: string) => {
@@ -828,6 +834,53 @@ export default function TeammembersPage() {
                   </p>
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="tags">Tags</Label>
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {formData.tags?.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="gap-1">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              tags: formData.tags?.filter((t) => t !== tag) || [],
+                            })
+                          }
+                          className="ml-1 hover:text-red-500"
+                        >
+                          ×
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <Select
+                    onValueChange={(value) => {
+                      if (!formData.tags?.includes(value)) {
+                        setFormData({
+                          ...formData,
+                          tags: [...(formData.tags || []), value],
+                        });
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Add a tag..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
+                      <SelectItem value="leadership">Leadership</SelectItem>
+                      <SelectItem value="staff">Staff</SelectItem>
+                      <SelectItem value="affiliate">Affiliate</SelectItem>
+                      <SelectItem value="founder">Founder</SelectItem>
+                      <SelectItem value="partner">Partner</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Add multiple tags to categorize this team member. KDM Consortium tag is auto-added for paying members.
+                  </p>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="expertise">Expertise *</Label>
                   <Input
                     id="expertise"
@@ -1059,7 +1112,7 @@ export default function TeammembersPage() {
               />
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full md:w-[160px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
@@ -1069,6 +1122,20 @@ export default function TeammembersPage() {
                 <SelectItem value="affiliate">Affiliate</SelectItem>
                 <SelectItem value="consultant">Consultant</SelectItem>
                 <SelectItem value="sme_user">SME User</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={tagFilter} onValueChange={setTagFilter}>
+              <SelectTrigger className="w-full md:w-[160px]">
+                <SelectValue placeholder="Filter by tag" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Tags</SelectItem>
+                <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
+                <SelectItem value="leadership">Leadership</SelectItem>
+                <SelectItem value="staff">Staff</SelectItem>
+                <SelectItem value="affiliate">Affiliate</SelectItem>
+                <SelectItem value="founder">Founder</SelectItem>
+                <SelectItem value="partner">Partner</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex items-center gap-1 border rounded-md p-1">
@@ -1147,6 +1214,7 @@ export default function TeammembersPage() {
                     <TableHead className="hidden lg:table-cell">Expertise</TableHead>
                     <TableHead className="hidden md:table-cell">Website</TableHead>
                     <TableHead>Role</TableHead>
+                    <TableHead className="hidden lg:table-cell">Tags</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -1215,6 +1283,15 @@ export default function TeammembersPage() {
                         )}
                       </TableCell>
                       <TableCell>{getRoleBadge(member.role)}</TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        <div className="flex flex-wrap gap-1">
+                          {member.tags?.map((tag) => (
+                            <Badge key={tag} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         {member.status === "active" ? (
                           <Badge variant="outline" className="text-green-600 border-green-600">
@@ -1297,6 +1374,15 @@ export default function TeammembersPage() {
                   </div>
                   {getRoleBadge(member.role)}
                 </div>
+                {member.tags && member.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {member.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>

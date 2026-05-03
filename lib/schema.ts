@@ -602,6 +602,20 @@ export interface TeamMemberDoc {
   clientNotes?: string; // Notes about them as a client
   // Mattermost integration
   mattermostUserId?: string; // Links to Mattermost user ID for playbook assignments
+  // Multi-tag support (replaces/extends single teamTag)
+  tags?: string[]; // e.g. ["kdm-consortium", "affiliate", "leadership"]
+  // Consortium-specific profile fields
+  companyName?: string; // Display name for company
+  companyDescription?: string; // Public company pitch (2-3 sentences)
+  ceoBio?: string; // CEO biography separate from personal bio
+  companyLogo?: string; // URL or base64 for company logo
+  naicsCodes?: string[]; // NAICS codes for capability matching
+  certifications?: string[]; // ["8(a)", "WOSB", "SDVOSB", "HUBZone", "CMMC", "MBE"]
+  consortiumPillarFocus?: string[]; // Which of 5 pillars they serve
+  consortiumOnboardingComplete?: boolean;
+  consortiumJoinedAt?: Timestamp;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

@@ -4,6 +4,7 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { UserProfileProvider } from "@/contexts/user-profile-context";
 import { ProfileCompletionWizard } from "@/components/portal/profile-completion-wizard";
 import { AffiliateOnboardingWizard } from "@/components/portal/affiliate-onboarding-wizard";
+import { ConsortiumOnboardingWizard } from "@/components/portal/consortium-onboarding-wizard";
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default function PortalLayout({
@@ -23,6 +24,7 @@ export default function PortalLayout({
         </SidebarProvider>
         <ProfileCompletionWizard />
         <AffiliateOnboardingWizard />
+        <ConsortiumOnboardingWizard />
       </UserProfileProvider>
     </AuthGuard>
   );

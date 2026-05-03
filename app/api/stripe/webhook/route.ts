@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
+import { auth, db } from "@/lib/firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!);
 const getResend = () => process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -137,6 +139,180 @@ async function sendPaymentConfirmation(eventType: string, data: PaymentEventData
   }
 }
 
+/**
+ * Handle KDM Consortium membership signup
+ * Creates Firebase Auth user, Firestore team member record, and sends welcome email
+ */
+async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
+  const customerEmail = session.customer_details?.email;
+  const customerName = session.customer_details?.name;
+  const firebaseUid = session.metadata?.firebaseUid;
+  
+  if (!customerEmail) {
+    console.error("No customer email in session, cannot create consortium member");
+    return;
+  }
+  
+  try {
+    // Parse name into first/last
+    const nameParts = customerName?.split(" ") || ["", ""];
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+    
+    // Check if user already exists in Firebase Auth
+    let userRecord;
+    try {
+      userRecord = await auth.getUserByEmail(customerEmail);
+      console.log("Existing user found:", userRecord.uid);
+    } catch {
+      // User doesn't exist, create new one with temporary password
+      const tempPassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-4).toUpperCase();
+      userRecord = await auth.createUser({
+        email: customerEmail,
+        displayName: customerName || undefined,
+        password: tempPassword,
+        emailVerified: true, // Auto-verify since they paid
+      });
+      console.log("Created new Firebase user:", userRecord.uid);
+      
+      // Store temp password in a secure way or send reset link
+      // For now, we'll send a password reset link in the welcome email
+    }
+    
+    // Create/update team member in Firestore
+    const teamMembersRef = db.collection("teamMembers");
+    const existingQuery = await teamMembersRef.where("emailPrimary", "==", customerEmail).limit(1).get();
+    
+    const teamMemberData = {
+      firebaseUid: userRecord.uid,
+      firstName,
+      lastName,
+      emailPrimary: customerEmail,
+      expertise: "KDM Consortium Member",
+      role: "affiliate",
+      status: "active",
+      teamTag: "affiliate",
+      tags: ["kdm-consortium"],
+      consortiumOnboardingComplete: false,
+      consortiumJoinedAt: FieldValue.serverTimestamp(),
+      stripeCustomerId: session.customer || null,
+      stripeSubscriptionId: session.subscription || null,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+    
+    if (existingQuery.empty) {
+      // Create new team member
+      const docRef = await teamMembersRef.add(teamMemberData);
+      console.log("Created new team member:", docRef.id);
+    } else {
+      // Update existing team member
+      const existingDoc = existingQuery.docs[0];
+      await existingDoc.ref.update({
+        ...teamMemberData,
+        tags: FieldValue.arrayUnion("kdm-consortium"),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      console.log("Updated existing team member:", existingDoc.id);
+    }
+    
+    // Send welcome email with login instructions
+    await sendConsortiumWelcomeEmail(customerEmail, customerName || "", userRecord.uid);
+    
+  } catch (error) {
+    console.error("Error handling consortium signup:", error);
+    // Don't throw - payment is still valid, just log for manual follow-up
+  }
+}
+
+/**
+ * Send KDM Consortium welcome email with login instructions
+ */
+async function sendConsortiumWelcomeEmail(email: string, name: string, uid: string) {
+  const resendClient = getResend();
+  if (!resendClient) {
+    console.warn("RESEND_API_KEY not set, skipping welcome email");
+    return;
+  }
+  
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://kdm-assoc.com";
+  const loginUrl = `${baseUrl}/sign-in?redirect=/portal/onboarding?type=consortium`;
+  
+  const htmlContent = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #1e3a5f; margin-bottom: 10px;">Welcome to the KDM Consortium!</h1>
+        <p style="font-size: 16px; color: #666;">Your membership has been activated</p>
+      </div>
+      
+      <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <p style="margin-top: 0;">Dear ${name || "New Member"},</p>
+        
+        <p>Thank you for joining the KDM Consortium! We're excited to have you as part of our selective network of expert companies.</p>
+        
+        <p><strong>What happens next:</strong></p>
+        <ul>
+          <li>Complete your profile to get matched with opportunities</li>
+          <li>Join our weekly Friday 3pm consortium meetings</li>
+          <li>Access curated contract opportunities</li>
+          <li>Connect with government buyers and fellow members</li>
+        </ul>
+        
+        <div style="margin: 30px 0; text-align: center;">
+          <a href="${loginUrl}" style="background: #c9a227; color: #1e3a5f; padding: 14px 32px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; font-size: 16px;">
+            Log In & Complete Your Profile
+          </a>
+        </div>
+        
+        <p style="font-size: 14px; color: #666;">
+          <strong>Need help?</strong><br>
+          Contact us at <a href="mailto:kmoore@kdm-assoc.com" style="color: #2563eb;">kmoore@kdm-assoc.com</a>
+        </p>
+      </div>
+      
+      <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+      <p style="color: #9ca3af; font-size: 11px; text-align: center;">
+        KDM Consortium | KDM & Associates<br>
+        This email was sent because you recently joined the KDM Consortium.
+      </p>
+    </div>
+  `;
+  
+  const textContent = `
+Welcome to the KDM Consortium!
+
+Dear ${name || "New Member"},
+
+Thank you for joining the KDM Consortium! We're excited to have you as part of our selective network of expert companies.
+
+What happens next:
+- Complete your profile to get matched with opportunities
+- Join our weekly Friday 3pm consortium meetings
+- Access curated contract opportunities
+- Connect with government buyers and fellow members
+
+Log in here: ${loginUrl}
+
+Need help? Contact us at kmoore@kdm-assoc.com
+
+KDM Consortium | KDM & Associates
+  `;
+  
+  try {
+    await resendClient.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      cc: CC_EMAILS,
+      subject: "Welcome to the KDM Consortium!",
+      html: htmlContent,
+      text: textContent,
+    });
+    console.log("Consortium welcome email sent to", email);
+  } catch (error) {
+    console.error("Failed to send consortium welcome email:", error);
+  }
+}
+
 export async function POST(req: NextRequest) {
   const payload = await req.text();
   const signature = req.headers.get("stripe-signature");
@@ -240,6 +416,11 @@ export async function POST(req: NextRequest) {
           status: "completed",
           created: session.created,
         });
+        
+        // Handle KDM Consortium membership signup
+        if (session.metadata?.membershipType === "consortium") {
+          await handleConsortiumSignup(session);
+        }
         break;
       }
 

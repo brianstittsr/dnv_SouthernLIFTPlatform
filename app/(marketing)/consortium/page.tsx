@@ -3,6 +3,7 @@ import {
   ConsortiumAlignmentHero,
   ConsortiumAlignmentContent,
   ConsortiumCTA,
+  ConsortiumMembersSection,
 } from "@/components/consortium";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function ConsortiumPage() {
     <>
       <ConsortiumAlignmentHero />
       <ConsortiumAlignmentContent />
+      <ConsortiumMembersSection />
       <ConsortiumCTA />
     </>
   );
