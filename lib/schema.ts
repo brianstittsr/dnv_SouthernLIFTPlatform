@@ -632,6 +632,36 @@ export interface TeamMemberDoc {
   annualRevenueRange?: string;  // "$1M-$5M", "$5M-$25M", etc.
   employeeCountRange?: string;  // "1-10", "11-50", "51-200", "200+"
   pastPerformance?: PastPerformanceEntry[];  // Notable contracts delivered
+  
+  // Enhanced Government Contracting Profile Fields
+  cageCode?: string;                    // CAGE code for government contracts
+  uei?: string;                         // Unique Entity ID (SAM)
+  samRegistrationDate?: Timestamp;      // When registered in SAM.gov
+  samExpirationDate?: Timestamp;          // SAM registration expiration
+  gsaScheduleHolder?: boolean;            // Has GSA Schedule
+  gsaScheduleNumbers?: string[];          // GSA Schedule numbers
+  
+  // Contracting preferences
+  preferredContractTypes?: string[];     // "fixed-price", "cost-plus", "time-materials"
+  contractSizePreference?: string;      // "small", "medium", "large", "any"
+  geographicPreference?: string[];      // Preferred states/regions
+  setAsidePreferences?: string[];        // "8(a)", "WOSB", "SDVOSB", "HUBZone"
+  
+  // Teaming preferences
+  seekingPartners?: boolean;             // Actively looking for teammates
+  willingToPrime?: boolean;             // Willing to act as prime contractor
+  willingToSub?: boolean;               // Willing to act as subcontractor
+  idealPartnerProfile?: string;          // Description of ideal teaming partners
+  
+  // Profile visibility settings
+  profileVisibility?: "public" | "consortium-only" | "members-only";
+  allowDirectContact?: boolean;           // Allow other members to contact directly
+  contactPreferences?: {
+    email: boolean;
+    phone: boolean;
+    portalMessages: boolean;
+  };
+  
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -1805,6 +1835,249 @@ export interface PastPerformanceEntry {
 }
 
 // ============================================================================
+// AI Contracting Tools Document Types
+// ============================================================================
+
+/** AI Bid/No-Bid Analysis for opportunities */
+export interface AiBidAnalysisDoc {
+  id: string;
+  
+  // Opportunity reference
+  opportunityId: string;
+  pursuitBriefId?: string;
+  title: string;
+  agency: string;
+  
+  // Member requesting analysis
+  memberId: string;
+  companyName: string;
+  
+  // AI Analysis results
+  recommendation: "bid" | "no-bid" | "review";
+  confidenceScore: number; // 0-100
+  winProbability: number; // 0-100
+  
+  // Analysis factors
+  factors: {
+    name: string;
+    score: number; // 0-100
+    weight: number;
+    description: string;
+    positive: boolean;
+  }[];
+  
+  // Capability gaps identified
+  capabilityGaps: {
+    requirement: string;
+    severity: "high" | "medium" | "low";
+    suggestedPartners?: string[]; // Member IDs who could fill gap
+  }[];
+  
+  // Competitive analysis
+  competitiveLandscape?: {
+    estimatedCompetitors: number;
+    incumbentExists: boolean;
+    incumbentName?: string;
+    smallBusinessSetAside: boolean;
+    setAsideType?: string;
+  };
+  
+  // Financial assessment
+  financialAssessment?: {
+    estimatedProposalCost: number;
+    potentialRevenue: number;
+    breakEvenProbability: number;
+    recommendedInvestment: number;
+  };
+  
+  // Status
+  status: "pending" | "completed" | "archived";
+  generatedAt: Timestamp;
+  expiresAt?: Timestamp;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** AI RFP Processing results */
+export interface AiRfpProcessingDoc {
+  id: string;
+  
+  // Source document
+  solicitationNumber: string;
+  title: string;
+  agency: string;
+  rfpDocumentUrl: string;
+  
+  // Processing metadata
+  processedBy: string; // Member ID
+  processedAt: Timestamp;
+  processingStatus: "processing" | "completed" | "failed";
+  
+  // Extracted data
+  extractedData: {
+    keyDates: {
+      publishDate: string;
+      questionDeadline: string;
+      proposalDeadline: string;
+      awardDate?: string;
+    };
+    naicsCodes: string[];
+    contractValue: {
+      estimatedMin: number;
+      estimatedMax: number;
+      type: "fixed" | "time-materials" | "cost-plus" | "other";
+    };
+    contractDuration: string;
+    placeOfPerformance: string[];
+    setAside: string;
+    smallBusinessGoals?: {
+      sdvosb?: number;
+      wosb?: number;
+      hubzone?: number;
+      _8a?: number;
+    };
+  };
+  
+  // Requirements analysis
+  requirements: {
+    mandatory: string[];
+    technical: string[];
+    pastPerformance: string[];
+    certifications: string[];
+    securityClearance?: string;
+    cmmcLevel?: string;
+  };
+  
+  // Evaluation criteria
+  evaluationCriteria: {
+    factor: string;
+    weight?: number;
+    description: string;
+  }[];
+  
+  // AI Insights
+  aiInsights: {
+    complexity: "low" | "medium" | "high";
+    riskFactors: string[];
+    opportunities: string[];
+    suggestedApproach: string;
+  };
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** AI Teaming Recommendation for pursuits */
+export interface AiTeamingRecommendationDoc {
+  id: string;
+  
+  // Context
+  opportunityId: string;
+  pursuitBriefId?: string;
+  forMemberId: string; // Member requesting recommendation
+  
+  // Opportunity summary
+  opportunityTitle: string;
+  naicsCodes: string[];
+  requiredCapabilities: string[];
+  requiredCertifications: string[];
+  
+  // Recommended teammates
+  recommendations: {
+    memberId: string;
+    companyName: string;
+    matchScore: number; // 0-100
+    matchReasons: string[];
+    
+    // What they bring
+    complementaryCapabilities: string[];
+    relevantCertifications: string[];
+    pastPerformanceRelevance: string;
+    
+    // Fit analysis
+    geographicFit: boolean;
+    sizeFit: boolean;
+    availabilityFit: boolean;
+    
+    // Contact status
+    contacted: boolean;
+    contactStatus?: "pending" | "interested" | "not-interested" | "teamed";
+    contactNotes?: string;
+  }[];
+  
+  // Suggested team structure
+  suggestedTeamStructure: {
+    role: string;
+    description: string;
+    suggestedMemberId?: string;
+    filled: boolean;
+  }[];
+  
+  // Status
+  status: "active" | "archived" | "converted";
+  generatedAt: Timestamp;
+  expiresAt: Timestamp;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Contract Floor Analysis - pipeline forecasting */
+export interface ContractFloorAnalysisDoc {
+  id: string;
+  
+  // Analysis metadata
+  memberId: string;
+  companyName: string;
+  analysisPeriod: {
+    startDate: Timestamp;
+    endDate: Timestamp;
+  };
+  
+  // Pipeline summary
+  pipelineSummary: {
+    totalOpportunities: number;
+    totalEstimatedValue: number;
+    byStage: {
+      identification: { count: number; value: number };
+      qualification: { count: number; value: number };
+      pursuit: { count: number; value: number };
+      proposal: { count: number; value: number };
+      award: { count: number; value: number };
+    };
+  };
+  
+  // Win probability by category
+  winProbabilityAnalysis: {
+    category: string;
+    opportunities: number;
+    weightedValue: number;
+    avgWinProbability: number;
+  }[];
+  
+  // Projections
+  projections: {
+    conservative: number; // 25th percentile
+    expected: number; // 50th percentile
+    optimistic: number; // 75th percentile
+  };
+  
+  // AI Recommendations
+  recommendations: {
+    type: "pursue" | "decline" | "partner" | "watch";
+    opportunityId?: string;
+    title: string;
+    reasoning: string;
+    priority: "high" | "medium" | "low";
+  }[];
+  
+  generatedAt: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// ============================================================================
 // Collection Names
 // ============================================================================
 
@@ -1940,6 +2213,11 @@ export const COLLECTIONS = {
   MARKETPLACE_LISTINGS: "marketplaceListings",
   MARKETPLACE_INQUIRIES: "marketplaceInquiries",
   MARKETPLACE_CATEGORIES: "marketplaceCategories",
+  // AI Contracting Tools Collections
+  AI_BID_ANALYSES: "aiBidAnalyses",
+  AI_RFP_PROCESSING: "aiRfpProcessing",
+  AI_TEAMMING_RECOMMENDATIONS: "aiTeamingRecommendations",
+  CONTRACT_FLOOR_ANALYSES: "contractFloorAnalyses",
 } as const;
 
 // ... existing code ...
@@ -1965,6 +2243,12 @@ export const contactMessagesCollection = () => getCollection<ContactMessageDoc>(
 export const marketplaceListingsCollection = () => getCollection<MarketPlaceListingDoc>(COLLECTIONS.MARKETPLACE_LISTINGS);
 export const marketplaceInquiriesCollection = () => getCollection<MarketPlaceInquiryDoc>(COLLECTIONS.MARKETPLACE_INQUIRIES);
 export const marketplaceCategoriesCollection = () => getCollection<MarketPlaceCategoryDoc>(COLLECTIONS.MARKETPLACE_CATEGORIES);
+
+// AI Contracting Tools collection references
+export const aiBidAnalysesCollection = () => getCollection<AiBidAnalysisDoc>(COLLECTIONS.AI_BID_ANALYSES);
+export const aiRfpProcessingCollection = () => getCollection<AiRfpProcessingDoc>(COLLECTIONS.AI_RFP_PROCESSING);
+export const aiTeamingRecommendationsCollection = () => getCollection<AiTeamingRecommendationDoc>(COLLECTIONS.AI_TEAMMING_RECOMMENDATIONS);
+export const contractFloorAnalysesCollection = () => getCollection<ContractFloorAnalysisDoc>(COLLECTIONS.CONTRACT_FLOOR_ANALYSES);
 
 // ============================================================================
 // Collection References

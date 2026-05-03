@@ -1,6 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Users, Target, TrendingUp, Award, Shield } from "lucide-react";
+import { 
+  CheckCircle, 
+  Users, 
+  Target, 
+  TrendingUp, 
+  Award, 
+  Shield,
+  Store,
+  Brain,
+  FileSearch,
+  Handshake,
+  Zap,
+  Globe,
+  Building2,
+  BarChart3,
+  Lock
+} from "lucide-react";
+import Image from "next/image";
 
 export function ConsortiumAlignmentContent() {
   return (
@@ -140,6 +157,232 @@ export function ConsortiumAlignmentContent() {
                   <p className="text-sm text-muted-foreground">Place-based growth with strategic industrial relevance</p>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Member Benefits Section */}
+        <section className="mb-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4">Member Benefits</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Everything You Need to Win Government Contracts
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Powerful tools and features designed to help consortium members identify opportunities, 
+                form winning teams, and deliver contracts successfully.
+              </p>
+            </div>
+
+            {/* Marketplace Benefit */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12 items-center">
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80"
+                  alt="Business professionals collaborating"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <Store className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold">KDM Marketplace</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Showcase your products and services to KDM OEMs, suppliers, and fellow consortium members. 
+                  A discovery-only marketplace for B2B government contracting.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Create listings for products, services, and capabilities</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Target visibility: Public, Consortium-only, or OEM-only</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Receive and manage buyer inquiries</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Track views and engagement analytics</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* AI Contracting Tools */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12 items-center">
+              <div className="order-2 md:order-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Brain className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold">AI-Powered Contracting Tools</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Leverage artificial intelligence to identify the right opportunities and make 
+                  data-driven bid/no-bid decisions faster.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>AI-enhanced bid/no-bid analysis with win probability scoring</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Automated RFP processing and requirement extraction</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Smart opportunity matching based on your NAICS and capabilities</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Contract floor analysis and pipeline forecasting</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden order-1 md:order-2">
+                <Image
+                  src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80"
+                  alt="AI and data analytics visualization"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+
+            {/* AI Teaming & Matching */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12 items-center">
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                  alt="Team collaboration in modern office"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <Handshake className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold">AI Teaming & Partner Matching</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Find the perfect teammates to strengthen your proposals and win larger contracts 
+                  through intelligent partner identification.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>AI-powered matching of consortium members by capability gaps</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Compatibility scoring based on past performance & certifications</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Automated teaming recommendations for active pursuits</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Partner identification for specific contract requirements</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Government Contracting Tools */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12 items-center">
+              <div className="order-2 md:order-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+                    <FileSearch className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold">KDM Government Contracting Tools</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Comprehensive tools for federal procurement research, compliance, and submission 
+                  management.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Integrated SAM.gov, USASpending, and agency opportunity feeds</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>CMMC readiness assessment and certification tracking</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Past performance documentation and management</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Push vs. Pull opportunity matching models</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden order-1 md:order-2">
+                <Image
+                  src="https://images.pexels.com/photos/7172858/pexels-photo-7172858.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Government documents and compliance"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Enhanced User Profile */}
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="relative h-64 md:h-80 rounded-xl overflow-hidden">
+                <Image
+                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80"
+                  alt="Professional business profile"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center">
+                    <Building2 className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold">Enhanced Member Profiles</h3>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  Rich profiles that showcase your capabilities, certifications, and past performance 
+                  to attract teaming partners and buyers.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Complete company profile with NAICS codes and certifications</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Past performance portfolio with contract history</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Consortium pillar focus alignment (Manufacturing, Defense, etc.)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Public visibility with controlled access tiers</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
