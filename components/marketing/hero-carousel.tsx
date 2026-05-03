@@ -54,6 +54,24 @@ const STORAGE_KEY = "hero-slides";
 // Default slides fallback
 const defaultSlides: HeroSlide[] = [
   {
+    id: "launch-2026",
+    badge: "🚀 WORLD DEBUT // PLATFORM LAUNCH",
+    headline: "KDM Consortium",
+    middleLine: "Digital Platform",
+    highlightedText: "May 6, 2026",
+    subheadline: "Join the free virtual launch event during National Small Business Week. The nation's first dual-sided platform connecting SMBs & manufacturers with Federal agencies, Prime contractors, and OEMs.",
+    benefits: ["Free Virtual Event", "May 6, 2026 at 11:30 AM ET", "Open to All SMBs & Manufacturers"],
+    primaryCta: { text: "Learn More", href: "/kdm-launch" },
+    secondaryCta: { text: "Join Event", href: "https://streamyard.com/watch/fJCre6Qg7neQ" },
+    isPublished: true,
+    order: 0,
+    backgroundType: "image",
+    backgroundImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80",
+    backgroundOverlay: true,
+    backgroundOverlayOpacity: 70,
+    showWaves: false,
+  },
+  {
     id: "0",
     badge: "Strategic Partnership Announcement",
     headline: "KDM & Associates",
@@ -64,7 +82,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Discover the Partnership", href: "/about" },
     secondaryCta: { text: "Get Started", href: "/contact" },
     isPublished: true,
-    order: 0,
+    order: 1,
   },
   {
     id: "1",
@@ -76,7 +94,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Schedule Introductory Session", href: "/contact" },
     secondaryCta: { text: "Learn More", href: "/about" },
     isPublished: true,
-    order: 1,
+    order: 2,
   },
   {
     id: "2",
@@ -88,7 +106,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Get Started", href: "/contact" },
     secondaryCta: { text: "View Services", href: "/services" },
     isPublished: true,
-    order: 2,
+    order: 3,
   },
 ];
 
