@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDM Consortium Introduction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            margin: 20px auto;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d1f33 100%);
+            color: white;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            page-break-after: always;
+        }
+        
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80') center/cover;
+            opacity: 0.15;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f59e0b;
+            margin-bottom: 20px;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            font-size: 18px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        h1 {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #f59e0b;
+        }
+        
+        .subtitle {
+            font-size: 28px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            flex: 1;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #f59e0b;
+        }
+        
+        .card ul {
+            list-style: none;
+        }
+        
+        .card li {
+            font-size: 18px;
+            margin-bottom: 12px;
+            padding-left: 28px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .icon-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        .highlight {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .pill {
+            display: inline-block;
+            background: rgba(245,158,11,0.2);
+            color: #f59e0b;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(34,197,94,0.2);
+            color: #22c55e;
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .badge-orange {
+            background: rgba(245,158,11,0.2);
+            color: #f59e0b;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(245,158,11,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .feature-text h4 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #f59e0b;
+        }
+        
+        .feature-text p {
+            font-size: 16px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05));
+            border: 2px solid #f59e0b;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .cta-box h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        .cta-box p {
+            font-size: 20px;
+            color: #94a3b8;
+        }
+        
+        .arrow {
+            font-size: 48px;
+            color: #f59e0b;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .two-col {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+        }
+        
+        .col {
+            flex: 1;
+        }
+        
+        .col h3 {
+            font-size: 24px;
+            color: #f59e0b;
+            margin-bottom: 25px;
+        }
+        
+        .stat-row {
+            display: flex;
+            gap: 30px;
+            margin-top: auto;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #94a3b8;
+        }
+        
+        @media print {
+            .slide {
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: Welcome -->
+<div class="slide">
+    <div class="content">
+        <div class="logo">KDM CONSORTIUM</div>
+        <span class="pill">SELECTIVE NETWORK</span>
+        <h1>Join an Exclusive Network of Government Contracting Experts</h1>
+        <p class="subtitle">12-50 Expert Companies. One Mission: Winning Together.</p>
+        
+        <div class="grid-3" style="margin-top: 40px;">
+            <div class="card">
+                <h3>🎯 Selective Model</h3>
+                <ul>
+                    <li>12-50 curated members only</li>
+                    <li>Hand-picked by capability fit</li>
+                    <li>High-touch, not mass market</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>🏆 Five Pillars</h3>
+                <ul>
+                    <li>U.S. Manufacturing</li>
+                    <li>Critical Minerals</li>
+                    <li>Defense Contracting</li>
+                    <li>Access to Capital</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>💰 Membership</h3>
+                <ul>
+                    <li>$1,250/month standard</li>
+                    <li><span class="highlight">$650/month promo</span></li>
+                    <li>Valid through April 2026</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide-number">1 / 5</div>
+    </div>
+</div>
+
+<!-- Slide 2: Onboarding & Profile -->
+<div class="slide">
+    <div class="content">
+        <span class="pill">GET STARTED</span>
+        <h2>Seamless Onboarding & Your Member Profile</h2>
+        
+        <div class="two-col">
+            <div class="col">
+                <h3>3-Step Onboarding</h3>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h4 style="font-size: 22px; margin-bottom: 8px;">Apply</h4>
+                            <p style="color: #94a3b8;">Submit company info & membership payment</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h4 style="font-size: 22px; margin-bottom: 8px;">Onboard</h4>
+                            <p style="color: #94a3b8;">Complete profile with NAICS, certifications, pillar focus</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h4 style="font-size: 22px; margin-bottom: 8px;">Collaborate</h4>
+                            <p style="color: #94a3b8;">Join weekly meetings & start pursuing contracts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <h3>Enhanced Member Profile</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge">✓</span>
+                        <span>NAICS codes & capabilities</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge">✓</span>
+                        <span>Certifications (8a, WOSB, CMMC)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge">✓</span>
+                        <span>CAGE Code & UEI tracking</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge">✓</span>
+                        <span>Past performance portfolio</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge">✓</span>
+                        <span>Teaming preferences (Prime/Sub)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span class="badge badge-orange">NEW</span>
+                        <span>Visibility controls</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-number">2 / 5</div>
+    </div>
+</div>
+
+<!-- Slide 3: Member Toolkit -->
+<div class="slide">
+    <div class="content">
+        <span class="pill">YOUR TOOLKIT</span>
+        <h2>Everything You Need to Find, Win & Deliver Contracts</h2>
+        
+        <div class="feature-list" style="flex: 1;">
+            <div class="feature-item">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-text">
+                    <h4>Opportunity Intelligence</h4>
+                    <p>SAM.gov, USASpending, agency feeds integrated. Get opportunities pushed to you based on your profile.</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-text">
+                    <h4>AI Bid/No-Bid Analyzer</h4>
+                    <p>AI scores win probability before you invest. Get pursue/decline/partner/watch recommendations.</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">📄</div>
+                <div class="feature-text">
+                    <h4>RFP Auto-Processing</h4>
+                    <p>Extracts key dates, requirements, evaluation criteria automatically from contract documents.</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div class="feature-text">
+                    <h4>Contract Floor Analysis</h4>
+                    <p>Pipeline forecasting with conservative, expected, and optimistic revenue projections.</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">💬</div>
+                <div class="feature-text">
+                    <h4>In-Platform Messaging</h4>
+                    <p>Direct messaging to consortium members. Facilitate introductions and teaming discussions.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-number">3 / 5</div>
+    </div>
+</div>
+
+<!-- Slide 4: Marketplace -->
+<div class="slide">
+    <div class="content">
+        <span class="pill">B2B MARKETING</span>
+        <h2>KDM Marketplace — Showcase Products & Services</h2>
+        
+        <div class="two-col" style="flex: 1;">
+            <div class="col">
+                <h3>What You Can Market</h3>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="card">
+                        <h3>📦 Products</h3>
+                        <p style="color: #94a3b8;">Physical goods you manufacture or supply</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Services</h3>
+                        <p style="color: #94a3b8;">Professional capabilities you offer</p>
+                    </div>
+                    <div class="card">
+                        <h3>🏭 Capabilities</h3>
+                        <p style="color: #94a3b8;">Core expertise and capacity</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <h3>How It Works</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="background: #f59e0b; color: #0d1f33; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                        <span>Create listings with images & certifications</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="background: #f59e0b; color: #0d1f33; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                        <span>Set visibility: Public / Consortium / OEM-only</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="background: #f59e0b; color: #0d1f33; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                        <span>Receive inquiries through platform</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="background: #f59e0b; color: #0d1f33; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</span>
+                        <span>Manage negotiations offline (discovery-only)</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4 style="color: #f59e0b; margin-bottom: 15px;">Target Audiences</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span class="badge">🏢 KDM OEMs</span>
+                        <span class="badge">🔗 Suppliers</span>
+                        <span class="badge">👥 Consortium Members</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-number">4 / 5</div>
+    </div>
+</div>
+
+<!-- Slide 5: AI Teaming -->
+<div class="slide">
+    <div class="content">
+        <span class="pill">AI-POWERED</span>
+        <h2>AI Teaming — Assemble Winning Teams Automatically</h2>
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+            <p style="font-size: 22px; color: #94a3b8;">Large contracts need multiple capabilities. AI finds your perfect teammates in minutes.</p>
+        </div>
+        
+        <div class="grid-3" style="flex: 1;">
+            <div class="card">
+                <div class="step-number" style="margin: 0 auto 20px;">1</div>
+                <h3 style="text-align: center;">Identify Opportunity</h3>
+                <p style="color: #94a3b8; text-align: center;">Find or get matched to a contract in your pursuit board</p>
+            </div>
+            
+            <div class="card">
+                <div class="step-number" style="margin: 0 auto 20px;">2</div>
+                <h3 style="text-align: center;">AI Analysis</h3>
+                <p style="color: #94a3b8; text-align: center;">AI identifies capability gaps you need to fill</p>
+            </div>
+            
+            <div class="card">
+                <div class="step-number" style="margin: 0 auto 20px;">3</div>
+                <h3 style="text-align: center;">Get Recommendations</h3>
+                <p style="color: #94a3b8; text-align: center;">Receive ranked list of compatible consortium members</p>
+            </div>
+        </div>
+        
+        <div class="arrow">↓</div>
+        
+        <div class="cta-box">
+            <h3>🎯 Real Results</h3>
+            <div class="stat-row" style="justify-content: center;">
+                <div class="stat">
+                    <div class="stat-number">2-5x</div>
+                    <div class="stat-label">Larger Contracts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">Hours</div>
+                    <div class="stat-label">Not Weeks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Vetted Members</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-number">5 / 5</div>
+    </div>
+</div>
+
+</body>
+</html>
