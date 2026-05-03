@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { ConsortiumMembersGrid } from "@/components/consortium/consortium-members-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -153,7 +153,7 @@ export default function ConsortiumMembersPage() {
               </Button>
             </div>
             <p className="mt-6 text-sm text-gray-400">
-              Founder rate: /month (limited slots) � Regular: ,250/month
+              Founder rate: /month (limited slots) • Regular: ,250/month
             </p>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function ConsortiumMembersPage() {
               return (
                 <Card key={benefit.title} className="border-0 shadow-sm hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
-                    <div className={w-12 h-12 rounded-lg  flex items-center justify-center mb-4}>
+                    <div className={`w-12 h-12 rounded-lg ${benefit.color} flex items-center justify-center mb-4`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">{benefit.title}</h3>
