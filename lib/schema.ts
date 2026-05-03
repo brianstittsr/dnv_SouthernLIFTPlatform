@@ -564,6 +564,14 @@ export interface StrategicPartnerDoc {
   isClient?: boolean; // Can this partner also be served as a client?
   clientSince?: Timestamp; // When they became a client
   clientNotes?: string; // Notes about them as a client
+  // OEM/Procurement preferences for Marketplace
+  isOEM?: boolean;             // Flag for procurement-active partners
+  procurementNeeds?: string[];  // What they typically buy
+  preferredCertifications?: string[];  // Supplier requirements
+  typicalContractSize?: string;
+  // Marketplace access
+  marketplaceAccess?: boolean;  // Can browse consortium listings
+  marketplaceInquiryQuota?: number;  // Monthly inquiry limit
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -616,6 +624,14 @@ export interface TeamMemberDoc {
   consortiumJoinedAt?: Timestamp;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
+  // Marketplace seller profile fields
+  isMarketplaceSeller?: boolean;
+  marketplaceBio?: string;      // Seller-focused description
+  marketplaceCategories?: string[];  // Primary capabilities
+  yearsInBusiness?: number;
+  annualRevenueRange?: string;  // "$1M-$5M", "$5M-$25M", etc.
+  employeeCountRange?: string;  // "1-10", "11-50", "51-200", "200+"
+  pastPerformance?: PastPerformanceEntry[];  // Notable contracts delivered
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -1673,6 +1689,122 @@ export interface PaymentPlanDoc extends BaseDocument {
 }
 
 // ============================================================================
+// KDM Marketplace Document Types
+// ============================================================================
+
+/** Marketplace listing document for consortium member products/services */
+export interface MarketPlaceListingDoc {
+  id: string;
+  
+  // Link to seller
+  sellerId: string;           // TeamMemberDoc.id (consortium member)
+  sellerCompanyName: string;  // Denormalized for display
+  sellerLogo?: string;
+  
+  // Listing details
+  listingType: "product" | "service" | "capability";
+  title: string;
+  description: string;
+  shortDescription: string;   // 150 chars for cards
+  
+  // Categorization
+  categories: string[];       // e.g., ["CNC Machining", "Defense"]
+  naicsCodes: string[];       // For matching
+  certifications: string[];   // Required to purchase/engage
+  
+  // For products
+  sku?: string;
+  unitOfMeasure?: string;     // "each", "lot", "hour", "project"
+  
+  // For services
+  serviceType?: "consulting" | "manufacturing" | "logistics" | "engineering" | "other";
+  deliveryTimeline?: string;    // "2-4 weeks", "Custom quote"
+  
+  // Visual assets
+  images: string[];           // URLs to storage
+  documents: {               // PDFs, spec sheets
+    name: string;
+    url: string;
+  }[];
+  
+  // Visibility
+  status: "draft" | "published" | "archived";
+  visibility: "public" | "consortium-only" | "oem-only";
+  
+  // Matching preferences
+  targetCustomerTypes: ("oem" | "supplier" | "consortium-member")[];
+  minimumContractSize?: number;  // $ amount for engagement
+  geographicServiceArea?: string[];  // States/regions
+  
+  // Stats
+  viewCount: number;
+  inquiryCount: number;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Marketplace inquiry from buyer to seller */
+export interface MarketPlaceInquiryDoc {
+  id: string;
+  
+  // Parties
+  listingId: string;
+  sellerId: string;
+  buyerId: string;            // Can be TeamMemberDoc or StrategicPartnerDoc
+  buyerType: "consortium-member" | "strategic-partner" | "admin";
+  
+  // Inquiry details
+  subject: string;
+  message: string;
+  quantity?: number;
+  desiredTimeline?: string;
+  budgetRange?: string;
+  
+  // Attachments from buyer
+  attachments: {
+    name: string;
+    url: string;
+  }[];
+  
+  // Status workflow
+  status: "new" | "reviewing" | "responded" | "negotiating" | "declined" | "converted";
+  
+  // Response from seller
+  sellerResponse?: string;
+  responseAt?: Timestamp;
+  
+  // Admin/tracking
+  assignedToAdminId?: string;  // KDM staff tracking
+  notes?: string;
+  
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Marketplace category definition */
+export interface MarketPlaceCategoryDoc {
+  id: string;
+  name: string;
+  description: string;
+  icon?: string;
+  parentId?: string;          // For subcategories
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Past performance entry for seller profiles */
+export interface PastPerformanceEntry {
+  contractTitle: string;
+  agency: string;
+  value: string;
+  date: string;
+  description?: string;
+}
+
+// ============================================================================
 // Collection Names
 // ============================================================================
 
@@ -1804,6 +1936,10 @@ export const COLLECTIONS = {
   REVENUE_ATTRIBUTION: "revenueAttribution",
   ROUTING_RULES: "routingRules",
   ATTRIBUTION_EVENTS: "attributionEvents",
+  // KDM Marketplace Collections
+  MARKETPLACE_LISTINGS: "marketplaceListings",
+  MARKETPLACE_INQUIRIES: "marketplaceInquiries",
+  MARKETPLACE_CATEGORIES: "marketplaceCategories",
 } as const;
 
 // ... existing code ...
@@ -1825,6 +1961,10 @@ export const attributionEventsCollection = () => getCollection<AttributionEventD
 // Contact Form collection reference
 export const contactMessagesCollection = () => getCollection<ContactMessageDoc>(COLLECTIONS.CONTACT_MESSAGES);
 
+// KDM Marketplace collection references
+export const marketplaceListingsCollection = () => getCollection<MarketPlaceListingDoc>(COLLECTIONS.MARKETPLACE_LISTINGS);
+export const marketplaceInquiriesCollection = () => getCollection<MarketPlaceInquiryDoc>(COLLECTIONS.MARKETPLACE_INQUIRIES);
+export const marketplaceCategoriesCollection = () => getCollection<MarketPlaceCategoryDoc>(COLLECTIONS.MARKETPLACE_CATEGORIES);
 
 // ============================================================================
 // Collection References

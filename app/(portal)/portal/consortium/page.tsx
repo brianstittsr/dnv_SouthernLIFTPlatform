@@ -25,6 +25,7 @@ import {
   ChevronRight,
   ExternalLink,
   Loader2,
+  Store,
 } from "lucide-react";
 
 interface ConsortiumMemberData {
@@ -312,7 +313,7 @@ export default function ConsortiumDashboardPage() {
           </Card>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="hover:border-amber-300 transition-colors cursor-pointer" onClick={() => router.push("/portal/pursuits")}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -357,6 +358,23 @@ export default function ConsortiumDashboardPage() {
                     <div>
                       <p className="font-medium">Book Concierge</p>
                       <p className="text-sm text-muted-foreground">Schedule support</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:border-amber-300 transition-colors cursor-pointer" onClick={() => router.push("/portal/marketplace")}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                      <Store className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Marketplace</p>
+                      <p className="text-sm text-muted-foreground">Buy & sell with members</p>
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
