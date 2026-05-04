@@ -524,7 +524,7 @@ export function ConsortiumOnboardingWizard() {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="max-w-2xl" hideClose>
+      <DialogContent className="max-w-2xl" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between mb-2">
             <div className="flex gap-1">
