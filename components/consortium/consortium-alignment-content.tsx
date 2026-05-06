@@ -452,45 +452,6 @@ export function ConsortiumAlignmentContent() {
           </div>
         </section>
 
-        {/* Strategic Partnerships */}
-        <section className="mb-20">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-center">Key Strategic Partnerships</h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="border-2 border-blue-200 bg-blue-50">
-                <CardHeader>
-                  <CardTitle className="text-lg">V-Plus Partnership</CardTitle>
-                  <CardDescription>Manufacturing Expertise</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">Seamless teaming partnership bringing manufacturing expertise to complement KDM's government contracting capabilities.</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-purple-200 bg-purple-50">
-                <CardHeader>
-                  <CardTitle className="text-lg">Lockheed Martin</CardTitle>
-                  <CardDescription>CMMC Sub-Contractor</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">~$1M+ contract potential for CMMC certification support to help small businesses achieve compliance.</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-green-200 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="text-lg">Vulcan</CardTitle>
-                  <CardDescription>Critical Minerals</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">$1.4B DOE contract for rare earth and critical minerals supply chain development.</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
         {/* Success Metrics */}
         <section>
           <div className="max-w-4xl mx-auto">
@@ -522,10 +483,6 @@ export function ConsortiumAlignmentContent() {
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <p>Revenue from contract delivery</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <p>Partnership quality (Lockheed, Vulcan, etc.)</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
