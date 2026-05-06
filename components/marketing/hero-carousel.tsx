@@ -49,7 +49,7 @@ export interface HeroSlide {
 }
 
 // Default slides - in production these would come from a database
-const STORAGE_KEY = "hero-slides";
+const STORAGE_KEY = "hero-slides-v2";
 
 // Default slides fallback
 const defaultSlides: HeroSlide[] = [
