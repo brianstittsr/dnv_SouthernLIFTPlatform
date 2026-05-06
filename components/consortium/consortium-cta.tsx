@@ -63,7 +63,7 @@ export function ConsortiumCTA() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-2 border-white text-white hover:bg-white hover:text-blue-700 px-8"
+                    className="border-2 border-white hover:bg-white hover:text-blue-700 px-8"
                   >
                     Learn More
                     <ArrowRight className="h-5 w-5 ml-2" />

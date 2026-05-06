@@ -60,7 +60,8 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'cohort-cart-storage',
+      name: 'cohort-cart-storage-v2',
+      version: 2,
     }
   )
 );
