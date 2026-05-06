@@ -94,8 +94,6 @@ const categoryFallbackImages: Record<BlogCategory, string> = {
 
 export default async function BlogPage() {
   const allPosts = await getAllBlogPosts();
-  const featuredPosts = allPosts.slice(0, 3);
-  const remainingPosts = allPosts.slice(3);
   return (
     <>
       {/* SEO: Blog List Structured Data */}
@@ -159,75 +157,9 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      {/* Featured Articles */}
-      <section className="py-16 md:py-20">
-        <div className="container">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold tracking-tight">Featured Articles</h2>
-            <p className="mt-2 text-muted-foreground">Our latest and most impactful content</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {featuredPosts.map((post) => {
-              const Icon = categoryIcons[post.category];
-              return (
-                <Card key={post.slug} className="overflow-hidden group hover:shadow-xl transition-all flex flex-col">
-                  <div className="aspect-video bg-muted relative overflow-hidden">
-                    <Image
-                      src={post.imageUrl || categoryFallbackImages[post.category]}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                  <CardHeader className="flex-1">
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground mb-2">
-                      <Badge className={categoryColors[post.category]} variant="secondary">
-                        {post.category}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm line-clamp-3">
-                      {post.excerpt}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(post.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {post.readTime} min read
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/blog/${post.slug}`}>
-                          Read
-                          <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* All Articles by Category */}
       {BLOG_CATEGORIES.map((category) => {
-        const categoryPosts = remainingPosts.filter((p) => p.category === category);
+        const categoryPosts = allPosts.filter((p) => p.category === category);
         if (categoryPosts.length === 0) return null;
         const Icon = categoryIcons[category];
 

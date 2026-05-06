@@ -27,6 +27,19 @@ export const defaultHeroSlides: HeroSlide[] = [
     isActive: true,
   },
   {
+    id: "genomic-data-diversity",
+    title: "The Missing 88%: Genomic Data Gaps",
+    subtitle: "$200B+ FEDERAL HEALTH EQUITY OPPORTUNITY",
+    description: "HITLAB report reveals 88% of world's population is underrepresented in genomic databases. Minority-owned businesses can capture breakthrough federal contracts in precision medicine and biorepository development.",
+    ctaText: "Learn More",
+    ctaLink: "/news/genomic-data-diversity-health-equity",
+    backgroundImage: "https://images.pexels.com/photos/2280571/pexels-photo-2280571.jpeg?auto=compress&cs=tinysrgb&w=1920",
+    backgroundColor: "bg-gradient-to-br from-[#701a75]/95 via-[#86198f]/90 to-[#701a75]/95",
+    textColor: "light",
+    order: 1,
+    isActive: true,
+  },
+  {
     id: "9-trillion-manufacturing",
     title: "$9 Trillion Manufacturing Boom",
     subtitle: "FEDERAL CONTRACTING OPPORTUNITY",
@@ -36,7 +49,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "https://images.pexels.com/photos/3846491/pexels-photo-3846491.jpeg?auto=compress&cs=tinysrgb&w=1920",
     backgroundColor: "bg-gradient-to-br from-[#1e3a5f]/95 via-[#2563eb]/90 to-[#1e3a5f]/95",
     textColor: "light",
-    order: 1,
+    order: 2,
     isActive: true,
   },
   {
@@ -49,7 +62,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#1e3a5f]/95 via-[#2d4a6f]/90 to-[#1e3a5f]/95",
     textColor: "light",
-    order: 1,
+    order: 3,
     isActive: true,
   },
   {
@@ -62,7 +75,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#0f766e]/95 via-[#14b8a6]/90 to-[#0f766e]/95",
     textColor: "light",
-    order: 2,
+    order: 4,
     isActive: true,
   },
   {
@@ -75,7 +88,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#7c3aed]/95 via-[#8b5cf6]/90 to-[#7c3aed]/95",
     textColor: "light",
-    order: 3,
+    order: 5,
     isActive: true,
   },
   {
@@ -88,7 +101,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#c9a227]/95 via-[#d4af37]/90 to-[#c9a227]/95",
     textColor: "dark",
-    order: 4,
+    order: 6,
     isActive: true,
   },
   {
@@ -101,7 +114,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#701a75]/95 via-[#86198f]/90 to-[#701a75]/95",
     textColor: "light",
-    order: 5,
+    order: 7,
     isActive: true,
   },
   {
@@ -114,7 +127,7 @@ export const defaultHeroSlides: HeroSlide[] = [
     backgroundImage: "",
     backgroundColor: "bg-gradient-to-br from-[#1e3a5f]/95 via-[#2d4a6f]/90 to-[#1e3a5f]/95",
     textColor: "light",
-    order: 6,
+    order: 8,
     isActive: true,
   },
 ];
