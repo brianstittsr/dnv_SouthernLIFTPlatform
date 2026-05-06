@@ -4,6 +4,16 @@
   "description": "Stay updated with the latest news and insights from KDM & Associates",
   "articles": [
     {
+      "id": "9-trillion-american-manufacturing",
+      "title": "$9 Trillion Manufacturing Boom: What It Means for Minority-Owned Businesses",
+      "slug": "9-trillion-american-manufacturing-boom-minority-owned-businesses",
+      "sourceUrl": "/news/9-trillion-american-manufacturing",
+      "category": "news-blog",
+      "publishDate": "2026-05-05",
+      "excerpt": "Major corporations have committed $9 trillion to U.S. manufacturing. Learn how minority-owned businesses can capture federal contracting opportunities from this unprecedented industrial investment.",
+      "featured": true
+    },
+    {
       "id": "breaking-barriers-emerging-technologies",
       "title": "Breaking Barriers: How Emerging Technologies Are Empowering Minority-Owned Businesses in Government Contracting",
       "slug": "breaking-barriers-how-emerging-technologies-are-empowering-minority-owned-businesses-in-government-contracting",
