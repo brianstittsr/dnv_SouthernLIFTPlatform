@@ -98,6 +98,7 @@ import {
   FileCheck,
   Radio,
   MapPin,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -718,6 +719,7 @@ export function PortalSidebar() {
   const [hiddenNavItems, setHiddenNavItems] = useState<string[]>([]);
   const [roleVisibility, setRoleVisibility] = useState<Record<string, string[]>>({});
   const [previewRole, setPreviewRole] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const isAdmin = profile.role === "admin" || profile.svpRole === "platform_admin";
   
   // Check if user profile is complete - if not, show only Profile navigation
@@ -817,6 +819,22 @@ export function PortalSidebar() {
       return !isHiddenForRole && !isGloballyHidden;
     });
   };
+
+  // Filter nav items based on search query
+  const filterNavItemsBySearch = (items: typeof mainNavItems) => {
+    if (!searchQuery.trim()) return filterNavItems(items);
+    
+    const query = searchQuery.toLowerCase();
+    return filterNavItems(items).filter(item => 
+      item.title.toLowerCase().includes(query) || 
+      item.href.toLowerCase().includes(query)
+    );
+  };
+
+  // Check if a section has any matching items
+  const sectionHasMatchingItems = (items: typeof mainNavItems) => {
+    return filterNavItemsBySearch(items).length > 0;
+  };
   
   // Check if item should show as hidden (for admin preview)
   const isItemHidden = (href: string) => {
@@ -842,6 +860,27 @@ export function PortalSidebar() {
     initiatives: false,
   });
 
+  // Auto-expand sections when searching
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setOpenSections(prev => ({
+        ...prev,
+        other: true,
+        navigation: true,
+        work: true,
+        intelligence: true,
+        admin: true,
+        initiatives: true,
+        svpSme: true,
+        svpPartner: true,
+        svpBuyer: true,
+        svpQa: true,
+        svpInstructor: true,
+        svpAdmin: true,
+      }));
+    }
+  }, [searchQuery]);
+
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
@@ -863,6 +902,29 @@ export function PortalSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Search Input */}
+        {!isNewUser && (
+          <div className="px-3 py-2 border-b border-sidebar-border">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-sidebar-foreground/60" />
+              <input
+                type="text"
+                placeholder="Search navigation..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-8 py-2 text-sm bg-sidebar-accent/50 border border-sidebar-border rounded-md focus:outline-none focus:ring-2 focus:ring-sidebar-ring text-sidebar-foreground placeholder:text-sidebar-foreground/60"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-2.5 text-sidebar-foreground/60 hover:text-sidebar-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
         {/* ============================================ */}
         {/* NEW USER - PROFILE ONLY MODE */}
         {/* ============================================ */}
@@ -895,7 +957,7 @@ export function PortalSidebar() {
             {/* ============================================ */}
 
             {/* Vendor Section */}
-            {isSvpSectionVisible("svpSme") && (
+            {isSvpSectionVisible("svpSme") && (!searchQuery.trim() || sectionHasMatchingItems(svpSmeItems)) && (
         <Collapsible open={openSections.svpSme} onOpenChange={() => toggleSection("svpSme")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -914,7 +976,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpSmeItems).map((item) => {
+                  {filterNavItemsBySearch(svpSmeItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -945,7 +1007,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Partner Section */}
-        {isSvpSectionVisible("svpPartner") && (
+        {isSvpSectionVisible("svpPartner") && (!searchQuery.trim() || sectionHasMatchingItems(svpPartnerItems)) && (
         <Collapsible open={openSections.svpPartner} onOpenChange={() => toggleSection("svpPartner")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -964,7 +1026,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpPartnerItems).map((item) => {
+                  {filterNavItemsBySearch(svpPartnerItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -995,7 +1057,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Buyer Section */}
-        {isSvpSectionVisible("svpBuyer") && (
+        {isSvpSectionVisible("svpBuyer") && (!searchQuery.trim() || sectionHasMatchingItems(svpBuyerItems)) && (
         <Collapsible open={openSections.svpBuyer} onOpenChange={() => toggleSection("svpBuyer")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1014,7 +1076,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpBuyerItems).map((item) => {
+                  {filterNavItemsBySearch(svpBuyerItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1045,7 +1107,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - QA Reviewer Section */}
-        {isSvpSectionVisible("svpQa") && (
+        {isSvpSectionVisible("svpQa") && (!searchQuery.trim() || sectionHasMatchingItems(svpQaItems)) && (
         <Collapsible open={openSections.svpQa} onOpenChange={() => toggleSection("svpQa")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1064,7 +1126,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpQaItems).map((item) => {
+                  {filterNavItemsBySearch(svpQaItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1095,7 +1157,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - CMMC Instructor Section */}
-        {isSvpSectionVisible("svpInstructor") && (
+        {isSvpSectionVisible("svpInstructor") && (!searchQuery.trim() || sectionHasMatchingItems(svpInstructorItems)) && (
         <Collapsible open={openSections.svpInstructor} onOpenChange={() => toggleSection("svpInstructor")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1114,7 +1176,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpInstructorItems).map((item) => {
+                  {filterNavItemsBySearch(svpInstructorItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1145,7 +1207,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Admin Section */}
-        {isSvpSectionVisible("svpAdmin") && (
+        {isSvpSectionVisible("svpAdmin") && (!searchQuery.trim() || sectionHasMatchingItems(svpAdminItems)) && (
         <Collapsible open={openSections.svpAdmin} onOpenChange={() => toggleSection("svpAdmin")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1164,7 +1226,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {filterNavItems(svpAdminItems).map((item) => {
+                  {filterNavItemsBySearch(svpAdminItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1198,6 +1260,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
+        {(!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1213,6 +1276,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 {/* Navigation */}
+                {(!searchQuery.trim() || sectionHasMatchingItems(mainNavItems)) && (
                 <Collapsible open={openSections.navigation} onOpenChange={() => toggleSection("navigation")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1228,7 +1292,7 @@ export function PortalSidebar() {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          {filterNavItems(mainNavItems).map((item) => {
+                          {filterNavItemsBySearch(mainNavItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (
                               <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1256,8 +1320,10 @@ export function PortalSidebar() {
                     </CollapsibleContent>
                   </SidebarGroup>
                 </Collapsible>
+                )}
 
                 {/* Work */}
+                {(!searchQuery.trim() || sectionHasMatchingItems(workItems)) && (
                 <Collapsible open={openSections.work} onOpenChange={() => toggleSection("work")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1273,7 +1339,7 @@ export function PortalSidebar() {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          {filterNavItems(workItems).map((item) => {
+                          {filterNavItemsBySearch(workItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (
                               <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1298,8 +1364,10 @@ export function PortalSidebar() {
                     </CollapsibleContent>
                   </SidebarGroup>
                 </Collapsible>
+                )}
 
                 {/* Intelligence */}
+                {(!searchQuery.trim() || sectionHasMatchingItems(aiItems)) && (
                 <Collapsible open={openSections.intelligence} onOpenChange={() => toggleSection("intelligence")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1315,7 +1383,7 @@ export function PortalSidebar() {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          {filterNavItems(aiItems).map((item) => {
+                          {filterNavItemsBySearch(aiItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (
                               <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1340,9 +1408,10 @@ export function PortalSidebar() {
                     </CollapsibleContent>
                   </SidebarGroup>
                 </Collapsible>
+                )}
 
                 {/* Admin */}
-                {isAdmin && (
+                {isAdmin && (!searchQuery.trim() || sectionHasMatchingItems(adminItems)) && (
                 <Collapsible open={openSections.admin} onOpenChange={() => toggleSection("admin")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1375,7 +1444,7 @@ export function PortalSidebar() {
                               </SidebarMenuBadge>
                             )}
                           </SidebarMenuItem>
-                          {filterNavItems(adminItems).map((item) => {
+                          {filterNavItemsBySearch(adminItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (
                               <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1403,6 +1472,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Initiatives */}
+                {(!searchQuery.trim() || sectionHasMatchingItems(initiativeItems)) && (
                 <Collapsible open={openSections.initiatives} onOpenChange={() => toggleSection("initiatives")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1418,7 +1488,7 @@ export function PortalSidebar() {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          {filterNavItems(initiativeItems).map((item) => {
+                          {filterNavItemsBySearch(initiativeItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (
                               <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
@@ -1443,10 +1513,12 @@ export function PortalSidebar() {
                     </CollapsibleContent>
                   </SidebarGroup>
                 </Collapsible>
+                )}
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
+        )}
         </>
         )}
       </SidebarContent>
