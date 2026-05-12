@@ -3,7 +3,7 @@ import { getStripe } from '@/lib/stripe';
 
 /**
  * DELETE /api/admin/subscriptions/[id]
- * Cancel a subscription
+ * Cancel a subscription immediately
  */
 export async function DELETE(
   request: NextRequest,
@@ -12,8 +12,6 @@ export async function DELETE(
   try {
     const params = await context.params;
     const { id } = params;
-    const body = await request.json();
-    const { cancelAtPeriodEnd = true } = body;
 
     const stripe = getStripe();
 
