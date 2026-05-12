@@ -198,6 +198,49 @@ export default function RevenueConfigPage() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
 
+  // Stripe subscriptions state
+  interface StripeSubscription {
+    id: string;
+    status: string;
+    customer: {
+      id: string;
+      email: string;
+      name: string;
+    };
+    items: {
+      data: Array<{
+        id: string;
+        price: {
+          id: string;
+          unit_amount: number;
+          currency: string;
+          nickname: string;
+        };
+        quantity: number;
+      }>;
+    };
+    current_period_end: number;
+    cancel_at_period_end: boolean;
+    created: number;
+  }
+  const [subscriptions, setSubscriptions] = useState<StripeSubscription[]>([]);
+  const [loadingSubscriptions, setLoadingSubscriptions] = useState(false);
+  const [showCreateSubscriptionDialog, setShowCreateSubscriptionDialog] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [showCancelSubscriptionDialog, setShowCancelSubscriptionDialog] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState<StripeSubscription | null>(null);
+  const [newSubscription, setNewSubscription] = useState({
+    customerId: "",
+    priceId: "",
+    quantity: 1,
+    trialDays: 0,
+  });
+  const [refundAmount, setRefundAmount] = useState("");
+  const [refundReason, setRefundReason] = useState("requested_by_customer");
+  const [creatingSubscription, setCreatingSubscription] = useState(false);
+  const [processingRefund, setProcessingRefund] = useState(false);
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
+
   const loadPaymentRequests = async () => {
     setLoadingRequests(true);
     try {
@@ -229,6 +272,90 @@ export default function RevenueConfigPage() {
       console.error("Cancel failed:", err);
     } finally {
       setCancellingId(null);
+    }
+  };
+
+  // Subscription management functions
+  const loadSubscriptions = async () => {
+    setLoadingSubscriptions(true);
+    try {
+      const res = await fetch("/api/admin/subscriptions?limit=50");
+      const data = await res.json();
+      if (data.subscriptions) setSubscriptions(data.subscriptions);
+    } catch (err) {
+      console.error("Failed to load subscriptions:", err);
+    } finally {
+      setLoadingSubscriptions(false);
+    }
+  };
+
+  const handleCreateSubscription = async () => {
+    if (!newSubscription.customerId || !newSubscription.priceId) {
+      return;
+    }
+    setCreatingSubscription(true);
+    try {
+      const res = await fetch("/api/admin/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSubscription),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSubscriptions(prev => [data.subscription, ...prev]);
+      setShowCreateSubscriptionDialog(false);
+      setNewSubscription({ customerId: "", priceId: "", quantity: 1, trialDays: 0 });
+    } catch (err) {
+      console.error("Failed to create subscription:", err);
+    } finally {
+      setCreatingSubscription(false);
+    }
+  };
+
+  const handleCancelSubscription = async (subscriptionId: string, cancelAtPeriodEnd: boolean = true) => {
+    setCancelingSubscription(true);
+    try {
+      const res = await fetch(`/api/admin/subscriptions/${subscriptionId}`, {
+        method: cancelAtPeriodEnd ? "PUT" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: cancelAtPeriodEnd ? JSON.stringify({ cancelAtPeriodEnd: true }) : undefined,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSubscriptions(prev =>
+        prev.map(s => s.id === subscriptionId ? data.subscription : s)
+      );
+      setShowCancelSubscriptionDialog(false);
+      setSelectedSubscription(null);
+    } catch (err) {
+      console.error("Failed to cancel subscription:", err);
+    } finally {
+      setCancelingSubscription(false);
+    }
+  };
+
+  const handleRefundPayment = async (paymentIntentId: string) => {
+    setProcessingRefund(true);
+    try {
+      const res = await fetch("/api/admin/refunds", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentIntentId,
+          amount: refundAmount ? parseInt(refundAmount) * 100 : undefined,
+          reason: refundReason,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setShowRefundDialog(false);
+      setRefundAmount("");
+      setRefundReason("requested_by_customer");
+      await loadSubscriptions(); // Refresh to see updated status
+    } catch (err) {
+      console.error("Failed to process refund:", err);
+    } finally {
+      setProcessingRefund(false);
     }
   };
 
@@ -608,8 +735,11 @@ export default function RevenueConfigPage() {
         if (v === 'payment-requests' && paymentRequests.length === 0) {
           loadPaymentRequests();
         }
+        if (v === 'subscriptions' && subscriptions.length === 0) {
+          loadSubscriptions();
+        }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-8 w-full max-w-9xl">
+        <TabsList className="grid grid-cols-9 w-full max-w-9xl">
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="billing-history">Billing History</TabsTrigger>
@@ -617,6 +747,10 @@ export default function RevenueConfigPage() {
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="payouts">Payouts</TabsTrigger>
           <TabsTrigger value="sharing">Attribution</TabsTrigger>
+          <TabsTrigger value="subscriptions">
+            <CreditCard className="h-3 w-3 mr-1" />
+            Subscriptions
+          </TabsTrigger>
           <TabsTrigger value="payment-requests">
             <Send className="h-3 w-3 mr-1" />
             Payment Requests
@@ -1965,7 +2099,307 @@ export default function RevenueConfigPage() {
           </Card>
         </TabsContent>
 
+        {/* Subscriptions Tab */}
+        <TabsContent value="subscriptions" className="mt-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-semibold">Stripe Subscriptions</h2>
+              <p className="text-sm text-muted-foreground">Manage recurring subscriptions and billing</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={loadSubscriptions} disabled={loadingSubscriptions}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${loadingSubscriptions ? "animate-spin" : ""}`} />
+                Refresh
+              </Button>
+              <Dialog open={showCreateSubscriptionDialog} onOpenChange={setShowCreateSubscriptionDialog}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Subscription
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Create Subscription</DialogTitle>
+                    <DialogDescription>
+                      Create a new subscription for a customer
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-2">
+                    <div>
+                      <Label>Customer ID <span className="text-red-500">*</span></Label>
+                      <Input
+                        placeholder="cus_xxx"
+                        value={newSubscription.customerId}
+                        onChange={e => setNewSubscription(p => ({ ...p, customerId: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Price ID <span className="text-red-500">*</span></Label>
+                      <Input
+                        placeholder="price_xxx"
+                        value={newSubscription.priceId}
+                        onChange={e => setNewSubscription(p => ({ ...p, priceId: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Quantity</Label>
+                      <Input
+                        type="number"
+                        min="1"
+                        value={newSubscription.quantity}
+                        onChange={e => setNewSubscription(p => ({ ...p, quantity: parseInt(e.target.value) || 1 }))}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Trial Days (optional)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        value={newSubscription.trialDays}
+                        onChange={e => setNewSubscription(p => ({ ...p, trialDays: parseInt(e.target.value) || 0 }))}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowCreateSubscriptionDialog(false)}>Cancel</Button>
+                    <Button onClick={handleCreateSubscription} disabled={creatingSubscription}>
+                      {creatingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
+                      Create Subscription
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Active Subscriptions</CardTitle>
+              <CardDescription>
+                {subscriptions.length} subscriptions loaded
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingSubscriptions ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : subscriptions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No subscriptions found</p>
+                  <Button variant="outline" className="mt-4" onClick={loadSubscriptions}>
+                    Load Subscriptions
+                  </Button>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Plan</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Period End</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {subscriptions.map((sub) => {
+                      const item = sub.items.data[0];
+                      const price = item?.price;
+                      return (
+                        <TableRow key={sub.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{sub.customer.name || 'Unknown'}</p>
+                              <p className="text-xs text-muted-foreground">{sub.customer.email}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{price?.nickname || 'Custom Plan'}</p>
+                              <p className="text-xs text-muted-foreground">Qty: {item?.quantity || 1}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-semibold">
+                            ${(price?.unit_amount || 0 / 100).toFixed(2)} {price?.currency.toUpperCase()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                sub.status === 'active' ? 'bg-green-100 text-green-800' :
+                                sub.status === 'trialing' ? 'bg-blue-100 text-blue-800' :
+                                sub.status === 'past_due' ? 'bg-red-100 text-red-800' :
+                                sub.status === 'canceled' ? 'bg-gray-100 text-gray-600' :
+                                'bg-yellow-100 text-yellow-800'
+                              }
+                            >
+                              {sub.status}
+                              {sub.cancel_at_period_end && ' (canceling)'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(sub.current_period_end * 1000).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => window.open(`https://dashboard.stripe.com/subscriptions/${sub.id}`, "_blank")}
+                                title="View in Stripe"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                              {sub.status === 'active' && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      setSelectedSubscription(sub);
+                                      setShowRefundDialog(true);
+                                    }}
+                                    title="Refund latest payment"
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                    onClick={() => {
+                                      setSelectedSubscription(sub);
+                                      setShowCancelSubscriptionDialog(true);
+                                    }}
+                                    title="Cancel subscription"
+                                  >
+                                    <Ban className="h-4 w-4" />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
       </Tabs>
+
+      {/* Cancel Subscription Dialog */}
+      <Dialog open={showCancelSubscriptionDialog} onOpenChange={setShowCancelSubscriptionDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancel Subscription</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this subscription?
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubscription && (
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">{selectedSubscription.customer.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
+                <p className="text-sm mt-2">
+                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handleCancelSubscription(selectedSubscription.id, true)}
+                  disabled={cancelingSubscription}
+                >
+                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                  Cancel at Period End
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleCancelSubscription(selectedSubscription.id, false)}
+                  disabled={cancelingSubscription}
+                >
+                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                  Cancel Immediately
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Refund Payment Dialog */}
+      <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Refund Payment</DialogTitle>
+            <DialogDescription>
+              Process a refund for this subscription's latest payment
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubscription && (
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">{selectedSubscription.customer.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
+                <p className="text-sm mt-2">
+                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
+                </p>
+              </div>
+              <div>
+                <Label>Refund Amount (USD)</Label>
+                <Input
+                  type="number"
+                  min="0.50"
+                  step="0.01"
+                  placeholder="Leave empty for full refund"
+                  value={refundAmount}
+                  onChange={e => setRefundAmount(e.target.value)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Leave empty for full refund</p>
+              </div>
+              <div>
+                <Label>Reason</Label>
+                <Select value={refundReason} onValueChange={setRefundReason}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="requested_by_customer">Requested by Customer</SelectItem>
+                    <SelectItem value="duplicate">Duplicate</SelectItem>
+                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
+                    <SelectItem value="expired_authorization">Expired Authorization</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowRefundDialog(false)}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRefundPayment(selectedSubscription.id)}
+                  disabled={processingRefund}
+                >
+                  {processingRefund ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <DollarSign className="h-4 w-4 mr-2" />}
+                  Process Refund
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Transaction Details Modal */}
       <Dialog open={showTransactionDetails} onOpenChange={setShowTransactionDetails}>
