@@ -7,9 +7,10 @@ import { getStripe } from '@/lib/stripe';
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const { id } = params;
     const body = await request.json();
     const { cancelAtPeriodEnd = true } = body;
@@ -34,9 +35,10 @@ export async function DELETE(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const { id } = params;
     const body = await request.json();
     const { cancelAtPeriodEnd } = body;
