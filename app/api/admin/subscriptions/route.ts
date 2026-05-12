@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
+import Stripe from 'stripe';
 
 /**
  * GET /api/admin/subscriptions
