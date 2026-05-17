@@ -39,6 +39,7 @@ import {
   AlertCircle,
   Linkedin,
   FileText,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog/types";
@@ -337,6 +338,14 @@ export default function BlogManagementPage() {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => window.location.href = "/portal/blog-management/new"}
+          >
+            <Plus className="h-3 w-3 mr-1" />
+            Create New Blog
+          </Button>
           <Button
             variant="outline"
             size="sm"
