@@ -460,14 +460,30 @@ export default function HelpPage() {
                 <Video className="h-5 w-5" />
                 Video Tutorials
               </CardTitle>
-              <CardDescription>Watch step-by-step guides (Coming Soon)</CardDescription>
+              <CardDescription>Watch step-by-step guides and video tutorials</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
-                <Video className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <Video className="h-12 w-12 text-primary mx-auto mb-4" />
                 <p className="text-muted-foreground mb-4">
-                  Video tutorials are coming soon. Check back later for guided walkthroughs.
+                  Our video tutorial library is currently being developed with comprehensive guides for all platform features.
                 </p>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Upcoming tutorials include:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Platform overview and navigation</li>
+                    <li>• Profile setup and optimization</li>
+                    <li>• Opportunity management workflows</li>
+                    <li>• Proof pack creation and management</li>
+                    <li>• Cohort enrollment and participation</li>
+                  </ul>
+                </div>
+                <Button variant="outline" className="mt-4" asChild>
+                  <Link href="/docs/USER-ROLES-DASHBOARDS.md" target="_blank">
+                    <FileText className="mr-2 h-4 w-4" />
+                    View Documentation
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

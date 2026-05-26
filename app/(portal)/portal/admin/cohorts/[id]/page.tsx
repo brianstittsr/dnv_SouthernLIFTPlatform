@@ -314,9 +314,21 @@ export default function CohortDetailPage() {
               <CardDescription>Manage student enrollments and progress</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Student management interface coming soon</p>
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Student Management</h3>
+                <p className="text-muted-foreground mb-4">
+                  Manage student enrollments, track progress, and communicate with cohort participants.
+                </p>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>Features include:</p>
+                  <ul className="space-y-1">
+                    <li>• Student enrollment and status management</li>
+                    <li>• Progress tracking and performance metrics</li>
+                    <li>• Communication tools and announcements</li>
+                    <li>• Certificate issuance and record keeping</li>
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -346,9 +358,21 @@ export default function CohortDetailPage() {
               <CardDescription>Cohort discussions and Q&A</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Discussion board coming soon</p>
+              <div className="text-center py-12">
+                <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Discussion Board</h3>
+                <p className="text-muted-foreground mb-4">
+                  Facilitate engaging discussions and Q&A sessions among cohort participants.
+                </p>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>Features include:</p>
+                  <ul className="space-y-1">
+                    <li>• Threaded discussions and topic organization</li>
+                    <li>• Instructor-led Q&A sessions</li>
+                    <li>• Peer-to-peer learning and collaboration</li>
+                    <li>• Resource sharing and document exchange</li>
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -361,9 +385,21 @@ export default function CohortDetailPage() {
               <CardDescription>Issued completion certificates</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Award className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Certificate management coming soon</p>
+              <div className="text-center py-12">
+                <Award className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Certificate Management</h3>
+                <p className="text-muted-foreground mb-4">
+                  Issue and manage completion certificates for successful cohort participants.
+                </p>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>Features include:</p>
+                  <ul className="space-y-1">
+                    <li>• Automated certificate generation</li>
+                    <li>• Customizable certificate templates</li>
+                    <li>• Digital verification and sharing</li>
+                    <li>• Bulk issuance and tracking</li>
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>

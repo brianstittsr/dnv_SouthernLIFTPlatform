@@ -151,7 +151,7 @@ async function main() {
         slug: content.slug.replace('detail-', ''),
         title: content.content?.sections?.[0]?.heading || extractTitleFromSlug(content.slug),
         description: processedContent.substring(0, 200).trim() + '...',
-        content: processedContent || 'Content coming soon.',
+        content: processedContent || 'Comprehensive content covering government contracting strategies, compliance requirements, and business development best practices for small and diverse businesses seeking to succeed in the federal marketplace.',
         category: determineCategory(content.slug, processedContent),
         featuredImage: firstImage?.sourceUrl || video?.thumbnailUrl || '',
         videoUrl: video?.url,

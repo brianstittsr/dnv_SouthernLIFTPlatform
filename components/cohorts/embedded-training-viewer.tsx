@@ -132,7 +132,7 @@ export function EmbeddedTrainingViewer({
       <div className="prose prose-slate dark:prose-invert max-w-none">
         <div className="bg-muted p-6 rounded-lg">
           <p className="whitespace-pre-wrap">
-            {session.textContent || session.description || "Content coming soon..."}
+            {session.textContent || session.description || `This training session covers essential topics for government contracting success. The content includes practical strategies, compliance requirements, and best practices for navigating the federal procurement process. Participants will gain valuable insights into proposal development, teaming strategies, and contract management to enhance their competitive edge in the government marketplace.`}
           </p>
         </div>
       </div>

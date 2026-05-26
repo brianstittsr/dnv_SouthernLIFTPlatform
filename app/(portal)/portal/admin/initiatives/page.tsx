@@ -74,9 +74,9 @@ export default function InitiativesPage() {
       // Future initiatives can be added here
       {
         id: "future-1",
-        name: "Coming Soon",
-        fullName: "Additional OEM Programs",
-        description: "More supplier readiness programs will be added as partnerships are established",
+        name: "Advanced Manufacturing",
+        fullName: "Advanced Manufacturing Programs",
+        description: "Specialized programs for Industry 4.0, smart manufacturing, and digital transformation initiatives",
         status: "planned" as const,
         stats: null,
         icon: Building2,

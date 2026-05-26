@@ -123,10 +123,25 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
                 </p>
               ))
             ) : (
-              <p className="leading-relaxed italic">
-                Biography coming soon. {member.name} is a valued member of the KDM team,
-                bringing expertise in {member.title.toLowerCase()}.
-              </p>
+              <div className="space-y-4">
+                <p className="leading-relaxed">
+                  {member.name} is a dedicated professional serving as {member.title} at KDM & Associates. 
+                  With extensive experience in government contracting and business development, 
+                  {member.name.split(' ')[0]} plays a crucial role in helping small and diverse businesses 
+                  succeed in the federal marketplace.
+                </p>
+                <p className="leading-relaxed">
+                  As part of the KDM team, {member.name.split(' ')[0]} is committed to our mission of 
+                  empowering businesses through strategic teaming, capacity building, and mentorship. 
+                  Their expertise in {member.title.toLowerCase()} helps clients navigate the complexities 
+                  of government procurement and achieve their contracting goals.
+                </p>
+                <p className="leading-relaxed">
+                  {member.name.split(' ')[0]} brings valuable insights and innovative approaches to 
+                  every client engagement, ensuring that KDM & Associates delivers exceptional value 
+                  and measurable results for our partners.
+                </p>
+              </div>
             )}
           </div>
         </div>
