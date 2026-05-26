@@ -91,6 +91,7 @@ export interface SystemConfig {
     registrationEnabled: boolean;
     maxUploadSizeMB: number;
     sessionTimeoutMinutes: number;
+    publicWebsiteParked: boolean;
   };
   
   updatedAt: Timestamp;
@@ -194,6 +195,7 @@ export async function getSystemConfig(): Promise<SystemConfig | null> {
           registrationEnabled: true,
           maxUploadSizeMB: 10,
           sessionTimeoutMinutes: 60,
+          publicWebsiteParked: false,
         },
         updatedAt: Timestamp.now(),
         updatedBy: "system",
@@ -203,7 +205,18 @@ export async function getSystemConfig(): Promise<SystemConfig | null> {
       return defaultConfig;
     }
     
-    return configDoc.data() as SystemConfig;
+    const config = configDoc.data() as SystemConfig;
+
+    return {
+      ...config,
+      settings: {
+        maintenanceMode: config.settings?.maintenanceMode ?? false,
+        registrationEnabled: config.settings?.registrationEnabled ?? true,
+        maxUploadSizeMB: config.settings?.maxUploadSizeMB ?? 10,
+        sessionTimeoutMinutes: config.settings?.sessionTimeoutMinutes ?? 60,
+        publicWebsiteParked: config.settings?.publicWebsiteParked ?? false,
+      },
+    };
   } catch (error) {
     console.error("Error getting system config:", error);
     return null;

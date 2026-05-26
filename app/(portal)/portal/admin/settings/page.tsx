@@ -66,6 +66,7 @@ interface SystemConfig {
     registrationEnabled: boolean;
     maxUploadSizeMB: number;
     sessionTimeoutMinutes: number;
+    publicWebsiteParked: boolean;
   };
 }
 
@@ -717,6 +718,28 @@ export default function SettingsPage() {
             <CardContent>
               {platformSettings && (
                 <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">Public Website Parked</p>
+                      <p className="text-sm text-muted-foreground">
+                        Show a parked landing page on the public website until the owner password is entered.
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Visitor password: KDMMustPay2026
+                      </p>
+                    </div>
+                    <Switch
+                      checked={platformSettings.publicWebsiteParked}
+                      onCheckedChange={(checked) => {
+                        setPlatformSettings({
+                          ...platformSettings,
+                          publicWebsiteParked: checked,
+                        });
+                        setHasChanges(true);
+                      }}
+                    />
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Maintenance Mode</p>
