@@ -96,7 +96,7 @@ export default function ConsortiumPricingAdminPage() {
   const populateForm = (p: MembershipPrice) => {
     setPrice(p.price);
     setIsPromotional(p.isPromotional);
-    setPromotionalPrice(p.promotionalPrice || 650);
+    setPromotionalPrice(p.promotionalPrice ? p.promotionalPrice / 100 : 650); // Convert from cents to dollars
     setDescription(p.description || "");
     setActive(p.active);
 
@@ -138,7 +138,7 @@ export default function ConsortiumPricingAdminPage() {
       const priceData: Omit<MembershipPrice, "id"> = {
         price,
         isPromotional,
-        promotionalPrice: isPromotional ? promotionalPrice : undefined,
+        promotionalPrice: isPromotional ? promotionalPrice * 100 : undefined, // Convert to cents
         validFrom: validFrom ? Timestamp.fromDate(new Date(validFrom)) : undefined,
         validUntil: validUntil ? Timestamp.fromDate(new Date(validUntil)) : undefined,
         description,
@@ -223,7 +223,7 @@ export default function ConsortiumPricingAdminPage() {
     const until = p.validUntil?.toDate();
     
     if (from && until && now >= from && now <= until) {
-      return p.promotionalPrice;
+      return p.promotionalPrice / 100; // Convert from cents to dollars for display
     }
     return p.price;
   };
