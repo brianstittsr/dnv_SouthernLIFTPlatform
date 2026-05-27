@@ -39,7 +39,8 @@ export async function GET(req: NextRequest) {
       averageRefundAmount: refunds.data.length > 0 ? refunds.data.reduce((sum, refund) => sum + refund.amount, 0) / refunds.data.length : 0,
       recentRefunds: refunds.data.filter(r => Date.now() - r.created * 1000 < 7 * 24 * 60 * 60 * 1000).length, // Last 7 days
       statusBreakdown: refunds.data.reduce((acc, refund) => {
-        acc[refund.status] = (acc[refund.status] || 0) + 1;
+        const status = refund.status || 'unknown';
+        acc[status] = (acc[status] || 0) + 1;
         return acc;
       }, {} as Record<string, number>)
     };
@@ -93,14 +94,23 @@ export async function POST(req: NextRequest) {
     // Get the payment intent to verify it exists and get charge info
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    if (!paymentIntent.charges.data.length) {
+    if (!paymentIntent.latest_charge) {
       return NextResponse.json(
         { error: 'No charges found for this payment intent' },
         { status: 400 }
       );
     }
 
-    const chargeId = paymentIntent.charges.data[0].id;
+    const chargeId = typeof paymentIntent.latest_charge === 'string' 
+      ? paymentIntent.latest_charge 
+      : paymentIntent.latest_charge?.id;
+
+    if (!chargeId) {
+      return NextResponse.json(
+        { error: 'No valid charge ID found for this payment intent' },
+        { status: 400 }
+      );
+    }
 
     // Create the refund
     const refund = await stripe.refunds.create({
