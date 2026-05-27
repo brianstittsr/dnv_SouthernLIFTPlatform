@@ -447,7 +447,7 @@ export default function RevenueConfigPage() {
       const data = await res.json();
       if (data.refunds) {
         setStripeRefunds(data.refunds);
-        setStripeStats(prev => ({ ...prev, refunds: data.stats }));
+        setStripeStats((prev: any) => ({ ...prev, refunds: data.stats }));
       }
     } catch (err) {
       console.error('Failed to load Stripe refunds:', err);
