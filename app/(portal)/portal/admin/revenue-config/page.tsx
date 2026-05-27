@@ -510,7 +510,7 @@ export default function RevenueConfigPage() {
   const handleSyncProducts = async () => {
     setSyncingProducts(true);
     try {
-      const res = await fetch('/api/admin/stripe-sync', {
+      const res = await fetch('/api/admin/stripe-sync-simple', {
         method: 'POST'
       });
       
