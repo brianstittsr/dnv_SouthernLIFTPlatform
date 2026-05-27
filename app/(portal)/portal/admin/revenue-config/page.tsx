@@ -241,6 +241,30 @@ export default function RevenueConfigPage() {
   const [processingRefund, setProcessingRefund] = useState(false);
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
 
+  // Stripe Management state
+  const [stripeProducts, setStripeProducts] = useState<any[]>([]);
+  const [stripeRefunds, setStripeRefunds] = useState<any[]>([]);
+  const [stripeStats, setStripeStats] = useState<any>({});
+  const [loadingStripeProducts, setLoadingStripeProducts] = useState(false);
+  const [loadingStripeRefunds, setLoadingStripeRefunds] = useState(false);
+  const [showCreateProductDialog, setShowCreateProductDialog] = useState(false);
+  const [showCreateRefundDialog, setShowCreateRefundDialog] = useState(false);
+  const [syncingProducts, setSyncingProducts] = useState(false);
+  const [selectedStripeProduct, setSelectedStripeProduct] = useState<any>(null);
+  const [newStripeProduct, setNewStripeProduct] = useState({
+    name: '',
+    description: '',
+    active: true,
+    prices: [
+      { unit_amount: 0, currency: 'usd', recurring: { interval: 'month' } }
+    ]
+  });
+  const [newRefund, setNewRefund] = useState({
+    paymentIntentId: '',
+    amount: '',
+    reason: 'requested_by_customer'
+  });
+
   const loadPaymentRequests = async () => {
     setLoadingRequests(true);
     try {
@@ -396,6 +420,109 @@ export default function RevenueConfigPage() {
       console.error("Failed to create payment request:", err);
     } finally {
       setSendingRequest(false);
+    }
+  };
+
+  // Stripe Management functions
+  const loadStripeProducts = async () => {
+    setLoadingStripeProducts(true);
+    try {
+      const res = await fetch('/api/admin/stripe-products');
+      const data = await res.json();
+      if (data.products) {
+        setStripeProducts(data.products);
+        setStripeStats(data.summary);
+      }
+    } catch (err) {
+      console.error('Failed to load Stripe products:', err);
+    } finally {
+      setLoadingStripeProducts(false);
+    }
+  };
+
+  const loadStripeRefunds = async () => {
+    setLoadingStripeRefunds(true);
+    try {
+      const res = await fetch('/api/admin/stripe-refunds');
+      const data = await res.json();
+      if (data.refunds) {
+        setStripeRefunds(data.refunds);
+        setStripeStats(prev => ({ ...prev, refunds: data.stats }));
+      }
+    } catch (err) {
+      console.error('Failed to load Stripe refunds:', err);
+    } finally {
+      setLoadingStripeRefunds(false);
+    }
+  };
+
+  const handleCreateStripeProduct = async () => {
+    if (!newStripeProduct.name) return;
+    
+    try {
+      const res = await fetch('/api/admin/stripe-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStripeProduct)
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setStripeProducts(prev => [data.product, ...prev]);
+        setShowCreateProductDialog(false);
+        setNewStripeProduct({
+          name: '',
+          description: '',
+          active: true,
+          prices: [{ unit_amount: 0, currency: 'usd', recurring: { interval: 'month' } }]
+        });
+      }
+    } catch (err) {
+      console.error('Failed to create Stripe product:', err);
+    }
+  };
+
+  const handleCreateRefund = async () => {
+    if (!newRefund.paymentIntentId) return;
+    
+    try {
+      const res = await fetch('/api/admin/stripe-refunds', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newRefund)
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setStripeRefunds(prev => [data.refund, ...prev]);
+        setShowCreateRefundDialog(false);
+        setNewRefund({
+          paymentIntentId: '',
+          amount: '',
+          reason: 'requested_by_customer'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to create refund:', err);
+    }
+  };
+
+  const handleSyncProducts = async () => {
+    setSyncingProducts(true);
+    try {
+      const res = await fetch('/api/admin/stripe-sync', {
+        method: 'POST'
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Sync results:', data);
+        await loadStripeProducts(); // Refresh the products list
+      }
+    } catch (err) {
+      console.error('Failed to sync products:', err);
+    } finally {
+      setSyncingProducts(false);
     }
   };
 
@@ -738,8 +865,12 @@ export default function RevenueConfigPage() {
         if (v === 'subscriptions' && subscriptions.length === 0) {
           loadSubscriptions();
         }
+        if (v === 'stripe-management' && stripeProducts.length === 0) {
+          loadStripeProducts();
+          loadStripeRefunds();
+        }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-9 w-full max-w-9xl">
+        <TabsList className="grid grid-cols-10 w-full max-w-9xl">
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="billing-history">Billing History</TabsTrigger>
@@ -754,6 +885,10 @@ export default function RevenueConfigPage() {
           <TabsTrigger value="payment-requests">
             <Send className="h-3 w-3 mr-1" />
             Payment Requests
+          </TabsTrigger>
+          <TabsTrigger value="stripe-management">
+            <Building2 className="h-3 w-3 mr-1" />
+            Stripe Management
           </TabsTrigger>
         </TabsList>
 
@@ -2531,6 +2666,364 @@ export default function RevenueConfigPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+        {/* Stripe Management Tab */}
+        <TabsContent value="stripe-management" className="mt-6">
+          <div className="space-y-6">
+            {/* Stripe Management Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Stripe Management</h2>
+                <p className="text-muted-foreground">Manage Stripe products, refunds, and synchronization</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button onClick={handleSyncProducts} disabled={syncingProducts}>
+                  {syncingProducts ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                  )}
+                  Sync Products
+                </Button>
+                <Button onClick={() => setShowCreateProductDialog(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Product
+                </Button>
+                <Button onClick={() => setShowCreateRefundDialog(true)} variant="outline">
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Create Refund
+                </Button>
+              </div>
+            </div>
+
+            {/* Stripe Statistics Cards */}
+            <div className="grid gap-6 md:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stripeStats.totalProducts || 0}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {stripeStats.activeProducts || 0} active
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Prices</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stripeStats.totalPrices || 0}</div>
+                  <p className="text-xs text-muted-foreground">
+                    Across all products
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Synced Tiers</CardTitle>
+                  <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stripeStats.syncedTiers || 0}</div>
+                  <p className="text-xs text-muted-foreground">
+                    Connected to Firestore
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Refunds</CardTitle>
+                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stripeStats.refunds?.totalRefunds || 0}</div>
+                  <p className="text-xs text-muted-foreground">
+                    {stripeStats.refunds?.recentRefunds || 0} this week
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Stripe Products Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Stripe Products</CardTitle>
+                <CardDescription>Manage your Stripe products and pricing</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingStripeProducts ? (
+                  <div className="flex items-center justify-center h-32">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {stripeProducts.map((product) => (
+                      <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-700">
+                            <Building2 className="h-6 w-6" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold">{product.name}</h3>
+                              <Badge variant={product.active ? "default" : "secondary"}>
+                                {product.active ? "Active" : "Inactive"}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {product.description || 'No description'}
+                            </p>
+                            <div className="flex items-center gap-4 text-sm">
+                              <span className="font-medium">{product.prices?.length || 0} prices</span>
+                              <span>•</span>
+                              <span>Created: {formatDate(product.created)}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Stripe Refunds Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Refunds</CardTitle>
+                <CardDescription>Manage refund requests and processing</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingStripeRefunds ? (
+                  <div className="flex items-center justify-center h-32">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Reason</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {stripeRefunds.slice(0, 10).map((refund) => (
+                        <TableRow key={refund.id}>
+                          <TableCell className="font-mono text-xs">
+                            {refund.id.slice(0, 12)}...
+                          </TableCell>
+                          <TableCell>
+                            {formatCurrency(refund.amount / 100)}
+                          </TableCell>
+                          <TableCell>
+                            {getStatusBadge(refund.status)}
+                          </TableCell>
+                          <TableCell>
+                            <span className="capitalize">{refund.reason?.replace('_', ' ')}</span>
+                          </TableCell>
+                          <TableCell>
+                            {formatDate(refund.created)}
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Create Product Dialog */}
+        <Dialog open={showCreateProductDialog} onOpenChange={setShowCreateProductDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Create Stripe Product</DialogTitle>
+              <DialogDescription>
+                Create a new product in Stripe with pricing options
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="product-name">Product Name</Label>
+                  <Input
+                    id="product-name"
+                    value={newStripeProduct.name}
+                    onChange={(e) => setNewStripeProduct(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter product name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="product-active">Status</Label>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Switch
+                      id="product-active"
+                      checked={newStripeProduct.active}
+                      onCheckedChange={(checked) => setNewStripeProduct(prev => ({ ...prev, active: checked }))}
+                    />
+                    <Label htmlFor="product-active">Active</Label>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="product-description">Description</Label>
+                <Input
+                  id="product-description"
+                  value={newStripeProduct.description}
+                  onChange={(e) => setNewStripeProduct(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Enter product description"
+                />
+              </div>
+              <div>
+                <Label>Price Configuration</Label>
+                <div className="grid grid-cols-3 gap-4 mt-2">
+                  <div>
+                    <Label htmlFor="price-amount">Amount (USD)</Label>
+                    <Input
+                      id="price-amount"
+                      type="number"
+                      value={newStripeProduct.prices[0].unit_amount / 100}
+                      onChange={(e) => setNewStripeProduct(prev => ({
+                        ...prev,
+                        prices: [{ ...prev.prices[0], unit_amount: parseFloat(e.target.value) * 100 }]
+                      }))}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <Label>Billing Cycle</Label>
+                    <Select 
+                      value={newStripeProduct.prices[0].recurring?.interval || 'month'}
+                      onValueChange={(value) => setNewStripeProduct(prev => ({
+                        ...prev,
+                        prices: [{ ...prev.prices[0], recurring: { interval: value } }]
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="month">Monthly</SelectItem>
+                        <SelectItem value="year">Annual</SelectItem>
+                        <SelectItem value="">One-time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Currency</Label>
+                    <Select value="usd" disabled>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="usd">USD</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowCreateProductDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateStripeProduct}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Product
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Refund Dialog */}
+        <Dialog open={showCreateRefundDialog} onOpenChange={setShowCreateRefundDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create Refund</DialogTitle>
+              <DialogDescription>
+                Process a refund for a payment intent
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <Label htmlFor="payment-intent-id">Payment Intent ID</Label>
+                <Input
+                  id="payment-intent-id"
+                  value={newRefund.paymentIntentId}
+                  onChange={(e) => setNewRefund(prev => ({ ...prev, paymentIntentId: e.target.value }))}
+                  placeholder="pi_..."
+                />
+              </div>
+              <div>
+                <Label htmlFor="refund-amount">Amount (USD)</Label>
+                <Input
+                  id="refund-amount"
+                  type="number"
+                  value={newRefund.amount}
+                  onChange={(e) => setNewRefund(prev => ({ ...prev, amount: e.target.value }))}
+                  placeholder="Leave empty for full refund"
+                  min="0.50"
+                  step="0.01"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Leave empty for full refund</p>
+              </div>
+              <div>
+                <Label htmlFor="refund-reason">Reason</Label>
+                <Select value={newRefund.reason} onValueChange={(value) => setNewRefund(prev => ({ ...prev, reason: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="requested_by_customer">Requested by Customer</SelectItem>
+                    <SelectItem value="duplicate">Duplicate</SelectItem>
+                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
+                    <SelectItem value="expired_authorization">Expired Authorization</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowCreateRefundDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateRefund} variant="destructive">
+                <DollarSign className="mr-2 h-4 w-4" />
+                Process Refund
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Tabs>
     </div>
   );
 }
