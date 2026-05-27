@@ -427,7 +427,7 @@ export default function RevenueConfigPage() {
   const loadStripeProducts = async () => {
     setLoadingStripeProducts(true);
     try {
-      const res = await fetch('/api/admin/stripe-products');
+      const res = await fetch('/api/admin/stripe-products-simple');
       const data = await res.json();
       if (data.products) {
         setStripeProducts(data.products);
@@ -443,7 +443,7 @@ export default function RevenueConfigPage() {
   const loadStripeRefunds = async () => {
     setLoadingStripeRefunds(true);
     try {
-      const res = await fetch('/api/admin/stripe-refunds');
+      const res = await fetch('/api/admin/stripe-refunds-simple');
       const data = await res.json();
       if (data.refunds) {
         setStripeRefunds(data.refunds);
@@ -460,7 +460,7 @@ export default function RevenueConfigPage() {
     if (!newStripeProduct.name) return;
     
     try {
-      const res = await fetch('/api/admin/stripe-products', {
+      const res = await fetch('/api/admin/stripe-products-simple', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newStripeProduct)
@@ -486,7 +486,7 @@ export default function RevenueConfigPage() {
     if (!newRefund.paymentIntentId) return;
     
     try {
-      const res = await fetch('/api/admin/stripe-refunds', {
+      const res = await fetch('/api/admin/stripe-refunds-simple', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newRefund)
