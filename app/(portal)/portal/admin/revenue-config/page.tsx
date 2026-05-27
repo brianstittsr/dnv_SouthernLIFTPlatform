@@ -2432,244 +2432,6 @@ export default function RevenueConfigPage() {
           </Card>
         </TabsContent>
 
-      </Tabs>
-
-      {/* Cancel Subscription Dialog */}
-      <Dialog open={showCancelSubscriptionDialog} onOpenChange={setShowCancelSubscriptionDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Cancel Subscription</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to cancel this subscription?
-            </DialogDescription>
-          </DialogHeader>
-          {selectedSubscription && (
-            <div className="space-y-4 py-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="font-medium">{selectedSubscription.customer.name}</p>
-                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
-                <p className="text-sm mt-2">
-                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
-                </p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => handleCancelSubscription(selectedSubscription.id, true)}
-                  disabled={cancelingSubscription}
-                >
-                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                  Cancel at Period End
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleCancelSubscription(selectedSubscription.id, false)}
-                  disabled={cancelingSubscription}
-                >
-                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                  Cancel Immediately
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Refund Payment Dialog */}
-      <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Refund Payment</DialogTitle>
-            <DialogDescription>
-              Process a refund for this subscription's latest payment
-            </DialogDescription>
-          </DialogHeader>
-          {selectedSubscription && (
-            <div className="space-y-4 py-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="font-medium">{selectedSubscription.customer.name}</p>
-                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
-                <p className="text-sm mt-2">
-                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
-                </p>
-              </div>
-              <div>
-                <Label>Refund Amount (USD)</Label>
-                <Input
-                  type="number"
-                  min="0.50"
-                  step="0.01"
-                  placeholder="Leave empty for full refund"
-                  value={refundAmount}
-                  onChange={e => setRefundAmount(e.target.value)}
-                  className="mt-1"
-                />
-                <p className="text-xs text-muted-foreground mt-1">Leave empty for full refund</p>
-              </div>
-              <div>
-                <Label>Reason</Label>
-                <Select value={refundReason} onValueChange={setRefundReason}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="requested_by_customer">Requested by Customer</SelectItem>
-                    <SelectItem value="duplicate">Duplicate</SelectItem>
-                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
-                    <SelectItem value="expired_authorization">Expired Authorization</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowRefundDialog(false)}>Cancel</Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleRefundPayment(selectedSubscription.id)}
-                  disabled={processingRefund}
-                >
-                  {processingRefund ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <DollarSign className="h-4 w-4 mr-2" />}
-                  Process Refund
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Transaction Details Modal */}
-      <Dialog open={showTransactionDetails} onOpenChange={setShowTransactionDetails}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Transaction Details</DialogTitle>
-            <DialogDescription>
-              Complete information for transaction {selectedTransaction?.id}
-            </DialogDescription>
-          </DialogHeader>
-          {selectedTransaction && (
-            <div className="space-y-6 py-4">
-              {/* Basic Information */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-muted-foreground">Transaction ID</Label>
-                  <p className="font-mono text-sm break-all">{selectedTransaction.id}</p>
-                </div>
-                <div>
-                  <Label className="text-muted-foreground">Date</Label>
-                  <p className="font-medium">{formatDate(selectedTransaction.created)}</p>
-                </div>
-              </div>
-
-              {/* Customer Information */}
-              <div className="border-t pt-4">
-                <h3 className="font-semibold mb-3">Customer Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-muted-foreground">Name</Label>
-                    <p className="font-medium">{selectedTransaction.customerName || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground">Email</Label>
-                    <p className="font-medium">{selectedTransaction.customerEmail || 'Not provided'}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Transaction Details */}
-              <div className="border-t pt-4">
-                <h3 className="font-semibold mb-3">Transaction Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-muted-foreground">Amount</Label>
-                    <p className="font-bold text-lg">{formatCurrency(selectedTransaction.amount)} {selectedTransaction.currency}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground">Status</Label>
-                    <div className="mt-1">{getStatusBadge(selectedTransaction.status)}</div>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground">Type</Label>
-                    <p className="font-medium capitalize">{selectedTransaction.type}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground">Source</Label>
-                    <Badge variant="outline" className={selectedTransaction.source === 'stripe' ? 'border-purple-500 text-purple-600' : 'border-orange-500 text-orange-600'}>
-                      {selectedTransaction.source === 'stripe' ? 'Stripe' : 'Firestore'}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description */}
-              {selectedTransaction.description && (
-                <div className="border-t pt-4">
-                  <Label className="text-muted-foreground">Description</Label>
-                  <p className="font-medium">{selectedTransaction.description}</p>
-                </div>
-              )}
-
-              {/* Entity Information */}
-              {(selectedTransaction.entityType || selectedTransaction.entityName) && (
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold mb-3">Entity Information</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {selectedTransaction.entityType && (
-                      <div>
-                        <Label className="text-muted-foreground">Entity Type</Label>
-                        <p className="font-medium capitalize">{selectedTransaction.entityType}</p>
-                      </div>
-                    )}
-                    {selectedTransaction.entityName && (
-                      <div>
-                        <Label className="text-muted-foreground">Entity Name</Label>
-                        <p className="font-medium">{selectedTransaction.entityName}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Metadata */}
-              {selectedTransaction.metadata && Object.keys(selectedTransaction.metadata).length > 0 && (
-                <div className="border-t pt-4">
-                  <h3 className="font-semibold mb-3">Metadata</h3>
-                  <div className="bg-muted p-3 rounded-lg text-sm space-y-2">
-                    {Object.entries(selectedTransaction.metadata).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="font-medium text-muted-foreground">{key}:</span>
-                        <span className="font-mono">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Stripe Payment Intent ID */}
-              {selectedTransaction.stripePaymentIntentId && (
-                <div className="border-t pt-4">
-                  <Label className="text-muted-foreground">Stripe Payment Intent ID</Label>
-                  <p className="font-mono text-sm break-all">{selectedTransaction.stripePaymentIntentId}</p>
-                </div>
-              )}
-            </div>
-          )}
-          <DialogFooter>
-            {selectedTransaction?.source === 'stripe' && (
-              <Button
-                variant="outline"
-                onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedTransaction.id}`, '_blank')}
-              >
-                <ExternalLink className="mr-2 h-4 w-4" />
-                View in Stripe
-              </Button>
-            )}
-            <Button onClick={() => setShowTransactionDetails(false)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
-
         {/* Stripe Management Tab */}
         <TabsContent value="stripe-management" className="mt-6">
           <div className="space-y-6">
@@ -3023,7 +2785,241 @@ export default function RevenueConfigPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
       </Tabs>
+
+      {/* Cancel Subscription Dialog */}
+      <Dialog open={showCancelSubscriptionDialog} onOpenChange={setShowCancelSubscriptionDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancel Subscription</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this subscription?
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubscription && (
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">{selectedSubscription.customer.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
+                <p className="text-sm mt-2">
+                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handleCancelSubscription(selectedSubscription.id, true)}
+                  disabled={cancelingSubscription}
+                >
+                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                  Cancel at Period End
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleCancelSubscription(selectedSubscription.id, false)}
+                  disabled={cancelingSubscription}
+                >
+                  {cancelingSubscription ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                  Cancel Immediately
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Refund Payment Dialog */}
+      <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Refund Payment</DialogTitle>
+            <DialogDescription>
+              Process a refund for this subscription's latest payment
+            </DialogDescription>
+          </DialogHeader>
+          {selectedSubscription && (
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">{selectedSubscription.customer.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedSubscription.customer.email}</p>
+                <p className="text-sm mt-2">
+                  Plan: {selectedSubscription.items.data[0]?.price?.nickname || 'Custom'}
+                </p>
+              </div>
+              <div>
+                <Label>Refund Amount (USD)</Label>
+                <Input
+                  type="number"
+                  min="0.50"
+                  step="0.01"
+                  placeholder="Leave empty for full refund"
+                  value={refundAmount}
+                  onChange={e => setRefundAmount(e.target.value)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Leave empty for full refund</p>
+              </div>
+              <div>
+                <Label>Reason</Label>
+                <Select value={refundReason} onValueChange={setRefundReason}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="requested_by_customer">Requested by Customer</SelectItem>
+                    <SelectItem value="duplicate">Duplicate</SelectItem>
+                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
+                    <SelectItem value="expired_authorization">Expired Authorization</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowRefundDialog(false)}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRefundPayment(selectedSubscription.id)}
+                  disabled={processingRefund}
+                >
+                  {processingRefund ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <DollarSign className="h-4 w-4 mr-2" />}
+                  Process Refund
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Transaction Details Modal */}
+      <Dialog open={showTransactionDetails} onOpenChange={setShowTransactionDetails}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Transaction Details</DialogTitle>
+            <DialogDescription>
+              Complete information for transaction {selectedTransaction?.id}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTransaction && (
+            <div className="space-y-6 py-4">
+              {/* Basic Information */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-muted-foreground">Transaction ID</Label>
+                  <p className="font-mono text-sm break-all">{selectedTransaction.id}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Date</Label>
+                  <p className="font-medium">{formatDate(selectedTransaction.created)}</p>
+                </div>
+              </div>
+
+              {/* Customer Information */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Customer Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Name</Label>
+                    <p className="font-medium">{selectedTransaction.customerName || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Email</Label>
+                    <p className="font-medium">{selectedTransaction.customerEmail || 'Not provided'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Details */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Transaction Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Amount</Label>
+                    <p className="font-bold text-lg">{formatCurrency(selectedTransaction.amount)} {selectedTransaction.currency}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Status</Label>
+                    <div className="mt-1">{getStatusBadge(selectedTransaction.status)}</div>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Type</Label>
+                    <p className="font-medium capitalize">{selectedTransaction.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Source</Label>
+                    <Badge variant="outline" className={selectedTransaction.source === 'stripe' ? 'border-purple-500 text-purple-600' : 'border-orange-500 text-orange-600'}>
+                      {selectedTransaction.source === 'stripe' ? 'Stripe' : 'Firestore'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedTransaction.description && (
+                <div className="border-t pt-4">
+                  <Label className="text-muted-foreground">Description</Label>
+                  <p className="font-medium">{selectedTransaction.description}</p>
+                </div>
+              )}
+
+              {/* Entity Information */}
+              {(selectedTransaction.entityType || selectedTransaction.entityName) && (
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Entity Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {selectedTransaction.entityType && (
+                      <div>
+                        <Label className="text-muted-foreground">Entity Type</Label>
+                        <p className="font-medium capitalize">{selectedTransaction.entityType}</p>
+                      </div>
+                    )}
+                    {selectedTransaction.entityName && (
+                      <div>
+                        <Label className="text-muted-foreground">Entity Name</Label>
+                        <p className="font-medium">{selectedTransaction.entityName}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Metadata */}
+              {selectedTransaction.metadata && Object.keys(selectedTransaction.metadata).length > 0 && (
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Metadata</h3>
+                  <div className="bg-muted p-3 rounded-lg text-sm space-y-2">
+                    {Object.entries(selectedTransaction.metadata).map(([key, value]) => (
+                      <div key={key} className="flex justify-between">
+                        <span className="font-medium text-muted-foreground">{key}:</span>
+                        <span className="font-mono">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stripe Payment Intent ID */}
+              {selectedTransaction.stripePaymentIntentId && (
+                <div className="border-t pt-4">
+                  <Label className="text-muted-foreground">Stripe Payment Intent ID</Label>
+                  <p className="font-mono text-sm break-all">{selectedTransaction.stripePaymentIntentId}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            {selectedTransaction?.source === 'stripe' && (
+              <Button
+                variant="outline"
+                onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedTransaction.id}`, '_blank')}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View in Stripe
+              </Button>
+            )}
+            <Button onClick={() => setShowTransactionDetails(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
