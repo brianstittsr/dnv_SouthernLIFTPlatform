@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, where, Timestamp } from 'firebase/firestore';
-import type { PressRelease } from '@/lib/press-releases-schema';
+import { db } from '@/lib/firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 async function addPressRelease() {
   if (!db) {
@@ -14,11 +13,11 @@ async function addPressRelease() {
   const slug = "kdm-consortium-hubzone-council-digital-ecosystem";
 
   // Idempotency check - avoid duplicates
-  const existingQuery = query(
-    collection(db, 'press_releases'),
-    where('slug', '==', slug)
-  );
-  const existingSnapshot = await getDocs(existingQuery);
+  const existingSnapshot = await db.collection('press_releases')
+    .where('slug', '==', slug)
+    .limit(1)
+    .get();
+
   if (!existingSnapshot.empty) {
     return NextResponse.json({
       success: true,
@@ -32,7 +31,7 @@ async function addPressRelease() {
       title: "KDM Consortium and HUBZone Contractors National Council Launch A Whole of Government Team Approach to Build National HUBZone Digital Ecosystem To Accelerate Small Business Success, Strengthen the 2026 National HUBZone Conference, and Drive Long-Term Manufacturing Modernization and Federal Contracting Opportunities",
       subtitle: "Major strategic collaboration establishes centralized digital ecosystem platform to consolidate capabilities, resources, and partnerships across the HUBZone community",
       location: "ALEXANDRIA, Va.",
-      releaseDate: Timestamp.fromDate(new Date('2026-05-26')),
+      releaseDate: Timestamp.fromDate(new Date('2026-05-26')) as any,
       content: `The KDM Consortium and the HUBZone Contractors National Council today announced a major strategic collaboration to launch A Whole of Government Team Approach. The initiative establishes a centralized digital ecosystem platform designed to consolidate capabilities, resources, and partnerships across the HUBZone community — significantly enhancing small business competitiveness in federal contracting while supporting national manufacturing and supply chain resilience priorities.
 
 This new platform will serve as a single, secure hub for company capabilities and past performance data, executive profiles, technology demonstrations, matchmaking and teaming requests, needs assessments, and barrier identification. By replacing fragmented processes with a scalable infrastructure, the ecosystem platform will directly support immediate priorities while laying the foundation for a robust, sustainable national ecosystem.
@@ -72,13 +71,13 @@ Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprof
       seoDescription: "Major strategic collaboration establishes centralized digital ecosystem platform to consolidate capabilities across the HUBZone community and enhance federal contracting competitiveness.",
       slug: "kdm-consortium-hubzone-council-digital-ecosystem",
       createdBy: "admin",
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-      publishedAt: Timestamp.now(),
+      createdAt: Timestamp.now() as any,
+      updatedAt: Timestamp.now() as any,
+      publishedAt: Timestamp.now() as any,
       featured: true
     };
 
-  const docRef = await addDoc(collection(db, 'press_releases'), pressReleaseData);
+  const docRef = await db.collection('press_releases').add(pressReleaseData);
 
   return NextResponse.json({
     success: true,
