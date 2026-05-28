@@ -1021,6 +1021,7 @@ export default function RevenueConfigPage() {
           {/* Member Management */}
           <div className="flex flex-wrap gap-1 border-r pr-2 mr-2">
             <TabsTrigger value="founders" className="text-sm bg-green-50 hover:bg-green-100">Founders</TabsTrigger>
+            <TabsTrigger value="cmmc-training" className="text-sm bg-blue-50 hover:bg-blue-100">CMMC Training</TabsTrigger>
             <TabsTrigger value="partners" className="text-sm">Partners</TabsTrigger>
             <TabsTrigger value="subscriptions" className="text-sm">
               <CreditCard className="h-3 w-3 mr-1" />
@@ -1902,6 +1903,144 @@ export default function RevenueConfigPage() {
                       ))}
                     </div>
                   )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* CMMC Training Tab */}
+        <TabsContent value="cmmc-training" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>CMMC Training Management</CardTitle>
+              <CardDescription>
+                Manage CMMC (Cybersecurity Maturity Model Certification) cohort training programs and participants
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Training Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Participants</CardTitle>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">Enrolled participants</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Training Revenue</CardTitle>
+                      <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">$0</div>
+                      <p className="text-xs text-muted-foreground">From CMMC training</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Standard Level</CardTitle>
+                      <Badge className="bg-blue-100 text-blue-700">Standard</Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">$2,500 per participant</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Premium Level</CardTitle>
+                      <Badge className="bg-purple-100 text-purple-700">Premium</Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">$4,500 per participant</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Training Programs */}
+                <div className="border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4">Available Training Programs</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="border-blue-200">
+                      <CardHeader>
+                        <CardTitle className="text-blue-700">Standard CMMC Training</CardTitle>
+                        <CardDescription>8-week virtual cohort</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <p className="text-2xl font-bold text-blue-700">$2,500</p>
+                          <ul className="text-sm space-y-1">
+                            <li>• Expert instruction</li>
+                            <li>• Training materials</li>
+                            <li>• Certification preparation</li>
+                            <li>• Group discussions</li>
+                          </ul>
+                          <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
+                            Manage Standard
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-purple-200">
+                      <CardHeader>
+                        <CardTitle className="text-purple-700">Premium CMMC Training</CardTitle>
+                        <CardDescription>12-week virtual + mentoring</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <p className="text-2xl font-bold text-purple-700">$4,500</p>
+                          <ul className="text-sm space-y-1">
+                            <li>• Expert instruction</li>
+                            <li>• One-on-one mentoring</li>
+                            <li>• Certification preparation</li>
+                            <li>• Priority support</li>
+                          </ul>
+                          <Button className="w-full mt-4 bg-purple-600 hover:bg-purple-700">
+                            Manage Premium
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-green-200">
+                      <CardHeader>
+                        <CardTitle className="text-green-700">Enterprise CMMC Training</CardTitle>
+                        <CardDescription>16-week onsite + virtual</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <p className="text-2xl font-bold text-green-700">$15,000</p>
+                          <ul className="text-sm space-y-1">
+                            <li>• Team training</li>
+                            <li>• Custom implementation</li>
+                            <li>• Onsite consultation</li>
+                            <li>• Dedicated support</li>
+                          </ul>
+                          <Button className="w-full mt-4 bg-green-600 hover:bg-green-700">
+                            Manage Enterprise
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Participants List */}
+                <div className="border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4">Training Participants</h3>
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No CMMC training participants yet</p>
+                    <p className="text-sm">Participants will appear here once they enroll in training programs.</p>
+                  </div>
                 </div>
               </div>
             </CardContent>

@@ -27,7 +27,7 @@ import { Plus, Pencil, Trash2, Loader2, DollarSign, Calendar } from "lucide-reac
 interface MembershipPrice {
   id?: string;
   name: string;
-  priceType: 'monthly' | 'annual' | 'one-time';
+  priceType: 'monthly' | 'annual' | 'one-time' | 'training';
   price: number;
   isPromotional: boolean;
   promotionalPrice?: number;
@@ -51,7 +51,7 @@ export default function ConsortiumPricingAdminPage() {
 
   // Form state
   const [name, setName] = useState<string>("");
-  const [priceType, setPriceType] = useState<'monthly' | 'annual' | 'one-time'>('monthly');
+  const [priceType, setPriceType] = useState<'monthly' | 'annual' | 'one-time' | 'training'>('monthly');
   const [price, setPrice] = useState<number>(1250);
   const [isPromotional, setIsPromotional] = useState(false);
   const [promotionalPrice, setPromotionalPrice] = useState<number>(650);
@@ -283,7 +283,7 @@ export default function ConsortiumPricingAdminPage() {
 
             <div className="space-y-2">
               <Label htmlFor="priceType">Price Type</Label>
-              <Select value={priceType} onValueChange={(value: 'monthly' | 'annual' | 'one-time') => setPriceType(value)}>
+              <Select value={priceType} onValueChange={(value: 'monthly' | 'annual' | 'one-time' | 'training') => setPriceType(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select price type" />
                 </SelectTrigger>
@@ -291,20 +291,28 @@ export default function ConsortiumPricingAdminPage() {
                   <SelectItem value="monthly">Monthly</SelectItem>
                   <SelectItem value="annual">Annual</SelectItem>
                   <SelectItem value="one-time">One-time</SelectItem>
+                  <SelectItem value="training">Training</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="regularPrice">
-                {priceType === 'monthly' ? 'Monthly Price ($)' : priceType === 'annual' ? 'Annual Price ($)' : 'One-time Price ($)'}
+                {priceType === 'monthly' ? 'Monthly Price ($)' : 
+                 priceType === 'annual' ? 'Annual Price ($)' : 
+                 priceType === 'training' ? 'Training Price ($)' : 
+                 'One-time Price ($)'}
               </Label>
               <Input
                 id="regularPrice"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                placeholder={priceType === 'one-time' ? "625" : "1250"}
+                placeholder={
+                  priceType === 'one-time' ? "625" : 
+                  priceType === 'training' ? "2500" : 
+                  "1250"
+                }
               />
             </div>
 

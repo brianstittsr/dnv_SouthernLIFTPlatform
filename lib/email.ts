@@ -901,6 +901,69 @@ export const emailTemplates = {
     `,
     text: `Welcome to KDM Founders! Your payment of $${params.amount.toFixed(2)} for ${params.type} has been confirmed on ${params.paymentDate}. Thank you for your smart business decision to join as a Founding member.`,
   }),
+
+  /**
+   * CMMC training payment notification for administrators
+   */
+  cmmcTrainingPaymentNotification: (params: { 
+    customerName: string; 
+    customerEmail: string; 
+    trainingLevel: string; 
+    amount: number; 
+    sessionId: string; 
+    paymentDate: string; 
+    companyInfo: string; 
+  }) => ({
+    subject: `CMMC Training Payment Received - ${params.customerName}`,
+    html: `
+      <h1>CMMC Training Payment Received</h1>
+      <p>A new CMMC training payment has been successfully processed:</p>
+      <ul>
+        <li><strong>Customer:</strong> ${params.customerName}</li>
+        <li><strong>Email:</strong> ${params.customerEmail}</li>
+        <li><strong>Training Level:</strong> ${params.trainingLevel}</li>
+        <li><strong>Amount:</strong> $${params.amount.toFixed(2)}</li>
+        <li><strong>Company:</strong> ${params.companyInfo}</li>
+        <li><strong>Date:</strong> ${params.paymentDate}</li>
+        <li><strong>Session ID:</strong> ${params.sessionId}</li>
+      </ul>
+      <p>This participant has enrolled in the CMMC ${params.trainingLevel} training program.</p>
+      <p>Best regards,<br>KDM Consortium System</p>
+    `,
+    text: `CMMC Training Payment Received: ${params.customerName} (${params.customerEmail}) - ${params.trainingLevel} - $${params.amount.toFixed(2)} on ${params.paymentDate}. Company: ${params.companyInfo}. Session: ${params.sessionId}`,
+  }),
+
+  /**
+   * CMMC training confirmation for customers
+   */
+  cmmcTrainingConfirmation: (params: { 
+    customerName: string; 
+    trainingLevel: string; 
+    amount: number; 
+    paymentDate: string; 
+    companyInfo: string; 
+  }) => ({
+    subject: 'CMMC Training Enrollment Confirmed',
+    html: `
+      <h1>CMMC Training Enrollment Confirmed!</h1>
+      <p>Dear ${params.customerName},</p>
+      <p>Thank you for your payment and welcome to the CMMC ${params.trainingLevel} training program! Your enrollment has been successfully processed.</p>
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3>Enrollment Details</h3>
+        <ul>
+          <li><strong>Training Level:</strong> ${params.trainingLevel} CMMC Cohort Training</li>
+          <li><strong>Amount Paid:</strong> $${params.amount.toFixed(2)}</li>
+          <li><strong>Payment Date:</strong> ${params.paymentDate}</li>
+          <li><strong>Company:</strong> ${params.companyInfo}</li>
+        </ul>
+      </div>
+      <p>Your payment of $${params.amount.toFixed(2)} secures your place in our comprehensive CMMC training program. You will receive separate communication with training schedule, materials, and access information.</p>
+      <p>As a CMMC training participant, you'll gain valuable expertise in cybersecurity maturity model certification, positioning your organization for government contracting opportunities.</p>
+      <p>If you have any questions about the training program, please don't hesitate to reach out to our team.</p>
+      <p>Best regards,<br>Keith Moore and the KDM Consortium Team</p>
+    `,
+    text: `CMMC Training Enrollment Confirmed! Your payment of $${params.amount.toFixed(2)} for ${params.trainingLevel} CMMC training has been confirmed on ${params.paymentDate}. Company: ${params.companyInfo}. You will receive training schedule and access information shortly.`,
+  }),
 };
 
 /**
