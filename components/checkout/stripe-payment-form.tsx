@@ -342,7 +342,7 @@ function CheckoutForm({
         <CardContent className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
             <p className="text-sm text-blue-900">
-              <strong>Secure Payment:</strong> Enter your credit or debit card details below. Your card will be charged ${(amount / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })} per month for your KDM Consortium Membership.
+              <strong>Secure Payment:</strong> Enter your credit or debit card details below. Your card will be charged ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} per month for your KDM Consortium Membership.
             </p>
           </div>
           <div className="border border-gray-300 rounded-lg p-4 bg-white">
@@ -386,7 +386,7 @@ function CheckoutForm({
         ) : (
           <>
             <Lock className="h-5 w-5 mr-2" />
-            Create Account & Pay ${(amount / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            Create Account & Pay ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
           </>
         )}
       </Button>
