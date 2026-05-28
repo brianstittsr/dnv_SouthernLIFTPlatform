@@ -2,7 +2,7 @@
  * Cart and Product Type Definitions
  */
 
-export type ProductType = 'consortium' | 'cmmc-cohort';
+export type ProductType = 'consortium' | 'cmmc-cohort' | 'founders';
 
 export interface Product {
   id: string;
@@ -68,6 +68,28 @@ export const PRODUCTS: Record<ProductType, Product> = {
       'Compliance roadmap development',
       'Policy & procedure creation',
       'C3PAO referral network'
+    ]
+  },
+  'founders': {
+    id: 'kdm-founders-membership',
+    type: 'founders',
+    name: 'KDM Founders Membership',
+    description: 'One-time founding member payment - Smart business decision to capitalize on opportunities through September 30th',
+    price: 625,
+    billingPeriod: 'one-time',
+    features: [
+      'Lifetime Founding Member status',
+      'All Consortium membership benefits',
+      'Early access to high-value opportunities',
+      'Founding member badge & recognition',
+      'Exclusive founding member events',
+      'Priority support & concierge service',
+      'Direct access to KDM leadership',
+      'Lifetime price guarantee',
+      'Strategic partner introductions',
+      'Custom opportunity matching',
+      'Alumni network access',
+      'Legacy benefits for future growth'
     ]
   }
 };

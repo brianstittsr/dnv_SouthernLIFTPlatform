@@ -25,6 +25,7 @@ import {
   Clock,
   MessageSquare,
   BookOpen,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,6 +56,30 @@ const PRICING_TIERS = [
     ],
     icon: Star,
     cta: "Join the Consortium",
+  },
+  {
+    id: "founders",
+    name: "KDM Founders Membership",
+    description: "One-time founding member payment - Limited time offer for smart business leaders",
+    price: 625,
+    isOneTime: true,
+    popular: false,
+    features: [
+      "Lifetime Founding Member status",
+      "All Consortium membership benefits",
+      "Early access to high-value opportunities",
+      "Founding member badge & recognition",
+      "Exclusive founding member events",
+      "Priority support & concierge service",
+      "Direct access to KDM leadership",
+      "Lifetime price guarantee",
+      "Strategic partner introductions",
+      "Custom opportunity matching",
+      "Alumni network access",
+      "Legacy benefits for future growth",
+    ],
+    icon: Crown,
+    cta: "Claim Founders Spot",
   },
   {
     id: "cmmc-cohort",
@@ -346,6 +371,15 @@ export default function PricingPage() {
                       >
                         {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
                       </AddToCartButton>
+                    ) : tier.id === "founders" ? (
+                      <AddToCartButton
+                        product={PRODUCTS.founders}
+                        variant="default"
+                        size="lg"
+                        className="w-full bg-amber-600 hover:bg-amber-700"
+                      >
+                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                      </AddToCartButton>
                     ) : tier.id === "cmmc-cohort" ? (
                       <AddToCartButton
                         product={PRODUCTS["cmmc-cohort"]}
@@ -537,6 +571,14 @@ export default function PricingPage() {
               size="lg"
             >
               Join the Consortium
+            </AddToCartButton>
+            <AddToCartButton
+              product={PRODUCTS.founders}
+              variant="default"
+              size="lg"
+              className="bg-amber-500 text-white hover:bg-amber-600"
+            >
+              Claim Founders Spot
             </AddToCartButton>
             <AddToCartButton
               product={PRODUCTS["cmmc-cohort"]}
