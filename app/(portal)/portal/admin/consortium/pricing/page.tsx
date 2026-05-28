@@ -496,11 +496,26 @@ export default function ConsortiumPricingAdminPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">
-                          {formatPrice(effectivePrice)}/month
+                          {formatPrice(effectivePrice)}
+                          {p.priceType === 'monthly' ? '/month' : 
+                           p.priceType === 'annual' ? '/year' : 
+                           p.priceType === 'training' ? '/training' : 
+                           ''}
                         </span>
                         {p.isPromotional && (
                           <Badge variant="secondary">Promotional</Badge>
                         )}
+                        <Badge variant="outline" className={
+                          p.priceType === 'training' ? 'bg-blue-100 text-blue-700' :
+                          p.priceType === 'one-time' ? 'bg-green-100 text-green-700' :
+                          p.priceType === 'annual' ? 'bg-purple-100 text-purple-700' :
+                          'bg-gray-100 text-gray-700'
+                        }>
+                          {p.priceType === 'training' ? 'Training' :
+                           p.priceType === 'one-time' ? 'One-time' :
+                           p.priceType === 'annual' ? 'Annual' :
+                           'Monthly'}
+                        </Badge>
                         {p.active ? (
                           <Badge className="bg-green-500">Active</Badge>
                         ) : (
@@ -508,9 +523,19 @@ export default function ConsortiumPricingAdminPage() {
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
+                        {p.name && <><strong>{p.name}</strong> - </>}
                         Regular: {formatPrice(p.price)}
+                        {p.priceType === 'monthly' ? '/month' : 
+                         p.priceType === 'annual' ? '/year' : 
+                         p.priceType === 'training' ? '/training' : 
+                         ''}
                         {p.isPromotional && p.promotionalPrice && (
-                          <> → Promo: {formatPrice(p.promotionalPrice)}</>
+                          <> → Promo: {formatPrice(p.promotionalPrice)}
+                          {p.priceType === 'monthly' ? '/month' : 
+                           p.priceType === 'annual' ? '/year' : 
+                           p.priceType === 'training' ? '/training' : 
+                           ''}
+                          </>
                         )}
                       </p>
                       {p.description && (
