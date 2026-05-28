@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       subtitle: "Major strategic collaboration establishes centralized digital ecosystem platform to consolidate capabilities, resources, and partnerships across the HUBZone community",
       location: "ALEXANDRIA, Va.",
       releaseDate: Timestamp.fromDate(new Date('2026-05-26')),
-      content: `The KDM Consortium and the HUBZone Contractors National Council today announced a major strategic collaboration to launch A Whole of Government Team Approach. The initiative establishes a centralized digital ecosystem platform designed to consolidate capabilities, resources, and partnerships across the HUBZone community — significantly enhancing small business competitiveness in federal contracting while supporting national manufacturing and supply chain resilience priorities.
+      content: `ALEXANDRIA, Va., May 26, 2026 — The KDM Consortium and the HUBZone Contractors National Council today announced a major strategic collaboration to launch A Whole of Government Team Approach. The initiative establishes a centralized digital ecosystem platform designed to consolidate capabilities, resources, and partnerships across the HUBZone community — significantly enhancing small business competitiveness in federal contracting while supporting national manufacturing and supply chain resilience priorities.
 
 This new platform will serve as a single, secure hub for company capabilities and past performance data, executive profiles, technology demonstrations, matchmaking and teaming requests, needs assessments, and barrier identification. By replacing fragmented processes with a scalable infrastructure, the ecosystem platform will directly support immediate priorities while laying the foundation for a robust, sustainable national ecosystem.
 
@@ -53,7 +53,13 @@ Led by Keith Moore, KDM & Associates is a leader in government affairs, small bu
 
 About the HUBZone Contractors National Council
 
-Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in historically underutilized communities. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit www.kdm-assoc.com`,
+Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in historically underutilized communities. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit www.kdm-assoc.com
+
+Media Contact:
+
+Keith Moore
+CEO, KDM & Associates | Chair, KDM Consortium
+kmoore@kdm-assoc.com | (609) 206-1440`,
       contactInfo: {
         name: "Keith Moore",
         email: "kmoore@kdm-assoc.com",
