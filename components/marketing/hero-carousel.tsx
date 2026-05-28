@@ -253,10 +253,26 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       sessionStorage.setItem("hero_slides_timestamp", timestamp.toString());
       
       const firebaseSlides = await getHeroSlides();
-      // If no slides in Firebase, use default slides
+      // Merge Firebase slides with default slides, ensuring press release slide is always included
+      const pressReleaseSlide = defaultSlides.find(s => s.id === "press-release-hubzone");
+      
       if (firebaseSlides.length > 0) {
-        setSlides(firebaseSlides);
+        // Check if press release slide already exists in Firebase slides
+        const hasPressRelease = firebaseSlides.some(s => s.id === "press-release-hubzone");
+        
+        if (hasPressRelease || !pressReleaseSlide) {
+          // Use Firebase slides as-is if press release is already there or not found in defaults
+          setSlides(firebaseSlides);
+        } else {
+          // Merge: add press release slide (order 0) and shift other slides
+          const mergedSlides = [
+            pressReleaseSlide,
+            ...firebaseSlides.map(s => ({ ...s, order: s.order + 1 }))
+          ];
+          setSlides(mergedSlides);
+        }
       } else {
+        // No Firebase slides, use defaults
         setSlides(defaultSlides);
       }
     } catch (error) {
