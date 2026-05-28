@@ -12,8 +12,20 @@ async function addPressRelease() {
 
   const slug = "kdm-consortium-hubzone-council-digital-ecosystem";
 
+  // Cleanup: remove any docs accidentally written to the wrong (snake_case) collection
+  try {
+    const wrongCollectionSnapshot = await db.collection('press_releases')
+      .where('slug', '==', slug)
+      .get();
+    for (const doc of wrongCollectionSnapshot.docs) {
+      await doc.ref.delete();
+    }
+  } catch (cleanupErr) {
+    console.error('Cleanup of press_releases collection failed (non-fatal):', cleanupErr);
+  }
+
   // Idempotency check - avoid duplicates
-  const existingSnapshot = await db.collection('press_releases')
+  const existingSnapshot = await db.collection('pressReleases')
     .where('slug', '==', slug)
     .limit(1)
     .get();
@@ -77,7 +89,7 @@ Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprof
       featured: true
     };
 
-  const docRef = await db.collection('press_releases').add(pressReleaseData);
+  const docRef = await db.collection('pressReleases').add(pressReleaseData);
 
   return NextResponse.json({
     success: true,
