@@ -8,9 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { HeroCarousel, samplePressReleaseSlides } from '@/components/ui/hero-carousel';
+import { getCarouselConfig } from '@/lib/carousel-config';
 
 export default function PressReleasePage() {
   const [copied, setCopied] = useState(false);
+  const carouselConfig = getCarouselConfig();
 
   const pressRelease = {
     title: "KDM Consortium and HUBZone Contractors National Council Launch A Whole of Government Team Approach to Build National HUBZone Digital Ecosystem To Accelerate Small Business Success, Strengthen the 2026 National HUBZone Conference, and Drive Long-Term Manufacturing Modernization and Federal Contracting Opportunities",
@@ -106,6 +109,17 @@ kmoore@kdm-assoc.com | (609) 206-1440`;
           </div>
         </div>
       </div>
+
+      {/* Hero Carousel - Currently Disabled */}
+      <HeroCarousel
+        slides={samplePressReleaseSlides}
+        enabled={carouselConfig.enabled}
+        autoPlay={carouselConfig.autoPlay}
+        interval={carouselConfig.interval}
+        showDots={carouselConfig.showDots}
+        showArrows={carouselConfig.showArrows}
+        className="mb-8"
+      />
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
