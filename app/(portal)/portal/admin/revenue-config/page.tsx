@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, addDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
-import { sendTemplatedEmail } from "@/lib/email";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -864,24 +863,29 @@ export default function RevenueConfigPage() {
         updatedAt: Timestamp.now(),
       });
 
-      // Send notification emails
-      await sendTemplatedEmail('foundersPaymentNotification', 'kmoore@kdm-assoc.com', {
-        customerName: newFounder.name,
-        customerEmail: newFounder.email,
-        amount: 625,
-        sessionId: 'MANUAL-' + Date.now(),
-        paymentDate: newFounder.paymentDate,
-        type: 'Founders Membership'
-      });
+      // Send notification emails via API
+      try {
+        const notificationResponse = await fetch('/api/admin/send-founders-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            customerName: newFounder.name,
+            customerEmail: newFounder.email,
+            amount: 625,
+            sessionId: 'MANUAL-' + Date.now(),
+            paymentDate: newFounder.paymentDate,
+            type: 'Founders Membership'
+          }),
+        });
 
-      await sendTemplatedEmail('foundersPaymentNotification', 'nelinia@strategicvalueplus.com', {
-        customerName: newFounder.name,
-        customerEmail: newFounder.email,
-        amount: 625,
-        sessionId: 'MANUAL-' + Date.now(),
-        paymentDate: newFounder.paymentDate,
-        type: 'Founders Membership'
-      });
+        if (!notificationResponse.ok) {
+          console.error('Failed to send notification emails');
+        }
+      } catch (notificationError) {
+        console.error('Error sending notifications:', notificationError);
+      }
 
       // Reset form
       setNewFounder({
