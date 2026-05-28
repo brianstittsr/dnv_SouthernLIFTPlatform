@@ -842,6 +842,65 @@ export const emailTemplates = {
     `,
     text: `Payout Failed: ${params.partnerName} - ${params.amount}. Error: ${params.errorMessage}. Review at: ${params.dashboardUrl}`,
   }),
+
+  /**
+   * Founders payment notification for administrators
+   */
+  foundersPaymentNotification: (params: { 
+    customerName: string; 
+    customerEmail: string; 
+    amount: number; 
+    sessionId: string; 
+    paymentDate: string; 
+    type: string; 
+  }) => ({
+    subject: `Founders Membership Payment Received - ${params.customerName}`,
+    html: `
+      <h1>Founders Membership Payment Received</h1>
+      <p>A new Founders membership payment has been successfully processed:</p>
+      <ul>
+        <li><strong>Customer:</strong> ${params.customerName}</li>
+        <li><strong>Email:</strong> ${params.customerEmail}</li>
+        <li><strong>Amount:</strong> $${params.amount.toFixed(2)}</li>
+        <li><strong>Type:</strong> ${params.type}</li>
+        <li><strong>Date:</strong> ${params.paymentDate}</li>
+        <li><strong>Session ID:</strong> ${params.sessionId}</li>
+      </ul>
+      <p>This member has joined the KDM Founders program with a one-time payment of $${params.amount.toFixed(2)}.</p>
+      <p>Best regards,<br>KDM Consortium System</p>
+    `,
+    text: `Founders Membership Payment Received: ${params.customerName} (${params.customerEmail}) - $${params.amount.toFixed(2)} on ${params.paymentDate}. Session: ${params.sessionId}`,
+  }),
+
+  /**
+   * Founders payment confirmation for customers
+   */
+  foundersPaymentConfirmation: (params: { 
+    customerName: string; 
+    amount: number; 
+    paymentDate: string; 
+    type: string; 
+  }) => ({
+    subject: 'Welcome to KDM Founders - Payment Confirmed',
+    html: `
+      <h1>Welcome to KDM Founders!</h1>
+      <p>Dear ${params.customerName},</p>
+      <p>Thank you for your payment and welcome to the KDM Founders program! Your smart business decision to join as a Founding member has been successfully processed.</p>
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3>Payment Details</h3>
+        <ul>
+          <li><strong>Membership Type:</strong> ${params.type}</li>
+          <li><strong>Amount Paid:</strong> $${params.amount.toFixed(2)}</li>
+          <li><strong>Payment Date:</strong> ${params.paymentDate}</li>
+        </ul>
+      </div>
+      <p>Your one-time payment of $${params.amount.toFixed(2)} gives you Founding member status and allows us to focus on higher ground to capitalize on opportunities through September 30th.</p>
+      <p>As a Founding member, you'll have access to exclusive benefits and opportunities within the KDM Consortium ecosystem.</p>
+      <p>If you have any questions, please don't hesitate to reach out to our team.</p>
+      <p>Best regards,<br>Keith Moore and the KDM Consortium Team</p>
+    `,
+    text: `Welcome to KDM Founders! Your payment of $${params.amount.toFixed(2)} for ${params.type} has been confirmed on ${params.paymentDate}. Thank you for your smart business decision to join as a Founding member.`,
+  }),
 };
 
 /**

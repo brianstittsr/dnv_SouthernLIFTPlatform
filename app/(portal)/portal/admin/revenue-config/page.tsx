@@ -47,6 +47,7 @@ import {
   CreditCard,
   CheckCircle,
   Clock,
+  UserPlus,
   AlertCircle,
   RefreshCw,
   Download,
@@ -874,6 +875,7 @@ export default function RevenueConfigPage() {
           <TabsTrigger value="commission">Commission Rates</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="billing-history">Billing History</TabsTrigger>
+          <TabsTrigger value="founders">Founders</TabsTrigger>
           <TabsTrigger value="partners">Partners</TabsTrigger>
           <TabsTrigger value="commissions">Commissions</TabsTrigger>
           <TabsTrigger value="payouts">Payouts</TabsTrigger>
@@ -1598,6 +1600,120 @@ export default function RevenueConfigPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+        </TabsContent>
+
+        {/* Founders Tab */}
+        <TabsContent value="founders" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>KDM Founders Management</CardTitle>
+              <CardDescription>
+                Manage KDM Founders membership - one-time payment of $625.00
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Manual Addition Form */}
+                <div className="border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4">Add Founding Member Manually</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Use this form to add members who have already paid for Founders membership offline.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="founder-name">Member Name</Label>
+                      <Input
+                        id="founder-name"
+                        placeholder="Enter member's full name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="founder-email">Email Address</Label>
+                      <Input
+                        id="founder-email"
+                        type="email"
+                        placeholder="Enter member's email"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="founder-member-id">Member ID (if available)</Label>
+                      <Input
+                        id="founder-member-id"
+                        placeholder="Optional member ID"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="founder-payment-date">Payment Date</Label>
+                      <Input
+                        id="founder-payment-date"
+                        type="date"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Add Founding Member
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Founders Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Founders</CardTitle>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">Active members</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                      <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">$0</div>
+                      <p className="text-xs text-muted-foreground">From Founders payments</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Online Payments</CardTitle>
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">Via Stripe checkout</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Manual Additions</CardTitle>
+                      <UserPlus className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground">Added manually</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Founders List */}
+                <div className="border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4">Founders Members</h3>
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No Founders members yet</p>
+                    <p className="text-sm">Members will appear here once they join or are added manually.</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Commissions Tab */}

@@ -20,11 +20,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Loader2, DollarSign, Calendar } from "lucide-react";
 
 interface MembershipPrice {
   id?: string;
+  name: string;
+  priceType: 'monthly' | 'annual' | 'one-time';
   price: number;
   isPromotional: boolean;
   promotionalPrice?: number;
@@ -32,6 +35,8 @@ interface MembershipPrice {
   validUntil?: Timestamp;
   description?: string;
   active: boolean;
+  stripeProductId?: string;
+  stripePriceId?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -45,6 +50,8 @@ export default function ConsortiumPricingAdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form state
+  const [name, setName] = useState<string>("");
+  const [priceType, setPriceType] = useState<'monthly' | 'annual' | 'one-time'>('monthly');
   const [price, setPrice] = useState<number>(1250);
   const [isPromotional, setIsPromotional] = useState(false);
   const [promotionalPrice, setPromotionalPrice] = useState<number>(650);
@@ -94,6 +101,8 @@ export default function ConsortiumPricingAdminPage() {
   };
 
   const populateForm = (p: MembershipPrice) => {
+    setName(p.name || "");
+    setPriceType(p.priceType || 'monthly');
     setPrice(p.price);
     setIsPromotional(p.isPromotional);
     setPromotionalPrice(p.promotionalPrice ? p.promotionalPrice / 100 : 650); // Convert from cents to dollars
@@ -136,6 +145,8 @@ export default function ConsortiumPricingAdminPage() {
       setSaving(true);
 
       const priceData: Omit<MembershipPrice, "id"> = {
+        name,
+        priceType,
         price,
         isPromotional,
         promotionalPrice: isPromotional ? promotionalPrice * 100 : undefined, // Convert to cents
@@ -261,13 +272,39 @@ export default function ConsortiumPricingAdminPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="regularPrice">Regular Monthly Price ($)</Label>
+              <Label htmlFor="name">Pricing Tier Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g., KDM Founders Membership"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="priceType">Price Type</Label>
+              <Select value={priceType} onValueChange={(value: 'monthly' | 'annual' | 'one-time') => setPriceType(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select price type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="annual">Annual</SelectItem>
+                  <SelectItem value="one-time">One-time</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="regularPrice">
+                {priceType === 'monthly' ? 'Monthly Price ($)' : priceType === 'annual' ? 'Annual Price ($)' : 'One-time Price ($)'}
+              </Label>
               <Input
                 id="regularPrice"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                placeholder="1250"
+                placeholder={priceType === 'one-time' ? "625" : "1250"}
               />
             </div>
 
