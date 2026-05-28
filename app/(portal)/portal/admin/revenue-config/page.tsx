@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, addDoc, Timestamp } from "firebase/firestore";
+import { toast } from "sonner";
+import { sendTemplatedEmail } from "@/lib/email";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -96,6 +98,21 @@ export default function RevenueConfigPage() {
   const [showEditPartnerDialog, setShowEditPartnerDialog] = useState(false);
   const [editingPartner, setEditingPartner] = useState<PartnerProfileDoc | null>(null);
   const [saving, setSaving] = useState(false);
+
+  // Founders tab state
+  const [foundersMembers, setFoundersMembers] = useState<any[]>([]);
+  const [foundersStats, setFoundersStats] = useState({
+    totalFounders: 0,
+    totalRevenue: 0,
+    onlinePayments: 0,
+    manualAdditions: 0,
+  });
+  const [newFounder, setNewFounder] = useState({
+    name: "",
+    email: "",
+    memberId: "",
+    paymentDate: "",
+  });
   const [newPartner, setNewPartner] = useState({
     partnerId: "",
     contactName: "",
@@ -767,6 +784,125 @@ export default function RevenueConfigPage() {
     }
   };
 
+  const loadFoundersMembers = async () => {
+    try {
+      if (db) {
+        const membersSnapshot = await getDocs(collection(db, 'founders_members'));
+        const members = membersSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setFoundersMembers(members);
+        
+        // Calculate stats
+        const paymentsSnapshot = await getDocs(collection(db, 'founders_payments'));
+        const payments = paymentsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as any));
+        
+        const onlinePayments = payments.filter(p => p.status === 'completed' && !p.manual).length;
+        const manualAdditions = payments.filter(p => p.manual).length;
+        const totalRevenue = payments
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.amount || 0), 0) / 100; // Convert from cents
+        
+        setFoundersStats({
+          totalFounders: members.length,
+          totalRevenue,
+          onlinePayments,
+          manualAdditions,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading Founders members:', error);
+    }
+  };
+
+  const handleAddFoundingMember = async () => {
+    if (!db) {
+      toast.error('Database not available');
+      return;
+    }
+
+    if (!newFounder.name || !newFounder.email || !newFounder.paymentDate) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      // Add to Founders members collection
+      await addDoc(collection(db, 'founders_members'), {
+        customerName: newFounder.name,
+        customerEmail: newFounder.email,
+        memberId: newFounder.memberId || null,
+        paymentDate: Timestamp.fromDate(new Date(newFounder.paymentDate)),
+        paymentAmount: 62500, // $625 in cents
+        currency: 'usd',
+        paymentType: 'manual',
+        status: 'active',
+        joinedAt: Timestamp.now(),
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+
+      // Add to payments collection
+      await addDoc(collection(db, 'founders_payments'), {
+        customerName: newFounder.name,
+        customerEmail: newFounder.email,
+        memberId: newFounder.memberId || null,
+        amount: 62500, // $625 in cents
+        currency: 'usd',
+        status: 'completed',
+        type: 'founders_membership',
+        paymentType: 'manual',
+        paymentDate: Timestamp.fromDate(new Date(newFounder.paymentDate)),
+        completedAt: Timestamp.fromDate(new Date(newFounder.paymentDate)),
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+
+      // Send notification emails
+      await sendTemplatedEmail('foundersPaymentNotification', 'kmoore@kdm-assoc.com', {
+        customerName: newFounder.name,
+        customerEmail: newFounder.email,
+        amount: 625,
+        sessionId: 'MANUAL-' + Date.now(),
+        paymentDate: newFounder.paymentDate,
+        type: 'Founders Membership'
+      });
+
+      await sendTemplatedEmail('foundersPaymentNotification', 'nelinia@strategicvalueplus.com', {
+        customerName: newFounder.name,
+        customerEmail: newFounder.email,
+        amount: 625,
+        sessionId: 'MANUAL-' + Date.now(),
+        paymentDate: newFounder.paymentDate,
+        type: 'Founders Membership'
+      });
+
+      // Reset form
+      setNewFounder({
+        name: "",
+        email: "",
+        memberId: "",
+        paymentDate: "",
+      });
+
+      // Reload data
+      await loadFoundersMembers();
+
+      toast.success('Founding member added successfully!');
+    } catch (error) {
+      console.error('Error adding Founding member:', error);
+      toast.error('Failed to add Founding member');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const loadBillingHistory = async () => {
     setLoadingBillingHistory(true);
     try {
@@ -866,32 +1002,50 @@ export default function RevenueConfigPage() {
         if (v === 'subscriptions' && subscriptions.length === 0) {
           loadSubscriptions();
         }
+        if (v === 'founders' && foundersMembers.length === 0) {
+          loadFoundersMembers();
+        }
         if (v === 'stripe-management' && stripeProducts.length === 0) {
           loadStripeProducts();
           loadStripeRefunds();
         }
       }} className="mb-6">
-        <TabsList className="grid grid-cols-10 w-full max-w-9xl">
-          <TabsTrigger value="commission">Commission Rates</TabsTrigger>
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="billing-history">Billing History</TabsTrigger>
-          <TabsTrigger value="founders">Founders</TabsTrigger>
-          <TabsTrigger value="partners">Partners</TabsTrigger>
-          <TabsTrigger value="commissions">Commissions</TabsTrigger>
-          <TabsTrigger value="payouts">Payouts</TabsTrigger>
-          <TabsTrigger value="sharing">Attribution</TabsTrigger>
-          <TabsTrigger value="subscriptions">
-            <CreditCard className="h-3 w-3 mr-1" />
-            Subscriptions
-          </TabsTrigger>
-          <TabsTrigger value="payment-requests">
-            <Send className="h-3 w-3 mr-1" />
-            Payment Requests
-          </TabsTrigger>
-          <TabsTrigger value="stripe-management">
-            <Building2 className="h-3 w-3 mr-1" />
-            Stripe Management
-          </TabsTrigger>
+        <TabsList className="flex flex-wrap gap-2 w-full max-w-6xl">
+          {/* Revenue Management */}
+          <div className="flex flex-wrap gap-1 border-r pr-2 mr-2">
+            <TabsTrigger value="commission" className="text-sm">Commission Rates</TabsTrigger>
+            <TabsTrigger value="transactions" className="text-sm">Transactions</TabsTrigger>
+            <TabsTrigger value="billing-history" className="text-sm">Billing History</TabsTrigger>
+          </div>
+          
+          {/* Member Management */}
+          <div className="flex flex-wrap gap-1 border-r pr-2 mr-2">
+            <TabsTrigger value="founders" className="text-sm bg-green-50 hover:bg-green-100">Founders</TabsTrigger>
+            <TabsTrigger value="partners" className="text-sm">Partners</TabsTrigger>
+            <TabsTrigger value="subscriptions" className="text-sm">
+              <CreditCard className="h-3 w-3 mr-1" />
+              Subscriptions
+            </TabsTrigger>
+          </div>
+          
+          {/* Financial Operations */}
+          <div className="flex flex-wrap gap-1 border-r pr-2 mr-2">
+            <TabsTrigger value="commissions" className="text-sm">Commissions</TabsTrigger>
+            <TabsTrigger value="payouts" className="text-sm">Payouts</TabsTrigger>
+            <TabsTrigger value="payment-requests" className="text-sm">
+              <Send className="h-3 w-3 mr-1" />
+              Requests
+            </TabsTrigger>
+          </div>
+          
+          {/* System Settings */}
+          <div className="flex flex-wrap gap-1">
+            <TabsTrigger value="sharing" className="text-sm">Attribution</TabsTrigger>
+            <TabsTrigger value="stripe-management" className="text-sm">
+              <Building2 className="h-3 w-3 mr-1" />
+              Stripe
+            </TabsTrigger>
+          </div>
         </TabsList>
 
         <TabsContent value="commission" className="mt-6">
@@ -1624,6 +1778,8 @@ export default function RevenueConfigPage() {
                       <Label htmlFor="founder-name">Member Name</Label>
                       <Input
                         id="founder-name"
+                        value={newFounder.name}
+                        onChange={(e) => setNewFounder({...newFounder, name: e.target.value})}
                         placeholder="Enter member's full name"
                       />
                     </div>
@@ -1632,6 +1788,8 @@ export default function RevenueConfigPage() {
                       <Input
                         id="founder-email"
                         type="email"
+                        value={newFounder.email}
+                        onChange={(e) => setNewFounder({...newFounder, email: e.target.value})}
                         placeholder="Enter member's email"
                       />
                     </div>
@@ -1639,6 +1797,8 @@ export default function RevenueConfigPage() {
                       <Label htmlFor="founder-member-id">Member ID (if available)</Label>
                       <Input
                         id="founder-member-id"
+                        value={newFounder.memberId}
+                        onChange={(e) => setNewFounder({...newFounder, memberId: e.target.value})}
                         placeholder="Optional member ID"
                       />
                     </div>
@@ -1647,12 +1807,18 @@ export default function RevenueConfigPage() {
                       <Input
                         id="founder-payment-date"
                         type="date"
+                        value={newFounder.paymentDate}
+                        onChange={(e) => setNewFounder({...newFounder, paymentDate: e.target.value})}
                       />
                     </div>
                   </div>
                   <div className="mt-4">
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      <UserPlus className="mr-2 h-4 w-4" />
+                    <Button 
+                      className="bg-green-600 hover:bg-green-700"
+                      onClick={handleAddFoundingMember}
+                      disabled={saving}
+                    >
+                      {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserPlus className="mr-2 h-4 w-4" />}
                       Add Founding Member
                     </Button>
                   </div>
@@ -1666,7 +1832,7 @@ export default function RevenueConfigPage() {
                       <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">0</div>
+                      <div className="text-2xl font-bold">{foundersStats.totalFounders}</div>
                       <p className="text-xs text-muted-foreground">Active members</p>
                     </CardContent>
                   </Card>
@@ -1676,7 +1842,7 @@ export default function RevenueConfigPage() {
                       <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">$0</div>
+                      <div className="text-2xl font-bold">${foundersStats.totalRevenue.toFixed(2)}</div>
                       <p className="text-xs text-muted-foreground">From Founders payments</p>
                     </CardContent>
                   </Card>
@@ -1686,7 +1852,7 @@ export default function RevenueConfigPage() {
                       <CreditCard className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">0</div>
+                      <div className="text-2xl font-bold">{foundersStats.onlinePayments}</div>
                       <p className="text-xs text-muted-foreground">Via Stripe checkout</p>
                     </CardContent>
                   </Card>
@@ -1696,7 +1862,7 @@ export default function RevenueConfigPage() {
                       <UserPlus className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">0</div>
+                      <div className="text-2xl font-bold">{foundersStats.manualAdditions}</div>
                       <p className="text-xs text-muted-foreground">Added manually</p>
                     </CardContent>
                   </Card>
@@ -1705,11 +1871,37 @@ export default function RevenueConfigPage() {
                 {/* Founders List */}
                 <div className="border rounded-lg p-4">
                   <h3 className="text-lg font-semibold mb-4">Founders Members</h3>
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No Founders members yet</p>
-                    <p className="text-sm">Members will appear here once they join or are added manually.</p>
-                  </div>
+                  {foundersMembers.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No Founders members yet</p>
+                      <p className="text-sm">Members will appear here once they join or are added manually.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {foundersMembers.map((member) => (
+                        <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                              <UserPlus className="h-4 w-4 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{member.customerName}</p>
+                              <p className="text-sm text-muted-foreground">{member.customerEmail}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant="secondary" className="bg-green-50 text-green-700">
+                              {member.paymentType === 'manual' ? 'Manual' : 'Online'}
+                            </Badge>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Joined: {member.joinedAt?.toDate()?.toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
