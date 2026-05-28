@@ -1,18 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import type { PressRelease } from '@/lib/press-releases-schema';
 
-export async function POST(req: NextRequest) {
-  try {
-    if (!db) {
-      return NextResponse.json(
-        { error: 'Database not initialized' },
-        { status: 500 }
-      );
-    }
+async function addPressRelease() {
+  if (!db) {
+    return NextResponse.json(
+      { error: 'Database not initialized' },
+      { status: 500 }
+    );
+  }
 
-    const pressReleaseData = {
+  const slug = "kdm-consortium-hubzone-council-digital-ecosystem";
+
+  // Idempotency check - avoid duplicates
+  const existingQuery = query(
+    collection(db, 'press_releases'),
+    where('slug', '==', slug)
+  );
+  const existingSnapshot = await getDocs(existingQuery);
+  if (!existingSnapshot.empty) {
+    return NextResponse.json({
+      success: true,
+      id: existingSnapshot.docs[0].id,
+      message: 'Press release already exists',
+      alreadyExists: true,
+    });
+  }
+
+  const pressReleaseData = {
       title: "KDM Consortium and HUBZone Contractors National Council Launch A Whole of Government Team Approach to Build National HUBZone Digital Ecosystem To Accelerate Small Business Success, Strengthen the 2026 National HUBZone Conference, and Drive Long-Term Manufacturing Modernization and Federal Contracting Opportunities",
       subtitle: "Major strategic collaboration establishes centralized digital ecosystem platform to consolidate capabilities, resources, and partnerships across the HUBZone community",
       location: "ALEXANDRIA, Va.",
@@ -62,14 +78,30 @@ Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprof
       featured: true
     };
 
-    const docRef = await addDoc(collection(db, 'press_releases'), pressReleaseData);
-    
-    return NextResponse.json({
-      success: true,
-      id: docRef.id,
-      message: 'Press release added successfully'
-    });
+  const docRef = await addDoc(collection(db, 'press_releases'), pressReleaseData);
 
+  return NextResponse.json({
+    success: true,
+    id: docRef.id,
+    message: 'Press release added successfully'
+  });
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    return await addPressRelease();
+  } catch (error) {
+    console.error('Error adding press release:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to add press release' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    return await addPressRelease();
   } catch (error) {
     console.error('Error adding press release:', error);
     return NextResponse.json(
