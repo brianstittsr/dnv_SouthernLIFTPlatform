@@ -54,6 +54,23 @@ const STORAGE_KEY = "hero-slides-v2";
 // Default slides fallback
 const defaultSlides: HeroSlide[] = [
   {
+    id: "press-release-hubzone",
+    badge: "🎉 Major Partnership Announcement",
+    headline: "KDM Consortium &",
+    middleLine: "&",
+    highlightedText: "HUBZone Council",
+    subheadline: "Launching a Whole of Government Team Approach to build a National HUBZone Digital Ecosystem. Accelerating small business success and strengthening federal contracting opportunities.",
+    benefits: ["Digital Ecosystem Platform", "2026 National HUBZone Conference", "Federal Contracting Support"],
+    primaryCta: { text: "Read Press Release", href: "/press-releases/kdm-consortium-hubzone-council-digital-ecosystem" },
+    secondaryCta: { text: "Join the Consortium", href: "/consortium" },
+    isPublished: true,
+    order: 0,
+    backgroundType: "image",
+    backgroundImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80",
+    backgroundOverlay: true,
+    backgroundOverlayOpacity: 60,
+  },
+  {
     id: "0",
     badge: "Strategic Partnership Announcement",
     headline: "KDM & Associates",
@@ -64,7 +81,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Discover the Partnership", href: "/about" },
     secondaryCta: { text: "Get Started", href: "/contact" },
     isPublished: true,
-    order: 0,
+    order: 1,
   },
   {
     id: "1",
@@ -76,7 +93,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Schedule Introductory Session", href: "/contact" },
     secondaryCta: { text: "Learn More", href: "/about" },
     isPublished: true,
-    order: 1,
+    order: 2,
   },
   {
     id: "2",
@@ -88,7 +105,7 @@ const defaultSlides: HeroSlide[] = [
     primaryCta: { text: "Get Started", href: "/contact" },
     secondaryCta: { text: "View Services", href: "/services" },
     isPublished: true,
-    order: 2,
+    order: 3,
   },
 ];
 
