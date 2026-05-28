@@ -268,7 +268,7 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <section className="py-20 -mt-10">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {PRICING_TIERS.map((tier) => {
               const TierIcon = tier.icon;
 
