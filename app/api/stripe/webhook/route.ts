@@ -466,8 +466,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true });
 }
 
-export const config = {
-  api: {
-    bodyParser: false, // Required for Stripe webhook signature verification
-  },
-};
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const maxDuration = 30; // 30 seconds for webhook processing

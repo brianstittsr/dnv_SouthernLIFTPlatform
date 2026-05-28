@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
     );
 
     // Get Firestore pricing tiers for comparison
-    let firestoreTiers = [];
+    let firestoreTiers: any[] = [];
     if (db) {
       try {
         const tiersSnapshot = await getDocs(collection(db, 'pricing_tiers'));
