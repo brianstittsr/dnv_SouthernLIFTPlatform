@@ -27,6 +27,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { HeroSlide } from "@/components/marketing/hero-carousel";
@@ -41,6 +42,23 @@ import { toast } from "sonner";
 
 // Mock data - in production this would come from a database
 const initialSlides: HeroSlide[] = [
+  {
+    id: "press-release-hubzone",
+    badge: "🎉 Major Partnership Announcement",
+    headline: "KDM Consortium &",
+    middleLine: "&",
+    highlightedText: "HUBZone Council",
+    subheadline: "Launching a Whole of Government Team Approach to build a National HUBZone Digital Ecosystem. Accelerating small business success and strengthening federal contracting opportunities.",
+    benefits: ["Digital Ecosystem Platform", "2026 National HUBZone Conference", "Federal Contracting Support"],
+    primaryCta: { text: "Read Press Release", href: "/press-releases/kdm-consortium-hubzone-council-digital-ecosystem" },
+    secondaryCta: { text: "Join the Consortium", href: "/consortium" },
+    isPublished: true,
+    order: 0,
+    backgroundType: "image",
+    backgroundImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80",
+    backgroundOverlay: true,
+    backgroundOverlayOpacity: 60,
+  },
   {
     id: "1",
     badge: "Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence",
@@ -99,7 +117,7 @@ const initialSlides: HeroSlide[] = [
     benefits: ["Expert Insights", "Industry Updates", "Practical Tips"],
     primaryCta: { text: "Read Our Blog", href: "/blog" },
     secondaryCta: { text: "", href: "" },
-    isPublished: true,
+    isPublished: false,
     order: 5,
   },
   {
@@ -111,7 +129,7 @@ const initialSlides: HeroSlide[] = [
     benefits: ["Networking Events", "Teaming Opportunities", "Mentorship Programs"],
     primaryCta: { text: "Join the Consortium", href: "/consortium" },
     secondaryCta: { text: "", href: "" },
-    isPublished: true,
+    isPublished: false,
     order: 6,
   },
   {
@@ -123,7 +141,7 @@ const initialSlides: HeroSlide[] = [
     benefits: ["Workshops & Training", "Networking Sessions", "Expert Panels"],
     primaryCta: { text: "View Events", href: "/events" },
     secondaryCta: { text: "Register Now", href: "/events/register" },
-    isPublished: true,
+    isPublished: false,
     order: 7,
   },
   {
@@ -135,8 +153,20 @@ const initialSlides: HeroSlide[] = [
     benefits: ["CMMC Guidance", "Cohort Learning", "Compliance Support"],
     primaryCta: { text: "Join Cohort", href: "/cmmc-cohort" },
     secondaryCta: { text: "Learn About CMMC", href: "/services/cmmc" },
-    isPublished: true,
+    isPublished: false,
     order: 8,
+  },
+  {
+    id: "9",
+    badge: "Government Contracting Excellence",
+    headline: "Strategic Value+",
+    highlightedText: "Partnership",
+    subheadline: "KDM & Associates and Strategic Value+ unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
+    benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
+    primaryCta: { text: "Learn More", href: "/about" },
+    secondaryCta: { text: "Contact Us", href: "/contact" },
+    isPublished: false,
+    order: 9,
   },
 ];
 
@@ -233,6 +263,35 @@ export default function HeroManagementPage() {
       setSlides(initialSlides);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const resetToDefaults = async () => {
+    if (!confirm("This will delete all existing slides and re-seed with the default slides including the HUBZone Council slide. Are you sure?")) {
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      // Delete all existing slides
+      const firebaseSlides = await getHeroSlides();
+      for (const slide of firebaseSlides) {
+        await deleteHeroSlide(slide.id);
+      }
+      
+      // Re-seed with initial slides
+      for (const slide of initialSlides) {
+        await saveHeroSlide(slide);
+      }
+      
+      // Reload slides
+      await loadSlidesFromFirebase();
+      toast.success("Slides reset to defaults successfully. HUBZone Council slide added.");
+    } catch (error) {
+      console.error("Failed to reset slides:", error);
+      toast.error("Failed to reset slides.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -431,10 +490,20 @@ export default function HeroManagementPage() {
             Manage the rotating hero slides on the homepage
           </p>
         </div>
-        <Button onClick={() => openWizard()}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Slide
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={resetToDefaults}
+            disabled={isSaving}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Reset to Defaults
+          </Button>
+          <Button onClick={() => openWizard()}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Slide
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -567,7 +636,7 @@ export default function HeroManagementPage() {
               {editingSlide ? "Edit Hero Slide" : "Create New Hero Slide"}
             </DialogTitle>
             <DialogDescription>
-              Step {wizardStep} of {wizardSteps.length}: {wizardSteps[wizardStep - 1].title}
+              Step {wizardStep} of {wizardSteps.length}: {wizardSteps[wizardStep - 1]?.title || 'Step ' + wizardStep}
             </DialogDescription>
           </DialogHeader>
 
@@ -1130,7 +1199,7 @@ export default function HeroManagementPage() {
               <ChevronLeft className="mr-2 h-4 w-4" />
               {wizardStep === 1 ? "Cancel" : "Back"}
             </Button>
-            {wizardStep < 6 ? (
+            {wizardStep < 4 ? (
               <Button onClick={() => setWizardStep(wizardStep + 1)}>
                 Next
                 <ChevronRight className="ml-2 h-4 w-4" />

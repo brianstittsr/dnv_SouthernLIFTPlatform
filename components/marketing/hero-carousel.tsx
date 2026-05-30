@@ -70,42 +70,115 @@ const defaultSlides: HeroSlide[] = [
     backgroundOverlay: true,
     backgroundOverlayOpacity: 60,
   },
+  // FORCE REBUILD - v2
   {
-    id: "0",
-    badge: "Strategic Partnership Announcement",
-    headline: "KDM & Associates",
+    id: "1",
+    badge: "Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence",
+    headline: "Win OEM Contracts.",
     middleLine: "&",
-    highlightedText: "Strategic Value+",
-    subheadline: "Two industry leaders unite to deliver unparalleled support for small businesses. Together, we combine operational excellence with government contracting expertise to accelerate your success.",
-    benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
-    primaryCta: { text: "Discover the Partnership", href: "/about" },
-    secondaryCta: { text: "Get Started", href: "/contact" },
+    highlightedText: "Transform",
+    subheadline: "We help small- and mid-sized U.S. manufacturers become qualified suppliers through ISO certification, operational readiness, and supplier development.",
+    benefits: ["OEM Supplier Qualification", "ISO/QMS Certification", "Industry 4.0 Ready"],
+    primaryCta: { text: "Get Your Free Assessment", href: "/contact" },
+    secondaryCta: { text: "See Success Stories", href: "/case-studies" },
     isPublished: true,
     order: 1,
   },
   {
-    id: "1",
-    badge: "MBDA Federal Procurement Center",
-    headline: "Powering Growth for",
-    highlightedText: "Diverse Businesses",
-    subheadline: "KDM & Associates focuses on best practices in government contracting. We call it \"What Works\" because it drives greater success for Small Businesses.",
-    benefits: ["Federal Contract Opportunities", "Strategic Teaming", "Government Introductions"],
-    primaryCta: { text: "Schedule Introductory Session", href: "/contact" },
-    secondaryCta: { text: "Learn More", href: "/about" },
+    id: "2",
+    badge: "V+ TwinEDGE™ — Digital Twin Solutions",
+    headline: "Visualize Your Factory.",
+    highlightedText: "Optimize",
+    subheadline: "Create digital replicas of your manufacturing processes to simulate, analyze, and improve operations before making costly physical changes.",
+    benefits: ["Real-time Monitoring", "Predictive Analytics", "Process Simulation"],
+    primaryCta: { text: "Explore Digital Twins", href: "/services/twinedge" },
+    secondaryCta: { text: "Watch Demo", href: "/demo" },
     isPublished: true,
     order: 2,
   },
   {
-    id: "2",
-    badge: "Government Contracting Services",
-    headline: "Build, Grow &",
-    highlightedText: "Scale",
-    subheadline: "We help small businesses navigate the government procurement process and win government contracts through strategic teaming and capacity building.",
-    benefits: ["8(a) & WOSB Guidance", "Mentor-Protégé Programs", "SBA Certifications"],
-    primaryCta: { text: "Get Started", href: "/contact" },
-    secondaryCta: { text: "View Services", href: "/services" },
+    id: "3",
+    badge: "V+ IntellEDGE™ — AI-Powered Insights",
+    headline: "Make Smarter Decisions.",
+    highlightedText: "Faster",
+    subheadline: "Leverage artificial intelligence to gain actionable insights from your manufacturing data, predict maintenance needs, and optimize production schedules.",
+    benefits: ["AI-Driven Analytics", "Predictive Maintenance", "Smart Scheduling"],
+    primaryCta: { text: "Discover AI Solutions", href: "/services/intelledge" },
+    secondaryCta: { text: "Learn More", href: "/about" },
     isPublished: true,
     order: 3,
+  },
+  {
+    id: "4",
+    badge: "Reshoring Initiative Partner",
+    headline: "Bring Manufacturing",
+    highlightedText: "Home",
+    subheadline: "Join the reshoring movement. We help companies navigate the complexities of bringing manufacturing back to the United States with comprehensive support.",
+    benefits: ["Supply Chain Security", "Quality Control", "Job Creation"],
+    primaryCta: { text: "Start Reshoring", href: "/services/reshoring" },
+    secondaryCta: { text: "View Case Studies", href: "/case-studies" },
+    isPublished: false,
+    order: 4,
+  },
+  {
+    id: "5",
+    badge: "KDM Insights & Resources",
+    headline: "Explore Our Latest Blogs",
+    highlightedText: "Blogs",
+    subheadline: "Stay informed with expert insights on government contracting, certifications, and business growth strategies. Our blog features practical advice from industry leaders.",
+    benefits: ["Expert Insights", "Industry Updates", "Practical Tips"],
+    primaryCta: { text: "Read Our Blog", href: "/blog" },
+    secondaryCta: { text: "", href: "" },
+    isPublished: false,
+    order: 5,
+  },
+  {
+    id: "6",
+    badge: "Join the KDM Network",
+    headline: "KDM Consortium",
+    highlightedText: "Consortium",
+    subheadline: "Connect with a powerful network of businesses, partners, and mentors. The KDM Consortium provides access to teaming opportunities, shared resources, and collaborative growth.",
+    benefits: ["Networking Events", "Teaming Opportunities", "Mentorship Programs"],
+    primaryCta: { text: "Join the Consortium", href: "/consortium" },
+    secondaryCta: { text: "", href: "" },
+    isPublished: false,
+    order: 6,
+  },
+  {
+    id: "7",
+    badge: "Upcoming Opportunities",
+    headline: "KDM Events",
+    highlightedText: "Events",
+    subheadline: "Attend workshops, webinars, and networking events designed to help you succeed in government contracting. Learn from experts and connect with potential partners.",
+    benefits: ["Workshops & Training", "Networking Sessions", "Expert Panels"],
+    primaryCta: { text: "View Events", href: "/events" },
+    secondaryCta: { text: "Register Now", href: "/events/register" },
+    isPublished: false,
+    order: 7,
+  },
+  {
+    id: "8",
+    badge: "Cybersecurity Certification",
+    headline: "Join Our CMMC Cohort",
+    highlightedText: "CMMC Cohort",
+    subheadline: "Prepare for CMMC certification with guided support. Our cohort program helps small businesses meet cybersecurity requirements for government contracts.",
+    benefits: ["CMMC Guidance", "Cohort Learning", "Compliance Support"],
+    primaryCta: { text: "Join Cohort", href: "/cmmc-cohort" },
+    secondaryCta: { text: "Learn About CMMC", href: "/services/cmmc" },
+    isPublished: false,
+    order: 8,
+  },
+  {
+    id: "9",
+    badge: "Government Contracting Excellence",
+    headline: "Strategic Value+",
+    highlightedText: "Partnership",
+    subheadline: "KDM & Associates and Strategic Value+ unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
+    benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
+    primaryCta: { text: "Learn More", href: "/about" },
+    secondaryCta: { text: "Contact Us", href: "/contact" },
+    isPublished: false,
+    order: 9,
   },
 ];
 
@@ -199,11 +272,11 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
         .map(s => s.backgroundImage || resolvedBgImages[slides.indexOf(s)])
         .filter(Boolean);
 
-      if (imagesToPreload.length > 0) {
+      if (imagesToPreload.length > 0 && typeof window !== 'undefined') {
         Promise.all(
           imagesToPreload.map(src => {
             return new Promise((resolve) => {
-              const img = new window.Image();
+              const img = document.createElement('img');
               img.onload = () => resolve(true);
               img.onerror = () => resolve(false);
               img.src = src!;
@@ -248,6 +321,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   const loadSlidesFromFirebase = async () => {
     try {
       setIsLoading(true);
+      
       // Add cache buster to ensure fresh data
       const timestamp = Date.now();
       sessionStorage.setItem("hero_slides_timestamp", timestamp.toString());
@@ -260,16 +334,19 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
         // Check if press release slide already exists in Firebase slides
         const hasPressRelease = firebaseSlides.some(s => s.id === "press-release-hubzone");
         
-        if (hasPressRelease || !pressReleaseSlide) {
-          // Use Firebase slides as-is if press release is already there or not found in defaults
+        if (hasPressRelease) {
+          // Use Firebase slides as-is if press release is already there
           setSlides(firebaseSlides);
-        } else {
+        } else if (pressReleaseSlide) {
           // Merge: add press release slide (order 0) and shift other slides
           const mergedSlides = [
             pressReleaseSlide,
             ...firebaseSlides.map(s => ({ ...s, order: s.order + 1 }))
-          ];
+          ].filter((s): s is HeroSlide => s !== undefined);
           setSlides(mergedSlides);
+        } else {
+          // No press release slide in defaults, use Firebase slides as-is
+          setSlides(firebaseSlides);
         }
       } else {
         // No Firebase slides, use defaults
@@ -317,9 +394,15 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
   const currentSlide = publishedSlides[currentIndex];
 
   // Resolve background image: use slide's own image, or pull from gallery by index
-  const resolvedBgImage =
-    currentSlide.backgroundImage ||
-    resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length];
+  const resolvedBgImage = 
+    (currentSlide.backgroundImage && currentSlide.backgroundImage.trim().length > 0 
+      ? currentSlide.backgroundImage 
+      : null) ||
+    (resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length] && 
+     resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length].trim().length > 0
+      ? resolvedBgImages[currentIndex % Object.keys(resolvedBgImages).length]
+      : null) ||
+    null;
 
   return (
     <>
