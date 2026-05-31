@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { StripeProductSync } from '@/../../scripts/sync-stripe-products';
+import { StripeProductSync } from '@/scripts/sync-stripe-products';
 
 /**
  * POST /api/admin/sync-stripe-products
