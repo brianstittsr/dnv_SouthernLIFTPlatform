@@ -56,6 +56,7 @@ import {
   ImageIcon,
   CheckCircle2,
   Link as LinkIcon,
+  Send,
 } from "lucide-react";
 import { 
   collection, 
@@ -383,6 +384,53 @@ export default function TeammembersPage() {
       await fetchMembers();
     } catch (error) {
       console.error("Error deleting member:", error);
+    }
+  };
+
+  // Resend welcome email
+  const handleResendWelcomeEmail = async (member: TeamMemberDoc) => {
+    if (!db) {
+      alert('Database not initialized');
+      return;
+    }
+
+    try {
+      const { auth } = await import('@/lib/firebase');
+      const token = auth?.currentUser?.getIdToken ? await auth.currentUser.getIdToken() : null;
+      
+      if (!token) {
+        alert('You must be logged in to perform this action');
+        return;
+      }
+
+      // Find the user ID from the users collection by email
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const userDoc = usersSnapshot.docs.find(doc => doc.data().email === member.emailPrimary);
+      
+      if (!userDoc) {
+        alert('User not found in users collection. They may need to sign up first.');
+        return;
+      }
+
+      const response = await fetch('/api/admin/resend-welcome-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: userDoc.id }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(`Welcome email resent successfully to ${member.emailPrimary}\nUsername: ${result.username}`);
+      } else {
+        alert(`Failed to resend email: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error resending welcome email:', error);
+      alert('Error resending welcome email. Check console for details.');
     }
   };
 
@@ -1329,6 +1377,14 @@ export default function TeammembersPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => handleResendWelcomeEmail(member)}
+                            title="Resend welcome email"
+                          >
+                            <Send className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleEditMember(member)}
                           >
                             <Pencil className="h-4 w-4" />
@@ -1434,6 +1490,14 @@ export default function TeammembersPage() {
                       title={isInSchedulingList(member.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
                     >
                       <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(member.id) ? "text-primary" : ""}`} />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleResendWelcomeEmail(member)}
+                      title="Resend welcome email"
+                    >
+                      <Send className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="outline"
