@@ -3,8 +3,8 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
-import { db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import {
   OnboardingWizard,
   WizardStep,
@@ -60,6 +60,9 @@ function OnboardingContent() {
     try {
       const updateData = userType === "sme" 
         ? {
+            email: profile.email,
+            firstName: smeFormData.contactName?.split(" ")[0] || "",
+            lastName: smeFormData.contactName?.split(" ").slice(1).join(" ") || "",
             company: smeFormData.companyName,
             dunsUei: smeFormData.dunsUei,
             cageCode: smeFormData.cageCode,
@@ -82,6 +85,9 @@ function OnboardingContent() {
             updatedAt: Timestamp.now(),
           }
         : {
+            email: profile.email,
+            firstName: "",
+            lastName: "",
             company: buyerFormData.agencyName,
             agencyType: buyerFormData.agencyType,
             officeDivision: buyerFormData.officeDivision,
@@ -104,7 +110,13 @@ function OnboardingContent() {
             updatedAt: Timestamp.now(),
           };
 
-      await updateDoc(doc(db, "users", profile.id), updateData);
+      // Use Firebase Auth UID for user document
+      const firebaseUid = auth?.currentUser?.uid;
+      const userId = firebaseUid || profile.id;
+      const userRef = doc(db, "users", userId);
+      
+      // Use setDoc with merge: true to create or update the document
+      await setDoc(userRef, updateData, { merge: true });
       
       toast.success("Welcome to the KDM Consortium!", {
         description: "Your profile is ready. Let's get started!",

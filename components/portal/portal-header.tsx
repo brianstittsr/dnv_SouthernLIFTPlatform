@@ -174,7 +174,7 @@ export function PortalHeader() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/portal/settings/profile">
+              <Link href="/portal/profile">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </Link>
