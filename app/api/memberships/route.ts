@@ -1,29 +1,31 @@
 /**
  * memberships API Route
- * 
+ *
  * Handles CRUD operations for KDM Consortium memberships
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  getDoc, 
-  addDoc, 
-  updateDoc, 
-  query, 
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  query,
   where,
   orderBy,
-  Timestamp 
+  Timestamp
 } from 'firebase/firestore';
 import { COLLECTIONS, MembershipDoc } from '@/lib/schema';
-import { 
-  createStripeCustomer, 
+import {
+  createStripeCustomer,
   createCheckoutSession,
-  memberSHIP_TIERS 
+  memberSHIP_TIERS
 } from '@/lib/stripe';
+import crypto from 'crypto';
+import { sendWelcomeEmail } from '@/lib/email-demo';
 
 /**
  * GET /api/memberships
@@ -82,15 +84,18 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      userId, 
-      email, 
-      name, 
+    const {
+      userId,
+      email,
+      name,
       tier = 'core-capture',
       billingCycle = 'monthly',
       trialDays,
       successUrl,
-      cancelUrl 
+      cancelUrl,
+      firstName,
+      lastName,
+      companyName
     } = body;
 
     if (!userId || !email || !name) {
@@ -131,8 +136,25 @@ export async function POST(request: NextRequest) {
       metadata: {
         tier,
         billingCycle,
+        firstName: firstName || '',
+        lastName: lastName || '',
+        companyName: companyName || '',
       },
     });
+
+    // Generate username and password from registration data
+    const tempPassword = crypto.randomBytes(12).toString('hex');
+    
+    let username: string;
+    if (firstName && lastName) {
+      username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
+    } else if (companyName) {
+      username = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    } else {
+      username = email.split('@')[0];
+    }
+    
+    username = username + Math.floor(Math.random() * 1000);
 
     // Create checkout session
     const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000';
@@ -143,6 +165,13 @@ export async function POST(request: NextRequest) {
       successUrl: successUrl || `${baseUrl}/portal/membership/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: cancelUrl || `${baseUrl}/portal/membership/cancel`,
       trialDays,
+      metadata: {
+        firstName: firstName || '',
+        lastName: lastName || '',
+        companyName: companyName || '',
+        username,
+        tempPassword,
+      },
     });
 
     // Create pending membership record

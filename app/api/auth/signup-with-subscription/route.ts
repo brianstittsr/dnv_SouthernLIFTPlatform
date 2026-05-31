@@ -7,7 +7,15 @@ import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, planId = 'consortium-monthly', paymentMethodId } = await req.json();
+    const { 
+      email, 
+      password, 
+      planId = 'consortium-monthly', 
+      paymentMethodId,
+      firstName,
+      lastName,
+      companyName 
+    } = await req.json();
 
     // Validate required fields
     if (!email || !password || !paymentMethodId) {
@@ -29,7 +37,7 @@ export async function POST(req: NextRequest) {
     // Create Stripe customer
     const customer = await createStripeCustomer({
       email,
-      name: email.split('@')[0],
+      name: firstName && lastName ? `${firstName} ${lastName}` : companyName || email.split('@')[0],
       userId: '', // Will be set after user creation
       metadata: { source: 'kdm-consortium-signup' }
     });
@@ -41,11 +49,23 @@ export async function POST(req: NextRequest) {
       billingCycle: 'monthly'
     });
 
-    // Generate temporary password and username
+    // Generate temporary password and username from registration data
     const tempPassword = crypto.randomBytes(12).toString('hex');
-    const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
     
-    // Create user record
+    // Generate username: firstName.lastName or companyName if available, otherwise email prefix
+    let username: string;
+    if (firstName && lastName) {
+      username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
+    } else if (companyName) {
+      username = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    } else {
+      username = email.split('@')[0];
+    }
+    
+    // Add random number to ensure uniqueness
+    username = username + Math.floor(Math.random() * 1000);
+    
+    // Create user record with registration data
     const userRef = await db.collection('users').add({
       email,
       username,
@@ -54,6 +74,9 @@ export async function POST(req: NextRequest) {
       profileComplete: false,
       onboardingStep: 0,
       hasChangedPassword: false,
+      firstName: firstName || null,
+      lastName: lastName || null,
+      companyName: companyName || null,
       subscription: {
         customerId: customer.id,
         subscriptionId: subscription.id,

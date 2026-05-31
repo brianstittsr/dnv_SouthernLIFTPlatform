@@ -56,6 +56,9 @@ export interface ProfileFormData {
 export interface CheckoutSessionRequest {
   plan: PlanType;
   userType: UserType;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
 }
 
 export interface CheckoutSessionResponse {

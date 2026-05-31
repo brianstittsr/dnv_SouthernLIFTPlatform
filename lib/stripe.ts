@@ -226,10 +226,11 @@ export async function createCheckoutSession(params: {
   successUrl: string;
   cancelUrl: string;
   trialDays?: number;
+  metadata?: Record<string, string>;
 }): Promise<Stripe.Checkout.Session> {
   const tierConfig = memberSHIP_TIERS[params.tier];
-  const price = params.billingCycle === 'monthly' 
-    ? tierConfig.monthlyPrice 
+  const price = params.billingCycle === 'monthly'
+    ? tierConfig.monthlyPrice
     : tierConfig.annualPrice;
 
   // Create a price for checkout
@@ -260,6 +261,7 @@ export async function createCheckoutSession(params: {
       metadata: {
         tier: params.tier,
         billingCycle: params.billingCycle,
+        ...params.metadata,
       },
     },
   });

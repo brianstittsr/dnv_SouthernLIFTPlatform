@@ -4,6 +4,7 @@ import { auth } from "@/lib/firebase-admin";
 import { db } from "@/lib/firebase-admin";
 import { CheckoutSessionRequest, BUYER_PRICING, SUPPLIER_PRICING } from "@/lib/types/consortium";
 import { Timestamp } from "firebase-admin/firestore";
+import crypto from "crypto";
 
 const DISCOUNT_DEADLINE = new Date("2026-04-30");
 
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
     const decodedToken = await auth.verifyIdToken(token);
 
     const body: CheckoutSessionRequest = await req.json();
-    const { plan, userType } = body;
+    const { plan, userType, firstName, lastName, companyName } = body;
 
     if (!plan || !userType) {
       return NextResponse.json(
@@ -98,12 +99,18 @@ export async function POST(req: NextRequest) {
         plan,
         membershipType: "consortium",
         discountApplied: discountCouponId ? "true" : "false",
+        firstName: firstName || "",
+        lastName: lastName || "",
+        companyName: companyName || "",
       },
       subscription_data: {
         metadata: {
           firebaseUid: decodedToken.uid,
           userType,
           plan,
+          firstName: firstName || "",
+          lastName: lastName || "",
+          companyName: companyName || "",
         },
       },
     };

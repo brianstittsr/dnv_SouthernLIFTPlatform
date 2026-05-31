@@ -3,6 +3,7 @@ import { getStripe, verifyWebhookSignature } from "@/lib/stripe";
 import { db } from "@/lib/firebase-admin";
 import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
+import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,24 +31,50 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const { firebaseUid, userType, plan } = session.metadata || {};
+        const { firebaseUid, userType, plan, firstName, lastName, companyName } = session.metadata || {};
 
         if (!firebaseUid) {
           console.error("Missing firebaseUid in session metadata");
           break;
         }
 
+        // Generate username and password from registration data
+        const tempPassword = crypto.randomBytes(12).toString('hex');
+        
+        let username: string;
+        if (firstName && lastName) {
+          username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
+        } else if (companyName) {
+          username = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        } else {
+          username = session.customer_email?.split('@')[0] || 'user';
+        }
+        
+        username = username + Math.floor(Math.random() * 1000);
+
+        // Update user with subscription info and generated credentials
         await db.collection("users").doc(firebaseUid).update({
           "stripe.customerId": session.customer,
           "stripe.subscriptionId": session.subscription,
           "stripe.subscriptionStatus": "active",
           "stripe.plan": plan,
+          username,
+          tempPassword,
+          isTempPassword: true,
+          hasChangedPassword: false,
+          firstName: firstName || null,
+          lastName: lastName || null,
+          companyName: companyName || null,
           paymentComplete: true,
           onboardingStatus: "active",
           updatedAt: Timestamp.now(),
         });
 
-        console.log(`Payment completed for user ${firebaseUid}`);
+        // Send welcome email with credentials
+        const { sendWelcomeEmail } = await import("@/lib/email-demo");
+        await sendWelcomeEmail(session.customer_email || "", username, tempPassword, firebaseUid);
+
+        console.log(`Payment completed for user ${firebaseUid}, credentials generated`);
         break;
       }
 

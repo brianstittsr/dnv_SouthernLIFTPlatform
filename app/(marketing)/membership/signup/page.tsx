@@ -95,6 +95,9 @@ function SignupForm() {
           tier,
           billingCycle: billing,
           trialDays: 14, // 14-day trial
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          companyName: formData.companyName,
         }),
       });
 
