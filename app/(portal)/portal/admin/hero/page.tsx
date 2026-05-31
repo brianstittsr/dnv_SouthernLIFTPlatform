@@ -340,11 +340,10 @@ export default function HeroManagementPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const newSlide: HeroSlide = {
+      const slideData: HeroSlide = {
         id: editingSlide?.id || Date.now().toString(),
         badge: formData.badge,
         headline: formData.headline,
-        middleLine: formData.middleLine || undefined,
         highlightedText: formData.highlightedText,
         subheadline: formData.subheadline,
         benefits: formData.benefits.filter(b => b.trim() !== ""),
@@ -358,16 +357,22 @@ export default function HeroManagementPage() {
         backgroundType: formData.backgroundType,
         backgroundImage: formData.backgroundImage,
         backgroundOverlay: formData.backgroundOverlay,
+        backgroundOverlayOpacity: formData.backgroundOverlayOpacity,
         showWaves: formData.showWaves,
         highlightOnSecondLine: formData.highlightOnSecondLine,
       };
 
-      await saveHeroSlide(newSlide);
+      // Only include middleLine if it has a value
+      if (formData.middleLine && formData.middleLine.trim() !== "") {
+        slideData.middleLine = formData.middleLine;
+      }
+
+      await saveHeroSlide(slideData);
 
       if (editingSlide) {
-        setSlides(slides.map(s => s.id === editingSlide.id ? newSlide : s));
+        setSlides(slides.map(s => s.id === editingSlide.id ? slideData : s));
       } else {
-        setSlides([...slides, newSlide]);
+        setSlides([...slides, slideData]);
       }
       toast.success(editingSlide ? "Slide updated" : "Slide created");
       closeWizard();
