@@ -43,11 +43,38 @@ This document describes the end-to-end user journeys for both Consortium Members
 
 **Step 2: Authentication**
 - Receives welcome email with temporary credentials
+- Email subject: "Welcome to KDM Consortium - Your Account is Ready"
 - Email contains:
-  - Auto-generated username
-  - Temporary password
-  - Login URL
+  - Auto-generated username (format: firstname.lastname + random number)
+  - Temporary password (24-character hex string)
+  - Login URL with demo parameter
+  - Warning that temporary password expires in 48 hours
+- **Email Content:**
+  ```
+  Subject: Welcome to KDM Consortium - Your Account is Ready
+  
+  Your Login Details:
+  - Email: [user's email]
+  - Username: [generated username]
+  - Temporary Password: [24-char hex password]
+  
+  Next Steps:
+  1. Login with your temporary password
+  2. Complete your business profile wizard
+  3. Add your NAICS codes and certifications
+  4. Start receiving AI-matched opportunities
+  5. Explore teaming partner recommendations
+  6. Test the proposal generation workflow
+  
+  Demo Features:
+  - Full platform access for 30 days
+  - AI-powered opportunity matching
+  - Teaming partner recommendations
+  - Simulated proposal generation
+  - No actual charges or commitments
+  ```
 - Logs in to portal for first time
+- Prompted to change temporary password on first login
 
 **Step 3: Membership Selection**
 - Selects membership tier (Core Capture, Elite, Standard)
@@ -64,27 +91,61 @@ This document describes the end-to-end user journeys for both Consortium Members
 **Step 1: Profile Completion**
 - Redirected to onboarding page (`/portal/onboarding`)
 - Completes SME or Buyer profile:
-  - Company information
-  - NAICS codes (up to 5)
-  - Certifications
-  - Core capabilities
-  - Past performance
-  - Contact preferences
-  - Geographic preferences
+  - Company information (name, address, city, state, zip)
+  - NAICS codes (up to 5 primary codes)
+  - Certifications (8(a), WOSB, SDVOSB, HUBZone, CMMC, MBE, etc.)
+  - Core capabilities and expertise areas
+  - Past performance (notable contracts delivered)
+  - Key differentiators
+  - Contact preferences (email, phone, portal messages)
+  - Geographic preferences (states/regions served)
+  - Contract size preferences (small, medium, large, any)
+  - Set-aside preferences (8(a), WOSB, SDVOSB, HUBZone)
+  - Teaming preferences (willing to prime, willing to sub, seeking partners)
 
 **Step 2: Consortium-Specific Onboarding**
 - Completes consortium onboarding wizard:
-  - Company description
-  - CEO biography
+  - Company description (2-3 sentence public pitch)
+  - CEO biography (separate from personal bio)
   - Company logo upload
-  - Consortium pillar focus selection
-  - Marketplace seller profile setup
-  - Government contracting profile (CAGE code, UEI, SAM registration)
+  - Consortium pillar focus selection (which of 5 pillars they serve)
+  - Marketplace seller profile setup:
+    - Seller-focused description
+    - Primary capabilities/categories
+    - Years in business
+    - Annual revenue range
+    - Employee count range
+    - Geographic service area
+  - Government contracting profile:
+    - CAGE code (for government contracts)
+    - UEI (Unique Entity ID from SAM.gov)
+    - SAM registration date
+    - SAM expiration date
+    - GSA Schedule holder status
+    - GSA Schedule numbers
+    - Preferred contract types (fixed-price, cost-plus, time-materials)
+    - Ideal partner profile description
 
-**Step 3: Dashboard Access**
+**Step 3: Government Contracting Readiness**
+- System validates government contracting profile completeness
+- Checks for required fields:
+  - At least one NAICS code
+  - At least one certification
+  - CAGE code (if applicable)
+  - UEI (if applicable)
+  - SAM registration status
+- Provides guidance if fields are missing:
+  - Links to SAM.gov registration
+  - Instructions for obtaining CAGE code
+  - Certification application resources
+- Calculates "government contracting readiness score"
+- Displays recommendations for improving competitiveness
+
+**Step 4: Dashboard Access**
 - Onboarding completion confirmed
 - Redirected to consortium dashboard (`/portal/consortium`)
 - Can now access all consortium features
+- AI-powered opportunity matching activated based on profile data
 
 ### 4. Platform Usage
 
@@ -185,18 +246,47 @@ This document describes the end-to-end user journeys for both Consortium Members
 
 **Step 2: Account Creation**
 - Submits registration with:
-  - Personal information
+  - Personal information (first name, last name)
   - Company information
   - Professional background
   - Areas of expertise
+  - Contact information
 
 **Step 3: Credential Generation**
 - System generates temporary credentials
 - Welcome email sent with:
-  - Username
-  - Temporary password
-  - Login instructions
+  - Email subject: "Welcome to KDM Consortium - Your Account is Ready"
+  - Auto-generated username (format: firstname.lastname + random number)
+  - Temporary password (24-character hex string)
+  - Login URL
+  - Warning that temporary password expires in 48 hours
+- **Email Content:**
+  ```
+  Subject: Welcome to KDM Consortium - Your Account is Ready
+  
+  Your Login Details:
+  - Email: [user's email]
+  - Username: [generated username]
+  - Temporary Password: [24-char hex password]
+  
+  Next Steps:
+  1. Login with your temporary password
+  2. Complete your business profile wizard
+  3. Add your NAICS codes and certifications
+  4. Start receiving AI-matched opportunities
+  5. Explore teaming partner recommendations
+  6. Test the proposal generation workflow
+  
+  Demo Features:
+  - Full platform access for 30 days
+  - AI-powered opportunity matching
+  - Teaming partner recommendations
+  - Simulated proposal generation
+  - No actual charges or commitments
+  ```
 - Added to team members collection with "founder" tag
+- Logs in to portal for first time
+- Prompted to change temporary password on first login
 
 ### 3. Onboarding
 
