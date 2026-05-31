@@ -14,6 +14,7 @@ import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { findAndLinkTeammember } from "@/lib/auth-team-member-link";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -113,9 +114,20 @@ export default function SignInPage() {
       if (userName) {
         sessionStorage.setItem("svp_user_name", userName);
       }
+
+      // Check if user needs to change password
+      const db = getFirestore();
+      const userDocRef = doc(db, "users", firebaseUid || email);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.data();
       
-      // Redirect to portal
-      router.push("/portal");
+      if (userData && !userData.hasChangedPassword) {
+        // Redirect to change password page
+        router.push("/change-password");
+      } else {
+        // Redirect to portal
+        router.push("/portal");
+      }
     } catch (err) {
       setError("An error occurred during sign in. Please try again.");
     } finally {
