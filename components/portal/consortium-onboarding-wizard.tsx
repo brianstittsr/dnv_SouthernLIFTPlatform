@@ -377,7 +377,12 @@ export function ConsortiumOnboardingWizard() {
           <ScrollArea className="h-[400px] pr-4">
             <div className="space-y-6">
               <div className="space-y-3">
-                <Label>NAICS Codes</Label>
+                <div className="flex justify-between items-center">
+                  <Label>NAICS Codes</Label>
+                  <Badge variant="outline">
+                    {formData.naicsCodes.length} / 5
+                  </Badge>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {formData.naicsCodes.map((code) => (
                     <Badge key={code} variant="secondary" className="gap-1">
@@ -394,10 +399,11 @@ export function ConsortiumOnboardingWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Add NAICS code (e.g. 541511)"
+                    disabled={formData.naicsCodes.length >= 5}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         const value = (e.target as HTMLInputElement).value.trim();
-                        if (value && !formData.naicsCodes.includes(value)) {
+                        if (value && !formData.naicsCodes.includes(value) && formData.naicsCodes.length < 5) {
                           toggleArrayItem("naicsCodes", value);
                           (e.target as HTMLInputElement).value = "";
                         }
@@ -405,6 +411,11 @@ export function ConsortiumOnboardingWizard() {
                     }}
                   />
                 </div>
+                {formData.naicsCodes.length >= 5 && (
+                  <p className="text-xs text-muted-foreground">
+                    Maximum of 5 NAICS codes reached. Remove a code to add another.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">

@@ -266,7 +266,7 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
   const [selectedNaics, setSelectedNaics] = useState("");
 
   const addPrimaryNaics = () => {
-    if (selectedNaics && !formData.primaryNaics.includes(selectedNaics)) {
+    if (selectedNaics && !formData.primaryNaics.includes(selectedNaics) && formData.primaryNaics.length < 5) {
       setFormData({
         ...formData,
         primaryNaics: [...formData.primaryNaics, selectedNaics],
@@ -282,15 +282,22 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
     });
   };
 
+  const maxCodesReached = formData.primaryNaics.length >= 5;
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label>Primary NAICS Codes *</Label>
+        <div className="flex justify-between items-center">
+          <Label>Primary NAICS Codes *</Label>
+          <Badge variant="outline">
+            {formData.primaryNaics.length} / 5
+          </Badge>
+        </div>
         <p className="text-sm text-muted-foreground">
           Select up to 5 primary NAICS codes that best describe your services
         </p>
         <div className="flex gap-2">
-          <Select value={selectedNaics} onValueChange={setSelectedNaics}>
+          <Select value={selectedNaics} onValueChange={setSelectedNaics} disabled={maxCodesReached}>
             <SelectTrigger className="flex-1">
               <SelectValue placeholder="Select NAICS code" />
             </SelectTrigger>
@@ -305,11 +312,16 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
           <Button
             type="button"
             onClick={addPrimaryNaics}
-            disabled={!selectedNaics || formData.primaryNaics.length >= 5}
+            disabled={!selectedNaics || maxCodesReached}
           >
             <Plus className="h-4 w-4" />
           </Button>
         </div>
+        {maxCodesReached && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Maximum of 5 NAICS codes reached. Remove a code to add another.
+          </p>
+        )}
         {formData.primaryNaics.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {formData.primaryNaics.map((code) => (
