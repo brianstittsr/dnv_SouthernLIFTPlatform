@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType } = require('docx');
+const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, TableOfContents } = require('docx');
 
 async function convertMarkdownToDocx() {
   try {
@@ -12,6 +12,8 @@ async function convertMarkdownToDocx() {
     
     let inCodeBlock = false;
     let codeBlockContent = [];
+    let tableRows = [];
+    let inTable = false;
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -51,6 +53,16 @@ async function convertMarkdownToDocx() {
       
       // Handle horizontal rules
       if (line.trim() === '---') {
+        // Flush any pending table
+        if (tableRows.length > 0) {
+          children.push(new Table({
+            rows: tableRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          }));
+          tableRows = [];
+          inTable = false;
+        }
+        
         children.push(new Paragraph({
           children: [new TextRun({ text: '', })],
           border: { bottom: { style: BorderStyle.SINGLE, size: 1 } },
@@ -61,6 +73,16 @@ async function convertMarkdownToDocx() {
       
       // Handle headings
       if (line.startsWith('### ')) {
+        // Flush any pending table
+        if (tableRows.length > 0) {
+          children.push(new Table({
+            rows: tableRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          }));
+          tableRows = [];
+          inTable = false;
+        }
+        
         children.push(new Paragraph({
           children: [new TextRun({
             text: line.replace('### ', ''),
@@ -74,6 +96,16 @@ async function convertMarkdownToDocx() {
       }
       
       if (line.startsWith('## ')) {
+        // Flush any pending table
+        if (tableRows.length > 0) {
+          children.push(new Table({
+            rows: tableRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          }));
+          tableRows = [];
+          inTable = false;
+        }
+        
         children.push(new Paragraph({
           children: [new TextRun({
             text: line.replace('## ', ''),
@@ -87,6 +119,16 @@ async function convertMarkdownToDocx() {
       }
       
       if (line.startsWith('# ')) {
+        // Flush any pending table
+        if (tableRows.length > 0) {
+          children.push(new Table({
+            rows: tableRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          }));
+          tableRows = [];
+          inTable = false;
+        }
+        
         children.push(new Paragraph({
           children: [new TextRun({
             text: line.replace('# ', ''),
@@ -101,27 +143,50 @@ async function convertMarkdownToDocx() {
         continue;
       }
       
-      // Handle tables (simplified)
+      // Handle tables
       if (line.startsWith('|')) {
         const cells = line.split('|').filter(c => c.trim() !== '');
-        if (cells.length > 1 && !line.includes('---')) {
-          // This is a table row
+        
+        // Skip separator lines
+        if (line.includes('---')) {
+          continue;
+        }
+        
+        if (cells.length > 1) {
+          inTable = true;
           const tableCells = cells.map(cell => 
             new TableCell({
               children: [new Paragraph({
-                children: [new TextRun({ text: cell.trim(), size: 22 })],
+                children: [new TextRun({ 
+                  text: cell.trim(), 
+                  size: 22,
+                  bold: tableRows.length === 0 // Bold header row
+                })],
               })],
-              width: { size: 25, type: WidthType.PERCENTAGE },
-              shading: { fill: 'FFFFFF' },
+              width: { size: 100 / cells.length, type: WidthType.PERCENTAGE },
+              shading: { fill: tableRows.length === 0 ? 'E8E8E8' : 'FFFFFF' },
               verticalAlign: 'center',
+              margins: { top: 100, bottom: 100, left: 100, right: 100 },
             })
           );
           
-          children.push(new TableRow({
+          tableRows.push(new TableRow({
             children: tableCells,
           }));
         }
         continue;
+      }
+      
+      // Flush table if we're leaving it
+      if (inTable && !line.startsWith('|')) {
+        if (tableRows.length > 0) {
+          children.push(new Table({
+            rows: tableRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          }));
+          tableRows = [];
+          inTable = false;
+        }
       }
       
       // Handle bullet points
@@ -176,6 +241,14 @@ async function convertMarkdownToDocx() {
           spacing: { before: 200, after: 200 },
         }));
       }
+    }
+    
+    // Flush any remaining table
+    if (tableRows.length > 0) {
+      children.push(new Table({
+        rows: tableRows,
+        width: { size: 100, type: WidthType.PERCENTAGE },
+      }));
     }
     
     // Create the document
