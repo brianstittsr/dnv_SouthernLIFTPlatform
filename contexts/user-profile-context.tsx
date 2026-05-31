@@ -24,6 +24,11 @@ export interface UserProfile {
   // SVP Platform role
   svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor";
   
+  // Onboarding fields
+  isOnboardingComplete?: boolean;
+  primaryNaics?: string[];
+  certifications?: string[];
+  
   // Affiliate-specific fields
   isAffiliate: boolean;
   affiliateOnboardingComplete: boolean;

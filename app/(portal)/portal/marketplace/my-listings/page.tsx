@@ -23,12 +23,15 @@ import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { COLLECTIONS, type MarketPlaceListingDoc } from "@/lib/schema";
 import { auth } from "@/lib/firebase";
 import { toast } from "sonner";
+import { MarketplaceListingForm } from "@/components/marketplace/marketplace-listing-form";
 
 export default function MyListingsPage() {
   const router = useRouter();
   const [listings, setListings] = useState<MarketPlaceListingDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingListing, setEditingListing] = useState<MarketPlaceListingDoc | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth?.onAuthStateChanged((user) => {
@@ -144,11 +147,9 @@ export default function MyListingsPage() {
 
       {/* Quick Actions */}
       <div className="flex gap-2">
-        <Button asChild>
-          <Link href="/portal/marketplace/my-listings/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Create New Listing
-          </Link>
+        <Button onClick={() => { setEditingListing(null); setFormOpen(true); }}>
+          <Plus className="mr-2 h-4 w-4" />
+          Create New Listing
         </Button>
         <Button variant="outline" asChild>
           <Link href="/portal/marketplace/analytics">
@@ -196,11 +197,9 @@ export default function MyListingsPage() {
                       : "Get started by creating your first marketplace listing."}
                   </p>
                   {tab !== "archived" && (
-                    <Button className="mt-4" asChild>
-                      <Link href="/portal/marketplace/my-listings/new">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Create Listing
-                      </Link>
+                    <Button className="mt-4" onClick={() => { setEditingListing(null); setFormOpen(true); }}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Listing
                     </Button>
                   )}
                 </CardContent>
@@ -255,10 +254,8 @@ export default function MyListingsPage() {
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
-                            <Button variant="ghost" size="sm" asChild>
-                              <Link href={`/portal/marketplace/my-listings/${listing.id}/edit`}>
-                                <Edit className="h-4 w-4" />
-                              </Link>
+                            <Button variant="ghost" size="sm" onClick={() => { setEditingListing(listing); setFormOpen(true); }}>
+                              <Edit className="h-4 w-4" />
                             </Button>
                             {listing.status !== "archived" && (
                               <Button variant="ghost" size="sm">
@@ -275,6 +272,16 @@ export default function MyListingsPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      {/* Marketplace Listing Form Dialog */}
+      <MarketplaceListingForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSuccess={() => {
+          if (currentUserId) fetchMyListings(currentUserId);
+        }}
+        editingListing={editingListing}
+      />
     </div>
   );
 }
