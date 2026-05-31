@@ -126,7 +126,7 @@ const defaultSlides: HeroSlide[] = [
     headline: "Stay Ahead with",
     highlightedText: "KDM Insights",
     subheadline: "Access expert analysis on government contracting, CMMC certification, and business growth strategies. Our blog delivers actionable insights from industry leaders to help you win more contracts.",
-    benefits: ["Expert Insights", "Industry Updates", "Practical Tips"],
+    benefits: ["CMMC Certification Guides", "Contracting Strategy Tips", "Industry Trend Analysis"],
     primaryCta: { text: "Read Our Blog", href: "/blog" },
     secondaryCta: { text: "", href: "" },
     isPublished: false,
