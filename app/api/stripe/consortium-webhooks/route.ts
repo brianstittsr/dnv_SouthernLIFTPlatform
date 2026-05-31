@@ -4,6 +4,7 @@ import { db } from "@/lib/firebase-admin";
 import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
 import crypto from "crypto";
+import { COLLECTIONS } from "@/lib/schema";
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,6 +70,43 @@ export async function POST(req: NextRequest) {
           onboardingStatus: "active",
           updatedAt: Timestamp.now(),
         });
+
+        // If this is a consortium member registration, add to consortium members collection
+        if (userType === "consortium") {
+          await db.collection(COLLECTIONS.CONSORTIUM_MEMBERS).add({
+            firebaseUid,
+            firstName: firstName || "",
+            lastName: lastName || "",
+            emailPrimary: session.customer_email || "",
+            company: companyName || "",
+            membershipTier: plan === "core-capture" ? "core-capture" : "standard",
+            membershipStatus: "active",
+            subscriptionId: session.subscription as string,
+            onboardingComplete: false,
+            consortiumOnboardingComplete: false,
+            expertise: "",
+            tags: ["kdm-consortium"],
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
+          console.log(`Consortium member created for ${firebaseUid}`);
+        } else {
+          // This is a founder registration, add to team members collection
+          await db.collection(COLLECTIONS.TEAM_MEMBERS).add({
+            firebaseUid,
+            firstName: firstName || "",
+            lastName: lastName || "",
+            emailPrimary: session.customer_email || "",
+            company: companyName || "",
+            role: "affiliate",
+            status: "active",
+            expertise: "",
+            tags: ["founder"],
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
+          console.log(`Founder added to team members for ${firebaseUid}`);
+        }
 
         // Send welcome email with credentials
         const { sendWelcomeEmail } = await import("@/lib/email-demo");

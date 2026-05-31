@@ -608,60 +608,41 @@ export interface TeamMemberDoc {
   isClient?: boolean; // Can this affiliate/team Member also be served as a client?
   clientSince?: Timestamp; // When they became a client
   clientNotes?: string; // Notes about them as a client
-  // Mattermost integration
-  mattermostUserId?: string; // Links to Mattermost user ID for playbook assignments
-  // Multi-tag support (replaces/extends single teamTag)
-  tags?: string[]; // e.g. ["kdm-consortium", "affiliate", "leadership"]
-  // Consortium-specific profile fields
-  companyName?: string; // Display name for company
-  companyDescription?: string; // Public company pitch (2-3 sentences)
-  ceoBio?: string; // CEO biography separate from personal bio
-  companyLogo?: string; // URL or base64 for company logo
-  naicsCodes?: string[]; // NAICS codes for capability matching
-  certifications?: string[]; // ["8(a)", "WOSB", "SDVOSB", "HUBZone", "CMMC", "MBE"]
-  consortiumPillarFocus?: string[]; // Which of 5 pillars they serve
+  // Tags for categorization
+  tags?: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Consortium Member document in Firestore */
+export interface ConsortiumMemberDoc {
+  id: string;
+  firebaseUid?: string; // Links to Firebase Auth user UID
+  firstName: string;
+  lastName: string;
+  emailPrimary: string;
+  emailSecondary?: string;
+  mobile?: string;
+  expertise: string;
+  title?: string;
+  company?: string;
+  location?: string;
+  bio?: string;
+  avatar?: string;
+  linkedIn?: string;
+  website?: string;
+  // Consortium-specific fields
+  membershipTier?: "core-capture" | "elite" | "standard";
+  membershipStatus: "active" | "inactive" | "pending" | "suspended";
+  subscriptionId?: string; // Stripe subscription ID
+  onboardingComplete?: boolean;
   consortiumOnboardingComplete?: boolean;
-  consortiumJoinedAt?: Timestamp;
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
-  // Marketplace seller profile fields
-  isMarketplaceSeller?: boolean;
-  marketplaceBio?: string;      // Seller-focused description
-  marketplaceCategories?: string[];  // Primary capabilities
-  yearsInBusiness?: number;
-  annualRevenueRange?: string;  // "$1M-$5M", "$5M-$25M", etc.
-  employeeCountRange?: string;  // "1-10", "11-50", "51-200", "200+"
-  pastPerformance?: PastPerformanceEntry[];  // Notable contracts delivered
-  
-  // Enhanced Government Contracting Profile Fields
-  cageCode?: string;                    // CAGE code for government contracts
-  uei?: string;                         // Unique Entity ID (SAM)
-  samRegistrationDate?: Timestamp;      // When registered in SAM.gov
-  samExpirationDate?: Timestamp;          // SAM registration expiration
-  gsaScheduleHolder?: boolean;            // Has GSA Schedule
-  gsaScheduleNumbers?: string[];          // GSA Schedule numbers
-  
-  // Contracting preferences
-  preferredContractTypes?: string[];     // "fixed-price", "cost-plus", "time-materials"
-  contractSizePreference?: string;      // "small", "medium", "large", "any"
-  geographicPreference?: string[];      // Preferred states/regions
-  setAsidePreferences?: string[];        // "8(a)", "WOSB", "SDVOSB", "HUBZone"
-  
-  // Teaming preferences
-  seekingPartners?: boolean;             // Actively looking for teammates
-  willingToPrime?: boolean;             // Willing to act as prime contractor
-  willingToSub?: boolean;               // Willing to act as subcontractor
-  idealPartnerProfile?: string;          // Description of ideal teaming partners
-  
-  // Profile visibility settings
-  profileVisibility?: "public" | "consortium-only" | "members-only";
-  allowDirectContact?: boolean;           // Allow other members to contact directly
-  contactPreferences?: {
-    email: boolean;
-    phone: boolean;
-    portalMessages: boolean;
-  };
-  
+  // NAICS codes and certifications
+  naicsCodes?: string[];
+  certifications?: string[];
+  consortiumPillarFocus?: string[];
+  // Tags for categorization
+  tags?: string[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -2130,6 +2111,7 @@ export const COLLECTIONS = {
   EOS_CORE_VALUES: "eosCoreValues",
   // KDM Consortium Platform Collections
   MEMBERSHIPS: "memberships",
+  CONSORTIUM_MEMBERS: "consortiumMembers",
   TICKETS: "tickets",
   PROMO_CODES: "promoCodes",
   SPONSORS: "sponsors",
@@ -2296,6 +2278,9 @@ export const strategicPartnersCollection = () => getCollection<StrategicPartnerD
 
 // Team Members collection reference
 export const teamMembersCollection = () => getCollection<TeamMemberDoc>(COLLECTIONS.TEAM_MEMBERS);
+
+// Consortium Members collection reference
+export const consortiumMembersCollection = () => getCollection<ConsortiumMemberDoc>(COLLECTIONS.CONSORTIUM_MEMBERS);
 
 // Platform Settings collection reference
 export const platformSettingsCollection = () => getCollection<PlatformSettingsDoc>(COLLECTIONS.PLATFORM_SETTINGS);

@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/portal/payment`,
       metadata: {
         firebaseUid: decodedToken.uid,
-        userType,
+        userType: "consortium", // Always consortium for this checkout route
         plan,
         membershipType: "consortium",
         discountApplied: discountCouponId ? "true" : "false",
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       subscription_data: {
         metadata: {
           firebaseUid: decodedToken.uid,
-          userType,
+          userType: "consortium", // Always consortium for this checkout route
           plan,
           firstName: firstName || "",
           lastName: lastName || "",
