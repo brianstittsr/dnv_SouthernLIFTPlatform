@@ -53,6 +53,9 @@ function CheckoutForm({
     confirmPassword: "",
   });
 
+  // Determine if this is a SetupIntent (subscription) or PaymentIntent (one-time)
+  const isSetupIntent = subscriptionId?.startsWith('seti_') || false;
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -123,28 +126,42 @@ function CheckoutForm({
         return;
       }
 
-      // Use confirmCardSetup for SetupIntent (seti_) - avoids elements/sessions API
-      console.log("confirmCardSetup clientSecret prefix:", subscriptionId?.substring(0, 25));
-      const { error, setupIntent } = await stripe.confirmCardSetup(
-        subscriptionId!, // clientSecret passed via subscriptionId prop in this context
-        { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
-      );
-      confirmError = error || null;
-      if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
-        intentId = setupIntent.id;
-        const subResponse = await fetch("/api/checkout/confirm-subscription", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            setupIntentId: setupIntent.id,
-            paymentMethodId: setupIntent.payment_method,
-            email: formData.email,
-          }),
-        });
-        if (!subResponse.ok) {
-          const subError = await subResponse.json();
-          console.error("Subscription creation failed:", subError);
-          throw new Error(subError.error || "Payment processing failed. Please try again.");
+      // Use appropriate confirmation method based on intent type
+      if (isSetupIntent) {
+        // SetupIntent for subscription payments
+        console.log("Using confirmCardSetup for SetupIntent:", subscriptionId?.substring(0, 25));
+        const { error, setupIntent } = await stripe.confirmCardSetup(
+          subscriptionId!,
+          { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
+        );
+        confirmError = error || null;
+        if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
+          intentId = setupIntent.id;
+          const subResponse = await fetch("/api/checkout/confirm-subscription", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              setupIntentId: setupIntent.id,
+              paymentMethodId: setupIntent.payment_method,
+              email: formData.email,
+            }),
+          });
+          if (!subResponse.ok) {
+            const subError = await subResponse.json();
+            console.error("Subscription creation failed:", subError);
+            throw new Error(subError.error || "Payment processing failed. Please try again.");
+          }
+        }
+      } else {
+        // PaymentIntent for one-time payments (e.g., CMMC cohort)
+        console.log("Using confirmCardPayment for PaymentIntent:", subscriptionId?.substring(0, 25));
+        const { error, paymentIntent } = await stripe.confirmCardPayment(
+          subscriptionId!,
+          { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
+        );
+        confirmError = error || null;
+        if (paymentIntent?.status === "succeeded") {
+          intentId = paymentIntent.id;
         }
       }
 
