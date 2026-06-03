@@ -7,9 +7,25 @@
  * Make sure you're using Stripe Test Mode (not Live Mode)
  * 
  * Run with: node scripts/test-founders-payment.js
+ * 
+ * Or set the key inline:
+ * STRIPE_SECRET_KEY=sk_test_xxx node scripts/test-founders-payment.js
  */
 
 const Stripe = require('stripe');
+
+// Check for environment variable
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('Error: STRIPE_SECRET_KEY environment variable is not set.');
+  console.error('\nTo run this test, set your Stripe secret key:');
+  console.error('  Windows PowerShell: $env:STRIPE_SECRET_KEY="sk_test_your_key_here"');
+  console.error('  Windows CMD: set STRIPE_SECRET_KEY=sk_test_your_key_here');
+  console.error('  Linux/Mac: export STRIPE_SECRET_KEY=sk_test_your_key_here');
+  console.error('\nOr run inline:');
+  console.error('  STRIPE_SECRET_KEY=sk_test_your_key_here node scripts/test-founders-payment.js');
+  console.error('\nMake sure you use a TEST key (starts with sk_test_) not a LIVE key.');
+  process.exit(1);
+}
 
 // Initialize Stripe with test mode
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
