@@ -173,9 +173,6 @@ importers:
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      stripe:
-        specifier: ^20.1.0
-        version: 20.4.0(@types/node@20.19.35)
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.5.0
@@ -231,6 +228,9 @@ importers:
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
+      stripe:
+        specifier: ^20.1.0
+        version: 20.4.0(@types/node@20.19.35)
       tailwindcss:
         specifier: ^4
         version: 4.2.1
