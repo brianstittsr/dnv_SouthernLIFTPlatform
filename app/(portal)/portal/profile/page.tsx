@@ -502,7 +502,7 @@ export default function ProfilePage() {
 
       {/* Tabbed Content - Only show relevant tabs */}
       <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full">
+        <TabsList className="grid grid-cols-4 w-full">
           <TabsTrigger value="basic" className="text-xs sm:text-sm">
             <User className="h-4 w-4 mr-1 hidden sm:inline" />
             Basic Info
@@ -510,6 +510,10 @@ export default function ProfilePage() {
           <TabsTrigger value="professional" className="text-xs sm:text-sm">
             <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
             Professional
+          </TabsTrigger>
+          <TabsTrigger value="onboarding" className="text-xs sm:text-sm">
+            <CheckCircle className="h-4 w-4 mr-1 hidden sm:inline" />
+            Onboarding
           </TabsTrigger>
           <TabsTrigger value="contacts" className="text-xs sm:text-sm">
             <Users className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -724,6 +728,115 @@ export default function ProfilePage() {
         {/* Contacts Tab */}
         <TabsContent value="contacts" className="space-y-6">
           <ContactsTab />
+        </TabsContent>
+
+        {/* Onboarding Tab */}
+        <TabsContent value="onboarding" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Onboarding Status</CardTitle>
+              <CardDescription>Your onboarding progress and completion status</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">Onboarding Status</p>
+                    <p className="text-sm text-muted-foreground">
+                      {userProfile.onboardingStatus === "completed" 
+                        ? "Completed" 
+                        : userProfile.onboardingStatus === "in_progress"
+                        ? "In Progress"
+                        : "Not Started"}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={userProfile.onboardingStatus === "completed" ? "default" : "secondary"}>
+                  {userProfile.onboardingStatus || "Not Started"}
+                </Badge>
+              </div>
+
+              {userProfile.onboardingType && (
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Briefcase className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-medium">Onboarding Type</p>
+                      <p className="text-sm text-muted-foreground capitalize">
+                        {userProfile.onboardingType}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {userProfile.onboardingStartedAt && (
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-medium">Started On</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(userProfile.onboardingStartedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {userProfile.onboardingCompletedAt && (
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                    <div>
+                      <p className="font-medium">Completed On</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(userProfile.onboardingCompletedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {userProfile.onboardingStatus !== "completed" && (
+                <Button className="w-full">
+                  <Play className="mr-2 h-4 w-4" />
+                  {userProfile.onboardingStatus === "in_progress" ? "Continue Onboarding" : "Start Onboarding"}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Onboarding Checklist</CardTitle>
+              <CardDescription>Track your onboarding progress</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[
+                  { label: "Complete Profile Information", completed: true },
+                  { label: "Upload Company Logo", completed: userProfile.avatarUrl ? true : false },
+                  { label: "Add Contact Information", completed: userProfile.phone ? true : false },
+                  { label: "Select Expertise Areas", completed: profile.expertise.length > 0 },
+                  { label: "Add Certifications", completed: profile.certifications.length > 0 },
+                  { label: "Review Platform Guidelines", completed: false },
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 rounded-lg border">
+                    <div className={`h-5 w-5 rounded-full flex items-center justify-center ${
+                      item.completed ? "bg-green-600" : "bg-muted"
+                    }`}>
+                      {item.completed && <CheckCircle className="h-3 w-3 text-white" />}
+                    </div>
+                    <span className={item.completed ? "text-foreground" : "text-muted-foreground"}>
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Professional Info Tab */}

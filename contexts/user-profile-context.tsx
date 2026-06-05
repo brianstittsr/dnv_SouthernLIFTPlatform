@@ -26,6 +26,10 @@ export interface UserProfile {
   
   // Onboarding fields
   isOnboardingComplete?: boolean;
+  onboardingStatus?: "not_started" | "in_progress" | "completed" | "skipped";
+  onboardingType?: "consortium" | "affiliate" | "founder";
+  onboardingStartedAt?: string;
+  onboardingCompletedAt?: string;
   primaryNaics?: string[];
   certifications?: string[];
   
