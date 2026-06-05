@@ -31,6 +31,7 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
 
 interface User {
   uid: string;
@@ -53,6 +54,9 @@ export default function OnboardingManagementPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [triggeringUser, setTriggeringUser] = useState<string | null>(null);
+  const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedOnboardingType, setSelectedOnboardingType] = useState<"consortium" | "affiliate" | "founder">("consortium");
 
   useEffect(() => {
     loadUsers();
@@ -144,35 +148,29 @@ export default function OnboardingManagementPage() {
   };
 
   const triggerOnboarding = async (userId: string, onboardingType: string) => {
-    setTriggeringUser(userId);
-    try {
-      // In production, this would:
-      // 1. Update user's onboarding status in Firestore
-      // 2. Send email notification with onboarding link
-      // 3. Set onboardingStartedAt timestamp
-      
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Update local state
+    setSelectedUserId(userId);
+    setSelectedOnboardingType(onboardingType as "consortium" | "affiliate" | "founder");
+    setOnboardingModalOpen(true);
+  };
+
+  const handleOnboardingComplete = () => {
+    setOnboardingModalOpen(false);
+    if (selectedUserId) {
       setUsers(
         users.map((user) =>
-          user.uid === userId
+          user.uid === selectedUserId
             ? {
                 ...user,
                 onboardingStatus: "in_progress",
-                onboardingType: onboardingType as any,
+                onboardingType: selectedOnboardingType,
                 onboardingStartedAt: new Date().toISOString(),
               }
             : user
         )
       );
-      
       toast.success(`Onboarding triggered for user`);
-    } catch (error) {
-      toast.error("Failed to trigger onboarding");
-    } finally {
-      setTriggeringUser(null);
     }
+    setSelectedUserId(null);
   };
 
   const getStatusBadge = (status?: string) => {
@@ -345,6 +343,16 @@ export default function OnboardingManagementPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Onboarding Modal */}
+      {selectedUserId && (
+        <ConsortiumOnboardingModal
+          open={onboardingModalOpen}
+          onOpenChange={setOnboardingModalOpen}
+          userType={selectedOnboardingType === "consortium" ? "supplier" : "buyer"}
+          userId={selectedUserId}
+        />
+      )}
     </div>
   );
 }

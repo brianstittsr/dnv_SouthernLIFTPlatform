@@ -85,6 +85,7 @@ import { USER_ROLES } from "@/lib/rbac-types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ContactsTab from "./contacts-tab";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
+import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
@@ -232,6 +233,7 @@ export default function ProfilePage() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
 
   // Sync profile state with userProfile context when it loads
   useEffect(() => {
@@ -800,7 +802,7 @@ export default function ProfilePage() {
               )}
 
               {userProfile.onboardingStatus !== "completed" && (
-                <Button className="w-full">
+                <Button className="w-full" onClick={() => setOnboardingModalOpen(true)}>
                   <Play className="mr-2 h-4 w-4" />
                   {userProfile.onboardingStatus === "in_progress" ? "Continue Onboarding" : "Start Onboarding"}
                 </Button>
@@ -1681,6 +1683,16 @@ export default function ProfilePage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Onboarding Modal */}
+      {userProfile.id && (
+        <ConsortiumOnboardingModal
+          open={onboardingModalOpen}
+          onOpenChange={setOnboardingModalOpen}
+          userType="supplier"
+          userId={userProfile.id}
+        />
+      )}
     </div>
   );
 }
