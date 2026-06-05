@@ -658,6 +658,45 @@ const svpAdminItems = [
   },
 ];
 
+// Consortium Member Navigation
+const consortiumMemberItems = [
+  {
+    title: "Profile",
+    href: "/portal/profile",
+    icon: User,
+  },
+  {
+    title: "Dashboard",
+    href: "/portal/consortium/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Onboarding",
+    href: "/portal/consortium/onboarding",
+    icon: UserPlus,
+  },
+  {
+    title: "Opportunities",
+    href: "/portal/opportunities/sam-gov",
+    icon: Target,
+  },
+  {
+    title: "Proposals",
+    href: "/portal/proposals",
+    icon: FileText,
+  },
+  {
+    title: "Teaming",
+    href: "/portal/teaming",
+    icon: Handshake,
+  },
+  {
+    title: "Communications",
+    href: "/portal/communications",
+    icon: MessageSquare,
+  },
+];
+
 const aiItems = [
   {
     title: "Ask IntellEDGE",
@@ -681,19 +720,21 @@ const AVAILABLE_ROLES = [
   { value: "buyer", label: "SVP Buyer" },
   { value: "qa_reviewer", label: "SVP QA Reviewer" },
   { value: "cmmc_instructor", label: "SVP CMMC Instructor" },
+  { value: "consortium_member", label: "KDM Consortium Member" },
 ];
 
 // Define which sections are visible for each SVP role
 const SVP_ROLE_SECTIONS: Record<string, string[]> = {
   // Regular admin sees all SVP sections
-  admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin"],
+  admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin", "consortiumMember"],
   // SVP Platform Admin sees all sections
-  platform_admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin"],
+  platform_admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin", "consortiumMember"],
   sme_user: ["svpSme"],
   partner_user: ["svpPartner"],
   buyer: ["svpBuyer"],
   qa_reviewer: ["svpQa"],
   cmmc_instructor: ["svpInstructor", "svpSme"],
+  consortium_member: ["consortiumMember"],
 };
 
 // Export all nav items for use in settings
@@ -710,6 +751,7 @@ export const ALL_NAV_ITEMS = [
   ...svpQaItems.map(item => ({ ...item, section: "SVP - QA" })),
   ...svpInstructorItems.map(item => ({ ...item, section: "SVP - Instructor" })),
   ...svpAdminItems.map(item => ({ ...item, section: "SVP - Admin" })),
+  ...consortiumMemberItems.map(item => ({ ...item, section: "Consortium Member" })),
 ];
 
 export function PortalSidebar() {
@@ -851,6 +893,7 @@ export function PortalSidebar() {
     svpQa: true,
     svpInstructor: true,
     svpAdmin: true,
+    consortiumMember: true,
     // Other sections - grouped under OTHER
     other: false,
     navigation: false,
@@ -877,6 +920,7 @@ export function PortalSidebar() {
         svpQa: true,
         svpInstructor: true,
         svpAdmin: true,
+        consortiumMember: true,
       }));
     }
   }, [searchQuery]);
@@ -1227,6 +1271,56 @@ export function PortalSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {filterNavItemsBySearch(svpAdminItems).map((item) => {
+                    const hidden = isItemHidden(item.href);
+                    return (
+                      <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                          tooltip={item.title}
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="h-4 w-4" />
+                            <span>{item.title}</span>
+                            {hidden && isAdmin && !previewRole && (
+                              <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                            )}
+                          </Link>
+                        </SidebarMenuButton>
+                        {item.badge && !hidden && (
+                          <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+        {/* Consortium Member Section */}
+        {isSvpSectionVisible("consortiumMember") && (!searchQuery.trim() || sectionHasMatchingItems(consortiumMemberItems)) && (
+        <Collapsible open={openSections.consortiumMember} onOpenChange={() => toggleSection("consortiumMember")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="h-3 w-3 text-amber-500" />
+                  Consortium Member
+                </span>
+                {openSections.consortiumMember ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItemsBySearch(consortiumMemberItems).map((item) => {
                     const hidden = isItemHidden(item.href);
                     return (
                       <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>

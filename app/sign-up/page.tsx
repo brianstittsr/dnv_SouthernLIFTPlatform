@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark, Sparkles } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { findAndLinkTeammember } from "@/lib/auth-team-member-link";
@@ -21,7 +21,7 @@ import { doc, setDoc, Timestamp } from "firebase/firestore";
 export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "">("");
+  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "consortium_member" | "">("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -99,6 +99,8 @@ export default function SignUpPage() {
             await setDoc(userRef, {
               email: email,
               accountType: accountType,
+              role: accountType === "consortium_member" ? "consortium_member" : "team_member",
+              svpRole: accountType === "consortium_member" ? "consortium_member" : undefined,
               createdAt: now,
               updatedAt: now,
               profileComplete: false,
@@ -139,6 +141,8 @@ export default function SignUpPage() {
       // Redirect based on account type
       if (accountType === "buyer") {
         router.push("/portal/buyer/dashboard");
+      } else if (accountType === "consortium_member") {
+        router.push("/portal");
       } else if (accountType === "client") {
         router.push("/portal");
       } else {
@@ -215,7 +219,7 @@ export default function SignUpPage() {
               <div className="space-y-4">
                 <RadioGroup
                   value={accountType}
-                  onValueChange={(value) => setAccountType(value as "buyer" | "client")}
+                  onValueChange={(value) => setAccountType(value as "buyer" | "client" | "consortium_member")}
                   className="space-y-4"
                 >
                   <div 
@@ -272,6 +276,35 @@ export default function SignUpPage() {
                         <li>• Supplier qualification and CMMC certification programs</li>
                         <li>• Manufacturing assessments and Industry 4.0 support</li>
                         <li>• Connect with government buyers and prime contractors</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div 
+                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      accountType === "consortium_member" 
+                        ? "border-[#C8A951] bg-[#C8A951]/5" 
+                        : "border-muted hover:border-muted-foreground/50"
+                    }`}
+                    onClick={() => setAccountType("consortium_member")}
+                  >
+                    <RadioGroupItem value="consortium_member" id="consortium_member" className="mt-1" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 text-[#C8A951]" />
+                        <Label htmlFor="consortium_member" className="text-lg font-semibold cursor-pointer">
+                          KDM Consortium Member
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Join the KDM Consortium to access exclusive opportunities, teaming partnerships, and government contracting resources. 
+                        Connect with other consortium members and leverage collective capabilities to win federal contracts.
+                      </p>
+                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                        <li>• Access to SAM.gov opportunities with teaming features</li>
+                        <li>• Proposals and teaming collaboration tools</li>
+                        <li>• In-platform communications with partners</li>
+                        <li>• Dashboard and onboarding support</li>
                       </ul>
                     </div>
                   </div>
