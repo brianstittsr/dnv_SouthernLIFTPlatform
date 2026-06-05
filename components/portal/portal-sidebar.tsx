@@ -1354,7 +1354,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
-        {(!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
+        {effectiveRole !== "consortium_member" && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
