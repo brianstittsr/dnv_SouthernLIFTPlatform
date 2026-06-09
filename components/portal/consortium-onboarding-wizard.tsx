@@ -28,6 +28,7 @@ import {
   Target,
   CheckCircle,
   ChevronRight,
+  FileText,
   ChevronLeft,
   Briefcase,
   Award,
@@ -35,7 +36,15 @@ import {
   Linkedin,
   Upload,
   Loader2,
+  X,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CERTIFICATIONS = [
   { id: "8a", label: "8(a)" },
@@ -44,6 +53,49 @@ const CERTIFICATIONS = [
   { id: "wosb", label: "WOSB" },
   { id: "cmmc", label: "CMMC" },
   { id: "mbe", label: "MBE" },
+];
+
+const COMMON_NAICS_CODES = [
+  { code: "332710", description: "Machine Shops" },
+  { code: "332810", description: "Coating, Engraving, Heat Treating" },
+  { code: "333120", description: "Commercial Air Conditioning" },
+  { code: "333131", description: "Industrial Machinery Manufacturing" },
+  { code: "333511", description: "Industrial Mold Manufacturing" },
+  { code: "336411", description: "Aircraft Manufacturing" },
+  { code: "336413", description: "Aircraft Engine and Engine Parts" },
+  { code: "541330", description: "Engineering Services" },
+  { code: "541511", description: "Custom Computer Programming" },
+  { code: "541512", description: "Computer Systems Design" },
+  { code: "541611", description: "Administrative Management" },
+  { code: "541690", description: "Other Scientific and Technical Consulting" },
+  { code: "541712", description: "Research and Development in Physical Sciences" },
+  { code: "562910", description: "Remediation and Other Waste Management" },
+  { code: "236220", description: "Commercial and Institutional Building" },
+  { code: "237310", description: "Highway, Street, and Bridge Construction" },
+  { code: "237990", description: "Heavy and Civil Engineering Construction" },
+  { code: "541330", description: "Engineering Services" },
+  { code: "541512", description: "Computer Systems Design" },
+  { code: "541519", description: "Other Computer Related Services" },
+  { code: "541611", description: "Administrative Management" },
+  { code: "541612", description: "Human Resources Consulting" },
+  { code: "541618", description: "Other Management Consulting" },
+  { code: "541690", description: "Other Scientific and Technical Consulting" },
+  { code: "541712", description: "Research and Development in Physical Sciences" },
+  { code: "541715", description: "Research and Development in Life Sciences" },
+  { code: "541720", description: "Research and Development in Social Sciences" },
+  { code: "541990", description: "All Other Professional Services" },
+  { code: "561110", description: "Office Administrative Services" },
+  { code: "561210", description: "Facilities Support Services" },
+  { code: "561320", description: "Temporary Help Services" },
+  { code: "561410", description: "Document Preparation Services" },
+  { code: "561430", description: "Business Support Services" },
+  { code: "561490", description: "Other Professional Services" },
+  { code: "561710", description: "Travel Agencies" },
+  { code: "561720", description: "Tour Operators" },
+  { code: "561730", description: "Convention and Trade Show Organizers" },
+  { code: "561740", description: "Event Promotion" },
+  { code: "561790", description: "Other Travel Arrangement" },
+  { code: "561990", description: "All Other Support Services" },
 ];
 
 const PILLARS = [
@@ -67,6 +119,16 @@ interface FormData {
   naicsCodes: string[];
   certifications: string[];
   pillarFocus: string[];
+  // Stage 4: Readiness Documents
+  readinessDocuments: {
+    type: "sam_registration" | "duns_number" | "cage_code" | "capability_statement" | "past_performance" | "certifications" | "financials" | "insurance" | "other";
+    fileName: string;
+    fileUrl: string;
+  }[];
+  // Stage 5: Matching Preferences
+  targetContractSizes: string[];
+  targetAgencies: string[];
+  targetRegions: string[];
 }
 
 export function ConsortiumOnboardingWizard() {
@@ -89,6 +151,10 @@ export function ConsortiumOnboardingWizard() {
     naicsCodes: [],
     certifications: [],
     pillarFocus: [],
+    readinessDocuments: [],
+    targetContractSizes: [],
+    targetAgencies: [],
+    targetRegions: [],
   });
 
   // Check if user is a consortium member who needs onboarding
@@ -97,25 +163,47 @@ export function ConsortiumOnboardingWizard() {
       if (!db || !profile.email) return;
 
       try {
-        // Find team member by email
+        // Check if user has consortium_member svpRole
+        const isConsortiumMember = profile.svpRole === "consortium_member";
+        
+        if (!isConsortiumMember) return;
+
+        // Check if onboarding is already complete in user document
+        const userDocRef = doc(db, "users", profile.id);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        let onboardingComplete = false;
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          onboardingComplete = userData.consortiumOnboardingComplete === true;
+        }
+
+        // Also check team member document if it exists
         const teamMembersRef = doc(db, COLLECTIONS.TEAM_MEMBERS, profile.id);
         const teamMemberSnap = await getDoc(teamMembersRef);
 
         if (teamMemberSnap.exists()) {
           const data = teamMemberSnap.data();
-          const isConsortiumMember = data.tags?.includes("kdm-consortium");
-          const onboardingComplete = data.consortiumOnboardingComplete;
+          onboardingComplete = onboardingComplete || data.consortiumOnboardingComplete === true;
+          setTeamMemberId(teamMemberSnap.id);
+          setFormData((prev) => ({
+            ...prev,
+            firstName: data.firstName || profile.firstName || "",
+            lastName: data.lastName || profile.lastName || "",
+            avatar: data.avatar || profile.avatarUrl || "",
+          }));
+        } else {
+          // Pre-fill from profile if no team member exists
+          setFormData((prev) => ({
+            ...prev,
+            firstName: profile.firstName || "",
+            lastName: profile.lastName || "",
+            avatar: profile.avatarUrl || "",
+          }));
+        }
 
-          if (isConsortiumMember && !onboardingComplete) {
-            setTeamMemberId(teamMemberSnap.id);
-            setFormData((prev) => ({
-              ...prev,
-              firstName: data.firstName || profile.firstName || "",
-              lastName: data.lastName || profile.lastName || "",
-              avatar: data.avatar || profile.avatarUrl || "",
-            }));
-            setIsOpen(true);
-          }
+        if (isConsortiumMember && !onboardingComplete) {
+          setIsOpen(true);
         }
       } catch (error) {
         console.error("Error checking onboarding status:", error);
@@ -168,7 +256,11 @@ export function ConsortiumOnboardingWizard() {
         return true;
       case 3: // Capabilities - optional
         return true;
-      case 4: // Review - always valid
+      case 4: // Readiness - optional for now
+        return true;
+      case 5: // Matching - optional for now
+        return true;
+      case 6: // Review - always valid
         return true;
       default:
         return true;
@@ -181,6 +273,14 @@ export function ConsortiumOnboardingWizard() {
     setLoading(true);
     try {
       const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, teamMemberId);
+      
+      // Prepare readiness documents with timestamps
+      const readinessDocumentsWithTimestamps = formData.readinessDocuments.map(doc => ({
+        ...doc,
+        uploadedAt: Timestamp.now(),
+        status: "pending" as const,
+      }));
+
       await updateDoc(teamMemberRef, {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -195,15 +295,40 @@ export function ConsortiumOnboardingWizard() {
         certifications: formData.certifications,
         consortiumPillarFocus: formData.pillarFocus,
         consortiumOnboardingComplete: true,
+        // Set onboarding stage to "readiness" (Stage 4)
+        onboardingStage: "readiness",
+        onboardingStageStartedAt: Timestamp.now(),
+        // Save readiness documents
+        readinessDocuments: readinessDocumentsWithTimestamps,
+        readinessValidationStatus: formData.readinessDocuments.length > 0 ? "in_progress" : "not_started",
+        // Save matching preferences
+        matchingPreferences: {
+          targetContractSizes: formData.targetContractSizes,
+          targetAgencies: formData.targetAgencies,
+          targetRegions: formData.targetRegions,
+          preferredPartnerships: [],
+        },
+        // Initialize performance metrics
+        performanceMetrics: {
+          totalOpportunitiesViewed: 0,
+          totalPartnershipsInitiated: 0,
+          totalProposalsSubmitted: 0,
+          totalContractsWon: 0,
+          totalContractValue: 0,
+          averageResponseTime: 0,
+          partnershipSuccessRate: 0,
+          lastActivityAt: Timestamp.now(),
+        },
+        engagementScore: 0,
         updatedAt: Timestamp.now(),
       });
 
       toast.success("Welcome to the KDM Consortium!", {
-        description: "Your profile is complete and ready for matching.",
+        description: "Your profile is complete. Next step: Upload government contracting documentation.",
       });
 
       setIsOpen(false);
-      router.push("/portal/consortium");
+      router.push("/portal/consortium/onboarding");
     } catch (error) {
       console.error("Error completing onboarding:", error);
       toast.error("Failed to save your profile. Please try again.");
@@ -217,6 +342,8 @@ export function ConsortiumOnboardingWizard() {
     { id: "profile", title: "CEO Profile", description: "Tell us about yourself" },
     { id: "company", title: "Company Info", description: "Your company details" },
     { id: "capabilities", title: "Capabilities", description: "What you bring" },
+    { id: "readiness", title: "Readiness Validation", description: "Government contracting documentation" },
+    { id: "matching", title: "AI Matching Setup", description: "Configure your matching preferences" },
     { id: "review", title: "Review", description: "Review and submit" },
   ];
 
@@ -391,14 +518,35 @@ export function ConsortiumOnboardingWizard() {
                         onClick={() => toggleArrayItem("naicsCodes", code)}
                         className="ml-1 hover:text-red-500"
                       >
-                        ×
+                        <X className="h-3 w-3" />
                       </button>
                     </Badge>
                   ))}
                 </div>
                 <div className="flex gap-2">
+                  <Select
+                    disabled={formData.naicsCodes.length >= 5}
+                    onValueChange={(value) => {
+                      if (!formData.naicsCodes.includes(value) && formData.naicsCodes.length < 5) {
+                        toggleArrayItem("naicsCodes", value);
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select NAICS code" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COMMON_NAICS_CODES
+                        .filter((naics) => !formData.naicsCodes.includes(naics.code))
+                        .map((naics) => (
+                          <SelectItem key={naics.code} value={naics.code}>
+                            {naics.code} - {naics.description}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                   <Input
-                    placeholder="Add NAICS code (e.g. 541511)"
+                    placeholder="Or enter custom code"
                     disabled={formData.naicsCodes.length >= 5}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -466,6 +614,171 @@ export function ConsortiumOnboardingWizard() {
         );
 
       case 4:
+        // Stage 4: Government Contracting Readiness Validation
+        return (
+          <ScrollArea className="h-[400px] pr-4">
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <Award className="h-12 w-12 text-amber-600 mx-auto mb-2" />
+                <h3 className="text-xl font-semibold">Government Contracting Readiness</h3>
+                <p className="text-sm text-muted-foreground">
+                  Upload documentation to validate your government contracting readiness
+                </p>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm text-amber-900">
+                  <strong>Required Documents:</strong> SAM Registration, DUNS Number, and CAGE Code are required for government contracting.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Upload Documents</Label>
+                <p className="text-sm text-muted-foreground">
+                  Upload your government contracting documentation. You can skip this step and upload later.
+                </p>
+                
+                <div className="grid gap-3">
+                  {[
+                    { type: "sam_registration", label: "SAM Registration", required: true },
+                    { type: "duns_number", label: "DUNS Number", required: true },
+                    { type: "cage_code", label: "CAGE Code", required: true },
+                    { type: "capability_statement", label: "Capability Statement", required: false },
+                    { type: "past_performance", label: "Past Performance References", required: false },
+                    { type: "certifications", label: "Certifications (CMMC, ISO, etc.)", required: false },
+                    { type: "financials", label: "Financial Statements", required: false },
+                    { type: "insurance", label: "Insurance Certificates", required: false },
+                  ].map((doc) => (
+                    <div key={doc.type} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="text-sm font-medium">{doc.label}</p>
+                          {doc.required && <p className="text-xs text-red-600">Required</p>}
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Note:</strong> Documents will be reviewed by KDM staff. You'll be notified once your readiness is validated.
+                </p>
+              </div>
+            </div>
+          </ScrollArea>
+        );
+
+      case 5:
+        // Stage 5: Capability Categorization & AI Matching Activation
+        return (
+          <ScrollArea className="h-[400px] pr-4">
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <Target className="h-12 w-12 text-amber-600 mx-auto mb-2" />
+                <h3 className="text-xl font-semibold">AI Matching Setup</h3>
+                <p className="text-sm text-muted-foreground">
+                  Configure your preferences for AI-powered opportunity matching
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Target Contract Sizes</Label>
+                <p className="text-sm text-muted-foreground">Select the contract sizes you're interested in:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "$0-100K",
+                    "$100K-500K",
+                    "$500K-1M",
+                    "$1M-5M",
+                    "$5M-10M",
+                    "$10M+",
+                  ].map((size) => (
+                    <div key={size} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`size-${size}`}
+                        checked={formData.targetContractSizes.includes(size)}
+                        onCheckedChange={() => toggleArrayItem("targetContractSizes" as any, size)}
+                      />
+                      <Label htmlFor={`size-${size}`} className="text-sm font-normal cursor-pointer">
+                        {size}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Target Agencies</Label>
+                <p className="text-sm text-muted-foreground">Select agencies you want to work with:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "DoD",
+                    "Department of State",
+                    "Department of Energy",
+                    "NASA",
+                    "Department of Homeland Security",
+                    "Department of Transportation",
+                    "VA",
+                    "GSA",
+                  ].map((agency) => (
+                    <div key={agency} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`agency-${agency}`}
+                        checked={formData.targetAgencies.includes(agency)}
+                        onCheckedChange={() => toggleArrayItem("targetAgencies" as any, agency)}
+                      />
+                      <Label htmlFor={`agency-${agency}`} className="text-sm font-normal cursor-pointer">
+                        {agency}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label>Target Regions</Label>
+                <p className="text-sm text-muted-foreground">Select geographic regions you can serve:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "National",
+                    "Northeast",
+                    "Southeast",
+                    "Midwest",
+                    "Southwest",
+                    "West",
+                    "International",
+                  ].map((region) => (
+                    <div key={region} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`region-${region}`}
+                        checked={formData.targetRegions.includes(region)}
+                        onCheckedChange={() => toggleArrayItem("targetRegions" as any, region)}
+                      />
+                      <Label htmlFor={`region-${region}`} className="text-sm font-normal cursor-pointer">
+                        {region}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm text-amber-900">
+                  <strong>AI Matching:</strong> Once activated, our AI will match you with relevant opportunities based on your capabilities, certifications, and preferences.
+                </p>
+              </div>
+            </div>
+          </ScrollArea>
+        );
+
+      case 6:
         return (
           <div className="space-y-4">
             <h3 className="font-semibold">Review Your Profile</h3>

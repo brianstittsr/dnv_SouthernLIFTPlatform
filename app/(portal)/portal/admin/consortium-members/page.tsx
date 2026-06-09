@@ -80,7 +80,7 @@ export default function ConsortiumMembersPage() {
     bio: "",
     linkedIn: "",
     website: "",
-    membershipTier: "core-capture" as "core-capture" | "elite" | "standard",
+    membershipTier: "core-capture" as "founder" | "core-capture" | "elite" | "standard",
     membershipStatus: "active" as "active" | "inactive" | "pending" | "suspended",
     tags: [] as string[],
   });

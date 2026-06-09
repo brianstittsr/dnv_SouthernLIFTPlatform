@@ -19,10 +19,10 @@ export interface UserProfile {
   location: string;
   bio: string;
   avatarUrl: string;
-  role: "admin" | "affiliate" | "customer" | "team_member";
+  role: "admin" | "affiliate" | "customer" | "team_member" | "consortium_member";
   
   // SVP Platform role
-  svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor";
+  svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member";
   
   // Onboarding fields
   isOnboardingComplete?: boolean;
@@ -349,13 +349,18 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       return;
     }
     
+    // Consortium members should not see the SME profile wizard - they have their own onboarding
+    if (profile.svpRole === "consortium_member") {
+      return;
+    }
+    
     // Only show profile wizard if profiles are not synced (incomplete or mismatched)
     if (!profilesSynced) {
       setShowProfileWizard(true);
     } else if (needsOnboarding) {
       setShowAffiliateOnboarding(true);
     }
-  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeammember]);
+  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeammember, profile.svpRole]);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setProfile((prev) => ({

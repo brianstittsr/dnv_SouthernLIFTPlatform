@@ -32,7 +32,11 @@ import {
   Wrench,
   Clock,
   FileText,
+  ShoppingCart,
+  Truck,
+  DollarSign,
 } from "lucide-react";
+import { useCart } from "@/contexts/cart-context";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, addDoc, Timestamp, updateDoc, collection } from "firebase/firestore";
 import { auth } from "@/lib/firebase";
@@ -43,6 +47,7 @@ export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const listingId = params.id as string;
+  const { addItem } = useCart();
 
   const [listing, setListing] = useState<MarketPlaceListingDoc | null>(null);
   const [seller, setSeller] = useState<TeamMemberDoc | null>(null);
@@ -53,6 +58,7 @@ export default function ListingDetailPage() {
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquirySubject, setInquirySubject] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const unsubscribe = auth?.onAuthStateChanged((user) => {
@@ -200,6 +206,28 @@ export default function ListingDetailPage() {
       default:
         return null;
     }
+  };
+
+  const handleAddToCart = () => {
+    if (!listing) return;
+    
+    addItem({
+      id: listing.id,
+      type: listing.listingType as "service" | "product" | "subscription",
+      title: listing.title,
+      price: (listing as any).basePrice || (listing as any).price || 0,
+      priceUnit: (listing as any).priceUnit || "per unit",
+      seller: listing.sellerCompanyName,
+      sellerId: listing.sellerId,
+      image: listing.images?.[0],
+    });
+    
+    toast.success(`Added ${listing.title} to cart`);
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push("/portal/marketplace/checkout");
   };
 
   if (loading) {
@@ -391,9 +419,9 @@ export default function ListingDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
-                {seller?.companyLogo ? (
+                {(seller as any)?.companyLogo ? (
                   <img
-                    src={seller.companyLogo}
+                    src={(seller as any).companyLogo}
                     alt={listing.sellerCompanyName}
                     className="h-12 w-12 rounded-lg object-cover"
                   />
@@ -406,23 +434,57 @@ export default function ListingDetailPage() {
                   <div className="font-semibold">{listing.sellerCompanyName}</div>
                   {seller && (
                     <div className="text-sm text-muted-foreground">
-                      {seller.yearsInBusiness && `${seller.yearsInBusiness} years in business`}
+                      {(seller as any)?.yearsInBusiness && `${(seller as any).yearsInBusiness} years in business`}
                     </div>
                   )}
                 </div>
               </div>
 
-              {seller?.companyDescription && (
-                <p className="text-sm text-muted-foreground">{seller.companyDescription}</p>
+              {(seller as any)?.companyDescription && (
+                <p className="text-sm text-muted-foreground">{(seller as any).companyDescription}</p>
               )}
 
               {seller?.website && (
                 <Button variant="outline" size="sm" className="w-full" asChild>
-                  <a href={seller.website} target="_blank" rel="noopener noreferrer">
+                  <a href={(seller as any).website} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Visit Website
                   </a>
                 </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Pricing Card */}
+          <Card className="border-2 border-primary">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Pricing
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-center">
+                <div className="text-3xl font-bold">
+                  ${((listing as any).basePrice || (listing as any).price || 0).toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {(listing as any).priceUnit || "per unit"}
+                </div>
+              </div>
+              
+              {(listing as any).deliveryMode && (
+                <div className="flex items-center gap-2 text-sm bg-muted p-2 rounded">
+                  <Truck className="h-4 w-4 text-muted-foreground" />
+                  <span>{(listing as any).deliveryMode}</span>
+                </div>
+              )}
+              
+              {(listing as any).deliveryTimeline && (
+                <div className="text-xs text-muted-foreground">
+                  <Clock className="inline h-3 w-3 mr-1" />
+                  Delivery: {(listing as any).deliveryTimeline}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -445,10 +507,20 @@ export default function ListingDetailPage() {
 
           {/* Actions */}
           {!isOwner && (
-            <Button className="w-full" onClick={() => setInquiryOpen(true)}>
-              <MessageSquare className="mr-2 h-4 w-4" />
-              Express Interest
-            </Button>
+            <>
+              <Button className="w-full" size="lg" onClick={handleBuyNow}>
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Buy Now
+              </Button>
+              <Button variant="outline" className="w-full" onClick={handleAddToCart}>
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Add to Cart
+              </Button>
+              <Button variant="secondary" className="w-full" onClick={() => setInquiryOpen(true)}>
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Express Interest
+              </Button>
+            </>
           )}
 
           {isOwner && (

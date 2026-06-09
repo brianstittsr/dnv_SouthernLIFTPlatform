@@ -26,8 +26,11 @@ import {
   Users,
   Handshake,
   RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
+import { AIMatchingDisplay } from "@/components/consortium/matching/AIMatchingDisplay";
+import { useUserProfile } from "@/contexts/user-profile-context";
 
 interface Opportunity {
   id: string;
@@ -130,6 +133,7 @@ const mockSAMOpportunities: Opportunity[] = [
 ];
 
 export default function SAMOpportunitiesPage() {
+  const { profile } = useUserProfile();
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [filteredOpportunities, setFilteredOpportunities] = useState<Opportunity[]>([]);
   const [useMockData, setUseMockData] = useState(true);
@@ -137,6 +141,10 @@ export default function SAMOpportunitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [agencyFilter, setAgencyFilter] = useState<string>("all");
   const [setAsideFilter, setSetAsideFilter] = useState<string>("all");
+  const [showAIMatching, setShowAIMatching] = useState(false);
+  const [aiMatches, setAiMatches] = useState<any[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
 
   useEffect(() => {
     loadOpportunities();
@@ -199,15 +207,51 @@ export default function SAMOpportunitiesPage() {
             : opp
         )
       );
-      
+
       const opportunity = opportunities.find((opp) => opp.id === opportunityId);
       if (opportunity?.interestedInTeaming) {
         toast.success("Flagged for teaming - other partners can now see your interest");
       } else {
-        toast.success("Teaming flag removed");
+        toast.info("Teaming flag removed");
       }
     } catch (error) {
       toast.error("Failed to update teaming interest");
+    }
+  };
+
+  const handleAIMatching = async (opportunity: Opportunity) => {
+    if (!profile?.id) {
+      toast.error("You must be logged in to use AI matching");
+      return;
+    }
+
+    setSelectedOpportunity(opportunity);
+    setShowAIMatching(true);
+    setAiLoading(true);
+
+    try {
+      const response = await fetch("/api/consortium/matching/opportunity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          opportunity: {
+            id: opportunity.id,
+            title: opportunity.title,
+            description: opportunity.description,
+            naicsCodes: opportunity.naicsCodes,
+            setAside: opportunity.setAside,
+          },
+          options: { threshold: 50, limit: 10 },
+        }),
+      });
+
+      const data = await response.json();
+      setAiMatches(data.matches || []);
+      toast.success(`Found ${data.matches?.length || 0} matching partners`);
+    } catch (error) {
+      toast.error("Failed to get AI matches");
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -295,7 +339,7 @@ export default function SAMOpportunitiesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
-                  {setAsides.map((type) => (
+                  {setAsides.filter((type: string | undefined): type is string => type !== undefined).map((type: string) => (
                     <SelectItem key={type} value={type}>
                       {type}
                     </SelectItem>
@@ -435,6 +479,17 @@ export default function SAMOpportunitiesPage() {
 
                     {/* Actions */}
                     <div className="flex flex-col gap-2">
+                      {profile?.role === "consortium_member" && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleAIMatching(opportunity)}
+                          className="bg-purple-600 hover:bg-purple-700"
+                        >
+                          <Sparkles className="h-4 w-4 mr-1" />
+                          AI Match Partners
+                        </Button>
+                      )}
                       <Button variant="outline" size="sm">
                         <ExternalLink className="h-4 w-4 mr-1" />
                         View on SAM.gov
@@ -447,6 +502,22 @@ export default function SAMOpportunitiesPage() {
           })
         )}
       </div>
+
+      {/* AI Matching Display */}
+      {showAIMatching && (
+        <div className="mt-6">
+          <AIMatchingDisplay
+            opportunityMatches={aiMatches}
+            loading={aiLoading}
+            onContactPartner={(partnerId) => {
+              toast.info(`Contact partner ${partnerId}`);
+            }}
+            onViewProfile={(partnerId) => {
+              toast.info(`View profile ${partnerId}`);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

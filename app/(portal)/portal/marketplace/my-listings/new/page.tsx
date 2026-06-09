@@ -114,6 +114,11 @@ export default function CreateListingPage() {
   const [geographicArea, setGeographicArea] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
 
+  // Consolidated: this route now redirects to the canonical listing wizard
+  useEffect(() => {
+    router.replace("/portal/marketplace/create-listing/wizard");
+  }, [router]);
+
   useEffect(() => {
     const loadCurrentUser = async () => {
       const user = auth?.currentUser;
@@ -126,7 +131,7 @@ export default function CreateListingPage() {
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
-          const data = snap.docs[0].data() as TeamMemberDoc;
+          const data = snap.docs[0].data() as TeamMemberDoc & { naicsCodes?: string[]; certifications?: string[] };
           setCurrentUser({ ...data, id: snap.docs[0].id });
           // Pre-populate with user's data
           if (data.naicsCodes) setSelectedNaicsCodes(data.naicsCodes);
@@ -181,8 +186,8 @@ export default function CreateListingPage() {
     try {
       const listingData: Omit<MarketPlaceListingDoc, "id"> = {
         sellerId: currentUser.id,
-        sellerCompanyName: currentUser.companyName || currentUser.company || "",
-        sellerLogo: currentUser.companyLogo || currentUser.avatar || "",
+        sellerCompanyName: currentUser.company || "",
+        sellerLogo: currentUser.avatar || "",
         listingType,
         title,
         description,
@@ -228,6 +233,14 @@ export default function CreateListingPage() {
 
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
+  // Redirecting to the canonical wizard; render nothing meaningful here
+  return (
+    <div className="mx-auto max-w-3xl py-12 text-center text-muted-foreground">
+      Redirecting to the listing wizard...
+    </div>
+  );
+
+  // eslint-disable-next-line no-unreachable
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Header */}

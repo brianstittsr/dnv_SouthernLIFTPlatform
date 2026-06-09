@@ -298,6 +298,12 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Home Page Settings - public read for site display, admin write
+    match /homePageSettings/{settingsId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Partner payouts - payout records and history
     match /partnerPayouts/{payoutId} {
       allow read: if isAuthenticated();
@@ -316,6 +322,12 @@ service cloud.firestore {
     // Hero slides - public read and write for testing
     match /hero_slides/{slideId} {
       allow read, write: if true;
+    }
+    
+    // Hero images - public read for display, admin write
+    match /hero_images/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
     
     // Consortium hero slides - public read for marketing page
@@ -391,6 +403,106 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // ==================== CONSORTIUM INTELLIGENCE PLATFORM ====================
+    // Consortium profiles - authenticated read for members, admin write
+    match /consortium_profiles/{profileId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == profileId || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == profileId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == profileId || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    // Teaming communications - participants can read their own
+    match /teaming_communications/{commId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.fromUserId == request.auth.uid || 
+         resource.data.toUserId == request.auth.uid || 
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.fromUserId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    // Proposals - proposal owner and team can read
+    match /proposals/{proposalId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.partnerId == request.auth.uid || 
+         resource.data.primeContractor == request.auth.uid || 
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.partnerId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    // Pricing tiers - public read for display, admin write
+    match /pricing_tiers/{tierId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Promotional prices - public read for display, admin write
+    match /promotional_prices/{promoId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Marketplace categories - public read, admin write
+    match /marketplaceCategories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Marketplace listings - public read for active listings, authenticated users can create
+    match /marketplaceListings/{listingId} {
+      // Public read for active listings (filtered in app)
+      allow read: if true;
+      // Authenticated users can create listings
+      allow create: if isAuthenticated();
+      // Listing owner or admin can update
+      allow update: if isAuthenticated() && 
+        (resource.data.sellerId == request.auth.uid || isAdmin());
+      // Admin can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Marketplace inquiries - participants can read their own
+    match /marketplaceInquiries/{inquiryId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.buyerId == request.auth.uid || 
+         resource.data.sellerId == request.auth.uid || 
+         isAdmin());
+      // Authenticated users can create inquiries
+      allow create: if isAuthenticated();
+      // Buyer or admin can update
+      allow update: if isAuthenticated() && 
+        (resource.data.buyerId == request.auth.uid || isAdmin());
+      // Admin can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Marketplace orders - buyer can read/create their own, admin manages all
+    match /marketplaceOrders/{orderId} {
+      // Buyer can read their own orders; admins can read all
+      allow read: if isAuthenticated() &&
+        (resource.data.buyerId == request.auth.uid || isAdmin());
+      // Authenticated buyers can create their own orders
+      allow create: if isAuthenticated() &&
+        request.resource.data.buyerId == request.auth.uid;
+      // Only admins can update (e.g. refunds) or delete
+      allow update, delete: if isAdmin();
+    }
+
+    // Consortium members - a user can read their own record; admins manage all
+    match /consortiumMembers/{memberId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.firebaseUid == request.auth.uid || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

@@ -78,6 +78,8 @@ import {
   Image,
   Languages,
   FileSearch,
+  TrendingUp,
+  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProfile } from "@/contexts/user-profile-context";
@@ -457,7 +459,7 @@ export default function ProfilePage() {
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-bold">
-                  {profile.firstName || userProfile.firstName} {profile.lastName || userProfile.lastName}
+                  {profile.firstName} {profile.lastName}
                 </h2>
                 <Badge variant="secondary">
                   {USER_ROLES[userProfile.svpRole as keyof typeof USER_ROLES] || USER_ROLES[profile.role as keyof typeof USER_ROLES] || "member"}
@@ -504,14 +506,34 @@ export default function ProfilePage() {
 
       {/* Tabbed Content - Only show relevant tabs */}
       <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 w-full">
           <TabsTrigger value="basic" className="text-xs sm:text-sm">
             <User className="h-4 w-4 mr-1 hidden sm:inline" />
-            Basic Info
+            Basic
           </TabsTrigger>
           <TabsTrigger value="professional" className="text-xs sm:text-sm">
             <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
             Professional
+          </TabsTrigger>
+          <TabsTrigger value="company-intelligence" className="text-xs sm:text-sm">
+            <Building2 className="h-4 w-4 mr-1 hidden sm:inline" />
+            Company Intel
+          </TabsTrigger>
+          <TabsTrigger value="readiness" className="text-xs sm:text-sm">
+            <Shield className="h-4 w-4 mr-1 hidden sm:inline" />
+            Readiness
+          </TabsTrigger>
+          <TabsTrigger value="ai-matching" className="text-xs sm:text-sm">
+            <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
+            AI Matching
+          </TabsTrigger>
+          <TabsTrigger value="performance" className="text-xs sm:text-sm">
+            <TrendingUp className="h-4 w-4 mr-1 hidden sm:inline" />
+            Performance
+          </TabsTrigger>
+          <TabsTrigger value="marketplace" className="text-xs sm:text-sm">
+            <Store className="h-4 w-4 mr-1 hidden sm:inline" />
+            Marketplace
           </TabsTrigger>
           <TabsTrigger value="onboarding" className="text-xs sm:text-sm">
             <CheckCircle className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -730,6 +752,486 @@ export default function ProfilePage() {
         {/* Contacts Tab */}
         <TabsContent value="contacts" className="space-y-6">
           <ContactsTab />
+        </TabsContent>
+
+        {/* Company Intelligence Tab */}
+        <TabsContent value="company-intelligence" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Company Intelligence</CardTitle>
+              <CardDescription>
+                Detailed organizational data captured during onboarding
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Building2 className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">Company Intelligence Status</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(userProfile as any).companyIntelligenceComplete ? "Complete" : "Incomplete"}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={(userProfile as any).companyIntelligenceComplete ? "default" : "secondary"}>
+                  {(userProfile as any).companyIntelligenceComplete ? "Complete" : "Incomplete"}
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Legal Company Name</Label>
+                <Input value={(userProfile as any).legalCompanyName || ""} disabled />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>City</Label>
+                  <Input value={(userProfile as any).city || ""} disabled />
+                </div>
+                <div className="space-y-2">
+                  <Label>State</Label>
+                  <Input value={(userProfile as any).state || ""} disabled />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Company Description</Label>
+                <Textarea rows={3} value={(userProfile as any).companyDescription || ""} disabled />
+              </div>
+
+              <div className="space-y-2">
+                <Label>NAICS Codes</Label>
+                <div className="flex flex-wrap gap-2">
+                  {((userProfile as any).naicsCodes || []).map((code: string, idx: number) => (
+                    <Badge key={idx} variant="outline">{code}</Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Certifications</Label>
+                <div className="flex flex-wrap gap-2">
+                  {((userProfile as any).certifications || []).map((cert: string, idx: number) => (
+                    <Badge key={idx} variant="secondary">{cert}</Badge>
+                  ))}
+                </div>
+              </div>
+
+              <Button variant="outline" asChild>
+                <a href="/portal/consortium/onboarding">Update Company Intelligence</a>
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Readiness & Compliance Tab */}
+        <TabsContent value="readiness" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Government Contracting Readiness</CardTitle>
+              <CardDescription>
+                Document validation and qualification verification status
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">Readiness Score</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(userProfile as any).readinessScore || 0}/100
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={(userProfile as any).readinessScore >= 80 ? "default" : "secondary"}>
+                  {(userProfile as any).readinessScore >= 80 ? "Strong" : (userProfile as any).readinessScore >= 60 ? "Good" : "Needs Improvement"}
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">Validation Status</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(userProfile as any).readinessValidationStatus || "Not Started"}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={(userProfile as any).readinessValidationStatus === "approved" ? "default" : "secondary"}>
+                  {(userProfile as any).readinessValidationStatus || "Not Started"}
+                </Badge>
+              </div>
+
+              {((userProfile as any).readinessDocuments || []).length > 0 && (
+                <div className="space-y-2">
+                  <Label>Uploaded Documents</Label>
+                  <div className="space-y-2">
+                    {(userProfile as any).readinessDocuments.map((doc: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{doc.fileName}</span>
+                        </div>
+                        <Badge variant={doc.status === "approved" ? "default" : "secondary"}>
+                          {doc.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <Button variant="outline" asChild>
+                <a href="/portal/consortium/readiness">Manage Documents</a>
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* AI Matching Tab */}
+        <TabsContent value="ai-matching" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Matching Configuration</CardTitle>
+              <CardDescription>
+                Capability categorization and matching preferences
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Brain className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">AI Matching Status</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(userProfile as any).aiMatchingActivated ? "Activated" : "Not Activated"}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={(userProfile as any).aiMatchingActivated ? "default" : "secondary"}>
+                  {(userProfile as any).aiMatchingActivated ? "Active" : "Inactive"}
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Capability Categories</Label>
+                <div className="flex flex-wrap gap-2">
+                  {((userProfile as any).capabilityCategories || []).map((cat: string, idx: number) => (
+                    <Badge key={idx} variant="outline">{cat}</Badge>
+                  ))}
+                </div>
+              </div>
+
+              {(userProfile as any).matchingPreferences && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Target Contract Sizes</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {((userProfile as any).matchingPreferences.targetContractSizes || []).map((size: string, idx: number) => (
+                        <Badge key={idx} variant="secondary">{size}</Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Target Agencies</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {((userProfile as any).matchingPreferences.targetAgencies || []).map((agency: string, idx: number) => (
+                        <Badge key={idx} variant="secondary">{agency}</Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Target Regions</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {((userProfile as any).matchingPreferences.targetRegions || []).map((region: string, idx: number) => (
+                        <Badge key={idx} variant="secondary">{region}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <Button variant="outline" asChild>
+                <a href="/portal/consortium/matching">Configure AI Matching</a>
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Performance Tab */}
+        <TabsContent value="performance" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Metrics</CardTitle>
+              <CardDescription>
+                Continuous engagement and performance tracking
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="font-medium">Engagement Score</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(userProfile as any).engagementScore || 0}/100
+                    </p>
+                  </div>
+                </div>
+                <Badge variant={(userProfile as any).engagementScore >= 70 ? "default" : "secondary"}>
+                  {(userProfile as any).engagementScore >= 70 ? "High" : (userProfile as any).engagementScore >= 50 ? "Medium" : "Low"}
+                </Badge>
+              </div>
+
+              {(userProfile as any).performanceMetrics && (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Opportunities Viewed</p>
+                    <p className="text-2xl font-bold">{(userProfile as any).performanceMetrics.totalOpportunitiesViewed || 0}</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Partnerships Initiated</p>
+                    <p className="text-2xl font-bold">{(userProfile as any).performanceMetrics.totalPartnershipsInitiated || 0}</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Proposals Submitted</p>
+                    <p className="text-2xl font-bold">{(userProfile as any).performanceMetrics.totalProposalsSubmitted || 0}</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Contracts Won</p>
+                    <p className="text-2xl font-bold">{(userProfile as any).performanceMetrics.totalContractsWon || 0}</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Total Contract Value</p>
+                    <p className="text-2xl font-bold">
+                      ${((userProfile as any).performanceMetrics.totalContractValue || 0).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground">Partnership Success Rate</p>
+                    <p className="text-2xl font-bold">{(userProfile as any).performanceMetrics.partnershipSuccessRate || 0}%</p>
+                  </div>
+                </div>
+              )}
+
+              <Button variant="outline" asChild>
+                <a href="/portal/consortium/performance">View Performance Dashboard</a>
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Marketplace Tab */}
+        <TabsContent value="marketplace" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Marketplace & Capability Exchange</CardTitle>
+              <CardDescription>
+                Your listings, inquiries, and procurement activity
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Marketplace Stats */}
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Store className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-muted-foreground">Active Listings</p>
+                  </div>
+                  <p className="text-2xl font-bold">3</p>
+                </div>
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-muted-foreground">Inquiries Received</p>
+                  </div>
+                  <p className="text-2xl font-bold">12</p>
+                </div>
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-muted-foreground">Conversions</p>
+                  </div>
+                  <p className="text-2xl font-bold">5</p>
+                </div>
+              </div>
+
+              {/* Active Listings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Your Marketplace Listings</h3>
+                <div className="space-y-3">
+                  <Card className="border-l-4 border-l-blue-500">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge variant="outline">Service</Badge>
+                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          </div>
+                          <h4 className="font-semibold">Government Contracting Consulting</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Comprehensive support for SAM registration, CMMC certification, and federal procurement strategy
+                          </p>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                            <span>NAICS: 541611</span>
+                            <span>•</span>
+                            <span>Readiness: 92</span>
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm">View</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-l-4 border-l-purple-500">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge variant="outline">Capability</Badge>
+                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          </div>
+                          <h4 className="font-semibold">CMMC Level 2 Assessment</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Full CMMC Level 2 assessment and certification support for defense contractors
+                          </p>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                            <span>NAICS: 541512</span>
+                            <span>•</span>
+                            <span>Readiness: 95</span>
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm">View</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-l-4 border-l-amber-500">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge variant="outline">Product</Badge>
+                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          </div>
+                          <h4 className="font-semibold">Compliance Management System</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            SaaS platform for tracking federal compliance requirements and documentation
+                          </p>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                            <span>NAICS: 511210</span>
+                            <span>•</span>
+                            <span>Readiness: 88</span>
+                          </div>
+                        </div>
+                        <Button variant="outline" size="sm">View</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Recent Inquiries */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Recent Inquiries</h3>
+                <div className="space-y-3">
+                  <Card>
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge className="bg-blue-100 text-blue-800">New</Badge>
+                            <Badge variant="outline">Meeting Request</Badge>
+                          </div>
+                          <h4 className="font-semibold">Acme Manufacturing</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Interested in CMMC Level 2 assessment services for upcoming DoD contract
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-2">2 hours ago</p>
+                        </div>
+                        <Button variant="outline" size="sm">Respond</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge className="bg-amber-100 text-amber-800">In Progress</Badge>
+                            <Badge variant="outline">Teaming Discussion</Badge>
+                          </div>
+                          <h4 className="font-semibold">Federal Logistics Partners</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Exploring partnership for comprehensive logistics and compliance services
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-2">1 day ago</p>
+                        </div>
+                        <Button variant="outline" size="sm">View</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Procurement Workflow */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Procurement Workflow</h3>
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="pt-4">
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                          <p className="font-medium">Discover Partners</p>
+                          <p className="text-sm text-muted-foreground">Search the partner directory by capability, certification, or location</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                          <p className="font-medium">Submit Inquiry</p>
+                          <p className="text-sm text-muted-foreground">Send inquiries to vetted partners with detailed requirements</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                          <p className="font-medium">Track Engagement</p>
+                          <p className="text-sm text-muted-foreground">Monitor responses, schedule meetings, and document selection rationale</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                          <p className="font-medium">Convert to Partnership</p>
+                          <p className="text-sm text-muted-foreground">Formalize partnerships and begin collaboration on E2G opportunities</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="flex gap-4">
+                <Button variant="outline" asChild>
+                  <a href="/portal/marketplace/create-listing/wizard">Create Listing</a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href="/portal/marketplace/directory">Browse Directory</a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href="/portal/marketplace/inquiries">View Inquiries</a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Onboarding Tab */}

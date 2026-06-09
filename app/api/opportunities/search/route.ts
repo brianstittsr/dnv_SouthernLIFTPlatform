@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const userData = userDoc.data();
 
     // Check if onboarding is complete
-    if (!userData.isOnboardingComplete) {
+    if (!userData?.isOnboardingComplete) {
       return NextResponse.json(
         { 
           error: "Onboarding not complete",
@@ -38,9 +38,9 @@ export async function POST(req: NextRequest) {
     const { forceRefresh = false } = body;
 
     // Get user's NAICS codes and certifications from onboarding data
-    const naicsCodes = userData.primaryNaics || [];
-    const certifications = userData.certifications || [];
-    const company = userData.company || "";
+    const naicsCodes = userData?.primaryNaics || [];
+    const certifications = userData?.certifications || [];
+    const company = userData?.company || "";
 
     if (naicsCodes.length === 0) {
       return NextResponse.json(

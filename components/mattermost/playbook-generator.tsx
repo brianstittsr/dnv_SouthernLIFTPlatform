@@ -164,7 +164,7 @@ export function PlaybookGenerator() {
             id: doc.id,
             name: `${firstName} ${lastName}`.trim() || "Unknown",
             email: data.emailPrimary || "",
-            mattermostUserId: data.mattermostUserId,
+            mattermostUserId: (data as any).mattermostUserId,
           });
         });
         setTeammembers(members);

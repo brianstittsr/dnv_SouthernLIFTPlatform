@@ -147,7 +147,7 @@ export default function MyListingsPage() {
 
       {/* Quick Actions */}
       <div className="flex gap-2">
-        <Button onClick={() => { setEditingListing(null); setFormOpen(true); }}>
+        <Button onClick={() => router.push("/portal/marketplace/create-listing/wizard")}>
           <Plus className="mr-2 h-4 w-4" />
           Create New Listing
         </Button>
@@ -197,7 +197,7 @@ export default function MyListingsPage() {
                       : "Get started by creating your first marketplace listing."}
                   </p>
                   {tab !== "archived" && (
-                    <Button className="mt-4" onClick={() => { setEditingListing(null); setFormOpen(true); }}>
+                    <Button className="mt-4" onClick={() => router.push("/portal/marketplace/create-listing/wizard")}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Listing
                     </Button>

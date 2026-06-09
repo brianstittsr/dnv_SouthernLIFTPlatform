@@ -273,7 +273,7 @@ export function OpportunityDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Urgent (< 7 days)</p>
+                  <p className="text-sm font-medium text-slate-600">Urgent ({'<'} 7 days)</p>
                   <p className="text-2xl font-bold text-slate-900">
                     {opportunities.filter(o => {
                       const days = Math.ceil((o.deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));

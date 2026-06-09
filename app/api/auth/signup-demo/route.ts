@@ -52,7 +52,8 @@ export async function POST(req: NextRequest) {
     });
 
     // Send welcome email with temporary password
-    await sendWelcomeEmail(email, tempPassword, userRef.id);
+    const username = email.split('@')[0];
+    await sendWelcomeEmail(email, username, tempPassword, userRef.id);
 
     return NextResponse.json({
       success: true,

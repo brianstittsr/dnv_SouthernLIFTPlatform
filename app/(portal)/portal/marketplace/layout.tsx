@@ -58,7 +58,7 @@ export default function MarketplaceLayout({
               </p>
             </div>
             <Button asChild>
-              <Link href="/portal/marketplace/my-listings/new">
+              <Link href="/portal/marketplace/create-listing/wizard">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Listing
               </Link>

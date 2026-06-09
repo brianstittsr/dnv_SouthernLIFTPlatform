@@ -152,7 +152,7 @@ export default function MarketplaceAnalyticsPage() {
           Create listings to start seeing analytics.
         </p>
         <Button className="mt-4" asChild>
-          <Link href="/portal/marketplace/my-listings/new">Create Listing</Link>
+          <Link href="/portal/marketplace/create-listing/wizard">Create Listing</Link>
         </Button>
       </div>
     );

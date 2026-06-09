@@ -34,6 +34,7 @@ import {
   Shield,
   Factory,
   Radio,
+  UserPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -79,6 +80,7 @@ const resources = [
   // { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "CMMC", href: "/cmmc", icon: Shield },
   { title: "Industries", href: "/industries", icon: Factory },
+  { title: "Client Registration", href: "/resources", icon: UserPlus },
 ];
 
 const companyLinks = [

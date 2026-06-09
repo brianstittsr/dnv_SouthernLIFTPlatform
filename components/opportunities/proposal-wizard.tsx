@@ -389,7 +389,7 @@ export function ProposalWizard({ opportunityId, teamingPartners }: ProposalWizar
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              {steps[currentStep].icon}
+              {(steps as any)[currentStep].icon}
               {steps[currentStep].title}
             </CardTitle>
             <CardDescription>
@@ -536,7 +536,7 @@ function DocumentUploadStep({ onUpload, isProcessing }: { onUpload: Function, is
 
 function AIScopingStep({ scope, onGenerate, isGenerating }: { 
   scope: ProjectScope | null, 
-  onGenerate: Function, 
+  onGenerate: () => void, 
   isGenerating: boolean 
 }) {
   if (!scope) {
@@ -641,8 +641,8 @@ function ContentCreationStep({
   projectScope 
 }: { 
   sections: ProposalSection[], 
-  onUpdate: Function,
-  onGenerate: Function,
+  onUpdate: (id: string, content: string) => void,
+  onGenerate: () => void,
   projectScope: ProjectScope | null
 }) {
   if (sections.length === 0) {
@@ -768,8 +768,8 @@ function QualityCheckStep({
   isGenerating 
 }: { 
   recommendations: QualityRecommendation[],
-  onGenerate: Function,
-  onFinalize: Function,
+  onGenerate: () => void,
+  onFinalize: () => void,
   isGenerating: boolean
 }) {
   const [hasRunCheck, setHasRunCheck] = useState(false);

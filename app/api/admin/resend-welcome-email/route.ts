@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/firebase';
+import * as admin from 'firebase-admin';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import crypto from 'crypto';
 import { sendWelcomeEmail } from '@/lib/email-demo';
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const token = authHeader.split('Bearer ')[1];
-    const decodedToken = await auth.verifyIdToken(token);
+    const decodedToken = await admin.auth().verifyIdToken(token);
     
     // Check if user is admin
     if (!decodedToken.email?.includes('admin') && !decodedToken.email?.includes('kdm-assoc.com')) {

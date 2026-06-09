@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { useCart } from "@/contexts/cart-context";
+import { ShoppingCart } from "@/components/marketplace/shopping-cart";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +30,7 @@ import {
   FolderKanban,
   Calendar,
   FileText,
+  ShoppingBag,
 } from "lucide-react";
 
 const quickActions = [
@@ -66,7 +69,9 @@ const notifications = [
 
 export function PortalHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const { getDisplayName, getInitials, profile } = useUserProfile();
+  const { getTotalItems } = useCart();
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
@@ -153,6 +158,26 @@ export function PortalHeader() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Shopping Cart */}
+        <Button
+          size="icon"
+          variant="outline"
+          className="relative"
+          onClick={() => setCartOpen(true)}
+        >
+          <ShoppingBag className="h-4 w-4" />
+          {getTotalItems() > 0 && (
+            <Badge
+              variant="destructive"
+              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+            >
+              {getTotalItems()}
+            </Badge>
+          )}
+        </Button>
+
+        <ShoppingCart isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
         {/* User Menu */}
         <DropdownMenu>

@@ -280,6 +280,12 @@ const adminItems = [
     badge: "New",
   },
   {
+    title: "Purchases",
+    href: "/portal/admin/purchases",
+    icon: Package,
+    badge: "New",
+  },
+  {
     title: "memberships",
     href: "/portal/admin/memberships",
     icon: Users,
@@ -295,6 +301,18 @@ const adminItems = [
     title: "Membership Tracker",
     href: "/portal/admin/consortium/membership-tracker",
     icon: Users,
+    badge: "New",
+  },
+  {
+    title: "Pipeline Kanban",
+    href: "/portal/admin/pipeline-kanban",
+    icon: FolderKanban,
+    badge: "New",
+  },
+  {
+    title: "Opportunity Pipeline",
+    href: "/portal/admin/opportunity-pipeline",
+    icon: Target,
     badge: "New",
   },
   {
@@ -356,6 +374,12 @@ const adminItems = [
     href: "/portal/admin/contact-submissions",
     icon: Mail,
     badge: "Forms",
+  },
+  {
+    title: "Client Registrations",
+    href: "/portal/admin/client-registrations",
+    icon: UserPlus,
+    badge: "KDM",
   },
   {
     title: "Zenthium Submissions",
@@ -676,6 +700,17 @@ const consortiumMemberItems = [
     icon: UserPlus,
   },
   {
+    title: "Marketplace",
+    href: "/portal/marketplace",
+    icon: Building2,
+  },
+  {
+    title: "My Pipeline",
+    href: "/portal/marketplace/my-pipeline",
+    icon: FolderKanban,
+    badge: "New",
+  },
+  {
     title: "Opportunities",
     href: "/portal/opportunities/sam-gov",
     icon: Target,
@@ -694,6 +729,11 @@ const consortiumMemberItems = [
     title: "Communications",
     href: "/portal/communications",
     icon: MessageSquare,
+  },
+  {
+    title: "Subscriptions",
+    href: "/portal/settings/subscriptions",
+    icon: CreditCard,
   },
 ];
 
