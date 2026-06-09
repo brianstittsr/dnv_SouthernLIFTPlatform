@@ -3306,6 +3306,14 @@ export interface HomePageSettingsDoc {
   popupFormButtonText: string;
   popupFormSuccessMessage: string;
   
+  // Discount Banner Settings
+  discountBannerEnabled: boolean; // enable/disable discount banner
+  discountBannerText: string; // banner message text
+  discountBannerCtaText: string; // CTA button text
+  discountBannerCtaLink: string; // CTA button link
+  discountBannerBackgroundColor: string; // banner background color (hex)
+  discountBannerTextColor: string; // banner text color (hex)
+  
   // Metadata
   createdAt: Timestamp;
   updatedAt: Timestamp;

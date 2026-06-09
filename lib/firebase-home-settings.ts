@@ -29,6 +29,14 @@ export const defaultHomePageSettings: HomePageSettingsDoc = {
   popupFormButtonText: "Schedule Session",
   popupFormSuccessMessage: "Thank you! We'll be in touch within 24 hours.",
   
+  // Discount Banner Settings
+  discountBannerEnabled: true,
+  discountBannerText: "Limited Time Offer: Join the KDM Consortium for just $625/month - 50% off regular price!",
+  discountBannerCtaText: "Join Now",
+  discountBannerCtaLink: "/pricing",
+  discountBannerBackgroundColor: "#dc2626", // red-600
+  discountBannerTextColor: "#ffffff",
+  
   createdAt: Timestamp.now(),
   updatedAt: Timestamp.now(),
 };

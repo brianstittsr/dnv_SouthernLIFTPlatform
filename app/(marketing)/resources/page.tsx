@@ -22,6 +22,7 @@ import {
   Award,
   TrendingUp,
   Shield,
+  DollarSign,
 } from "lucide-react";
 
 const benefits = [
@@ -41,7 +42,7 @@ const benefits = [
     icon: Landmark,
     title: "Certification Assistance",
     description:
-      "Get support obtaining 8(a), HUBZone, WOSB, SDVOSB, MBE, and other certifications that open doors to set-aside contracts.",
+      "Get support obtaining 8(a), HUBZone, WOSB, SDVOSB, MBE, DBE, SBE, and other certifications that open doors to set-aside contracts.",
   },
   {
     icon: ClipboardCheck,
@@ -60,6 +61,18 @@ const benefits = [
     title: "Compliance & Security",
     description:
       "Navigate CMMC, ITAR, and other security requirements with expert guidance on cybersecurity and compliance standards.",
+  },
+  {
+    icon: DollarSign,
+    title: "Financing & Loans",
+    description:
+      "Access financing options and loan programs to support your business growth and contract fulfillment needs.",
+  },
+  {
+    icon: Target,
+    title: "Target Agency Matching",
+    description:
+      "Get matched with government agencies and opportunities that align with your capabilities and business goals.",
   },
 ];
 
@@ -313,7 +326,6 @@ export default function ClientRegistrationResourcesPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/20 hover:bg-white/10"
                 asChild
               >
                 <Link href="/contact">
@@ -399,9 +411,14 @@ export default function ClientRegistrationResourcesPage() {
           <div className="max-w-3xl mx-auto space-y-4">
             {[
               {
-                question: "Is there a cost to register?",
+                question: "What information do I need to provide?",
                 answer:
-                  "No, client registration is free. We evaluate your business needs and provide recommendations at no cost. Some services may have fees, which are always discussed transparently before any engagement.",
+                  "The registration form collects your ownership details, professional background, company information, business identifiers (NAICS codes, CAGE codes, SAM registration), and your specific needs and interests. This helps us understand your business and match you with the right opportunities.",
+              },
+              {
+                question: "Do I need to have NAICS codes and certifications?",
+                answer:
+                  "You'll need at least one NAICS code to register. If you don't have certifications yet, that's okay—we can help you determine which certifications (8(a), HUBZone, WOSB, SDVOSB, MBE, DBE, SBE) would benefit your business and guide you through the process.",
               },
               {
                 question: "How long does the registration process take?",
@@ -411,17 +428,27 @@ export default function ClientRegistrationResourcesPage() {
               {
                 question: "What happens after I register?",
                 answer:
-                  "Once registered, you'll be contacted by a KDM representative to schedule an initial consultation. We'll assess your current capabilities, discuss your goals, and create a customized action plan.",
+                  "Once registered, you'll be contacted by a KDM representative to schedule an initial consultation. We'll assess your current capabilities, discuss your goals, and create a customized action plan based on your needs.",
               },
               {
-                question: "Do I need certifications to work with you?",
+                question: "Can I specify which government agencies I want to work with?",
                 answer:
-                  "No. We work with businesses at all stages. If you don't have certifications yet, we can help you determine which ones would benefit your business and guide you through the process.",
+                  "Yes. During registration, you can select target government agencies you're interested in working with, including DoD, VA, DHS, HHS, DOE, DOT, and others. This helps us match you with relevant opportunities.",
               },
               {
-                question: "What types of contracts can you help me pursue?",
+                question: "Do you help with financing and loans?",
                 answer:
-                  "We assist with federal, state, and local government contracts, as well as manufacturing OEM supply chain opportunities. This includes set-aside contracts for certified businesses and general procurement opportunities.",
+                  "Yes. We can connect you with financing options and loan programs to support your business growth and contract fulfillment needs. This is one of the services you can indicate interest in during registration.",
+              },
+              {
+                question: "Can I connect with manufacturing OEMs?",
+                answer:
+                  "Yes. During registration, you can specify OEM manufacturers you're interested in working with. We help connect qualified minority businesses with major OEMs and prime contractors seeking supply chain partners.",
+              },
+              {
+                question: "Is there a cost to register?",
+                answer:
+                  "No, client registration is free. We evaluate your business needs and provide recommendations at no cost. Some services may have fees, which are always discussed transparently before any engagement.",
               },
             ].map((faq, index) => (
               <Card key={index}>

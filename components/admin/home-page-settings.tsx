@@ -269,6 +269,89 @@ export function HomePageSettings() {
         </CardContent>
       </Card>
 
+      {/* Discount Banner Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Discount Banner Settings</CardTitle>
+          <CardDescription>
+            Configure the promotional banner that appears at the top of the home page
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Banner Enabled */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label htmlFor="discountBannerEnabled">Enable Discount Banner</Label>
+              <p className="text-xs text-muted-foreground">
+                Show the promotional banner on the home page
+              </p>
+            </div>
+            <Switch
+              id="discountBannerEnabled"
+              checked={settings.discountBannerEnabled}
+              onCheckedChange={(checked) =>
+                updateSetting("discountBannerEnabled", checked)
+              }
+            />
+          </div>
+
+          {/* Banner Text */}
+          <div className="space-y-2">
+            <Label htmlFor="discountBannerText">Banner Text</Label>
+            <Input
+              id="discountBannerText"
+              value={settings.discountBannerText}
+              onChange={(e) => updateSetting("discountBannerText", e.target.value)}
+              placeholder="Limited Time Offer: Join the KDM Consortium for just $625/month!"
+            />
+          </div>
+
+          {/* CTA Text */}
+          <div className="space-y-2">
+            <Label htmlFor="discountBannerCtaText">CTA Button Text</Label>
+            <Input
+              id="discountBannerCtaText"
+              value={settings.discountBannerCtaText}
+              onChange={(e) => updateSetting("discountBannerCtaText", e.target.value)}
+              placeholder="Join Now"
+            />
+          </div>
+
+          {/* CTA Link */}
+          <div className="space-y-2">
+            <Label htmlFor="discountBannerCtaLink">CTA Button Link</Label>
+            <Input
+              id="discountBannerCtaLink"
+              value={settings.discountBannerCtaLink}
+              onChange={(e) => updateSetting("discountBannerCtaLink", e.target.value)}
+              placeholder="/pricing"
+            />
+          </div>
+
+          {/* Background Color */}
+          <div className="space-y-2">
+            <Label htmlFor="discountBannerBackgroundColor">Background Color (Hex)</Label>
+            <Input
+              id="discountBannerBackgroundColor"
+              value={settings.discountBannerBackgroundColor}
+              onChange={(e) => updateSetting("discountBannerBackgroundColor", e.target.value)}
+              placeholder="#dc2626"
+            />
+          </div>
+
+          {/* Text Color */}
+          <div className="space-y-2">
+            <Label htmlFor="discountBannerTextColor">Text Color (Hex)</Label>
+            <Input
+              id="discountBannerTextColor"
+              value={settings.discountBannerTextColor}
+              onChange={(e) => updateSetting("discountBannerTextColor", e.target.value)}
+              placeholder="#ffffff"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Action Buttons */}
       <div className="flex gap-3">
         <Button

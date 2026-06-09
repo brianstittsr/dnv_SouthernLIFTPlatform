@@ -37,8 +37,8 @@ const PRICING_TIERS = [
     id: "kdm-consortium",
     name: "KDM Consortium Membership",
     description: "Join our exclusive network of government contractors and suppliers",
-    monthlyPrice: 1250,
-    annualPrice: 13500, // ~10% discount
+    monthlyPrice: 625,
+    annualPrice: 6750, // ~10% discount
     popular: true,
     features: [
       "Curated federal opportunity alerts",
@@ -428,7 +428,7 @@ export default function PricingPage() {
               Why Join the Consortium?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              For just $1,250/month, get access to everything you need to compete 
+              For just $625/month, get access to everything you need to compete 
               and win in the federal contracting marketplace.
             </p>
           </div>

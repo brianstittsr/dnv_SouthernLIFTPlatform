@@ -213,7 +213,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label className="pb-1">Owner Ethnicity *</Label><Select value={formData.companyOwnerEthnicity} onValueChange={(v) => updateFormData("companyOwnerEthnicity", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{ETHNICITY_OPTIONS.map((e) => (<SelectItem key={e} value={e}>{e}</SelectItem>))}</SelectContent></Select></div>
-                  <div><Label className="pb-1">Minority Certification</Label><Select value={formData.minorityBusinessCertification} onValueChange={(v) => updateFormData("minorityBusinessCertification", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{MINORITY_CERT_OPTIONS.map((c) => (<SelectItem key={c} value={c}>{c}</SelectItem>))}</SelectContent></Select></div>
+                  <div><Label className="pb-1">Certifications</Label><Select value={formData.minorityBusinessCertification} onValueChange={(v) => updateFormData("minorityBusinessCertification", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{MINORITY_CERT_OPTIONS.map((c) => (<SelectItem key={c} value={c}>{c}</SelectItem>))}</SelectContent></Select></div>
                 </div>
               </CardContent>
             </Card>
