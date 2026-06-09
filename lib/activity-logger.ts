@@ -21,9 +21,9 @@ export type ActivityType =
   | "update"
   | "delete";
 
-export type EntityType = 
-  | "opportunity" 
-  | "project" 
+export type EntityType =
+  | "opportunity"
+  | "project"
   | "organization"
   | "meeting"
   | "document"
@@ -33,7 +33,8 @@ export type EntityType =
   | "team-member"
   | "proposal"
   | "calendar"
-  | "settings";
+  | "settings"
+  | "consortium-member";
 
 export interface LogActivityParams {
   type: ActivityType;

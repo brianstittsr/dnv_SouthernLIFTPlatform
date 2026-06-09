@@ -250,7 +250,7 @@ export interface CertificationDoc extends Omit<Certification, "dateObtained" | "
 export interface ActivityDoc extends Omit<Activity, "createdAt" | "user"> {
   createdAt: Timestamp;
   userId: string; // Reference to user
-  entityType: "opportunity" | "project" | "organization" | "meeting" | "document" | "task" | "rock" | "affiliate" | "team-Member" | "proposal" | "calendar" | "settings";
+  entityType: "opportunity" | "project" | "organization" | "meeting" | "document" | "task" | "rock" | "affiliate" | "team-Member" | "proposal" | "calendar" | "settings" | "consortium-member";
   entityId: string;
   entityName?: string;
   metadata?: Record<string, unknown>;
@@ -632,17 +632,152 @@ export interface ConsortiumMemberDoc {
   linkedIn?: string;
   website?: string;
   // Consortium-specific fields
-  membershipTier?: "core-capture" | "elite" | "standard";
+  membershipTier?: "founder" | "core-capture" | "elite" | "standard";
   membershipStatus: "active" | "inactive" | "pending" | "suspended";
   subscriptionId?: string; // Stripe subscription ID
   onboardingComplete?: boolean;
   consortiumOnboardingComplete?: boolean;
+  
+  // Onboarding Stages Tracking
+  onboardingStage?: "profile" | "readiness" | "categorization" | "active" | "complete";
+  onboardingStageStartedAt?: Timestamp;
+  onboardingStageCompletedAt?: Timestamp;
+  
+  // Stage 4: Government Contracting Readiness Validation
+  readinessDocuments?: {
+    type: "sam_registration" | "duns_number" | "cage_code" | "capability_statement" | "past_performance" | "certifications" | "financials" | "insurance" | "other";
+    fileName: string;
+    fileUrl: string;
+    uploadedAt: Timestamp;
+    status: "pending" | "under_review" | "approved" | "rejected";
+    reviewedBy?: string;
+    reviewedAt?: Timestamp;
+    rejectionReason?: string;
+  }[];
+  readinessValidationStatus?: "not_started" | "in_progress" | "pending_review" | "approved" | "rejected";
+  readinessValidatedAt?: Timestamp;
+  readinessValidatedBy?: string;
+  
+  // Stage 5: Capability Categorization & AI Matching
+  aiMatchingActivated?: boolean;
+  aiMatchingActivatedAt?: Timestamp;
+  capabilityCategories?: string[];
+  matchingPreferences?: {
+    targetContractSizes: string[];
+    targetAgencies: string[];
+    targetRegions: string[];
+    preferredPartnerships: string[];
+  };
+  
+  // Stage 6: Continuous Engagement & Performance Tracking
+  performanceMetrics?: {
+    totalOpportunitiesViewed: number;
+    totalPartnershipsInitiated: number;
+    totalProposalsSubmitted: number;
+    totalContractsWon: number;
+    totalContractValue: number;
+    averageResponseTime: number; // hours
+    partnershipSuccessRate: number; // percentage
+    lastActivityAt: Timestamp;
+  };
+  engagementScore?: number; // 0-100 calculated from activity
+  lastEngagementReview?: Timestamp;
+  
   // NAICS codes and certifications
   naicsCodes?: string[];
   certifications?: string[];
   consortiumPillarFocus?: string[];
   // Tags for categorization
   tags?: string[];
+  
+  // Company Intelligence Data Elements
+  companyIntelligence?: {
+    // Basic Company Information
+    legalCompanyName: string;
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    companyDescription: string; // Public pitch
+    ceoBiography: string;
+    companyLogo?: string;
+    yearsInBusiness: number;
+    annualRevenueRange: string;
+    employeeCountRange: string;
+    
+    // NAICS Codes (up to 5)
+    primaryNaicsCodes: string[];
+    
+    // Certifications and Designations
+    federalDesignations: {
+      eightA: boolean;
+      wosb: boolean;
+      sdvosb: boolean;
+      hubzone: boolean;
+      mbe: boolean;
+      otherDesignations: string[];
+    };
+    certifications: {
+      cmmcLevel?: string;
+      isoCertifications: string[];
+      otherCertifications: string[];
+    };
+    
+    // Technical Expertise
+    technicalExpertise: string[];
+    serviceOfferings: string[];
+    technologySpecializations: string[];
+    industryFocusAreas: string[];
+    
+    // Past Performance
+    notableContracts: {
+      contractTitle: string;
+      client: string;
+      description: string;
+      value?: number;
+      completedAt?: Timestamp;
+      outcomes: string[];
+    }[];
+    clientReferences: string[];
+    keyDifferentiators: string[];
+    
+    // Government Contracting Details
+    cageCode?: string;
+    uei?: string;
+    samRegistration: {
+      status: "active" | "inactive" | "pending";
+      registrationDate?: Timestamp;
+      expirationDate?: Timestamp;
+    };
+    gsaSchedule: {
+      isHolder: boolean;
+      scheduleNumbers?: string[];
+    };
+    preferredContractTypes: ("fixed-price" | "cost-plus" | "time-and-materials")[];
+    
+    // Geographic Service Area
+    statesServed: string[];
+    regionsServed: string[];
+    geographicServiceArea: string;
+    willingToDeployRural: boolean;
+    willingToDeployRemote: boolean;
+    
+    // Partnership Preferences
+    willingToPrime: boolean;
+    willingToSub: boolean;
+    seekingPartners: boolean;
+    idealPartnerProfile: string;
+    contractSizePreferences: string[];
+    setAsidePreferences: string[];
+    
+    // Consortium and Marketplace
+    consortiumPillarsServed: string[];
+    marketplaceSellerProfile: {
+      enabled: boolean;
+      primaryServiceCategories: string[];
+    };
+  };
+  
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -1747,6 +1882,17 @@ export interface MarketPlaceListingDoc {
   minimumContractSize?: number;  // $ amount for engagement
   geographicServiceArea?: string[];  // States/regions
   
+  // Verified capability data (from onboarding)
+  readinessScore?: number;     // 0-100 from government contracting readiness
+  pastPerformanceReferences?: {
+    contractTitle: string;
+    client: string;
+    description: string;
+    value?: number;
+    completedAt?: Timestamp;
+  }[];
+  engagementTerms?: string;    // Terms for engagement
+  
   // Stats
   viewCount: number;
   inquiryCount: number;
@@ -1764,6 +1910,7 @@ export interface MarketPlaceInquiryDoc {
   sellerId: string;
   buyerId: string;            // Can be TeamMemberDoc or StrategicPartnerDoc
   buyerType: "consortium-member" | "strategic-partner" | "admin";
+  buyerCompanyName?: string;  // Denormalized for display
   
   // Inquiry details
   subject: string;
@@ -1785,10 +1932,79 @@ export interface MarketPlaceInquiryDoc {
   sellerResponse?: string;
   responseAt?: Timestamp;
   
+  // Engagement tracking for federal compliance
+  engagementType?: "inquiry" | "meeting_request" | "teaming_discussion" | "proposal_request";
+  selectionRationale?: string;  // Why this partner was selected
+  meetingScheduled?: boolean;
+  meetingDate?: Timestamp;
+  meetingNotes?: string;
+  
   // Admin/tracking
   assignedToAdminId?: string;  // KDM staff tracking
   notes?: string;
   
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Marketplace order/purchase document */
+export interface MarketPlaceOrderDoc {
+  id: string;
+  
+  // Order details
+  orderNumber: string;           // e.g., "ORD-123456"
+  buyerId: string;               // User who made the purchase
+  buyerEmail: string;            // Denormalized for display
+  buyerName: string;             // Denormalized for display
+  buyerCompany?: string;         // Denormalized for display
+  
+  // Payment details
+  totalAmount: number;
+  currency: string;              // e.g., "USD"
+  paymentMethod: "card" | "invoice" | "stripe";
+  paymentStatus: "pending" | "completed" | "failed" | "refunded" | "partially_refunded";
+  stripePaymentIntentId?: string;
+  stripeCustomerId?: string;
+  
+  // Billing address
+  billingAddress: {
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+  
+  // Order items
+  items: {
+    id: string;
+    type: "service" | "product" | "subscription";
+    title: string;
+    price: number;
+    priceUnit: string;
+    quantity: number;
+    seller: string;
+    sellerId: string;
+    listingId?: string;         // Reference to marketplace listing
+  }[];
+  
+  // Subscription tracking (if applicable)
+  subscriptionId?: string;      // Stripe subscription ID
+  subscriptionStatus?: "active" | "cancelled" | "past_due" | "unpaid";
+  cancelAtPeriodEnd?: boolean;
+  currentPeriodEnd?: Timestamp;
+  
+  // Refund tracking
+  refundAmount?: number;
+  refundReason?: string;
+  refundedAt?: Timestamp;
+  refundedBy?: string;           // Admin user ID who processed refund
+  
+  // Admin notes
+  adminNotes?: string;
+  
+  // Timestamps
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -2195,11 +2411,14 @@ export const COLLECTIONS = {
   MARKETPLACE_LISTINGS: "marketplaceListings",
   MARKETPLACE_INQUIRIES: "marketplaceInquiries",
   MARKETPLACE_CATEGORIES: "marketplaceCategories",
+  MARKETPLACE_ORDERS: "marketplaceOrders",
   // AI Contracting Tools Collections
   AI_BID_ANALYSES: "aiBidAnalyses",
   AI_RFP_PROCESSING: "aiRfpProcessing",
   AI_TEAMMING_RECOMMENDATIONS: "aiTeamingRecommendations",
   CONTRACT_FLOOR_ANALYSES: "contractFloorAnalyses",
+  // Client Registration Collection
+  CLIENT_REGISTRATIONS: "clientRegistrations",
 } as const;
 
 // ... existing code ...
@@ -2225,6 +2444,7 @@ export const contactMessagesCollection = () => getCollection<ContactMessageDoc>(
 export const marketplaceListingsCollection = () => getCollection<MarketPlaceListingDoc>(COLLECTIONS.MARKETPLACE_LISTINGS);
 export const marketplaceInquiriesCollection = () => getCollection<MarketPlaceInquiryDoc>(COLLECTIONS.MARKETPLACE_INQUIRIES);
 export const marketplaceCategoriesCollection = () => getCollection<MarketPlaceCategoryDoc>(COLLECTIONS.MARKETPLACE_CATEGORIES);
+export const marketplaceOrdersCollection = () => getCollection<MarketPlaceOrderDoc>(COLLECTIONS.MARKETPLACE_ORDERS);
 
 // AI Contracting Tools collection references
 export const aiBidAnalysesCollection = () => getCollection<AiBidAnalysisDoc>(COLLECTIONS.AI_BID_ANALYSES);
@@ -2989,6 +3209,86 @@ export interface EventDocKDMExtensions {
   recordingUrl?: string;
 }
 
+/** Client Registration document for KDM & Associates intake */
+export interface ClientRegistrationDoc extends BaseDocument {
+  // Submission Metadata
+  category: string;
+  fieldLabel: string;
+  submissionDate: Timestamp;
+  lastUpdateDate: Timestamp;
+  status: "pending" | "approved" | "rejected" | "under_review";
+  
+  // Ownership Information
+  prefix: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  professionalHeadshotUrl?: string;
+  temporaryHeadshotTaken: boolean;
+  
+  // Professional Identity
+  title: string;
+  companyOwnerEthnicity: string;
+  minorityBusinessCertification?: string;
+  linkedInUrl?: string;
+  
+  // Company Basics
+  companyName: string;
+  streetAddress: string;
+  streetAddress2?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  
+  // Contact Details
+  mobilePhone: string;
+  companyPhone?: string;
+  companyEmail: string;
+  websiteUrl?: string;
+  
+  // Business Identifiers
+  samRegistration?: string;
+  cageCodes: string[];
+  dunsNumber?: string;
+  naicsCodes: string[];
+  
+  // Financials & Capacity
+  approximateAnnualRevenue: string;
+  applyingAs: "prime_contractor" | "subcontractor" | "joint_venture" | "other";
+  ableToWorkOutOfState: boolean;
+  
+  // Business Development
+  hasInHouseBDTeam: boolean;
+  currentBusinessAcquisitionMethod: string;
+  referredBy?: string;
+  howFoundKDMAssociates: string;
+  
+  // Strategy & Assets
+  capabilityStatementUrl?: string;
+  openToTeamingArrangement: boolean;
+  hasResourcesToInvest: boolean;
+  
+  // Needs & Interests
+  helpNeededFromKDM: string;
+  servicesInterestedIn: string[];
+  topCompanyNeed: string;
+  interestedInCertifications: string[];
+  interestedInLoans: boolean;
+  
+  // Targeting
+  targetAgencies: string[];
+  oemManufacturers: string[];
+  
+  // Administrative
+  kdmRepAssigned?: string;
+  notes?: string;
+  
+  // Tracking
+  assignedTo?: string; // admin user ID
+  reviewedBy?: string;
+  reviewedAt?: Timestamp;
+}
+
 /** Home Page Settings document in Firestore */
 export interface HomePageSettingsDoc {
   id: string;
@@ -3010,3 +3310,6 @@ export interface HomePageSettingsDoc {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+// Client Registration collection reference
+export const clientRegistrationsCollection = () => getCollection<ClientRegistrationDoc>(COLLECTIONS.CLIENT_REGISTRATIONS);
