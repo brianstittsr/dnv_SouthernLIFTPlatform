@@ -1,5 +1,4 @@
-// Demo email service - simulates sending emails without actual email service integration
-// For development and testing purposes
+import { Resend } from 'resend';
 
 export interface EmailTemplate {
   to: string;
@@ -8,96 +7,106 @@ export interface EmailTemplate {
   text?: string;
 }
 
-export async function sendWelcomeEmail(email: string, username: string, tempPassword: string, userId: string) {
-  // In demo mode, we'll just log the email details instead of actually sending
-  console.log('=== DEMO EMAIL SENT ===');
-  console.log('To:', email);
-  console.log('Subject: Welcome to KDM Consortium - Your Account is Ready');
-  console.log('Username:', username);
-  console.log('Temporary Password:', tempPassword);
-  console.log('User ID:', userId);
-  console.log('========================');
+const CC_EMAILS = ['bstitt@strategicvalueplus.com', 'kmoore@kdm-assoc.com'];
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@kdm-assoc.com';
 
-  // In production, this would use SendGrid, Resend, or another email service
-  const emailContent = {
-    to: email,
-    subject: 'Welcome to KDM Consortium - Your Account is Ready',
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center;">
-          <h1 style="margin: 0; font-size: 28px;">Welcome to KDM Consortium</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your account is ready for government contracting success</p>
-        </div>
-        
-        <div style="padding: 30px; background: #f9f9f9;">
-          <h2 style="color: #333; margin-bottom: 20px;">Get Started with Your Demo Account</h2>
-          
-          <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h3 style="color: #667eea; margin-top: 0;">Your Login Details</h3>
-            <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-            <p style="margin: 5px 0;"><strong>Username:</strong> <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">${username}</code></p>
-            <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">${tempPassword}</code></p>
-            <p style="margin: 10px 0; color: #666; font-size: 14px;">
-              ⚠️ Your temporary password expires in 48 hours. Please change it after your first login.
-            </p>
-          </div>
-          
-          <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h3 style="color: #667eea; margin-top: 0;">Next Steps</h3>
-            <ol style="margin: 0; padding-left: 20px;">
-              <li style="margin-bottom: 10px;">Login with your temporary password</li>
-              <li style="margin-bottom: 10px;">Complete your business profile wizard</li>
-              <li style="margin-bottom: 10px;">Add your NAICS codes and certifications</li>
-              <li style="margin-bottom: 10px;">Start receiving AI-matched opportunities</li>
-              <li style="margin-bottom: 10px;">Explore teaming partner recommendations</li>
-              <li>Test the proposal generation workflow</li>
-            </ol>
-          </div>
-          
-          <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h3 style="color: #28a745; margin-top: 0;">Demo Features</h3>
-            <ul style="margin: 0; padding-left: 20px;">
-              <li style="margin-bottom: 5px;">✅ Full platform access for 30 days</li>
-              <li style="margin-bottom: 5px;">✅ AI-powered opportunity matching</li>
-              <li style="margin-bottom: 5px;">✅ Teaming partner recommendations</li>
-              <li style="margin-bottom: 5px;">✅ Simulated proposal generation</li>
-              <li>✅ No actual charges or commitments</li>
-            </ul>
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login?demo=true" 
-               style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-              Login to Your Demo Account
-            </a>
-          </div>
-        </div>
-        
-        <div style="background: #333; color: white; padding: 20px; text-align: center;">
-          <p style="margin: 0; font-size: 14px;">Questions? Contact us at <a href="mailto:support@kdm-assoc.com" style="color: #667eea;">support@kdm-assoc.com</a></p>
-          <p style="margin: 10px 0 0 0; font-size: 12px; opacity: 0.8;">
-            © 2026 KDM & Associates. All rights reserved.
+function getResend(): Resend | null {
+  return process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+}
+
+export async function sendWelcomeEmail(email: string, username: string, tempPassword: string, userId: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const loginUrl = `${baseUrl}/sign-in`;
+
+  const html = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+      <div style="background: linear-gradient(135deg, #1e3a5f 0%, #c9a227 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0; font-size: 26px;">Welcome to KDM Consortium</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">Your account is ready for government contracting success</p>
+      </div>
+
+      <div style="padding: 30px; background: #f9f9f9;">
+        <div style="background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <h3 style="color: #92400e; margin-top: 0;">Your Login Credentials</h3>
+          <p style="margin: 6px 0;"><strong>Email:</strong> ${email}</p>
+          <p style="margin: 6px 0;"><strong>Username:</strong> <code style="background: #fef3c7; padding: 2px 6px; border-radius: 4px;">${username}</code></p>
+          <p style="margin: 6px 0;"><strong>Temporary Password:</strong> <code style="background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 15px;">${tempPassword}</code></p>
+          <p style="margin: 12px 0 0 0; font-size: 13px; color: #92400e;">
+            ⚠️ This is a temporary password. You will be prompted to create a permanent password after your first login.
           </p>
         </div>
-      </div>
-    `
-  };
 
-  // Store email in demo collection for testing
-  try {
-    const { db } = await import('./firebase-admin');
-    await db.collection('demoEmails').add({
-      ...emailContent,
-      sentAt: new Date(),
-      tempPassword,
-      userId
-    });
-    console.log('Email stored in demo collection');
-  } catch (error) {
-    console.log('Could not store email (Firebase not available in demo mode)');
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="color: #1e3a5f; margin-top: 0;">Next Steps</h3>
+          <ol style="margin: 0; padding-left: 20px;">
+            <li style="margin-bottom: 10px;">Log in with your temporary password</li>
+            <li style="margin-bottom: 10px;">Complete your business profile</li>
+            <li style="margin-bottom: 10px;">Add your NAICS codes and certifications</li>
+            <li style="margin-bottom: 10px;">Start receiving AI-matched opportunities</li>
+            <li style="margin-bottom: 10px;">Explore teaming partner recommendations</li>
+            <li>Join our weekly Friday 3pm consortium meetings</li>
+          </ol>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${loginUrl}" style="background: #c9a227; color: #1e3a5f; padding: 14px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 16px;">
+            Log In to Your Portal
+          </a>
+        </div>
+      </div>
+
+      <div style="background: #1e3a5f; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">
+        <p style="margin: 0; font-size: 14px;">Questions? Contact us at <a href="mailto:kmoore@kdm-assoc.com" style="color: #c9a227;">kmoore@kdm-assoc.com</a></p>
+        <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.7;">© 2026 KDM &amp; Associates. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  const text = `Welcome to KDM Consortium!
+
+Your Login Credentials:
+  Email:              ${email}
+  Username:           ${username}
+  Temporary Password: ${tempPassword}
+
+This is a temporary password — you will be prompted to create a permanent password on first login.
+
+Log in here: ${loginUrl}
+
+Next Steps:
+1. Log in with your temporary password
+2. Complete your business profile
+3. Add your NAICS codes and certifications
+4. Start receiving AI-matched opportunities
+5. Join our weekly Friday 3pm consortium meetings
+
+Questions? Contact kmoore@kdm-assoc.com
+
+KDM Consortium | KDM & Associates`;
+
+  const resend = getResend();
+  if (resend) {
+    try {
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: email,
+        cc: CC_EMAILS,
+        subject: 'Welcome to KDM Consortium — Your Account is Ready',
+        html,
+        text,
+      });
+      console.log('Welcome email sent via Resend to', email);
+    } catch (error) {
+      console.error('Resend failed to send welcome email:', error);
+    }
+  } else {
+    console.warn('RESEND_API_KEY not set — logging welcome email instead of sending');
+    console.log('=== WELCOME EMAIL (not sent) ===');
+    console.log('To:', email, '| Username:', username, '| Temp Password:', tempPassword, '| User ID:', userId);
+    console.log('================================');
   }
 
-  return emailContent;
+  return { to: email, subject: 'Welcome to KDM Consortium — Your Account is Ready', html, text };
 }
 
 export async function sendDemoNotification(email: string, subject: string, message: string) {

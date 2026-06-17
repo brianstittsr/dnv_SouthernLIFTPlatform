@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
 import crypto from "crypto";
 import { COLLECTIONS } from "@/lib/schema";
+import { sendWelcomeEmail } from "@/lib/email-demo";
 
 export async function POST(req: NextRequest) {
   try {
@@ -109,7 +110,6 @@ export async function POST(req: NextRequest) {
         }
 
         // Send welcome email with credentials
-        const { sendWelcomeEmail } = await import("@/lib/email-demo");
         await sendWelcomeEmail(session.customer_email || "", username, tempPassword, firebaseUid);
 
         console.log(`Payment completed for user ${firebaseUid}, credentials generated`);

@@ -141,53 +141,134 @@ async function sendPaymentConfirmation(eventType: string, data: PaymentEventData
 
 /**
  * Handle KDM Consortium membership signup
- * Creates Firebase Auth user, Firestore team member record, and sends welcome email
+ * Creates Firebase Auth user, Firestore user/teamMember records, and sends welcome email
  */
 async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
   const customerEmail = session.customer_details?.email;
   const customerName = session.customer_details?.name;
-  const firebaseUid = session.metadata?.firebaseUid;
-  
+  const { firebaseUid, firstName: metaFirst, lastName: metaLast, companyName: metaCompany, plan } = session.metadata || {};
+
   if (!customerEmail) {
     console.error("No customer email in session, cannot create consortium member");
     return;
   }
-  
+
   try {
-    // Parse name into first/last
-    const nameParts = customerName?.split(" ") || ["", ""];
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-    
-    // Check if user already exists in Firebase Auth
+    // Parse name — prefer metadata values, fall back to Stripe customer name split
+    const nameParts = customerName?.split(" ") || [];
+    const firstName = metaFirst || nameParts[0] || "";
+    const lastName = metaLast || nameParts.slice(1).join(" ") || "";
+    const companyName = metaCompany || "";
+
+    // ------------------------------------------------------------------
+    // 1. Resolve or create Firebase Auth user
+    // ------------------------------------------------------------------
     let userRecord;
+    let isNewUser = false;
+    let tempPassword: string | null = null;
+    let passwordResetLink: string | null = null;
+
     try {
-      userRecord = await auth.getUserByEmail(customerEmail);
-      console.log("Existing user found:", userRecord.uid);
+      // If firebaseUid is in metadata the user was already signed in at checkout
+      if (firebaseUid) {
+        userRecord = await auth.getUser(firebaseUid);
+        console.log("Resolved existing Firebase user from metadata UID:", userRecord.uid);
+      } else {
+        userRecord = await auth.getUserByEmail(customerEmail);
+        console.log("Resolved existing Firebase user by email:", userRecord.uid);
+      }
+      // Existing user — generate a password reset link so they can set their password
+      const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || process.env.NEXT_PUBLIC_URL || "https://kdm-assoc.com";
+      passwordResetLink = await auth.generatePasswordResetLink(customerEmail, {
+        url: `${baseUrl}/portal/dashboard`,
+      });
+      console.log("Generated password reset link for existing user:", userRecord.uid);
     } catch {
-      // User doesn't exist, create new one with temporary password
-      const tempPassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-4).toUpperCase();
+      // No existing account — create one with a temporary password
+      isNewUser = true;
+      tempPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-4).toUpperCase() +
+        Math.floor(Math.random() * 90 + 10).toString();
+
       userRecord = await auth.createUser({
         email: customerEmail,
-        displayName: customerName || undefined,
+        displayName: customerName || `${firstName} ${lastName}`.trim() || undefined,
         password: tempPassword,
-        emailVerified: true, // Auto-verify since they paid
+        emailVerified: true, // auto-verify since they paid
       });
-      console.log("Created new Firebase user:", userRecord.uid);
-      
-      // Store temp password in a secure way or send reset link
-      // For now, we'll send a password reset link in the welcome email
+      console.log("Created new Firebase Auth user:", userRecord.uid);
     }
-    
-    // Create/update team member in Firestore
+
+    const uid = userRecord.uid;
+
+    // ------------------------------------------------------------------
+    // 2. Create or update the Firestore users doc
+    // ------------------------------------------------------------------
+    const usersRef = db.collection("users");
+    const userDocRef = usersRef.doc(uid);
+    const existingUserDoc = await userDocRef.get();
+
+    const subscriptionData = {
+      stripeCustomerId: session.customer || null,
+      stripeSubscriptionId: session.subscription || null,
+      subscriptionStatus: "active",
+      plan: plan || "monthly",
+      membershipType: "consortium",
+      activatedAt: FieldValue.serverTimestamp(),
+    };
+
+    if (existingUserDoc.exists()) {
+      await userDocRef.update({
+        ...subscriptionData,
+        firstName: firstName || existingUserDoc.data()?.firstName,
+        lastName: lastName || existingUserDoc.data()?.lastName,
+        companyName: companyName || existingUserDoc.data()?.companyName,
+        paymentComplete: true,
+        onboardingStatus: "active",
+        updatedAt: FieldValue.serverTimestamp(),
+        ...(isNewUser && tempPassword
+          ? { tempPassword, isTempPassword: true, hasChangedPassword: false }
+          : {}),
+      });
+      console.log("Updated existing users doc:", uid);
+    } else {
+      await userDocRef.set({
+        email: customerEmail,
+        firstName,
+        lastName,
+        companyName,
+        displayName: customerName || `${firstName} ${lastName}`.trim(),
+        ...subscriptionData,
+        paymentComplete: true,
+        profileComplete: false,
+        onboardingStatus: "active",
+        onboardingStep: 0,
+        role: "consortium_member",
+        ...(isNewUser && tempPassword
+          ? { tempPassword, isTempPassword: true, hasChangedPassword: false }
+          : {}),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      console.log("Created new users doc:", uid);
+    }
+
+    // ------------------------------------------------------------------
+    // 3. Create or update teamMembers record
+    // ------------------------------------------------------------------
     const teamMembersRef = db.collection("teamMembers");
-    const existingQuery = await teamMembersRef.where("emailPrimary", "==", customerEmail).limit(1).get();
-    
+    const existingQuery = await teamMembersRef
+      .where("emailPrimary", "==", customerEmail)
+      .limit(1)
+      .get();
+
     const teamMemberData = {
-      firebaseUid: userRecord.uid,
+      firebaseUid: uid,
       firstName,
       lastName,
       emailPrimary: customerEmail,
+      company: companyName,
       expertise: "KDM Consortium Member",
       role: "affiliate",
       status: "active",
@@ -197,59 +278,115 @@ async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
       consortiumJoinedAt: FieldValue.serverTimestamp(),
       stripeCustomerId: session.customer || null,
       stripeSubscriptionId: session.subscription || null,
-      createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     };
-    
+
     if (existingQuery.empty) {
-      // Create new team member
-      const docRef = await teamMembersRef.add(teamMemberData);
-      console.log("Created new team member:", docRef.id);
+      await teamMembersRef.add({ ...teamMemberData, createdAt: FieldValue.serverTimestamp() });
+      console.log("Created new teamMembers record for:", uid);
     } else {
-      // Update existing team member
-      const existingDoc = existingQuery.docs[0];
-      await existingDoc.ref.update({
+      await existingQuery.docs[0].ref.update({
         ...teamMemberData,
         tags: FieldValue.arrayUnion("kdm-consortium"),
-        updatedAt: FieldValue.serverTimestamp(),
       });
-      console.log("Updated existing team member:", existingDoc.id);
+      console.log("Updated existing teamMembers record for:", uid);
     }
-    
-    // Send welcome email with login instructions
-    await sendConsortiumWelcomeEmail(customerEmail, customerName || "", userRecord.uid);
-    
+
+    // ------------------------------------------------------------------
+    // 4. Send welcome email with credentials or password reset link
+    // ------------------------------------------------------------------
+    await sendConsortiumWelcomeEmail({
+      email: customerEmail,
+      name: customerName || `${firstName} ${lastName}`.trim(),
+      isNewUser,
+      tempPassword,
+      passwordResetLink,
+    });
+
   } catch (error) {
     console.error("Error handling consortium signup:", error);
-    // Don't throw - payment is still valid, just log for manual follow-up
+    // Don't throw — payment is still valid; log for manual follow-up
   }
 }
 
+interface ConsortiumWelcomeEmailParams {
+  email: string;
+  name: string;
+  isNewUser: boolean;
+  tempPassword: string | null;
+  passwordResetLink: string | null;
+}
+
 /**
- * Send KDM Consortium welcome email with login instructions
+ * Send KDM Consortium welcome email with login credentials or password reset link
  */
-async function sendConsortiumWelcomeEmail(email: string, name: string, uid: string) {
+async function sendConsortiumWelcomeEmail(params: ConsortiumWelcomeEmailParams) {
+  const { email, name, isNewUser, tempPassword, passwordResetLink } = params;
+
   const resendClient = getResend();
   if (!resendClient) {
     console.warn("RESEND_API_KEY not set, skipping welcome email");
     return;
   }
-  
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://kdm-assoc.com";
-  const loginUrl = `${baseUrl}/sign-in?redirect=/portal/onboarding?type=consortium`;
-  
+
+  const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || process.env.NEXT_PUBLIC_URL || "https://kdm-assoc.com";
+  const loginUrl = `${baseUrl}/sign-in`;
+
+  // Build the credentials block based on whether this is a new or returning user
+  const credentialsHtml = isNewUser && tempPassword
+    ? `
+      <div style="background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #92400e; margin-top: 0;">Your Login Credentials</h3>
+        <p style="margin: 6px 0;"><strong>Email:</strong> ${email}</p>
+        <p style="margin: 6px 0;"><strong>Temporary Password:</strong> <code style="background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 15px;">${tempPassword}</code></p>
+        <p style="margin: 12px 0 0 0; font-size: 13px; color: #92400e;">
+          ⚠️ This is a temporary password. You will be prompted to create a permanent password after your first login.
+        </p>
+      </div>`
+    : passwordResetLink
+    ? `
+      <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #1e40af; margin-top: 0;">Set Your Password</h3>
+        <p style="margin: 6px 0;">Your membership is linked to your existing account (<strong>${email}</strong>).</p>
+        <p style="margin: 6px 0;">Click the button below to set a password for your portal access:</p>
+        <div style="margin: 16px 0; text-align: center;">
+          <a href="${passwordResetLink}" style="background: #3b82f6; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;">
+            Set My Password
+          </a>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #6b7280;">This link expires in 24 hours.</p>
+      </div>`
+    : `
+      <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <p style="margin: 0;">Use your existing email and password to log in: <strong>${email}</strong></p>
+      </div>`;
+
+  const credentialsText = isNewUser && tempPassword
+    ? `Your Login Credentials\nEmail: ${email}\nTemporary Password: ${tempPassword}\n\nThis is a temporary password — you will be prompted to create a permanent password on first login.`
+    : passwordResetLink
+    ? `Set Your Password\nYour membership is linked to your existing account (${email}).\nSet your password here: ${passwordResetLink}\n(This link expires in 24 hours.)`
+    : `Use your existing email and password to log in: ${email}`;
+
   const htmlContent = `
     <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
       <div style="text-align: center; margin-bottom: 30px;">
         <h1 style="color: #1e3a5f; margin-bottom: 10px;">Welcome to the KDM Consortium!</h1>
         <p style="font-size: 16px; color: #666;">Your membership has been activated</p>
       </div>
-      
+
       <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
         <p style="margin-top: 0;">Dear ${name || "New Member"},</p>
-        
-        <p>Thank you for joining the KDM Consortium! We're excited to have you as part of our selective network of expert companies.</p>
-        
+
+        <p>Thank you for joining the KDM Consortium! You are now part of our selective network of expert companies positioned to win federal contracts.</p>
+
+        ${credentialsHtml}
+
+        <div style="margin: 24px 0; text-align: center;">
+          <a href="${loginUrl}" style="background: #c9a227; color: #1e3a5f; padding: 14px 32px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; font-size: 16px;">
+            Log In to Your Portal
+          </a>
+        </div>
+
         <p><strong>What happens next:</strong></p>
         <ul>
           <li>Complete your profile to get matched with opportunities</li>
@@ -257,33 +394,30 @@ async function sendConsortiumWelcomeEmail(email: string, name: string, uid: stri
           <li>Access curated contract opportunities</li>
           <li>Connect with government buyers and fellow members</li>
         </ul>
-        
-        <div style="margin: 30px 0; text-align: center;">
-          <a href="${loginUrl}" style="background: #c9a227; color: #1e3a5f; padding: 14px 32px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold; font-size: 16px;">
-            Log In & Complete Your Profile
-          </a>
-        </div>
-        
+
         <p style="font-size: 14px; color: #666;">
           <strong>Need help?</strong><br>
           Contact us at <a href="mailto:kmoore@kdm-assoc.com" style="color: #2563eb;">kmoore@kdm-assoc.com</a>
         </p>
       </div>
-      
+
       <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
       <p style="color: #9ca3af; font-size: 11px; text-align: center;">
-        KDM Consortium | KDM & Associates<br>
+        KDM Consortium | KDM &amp; Associates<br>
         This email was sent because you recently joined the KDM Consortium.
       </p>
     </div>
   `;
-  
-  const textContent = `
-Welcome to the KDM Consortium!
+
+  const textContent = `Welcome to the KDM Consortium!
 
 Dear ${name || "New Member"},
 
-Thank you for joining the KDM Consortium! We're excited to have you as part of our selective network of expert companies.
+Thank you for joining the KDM Consortium! You are now part of our selective network of expert companies.
+
+${credentialsText}
+
+Log in here: ${loginUrl}
 
 What happens next:
 - Complete your profile to get matched with opportunities
@@ -291,19 +425,17 @@ What happens next:
 - Access curated contract opportunities
 - Connect with government buyers and fellow members
 
-Log in here: ${loginUrl}
-
 Need help? Contact us at kmoore@kdm-assoc.com
 
 KDM Consortium | KDM & Associates
   `;
-  
+
   try {
     await resendClient.emails.send({
       from: FROM_EMAIL,
       to: email,
       cc: CC_EMAILS,
-      subject: "Welcome to the KDM Consortium!",
+      subject: "Welcome to the KDM Consortium — Your Account is Ready",
       html: htmlContent,
       text: textContent,
     });
