@@ -70,14 +70,22 @@ export async function POST(request: NextRequest) {
       "prefix", "firstName", "lastName",
       "title", "companyOwnerEthnicity",
       "companyName", "streetAddress", "city", "state", "zipCode",
-      "mobilePhone", "companyEmail", "primaryNaicsCode",
-      "helpNeededFromMBDA", "topCompanyNeed", "howFoundMBDAFPC"
+      "mobilePhone", "companyEmail",
+      "helpNeededFromKDM", "topCompanyNeed", "howFoundKDMAssociates"
     ];
 
     const missingFields = requiredFields.filter((field) => !body[field]);
     if (missingFields.length > 0) {
       return NextResponse.json(
         { error: `Missing required fields: ${missingFields.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    // Validate naicsCodes array
+    if (!body.naicsCodes || !Array.isArray(body.naicsCodes) || body.naicsCodes.length === 0) {
+      return NextResponse.json(
+        { error: "At least one NAICS code is required" },
         { status: 400 }
       );
     }

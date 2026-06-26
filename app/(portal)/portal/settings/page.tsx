@@ -156,6 +156,17 @@ const apiConfigs: ApiKeyConfig[] = [
     additionalFields: [],
     status: "disconnected",
   },
+  {
+    id: "samgov",
+    name: "SAM.gov API Server",
+    description: "Federal procurement opportunities from SAM.gov for consortium members",
+    icon: Globe,
+    keyField: "API Key",
+    additionalFields: [
+      { name: "serverUrl", label: "Server URL", placeholder: "https://your-samgov-api-server.com" },
+    ],
+    status: "disconnected",
+  },
 ];
 
 const llmProviders = [
@@ -286,6 +297,12 @@ function SettingsPageContent() {
                 accountId: data.integrations.zoom.accountId || "",
               };
             }
+            if (data.integrations.samgov) {
+              loadedApiKeys.samgov = {
+                apiKey: data.integrations.samgov.apiKey || "",
+                serverUrl: data.integrations.samgov.serverUrl || "",
+              };
+            }
             setApiKeys(loadedApiKeys);
           }
           
@@ -387,6 +404,11 @@ function SettingsPageContent() {
             accountId: apiKeys.zoom?.accountId || "",
             status: testingStatus.zoom === "success" ? "connected" : "disconnected",
           },
+          samgov: {
+            apiKey: apiKeys.samgov?.apiKey || "",
+            serverUrl: apiKeys.samgov?.serverUrl || "",
+            status: testingStatus.samgov === "success" ? "connected" : "disconnected",
+          },
         },
         llmConfig: {
           provider: llmConfig.provider,
@@ -443,6 +465,41 @@ function SettingsPageContent() {
         if (!result.success) {
           alert(`Webhook test failed: ${result.error}`);
         }
+        return;
+      }
+    }
+    
+    // Test SAM.gov API Server connection
+    if (configId === "samgov") {
+      const serverUrl = apiKeys["samgov"]?.serverUrl;
+      const apiKey = apiKeys["samgov"]?.apiKey;
+      if (serverUrl && apiKey) {
+        try {
+          const res = await fetch(`${serverUrl}/api/naics`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-Key": apiKey,
+            },
+            body: JSON.stringify({ q: "541511" }),
+          });
+          setTestingStatus(prev => ({
+            ...prev,
+            [configId]: res.ok ? "success" : "error",
+          }));
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            alert(`SAM.gov API test failed (${res.status}): ${errData.error || "Unknown error"}`);
+          }
+          return;
+        } catch (err) {
+          setTestingStatus(prev => ({ ...prev, [configId]: "error" }));
+          alert(`SAM.gov API test failed: Could not connect to server at ${serverUrl}`);
+          return;
+        }
+      } else {
+        setTestingStatus(prev => ({ ...prev, [configId]: "error" }));
+        alert("Please enter both the Server URL and API Key for SAM.gov");
         return;
       }
     }

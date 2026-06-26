@@ -144,6 +144,11 @@ async function sendPaymentConfirmation(eventType: string, data: PaymentEventData
  * Creates Firebase Auth user, Firestore user/teamMember records, and sends welcome email
  */
 async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
+  if (!db || !auth) {
+    console.error("Firebase Admin not initialized — skipping consortium signup processing");
+    return;
+  }
+
   const customerEmail = session.customer_details?.email;
   const customerName = session.customer_details?.name;
   const { firebaseUid, firstName: metaFirst, lastName: metaLast, companyName: metaCompany, plan } = session.metadata || {};
@@ -218,7 +223,7 @@ async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
       activatedAt: FieldValue.serverTimestamp(),
     };
 
-    if (existingUserDoc.exists()) {
+    if (existingUserDoc.exists) {
       await userDocRef.update({
         ...subscriptionData,
         firstName: firstName || existingUserDoc.data()?.firstName,
@@ -446,7 +451,14 @@ KDM Consortium | KDM & Associates
 }
 
 export async function POST(req: NextRequest) {
-  const payload = await req.text();
+  let payload: string;
+  try {
+    payload = await req.text();
+  } catch (err) {
+    console.error("Failed to read request body:", err);
+    return NextResponse.json({ received: true, warning: "Could not read body" });
+  }
+
   const signature = req.headers.get("stripe-signature");
 
   if (!signature) {
@@ -454,8 +466,9 @@ export async function POST(req: NextRequest) {
   }
 
   if (!process.env.STRIPE_WEBHOOK_SECRET) {
-    console.error("STRIPE_WEBHOOK_SECRET not configured");
-    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 500 });
+    console.error("STRIPE_WEBHOOK_SECRET not configured — acknowledging event without processing");
+    // Return 200 so Stripe doesn't disable the endpoint
+    return NextResponse.json({ received: true, warning: "Webhook secret not configured" });
   }
 
   let event: Stripe.Event;
@@ -592,7 +605,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error("Error processing webhook event:", event.type, error);
-    // Still return 200 to acknowledge receipt - we don't want Stripe to retry
+    // Always return 200 — Stripe must not retry due to our internal errors
   }
 
   return NextResponse.json({ received: true });

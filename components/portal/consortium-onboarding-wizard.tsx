@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import {
   Dialog,
@@ -130,6 +130,145 @@ interface FormData {
   targetAgencies: string[];
   targetRegions: string[];
 }
+
+// ─── Readiness Step sub-component ────────────────────────────────────────────
+
+type ReadinessDocType = FormData["readinessDocuments"][number]["type"];
+
+interface ReadinessDocEntry {
+  type: ReadinessDocType;
+  fileName: string;
+  fileUrl: string;
+}
+
+const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
+  { type: "sam_registration", label: "SAM Registration" },
+  { type: "duns_number", label: "DUNS Number" },
+  { type: "cage_code", label: "CAGE Code" },
+  { type: "capability_statement", label: "Capability Statement" },
+  { type: "past_performance", label: "Past Performance References" },
+  { type: "certifications", label: "Certifications (CMMC, ISO, etc.)" },
+  { type: "financials", label: "Financial Statements" },
+  { type: "insurance", label: "Insurance Certificates" },
+];
+
+function ReadinessStep({
+  readinessDocuments,
+  onAdd,
+  onRemove,
+}: {
+  readinessDocuments: ReadinessDocEntry[];
+  onAdd: (entry: ReadinessDocEntry) => void;
+  onRemove: (type: ReadinessDocType) => void;
+}) {
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  const handleFileChange = (
+    type: ReadinessDocType,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      onAdd({
+        type,
+        fileName: file.name,
+        fileUrl: reader.result as string,
+      });
+    };
+    reader.readAsDataURL(file);
+
+    // Reset the input so the same file can be re-selected after removal
+    e.target.value = "";
+  };
+
+  return (
+    <ScrollArea className="h-[400px] pr-4">
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <Award className="h-12 w-12 text-amber-600 mx-auto mb-2" />
+          <h3 className="text-xl font-semibold">Government Contracting Readiness</h3>
+          <p className="text-sm text-muted-foreground">
+            Upload documentation to validate your government contracting readiness
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <Label>Upload Documents</Label>
+          <p className="text-sm text-muted-foreground">
+            Upload your government contracting documentation. You can skip this step and upload later.
+          </p>
+
+          <div className="grid gap-3">
+            {READINESS_DOC_TYPES.map((item) => {
+              const uploaded = readinessDocuments.find((d) => d.type === item.type);
+              return (
+                <div
+                  key={item.type}
+                  className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
+                    uploaded ? "border-green-400 bg-green-50" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <FileText className={`h-5 w-5 shrink-0 ${uploaded ? "text-green-600" : "text-muted-foreground"}`} />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">{item.label}</p>
+                      {uploaded && (
+                        <p className="text-xs text-green-700 truncate max-w-[180px]">{uploaded.fileName}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    {uploaded ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-700 h-7 px-2"
+                        onClick={() => onRemove(item.type)}
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Remove
+                      </Button>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          className="hidden"
+                          ref={(el) => { fileInputRefs.current[item.type] = el; }}
+                          onChange={(e) => handleFileChange(item.type, e)}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRefs.current[item.type]?.click()}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="bg-muted rounded-lg p-4">
+          <p className="text-sm text-muted-foreground">
+            <strong>Note:</strong> Documents will be reviewed by KDM staff. You'll be notified once your readiness is validated.
+          </p>
+        </div>
+      </div>
+    </ScrollArea>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function ConsortiumOnboardingWizard() {
   const { profile } = useUserProfile();
@@ -268,23 +407,33 @@ export function ConsortiumOnboardingWizard() {
   };
 
   const handleComplete = async () => {
-    if (!db || !teamMemberId) return;
+    if (!db) return;
+
+    // Use teamMemberId if found, otherwise fall back to the Firebase Auth UID (profile.id)
+    const targetId = teamMemberId || profile.id;
+    if (!targetId) {
+      toast.error("User session not found. Please refresh and try again.");
+      return;
+    }
 
     setLoading(true);
     try {
-      const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, teamMemberId);
+      const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, targetId);
       
       // Prepare readiness documents with timestamps
-      const readinessDocumentsWithTimestamps = formData.readinessDocuments.map(doc => ({
-        ...doc,
+      const readinessDocumentsWithTimestamps = formData.readinessDocuments.map((rdoc: FormData["readinessDocuments"][number]) => ({
+        ...rdoc,
         uploadedAt: Timestamp.now(),
         status: "pending" as const,
       }));
 
-      await updateDoc(teamMemberRef, {
+      const teamMemberData = {
+        id: targetId,
+        firebaseUid: profile.id,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        title: formData.title,
+        emailPrimary: profile.email,
+        title: formData.title || "CEO",
         bio: formData.ceoBio,
         avatar: formData.avatar,
         companyName: formData.companyName,
@@ -295,6 +444,10 @@ export function ConsortiumOnboardingWizard() {
         certifications: formData.certifications,
         consortiumPillarFocus: formData.pillarFocus,
         consortiumOnboardingComplete: true,
+        role: "affiliate" as const,
+        status: "active" as const,
+        membershipTier: "standard" as const,
+        membershipStatus: "active" as const,
         // Set onboarding stage to "readiness" (Stage 4)
         onboardingStage: "readiness",
         onboardingStageStartedAt: Timestamp.now(),
@@ -321,7 +474,22 @@ export function ConsortiumOnboardingWizard() {
         },
         engagementScore: 0,
         updatedAt: Timestamp.now(),
-      });
+      };
+
+      // Use setDoc with merge so it works whether the doc exists or not
+      await setDoc(teamMemberRef, teamMemberData, { merge: true });
+
+      // Also mark the users document as onboarding complete
+      const userRef = doc(db, "users", profile.id);
+      await setDoc(userRef, {
+        consortiumOnboardingComplete: true,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        company: formData.companyName,
+        jobTitle: formData.title || "CEO",
+        bio: formData.ceoBio,
+        updatedAt: Timestamp.now(),
+      }, { merge: true });
 
       toast.success("Welcome to the KDM Consortium!", {
         description: "Your profile is complete. Next step: Upload government contracting documentation.",
@@ -616,63 +784,18 @@ export function ConsortiumOnboardingWizard() {
       case 4:
         // Stage 4: Government Contracting Readiness Validation
         return (
-          <ScrollArea className="h-[400px] pr-4">
-            <div className="space-y-6">
-              <div className="text-center mb-6">
-                <Award className="h-12 w-12 text-amber-600 mx-auto mb-2" />
-                <h3 className="text-xl font-semibold">Government Contracting Readiness</h3>
-                <p className="text-sm text-muted-foreground">
-                  Upload documentation to validate your government contracting readiness
-                </p>
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-sm text-amber-900">
-                  <strong>Required Documents:</strong> SAM Registration, DUNS Number, and CAGE Code are required for government contracting.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <Label>Upload Documents</Label>
-                <p className="text-sm text-muted-foreground">
-                  Upload your government contracting documentation. You can skip this step and upload later.
-                </p>
-                
-                <div className="grid gap-3">
-                  {[
-                    { type: "sam_registration", label: "SAM Registration", required: true },
-                    { type: "duns_number", label: "DUNS Number", required: true },
-                    { type: "cage_code", label: "CAGE Code", required: true },
-                    { type: "capability_statement", label: "Capability Statement", required: false },
-                    { type: "past_performance", label: "Past Performance References", required: false },
-                    { type: "certifications", label: "Certifications (CMMC, ISO, etc.)", required: false },
-                    { type: "financials", label: "Financial Statements", required: false },
-                    { type: "insurance", label: "Insurance Certificates", required: false },
-                  ].map((doc) => (
-                    <div key={doc.type} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <p className="text-sm font-medium">{doc.label}</p>
-                          {doc.required && <p className="text-xs text-red-600">Required</p>}
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-muted rounded-lg p-4">
-                <p className="text-sm text-muted-foreground">
-                  <strong>Note:</strong> Documents will be reviewed by KDM staff. You'll be notified once your readiness is validated.
-                </p>
-              </div>
-            </div>
-          </ScrollArea>
+          <ReadinessStep
+            readinessDocuments={formData.readinessDocuments}
+            onAdd={(entry) =>
+              updateFormData("readinessDocuments", [...formData.readinessDocuments, entry])
+            }
+            onRemove={(type) =>
+              updateFormData(
+                "readinessDocuments",
+                formData.readinessDocuments.filter((d) => d.type !== type)
+              )
+            }
+          />
         );
 
       case 5:

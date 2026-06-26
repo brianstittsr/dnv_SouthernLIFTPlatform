@@ -1,0 +1,11 @@
+Brian's priority GitHub account is github.com/brianstittsr; critical repos include ws_KDM_SVP_Site, ws_hermesvercel, windsurf_SVP_VPlusPlatform, ws_UrrbanMinistries-V2-svp-platform, and windsurf_WL4WJ_CHWOne. On Brian's Windows Hermes profile, Node CLI shims such as pnpm/codex/vercel may need `cmd.exe /c <tool>`; gh is authenticated as brianstittsr.
+§
+Brian wants daily executive briefs that cover calendar review, critical emails, project status, proposal deadlines, grant opportunities, required follow-ups, GitHub activity, risks/blockers, recommended priorities, and suggested next actions across Gmail, Outlook, Teams, LinkedIn, Google/Outlook calendars, GitHub, Docker, EasyPanel, DigitalOcean, AWS, cloud.gov, Stripe, Privyr, and GoHighLevel where available.
+§
+Brian's key strategic initiative domains are healthcare modernization, AI agent ecosystems, robotics/manufacturing, and economic development. Important org contexts include EPA, Technology to Scale, Strategic Value Plus Solutions, Women Leading for Wellness & Justice, Urban Ministries, Leadership Connections, HubZone Council, and KDM & Associates.
+§
+Brian selected /knowledge/brian/ as the desired location for Hermes master profile files, Telegram as the preferred daily brief delivery channel, 6:30 AM Eastern daily as the daily brief schedule, Gmail as the first communication source to connect, and a primary-profile-first approach before adding separate Hermes profiles for roles/orgs.
+§
+Outlook/Microsoft Graph helper is installed at `/home/bstitt/.hermes/outlook_summary/` with script `graph_mail_summary.py`, venv `.venv/`, `.env`, and token cache. Current OAuth token is delegated for `bstitt@strategicvalueplus.com`; Graph `/me`, `/me/messages`, and calendar event creation with `Calendars.ReadWrite` verified on 2026-06-06.
+§
+Brian's Google Workspace OAuth is configured at /mnt/c/Users/Buyer/AppData/Local/hermes/google_token.json with Gmail read/send/modify, Calendar, Drive, Contacts read-only, Sheets, and Docs scopes. Use google-venv/bin/python with skills/productivity/google-workspace/scripts/google_api.py under that Hermes home.

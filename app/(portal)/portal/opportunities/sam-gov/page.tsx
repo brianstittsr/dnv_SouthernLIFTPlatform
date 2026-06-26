@@ -161,14 +161,48 @@ export default function SAMOpportunitiesPage() {
         // Use mock SAM.gov data
         setOpportunities(mockSAMOpportunities);
       } else {
-        // In production, fetch from API
-        // const response = await fetch('/api/opportunities/sam-gov');
-        // const data = await response.json();
-        // setOpportunities(data);
-        setOpportunities([]);
+        // Fetch live data from SAM.gov API proxy
+        const response = await fetch("/api/opportunities/sam-gov", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            q: searchQuery || undefined,
+            is_active: true,
+            size: 25,
+            page: 0,
+          }),
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const mapped: Opportunity[] = (data.opportunitiesData || []).map((opp: Record<string, unknown>) => ({
+          id: opp.noticeId as string || "",
+          title: opp.title as string || "Untitled",
+          agency: (opp.organizationHierarchy as string || opp.department as string || "Unknown Agency").split("::").pop() || "Unknown Agency",
+          solicitationNumber: opp.solicitationNumber as string || "",
+          postedDate: opp.postedDate as string || "",
+          deadline: opp.responseDeadLine as string || "",
+          location: opp.placeOfPerformance
+            ? `${(opp.placeOfPerformance as { city?: string; state?: string }).city || ""}, ${(opp.placeOfPerformance as { city?: string; state?: string }).state || ""}`.replace(/^, |, $/g, "")
+            : "Not specified",
+          value: "See solicitation",
+          naicsCodes: opp.naicsCode ? [opp.naicsCode as string] : [],
+          description: opp.description as string || "",
+          setAside: opp.typeOfSetAsideDescription as string || undefined,
+          interestedInTeaming: false,
+          teamingCount: 0,
+          isMockData: false,
+        }));
+        setOpportunities(mapped);
       }
     } catch (error) {
-      toast.error("Failed to load opportunities");
+      const message = error instanceof Error ? error.message : "Failed to load opportunities";
+      toast.error(message);
+      setOpportunities([]);
     } finally {
       setLoading(false);
     }
@@ -358,7 +392,7 @@ export default function SAMOpportunitiesPage() {
             <div className="flex items-center gap-2 text-blue-900">
               <Filter className="h-4 w-4" />
               <span className="text-sm">
-                Displaying mock SAM.gov data for demonstration purposes
+                Displaying mock SAM.gov data for demonstration. Toggle off &quot;Use Mock Data&quot; to fetch live opportunities (requires SAM.gov API key in Settings &gt; Integrations).
               </span>
             </div>
           </CardContent>

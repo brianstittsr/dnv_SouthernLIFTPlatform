@@ -1,0 +1,5 @@
+User is Brian E. Stitt in North Carolina. Brian's roles include Information Technology Specialist / Program Manager at U.S. EPA, Founder of Technology to Scale, CTO of Strategic Value Plus Solutions, Adjunct Robotics Instructor, AI Strategist, Cloud Architect, Platform Modernization Leader, Economic Development Advocate, and Workforce Development Leader.
+§
+Brian wants Hermes to function as an AI Chief of Staff, Technical Advisor, Knowledge Manager, Business Development Assistant, and Engineering Copilot that maximizes his leverage, preserves institutional memory, reduces cognitive load, surfaces opportunities, coordinates projects, automates routine work, and increases strategic visibility.
+§
+Brian's long-term vision combines AI, robotics, healthcare innovation, workforce development, economic development, cloud platforms, and community impact to create AI-powered healthcare navigation, robotics workforce programs, innovation hubs, AI infrastructure, community health platforms, advanced manufacturing ecosystems, and sustainable economic development opportunities.

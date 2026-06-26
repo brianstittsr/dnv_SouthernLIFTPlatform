@@ -2,21 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { X, ArrowRight, Zap, Clock } from "lucide-react";
 import { getHomePageSettings } from "@/lib/firebase-home-settings";
 
 export function DiscountBanner() {
   const [settings, setSettings] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
+    const dismissed = sessionStorage.getItem("discount-banner-dismissed") === "true";
+
     const loadSettings = async () => {
       try {
         const data = await getHomePageSettings();
         setSettings(data);
-        setIsVisible(data.discountBannerEnabled);
+        setIsVisible(data.discountBannerEnabled && !dismissed);
       } catch (error) {
         console.error("Failed to load banner settings:", error);
       } finally {
@@ -27,59 +29,97 @@ export function DiscountBanner() {
     loadSettings();
   }, []);
 
-  const handleDismiss = () => {
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setIsVisible(false);
-    // Store dismissal in session storage
     sessionStorage.setItem("discount-banner-dismissed", "true");
   };
-
-  // Check if banner was previously dismissed
-  useEffect(() => {
-    if (sessionStorage.getItem("discount-banner-dismissed") === "true") {
-      setIsVisible(false);
-    }
-  }, []);
 
   if (isLoading || !isVisible || !settings) {
     return null;
   }
 
-  return (
+  const bg = settings.discountBannerBackgroundColor || "#c9a227";
+  const fg = settings.discountBannerTextColor || "#1e3a5f";
+  const hasLink = settings.discountBannerCtaText && settings.discountBannerCtaLink;
+
+  const inner = (
     <div
-      className="relative w-full py-3 px-4 text-center"
-      style={{
-        backgroundColor: settings.discountBannerBackgroundColor || "#dc2626",
-        color: settings.discountBannerTextColor || "#ffffff",
-      }}
+      className="relative w-full overflow-hidden"
+      style={{ backgroundColor: bg, color: fg }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
+      {/* Animated shimmer sweep */}
+      <div
+        className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_2.8s_ease-in-out_infinite]"
+        style={{
+          background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)",
+        }}
+      />
+
+      {/* Dismiss button */}
       <button
         onClick={handleDismiss}
-        className="absolute right-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
-        style={{ color: settings.discountBannerTextColor || "#ffffff" }}
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full p-1 transition-all hover:opacity-60"
+        style={{ color: fg }}
         aria-label="Dismiss banner"
       >
-        <X className="h-4 w-4" />
+        <X className="h-3.5 w-3.5" />
       </button>
-      <div className="flex items-center justify-center gap-4 flex-wrap">
-        <span className="text-sm font-medium">{settings.discountBannerText}</span>
-        {settings.discountBannerCtaText && settings.discountBannerCtaLink && (
-          <Button
-            asChild
-            size="sm"
-            variant="outline"
-            className="text-xs h-7"
+
+      {/* Main content */}
+      <div className="mx-auto flex max-w-5xl items-center justify-center gap-3 px-10 py-2.5 flex-wrap">
+        {/* Pulsing badge */}
+        <span
+          className="flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider animate-pulse"
+          style={{ backgroundColor: fg, color: bg }}
+        >
+          <Zap className="h-3 w-3" />
+          Limited Offer
+        </span>
+
+        {/* Message */}
+        <span className="text-sm font-semibold leading-snug">
+          {settings.discountBannerText}
+        </span>
+
+        {/* Urgency hint */}
+        <span className="hidden sm:flex items-center gap-1 text-xs font-medium opacity-75">
+          <Clock className="h-3 w-3" />
+          Offer ends soon
+        </span>
+
+        {/* CTA button */}
+        {hasLink && (
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold shadow-md transition-all duration-200"
             style={{
-              borderColor: settings.discountBannerTextColor || "#ffffff",
-              color: settings.discountBannerTextColor || "#ffffff",
-              backgroundColor: "transparent",
+              backgroundColor: fg,
+              color: bg,
+              transform: hovered ? "scale(1.07)" : "scale(1)",
+              boxShadow: hovered
+                ? `0 4px 18px ${fg}55`
+                : `0 2px 8px ${fg}33`,
             }}
           >
-            <Link href={settings.discountBannerCtaLink}>
-              {settings.discountBannerCtaText}
-            </Link>
-          </Button>
+            {settings.discountBannerCtaText}
+            <ArrowRight
+              className="h-3.5 w-3.5 transition-transform duration-200"
+              style={{ transform: hovered ? "translateX(3px)" : "translateX(0)" }}
+            />
+          </span>
         )}
       </div>
     </div>
+  );
+
+  return hasLink ? (
+    <Link href={settings.discountBannerCtaLink} className="block">
+      {inner}
+    </Link>
+  ) : (
+    inner
   );
 }
