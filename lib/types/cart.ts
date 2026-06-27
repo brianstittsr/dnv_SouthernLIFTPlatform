@@ -2,7 +2,7 @@
  * Cart and Product Type Definitions
  */
 
-export type ProductType = 'consortium' | 'cmmc-cohort' | 'founders';
+export type ProductType = 'consortium' | 'cmmc-cohort' | 'founders' | 'test-product';
 
 export interface Product {
   id: string;
@@ -26,6 +26,19 @@ export interface Cart {
 }
 
 export const PRODUCTS: Record<ProductType, Product> = {
+  'test-product': {
+    id: 'kdm-test-product',
+    type: 'test-product',
+    name: 'TEST PRODUCT',
+    description: '$1 test product for verifying Stripe checkout integration (admin use only)',
+    price: 1,
+    billingPeriod: 'one-time',
+    features: [
+      'Stripe checkout verification',
+      'Payment flow testing',
+      'Webhook validation',
+    ],
+  },
   'consortium': {
     id: 'kdm-consortium-membership',
     type: 'consortium',
