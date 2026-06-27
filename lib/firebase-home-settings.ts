@@ -31,7 +31,7 @@ export const defaultHomePageSettings: HomePageSettingsDoc = {
   
   // Discount Banner Settings
   discountBannerEnabled: true,
-  discountBannerText: "Limited Time Offer: Join the KDM Consortium for just $625/month - 50% off regular price!",
+  discountBannerText: "Limited Time Offer: Join the KDM Consortium for just $625/month — Save $600 off the regular price! Offer ends at the close of the HubZone Conference.",
   discountBannerCtaText: "Join Now",
   discountBannerCtaLink: "/pricing",
   discountBannerBackgroundColor: "#dc2626", // red-600

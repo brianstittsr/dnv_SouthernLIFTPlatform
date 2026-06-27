@@ -88,7 +88,7 @@ export function DiscountBanner() {
         {/* Urgency hint */}
         <span className="hidden sm:flex items-center gap-1 text-xs font-bold" style={{ color: "rgba(0,0,0,0.65)" }}>
           <Clock className="h-3.5 w-3.5" />
-          Offer ends soon
+          Ends at HubZone Conference
         </span>
 
         {/* CTA button */}

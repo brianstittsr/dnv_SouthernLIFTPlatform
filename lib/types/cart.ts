@@ -44,7 +44,7 @@ export const PRODUCTS: Record<ProductType, Product> = {
     type: 'consortium',
     name: 'KDM Consortium Membership',
     description: 'Join our exclusive network of government contractors and suppliers',
-    price: 650,
+    price: 625,
     billingPeriod: 'monthly',
     features: [
       'Curated federal opportunity alerts',
