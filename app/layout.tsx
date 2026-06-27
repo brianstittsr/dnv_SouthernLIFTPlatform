@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -128,6 +129,7 @@ export default function RootLayout({
         </a>
         {children}
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
