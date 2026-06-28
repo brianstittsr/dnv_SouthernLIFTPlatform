@@ -26,9 +26,28 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CMMC Level 1 Training - KDM - E3W | Strategic Value Plus",
-  description: "Join the next CMMC Level 1 training cohort. Team-based approach to cybersecurity compliance for DoD contractors. Achieve CMMC Level 1 certification in 90-180 days.",
-  keywords: ["CMMC Level 1 training", "CMMC Level 1 certification", "DoD compliance", "cybersecurity training", "NIST 800-171", "defense contractors"],
+  title: "CMMC Level 1 Cohort Training | KDM & Associates",
+  description:
+    "Join KDM & Associates' CMMC Level 1 cohort training program. A team-based 90-180 day approach to DoD cybersecurity compliance for defense contractors. Achieve CMMC certification and win federal contracts.",
+  keywords: [
+    "CMMC Level 1 training",
+    "CMMC cohort program",
+    "CMMC Level 1 certification",
+    "DoD cybersecurity training",
+    "NIST 800-171 training",
+    "defense contractor cybersecurity",
+    "CMMC compliance program",
+    "KDM CMMC training",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/cmmc-training" },
+  openGraph: {
+    title: "CMMC Level 1 Cohort Training | KDM & Associates",
+    description: "Team-based CMMC Level 1 certification in 90-180 days. KDM & Associates cohort training for defense contractors.",
+    url: "https://kdm-assoc.com/cmmc-training",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CMMC Cohort Training - KDM & Associates" }],
+  },
+  twitter: { card: "summary_large_image", title: "CMMC Training | KDM & Associates", description: "Achieve CMMC Level 1 in 90-180 days with KDM's cohort program." },
 };
 
 export default function CMMCTrainingPage() {

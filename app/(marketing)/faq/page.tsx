@@ -9,11 +9,30 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ArrowRight, HelpCircle } from "lucide-react";
+import { FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "FAQ",
+  title: "FAQ | Government Contracting Questions Answered | KDM & Associates",
   description:
-    "Frequently asked questions about KDM & Associates services, government contracting, and how we help emerging small businesses win federal contracts.",
+    "Answers to the most common questions about KDM & Associates: how we help small businesses win federal contracts, 8(a) certification, CMMC compliance, the KDM Consortium, teaming, and the MBDA Federal Procurement Center.",
+  keywords: [
+    "government contracting FAQ",
+    "8(a) certification questions",
+    "CMMC compliance FAQ",
+    "KDM Consortium FAQ",
+    "MBDA Federal Procurement Center FAQ",
+    "small business federal contracts questions",
+    "HUBZone FAQ",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/faq" },
+  openGraph: {
+    title: "FAQ | Government Contracting Questions Answered | KDM & Associates",
+    description: "Your top questions about federal contracting, CMMC, 8(a) certification, and the KDM Consortium — answered.",
+    url: "https://kdm-assoc.com/faq",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates FAQ" }],
+  },
+  twitter: { card: "summary_large_image", title: "FAQ | KDM & Associates", description: "Common questions about federal contracting, CMMC, and the KDM Consortium answered." },
 };
 
 const faqs = [
@@ -91,9 +110,16 @@ const faqs = [
   }
 ];
 
+const allFaqItems = faqs.flatMap((cat) => cat.questions);
+
 export default function FAQPage() {
   return (
     <>
+      <FAQJsonLd faqs={allFaqItems} />
+      <BreadcrumbJsonLd items={[
+        { name: "Home", url: "https://kdm-assoc.com" },
+        { name: "FAQ", url: "https://kdm-assoc.com/faq" },
+      ]} />
       {/* Hero Section */}
       <section className="py-20 md:py-28 bg-black text-white">
         <div className="container">

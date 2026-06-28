@@ -5,16 +5,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { services } from "@/lib/services-data";
+import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Government Contracting Services | KDM & Associates",
   description:
-    "KDM & Associates offers comprehensive services including digital solutions, technology integration, grants & RFPs, marketing, operations, and contracting vehicles for emerging small businesses.",
+    "KDM & Associates delivers expert government contracting services: 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small and diverse businesses.",
+  keywords: [
+    "government contracting services",
+    "8(a) certification",
+    "federal proposal support",
+    "CMMC compliance services",
+    "small business teaming",
+    "HUBZone consulting",
+    "WOSB SDVOSB support",
+    "federal procurement consulting",
+    "supplier diversity services",
+    "KDM Associates services",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/services" },
+  openGraph: {
+    title: "Government Contracting Services | KDM & Associates",
+    description:
+      "Expert 8(a), CMMC, proposal support, teaming, and capacity-building services for diverse small businesses pursuing federal contracts.",
+    url: "https://kdm-assoc.com/services",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Services" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Government Contracting Services | KDM & Associates",
+    description: "8(a), CMMC, teaming, proposal support and more for diverse small businesses.",
+  },
 };
 
 export default function ServicesPage() {
   return (
     <>
+      <ServiceJsonLd
+        name="Government Contracting Services"
+        description="KDM & Associates delivers expert government contracting services including 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small and diverse businesses."
+        url="https://kdm-assoc.com/services"
+      />
+      <BreadcrumbJsonLd items={[
+        { name: "Home", url: "https://kdm-assoc.com" },
+        { name: "Services", url: "https://kdm-assoc.com/services" },
+      ]} />
       {/* Hero Section */}
       <section className="py-20 md:py-28 bg-black text-white">
         <div className="container">

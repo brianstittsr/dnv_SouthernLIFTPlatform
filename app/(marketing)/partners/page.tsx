@@ -15,9 +15,26 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Partners",
+  title: "Strategic Partners | KDM & Associates",
   description:
-    "Join the KDM & Associates partner network. We connect solution providers with emerging small businesses to drive mutual success in government contracting.",
+    "KDM & Associates partners with SBA, MBDA, and leading solution providers to connect diverse small businesses with federal contracting opportunities, capital access, and compliance resources.",
+  keywords: [
+    "KDM Associates partners",
+    "MBDA Federal Procurement Center partners",
+    "SBA partner network",
+    "government contracting partners",
+    "small business partner program",
+    "supplier diversity partners",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/partners" },
+  openGraph: {
+    title: "Strategic Partners | KDM & Associates",
+    description: "Our partner ecosystem connects diverse businesses with the resources, capital, and relationships needed to win federal contracts.",
+    url: "https://kdm-assoc.com/partners",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Partners" }],
+  },
+  twitter: { card: "summary_large_image", title: "Strategic Partners | KDM & Associates", description: "SBA, MBDA, and solutions partners powering diverse business success in federal markets." },
 };
 
 const partnerBenefits = [

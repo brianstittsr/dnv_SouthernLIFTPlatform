@@ -15,9 +15,27 @@ import {
 import { getAllArticles } from "@/lib/articles-data";
 
 export const metadata: Metadata = {
-  title: "News & Insights",
+  title: "News & Insights | KDM & Associates",
   description:
-    "Stay informed with the latest news, insights, and updates from KDM Associates on quality management, ISO certification, CMMC compliance, and industry trends.",
+    "Latest news, federal contracting updates, CMMC insights, HUBZone opportunities, and government procurement news from KDM & Associates — your MBDA Federal Procurement Center.",
+  keywords: [
+    "government contracting news",
+    "CMMC updates",
+    "federal procurement news",
+    "HUBZone news",
+    "small business contracting insights",
+    "MBDA news",
+    "KDM Associates news",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/news" },
+  openGraph: {
+    title: "News & Insights | KDM & Associates",
+    description: "Federal contracting news, CMMC updates, and government procurement insights from KDM & Associates.",
+    url: "https://kdm-assoc.com/news",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates News" }],
+  },
+  twitter: { card: "summary_large_image", title: "News & Insights | KDM & Associates", description: "Federal contracting and CMMC news from KDM & Associates." },
 };
 
 // Get all articles from the data file

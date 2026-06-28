@@ -7,9 +7,25 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Linkedin, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Leadership Team",
+  title: "Leadership Team | KDM & Associates",
   description:
-    "Meet the Strategic Value+ leadership team - veteran experts driving manufacturing transformation.",
+    "Meet the KDM & Associates leadership team — seasoned experts in federal procurement, MBDA operations, government contracting, manufacturing, and CMMC compliance driving success for diverse businesses.",
+  keywords: [
+    "KDM Associates leadership",
+    "Keith Moore CEO",
+    "MBDA Federal Procurement Center team",
+    "government contracting experts",
+    "federal procurement consultants",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/leadership" },
+  openGraph: {
+    title: "Leadership Team | KDM & Associates",
+    description: "Seasoned federal procurement and CMMC experts leading KDM & Associates.",
+    url: "https://kdm-assoc.com/leadership",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Leadership" }],
+  },
+  twitter: { card: "summary_large_image", title: "Leadership | KDM & Associates", description: "Meet the experts behind KDM & Associates' federal contracting success." },
 };
 
 const leadershipTeam = [

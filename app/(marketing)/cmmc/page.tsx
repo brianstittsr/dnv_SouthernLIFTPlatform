@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -21,14 +22,44 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CMMC Certification & Compliance | KDM & Associates",
-  description: "Achieve CMMC compliance and secure DoD contracts. Expert guidance, training, and support for defense contractors navigating cybersecurity requirements.",
-  keywords: "CMMC, CMMC certification, DoD compliance, defense contractors, cybersecurity, NIST 800-171, federal contracting, CMMC training",
+  title: "CMMC Certification & Compliance Consulting | KDM & Associates",
+  description:
+    "KDM & Associates provides CMMC 2.0 compliance consulting and cohort training for defense contractors. Achieve DoD cybersecurity certification, NIST 800-171 readiness, and win more federal defense contracts.",
+  keywords: [
+    "CMMC certification",
+    "CMMC 2.0 compliance",
+    "DoD cybersecurity compliance",
+    "NIST 800-171 consulting",
+    "defense contractor CMMC",
+    "CMMC training program",
+    "minority business CMMC certification",
+    "federal defense contracts cybersecurity",
+    "CMMC cohort",
+    "KDM CMMC consulting",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/cmmc" },
+  openGraph: {
+    title: "CMMC Certification & Compliance Consulting | KDM & Associates",
+    description: "Expert CMMC 2.0 compliance consulting and cohort training. Win DoD contracts with confidence.",
+    url: "https://kdm-assoc.com/cmmc",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CMMC Compliance Consulting - KDM & Associates" }],
+  },
+  twitter: { card: "summary_large_image", title: "CMMC Compliance | KDM & Associates", description: "CMMC 2.0 consulting and training for defense contractors. Win DoD contracts." },
 };
 
 export default function CMMCPage() {
   return (
     <div className="min-h-screen">
+      <ServiceJsonLd
+        name="CMMC Certification & Compliance Consulting"
+        description="KDM & Associates provides CMMC 2.0 compliance consulting and cohort training for defense contractors navigating DoD cybersecurity requirements."
+        url="https://kdm-assoc.com/cmmc"
+      />
+      <BreadcrumbJsonLd items={[
+        { name: "Home", url: "https://kdm-assoc.com" },
+        { name: "CMMC", url: "https://kdm-assoc.com/cmmc" },
+      ]} />
       {/* Hero Section */}
       <section className="relative text-white py-20 md:py-32">
         {/* Background Image */}

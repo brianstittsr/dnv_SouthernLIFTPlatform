@@ -18,9 +18,27 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "About KDM & Associates | MBDA Federal Procurement Center",
   description:
-    "Learn about KDM & Associates and our mission to help businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+    "KDM & Associates is a minority-owned business development firm and MBDA Federal Procurement Center operator helping diverse small businesses win government contracts through strategic teaming, capacity building, CMMC compliance, and mentorship.",
+  keywords: [
+    "about KDM Associates",
+    "MBDA Federal Procurement Center",
+    "minority owned business development",
+    "diverse business government contracting",
+    "government contracting consulting firm",
+    "Keith Moore KDM Associates",
+    "Washington DC government contracting",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/about" },
+  openGraph: {
+    title: "About KDM & Associates | MBDA Federal Procurement Center",
+    description: "Minority-owned MBDA Federal Procurement Center helping diverse businesses win government contracts through teaming, CMMC, and mentorship.",
+    url: "https://kdm-assoc.com/about",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About KDM & Associates" }],
+  },
+  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "MBDA Federal Procurement Center helping diverse small businesses win government contracts." },
 };
 
 const values = [

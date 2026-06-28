@@ -102,9 +102,6 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
     creator: "@mbdafpcenter",
   },
-  verification: {
-    google: "your-google-verification-code",
-  },
   category: "business",
 };
 

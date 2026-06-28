@@ -14,9 +14,26 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Our Work",
+  title: "Our Work | Federal Contract Wins & Case Studies | KDM & Associates",
   description:
-    "See how KDM & Associates has helped emerging small businesses win government contracts and build sustainable businesses through strategic teaming and capacity building.",
+    "See KDM & Associates case studies and success stories: diverse small businesses that won federal contracts, achieved 8(a) certification, completed CMMC readiness, and built sustainable government contracting operations.",
+  keywords: [
+    "government contracting case studies",
+    "8(a) success stories",
+    "small business federal contract wins",
+    "CMMC readiness results",
+    "KDM Associates client results",
+    "diverse business contract wins",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/our-work" },
+  openGraph: {
+    title: "Our Work | Federal Contract Wins & Case Studies | KDM & Associates",
+    description: "Real results: diverse small businesses winning federal contracts with KDM & Associates.",
+    url: "https://kdm-assoc.com/our-work",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Our Work" }],
+  },
+  twitter: { card: "summary_large_image", title: "Our Work | KDM & Associates", description: "Case studies of diverse businesses winning federal contracts with KDM support." },
 };
 
 const stats = [

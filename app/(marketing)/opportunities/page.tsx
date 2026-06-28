@@ -15,9 +15,27 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Opportunities",
+  title: "Federal Contract Opportunities | KDM & Associates",
   description:
-    "Explore career opportunities, partnership programs, and business development opportunities with KDM Associates.",
+    "Explore federal contracting opportunities, teaming partnerships, and business development programs available through the KDM Consortium and MBDA Federal Procurement Center.",
+  keywords: [
+    "federal contract opportunities",
+    "government teaming opportunities",
+    "small business federal contracts",
+    "HUBZone opportunities",
+    "8(a) business opportunities",
+    "KDM Consortium opportunities",
+    "MBDA procurement opportunities",
+  ],
+  alternates: { canonical: "https://kdm-assoc.com/opportunities" },
+  openGraph: {
+    title: "Federal Contract Opportunities | KDM & Associates",
+    description: "Federal contracting opportunities and teaming programs through the KDM Consortium and MBDA Federal Procurement Center.",
+    url: "https://kdm-assoc.com/opportunities",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM Federal Contract Opportunities" }],
+  },
+  twitter: { card: "summary_large_image", title: "Federal Opportunities | KDM & Associates", description: "Federal contracting and teaming opportunities through the KDM Consortium." },
 };
 
 const careerOpportunities = [
