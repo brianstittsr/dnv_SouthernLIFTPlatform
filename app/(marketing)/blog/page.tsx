@@ -16,6 +16,7 @@ import {
   Layers,
   Lightbulb,
   Gem,
+  FileSearch,
 } from "lucide-react";
 import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
 import { BlogListJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
@@ -70,6 +71,7 @@ const categoryIcons: Record<BlogCategory, React.ElementType> = {
   "Opportunity Zones": MapPin,
   "Cross-Cutting Strategic Topics": Layers,
   "Thought Leadership & Case Studies": Lightbulb,
+  "Contract Opportunities": FileSearch,
 };
 
 const categoryColors: Record<BlogCategory, string> = {
@@ -80,6 +82,7 @@ const categoryColors: Record<BlogCategory, string> = {
   "Opportunity Zones": "bg-rose-100 text-rose-800",
   "Cross-Cutting Strategic Topics": "bg-cyan-100 text-cyan-800",
   "Thought Leadership & Case Studies": "bg-indigo-100 text-indigo-800",
+  "Contract Opportunities": "bg-orange-100 text-orange-800",
 };
 
 const categoryFallbackImages: Record<BlogCategory, string> = {
@@ -89,7 +92,8 @@ const categoryFallbackImages: Record<BlogCategory, string> = {
   "Access to Capital": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
   "Opportunity Zones": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
   "Cross-Cutting Strategic Topics": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
-  "Thought Leadership & Case Studies": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80",
+  "Thought Leadership & Case Studies": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
+  "Contract Opportunities": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
 };
 
 export default async function BlogPage() {

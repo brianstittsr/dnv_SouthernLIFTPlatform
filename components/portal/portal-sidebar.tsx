@@ -651,6 +651,12 @@ const svpAdminItems = [
     badge: "AI",
   },
   {
+    title: "Site Assistant",
+    href: "/portal/admin/site-assistant",
+    icon: Bot,
+    badge: "AI",
+  },
+  {
     title: "Header & Footer",
     href: "/portal/admin/header-footer",
     icon: Layout,

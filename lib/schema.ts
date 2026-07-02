@@ -2423,6 +2423,8 @@ export const COLLECTIONS = {
   AI_RFP_PROCESSING: "aiRfpProcessing",
   AI_TEAMMING_RECOMMENDATIONS: "aiTeamingRecommendations",
   CONTRACT_FLOOR_ANALYSES: "contractFloorAnalyses",
+  // Site Implementation Assistant
+  SITE_CHANGE_REQUESTS: "site_change_requests",
   // Client Registration Collection
   CLIENT_REGISTRATIONS: "clientRegistrations",
 } as const;

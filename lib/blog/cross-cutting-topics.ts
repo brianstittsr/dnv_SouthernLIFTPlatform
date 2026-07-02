@@ -1040,7 +1040,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["Policy", "Manufacturing", "Administration", "Trade", "Defense"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80",
     content: `The current administration has placed manufacturing at the center of its economic and national security agenda. From tariff policies to reshoring incentives to defense spending priorities, the policy landscape has shifted significantly. For manufacturers—especially those in or entering the defense market—understanding these changes is essential to strategic planning.
 
 ## Key Policy Changes
@@ -1175,7 +1175,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["ROI", "Government Contracting", "Small Business", "Financial Analysis"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&q=80",
     content: `One of the most common questions from small businesses considering government contracting is: "Is it worth the investment?" The answer, based on data from thousands of successful small defense contractors, is a resounding yes—but only if you understand the costs, timeline, and realistic returns.
 
 ## The Investment Required
@@ -1317,7 +1317,7 @@ ${BLOG_CTA}`
     category: "Cross-Cutting Strategic Topics",
     tags: ["MBDA", "Federal Procurement", "Strategy", "KDM", "Legacy"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&q=80",
     content: `The Small Business Development Agency (MBDA) Federal Procurement Center (FPC) built a legacy of helping businesses win government contracts. When operations transitioned to KDM & Associates, LLC, the proven strategies, relationships, and methodologies didn't disappear—they evolved. Here's how the strategies that worked at MBDA continue to deliver results in the private sector.
 
 ## The MBDA Legacy

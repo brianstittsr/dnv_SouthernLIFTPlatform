@@ -1239,7 +1239,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Reshoring", "Manufacturing", "Defense Contracts", "Supply Chain"],
     readTime: 10,
-    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=800&q=80",
     content: `The reshoring of American manufacturing isn't just a trend--it's a strategic imperative backed by hundreds of billions in federal investment. For small manufacturers, this represents the most significant opportunity in a generation to enter or expand in the defense contracting market. Understanding the reshoring landscape and positioning your business to capture these opportunities can transform your company's growth trajectory.
 
 ## The Reshoring Landscape in 2026: A Movement Accelerating
@@ -2081,6 +2081,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["China", "Manufacturing", "National Security", "Supply Chain", "Reshoring"],
     readTime: 11,
+    imageUrl: "https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=800&q=80",
     content: `The United States faces a manufacturing dependency crisis that threatens both national security and economic prosperity. China's dominance in critical manufacturing sectors--from rare earth minerals to electronics to pharmaceuticals--has created vulnerabilities that adversaries could exploit in a conflict. Understanding this challenge is essential for any manufacturer seeking to participate in the defense industrial base, and it creates unprecedented opportunities for domestic suppliers ready to fill the gaps.
 
 ## The Scope of the China Manufacturing Dependency Problem
@@ -2356,6 +2357,7 @@ Whether you're a **small manufacturer seeking defense contracts**, a **governmen
     category: "U.S. Manufacturing",
     tags: ["Quality Management", "Manufacturing", "Defense", "AS9100", "ISO 9001"],
     readTime: 10,
+    imageUrl: "https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?w=800&q=80",
     content: `In defense manufacturing, quality isn't just important--it's everything. A defective part in a commercial product might cause an inconvenience. A defective part in a weapons system can cost lives, compromise missions, and jeopardize national security. That's why the Department of Defense and prime contractors hold their suppliers to the highest quality standards in the world.
 
 For small manufacturers seeking defense contracts, building a robust, defense-grade quality management system (QMS) is the single most important investment you can make. It's the foundation that everything else rests upon, and it's what separates qualified suppliers from those who never break into the defense market.

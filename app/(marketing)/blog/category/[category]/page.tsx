@@ -15,6 +15,17 @@ import {
 import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
+const categoryFallbackImages: Record<BlogCategory, string> = {
+  "U.S. Manufacturing": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+  "Critical Minerals": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
+  "Defense Contracting & CMMC": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+  "Access to Capital": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+  "Opportunity Zones": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+  "Cross-Cutting Strategic Topics": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+  "Thought Leadership & Case Studies": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
+  "Contract Opportunities": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
+};
+
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
 }
@@ -97,17 +108,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (
               <Card key={post.slug} className="group hover:shadow-lg transition-all flex flex-col overflow-hidden">
-                {post.imageUrl && (
-                  <div className="aspect-video bg-muted relative overflow-hidden">
-                    <Image
-                      src={post.imageUrl}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                )}
+                <div className="aspect-video bg-muted relative overflow-hidden">
+                  <Image
+                    src={post.imageUrl || categoryFallbackImages[post.category]}
+                    alt={post.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
                 <CardHeader className="flex-1">
                   <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}

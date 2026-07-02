@@ -18,7 +18,8 @@ export type BlogCategory =
   | "Access to Capital"
   | "Opportunity Zones"
   | "Cross-Cutting Strategic Topics"
-  | "Thought Leadership & Case Studies";
+  | "Thought Leadership & Case Studies"
+  | "Contract Opportunities";
 
 export const BLOG_CATEGORIES: BlogCategory[] = [
   "U.S. Manufacturing",
@@ -28,6 +29,7 @@ export const BLOG_CATEGORIES: BlogCategory[] = [
   "Opportunity Zones",
   "Cross-Cutting Strategic Topics",
   "Thought Leadership & Case Studies",
+  "Contract Opportunities",
 ];
 
 export const BLOG_CTA = `

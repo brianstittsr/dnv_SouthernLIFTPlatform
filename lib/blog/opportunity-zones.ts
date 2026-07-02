@@ -467,7 +467,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Opportunity Zones", "Defense Manufacturing", "Investment", "Strategy"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1590859808308-3d2d9c515b1a?w=800&q=80",
     content: `The convergence of Opportunity Zone tax incentives and the defense manufacturing reshoring trend creates one of the most compelling investment strategies of 2026. By locating defense manufacturing facilities in designated Opportunity Zones, investors and manufacturers can achieve significant tax savings while contributing to national security and community economic development.
 
 ## The Investment Thesis
@@ -791,7 +791,7 @@ ${BLOG_CTA}`
     category: "Opportunity Zones",
     tags: ["Federal Contracts", "Opportunity Zones", "Tax Strategy", "Business Growth"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80",
     content: `Federal contracts provide stable, long-term revenue. Opportunity Zones provide powerful tax incentives. Combining the two creates a business strategy that maximizes both income and tax efficiency. This guide shows you how to structure this powerful combination.
 
 ## The Synergy: Federal Contracts + Opportunity Zones

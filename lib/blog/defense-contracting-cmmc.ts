@@ -733,7 +733,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["CMMC", "Defense Industrial Base", "Contracts", "Opportunity"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1624953587687-daf255b6b80a?w=800&q=80",
     content: `The Defense Industrial Base (DIB) represents one of the largest and most stable markets in the world. With annual spending exceeding $400 billion, the DoD is the world's largest buyer of goods and services. CMMC certification is rapidly becoming the key that unlocks this market.
 
 ## The DIB Market Opportunity
@@ -1422,7 +1422,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["SAM.gov", "Registration", "Federal Contracts", "Getting Started"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1568667256549-094345857637?w=800&q=80",
     content: `Every journey into federal contracting begins with SAM.gov registration. The System for Award Management is the federal government's official database of vendors, and no agency can award you a contract without it. While the process is free, it can be confusing for first-timers. This guide walks you through every step.
 
 ## What Is SAM.gov?
@@ -1586,6 +1586,7 @@ ${BLOG_CTA}`
     category: "Defense Contracting & CMMC",
     tags: ["NAICS Codes", "Defense Manufacturing", "Small Business", "Classification"],
     readTime: 8,
+    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
     content: `NAICS codes might seem like a minor administrative detail, but they're actually one of the most strategic decisions you'll make in defense contracting. The codes you select determine which contracts you can bid on, whether you qualify as a small business, and how government buyers find you. Getting them right is essential.
 
 ## What Are NAICS Codes?

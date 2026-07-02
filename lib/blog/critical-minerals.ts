@@ -549,7 +549,7 @@ ${BLOG_CTA}`
     category: "Critical Minerals",
     tags: ["DOE", "Critical Minerals", "Supply Chain", "Energy", "Policy"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
     content: `The Department of Energy (DOE) has undertaken a significant realignment of its critical minerals programs, consolidating efforts across multiple offices into a more focused, strategic approach. For manufacturers, defense contractors, and supply chain professionals, understanding these changes is essential to accessing funding, partnerships, and market opportunities.
 
 ## What Changed
@@ -676,7 +676,7 @@ ${BLOG_CTA}`
     category: "Critical Minerals",
     tags: ["Critical Minerals", "Supply Chain", "Mining", "Processing", "Manufacturing"],
     readTime: 10,
-    imageUrl: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1530533718754-001d2668365a?w=800&q=80",
     content: `The critical minerals supply chain is one of the most complex and strategically important value chains in the global economy. Understanding how minerals move from mine to market is essential for any business seeking to participate in this growing sector. This guide breaks down each stage of the supply chain and identifies where opportunities exist for small and medium-sized businesses.
 
 ## The Supply Chain Stages
@@ -1136,7 +1136,7 @@ ${BLOG_CTA}`
     category: "Critical Minerals",
     tags: ["Critical Minerals", "Compliance", "Processing", "Regulations"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=800&q=80",
     content: `The critical minerals processing sector is experiencing a regulatory transformation in 2026. New environmental standards, domestic content requirements, and incentive programs are creating a complex but opportunity-rich landscape for businesses. Understanding the compliance requirements is essential to capturing the available opportunities.
 
 ## The Regulatory Landscape

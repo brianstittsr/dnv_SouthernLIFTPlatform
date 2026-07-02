@@ -7,6 +7,7 @@ import { opportunityZonesPosts } from "./opportunity-zones";
 import { crossCuttingTopicsPosts } from "./cross-cutting-topics";
 import { thoughtLeadershipPosts } from "./thought-leadership";
 import { getLinkedinImportedPosts } from "./linkedin-imports";
+import { contractOpportunityPosts } from "./contract-opportunities";
 
 export type { BlogPost, BlogCategory };
 export { BLOG_CATEGORIES };
@@ -20,6 +21,7 @@ const staticBlogPosts: BlogPost[] = [
   ...opportunityZonesPosts,
   ...crossCuttingTopicsPosts,
   ...thoughtLeadershipPosts,
+  ...contractOpportunityPosts,
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 /** All blog posts including static ones (kept for backward compat / sitemap) */

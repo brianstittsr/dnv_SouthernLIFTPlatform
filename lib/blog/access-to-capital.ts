@@ -771,7 +771,7 @@ ${BLOG_CTA}`
     category: "Access to Capital",
     tags: ["Private Equity", "Investment", "Defense", "Manufacturing"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1559526324-593bc073d938?w=800&q=80",
     content: `Private equity investment in defense suppliers has surged in recent years, driven by growing defense budgets, reshoring trends, and the critical need to rebuild domestic manufacturing capacity. For small defense manufacturers, PE investment can provide the capital needed to scale operations, invest in technology, and pursue larger contracts. But attracting PE requires understanding what investors want.
 
 ## Why PE Firms Are Interested in Defense
@@ -1099,7 +1099,7 @@ ${BLOG_CTA}`
     category: "Access to Capital",
     tags: ["Documentation", "Investment", "Financial Planning", "Proof Pack"],
     readTime: 8,
-    imageUrl: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1543286386-713bdd548da4?w=800&q=80",
     content: `Every funding source—whether it's a bank, government agency, or private equity firm—needs to see evidence that your business is a sound investment. A Financial Proof Pack is the documentation package that provides this evidence. Building a compelling one is an art and a science.
 
 ## What Is a Financial Proof Pack?
@@ -1273,7 +1273,7 @@ ${BLOG_CTA}`
     category: "Access to Capital",
     tags: ["Alternative Financing", "Government Contractors", "Capital", "Factoring"],
     readTime: 9,
-    imageUrl: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=800&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
     content: `Government contractors face unique financing challenges: long payment cycles, mobilization costs, and the need to invest in compliance before revenue flows. Traditional banks often don't understand these dynamics. Fortunately, a growing ecosystem of alternative financing solutions is designed specifically for government contractors.
 
 ## The Government Contractor's Financing Challenge
