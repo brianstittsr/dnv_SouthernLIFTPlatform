@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
           <p>In the meantime, feel free to explore our resources or contact us directly:</p>
           <ul>
             <li>Email: <a href="mailto:kmoore@kdm-assoc.com">kmoore@kdm-assoc.com</a></li>
-            <li>Phone: (202) 469-3423</li>
+            <li>Phone: (513) 335-1978</li>
           </ul>
           <p>Best regards,<br>The KDM & Associates Team</p>
         `,
