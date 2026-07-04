@@ -29,7 +29,7 @@ interface VercelAnalyticsAPIResponse {
   topSources?: Array<{
     source: string;
     value: number;
-  }>>;
+  }>;
 }
 
 function formatDate(date: Date): string {
