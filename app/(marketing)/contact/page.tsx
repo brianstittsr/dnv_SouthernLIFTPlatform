@@ -352,10 +352,10 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium">Phone</p>
                       <Link
-                        href="tel:+1-513-335-1978"
+                        href="tel:+1-202-469-3423"
                         className="text-muted-foreground hover:text-primary"
                       >
-                        (513) 335-1978
+                        (202) 469-3423
                       </Link>
                     </div>
                   </div>
