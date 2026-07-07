@@ -289,6 +289,27 @@ export interface AffiliateBiographyDoc {
   updatedAt: Timestamp;
 }
 
+/** Affiliate Application document (e.g., founding member affiliate registration) */
+export interface AffiliateApplicationDoc {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  companyName: string;
+  jobTitle?: string;
+  expertise: string[];
+  valueProposition?: string;
+  source: string;
+  isFoundingMember: boolean;
+  status: "pending" | "approved" | "rejected";
+  reviewedBy?: string;
+  reviewedAt?: Timestamp;
+  notes?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 /** GAINS Profile document (Goals, Accomplishments, Interests, Networks, Skills) */
 export interface GainsProfileDoc {
   id: string;
@@ -2342,6 +2363,7 @@ export const COLLECTIONS = {
   SETTLEMENTS: "settlements",
   // Affiliate Networking Collections
   AFFILIATE_BIOGRAPHIES: "affiliateBiographies",
+  AFFILIATE_APPLICATIONS: "affiliateApplications",
   GAINS_PROFILES: "gainsProfiles",
   CONTACT_SPHERES: "contactSpheres",
   PREVIOUS_CUSTOMERS: "previousCustomers",
@@ -2491,6 +2513,7 @@ export const notesCollection = () => getCollection<NoteDoc>(COLLECTIONS.NOTES);
 
 // Affiliate Networking collection references
 export const affiliateBiographiesCollection = () => getCollection<AffiliateBiographyDoc>(COLLECTIONS.AFFILIATE_BIOGRAPHIES);
+export const affiliateApplicationsCollection = () => getCollection<AffiliateApplicationDoc>(COLLECTIONS.AFFILIATE_APPLICATIONS);
 export const gainsProfilesCollection = () => getCollection<GainsProfileDoc>(COLLECTIONS.GAINS_PROFILES);
 export const contactSpheresCollection = () => getCollection<ContactSphereDoc>(COLLECTIONS.CONTACT_SPHERES);
 export const previousCustomersCollection = () => getCollection<PreviousCustomersDoc>(COLLECTIONS.PREVIOUS_CUSTOMERS);
