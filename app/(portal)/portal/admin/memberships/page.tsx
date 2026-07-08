@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { 
   Users, 
@@ -67,17 +67,21 @@ interface membership {
   createdAt: Timestamp;
 }
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
   'active': { label: 'Active', color: 'bg-green-100 text-green-800', icon: CheckCircle },
   'trialing': { label: 'Trial', color: 'bg-blue-100 text-blue-800', icon: Clock },
   'past_due': { label: 'Past Due', color: 'bg-yellow-100 text-yellow-800', icon: AlertCircle },
   'cancelled': { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: XCircle },
+  'canceled': { label: 'Canceled', color: 'bg-red-100 text-red-800', icon: XCircle },
 };
 
-const TIER_CONFIG = {
+const TIER_CONFIG: Record<string, { label: string; color: string }> = {
   'core-capture': { label: 'Core Capture', color: 'bg-blue-100 text-blue-800' },
   'pursuit-pack': { label: 'Pursuit Pack', color: 'bg-green-100 text-green-800' },
   'custom': { label: 'Custom', color: 'bg-purple-100 text-purple-800' },
+  'founder': { label: 'Founder', color: 'bg-amber-100 text-amber-800' },
+  'standard': { label: 'Standard', color: 'bg-gray-100 text-gray-800' },
+  'elite': { label: 'Elite', color: 'bg-indigo-100 text-indigo-800' },
 };
 
 export default function membershipsAdminPage() {
@@ -282,6 +286,34 @@ export default function membershipsAdminPage() {
     }).format(value / 100);
   };
 
+  const toDate = (timestamp: unknown): Date | null => {
+    if (!timestamp) return null;
+    if (timestamp instanceof Timestamp) return timestamp.toDate();
+    if (typeof timestamp === 'object' && timestamp !== null && 'toDate' in timestamp && typeof (timestamp as { toDate: () => Date }).toDate === 'function') {
+      try {
+        return (timestamp as { toDate: () => Date }).toDate();
+      } catch {
+        return null;
+      }
+    }
+    if (timestamp instanceof Date) return timestamp;
+    if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+      const parsed = new Date(timestamp);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+    return null;
+  };
+
+  const formatTimestamp = (timestamp: unknown, fallback = 'N/A'): string => {
+    const date = toDate(timestamp);
+    if (!date) return fallback;
+    try {
+      return format(date, 'MMM d, yyyy');
+    } catch {
+      return fallback;
+    }
+  };
+
   const getStats = () => {
     const active = memberships.filter(m => m.status === 'active').length;
     const trialing = memberships.filter(m => m.status === 'trialing').length;
@@ -418,8 +450,8 @@ export default function membershipsAdminPage() {
             </TableHeader>
             <TableBody>
               {filteredmemberships.map(membership => {
-                const statusConfig = STATUS_CONFIG[membership.status];
-                const tierConfig = TIER_CONFIG[membership.tier];
+                const statusConfig = STATUS_CONFIG[membership.status] || { label: membership.status || 'Unknown', color: 'bg-gray-100 text-gray-800', icon: AlertCircle };
+                const tierConfig = TIER_CONFIG[membership.tier] || { label: membership.tier || 'Unknown', color: 'bg-gray-100 text-gray-800' };
                 const StatusIcon = statusConfig.icon;
 
                 return (
@@ -445,7 +477,7 @@ export default function membershipsAdminPage() {
                     <TableCell className="capitalize">{membership.billingCycle}</TableCell>
                     <TableCell>{formatCurrency(membership.amount)}</TableCell>
                     <TableCell>
-                      {format(membership.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
+                      {formatTimestamp(membership.currentPeriodEnd)}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
@@ -510,7 +542,7 @@ export default function membershipsAdminPage() {
                 <Calendar className="h-4 w-4 mr-2" />
                 Cancel at period end
                 <span className="ml-auto text-xs text-muted-foreground">
-                  {selectedmembership && format(selectedmembership.currentPeriodEnd.toDate(), 'MMM d, yyyy')}
+                  {selectedmembership && formatTimestamp(selectedmembership.currentPeriodEnd)}
                 </span>
               </Button>
               <Button 
