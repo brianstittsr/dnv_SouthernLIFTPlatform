@@ -7,163 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
 import {
   Target,
-  CheckCircle,
   Zap,
   Settings,
   Building2,
   MapPin,
   DollarSign,
   ArrowRight,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
   Star,
   Users,
-  Award,
-  Shield,
-  X,
-  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
-// Mock consortium members data
-const MOCK_MEMBERS = [
-  {
-    id: "1",
-    name: "Acme Manufacturing Solutions",
-    logo: "",
-    aiMatchingScore: 92,
-    readinessScore: 88,
-    companyIntelligenceComplete: true,
-    strengths: [
-      "Advanced CNC machining capabilities",
-      "ISO 9001:2015 certified",
-      "Strong DoD contract history",
-      "CMMC Level 2 certified",
-    ],
-    deficiencies: [
-      "Limited experience with GSA schedules",
-      "Geographic coverage limited to Northeast",
-    ],
-    teamingRecommendations: [
-      "Partner with electronics assembly firms for complete solutions",
-      "Consider joint ventures with logistics providers",
-    ],
-    naicsCodes: ["332710", "332720", "333120"],
-    certifications: ["ISO 9001", "CMMC Level 2", "8(a)"],
-    regions: ["Northeast", "Mid-Atlantic"],
-    contractSizes: ["$1M-5M", "$5M-10M"],
-  },
-  {
-    id: "2",
-    name: "CyberShield Technologies",
-    logo: "",
-    aiMatchingScore: 88,
-    readinessScore: 92,
-    companyIntelligenceComplete: true,
-    strengths: [
-      "CMMC Level 3 certified",
-      "Expert cybersecurity team",
-      "Federal clearance holders",
-      "Strong software development capabilities",
-    ],
-    deficiencies: [
-      "Limited manufacturing capabilities",
-      "Small team size limits large contracts",
-    ],
-    teamingRecommendations: [
-      "Partner with hardware manufacturers for integrated solutions",
-      "Teaming with larger primes for major contracts",
-    ],
-    naicsCodes: ["541512", "541511", "334290"],
-    certifications: ["CMMC Level 3", "ISO 27001", "SDVOSB"],
-    regions: ["National"],
-    contractSizes: ["$500K-1M", "$1M-5M"],
-  },
-  {
-    id: "3",
-    name: "Federal Logistics Partners",
-    logo: "",
-    aiMatchingScore: 85,
-    readinessScore: 78,
-    companyIntelligenceComplete: true,
-    strengths: [
-      "Extensive supply chain network",
-      "GSA Schedule holder",
-      "Large geographic coverage",
-      "Proven track record with DoD",
-    ],
-    deficiencies: [
-      "Limited technical capabilities",
-      "No CMMC certification",
-    ],
-    teamingRecommendations: [
-      "Partner with technology firms for value-added services",
-      "Consider CMMC certification for cybersecurity contracts",
-    ],
-    naicsCodes: ["484110", "493110", "423430"],
-    certifications: ["GSA Schedule", "HUBZone", "WOSB"],
-    regions: ["National", "International"],
-    contractSizes: ["$5M-10M", "$10M+"],
-  },
-  {
-    id: "4",
-    name: "Precision Components Inc",
-    logo: "",
-    aiMatchingScore: 78,
-    readinessScore: 65,
-    companyIntelligenceComplete: false,
-    strengths: [
-      "Specialized precision machining",
-      "Strong aerospace experience",
-      "Quality control excellence",
-    ],
-    deficiencies: [
-      "No federal certifications",
-      "Limited contract history",
-      "Small operational scale",
-    ],
-    teamingRecommendations: [
-      "Seek mentor-protégé relationship with larger contractors",
-      "Pursue 8(a) certification for set-aside opportunities",
-    ],
-    naicsCodes: ["332710", "332813"],
-    certifications: ["ISO 9001"],
-    regions: ["Southeast"],
-    contractSizes: ["$100K-500K", "$500K-1M"],
-  },
-  {
-    id: "5",
-    name: "Integrated Defense Systems",
-    logo: "",
-    aiMatchingScore: 95,
-    readinessScore: 96,
-    companyIntelligenceComplete: true,
-    strengths: [
-      "Full-system integration capabilities",
-      "Multiple GSA schedules",
-      "Large prime contractor experience",
-      "CMMC Level 2 certified",
-      "Strong financial position",
-    ],
-    deficiencies: [
-      "High cost structure",
-      "Limited flexibility on small contracts",
-    ],
-    teamingRecommendations: [
-      "Ideal prime for large-scale opportunities",
-      "Seek specialized subcontractors for niche capabilities",
-    ],
-    naicsCodes: ["541330", "541712", "332710"],
-    certifications: ["CMMC Level 2", "GSA Schedule", "ISO 9001", "ISO 27001"],
-    regions: ["National"],
-    contractSizes: ["$5M-10M", "$10M+"],
-  },
-];
 
 export default function ConsortiumMatchingPage() {
   const { profile } = useUserProfile();
@@ -210,20 +66,6 @@ export default function ConsortiumMatchingPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-green-600";
-    if (score >= 80) return "text-blue-600";
-    if (score >= 70) return "text-amber-600";
-    return "text-red-600";
-  };
-
-  const getScoreBadge = (score: number) => {
-    if (score >= 90) return <Badge className="bg-green-100 text-green-800">Excellent Match</Badge>;
-    if (score >= 80) return <Badge className="bg-blue-100 text-blue-800">Strong Match</Badge>;
-    if (score >= 70) return <Badge className="bg-amber-100 text-amber-800">Good Match</Badge>;
-    return <Badge className="bg-red-100 text-red-800">Low Match</Badge>;
   };
 
   const CONTRACT_SIZES = [
@@ -301,145 +143,25 @@ export default function ConsortiumMatchingPage() {
             <div className="flex items-center gap-4">
               <Badge variant="outline" className="text-sm">
                 <Star className="h-3 w-3 mr-1" />
-                {MOCK_MEMBERS.length} Members Analyzed
+                0 Members Analyzed
               </Badge>
               <p className="text-sm text-muted-foreground">
-                AI scores calculated based on capabilities, certifications, and compatibility
+                AI matching data will appear here once members complete their readiness profiles
               </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Members Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {MOCK_MEMBERS.map((member) => (
-            <Card key={member.id} className="overflow-hidden">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={member.logo} />
-                      <AvatarFallback>
-                        <Building2 className="h-6 w-6" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg">{member.name}</CardTitle>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-2xl font-bold ${getScoreColor(member.aiMatchingScore)}`}>
-                          {member.aiMatchingScore}
-                        </span>
-                        <span className="text-sm text-muted-foreground">AI Score</span>
-                        {getScoreBadge(member.aiMatchingScore)}
-                      </div>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Users className="h-4 w-4 mr-2" />
-                    Request Partnership
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Quick Stats */}
-                <div className="flex flex-wrap gap-2">
-                  {member.naicsCodes.slice(0, 2).map((code) => (
-                    <Badge key={code} variant="outline" className="text-xs">
-                      {code}
-                    </Badge>
-                  ))}
-                  {member.certifications.slice(0, 2).map((cert) => (
-                    <Badge key={cert} variant="secondary" className="text-xs">
-                      <Award className="h-3 w-3 mr-1" />
-                      {cert}
-                    </Badge>
-                  ))}
-                  {member.companyIntelligenceComplete && (
-                    <Badge variant="outline" className="text-xs bg-green-50 text-green-800 border-green-200">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Complete Profile
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Readiness Score */}
-                <div className="flex items-center justify-between p-2 bg-muted rounded-lg">
-                  <span className="text-sm text-muted-foreground">Readiness Score</span>
-                  <span className={`text-lg font-bold ${getScoreColor(member.readinessScore || 0)}`}>
-                    {member.readinessScore || 0}
-                  </span>
-                </div>
-
-                {/* Strengths */}
-                <div>
-                  <h4 className="text-sm font-semibold flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    Strengths
-                  </h4>
-                  <ul className="space-y-1">
-                    {member.strengths.map((strength, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <CheckCircle className="h-3 w-3 text-green-600 mt-0.5 flex-shrink-0" />
-                        {strength}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Deficiencies */}
-                <div>
-                  <h4 className="text-sm font-semibold flex items-center gap-2 mb-2">
-                    <TrendingDown className="h-4 w-4 text-red-600" />
-                    Areas for Improvement
-                  </h4>
-                  <ul className="space-y-1">
-                    {member.deficiencies.map((deficiency, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <AlertTriangle className="h-3 w-3 text-amber-600 mt-0.5 flex-shrink-0" />
-                        {deficiency}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Teaming Recommendations */}
-                <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                  <h4 className="text-sm font-semibold flex items-center gap-2 mb-2 text-blue-900">
-                    <Users className="h-4 w-4" />
-                    Teaming Recommendations
-                  </h4>
-                  <ul className="space-y-1">
-                    {member.teamingRecommendations.map((rec, idx) => (
-                      <li key={idx} className="text-sm text-blue-800 flex items-start gap-2">
-                        <Star className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                        {rec}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Compatibility Metrics */}
-                <div className="space-y-2 pt-2 border-t">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Capability Match</span>
-                    <span className="font-medium">85%</span>
-                  </div>
-                  <Progress value={85} className="h-1.5" />
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Geographic Overlap</span>
-                    <span className="font-medium">72%</span>
-                  </div>
-                  <Progress value={72} className="h-1.5" />
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Contract Size Alignment</span>
-                    <span className="font-medium">90%</span>
-                  </div>
-                  <Progress value={90} className="h-1.5" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Members Grid - Empty State */}
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-lg font-semibold mb-2">No Matching Data Yet</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              AI-powered member matching will display here once consortium members complete their readiness profiles and matching preferences.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -495,7 +217,7 @@ export default function ConsortiumMatchingPage() {
             <CardTitle>Target Contract Sizes</CardTitle>
           </div>
           <CardDescription>
-            Select the contract sizes you're interested in pursuing
+            Select the contract sizes you&apos;re interested in pursuing
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -582,7 +304,7 @@ export default function ConsortiumMatchingPage() {
             <CardTitle>Partnership Preferences</CardTitle>
           </div>
           <CardDescription>
-            Select the types of partnerships you're interested in
+            Select the types of partnerships you&apos;re interested in
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -65,6 +65,7 @@ export default function ConsortiumOnboardingPage() {
       title: "Stage 4: AI Matching Setup",
       description: "Configure capability categorization and matching preferences",
       completed: false,
+      comingSoon: true,
       icon: Target,
     },
     {
@@ -72,6 +73,7 @@ export default function ConsortiumOnboardingPage() {
       title: "Stage 5: Active Engagement",
       description: "Continuous engagement and performance tracking",
       completed: false,
+      comingSoon: true,
       icon: TrendingUp,
     },
   ];
@@ -143,13 +145,13 @@ export default function ConsortiumOnboardingPage() {
                     </CardDescription>
                   </div>
                   <Button
-                    variant={step.completed ? "outline" : "default"}
+                    variant={step.completed ? "outline" : step.comingSoon ? "secondary" : "default"}
                     size="sm"
-                    disabled={step.completed}
+                    disabled={step.completed || step.comingSoon}
                     onClick={() => handleStepClick(step.id)}
                   >
-                    {step.completed ? "View" : "Start"}
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    {step.completed ? "View" : step.comingSoon ? "Coming Soon" : "Start"}
+                    {!step.comingSoon && <ChevronRight className="h-4 w-4 ml-1" />}
                   </Button>
                 </div>
               </CardHeader>

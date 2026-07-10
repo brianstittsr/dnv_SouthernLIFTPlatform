@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { auth, db, storage } from "@/lib/firebase";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  Timestamp as FirestoreTimestamp,
+} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +28,7 @@ import {
   Shield,
   Target,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -37,60 +46,51 @@ const DOCUMENT_TYPES = [
 export default function ConsortiumReadinessPage() {
   const { profile } = useUserProfile();
   const [uploading, setUploading] = useState<string | null>(null);
-  
-  // Mock data for Robert Frost
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [uploadedDocuments, setUploadedDocuments] = useState<
     Array<{
       type: string;
       fileName: string;
       fileUrl: string;
+      storagePath?: string;
       uploadedAt: Date;
-      status: "pending" | "under_review" | "approved" | "rejected";
+      status: "pending" | "under_review" | "approved" | "rejected" | "pending_review";
     }>
-  >([
-    {
-      type: "sam_registration",
-      fileName: "SAM_Registration_Certificate_RobertFrost.pdf",
-      fileUrl: "/mock-docs/sam-registration.pdf",
-      uploadedAt: new Date("2024-05-15"),
-      status: "approved",
-    },
-    {
-      type: "duns_number",
-      fileName: "DUNS_Number_Verification_RobertFrost.pdf",
-      fileUrl: "/mock-docs/duns-number.pdf",
-      uploadedAt: new Date("2024-05-15"),
-      status: "approved",
-    },
-    {
-      type: "cage_code",
-      fileName: "CAGE_Code_Assignment_RobertFrost.pdf",
-      fileUrl: "/mock-docs/cage-code.pdf",
-      uploadedAt: new Date("2024-05-16"),
-      status: "approved",
-    },
-    {
-      type: "capability_statement",
-      fileName: "Capability_Statement_RobertFrost_Consulting.pdf",
-      fileUrl: "/mock-docs/capability-statement.pdf",
-      uploadedAt: new Date("2024-05-18"),
-      status: "approved",
-    },
-    {
-      type: "past_performance",
-      fileName: "Past_Performance_References_RobertFrost.pdf",
-      fileUrl: "/mock-docs/past-performance.pdf",
-      uploadedAt: new Date("2024-05-20"),
-      status: "under_review",
-    },
-    {
-      type: "certifications",
-      fileName: "Professional_Certifications_RobertFrost.pdf",
-      fileUrl: "/mock-docs/certifications.pdf",
-      uploadedAt: new Date("2024-05-22"),
-      status: "approved",
-    },
-  ]);
+  >([]);
+
+  const userId = auth?.currentUser?.uid || profile?.id;
+
+  // Fetch documents from Firestore on mount
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (!db || !userId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const profileRef = doc(db, "consortium_profiles", userId);
+        const profileSnap = await getDoc(profileRef);
+        if (profileSnap.exists()) {
+          const data = profileSnap.data();
+          const docs = (data.readinessDocuments || []).map((doc: any) => ({
+            ...doc,
+            uploadedAt: doc.uploadedAt?.toDate?.()
+              ? doc.uploadedAt.toDate()
+              : new Date(doc.uploadedAt),
+          }));
+          setUploadedDocuments(docs);
+        }
+      } catch (error) {
+        console.error("Error fetching readiness documents:", error);
+        toast.error("Failed to load documents");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocuments();
+  }, [userId]);
   
   // Calculate automated readiness score
   const calculateReadinessScore = () => {
@@ -123,45 +123,151 @@ export default function ConsortiumReadinessPage() {
   const readinessLevel = getReadinessLevel(readinessScore);
 
   const handleFileUpload = async (type: string, file: File) => {
+    if (!userId || !storage || !db) {
+      toast.error("Not authenticated or storage unavailable");
+      return;
+    }
     setUploading(type);
     try {
-      // Simulate file upload - in production, upload to Firebase Storage
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const fileName = file.name;
+      const storagePath = `consortium/readiness/${userId}/${type}/${fileName}`;
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, file);
+      const fileUrl = await getDownloadURL(storageRef);
 
       const newDoc = {
         type,
-        fileName: file.name,
-        fileUrl: URL.createObjectURL(file),
-        uploadedAt: new Date(),
+        fileName,
+        fileUrl,
+        storagePath,
+        uploadedAt: FirestoreTimestamp.now(),
         status: "pending" as const,
       };
 
-      setUploadedDocuments((prev) => [...prev, newDoc]);
+      const profileRef = doc(db, "consortium_profiles", userId);
+      const profileSnap = await getDoc(profileRef);
+      const currentDocs = profileSnap.exists()
+        ? (profileSnap.data().readinessDocuments || [])
+        : [];
+      const filteredDocs = currentDocs.filter((doc: any) => doc.type !== type);
+
+      await updateDoc(profileRef, {
+        readinessDocuments: [...filteredDocs, newDoc],
+        readinessValidationStatus: "in_progress",
+        updatedAt: FirestoreTimestamp.now(),
+      });
+
+      setUploadedDocuments((prev) => {
+        const filtered = prev.filter((doc) => doc.type !== type);
+        return [...filtered, { ...newDoc, uploadedAt: new Date() }];
+      });
       toast.success("Document uploaded successfully");
     } catch (error) {
+      console.error("Upload error:", error);
       toast.error("Failed to upload document");
     } finally {
       setUploading(null);
     }
   };
 
-  const handleDeleteDocument = (type: string) => {
-    setUploadedDocuments((prev) => prev.filter((doc) => doc.type !== type));
-    toast.success("Document removed");
+  const handleDeleteDocument = async (type: string) => {
+    if (!userId || !db) {
+      toast.error("Not authenticated");
+      return;
+    }
+    try {
+      const docToDelete = uploadedDocuments.find((doc) => doc.type === type);
+      if (!docToDelete) return;
+
+      if (storage && docToDelete.storagePath) {
+        try {
+          const storageRef = ref(storage, docToDelete.storagePath);
+          await deleteObject(storageRef);
+        } catch (storageError) {
+          console.warn("Could not delete storage object:", storageError);
+        }
+      }
+
+      const profileRef = doc(db, "consortium_profiles", userId);
+      const profileSnap = await getDoc(profileRef);
+      if (profileSnap.exists()) {
+        const currentDocs = profileSnap.data().readinessDocuments || [];
+        const updatedDocs = currentDocs.filter((doc: any) => doc.type !== type);
+        const updatePayload: any = {
+          readinessDocuments: updatedDocs,
+          updatedAt: FirestoreTimestamp.now(),
+        };
+        if (updatedDocs.length === 0) {
+          updatePayload.readinessValidationStatus = "not_started";
+        }
+        await updateDoc(profileRef, updatePayload);
+      }
+
+      setUploadedDocuments((prev) => prev.filter((doc) => doc.type !== type));
+      toast.success("Document removed");
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Failed to remove document");
+    }
   };
 
   const handleSubmitForReview = async () => {
+    if (!userId || !auth?.currentUser) {
+      toast.error("Not authenticated");
+      return;
+    }
+    if (uploadedDocuments.length === 0) {
+      toast.error("Upload at least one document before submitting");
+      return;
+    }
+    setSubmitting(true);
     try {
-      // In production, update Firestore with document status
-      toast.success("Documents submitted for review");
-    } catch (error) {
-      toast.error("Failed to submit documents");
+      const token = await auth.currentUser.getIdToken();
+      const response = await fetch("/api/consortium/readiness/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId,
+          displayName:
+            profile?.firstName && profile?.lastName
+              ? `${profile.firstName} ${profile.lastName}`
+              : profile?.email || "",
+          email: profile?.email || "",
+          documents: uploadedDocuments.map((doc) => ({
+            type: doc.type,
+            fileName: doc.fileName,
+            fileUrl: doc.fileUrl,
+            status: doc.status,
+          })),
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit documents");
+      }
+      if (data.warning) {
+        toast.warning(data.warning);
+      } else {
+        toast.success("Documents submitted for review");
+      }
+      setUploadedDocuments((prev) =>
+        prev.map((doc) => ({ ...doc, status: "pending_review" as const }))
+      );
+    } catch (error: any) {
+      console.error("Submit error:", error);
+      toast.error(error.message || "Failed to submit documents");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
+      case "pending_review":
         return <Clock className="h-4 w-4 text-yellow-600" />;
       case "under_review":
         return <Clock className="h-4 w-4 text-blue-600" />;
@@ -178,6 +284,8 @@ export default function ConsortiumReadinessPage() {
     switch (status) {
       case "pending":
         return <Badge variant="outline">Pending</Badge>;
+      case "pending_review":
+        return <Badge className="bg-amber-100 text-amber-800">Pending Review</Badge>;
       case "under_review":
         return <Badge className="bg-blue-100 text-blue-800">Under Review</Badge>;
       case "approved":
@@ -192,6 +300,14 @@ export default function ConsortiumReadinessPage() {
   const totalDocs = DOCUMENT_TYPES.length;
   const uploadedCount = uploadedDocuments.length;
   const requiredProgress = totalDocs > 0 ? (uploadedCount / totalDocs) * 100 : 0;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -456,8 +572,8 @@ export default function ConsortiumReadinessPage() {
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">
-              <Button onClick={handleSubmitForReview}>
-                Submit Documents for Review
+              <Button onClick={handleSubmitForReview} disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit Documents for Review"}
               </Button>
               <Button variant="outline">
                 Save as Draft
