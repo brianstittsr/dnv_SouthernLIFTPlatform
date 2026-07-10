@@ -3,9 +3,7 @@ import { getStripe, verifyWebhookSignature } from "@/lib/stripe";
 import { db } from "@/lib/firebase-admin";
 import Stripe from "stripe";
 import { Timestamp } from "firebase-admin/firestore";
-import crypto from "crypto";
 import { COLLECTIONS } from "@/lib/schema";
-import { sendWelcomeEmail } from "@/lib/email-demo";
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,54 +31,75 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const { firebaseUid, userType, plan, firstName, lastName, companyName } = session.metadata || {};
+        const { firebaseUid, firstName, lastName, companyName, membershipType } = session.metadata || {};
 
         if (!firebaseUid) {
           console.error("Missing firebaseUid in session metadata");
           break;
         }
 
-        // Generate username and password from registration data
-        const tempPassword = crypto.randomBytes(12).toString('hex');
-        
-        let username: string;
-        if (firstName && lastName) {
-          username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
-        } else if (companyName) {
-          username = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const customerEmail = session.customer_email || "";
+        const displayFirstName = firstName || customerEmail.split("@")[0] || "";
+        const displayLastName = lastName || "";
+        const displayCompany = companyName || "";
+
+        // Update the pre-created user record with subscription details
+        const userRef = db.collection(COLLECTIONS.USERS).doc(firebaseUid);
+        const userSnap = await userRef.get();
+
+        if (userSnap.exists) {
+          await userRef.update({
+            "stripe.customerId": session.customer,
+            "stripe.subscriptionId": session.subscription,
+            "stripe.subscriptionStatus": "active",
+            "stripe.plan": membershipType || "kdm-consortium",
+            membershipStatus: "active",
+            subscriptionStatus: "active",
+            paymentComplete: true,
+            onboardingStatus: "active",
+            updatedAt: Timestamp.now(),
+          });
         } else {
-          username = session.customer_email?.split('@')[0] || 'user';
+          // Fallback: create user doc if it was not created before checkout
+          await userRef.set({
+            id: firebaseUid,
+            userId: firebaseUid,
+            email: customerEmail,
+            firstName: displayFirstName,
+            lastName: displayLastName,
+            companyName: displayCompany,
+            role: "consortium_member",
+            svpRole: "consortium_member",
+            membershipType: "kdm-consortium",
+            membershipStatus: "active",
+            membershipTier: "core-capture",
+            subscriptionStatus: "active",
+            paymentComplete: true,
+            onboardingStatus: "active",
+            consortiumOnboardingComplete: false,
+            hasChangedPassword: true,
+            isTempPassword: false,
+            tags: ["KDM Consortium Member"],
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
         }
-        
-        username = username + Math.floor(Math.random() * 1000);
 
-        // Update user with subscription info and generated credentials
-        await db.collection("users").doc(firebaseUid).update({
-          "stripe.customerId": session.customer,
-          "stripe.subscriptionId": session.subscription,
-          "stripe.subscriptionStatus": "active",
-          "stripe.plan": plan,
-          username,
-          tempPassword,
-          isTempPassword: true,
-          hasChangedPassword: false,
-          firstName: firstName || null,
-          lastName: lastName || null,
-          companyName: companyName || null,
-          paymentComplete: true,
-          onboardingStatus: "active",
-          updatedAt: Timestamp.now(),
-        });
+        // Ensure a consortium member record exists
+        const consortiumQuery = await db
+          .collection(COLLECTIONS.CONSORTIUM_MEMBERS)
+          .where("firebaseUid", "==", firebaseUid)
+          .limit(1)
+          .get();
 
-        // If this is a consortium member registration, add to consortium members collection
-        if (userType === "consortium") {
+        if (consortiumQuery.empty) {
           await db.collection(COLLECTIONS.CONSORTIUM_MEMBERS).add({
             firebaseUid,
-            firstName: firstName || "",
-            lastName: lastName || "",
-            emailPrimary: session.customer_email || "",
-            company: companyName || "",
-            membershipTier: plan === "core-capture" ? "core-capture" : "standard",
+            firstName: displayFirstName,
+            lastName: displayLastName,
+            emailPrimary: customerEmail,
+            company: displayCompany,
+            membershipTier: "core-capture",
             membershipStatus: "active",
             subscriptionId: session.subscription as string,
             onboardingComplete: false,
@@ -91,28 +110,9 @@ export async function POST(req: NextRequest) {
             updatedAt: Timestamp.now(),
           });
           console.log(`Consortium member created for ${firebaseUid}`);
-        } else {
-          // This is a founder registration, add to team members collection
-          await db.collection(COLLECTIONS.TEAM_MEMBERS).add({
-            firebaseUid,
-            firstName: firstName || "",
-            lastName: lastName || "",
-            emailPrimary: session.customer_email || "",
-            company: companyName || "",
-            role: "affiliate",
-            status: "active",
-            expertise: "",
-            tags: ["founder"],
-            createdAt: Timestamp.now(),
-            updatedAt: Timestamp.now(),
-          });
-          console.log(`Founder added to team members for ${firebaseUid}`);
         }
 
-        // Send welcome email with credentials
-        await sendWelcomeEmail(session.customer_email || "", username, tempPassword, firebaseUid);
-
-        console.log(`Payment completed for user ${firebaseUid}, credentials generated`);
+        console.log(`Payment completed for user ${firebaseUid}`);
         break;
       }
 
