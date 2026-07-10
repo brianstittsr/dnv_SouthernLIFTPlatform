@@ -1043,141 +1043,50 @@ export default function ProfilePage() {
                     <Store className="h-5 w-5 text-primary" />
                     <p className="text-sm text-muted-foreground">Active Listings</p>
                   </div>
-                  <p className="text-2xl font-bold">3</p>
+                  <p className="text-2xl font-bold">0</p>
                 </div>
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <MessageSquare className="h-5 w-5 text-primary" />
                     <p className="text-sm text-muted-foreground">Inquiries Received</p>
                   </div>
-                  <p className="text-2xl font-bold">12</p>
+                  <p className="text-2xl font-bold">0</p>
                 </div>
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle className="h-5 w-5 text-primary" />
                     <p className="text-sm text-muted-foreground">Conversions</p>
                   </div>
-                  <p className="text-2xl font-bold">5</p>
+                  <p className="text-2xl font-bold">0</p>
                 </div>
               </div>
 
               {/* Active Listings */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Your Marketplace Listings</h3>
-                <div className="space-y-3">
-                  <Card className="border-l-4 border-l-blue-500">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Badge variant="outline">Service</Badge>
-                            <Badge className="bg-green-100 text-green-800">Active</Badge>
-                          </div>
-                          <h4 className="font-semibold">Government Contracting Consulting</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Comprehensive support for SAM registration, CMMC certification, and federal procurement strategy
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                            <span>NAICS: 541611</span>
-                            <span>•</span>
-                            <span>Readiness: 92</span>
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm">View</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-l-4 border-l-purple-500">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Badge variant="outline">Capability</Badge>
-                            <Badge className="bg-green-100 text-green-800">Active</Badge>
-                          </div>
-                          <h4 className="font-semibold">CMMC Level 2 Assessment</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Full CMMC Level 2 assessment and certification support for defense contractors
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                            <span>NAICS: 541512</span>
-                            <span>•</span>
-                            <span>Readiness: 95</span>
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm">View</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-l-4 border-l-amber-500">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Badge variant="outline">Product</Badge>
-                            <Badge className="bg-green-100 text-green-800">Active</Badge>
-                          </div>
-                          <h4 className="font-semibold">Compliance Management System</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            SaaS platform for tracking federal compliance requirements and documentation
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                            <span>NAICS: 511210</span>
-                            <span>•</span>
-                            <span>Readiness: 88</span>
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm">View</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card className="border-dashed">
+                  <CardContent className="pt-6 pb-6 text-center">
+                    <Store className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">No active marketplace listings yet.</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Create your first listing to showcase your capabilities.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Recent Inquiries */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Recent Inquiries</h3>
-                <div className="space-y-3">
-                  <Card>
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Badge className="bg-blue-100 text-blue-800">New</Badge>
-                            <Badge variant="outline">Meeting Request</Badge>
-                          </div>
-                          <h4 className="font-semibold">Acme Manufacturing</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Interested in CMMC Level 2 assessment services for upcoming DoD contract
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-2">2 hours ago</p>
-                        </div>
-                        <Button variant="outline" size="sm">Respond</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Badge className="bg-amber-100 text-amber-800">In Progress</Badge>
-                            <Badge variant="outline">Teaming Discussion</Badge>
-                          </div>
-                          <h4 className="font-semibold">Federal Logistics Partners</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Exploring partnership for comprehensive logistics and compliance services
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-2">1 day ago</p>
-                        </div>
-                        <Button variant="outline" size="sm">View</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card className="border-dashed">
+                  <CardContent className="pt-6 pb-6 text-center">
+                    <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">No inquiries received yet.</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Inquiries from other members will appear here.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Procurement Workflow */}
