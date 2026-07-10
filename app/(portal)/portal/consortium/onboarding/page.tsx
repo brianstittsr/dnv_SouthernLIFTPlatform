@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   CheckCircle,
   Circle,
@@ -170,30 +171,42 @@ export default function ConsortiumOnboardingPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer">
+            <Link
+              href="/portal/consortium/onboarding/resources/member-guide"
+              className="p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+            >
               <h4 className="font-semibold mb-2">Consortium Member Guide</h4>
               <p className="text-sm text-muted-foreground">
                 Comprehensive guide to getting started with the KDM Consortium
               </p>
-            </div>
-            <div className="p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer">
+            </Link>
+            <Link
+              href="/portal/consortium/onboarding/resources/pillars-overview"
+              className="p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+            >
               <h4 className="font-semibold mb-2">Pillars Overview</h4>
               <p className="text-sm text-muted-foreground">
                 Learn about the 5 pillars and how to select your focus areas
               </p>
-            </div>
-            <div className="p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer">
+            </Link>
+            <Link
+              href="/portal/consortium/onboarding/resources/naics-reference"
+              className="p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+            >
               <h4 className="font-semibold mb-2">NAICS Code Reference</h4>
               <p className="text-sm text-muted-foreground">
                 Find the right NAICS codes for your business capabilities
               </p>
-            </div>
-            <div className="p-4 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer">
+            </Link>
+            <Link
+              href="/portal/consortium/onboarding/resources/certification-guide"
+              className="p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+            >
               <h4 className="font-semibold mb-2">Certification Guide</h4>
               <p className="text-sm text-muted-foreground">
                 Information on government certifications and how to obtain them
               </p>
-            </div>
+            </Link>
           </div>
         </CardContent>
       </Card>
