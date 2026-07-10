@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { UserType, ProfileFormData, INDUSTRY_OPTIONS, CONTRACT_TYPE_OPTIONS, CERTIFICATION_OPTIONS } from "@/lib/types/consortium";
 import { db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 
 interface ConsortiumOnboardingModalProps {
@@ -68,27 +68,34 @@ export function ConsortiumOnboardingModal({
       if (!db) {
         throw new Error("Database not initialized");
       }
+      if (!userId) {
+        throw new Error("User ID is missing");
+      }
 
       const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, {
-        profileComplete: true,
-        onboardingStatus: "profile_complete",
-        profileData: {
-          companyName: formData.companyName,
-          industry: formData.industry,
-          capabilities: formData.capabilities ? formData.capabilities.split(",").map(c => c.trim()) : [],
-          certifications: formData.certifications,
-          contractTypes: formData.contractTypes,
-          annualSpend: formData.annualSpend,
+      await setDoc(
+        userRef,
+        {
+          profileComplete: true,
+          onboardingStatus: "profile_complete",
+          profileData: {
+            companyName: formData.companyName,
+            industry: formData.industry,
+            capabilities: formData.capabilities ? formData.capabilities.split(",").map(c => c.trim()) : [],
+            certifications: formData.certifications,
+            contractTypes: formData.contractTypes,
+            annualSpend: formData.annualSpend,
+          },
+          updatedAt: Timestamp.now(),
         },
-        updatedAt: Timestamp.now(),
-      });
+        { merge: true }
+      );
 
       toast.success("Profile completed successfully!");
       onOpenChange(false);
       router.push("/portal/payment");
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error saving profile:", error);
       toast.error("Failed to save profile. Please try again.");
     } finally {
       setLoading(false);
