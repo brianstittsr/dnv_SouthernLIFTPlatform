@@ -24,9 +24,9 @@ import {
 import { toast } from "sonner";
 
 const DOCUMENT_TYPES = [
-  { type: "sam_registration", label: "SAM Registration", required: true },
-  { type: "duns_number", label: "DUNS Number", required: true },
-  { type: "cage_code", label: "CAGE Code", required: true },
+  { type: "sam_registration", label: "SAM Registration", required: false },
+  { type: "duns_number", label: "DUNS Number", required: false },
+  { type: "cage_code", label: "CAGE Code", required: false },
   { type: "capability_statement", label: "Capability Statement", required: false },
   { type: "past_performance", label: "Past Performance References", required: false },
   { type: "certifications", label: "Certifications (CMMC, ISO, etc.)", required: false },
@@ -95,29 +95,20 @@ export default function ConsortiumReadinessPage() {
   // Calculate automated readiness score
   const calculateReadinessScore = () => {
     let score = 0;
-    const maxScore = 100;
-    
-    // Required documents (40 points)
-    const requiredDocs = DOCUMENT_TYPES.filter((d) => d.required);
-    const uploadedRequired = requiredDocs.filter((d) =>
-      uploadedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
-    );
-    score += (uploadedRequired.length / requiredDocs.length) * 40;
-    
-    // Optional documents (30 points)
-    const optionalDocs = DOCUMENT_TYPES.filter((d) => !d.required);
-    const uploadedOptional = optionalDocs.filter((d) =>
-      uploadedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
-    );
-    score += (uploadedOptional.length / optionalDocs.length) * 30;
-    
-    // Document quality (30 points) - based on approval status
+
+    // Document coverage (70 points) — all documents are now optional/recommended
+    const totalDocTypes = DOCUMENT_TYPES.length;
     const approvedDocs = uploadedDocuments.filter((doc) => doc.status === "approved").length;
+    if (totalDocTypes > 0) {
+      score += (approvedDocs / totalDocTypes) * 70;
+    }
+
+    // Document quality (30 points) — based on approval status of uploaded docs
     const totalUploaded = uploadedDocuments.length;
     if (totalUploaded > 0) {
       score += (approvedDocs / totalUploaded) * 30;
     }
-    
+
     return Math.round(score);
   };
   
@@ -160,16 +151,6 @@ export default function ConsortiumReadinessPage() {
   };
 
   const handleSubmitForReview = async () => {
-    const requiredDocs = DOCUMENT_TYPES.filter((d) => d.required);
-    const uploadedRequired = requiredDocs.filter((d) =>
-      uploadedDocuments.some((doc) => doc.type === d.type)
-    );
-
-    if (uploadedRequired.length < requiredDocs.length) {
-      toast.error("Please upload all required documents before submitting");
-      return;
-    }
-
     try {
       // In production, update Firestore with document status
       toast.success("Documents submitted for review");
@@ -208,11 +189,9 @@ export default function ConsortiumReadinessPage() {
     }
   };
 
-  const requiredDocs = DOCUMENT_TYPES.filter((d) => d.required);
-  const uploadedRequired = requiredDocs.filter((d) =>
-    uploadedDocuments.some((doc) => doc.type === d.type)
-  );
-  const requiredProgress = (uploadedRequired.length / requiredDocs.length) * 100;
+  const totalDocs = DOCUMENT_TYPES.length;
+  const uploadedCount = uploadedDocuments.length;
+  const requiredProgress = totalDocs > 0 ? (uploadedCount / totalDocs) * 100 : 0;
 
   return (
     <div className="space-y-6">
@@ -250,19 +229,19 @@ export default function ConsortiumReadinessPage() {
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center p-4 bg-white/50 rounded-lg">
               <TrendingUp className="h-6 w-6 mx-auto mb-2 text-green-600" />
-              <div className="text-2xl font-bold">{Math.round((uploadedRequired.length / requiredDocs.length) * 40)}</div>
-              <div className="text-sm text-muted-foreground">Required Docs</div>
+              <div className="text-2xl font-bold">
+                {Math.round(
+                  (DOCUMENT_TYPES.filter((d) =>
+                    uploadedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
+                  ).length / DOCUMENT_TYPES.length) * 70
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">Document Coverage</div>
             </div>
             <div className="text-center p-4 bg-white/50 rounded-lg">
               <Target className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-              <div className="text-2xl font-bold">
-                {Math.round(
-                  (DOCUMENT_TYPES.filter((d) => !d.required).filter((d) =>
-                    uploadedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
-                  ).length / DOCUMENT_TYPES.filter((d) => !d.required).length) * 30
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">Optional Docs</div>
+              <div className="text-2xl font-bold">{uploadedDocuments.length}</div>
+              <div className="text-sm text-muted-foreground">Documents Uploaded</div>
             </div>
             <div className="text-center p-4 bg-white/50 rounded-lg">
               <CheckCircle className="h-6 w-6 mx-auto mb-2 text-amber-600" />
@@ -285,9 +264,9 @@ export default function ConsortiumReadinessPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Required Documents Progress</CardTitle>
+              <CardTitle>Document Progress</CardTitle>
               <CardDescription>
-                {uploadedRequired.length} of {requiredDocs.length} required documents uploaded
+                {uploadedDocuments.length} of {DOCUMENT_TYPES.length} documents uploaded
               </CardDescription>
             </div>
             <Badge variant={requiredProgress === 100 ? "default" : "secondary"}>
@@ -364,11 +343,11 @@ export default function ConsortiumReadinessPage() {
           )}
         </div>
 
-        {/* Still Required */}
+        {/* Still Needed */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
-            Still Required
+            Still Needed
           </h3>
           {DOCUMENT_TYPES.filter((doc) => {
             const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
@@ -498,32 +477,9 @@ export default function ConsortiumReadinessPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h4 className="font-medium mb-2">Required Documents</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                <span>
-                  <strong>SAM Registration:</strong> System for Award Management registration is required for all government contractors
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                <span>
-                  <strong>DUNS Number:</strong> Data Universal Numbering System identifier for your business
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                <span>
-                  <strong>CAGE Code:</strong> Commercial and Government Entity code for DoD contracts
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-2">Optional Documents</h4>
+            <h4 className="font-medium mb-2">Recommended Documents</h4>
             <p className="text-sm text-muted-foreground">
-              Additional documents that can strengthen your contracting readiness and improve matching with opportunities.
+              Upload any documents you have available to strengthen your contracting readiness and improve matching with opportunities. All uploads are optional — you can return and add more documentation at any time.
             </p>
           </div>
         </CardContent>
