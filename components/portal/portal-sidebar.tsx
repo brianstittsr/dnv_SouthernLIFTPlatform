@@ -5,7 +5,7 @@ import Link from "next/link";
 import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { collection, query, where, onSnapshot, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc, getDoc, getDocs, type QueryDocumentSnapshot, type DocumentData } from "firebase/firestore";
 import { COLLECTIONS, type PlatformSettingsDoc } from "@/lib/schema";
 import { useUserProfile, isProfileComplete } from "@/contexts/user-profile-context";
 import { auth } from "@/lib/firebase";
@@ -85,6 +85,7 @@ import {
   Wand2,
   Share2,
   UserPlus,
+  RotateCcw,
   TrendingUp,
   GraduationCap,
   Award,
@@ -101,6 +102,7 @@ import {
   X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -802,13 +804,23 @@ export const ALL_NAV_ITEMS = [
 
 export function PortalSidebar() {
   const pathname = usePathname();
-  const { getDisplayName, getInitials, profile } = useUserProfile();
+  const {
+    getDisplayName,
+    getInitials,
+    profile,
+    actualProfile,
+    isImpersonating,
+    impersonatedUserId,
+    setImpersonatedUserId,
+  } = useUserProfile();
   const [bookCallLeadsCount, setBookCallLeadsCount] = useState(0);
   const [hiddenNavItems, setHiddenNavItems] = useState<string[]>([]);
   const [roleVisibility, setRoleVisibility] = useState<Record<string, string[]>>({});
   const [previewRole, setPreviewRole] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const isAdmin = profile.role === "admin" || profile.svpRole === "platform_admin";
+  const [usersList, setUsersList] = useState<Array<{ id: string; email: string; displayName: string }>>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const isAdmin = actualProfile?.role === "admin" || actualProfile?.svpRole === "platform_admin";
   
   // Check if user profile is complete - if not, show only Profile navigation
   const profileComplete = isProfileComplete(profile);
@@ -860,7 +872,48 @@ export function PortalSidebar() {
       if (unsubscribe) unsubscribe();
     };
   }, [isAdmin]);
-  
+
+  // Load list of users for admin impersonation switcher
+  useEffect(() => {
+    if (!db || !isAdmin) {
+      setUsersList([]);
+      return;
+    }
+
+    const firestore = db;
+    const currentAdminId = actualProfile?.id;
+
+    const loadUsers = async () => {
+      setUsersLoading(true);
+      try {
+        const usersRef = collection(firestore, COLLECTIONS.USERS);
+        const snapshot = await getDocs(usersRef);
+        const users = snapshot.docs
+          .map((docSnap: QueryDocumentSnapshot<DocumentData>) => {
+            const data = docSnap.data();
+            const firstName = String(data.firstName || "");
+            const lastName = String(data.lastName || "");
+            const displayName = [firstName, lastName].filter(Boolean).join(" ") || String(data.email || docSnap.id);
+            return {
+              id: docSnap.id,
+              email: String(data.email || ""),
+              displayName,
+            };
+          })
+          .filter((user: { id: string; email: string; displayName: string }) => user.id !== currentAdminId)
+          .sort((a: { displayName: string }, b: { displayName: string }) => a.displayName.localeCompare(b.displayName));
+        setUsersList(users);
+      } catch (error) {
+        console.error("Error loading users for impersonation:", error);
+        setUsersList([]);
+      } finally {
+        setUsersLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, [isAdmin, actualProfile?.id]);
+
   // Load navigation settings from Firebase
   useEffect(() => {
     if (!db || !auth) return;
@@ -1699,7 +1752,63 @@ export function PortalSidebar() {
             )}
           </div>
         )}
-        
+
+        {/* Admin User Impersonation Switcher */}
+        {isAdmin && (
+          <div className="px-3 py-2 border-b border-sidebar-border">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="h-4 w-4 text-sidebar-foreground/60" />
+              <span className="text-xs font-medium text-sidebar-foreground/60">View as User</span>
+            </div>
+            <div className="flex gap-2">
+              <Select
+                value={impersonatedUserId || "self"}
+                onValueChange={(value) => setImpersonatedUserId(value === "self" ? null : value)}
+                disabled={usersLoading}
+              >
+                <SelectTrigger className="h-8 text-xs flex-1">
+                  <SelectValue placeholder={usersLoading ? "Loading users..." : "Select a user"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="self" className="text-xs">
+                    <div className="flex items-center gap-2">
+                      <UserCheck className="h-3 w-3" />
+                      Yourself ({actualProfile?.email || "Admin"})
+                    </div>
+                  </SelectItem>
+                  {usersList.map((user) => (
+                    <SelectItem key={user.id} value={user.id} className="text-xs">
+                      <div className="flex flex-col">
+                        <span>{user.displayName}</span>
+                        {user.email && user.email !== user.displayName && (
+                          <span className="text-[10px] text-muted-foreground">{user.email}</span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {isImpersonating && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setImpersonatedUserId(null)}
+                  title="Reset to yourself"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            {isImpersonating && (
+              <p className="text-[10px] text-amber-600 mt-1 flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                Viewing as {profile.email || impersonatedUserId}
+              </p>
+            )}
+          </div>
+        )}
+
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>

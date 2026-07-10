@@ -214,12 +214,88 @@ interface UserProfileContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   linkedTeammember: TeamMemberDoc | null;
+  actualProfile: UserProfile | null;
+  isImpersonating: boolean;
+  impersonatedUserId: string | null;
+  setImpersonatedUserId: (id: string | null) => void;
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
 
+/**
+ * Load a profile for the given user ID. This fetches the user document and
+ * attempts to link a team member record by UID or email.
+ */
+async function loadProfileForUser(userId: string): Promise<UserProfile> {
+  if (!db) return { ...defaultProfile, id: userId };
+
+  let userDoc: any = null;
+  let svpRole: UserProfile["svpRole"] = undefined;
+
+  try {
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      userDoc = userDocSnap.data();
+      svpRole = userDoc.svpRole;
+    }
+  } catch (error) {
+    console.error("Error fetching user document:", error);
+  }
+
+  const userEmail = userDoc?.email || "";
+
+  // Try to find and link Team member by UID first, then by email
+  let teammember: TeamMemberDoc | null = await getTeammemberByAuthUid(userId);
+  if (!teammember && userEmail) {
+    teammember = await findAndLinkTeammember(userEmail, userId);
+  }
+
+  if (teammember) {
+    const mappedProfile = mapTeammemberToProfile(teammember);
+    return {
+      ...defaultProfile,
+      ...mappedProfile,
+      ...(userDoc && {
+        firstName: userDoc.firstName || mappedProfile.firstName,
+        lastName: userDoc.lastName || mappedProfile.lastName,
+        phone: userDoc.phone || mappedProfile.phone,
+        company: userDoc.company || mappedProfile.company,
+        jobTitle: userDoc.jobTitle || mappedProfile.jobTitle,
+        location: userDoc.location || mappedProfile.location,
+        bio: userDoc.bio || mappedProfile.bio,
+        avatarUrl: userDoc.avatarUrl || mappedProfile.avatarUrl,
+        profileCompletedAt: userDoc.profileCompletedAt?.toDate?.()?.toISOString() || null,
+        createdAt: userDoc.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
+      }),
+      svpRole,
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  return {
+    ...defaultProfile,
+    id: userId,
+    email: userEmail,
+    firstName: userDoc?.firstName || "",
+    lastName: userDoc?.lastName || "",
+    phone: userDoc?.phone || "",
+    company: userDoc?.company || "",
+    jobTitle: userDoc?.jobTitle || "",
+    location: userDoc?.location || "",
+    bio: userDoc?.bio || "",
+    avatarUrl: userDoc?.avatarUrl || "",
+    profileCompletedAt: userDoc?.profileCompletedAt?.toDate?.()?.toISOString() || null,
+    createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
+    svpRole,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [actualProfile, setActualProfile] = useState<UserProfile | null>(null);
+  const [impersonatedUserId, setImpersonatedUserId] = useState<string | null>(null);
   const [showProfileWizard, setShowProfileWizard] = useState(false);
   const [showAffiliateOnboarding, setShowAffiliateOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -230,8 +306,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const networkingCompletion = calculateNetworkingCompletion(profile);
   const isComplete = isProfileComplete(profile);
   const needsOnboarding = needsAffiliateOnboarding(profile);
+  const isImpersonating = !!impersonatedUserId && impersonatedUserId !== actualProfile?.id;
 
-  // Listen to Firebase Auth state and fetch linked Team member
+  // Listen to Firebase Auth state and load the actual user's profile
   useEffect(() => {
     if (!auth) {
       console.warn("Firebase Auth not initialized");
@@ -241,103 +318,50 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       setIsLoading(true);
-      
+
       if (firebaseUser) {
         setIsAuthenticated(true);
         console.log("User authenticated:", firebaseUser.uid, firebaseUser.email);
-        
-        try {
-          // Fetch user document from Firestore to get full profile data
-          let userDoc = null;
-          let svpRole = undefined;
-          if (db) {
-            try {
-              const userDocRef = doc(db, "users", firebaseUser.uid);
-              const userDocSnap = await getDoc(userDocRef);
-              if (userDocSnap.exists()) {
-                userDoc = userDocSnap.data();
-                svpRole = userDoc.svpRole;
-                console.log("User document loaded from Firebase:", {
-                  svpRole,
-                  hasAvatar: !!userDoc.avatarUrl,
-                  firstName: userDoc.firstName,
-                  lastName: userDoc.lastName
-                });
-              }
-            } catch (error) {
-              console.error("Error fetching user document:", error);
-            }
-          }
-          
-          // Try to find and link Team member by UID first, then by email
-          let teammember = await getTeammemberByAuthUid(firebaseUser.uid);
-          
-          if (!teammember && firebaseUser.email) {
-            // Try to find and link by email
-            teammember = await findAndLinkTeammember(firebaseUser.email, firebaseUser.uid);
-          }
-          
-          if (teammember) {
-            console.log("Linked Team member found:", teammember.id, teammember.firstName, teammember.lastName);
-            setLinkedTeammember(teammember);
-            
-            // Map Team member data to profile, but prioritize user document data
-            const mappedProfile = mapTeammemberToProfile(teammember);
-            setProfile((prev) => ({
-              ...prev,
-              ...mappedProfile,
-              // Override with user document data if available
-              ...(userDoc && {
-                firstName: userDoc.firstName || mappedProfile.firstName,
-                lastName: userDoc.lastName || mappedProfile.lastName,
-                phone: userDoc.phone || mappedProfile.phone,
-                company: userDoc.company || mappedProfile.company,
-                jobTitle: userDoc.jobTitle || mappedProfile.jobTitle,
-                location: userDoc.location || mappedProfile.location,
-                bio: userDoc.bio || mappedProfile.bio,
-                avatarUrl: userDoc.avatarUrl || mappedProfile.avatarUrl,
-                profileCompletedAt: userDoc.profileCompletedAt?.toDate?.()?.toISOString() || null,
-                createdAt: userDoc.createdAt?.toDate?.()?.toISOString() || prev.createdAt,
-              }),
-              svpRole, // Add svpRole from user document
-              updatedAt: new Date().toISOString(),
-            }));
-          } else {
-            console.log("No linked Team member found for user:", firebaseUser.email);
-            setLinkedTeammember(null);
-            // Set profile from user document or Firebase Auth
-            setProfile((prev) => ({
-              ...prev,
-              id: firebaseUser.uid,
-              email: userDoc?.email || firebaseUser.email || "",
-              firstName: userDoc?.firstName || firebaseUser.displayName?.split(" ")[0] || "",
-              lastName: userDoc?.lastName || firebaseUser.displayName?.split(" ").slice(1).join(" ") || "",
-              phone: userDoc?.phone || "",
-              company: userDoc?.company || "",
-              jobTitle: userDoc?.jobTitle || "",
-              location: userDoc?.location || "",
-              bio: userDoc?.bio || "",
-              avatarUrl: userDoc?.avatarUrl || firebaseUser.photoURL || "",
-              profileCompletedAt: userDoc?.profileCompletedAt?.toDate?.()?.toISOString() || null,
-              createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || prev.createdAt,
-              svpRole, // Add svpRole from user document
-              updatedAt: new Date().toISOString(),
-            }));
-          }
-        } catch (error) {
-          console.error("Error fetching Team member:", error);
-        }
+
+        const loadedProfile = await loadProfileForUser(firebaseUser.uid);
+        setActualProfile(loadedProfile);
+        setLinkedTeammember(await getTeammemberByAuthUid(firebaseUser.uid));
       } else {
         setIsAuthenticated(false);
         setLinkedTeammember(null);
+        setActualProfile(null);
+        setImpersonatedUserId(null);
         setProfile(defaultProfile);
       }
-      
+
       setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+  // Load the impersonated user's profile whenever the target user changes
+  useEffect(() => {
+    if (!impersonatedUserId) {
+      if (actualProfile) setProfile(actualProfile);
+      return;
+    }
+
+    let isCancelled = false;
+    const loadImpersonatedProfile = async () => {
+      setIsLoading(true);
+      const targetProfile = await loadProfileForUser(impersonatedUserId);
+      if (!isCancelled) {
+        const targetTeammember = await getTeammemberByAuthUid(impersonatedUserId);
+        setProfile(targetProfile);
+        setLinkedTeammember(targetTeammember);
+        setIsLoading(false);
+      }
+    };
+
+    loadImpersonatedProfile();
+    return () => { isCancelled = true; };
+  }, [impersonatedUserId, actualProfile]);
 
   // Check if profiles are synced (User Profile matches Team member)
   const profilesSynced = areProfilesSynced(profile, linkedTeammember);
@@ -412,6 +436,10 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated,
         linkedTeammember,
+        actualProfile,
+        isImpersonating,
+        impersonatedUserId,
+        setImpersonatedUserId,
       }}
     >
       {children}

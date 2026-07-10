@@ -60,7 +60,7 @@ export default function ConsortiumReadinessPage() {
     }>
   >([]);
 
-  const userId = auth?.currentUser?.uid || profile?.id;
+  const userId = profile?.id;
 
   // Fetch documents from Firestore on mount
   useEffect(() => {
