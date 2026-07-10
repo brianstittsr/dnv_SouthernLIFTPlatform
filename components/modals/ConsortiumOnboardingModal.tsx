@@ -22,11 +22,10 @@ import {
   ClipboardList,
   Zap,
   Trophy,
-  TrendingUp,
   Loader2,
 } from "lucide-react";
 import { UserType, ProfileFormData, INDUSTRY_OPTIONS, CONTRACT_TYPE_OPTIONS, CERTIFICATION_OPTIONS } from "@/lib/types/consortium";
-import { db, auth } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 
@@ -127,7 +126,6 @@ Complete your profile NOW to:
 → Receive AI-matched supplier recommendations within 48 hours
 → Skip the 6-month vetting process with pre-verified partners
 → Access $50M+ in shared contract opportunities`,
-    stats: "47 buyers have already joined and are actively seeking partners like you.",
   };
 
   const supplierContent = {
@@ -142,7 +140,6 @@ Complete your profile NOW to:
 → Receive RFP alerts matching your capabilities
 → Get introduced to buyers seeking your specific expertise
 → Access $2.5M average contract value opportunities`,
-    stats: "124 suppliers completed profiles this week and received RFP invitations.",
   };
 
   const content = userType === "buyer" ? buyerContent : supplierContent;
@@ -317,20 +314,6 @@ Complete your profile NOW to:
               </div>
             </>
           )}
-
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <div className="flex items-start gap-3">
-              <TrendingUp className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
-              <div className="text-sm">
-                <span className="font-semibold text-amber-900">
-                  {content.stats.split(" ")[0]} {content.stats.split(" ")[1]}{" "}
-                </span>
-                <span className="text-amber-800">
-                  {content.stats.split(" ").slice(2).join(" ")}
-                </span>
-              </div>
-            </div>
-          </div>
 
           <div className="flex gap-3 pt-4">
             <Button
