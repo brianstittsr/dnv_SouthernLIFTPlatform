@@ -179,14 +179,6 @@ export default function FoundingMemberAffiliatePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white bg-transparent hover:bg-white/10 px-8"
-                asChild
-              >
-                <Link href="/affiliates">Learn About Affiliates</Link>
-              </Button>
             </div>
           </div>
         </div>
