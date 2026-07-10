@@ -199,22 +199,44 @@ export async function POST(request: NextRequest) {
 
     // Send credentials email to applicant
     try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.kdm-assoc.com";
+      const signInUrl = `${appUrl}/sign-in`;
+
       await sendEmail({
         to: normalizedEmail,
-        subject: "Welcome to the KDM Affiliate Network",
+        subject: "Welcome to the KDM Consortium — Your Founding Member Access",
         html: `
           <h1>Welcome, ${body.firstName}!</h1>
-          <p>You have been registered as a KDM Affiliate as a Founding Member of the KDM Consortium.</p>
-          <p><strong>Your login credentials:</strong></p>
+          <p>Congratulations! You have been registered as a <strong>Founding Member of the KDM Consortium</strong> and as a KDM Affiliate. Your account is ready to use.</p>
+
+          <h2>Your Login Credentials</h2>
           <ul>
             <li><strong>Username (email):</strong> ${normalizedEmail}</li>
             <li><strong>Temporary password:</strong> ${tempPassword}</li>
           </ul>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL || "https://www.kdm-assoc.com"}/sign-in">Sign In to Your Account</a></p>
-          <p>You will be asked to change your temporary password the first time you sign in. After that, you will be guided through the affiliate onboarding process.</p>
+          <p><a href="${signInUrl}" style="font-weight:bold;">Sign In to Your Account</a></p>
+
+          <h2>Important: Change Your Password</h2>
+          <p>For security, you will be asked to create your own password the first time you sign in. You can also update your password anytime from your account settings after signing in.</p>
+
+          <h2>Next Steps to Unlock SAM.gov Resources</h2>
+          <ol>
+            <li><strong>Sign in and change your password</strong> using the link above.</li>
+            <li><strong>Complete your Affiliate Onboarding</strong> — the popup will guide you through your expertise, referral preferences, and networking profile.</li>
+            <li><strong>Complete your Consortium Member Onboarding</strong> at <a href="${appUrl}/portal/consortium/onboarding">${appUrl}/portal/consortium/onboarding</a>. This includes:
+              <ul>
+                <li>Company profile and capabilities</li>
+                <li>NAICS codes and certifications</li>
+                <li>Government contracting readiness documents (SAM registration, CAGE code, capability statement, etc.)</li>
+              </ul>
+            </li>
+            <li><strong>Once your readiness is validated</strong>, you will be able to explore SAM.gov opportunities and participate in curated contract pursuit teams.</li>
+          </ol>
+
+          <p>Need help? Contact us at <a href="mailto:kmoore@kdm-assoc.com">kmoore@kdm-assoc.com</a>.</p>
           <p>Best regards,<br>The KDM & Associates Team</p>
         `,
-        text: `Welcome, ${body.firstName}! You have been registered as a KDM Affiliate. Username: ${normalizedEmail} Temporary password: ${tempPassword} Sign in at ${process.env.NEXT_PUBLIC_APP_URL || "https://www.kdm-assoc.com"}/sign-in`,
+        text: `Welcome, ${body.firstName}! You have been registered as a Founding Member of the KDM Consortium and as a KDM Affiliate. Username: ${normalizedEmail} Temporary password: ${tempPassword} Sign in at ${signInUrl}. You will be asked to change your password on first sign in. Next: complete affiliate onboarding, then consortium onboarding at ${appUrl}/portal/consortium/onboarding to unlock SAM.gov resources.`,
       });
     } catch (emailError) {
       console.error("Failed to send applicant credentials email:", emailError);
