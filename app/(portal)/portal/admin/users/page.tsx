@@ -306,14 +306,15 @@ export default function AdminUsersPage() {
       if (!currentUser) return;
       const token = await currentUser.getIdToken();
 
-      const response = await fetch("/api/admin/users", {
-        method: "PATCH",
+      const response = await fetch("/api/admin/users/change-password", {
+        method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ userId: userForPassword.uid, newPassword }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || "Failed to change password");
       }
 
