@@ -289,12 +289,15 @@ export async function PATCH(req: NextRequest) {
     await db.collection("users").doc(userId).set(firestoreUpdate, { merge: true });
 
     // Audit log
+    const auditDetails: Record<string, any> = { passwordChanged: !!newPassword };
+    if (role) auditDetails.role = role;
+
     await db.collection("auditLogs").add({
       userId: decodedToken.uid,
       action: "user_updated",
       resource: "user",
       resourceId: userId,
-      details: { role, passwordChanged: !!newPassword },
+      details: auditDetails,
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
     });
