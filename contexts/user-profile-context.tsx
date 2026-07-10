@@ -348,17 +348,22 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     if (isLoading || !isAuthenticated) {
       return;
     }
-    
-    // Consortium members should not see the SME profile wizard - they have their own onboarding
+
+    // Affiliates who have not completed onboarding see it first — including founding members
+    // whose svpRole is "consortium_member".
+    if (needsOnboarding) {
+      setShowAffiliateOnboarding(true);
+      return;
+    }
+
+    // Consortium members who are not affiliates use the consortium onboarding flow
     if (profile.svpRole === "consortium_member") {
       return;
     }
-    
+
     // Only show profile wizard if profiles are not synced (incomplete or mismatched)
     if (!profilesSynced) {
       setShowProfileWizard(true);
-    } else if (needsOnboarding) {
-      setShowAffiliateOnboarding(true);
     }
   }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeammember, profile.svpRole]);
 

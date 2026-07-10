@@ -69,8 +69,8 @@ export default function ChangePasswordPage() {
         updatedAt: new Date()
       });
 
-      // Redirect to onboarding
-      router.push("/portal/onboarding");
+      // Redirect to consortium onboarding
+      router.push("/portal/consortium/onboarding");
     } catch (err: any) {
       console.error("Password change error:", err);
       if (err.code === "auth/wrong-password") {

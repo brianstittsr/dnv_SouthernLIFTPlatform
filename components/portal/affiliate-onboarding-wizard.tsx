@@ -2,8 +2,19 @@
 
 import { useState } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
-import { db } from "@/lib/firebase";
-import { collection, addDoc, Timestamp, doc, setDoc } from "firebase/firestore";
+import { db, auth as firebaseAuth } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  Timestamp,
+  doc,
+  setDoc,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 import {
   Dialog,
   DialogContent,
@@ -173,9 +184,18 @@ export function AffiliateOnboardingWizard() {
 
   const handleComplete = async () => {
     setIsSaving(true);
-    
+
     try {
-      // Create Team member document in Firebase
+      if (!db) {
+        throw new Error("Firebase not initialized");
+      }
+
+      const networkingProfile = {
+        categories: selectedCategories,
+        expertise: expertise.split(",").map((e) => e.trim()).filter((e) => e),
+        ...networkingData,
+      };
+
       const teammemberData = {
         firstName: profile.firstName,
         lastName: profile.lastName,
@@ -191,40 +211,76 @@ export function AffiliateOnboardingWizard() {
         website: "",
         role: "affiliate" as const,
         status: "active" as const,
-        // Networking profile data
-        networkingProfile: {
-          categories: selectedCategories,
-          expertise: expertise.split(",").map((e) => e.trim()).filter((e) => e),
-          ...networkingData,
-        },
+        networkingProfile,
         affiliateOnboardingComplete: true,
         affiliateAgreementSigned: true,
         affiliateAgreementDate: new Date().toISOString(),
-        createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       };
 
-      // Save to Firebase team_members collection
-      if (!db) {
-        throw new Error("Firebase not initialized");
+      // Look for an existing team member linked to this user
+      let teamMemberDocId: string | null = profile.id || null;
+      let existingTeamMemberId: string | null = null;
+
+      const firebaseUid = firebaseAuth?.currentUser?.uid;
+      if (firebaseUid) {
+        const uidQuery = query(
+          collection(db, COLLECTIONS.TEAM_MEMBERS),
+          where("firebaseUid", "==", firebaseUid)
+        );
+        const uidSnapshot = await getDocs(uidQuery);
+        if (!uidSnapshot.empty) {
+          existingTeamMemberId = uidSnapshot.docs[0].id;
+        }
       }
-      const teammembersRef = collection(db, "team_members");
-      const docRef = await addDoc(teammembersRef, teammemberData);
-      
-      console.log("Team member created with ID:", docRef.id);
+
+      if (!existingTeamMemberId && profile.email) {
+        const emailQuery = query(
+          collection(db, COLLECTIONS.TEAM_MEMBERS),
+          where("emailPrimary", "==", profile.email)
+        );
+        const emailSnapshot = await getDocs(emailQuery);
+        if (!emailSnapshot.empty) {
+          existingTeamMemberId = emailSnapshot.docs[0].id;
+        }
+      }
+
+      if (existingTeamMemberId) {
+        // Update existing team member
+        const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, existingTeamMemberId);
+        await updateDoc(teamMemberRef, teammemberData);
+        teamMemberDocId = existingTeamMemberId;
+        console.log("Updated existing team member:", existingTeamMemberId);
+      } else {
+        // Create new team member
+        const docRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
+          ...teammemberData,
+          createdAt: Timestamp.now(),
+        });
+        teamMemberDocId = docRef.id;
+        console.log("Created new team member:", docRef.id);
+      }
+
+      // Update the user document to mark onboarding complete
+      if (firebaseUid) {
+        const userRef = doc(db, COLLECTIONS.USERS, firebaseUid);
+        await setDoc(
+          userRef,
+          {
+            affiliateOnboardingComplete: true,
+            updatedAt: Timestamp.now(),
+          },
+          { merge: true }
+        );
+      }
 
       // Update local profile state
       updateProfile({
-        id: docRef.id,
+        ...(teamMemberDocId ? { id: teamMemberDocId } : {}),
         affiliateOnboardingComplete: true,
-        networkingProfile: {
-          ...profile.networkingProfile,
-          categories: selectedCategories,
-          expertise: expertise.split(",").map((e) => e.trim()).filter((e) => e),
-          ...networkingData,
-        },
+        networkingProfile,
       });
-      
+
       setShowAffiliateOnboarding(false);
     } catch (error) {
       console.error("Error saving affiliate data to Firebase:", error);

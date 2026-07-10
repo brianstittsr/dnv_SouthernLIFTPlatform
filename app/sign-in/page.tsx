@@ -124,6 +124,9 @@ export default function SignInPage() {
       if (userData && !userData.hasChangedPassword) {
         // Redirect to change password page
         router.push("/change-password");
+      } else if (userData?.svpRole === "consortium_member") {
+        // Consortium members land on the consortium onboarding page
+        router.push("/portal/consortium/onboarding");
       } else {
         // Redirect to portal
         router.push("/portal");
