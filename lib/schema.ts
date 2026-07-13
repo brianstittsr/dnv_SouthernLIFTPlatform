@@ -2302,6 +2302,47 @@ export interface ContractFloorAnalysisDoc {
 }
 
 // ============================================================================
+// Vercel Site Analytics Documents
+// ============================================================================
+
+export interface AnalyticsSnapshotDoc {
+  id?: string;
+  projectId: string;
+  from: string;
+  to: string;
+  environment: string;
+  totalVisitors: number;
+  totalPageviews: number;
+  bounceRate: number | null;
+  avgSessionDuration: number | null;
+  topPages: { path: string; views: number; visitors: number }[];
+  topSources: { source: string; visitors: number }[];
+  dailyVisitors: { date: string; visitors: number; pageviews: number }[];
+  rawMetrics?: Record<string, unknown>;
+  fetchedBy?: string;
+  createdAt: Timestamp;
+}
+
+export interface AnalyticsScheduledReportDoc {
+  id?: string;
+  name: string;
+  enabled: boolean;
+  projectId: string;
+  environment: string;
+  days: number;
+  frequency: "daily" | "weekly" | "monthly";
+  dayOfWeek?: number; // 0-6 for weekly
+  dayOfMonth?: number; // 1-31 for monthly
+  recipients: string[];
+  includePdf: boolean;
+  subject?: string;
+  lastRunAt?: Timestamp | null;
+  nextRunAt?: Timestamp | null;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// ============================================================================
 // Collection Names
 // ============================================================================
 
@@ -2449,6 +2490,9 @@ export const COLLECTIONS = {
   SITE_CHANGE_REQUESTS: "site_change_requests",
   // Client Registration Collection
   CLIENT_REGISTRATIONS: "clientRegistrations",
+  // Vercel Site Analytics
+  ANALYTICS_SNAPSHOTS: "analyticsSnapshots",
+  ANALYTICS_SCHEDULED_REPORTS: "analyticsScheduledReports",
 } as const;
 
 // ... existing code ...
@@ -2469,6 +2513,10 @@ export const attributionEventsCollection = () => getCollection<AttributionEventD
 
 // Contact Form collection reference
 export const contactMessagesCollection = () => getCollection<ContactMessageDoc>(COLLECTIONS.CONTACT_MESSAGES);
+
+// Vercel Site Analytics collection references
+export const analyticsSnapshotsCollection = () => getCollection<AnalyticsSnapshotDoc>(COLLECTIONS.ANALYTICS_SNAPSHOTS);
+export const analyticsScheduledReportsCollection = () => getCollection<AnalyticsScheduledReportDoc>(COLLECTIONS.ANALYTICS_SCHEDULED_REPORTS);
 
 // KDM Marketplace collection references
 export const marketplaceListingsCollection = () => getCollection<MarketPlaceListingDoc>(COLLECTIONS.MARKETPLACE_LISTINGS);

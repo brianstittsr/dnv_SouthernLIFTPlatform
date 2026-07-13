@@ -22,7 +22,7 @@
     },
     {
       "path": "/api/admin/analytics/report",
-      "schedule": "0 9 * * 1"
+      "schedule": "0 9 * * *"
     }
   ]
 }
