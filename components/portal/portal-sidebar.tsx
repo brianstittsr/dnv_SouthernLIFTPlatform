@@ -306,6 +306,12 @@ const adminItems = [
     badge: "New",
   },
   {
+    title: "Consortium Onboarding",
+    href: "/portal/admin/consortium/onboarding",
+    icon: UserPlus,
+    badge: "New",
+  },
+  {
     title: "Pipeline Kanban",
     href: "/portal/admin/pipeline-kanban",
     icon: FolderKanban,
