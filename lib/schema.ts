@@ -2493,6 +2493,8 @@ export const COLLECTIONS = {
   // Vercel Site Analytics
   ANALYTICS_SNAPSHOTS: "analyticsSnapshots",
   ANALYTICS_SCHEDULED_REPORTS: "analyticsScheduledReports",
+  // Company Profiles (shared across multiple users)
+  COMPANIES: "companies",
 } as const;
 
 // ... existing code ...

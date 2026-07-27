@@ -52,6 +52,10 @@ export interface UserProfile {
     successStory: string;
   };
   
+  // Company linkage
+  companyId?: string;
+  companyName?: string;
+
   // Profile completion tracking
   profileCompletedAt: string | null;
   createdAt: string;
@@ -265,6 +269,8 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
         location: userDoc.location || mappedProfile.location,
         bio: userDoc.bio || mappedProfile.bio,
         avatarUrl: userDoc.avatarUrl || mappedProfile.avatarUrl,
+        companyId: userDoc.companyId || undefined,
+        companyName: userDoc.companyName || userDoc.company || undefined,
         profileCompletedAt: userDoc.profileCompletedAt?.toDate?.()?.toISOString() || null,
         createdAt: userDoc.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
       }),
@@ -285,6 +291,8 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     location: userDoc?.location || "",
     bio: userDoc?.bio || "",
     avatarUrl: userDoc?.avatarUrl || "",
+    companyId: userDoc?.companyId || undefined,
+    companyName: userDoc?.companyName || userDoc?.company || undefined,
     profileCompletedAt: userDoc?.profileCompletedAt?.toDate?.()?.toISOString() || null,
     createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
     svpRole,

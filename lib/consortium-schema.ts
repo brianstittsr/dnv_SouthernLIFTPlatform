@@ -488,6 +488,7 @@ export interface OnboardingTracking {
 export interface ConsortiumProfile {
   id: string;
   userId: string;
+  companyId?: string;
   onboardingTracking: OnboardingTracking;
   companyIdentity: CompanyIdentity;
   naicsCodes: NAICSCode[];

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { email, firstName, lastName, role, tenantId } = body;
+    const { email, firstName, lastName, role, tenantId, companyId, companyName } = body;
 
     if (!email || !firstName || !lastName || !role) {
       return NextResponse.json(
@@ -111,6 +111,8 @@ export async function POST(req: NextRequest) {
         emailVerified: false,
         hasChangedPassword: false,
         isTempPassword: true,
+        ...(companyId ? { companyId } : {}),
+        ...(companyName ? { companyName } : {}),
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -121,7 +123,7 @@ export async function POST(req: NextRequest) {
       action: "user_invited",
       resource: "user",
       resourceId: userRecord.uid,
-      details: { email, role, tenantId },
+      details: { email, role, tenantId, companyId },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
     });
@@ -135,6 +137,7 @@ export async function POST(req: NextRequest) {
         displayName,
         role,
         tenantId: tenantId || "kdm-svp-platform",
+        companyId: companyId || undefined,
         tempPassword,
       },
     });

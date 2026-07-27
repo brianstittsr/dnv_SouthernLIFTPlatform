@@ -6,6 +6,7 @@ import type { Timestamp } from "firebase-admin/firestore";
 interface UserData {
   email?: string;
   company?: string;
+  companyId?: string;
   avatarUrl?: string;
   onboardingStatus?: string;
   createdAt?: Timestamp | Date;
@@ -14,6 +15,7 @@ interface UserData {
 interface ConsortiumProfileData {
   id?: string;
   userId?: string;
+  companyId?: string;
   companyIdentity?: {
     legalCompanyName?: string;
   };
@@ -89,6 +91,7 @@ interface MemberData {
 interface MemberOnboardingData {
   id: string;
   userId?: string;
+  companyId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -271,6 +274,7 @@ export async function GET(request: NextRequest) {
       results.push({
         id: memberDoc.id,
         userId,
+        companyId: user?.companyId || profile?.companyId || undefined,
         firstName: memberData.firstName || "",
         lastName: memberData.lastName || "",
         email: memberData.emailPrimary || user?.email || "",
