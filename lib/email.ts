@@ -496,6 +496,69 @@ export const emailTemplates = {
   }),
 
   /**
+   * Admin-invited user welcome email with login instructions
+   */
+  userInvitation: (params: {
+    name: string;
+    email: string;
+    inviterName: string;
+    role: string;
+    signInUrl: string;
+    tempPassword?: string;
+    passwordResetLink?: string;
+  }) => ({
+    subject: 'Your Account is Ready — KDM & Associates SVP Platform',
+    html: `
+      <h1>Welcome to the KDM & Associates SVP Platform, ${params.name}!</h1>
+      <p><strong>${params.inviterName}</strong> has created an account for you on the KDM & Associates Strategic Value+ Platform.</p>
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Your Account Details</h3>
+        <ul>
+          <li><strong>Email:</strong> ${params.email}</li>
+          <li><strong>Role:</strong> ${params.role}</li>
+        </ul>
+      </div>
+      ${params.tempPassword ? `
+      <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #1e40af; margin-top: 0;">Your Temporary Password</h3>
+        <p style="font-family: monospace; font-size: 16px; background: #fff; padding: 10px; border-radius: 4px; word-break: break-all;">
+          ${params.tempPassword}
+        </p>
+        <p style="font-size: 13px; color: #6b7280;">
+          ⚠️ This is a temporary password. You will be prompted to create a permanent password after your first login.
+        </p>
+      </div>` : params.passwordResetLink ? `
+      <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #1e40af; margin-top: 0;">Set Your Password</h3>
+        <p>Click the button below to set your password and access the platform:</p>
+        <div style="margin: 16px 0; text-align: center;">
+          <a href="${params.passwordResetLink}" style="background: #3b82f6; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: bold;">
+            Set My Password
+          </a>
+        </div>
+        <p style="font-size: 13px; color: #6b7280;">This link expires in 1 hour.</p>
+      </div>` : ''}
+      <div style="margin: 24px 0; text-align: center;">
+        <a href="${params.signInUrl}" style="background: #0066cc; color: white; padding: 12px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+          Sign In to the Platform
+        </a>
+      </div>
+      <h3>Platform Benefits:</h3>
+      <ul>
+        <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
+        <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
+        <li><strong>CMMC Cohort Training:</strong> Access CMMC certification programs</li>
+        <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
+        <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
+        <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
+      </ul>
+      <p>If you have any questions, please contact our support team at support@kdm-assoc.com.</p>
+      <p>Best regards,<br>The KDM & Associates Team</p>
+    `,
+    text: `Welcome to the KDM & Associates SVP Platform, ${params.name}! ${params.inviterName} has created an account for you. Sign in at: ${params.signInUrl}. ${params.tempPassword ? `Your temporary password is: ${params.tempPassword}. You will be prompted to change it on first login.` : params.passwordResetLink ? `Set your password here: ${params.passwordResetLink}` : ''} If you have questions, contact support@kdm-assoc.com.`,
+  }),
+
+  /**
    * Payment confirmation
    */
   paymentConfirmation: (params: { name: string; amount: number; description: string; receiptUrl?: string }) => ({

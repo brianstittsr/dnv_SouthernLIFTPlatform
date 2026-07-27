@@ -4,6 +4,7 @@ import { assignUserRole, USER_ROLES } from "@/lib/rbac";
 import { Timestamp } from "firebase-admin/firestore";
 import { randomBytes } from "crypto";
 import type { UserRole } from "@/lib/rbac-types";
+import { sendTemplatedEmail } from "@/lib/email";
 
 /**
  * POST /api/admin/invite
@@ -128,9 +129,52 @@ export async function POST(req: NextRequest) {
       createdAt: Timestamp.now(),
     });
 
+    // Send invitation email with login instructions
+    const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || process.env.NEXT_PUBLIC_URL || "https://www.kdm-assoc.com";
+    const signInUrl = `${baseUrl}/sign-in`;
+
+    // Generate a password reset link so the user can set their own password securely
+    let passwordResetLink: string | undefined;
+    try {
+      passwordResetLink = await auth.generatePasswordResetLink(email, {
+        url: `${baseUrl}/portal/dashboard`,
+      });
+    } catch (emailError) {
+      console.warn("Failed to generate password reset link, falling back to temp password in email:", emailError);
+    }
+
+    // Get inviter's display name
+    const inviterDoc = await db.collection("users").doc(decodedToken.uid).get();
+    const inviterData = inviterDoc.data();
+    const inviterName = inviterData?.displayName || inviterData?.firstName || "KDM & Associates";
+
+    try {
+      const emailResult = await sendTemplatedEmail(
+        "userInvitation",
+        email,
+        {
+          name: displayName,
+          email,
+          inviterName,
+          role: USER_ROLES[role as UserRole] || role,
+          signInUrl,
+          tempPassword: passwordResetLink ? undefined : tempPassword,
+          passwordResetLink: passwordResetLink || undefined,
+        }
+      );
+
+      if (!emailResult.success) {
+        console.error("Failed to send invitation email:", emailResult.error);
+      } else {
+        console.log(`Invitation email sent to ${email}. Message ID: ${emailResult.messageId}`);
+      }
+    } catch (emailError: any) {
+      console.error("Error sending invitation email:", emailError);
+    }
+
     return NextResponse.json({
       success: true,
-      message: "Invitation created successfully",
+      message: "Invitation created successfully. An email has been sent to the user with login instructions.",
       user: {
         uid: userRecord.uid,
         email,
