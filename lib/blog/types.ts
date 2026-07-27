@@ -19,7 +19,9 @@ export type BlogCategory =
   | "Opportunity Zones"
   | "Cross-Cutting Strategic Topics"
   | "Thought Leadership & Case Studies"
-  | "Contract Opportunities";
+  | "Contract Opportunities"
+  | "Supply Chain Resilience"
+  | "AI & Cybersecurity";
 
 export const BLOG_CATEGORIES: BlogCategory[] = [
   "U.S. Manufacturing",
@@ -30,6 +32,8 @@ export const BLOG_CATEGORIES: BlogCategory[] = [
   "Cross-Cutting Strategic Topics",
   "Thought Leadership & Case Studies",
   "Contract Opportunities",
+  "Supply Chain Resilience",
+  "AI & Cybersecurity",
 ];
 
 export const BLOG_CTA = `

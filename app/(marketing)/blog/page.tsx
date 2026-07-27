@@ -17,6 +17,8 @@ import {
   Lightbulb,
   Gem,
   FileSearch,
+  Network,
+  Cpu,
 } from "lucide-react";
 import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
 import { BlogListJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     "CMMC certification guide",
     "government contracting insights",
     "critical minerals strategy",
-    "diverse business defense contracts",
+    "small business defense contracts",
     "manufacturing reshoring",
     "opportunity zones investment",
     "small business capital access",
@@ -72,6 +74,8 @@ const categoryIcons: Record<BlogCategory, React.ElementType> = {
   "Cross-Cutting Strategic Topics": Layers,
   "Thought Leadership & Case Studies": Lightbulb,
   "Contract Opportunities": FileSearch,
+  "Supply Chain Resilience": Network,
+  "AI & Cybersecurity": Cpu,
 };
 
 const categoryColors: Record<BlogCategory, string> = {
@@ -83,6 +87,8 @@ const categoryColors: Record<BlogCategory, string> = {
   "Cross-Cutting Strategic Topics": "bg-cyan-100 text-cyan-800",
   "Thought Leadership & Case Studies": "bg-indigo-100 text-indigo-800",
   "Contract Opportunities": "bg-orange-100 text-orange-800",
+  "Supply Chain Resilience": "bg-teal-100 text-teal-800",
+  "AI & Cybersecurity": "bg-slate-100 text-slate-800",
 };
 
 const categoryFallbackImages: Record<BlogCategory, string> = {
@@ -94,6 +100,8 @@ const categoryFallbackImages: Record<BlogCategory, string> = {
   "Cross-Cutting Strategic Topics": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
   "Thought Leadership & Case Studies": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
   "Contract Opportunities": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
+  "Supply Chain Resilience": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+  "AI & Cybersecurity": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
 };
 
 export default async function BlogPage() {

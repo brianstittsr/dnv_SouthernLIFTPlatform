@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
   keywords: [
     "government contracting",
-    "diverse business enterprise",
     "federal procurement",
     "MBDA",
     "8(a) certification",
@@ -33,7 +32,6 @@ export const metadata: Metadata = {
     "SDVOSB",
     "HUBZone",
     "small business government contracts",
-    "supplier diversity",
     "mentor protege",
     "SBA programs",
     "CMMC certification",

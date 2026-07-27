@@ -88,7 +88,7 @@ The Community Advantage program is specifically designed for businesses in under
 
 **Program Details:**
 - **Maximum loan amount:** $350,000
-- **Target market:** Businesses in underserved communities, including diverse, women-owned, and veteran-owned businesses
+- **Target market:** Businesses in underserved communities, including women-owned and veteran-owned businesses
 - **Terms:** Similar to 7(a) program but with streamlined requirements
 - **Mission:** Expanding capital access to businesses that historically faced barriers
 
@@ -99,7 +99,7 @@ The Community Advantage program is specifically designed for businesses in under
 - Potential combination with 8(a) Business Development Program
 
 **Eligibility Factors:**
-Businesses located in low-to-moderate income communities, diverse businesses, women-owned businesses, veteran-owned businesses, and businesses in rural areas may qualify for preferential consideration.
+Businesses located in low-to-moderate income communities, women-owned businesses, veteran-owned businesses, and businesses in rural areas may qualify for preferential consideration.
 
 ## Department of Defense Direct Funding Programs
 
@@ -663,7 +663,7 @@ ${BLOG_CTA}`
 **What they want to see:**
 - Multi-year contracts with funded obligations
 - Growing contract backlog
-- Diverse customer base (multiple primes and agencies)
+- Broad customer base (multiple primes and agencies)
 - High contract renewal rates
 - Revenue visibility for 12-24 months
 
@@ -1092,9 +1092,9 @@ ${BLOG_CTA}`
 - More flexible underwriting than banks
 - Lower interest rates than most alternative lenders
 - Technical assistance included
-- Focus on diverse-owned and community-based businesses
+- Focus on small and community-based businesses
 
-**Best for:** Diverse-owned contractors in underserved areas
+**Best for:** Small contractors in underserved areas
 
 ### 9. Crowdfunding and Peer-to-Peer Lending
 **How it works:** Raise capital from multiple individual investors.

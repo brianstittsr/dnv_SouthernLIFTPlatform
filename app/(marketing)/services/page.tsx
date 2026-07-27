@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     "HUBZone consulting",
     "WOSB SDVOSB support",
     "federal procurement consulting",
-    "supplier diversity services",
     "KDM Associates services",
   ],
   alternates: { canonical: "https://kdm-assoc.com/services" },
