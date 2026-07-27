@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
       action: "user_invited",
       resource: "user",
       resourceId: userRecord.uid,
-      details: { email, role, tenantId, companyId },
+      details: { email, role, tenantId: tenantId || "kdm-svp-platform", companyId: companyId || null },
       timestamp: Timestamp.now(),
       createdAt: Timestamp.now(),
     });
