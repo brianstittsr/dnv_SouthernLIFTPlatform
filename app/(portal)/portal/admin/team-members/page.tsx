@@ -73,6 +73,7 @@ import { listImages, getImage, base64ToDataUrl, type ImageMetadata } from "@/lib
 import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
+import { InviteUserDialog } from "@/components/admin/invite-user-dialog";
 import Link from "next/link";
 
 // Seed data for Team members
@@ -625,6 +626,12 @@ export default function TeammembersPage() {
               Update Websites
             </Button>
           )}
+          <InviteUserDialog>
+            <Button variant="outline">
+              <Mail className="mr-2 h-4 w-4" />
+              Invite User
+            </Button>
+          </InviteUserDialog>
           {members.length === 0 && (
             <Button variant="outline" onClick={handleSeedData} disabled={seeding}>
               {seeding ? (

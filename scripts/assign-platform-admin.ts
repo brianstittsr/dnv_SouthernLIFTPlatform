@@ -1,14 +1,18 @@
 // Script to assign platform_admin role to a user
 // Run with: npx tsx scripts/assign-platform-admin.ts
 
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import { initializeApp, cert } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
+import { getAuth, type UserRecord } from 'firebase-admin/auth';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { randomUUID } from 'crypto';
 
 // Initialize Firebase Admin
 const app = initializeApp({
   credential: cert({
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   }),
@@ -21,13 +25,32 @@ async function assignPlatformAdmin(email: string) {
   try {
     console.log(`🔍 Looking up user: ${email}`);
     
-    // Get user by email
-    const userRecord = await auth.getUserByEmail(email);
-    console.log(`✅ Found user: ${userRecord.uid}`);
-    
+    // Get or create user by email
+    let userRecord: UserRecord;
+    let tempPassword: string | undefined;
+    try {
+      userRecord = await auth.getUserByEmail(email);
+      console.log(`✅ Found user: ${userRecord.uid}`);
+    } catch (error: any) {
+      if (error.code === 'auth/user-not-found') {
+        tempPassword = `${randomUUID().replace(/-/g, '')}A1!`;
+        console.log(`🔧 User not found; creating new account for ${email}`);
+        userRecord = await auth.createUser({
+          email,
+          displayName: 'Manpreet Hundal',
+          password: tempPassword,
+          emailVerified: true,
+        });
+        console.log(`✅ Created user: ${userRecord.uid}`);
+      } else {
+        throw error;
+      }
+    }
+
     // Set custom claims
     await auth.setCustomUserClaims(userRecord.uid, {
       role: 'platform_admin',
+      svpRole: 'platform_admin',
       tenantId: 'kdm-svp-platform',
     });
     console.log(`✅ Set custom claims: role=platform_admin, tenantId=kdm-svp-platform`);
@@ -38,8 +61,13 @@ async function assignPlatformAdmin(email: string) {
     
     if (userDoc.exists) {
       await userDocRef.update({
+        firstName: 'Manpreet',
+        lastName: 'Hundal',
+        displayName: userRecord.displayName || 'Manpreet Hundal',
         role: 'platform_admin',
+        svpRole: 'platform_admin',
         tenantId: 'kdm-svp-platform',
+        isActive: true,
         updatedAt: Timestamp.now(),
       });
       console.log(`✅ Updated user document in Firestore`);
@@ -47,9 +75,14 @@ async function assignPlatformAdmin(email: string) {
       await userDocRef.set({
         id: userRecord.uid,
         email: userRecord.email,
-        displayName: userRecord.displayName || email.split('@')[0],
+        firstName: 'Manpreet',
+        lastName: 'Hundal',
+        displayName: userRecord.displayName || 'Manpreet Hundal',
         role: 'platform_admin',
+        svpRole: 'platform_admin',
         tenantId: 'kdm-svp-platform',
+        isActive: true,
+        emailVerified: true,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -77,6 +110,10 @@ async function assignPlatformAdmin(email: string) {
     }, { merge: true });
     console.log(`✅ Updated permissions document`);
     
+    if (tempPassword) {
+      console.log(`\n🔑 Temporary password: ${tempPassword}`);
+      console.log(`⚠️  Share this securely; the user should change it on first login.`);
+    }
     console.log(`\n🎉 Success! ${email} is now a platform admin`);
     console.log(`\n⚠️  Important: User must sign out and sign back in for changes to take effect`);
     

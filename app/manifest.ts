@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "KDM & Associates | MBDA Federal Procurement Center",
+    name: "KDM & Associates | Federal Procurement & Government Contracting",
     short_name: "KDM & Associates",
     description:
       "KDM & Associates helps businesses win government contracts through strategic teaming, capacity building, and mentorship.",

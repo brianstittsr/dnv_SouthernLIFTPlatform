@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
-import { PRODUCTS } from "@/lib/types/cart";
+import { PRODUCTS, type Product } from "@/lib/types/cart";
 import {
   Check,
   Star,
@@ -193,11 +194,26 @@ interface MembershipTrackerStatus {
   discountPercentage: number;
 }
 
+interface SpecialOffer {
+  id: string;
+  name: string;
+  price: number;
+  priceType: 'monthly' | 'annual' | 'one-time' | 'training';
+  description?: string;
+  specialTag?: string;
+  features?: string[];
+  productType?: 'founders' | 'consortium' | 'cmmc-cohort';
+  cta?: string;
+  validUntil?: string;
+}
+
 export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [trackerStatus, setTrackerStatus] = useState<MembershipTrackerStatus | null>(null);
   const [trackerLoading, setTrackerLoading] = useState(true);
+  const [specialOffers, setSpecialOffers] = useState<SpecialOffer[]>([]);
+  const [specialOffersLoading, setSpecialOffersLoading] = useState(true);
 
   // Fetch membership tracker status on component mount
   useEffect(() => {
@@ -217,6 +233,41 @@ export default function PricingPage() {
 
     fetchTrackerStatus();
   }, []);
+
+  // Fetch dynamic special offers managed from the admin panel
+  useEffect(() => {
+    const fetchSpecialOffers = async () => {
+      try {
+        const response = await fetch("/api/pricing/special-offers");
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        const result = await response.json();
+        setSpecialOffers(result.data || []);
+      } catch (error) {
+        console.error("Error fetching special offers:", error);
+      } finally {
+        setSpecialOffersLoading(false);
+      }
+    };
+
+    fetchSpecialOffers();
+  }, []);
+
+  const buildSpecialOfferProduct = (offer: SpecialOffer): Product => {
+    const baseProduct = PRODUCTS[offer.productType || 'founders'];
+    return {
+      ...baseProduct,
+      id: `${baseProduct.id}-${offer.id}`,
+      name: offer.name || baseProduct.name,
+      description: offer.description || baseProduct.description,
+      price: offer.price || baseProduct.price,
+      features: offer.features?.length ? offer.features : baseProduct.features,
+      billingPeriod: offer.priceType === 'monthly' || offer.priceType === 'annual'
+        ? offer.priceType
+        : 'one-time',
+    };
+  };
 
   const handleSelectPlan = async (tierId: string) => {
     const tier = PRICING_TIERS.find((t) => t.id === tierId);
@@ -416,6 +467,87 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      {/* Special Offers Section (admin togglable) */}
+      {!specialOffersLoading && specialOffers.length > 0 && (
+        <section className="py-10 -mt-6">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <Badge className="mb-2 bg-amber-500 text-white hover:bg-amber-600 border-none">
+                Limited Time
+              </Badge>
+              <h2 className="text-3xl font-bold mb-2">Special Pricing</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Exclusive offers available for a limited time. Toggle these on or off from the admin panel.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {specialOffers.map((offer) => {
+                const product = buildSpecialOfferProduct(offer);
+                const isRecurring = product.billingPeriod === 'monthly' || product.billingPeriod === 'annual';
+                return (
+                  <Card
+                    key={offer.id}
+                    className="relative flex flex-col h-full border-2 border-amber-400 shadow-xl"
+                  >
+                    {offer.specialTag && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <Badge className="bg-amber-500 text-white px-4 py-1 border-none">
+                          {offer.specialTag}
+                        </Badge>
+                      </div>
+                    )}
+                    <CardHeader className="text-center pb-4 pt-8">
+                      <div className="mx-auto mb-4 p-3 rounded-full bg-amber-100 w-fit">
+                        <Star className="h-8 w-8 text-amber-600" />
+                      </div>
+                      <CardTitle className="text-2xl">{offer.name}</CardTitle>
+                      <CardDescription className="min-h-[48px] mt-2">
+                        {offer.description || product.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                      <div className="text-center mb-6">
+                        <div className="text-4xl font-bold">
+                          {formatPrice(product.price)}
+                        </div>
+                        <div className="text-muted-foreground">
+                          {isRecurring ? `per ${product.billingPeriod}` : 'one-time payment'}
+                        </div>
+                        {offer.validUntil && (
+                          <div className="text-xs text-amber-700 mt-2 font-semibold flex items-center justify-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            Offer ends {format(new Date(offer.validUntil), 'MMM d, yyyy')}
+                          </div>
+                        )}
+                      </div>
+                      <Separator className="my-6" />
+                      <ul className="space-y-3">
+                        {(offer.features?.length ? offer.features : product.features).map((feature, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    <CardFooter className="pt-4">
+                      <AddToCartButton
+                        product={product}
+                        variant="default"
+                        size="lg"
+                        className="w-full bg-amber-600 hover:bg-amber-700"
+                      >
+                        {offer.cta || 'Claim Offer'} <ArrowRight className="ml-2 h-4 w-4" />
+                      </AddToCartButton>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Membership Benefits Section */}
       <section className="py-20 bg-muted/30">

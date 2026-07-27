@@ -39,6 +39,14 @@ interface MembershipPrice {
   stripePriceId?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+  /** Special offer tag shown on public pricing (e.g., "HubZone Conference Special") */
+  specialTag?: string;
+  /** Features shown on the public pricing card */
+  features?: string[];
+  /** Maps this offer to the checkout product type */
+  productType?: 'founders' | 'consortium' | 'cmmc-cohort';
+  /** Call-to-action label */
+  cta?: string;
 }
 
 const COLLECTION_NAME = "consortiumPricing";
@@ -58,6 +66,10 @@ export default function ConsortiumPricingAdminPage() {
   const [validFrom, setValidFrom] = useState<string>("");
   const [validUntil, setValidUntil] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [specialTag, setSpecialTag] = useState<string>("");
+  const [features, setFeatures] = useState<string>("");
+  const [productType, setProductType] = useState<'founders' | 'consortium' | 'cmmc-cohort'>('founders');
+  const [cta, setCta] = useState<string>("");
   const [active, setActive] = useState(true);
 
   useEffect(() => {
@@ -107,6 +119,10 @@ export default function ConsortiumPricingAdminPage() {
     setIsPromotional(p.isPromotional);
     setPromotionalPrice(p.promotionalPrice ? p.promotionalPrice / 100 : 650); // Convert from cents to dollars
     setDescription(p.description || "");
+    setSpecialTag(p.specialTag || "");
+    setFeatures(p.features ? p.features.join("\n") : "");
+    setProductType(p.productType || 'founders');
+    setCta(p.cta || "");
     setActive(p.active);
 
     if (p.validFrom) {
@@ -126,6 +142,10 @@ export default function ConsortiumPricingAdminPage() {
     setValidFrom("");
     setValidUntil("");
     setDescription("");
+    setSpecialTag("");
+    setFeatures("");
+    setProductType('founders');
+    setCta("");
     setActive(true);
     setEditingId(null);
   };
@@ -153,6 +173,10 @@ export default function ConsortiumPricingAdminPage() {
         validFrom: validFrom ? Timestamp.fromDate(new Date(validFrom)) : undefined,
         validUntil: validUntil ? Timestamp.fromDate(new Date(validUntil)) : undefined,
         description,
+        specialTag: specialTag || undefined,
+        features: features.trim() ? features.split("\n").map((f) => f.trim()).filter(Boolean) : undefined,
+        productType,
+        cta: cta || undefined,
         active,
         updatedAt: Timestamp.now(),
       };
@@ -371,6 +395,52 @@ export default function ConsortiumPricingAdminPage() {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="specialTag">Special Offer Tag (optional)</Label>
+              <Input
+                id="specialTag"
+                value={specialTag}
+                onChange={(e) => setSpecialTag(e.target.value)}
+                placeholder="e.g., HubZone Conference Special"
+              />
+              <p className="text-xs text-muted-foreground">Shown as a badge on the public pricing page.</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="features">Public Pricing Features (one per line, optional)</Label>
+              <textarea
+                id="features"
+                value={features}
+                onChange={(e) => setFeatures(e.target.value)}
+                placeholder="Lifetime Founding Member status&#10;All Consortium membership benefits&#10;..."
+                className="w-full px-3 py-2 border rounded-md text-sm min-h-[100px]"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="productType">Checkout Product Mapping</Label>
+              <Select value={productType} onValueChange={(value: 'founders' | 'consortium' | 'cmmc-cohort') => setProductType(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select checkout product" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="founders">Founders Membership (one-time)</SelectItem>
+                  <SelectItem value="consortium">Consortium Membership (subscription)</SelectItem>
+                  <SelectItem value="cmmc-cohort">CMMC Cohort Training (one-time)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cta">Call-to-Action Label (optional)</Label>
+              <Input
+                id="cta"
+                value={cta}
+                onChange={(e) => setCta(e.target.value)}
+                placeholder="e.g., Claim Founders Spot"
+              />
+            </div>
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="active"
@@ -502,6 +572,9 @@ export default function ConsortiumPricingAdminPage() {
                            p.priceType === 'training' ? '/training' : 
                            ''}
                         </span>
+                        {p.specialTag && (
+                          <Badge className="bg-amber-500 text-white">{p.specialTag}</Badge>
+                        )}
                         {p.isPromotional && (
                           <Badge variant="secondary">Promotional</Badge>
                         )}

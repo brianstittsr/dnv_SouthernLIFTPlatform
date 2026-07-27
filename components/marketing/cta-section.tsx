@@ -10,6 +10,9 @@ export function CTASection() {
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Ready to Win Government Contracts?
           </h2>
+          <p className="mt-4 text-xl opacity-95 max-w-3xl mx-auto font-medium">
+            Supporting U.S. Manufacturing, Defense Industrial Base Readiness, Critical Minerals, and Supply Chain Resilience.
+          </p>
           <p className="mt-6 text-lg opacity-90 max-w-2xl mx-auto">
             Take the first step toward growing your government contracting business. 
             Schedule an introductory session and discover how KDM & Associates can help you succeed.

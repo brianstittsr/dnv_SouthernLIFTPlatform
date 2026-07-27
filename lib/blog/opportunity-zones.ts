@@ -157,14 +157,14 @@ ${BLOG_CTA}`
   {
     slug: "6th-region-africa-caribbean-opportunity-zone-strategies",
     title: "The 6th Region of Africa: Caribbean Opportunity Zone Strategies",
-    excerpt: "The Caribbean's unique position as the '6th Region of Africa' creates distinctive Opportunity Zone investment strategies connecting diaspora communities with economic development.",
+    excerpt: "The Caribbean's unique position as the '6th Region of Africa' creates distinctive Opportunity Zone investment strategies connecting international communities with economic development.",
     author: "KDM & Associates",
     date: "2026-01-29",
     category: "Opportunity Zones",
     tags: ["Caribbean", "Africa", "Opportunity Zones", "Diaspora", "Investment"],
     readTime: 10,
     imageUrl: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?w=800&q=80",
-    content: `The concept of the Caribbean as the "6th Region of Africa" reflects the deep historical, cultural, and economic connections between the Caribbean and the African continent. These connections, combined with Opportunity Zone designations in U.S. territories like Puerto Rico and the U.S. Virgin Islands, create unique investment strategies that bridge diaspora communities, economic development, and federal incentives.
+    content: `The concept of the Caribbean as the "6th Region of Africa" reflects the deep historical, cultural, and economic connections between the Caribbean and the African continent. These connections, combined with Opportunity Zone designations in U.S. territories like Puerto Rico and the U.S. Virgin Islands, create unique investment strategies that bridge international communities, economic development, and federal incentives.
 
 ## The 6th Region Concept
 
@@ -172,12 +172,12 @@ ${BLOG_CTA}`
 The Caribbean is home to the largest concentration of people of African descent outside of Africa. This shared heritage creates:
 - Cultural and linguistic connections
 - Trade relationships and business networks
-- Diaspora investment flows
+- International investment flows
 - Shared development challenges and opportunities
 
 ### Economic Significance
 - Caribbean-Africa trade: **$5+ billion annually** and growing
-- Diaspora remittances: **$40+ billion** to the Caribbean annually
+- International remittances: **$40+ billion** to the Caribbean annually
 - Shared industries: Mining, agriculture, tourism, manufacturing
 - Common development goals: Infrastructure, education, healthcare
 
@@ -233,11 +233,11 @@ Africa's mineral wealth + Caribbean processing capacity:
 - Specialty metals refining
 - Recycling and recovery operations
 
-### Diaspora Investment Vehicles
-Structured investment opportunities for diaspora communities:
+### International Investment Vehicles
+Structured investment opportunities for international communities:
 - Qualified Opportunity Funds focused on Caribbean OZs
 - Community development projects with OZ benefits
-- Social impact investments with tax advantages
+- Tax-advantaged investments in designated Opportunity Zones
 - Cultural and heritage tourism development
 
 ## Investment Strategies
@@ -246,7 +246,7 @@ Structured investment opportunities for diaspora communities:
 Establish manufacturing facilities in Caribbean OZs that:
 - Process raw materials from Africa
 - Serve U.S. defense and commercial markets
-- Create jobs in underserved Caribbean communities
+- Create jobs in Caribbean Opportunity Zone communities
 - Benefit from OZ tax incentives and local incentives
 
 ### Strategy 2: Technology Hub
@@ -302,7 +302,7 @@ The International Association of Economic Opportunity Zones (IAEOZ) provides:
 
 ## Conclusion
 
-The intersection of Caribbean Opportunity Zones, African economic connections, and U.S. federal incentives creates a unique investment landscape. For investors and businesses willing to navigate the complexity, these strategies offer compelling returns combined with meaningful community and economic impact across the African diaspora.
+The intersection of Caribbean Opportunity Zones, African economic connections, and U.S. federal incentives creates a unique investment landscape. For investors and businesses willing to navigate the complexity, these strategies offer compelling returns combined with meaningful community and economic impact across African and Caribbean communities.
 
 ${BLOG_CTA}`
   },

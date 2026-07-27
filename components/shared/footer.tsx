@@ -46,7 +46,7 @@ export function Footer() {
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
               Helping businesses win government contracts through 
-              strategic teaming, capacity building, and mentorship.
+              strategic teaming, capacity building, CMMC readiness, and supply chain integration.
             </p>
             <div className="flex gap-4">
               <Link href="https://www.linkedin.com/company/kdmassoc" className="text-gray-400 hover:text-primary transition-colors">

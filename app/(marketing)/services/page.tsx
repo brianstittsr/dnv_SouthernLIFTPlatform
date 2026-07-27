@@ -10,7 +10,7 @@ import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 export const metadata: Metadata = {
   title: "Government Contracting Services | KDM & Associates",
   description:
-    "KDM & Associates delivers expert government contracting services: 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small and diverse businesses.",
+    "KDM & Associates delivers expert government contracting services: 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small businesses.",
   keywords: [
     "government contracting services",
     "8(a) certification",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Government Contracting Services | KDM & Associates",
     description:
-      "Expert 8(a), CMMC, proposal support, teaming, and capacity-building services for diverse small businesses pursuing federal contracts.",
+      "Expert 8(a), CMMC, proposal support, teaming, and capacity-building services for small businesses pursuing federal contracts.",
     url: "https://kdm-assoc.com/services",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Services" }],
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Government Contracting Services | KDM & Associates",
-    description: "8(a), CMMC, teaming, proposal support and more for diverse small businesses.",
+    description: "8(a), CMMC, teaming, proposal support and more for small businesses.",
   },
 };
 
@@ -44,7 +44,7 @@ export default function ServicesPage() {
     <>
       <ServiceJsonLd
         name="Government Contracting Services"
-        description="KDM & Associates delivers expert government contracting services including 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small and diverse businesses."
+        description="KDM & Associates delivers expert government contracting services including 8(a) certification guidance, CMMC compliance, federal proposal support, teaming agreements, and capacity building for small businesses."
         url="https://kdm-assoc.com/services"
       />
       <BreadcrumbJsonLd items={[

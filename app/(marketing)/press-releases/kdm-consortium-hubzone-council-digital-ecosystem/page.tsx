@@ -37,7 +37,7 @@ ${pressRelease.location}, ${format(pressRelease.releaseDate, 'MMMM d, yyyy')} �
 
 This new platform will serve as a single, secure hub for company capabilities and past performance data, executive profiles, technology demonstrations, matchmaking and teaming requests, needs assessments, and barrier identification. By replacing fragmented processes with a scalable infrastructure, the ecosystem platform will directly support immediate priorities while laying the foundation for a robust, sustainable national ecosystem.
 
-"The launch of the 5 Pillar focused digital platform and collaboration strategy" said Keith Moore, CEO of KDM & Associates and Chair of the KDM Consortium creates the infrastructure to bring every relevant stakeholder to the table — manufacturers, technology providers, educational institutions, workforce organizations, and strategic partners — empowering HUBZone businesses to thrive and contribute to America's industrial base modernization."
+"The launch of the 5 Pillar focused digital platform and collaboration strategy" said Keith Moore, CEO of KDM & Associates and Chair of the KDM Consortium creates the infrastructure to bring every relevant stakeholder to the table — manufacturers, technology providers, educational institutions, workforce organizations, and strategic partners — equipping HUBZone businesses to compete and contribute to America's industrial base modernization."
 
 The collaboration is focused on two critical near-term objectives:
 
@@ -49,15 +49,15 @@ Future Vision
 
 Once fully operational, the platform will evolve into the core digital backbone for the integrated KDM Consortium and HUBZone Council ecosystem. It will enable advanced business intelligence, ongoing training and webinar programs, dynamic company directories, and expanded public-private collaboration opportunities.
 
-HUBZone-certified businesses, manufacturers, primes, nonprofits, educational institutions, and community partners are invited to participate in this initiative. Broad engagement will directly strengthen the nation's small business supply chain and elevate the upcoming national conference while accelerating the development of long-term infrastructure to drive job creation and economic growth in historically underutilized areas.
+HUBZone-certified businesses, manufacturers, primes, nonprofits, educational institutions, and community partners are invited to participate in this initiative. Broad engagement will directly strengthen the nation's small business supply chain and elevate the upcoming national conference while accelerating the development of long-term infrastructure to drive job creation and economic growth in HUBZone-designated areas.
 
 About the KDM Consortium and KDM & Associates
 
-Led by Keith Moore, KDM & Associates is a leader in government affairs, small business advocacy, and federal contracting support. The KDM Consortium functions as a dynamic teaming ecosystem that connects HUBZone and small manufacturers with federal agencies, prime contractors, and critical supply chain opportunities. To become a member of the KDM Consortium, visit www.kdm-assoc.com to sign up.
+Led by Keith Moore, KDM & Associates is a leader in government affairs, small business development and federal contracting support. The KDM Consortium functions as a dynamic teaming ecosystem that connects HUBZone and small manufacturers with federal agencies, prime contractors, and critical supply chain opportunities. To become a member of the KDM Consortium, visit www.kdm-assoc.com to sign up.
 
 About the HUBZone Contractors National Council
 
-Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in historically underutilized communities. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit www.kdm-assoc.com
+Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in HUBZone-designated areas. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit www.kdm-assoc.com
 
 Media Contact:
 
@@ -169,7 +169,7 @@ kmoore@kdm-assoc.com | (609) 206-1440`;
               </p>
 
               <blockquote className="border-l-4 border-primary pl-4 italic my-6">
-                <p>"The launch of the 5 Pillar focused digital platform and collaboration strategy" said Keith Moore, CEO of KDM & Associates and Chair of the KDM Consortium creates the infrastructure to bring every relevant stakeholder to the table — manufacturers, technology providers, educational institutions, workforce organizations, and strategic partners — empowering HUBZone businesses to thrive and contribute to America's industrial base modernization."</p>
+                <p>"The launch of the 5 Pillar focused digital platform and collaboration strategy" said Keith Moore, CEO of KDM & Associates and Chair of the KDM Consortium creates the infrastructure to bring every relevant stakeholder to the table — manufacturers, technology providers, educational institutions, workforce organizations, and strategic partners — equipping HUBZone businesses to compete and contribute to America's industrial base modernization."</p>
               </blockquote>
 
               <p className="mb-6">
@@ -188,7 +188,7 @@ kmoore@kdm-assoc.com | (609) 206-1440`;
               </p>
 
               <p className="mb-6">
-                HUBZone-certified businesses, manufacturers, primes, nonprofits, educational institutions, and community partners are invited to participate in this initiative. Broad engagement will directly strengthen the nation's small business supply chain and elevate the upcoming national conference while accelerating the development of long-term infrastructure to drive job creation and economic growth in historically underutilized areas.
+                HUBZone-certified businesses, manufacturers, primes, nonprofits, educational institutions, and community partners are invited to participate in this initiative. Broad engagement will directly strengthen the nation's small business supply chain and elevate the upcoming national conference while accelerating the development of long-term infrastructure to drive job creation and economic growth in HUBZone-designated areas.
               </p>
 
               <Separator className="my-8" />
@@ -197,14 +197,14 @@ kmoore@kdm-assoc.com | (609) 206-1440`;
                 <div>
                   <h3 className="text-xl font-bold mb-4">About the KDM Consortium and KDM & Associates</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Led by Keith Moore, KDM & Associates is a leader in government affairs, small business advocacy, and federal contracting support. The KDM Consortium functions as a dynamic teaming ecosystem that connects HUBZone and small manufacturers with federal agencies, prime contractors, and critical supply chain opportunities. To become a member of the KDM Consortium, visit <a href="https://www.kdm-assoc.com" className="text-primary hover:underline">www.kdm-assoc.com</a> to sign up.
+                    Led by Keith Moore, KDM & Associates is a leader in government affairs, small business development and federal contracting support. The KDM Consortium functions as a dynamic teaming ecosystem that connects HUBZone and small manufacturers with federal agencies, prime contractors, and critical supply chain opportunities. To become a member of the KDM Consortium, visit <a href="https://www.kdm-assoc.com" className="text-primary hover:underline">www.kdm-assoc.com</a> to sign up.
                   </p>
                 </div>
 
                 <div>
                   <h3 className="text-xl font-bold mb-4">About the HUBZone Contractors National Council</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in historically underutilized communities. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit <a href="https://www.kdm-assoc.com" className="text-primary hover:underline">www.kdm-assoc.com</a>
+                    Founded in 2000, the HUBZone Contractors National Council is a 501(c)(6) nonprofit trade association serving as the unified voice for 4,500 HUBZone-certified small businesses. The Council advocates for policies that expand market access, creates networking and training opportunities, and hosts the annual National HUBZone Conference to drive economic revitalization in HUBZone-designated areas. To sign up for the HUBZone conference and receive a 15% discount on conference admission, visit <a href="https://www.kdm-assoc.com" className="text-primary hover:underline">www.kdm-assoc.com</a>
                   </p>
                 </div>
               </div>
@@ -231,9 +231,6 @@ kmoore@kdm-assoc.com | (609) 206-1440`;
                 </div>
               </div>
 
-              <div className="text-center text-xs text-muted-foreground mt-8">
-                <p>Sent from my iPad</p>
-              </div>
             </div>
           </CardContent>
         </Card>

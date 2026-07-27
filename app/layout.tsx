@@ -18,8 +18,8 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kdm-assoc.com"),
   title: {
-    default: "KDM & Associates | MBDA Federal Procurement Center",
-    template: "%s | KDM & Associates",
+    default: "KDM & Associates | Federal Procurement & Government Contracting",
+    template: "%s",
   },
   description:
     "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://kdm-assoc.com",
     siteName: "KDM & Associates",
-    title: "KDM & Associates | MBDA Federal Procurement Center",
+    title: "KDM & Associates | Federal Procurement & Government Contracting",
     description:
       "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
     images: [
@@ -90,13 +90,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KDM & Associates - Powering Growth for Diverse Businesses",
+        alt: "KDM & Associates - Powering Growth for Competitive Businesses",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KDM & Associates | MBDA Federal Procurement Center",
+    title: "KDM & Associates | Federal Procurement & Government Contracting",
     description:
       "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts.",
     images: ["/og-image.png"],

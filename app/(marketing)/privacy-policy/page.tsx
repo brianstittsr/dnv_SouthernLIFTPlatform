@@ -86,10 +86,15 @@ export default function PrivacyPolicyPage() {
               We use administrative, technical, and physical security measures to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
             </p>
 
-            <h2>6. Contact Us</h2>
+            <h2>6. Contact Information</h2>
             <p>
-              We use administrative, technical, and physical security measures to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
+              If you have privacy-related questions, please contact us at:
             </p>
+            <ul>
+              <li>Email: privacy@kdm-assoc.com</li>
+              <li>Phone: (202) 469-3423</li>
+              <li>Address: 300 New Jersey Avenue NW, Washington, DC 20001</li>
+            </ul>
 
             <h2>7. Cookies and Tracking Technologies</h2>
             <p>
@@ -132,8 +137,8 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul>
               <li>Email: privacy@kdm-assoc.com</li>
-              <li>Phone: (202) 555-0123</li>
-              <li>Address: Washington, D.C.</li>
+              <li>Phone: (202) 469-3423</li>
+              <li>Address: 300 New Jersey Avenue NW, Washington, DC 20001</li>
             </ul>
 
             <h2>13. California Privacy Rights</h2>

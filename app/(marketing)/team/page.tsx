@@ -215,7 +215,7 @@ export default function TeamPage() {
         <div className="container text-center">
           <Users className="h-12 w-12 mx-auto mb-6 text-primary" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">A Team Approach to Your Success</h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Our diverse team brings together expertise in government contracting, business development, technology, and community engagement to support your journey to success.</p>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Our experienced team brings together expertise in government contracting, business development, technology, and community engagement to support your journey to success.</p>
           <Button size="lg" className="mt-8" asChild>
             <Link href="/contact">Work With Our Team<ArrowRight className="ml-2 h-5 w-5" /></Link>
           </Button>

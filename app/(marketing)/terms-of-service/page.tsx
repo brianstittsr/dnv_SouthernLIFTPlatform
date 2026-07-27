@@ -112,8 +112,8 @@ export default function TermsOfServicePage() {
             </p>
             <ul>
               <li>Email: legal@kdm-assoc.com</li>
-              <li>Phone: (202) 555-0123</li>
-              <li>Address: Washington, D.C.</li>
+              <li>Phone: (202) 469-3423</li>
+              <li>Address: 300 New Jersey Avenue NW, Washington, DC 20001</li>
             </ul>
           </div>
         </div>

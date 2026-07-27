@@ -27,9 +27,7 @@ import {
   Building2,
   Newspaper,
   Package,
-  Video,
   BookOpen,
-  Play,
   Columns,
   Shield,
   Factory,
@@ -77,7 +75,6 @@ const services = [
 const resources = [
   { title: "Blog", href: "/blog", icon: BookOpen },
   { title: "Press Releases", href: "/press-releases", icon: Radio },
-  { title: "IAEOZ Summit Videos", href: "/iaeoz-summit", icon: Play },
   { title: "CMMC", href: "/cmmc", icon: Shield },
   { title: "Industries", href: "/industries", icon: Factory },
   { title: "Client Registration", href: "/resources", icon: UserPlus },

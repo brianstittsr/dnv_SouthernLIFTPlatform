@@ -20,12 +20,12 @@ import {
 export const metadata: Metadata = {
   title: "About KDM & Associates | MBDA Federal Procurement Center",
   description:
-    "KDM & Associates is a minority-owned business development firm and MBDA Federal Procurement Center operator helping diverse small businesses win government contracts through strategic teaming, capacity building, CMMC compliance, and mentorship.",
+    "KDM & Associates is a business development firm and MBDA Federal Procurement Center operator helping small businesses win government contracts through strategic teaming, capacity building, CMMC compliance, and mentorship.",
   keywords: [
     "about KDM Associates",
     "MBDA Federal Procurement Center",
-    "minority owned business development",
-    "diverse business government contracting",
+    "small business development",
+    "small business government contracting",
     "government contracting consulting firm",
     "Keith Moore KDM Associates",
     "Washington DC government contracting",
@@ -33,12 +33,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://kdm-assoc.com/about" },
   openGraph: {
     title: "About KDM & Associates | MBDA Federal Procurement Center",
-    description: "Minority-owned MBDA Federal Procurement Center helping diverse businesses win government contracts through teaming, CMMC, and mentorship.",
+    description: "MBDA Federal Procurement Center helping small businesses win government contracts through teaming, CMMC, and mentorship.",
     url: "https://kdm-assoc.com/about",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About KDM & Associates" }],
   },
-  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "MBDA Federal Procurement Center helping diverse small businesses win government contracts." },
+  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "MBDA Federal Procurement Center helping small businesses win government contracts." },
 };
 
 const values = [
@@ -102,8 +102,8 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
-                  To empower small and diverse businesses 
-                  to compete and win government contracts by providing accessible, results-driven 
+                  To help small businesses 
+                  compete and win government contracts by providing accessible, results-driven 
                   support services that bridge the gap between current capabilities 
                   and federal procurement requirements.
                 </p>
@@ -134,10 +134,10 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg max-w-none">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                On April 30, 2025, KDM & Associates, LLC took a bold step - privatizing the mission of the Department of Commerce&apos;s Minority Business Development Agency (MBDA) to deliver expanded, value-added support directly to the large Prime Government Contractor community.
+                On April 30, 2025, KDM & Associates, LLC took a bold step - privatizing and expanding the mission of the Department of Commerce&apos;s MBDA Federal Procurement Center to deliver expanded, value-added support directly to the large Prime Government Contractor community.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                With a broader and more focused mandate, KDM directed its primary attention to the U.S. manufacturing, critical minerals, defense, and Opportunity Zone sectors — building on its foundation as the nation&apos;s most recently awarded Federal Procurement Center (FPC) since July 2021. This evolution reflects a deepened commitment to capacity building for the nation&apos;s most eligible and shovel-worthy small businesses.
+                With a broader and more focused mandate, KDM directed its primary attention to the U.S. manufacturing, critical minerals, defense, and Opportunity Zone sectors — building on its foundation as the nation&apos;s most recently awarded Federal Procurement Center (FPC) since July 2021. This evolution reflects a deepened commitment to capacity building for the nation&apos;s most eligible and procurement-ready small businesses.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
                 This privatization marks a strategic realignment — bringing new leadership, fresh initiatives, and stronger partnerships to more effectively meet the escalating demand for supply chain-ready small businesses that can address the nation&apos;s most critical procurement needs. Historical data confirms that small businesses have consistently faced significant barriers to entry in the federal acquisition sector. KDM exists to change that.

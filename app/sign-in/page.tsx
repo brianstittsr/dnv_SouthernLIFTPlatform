@@ -147,21 +147,14 @@ export default function SignInPage() {
         {/* Logo and Branding */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex flex-col items-center gap-3 group">
-            <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-[#C8A951] to-[#a08840] rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
-              <Image
-                src="/kdm-logo.png"
-                alt="KDM & Associates Logo"
-                width={80}
-                height={80}
-                className="relative h-20 w-auto"
-                priority
-              />
-            </div>
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-foreground">KDM & Associates</h1>
-              <p className="text-sm text-muted-foreground">Powering Growth for Diverse Businesses</p>
-            </div>
+            <Image
+              src="/kdm-logo.png"
+              alt="KDM & Associates Logo"
+              width={80}
+              height={80}
+              className="h-20 w-auto"
+              priority
+            />
           </Link>
         </div>
 

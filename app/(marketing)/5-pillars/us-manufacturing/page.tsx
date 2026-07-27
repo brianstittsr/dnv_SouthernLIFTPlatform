@@ -194,6 +194,16 @@ export default function ManufacturingPage() {
                   </p>
                 </CardContent>
               </Card>
+              <Card className="border-2 overflow-hidden md:col-span-3 lg:col-span-1">
+                <CardHeader>
+                  <CardTitle className="text-lg">Federal Procurement Compliance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Align manufacturing capabilities with federal procurement mandates including the Buy American Act, Berry Amendment, Trade Agreements Act (TAA), and Defense Production Act (DPA).
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

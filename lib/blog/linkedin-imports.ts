@@ -18,24 +18,33 @@ export async function getLinkedinImportedPosts(): Promise<BlogPost[]> {
       .orderBy("date", "desc")
       .get();
 
-    return snapshot.docs.map((doc) => {
-      const data = doc.data();
-      const content = data.content || "";
-      return {
-        slug: data.slug,
-        title: data.title,
-        excerpt: data.excerpt || content.substring(0, 200),
-        content: content.includes("## Ready to Take the Next Step?")
-          ? content
-          : content + "\n\n" + BLOG_CTA,
-        author: data.author || "KDM & Associates",
-        date: data.date,
-        category: data.category as BlogPost["category"],
-        tags: data.tags || [],
-        readTime: data.readTime || 5,
-        imageUrl: data.imageUrl,
-      };
-    });
+    const posts: (BlogPost | null)[] = snapshot.docs
+      .map((doc): BlogPost | null => {
+        const data = doc.data();
+        const rawContent = data.content || "";
+        const content = rawContent.includes("## Ready to Take the Next Step?")
+          ? rawContent
+          : rawContent + "\n\n" + BLOG_CTA;
+        const bodyOnly = content.replace(BLOG_CTA, "").trim();
+        if (bodyOnly.length < 200) {
+          console.warn(`Skipping thin LinkedIn import post: ${data.slug}`);
+          return null;
+        }
+        return {
+          slug: data.slug,
+          title: data.title,
+          excerpt: data.excerpt || content.substring(0, 200),
+          content,
+          author: data.author || "KDM & Associates",
+          date: data.date,
+          category: data.category as BlogPost["category"],
+          tags: data.tags || [],
+          readTime: data.readTime || 5,
+          imageUrl: data.imageUrl,
+        };
+      });
+
+    return posts.filter((post): post is BlogPost => post !== null);
   } catch (error) {
     console.error("Error fetching LinkedIn imported posts:", error);
     return [];
