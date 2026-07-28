@@ -14,7 +14,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   Timestamp,
 } from "firebase/firestore";
 
@@ -187,20 +186,10 @@ export async function listIAEOZVideos(year?: number): Promise<IAEOZVideoMetadata
     if (!db) throw new Error("Firebase not initialized");
 
     const videosRef = collection(db, IAEOZ_VIDEOS_COLLECTION);
-    let q = query(
-      videosRef,
-      where("isActive", "==", true),
-      orderBy("year", "desc"),
-      orderBy("createdAt", "desc")
-    );
+    let q = query(videosRef, where("isActive", "==", true));
 
     if (year) {
-      q = query(
-        videosRef,
-        where("isActive", "==", true),
-        where("year", "==", year),
-        orderBy("createdAt", "desc")
-      );
+      q = query(videosRef, where("isActive", "==", true), where("year", "==", year));
     }
 
     const querySnapshot = await getDocs(q);
@@ -227,6 +216,14 @@ export async function listIAEOZVideos(year?: number): Promise<IAEOZVideoMetadata
       });
     });
 
+    // Sort client-side to avoid needing composite indexes
+    videos.sort((a, b) => {
+      if (b.year !== a.year) return b.year - a.year;
+      const bTime = b.createdAt?.getTime() || 0;
+      const aTime = a.createdAt?.getTime() || 0;
+      return bTime - aTime;
+    });
+
     return videos;
   } catch (error) {
     console.error("Error listing IAEOZ videos:", error);
@@ -242,7 +239,7 @@ export async function listAllIAEOZVideos(): Promise<IAEOZVideoMetadata[]> {
     if (!db) throw new Error("Firebase not initialized");
 
     const videosRef = collection(db, IAEOZ_VIDEOS_COLLECTION);
-    const q = query(videosRef, orderBy("year", "desc"), orderBy("createdAt", "desc"));
+    const q = query(videosRef);
 
     const querySnapshot = await getDocs(q);
     const videos: IAEOZVideoMetadata[] = [];
@@ -266,6 +263,14 @@ export async function listAllIAEOZVideos(): Promise<IAEOZVideoMetadata[]> {
         createdAt: data.createdAt?.toDate(),
         updatedAt: data.updatedAt?.toDate(),
       });
+    });
+
+    // Sort client-side to avoid needing composite indexes
+    videos.sort((a, b) => {
+      if (b.year !== a.year) return b.year - a.year;
+      const bTime = b.createdAt?.getTime() || 0;
+      const aTime = a.createdAt?.getTime() || 0;
+      return bTime - aTime;
     });
 
     return videos;
