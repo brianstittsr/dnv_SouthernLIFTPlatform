@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { IAEOZHeroCarousel } from "@/components/iaeoz/hero-carousel";
 import { iaeozHeroSlides } from "@/lib/iaeoz-config";
+import { listIAEOZVideos, type IAEOZVideoMetadata } from "@/lib/firebase-iaeoz-videos";
+import fallbackVideoData from "@/iaeoz_summit_videos.json";
 
 // Image Placeholder Component
 function VideoThumbnail({ video }: { video: Video }) {
@@ -33,8 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Play, Search, Filter, X, Calendar, User, Building2, Tag, Mic } from "lucide-react";
-import videoData from "@/iaeoz_summit_videos.json";
+import { Play, Search, Filter, X, Calendar, User, Building2, Tag, Mic, Loader2 } from "lucide-react";
 
 interface Video {
   id: string;
@@ -71,26 +72,115 @@ interface VideoData {
   };
 }
 
-const data = videoData as VideoData;
+function transformFirestoreVideos(videos: IAEOZVideoMetadata[]): VideoData {
+  const videosByYear: Record<string, Video[]> = {};
+  const speakersMap = new Map<string, { name: string; organization: string | null; videos: string[] }>();
+  const years = new Set<number>();
 
-// Flatten videos for filtering
-const allVideos = Object.entries(data.videos_by_year).flatMap(([year, videos]) =>
-  videos.map((video) => ({ ...video, year: parseInt(year) }))
-);
+  videos.forEach((video) => {
+    const v: Video = {
+      id: video.youtubeId,
+      title: video.title,
+      url: video.url,
+      description: video.description || "",
+      year: video.year,
+      type: video.type,
+      speaker: video.speaker,
+      organization: video.organization,
+      duration_seconds: video.durationSeconds,
+      view_count: video.viewCount,
+      thumbnail_url: video.thumbnailUrl,
+    };
 
-// Get unique values for filters
-const uniqueSpeakers = Array.from(new Set(allVideos.map((v) => v.speaker).filter((s): s is string => s !== null))).sort();
-const uniqueOrganizations = Array.from(new Set(allVideos.map((v) => v.organization).filter(Boolean))).sort() as string[];
-const uniqueTypes = Array.from(new Set(allVideos.map((v) => v.type))).sort();
-const uniqueYears = Array.from(new Set(allVideos.map((v) => v.year))).sort((a, b) => b - a);
+    if (!videosByYear[video.year]) {
+      videosByYear[video.year] = [];
+    }
+    videosByYear[video.year].push(v);
+    years.add(video.year);
+
+    if (video.speaker) {
+      const existing = speakersMap.get(video.speaker);
+      if (existing) {
+        existing.videos.push(video.youtubeId);
+      } else {
+        speakersMap.set(video.speaker, {
+          name: video.speaker,
+          organization: video.organization,
+          videos: [video.youtubeId],
+        });
+      }
+    }
+  });
+
+  const yearsCovered = Array.from(years).sort((a, b) => a - b);
+  const videosByYearCount: Record<string, number> = {};
+  Object.entries(videosByYear).forEach(([year, vids]) => {
+    videosByYearCount[year] = vids.length;
+  });
+
+  return {
+    channel: fallbackVideoData.channel,
+    videos_by_year: videosByYear,
+    speakers: Array.from(speakersMap.values()).sort((a, b) => a.name.localeCompare(b.name)),
+    statistics: {
+      total_videos: videos.length,
+      years_covered: yearsCovered,
+      videos_by_year_count: videosByYearCount,
+      unique_speakers: speakersMap.size,
+    },
+  };
+}
 
 export default function IAEOZSummitPage() {
+  const [data, setData] = useState<VideoData>(() => fallbackVideoData as VideoData);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpeaker, setSelectedSpeaker] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedOrganization, setSelectedOrganization] = useState<string>("all");
   const [playingVideo, setPlayingVideo] = useState<Video | null>(null);
+
+  // Flatten videos for filtering (computed from loaded data)
+  const allVideos = useMemo(
+    () =>
+      Object.entries(data.videos_by_year).flatMap(([year, videos]) =>
+        videos.map((video) => ({ ...video, year: parseInt(year) }))
+      ),
+    [data]
+  );
+
+  // Get unique values for filters
+  const uniqueSpeakers = useMemo(
+    () => Array.from(new Set(allVideos.map((v) => v.speaker).filter((s): s is string => s !== null))).sort(),
+    [allVideos]
+  );
+  const uniqueOrganizations = useMemo(
+    () => Array.from(new Set(allVideos.map((v) => v.organization).filter(Boolean))).sort() as string[],
+    [allVideos]
+  );
+  const uniqueTypes = useMemo(() => Array.from(new Set(allVideos.map((v) => v.type))).sort(), [allVideos]);
+  const uniqueYears = useMemo(
+    () => Array.from(new Set(allVideos.map((v) => v.year))).sort((a, b) => b - a),
+    [allVideos]
+  );
+
+  // Load videos from Firestore on mount, falling back to JSON
+  useEffect(() => {
+    async function loadVideos() {
+      try {
+        const firestoreVideos = await listIAEOZVideos();
+        if (firestoreVideos.length > 0) {
+          setData(transformFirestoreVideos(firestoreVideos));
+        }
+      } catch (error) {
+        console.error("Error loading IAEOZ videos from Firestore:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadVideos();
+  }, []);
 
   const filteredVideos = useMemo(() => {
     return allVideos.filter((video) => {
@@ -101,14 +191,14 @@ export default function IAEOZSummitPage() {
         video.speaker?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (video.organization && video.organization.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const matchesSpeaker = selectedSpeaker === "all" || video.speaker === selectedSpeaker;
+      const matchesSpeaker = selectedSpeaker === "all" || video.speaker === selectedSpeaker;
       const matchesYear = selectedYear === "all" || video.year.toString() === selectedYear;
       const matchesType = selectedType === "all" || video.type === selectedType;
       const matchesOrganization = selectedOrganization === "all" || video.organization === selectedOrganization;
 
       return matchesSearch && matchesSpeaker && matchesYear && matchesType && matchesOrganization;
     });
-  }, [searchQuery, selectedSpeaker, selectedYear, selectedType, selectedOrganization]);
+  }, [allVideos, searchQuery, selectedSpeaker, selectedYear, selectedType, selectedOrganization]);
 
   const groupedVideos = useMemo(() => {
     const grouped: Record<number, Video[]> = {};

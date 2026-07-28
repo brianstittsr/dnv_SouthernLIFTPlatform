@@ -47,6 +47,7 @@ import {
   Building,
   FileText,
   Video,
+  Play,
   Calendar,
   CalendarDays,
   CheckSquare,
@@ -597,6 +598,12 @@ const svpAdminItems = [
     title: "Webinar Creator",
     href: "/portal/admin/webinar-creator",
     icon: Video,
+    badge: "New",
+  },
+  {
+    title: "IAEOZ Summit Videos",
+    href: "/portal/admin/iaeoz-videos",
+    icon: Play,
     badge: "New",
   },
   {
