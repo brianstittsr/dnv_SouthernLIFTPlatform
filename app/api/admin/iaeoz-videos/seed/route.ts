@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, db } from "@/lib/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
-import { readdirSync, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import path from "path";
 
 interface JsonVideo {
