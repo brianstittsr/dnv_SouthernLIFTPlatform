@@ -51,6 +51,7 @@ import {
   Tag,
   Clock,
   Eye,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -103,6 +104,7 @@ export function IAEOZVideoManager() {
   const [editingVideo, setEditingVideo] = useState<IAEOZVideoMetadata | null>(null);
   const [deleteVideoId, setDeleteVideoId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   useEffect(() => {
     loadVideos();
@@ -191,6 +193,47 @@ export function IAEOZVideoManager() {
       toast.error("Failed to delete video");
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  async function handleSeed() {
+    setIsSeeding(true);
+    try {
+      const { getIdToken } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
+      if (!auth) {
+        toast.error("Auth not initialized");
+        return;
+      }
+      const user = auth.currentUser;
+      if (!user) {
+        toast.error("You must be signed in to import videos");
+        return;
+      }
+
+      const token = await getIdToken(user, true);
+      const response = await fetch("/api/admin/iaeoz-videos/seed", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to import videos");
+      }
+
+      toast.success(
+        `Imported ${result.summary.added} videos. Skipped ${result.summary.skipped}, errors ${result.summary.errors}.`
+      );
+      loadVideos();
+    } catch (error: any) {
+      console.error("Error seeding IAEOZ videos:", error);
+      toast.error(error.message || "Failed to import videos");
+    } finally {
+      setIsSeeding(false);
     }
   }
 
@@ -356,10 +399,24 @@ export function IAEOZVideoManager() {
                 : "Add your first IAEOZ Summit video to get started."}
             </p>
             {!hasActiveFilters && (
-              <Button onClick={() => setAddDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add First Video
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button onClick={() => setAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Video
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleSeed}
+                  disabled={isSeeding}
+                >
+                  {isSeeding ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Upload className="h-4 w-4 mr-2" />
+                  )}
+                  Import Existing Videos
+                </Button>
+              </div>
             )}
           </div>
         </Card>
