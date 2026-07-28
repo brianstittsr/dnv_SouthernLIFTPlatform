@@ -13,7 +13,7 @@ import { DiscountBanner } from "@/components/marketing/discount-banner";
 export default function HomePage() {
   return (
     <>
-      <DiscountBanner />
+      {/* <DiscountBanner /> */}
       <HeroCarousel />
       {/* <ServicesOverview /> */}
       <FivePillarsSection />
