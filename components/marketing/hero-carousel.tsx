@@ -53,23 +53,6 @@ const STORAGE_KEY = "hero-slides-v2";
 
 // Default slides fallback
 const defaultSlides: HeroSlide[] = [
-  {
-    id: "press-release-hubzone",
-    badge: "🎉 Major Partnership Announcement",
-    headline: "KDM Consortium &",
-    middleLine: "&",
-    highlightedText: "HUBZone Council",
-    subheadline: "Launching a Whole of Government Team Approach to build a National HUBZone Digital Ecosystem. Accelerating small business success and strengthening federal contracting opportunities.",
-    benefits: ["Digital Ecosystem Platform", "2026 National HUBZone Conference", "Federal Contracting Support"],
-    primaryCta: { text: "Read Press Release", href: "/press-releases/kdm-consortium-hubzone-council-digital-ecosystem" },
-    secondaryCta: { text: "Join the Consortium", href: "/consortium" },
-    isPublished: true,
-    order: 0,
-    backgroundType: "image",
-    backgroundImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1920&q=80",
-    backgroundOverlay: true,
-    backgroundOverlayOpacity: 60,
-  },
   // FORCE REBUILD - v2
   {
     id: "1",
@@ -327,27 +310,11 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
       sessionStorage.setItem("hero_slides_timestamp", timestamp.toString());
       
       const firebaseSlides = await getHeroSlides();
-      // Merge Firebase slides with default slides, ensuring press release slide is always included
-      const pressReleaseSlide = defaultSlides.find(s => s.id === "press-release-hubzone");
       
       if (firebaseSlides.length > 0) {
-        // Check if press release slide already exists in Firebase slides
-        const hasPressRelease = firebaseSlides.some(s => s.id === "press-release-hubzone");
-        
-        if (hasPressRelease) {
-          // Use Firebase slides as-is if press release is already there
-          setSlides(firebaseSlides);
-        } else if (pressReleaseSlide) {
-          // Merge: add press release slide (order 0) and shift other slides
-          const mergedSlides = [
-            pressReleaseSlide,
-            ...firebaseSlides.map(s => ({ ...s, order: s.order + 1 }))
-          ].filter((s): s is HeroSlide => s !== undefined);
-          setSlides(mergedSlides);
-        } else {
-          // No press release slide in defaults, use Firebase slides as-is
-          setSlides(firebaseSlides);
-        }
+        // Filter out any HUBZone slides from Firebase data
+        const filtered = firebaseSlides.filter(s => s.id !== "press-release-hubzone");
+        setSlides(filtered.length > 0 ? filtered : defaultSlides);
       } else {
         // No Firebase slides, use defaults
         setSlides(defaultSlides);
