@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "KDM & Associates — MBDA Federal Procurement Center";
+export const alt = "KDM & Associates — Federal Procurement & Industrial Readiness Center";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -47,7 +47,7 @@ export default async function Image() {
             marginBottom: 32,
           }}
         >
-          MBDA Federal Procurement Center
+          Federal Procurement & Industrial Readiness Center
         </div>
 
         {/* Main headline */}
@@ -75,7 +75,7 @@ export default async function Image() {
             lineHeight: 1.4,
           }}
         >
-          Helping Diverse Businesses Win Government Contracts
+          Helping Diverse Businesses Compete Effectively
         </div>
 
         {/* Service pills */}

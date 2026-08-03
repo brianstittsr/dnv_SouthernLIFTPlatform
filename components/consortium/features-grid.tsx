@@ -84,7 +84,7 @@ const buyerFeatures = [
   {
     icon: Clock,
     title: "Streamlined Procurement",
-    description: "Reduce time-to-award with pre-vetted, ready-to-perform contractors",
+    description: "Reduce time-to-award with KDM-reviewed, ready-to-perform contractors",
   },
 ];
 

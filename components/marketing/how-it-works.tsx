@@ -24,9 +24,9 @@ const steps = [
   },
   {
     number: "04",
-    title: "Contract Success",
+    title: "Pursuit and Performance Support",
     description:
-      "Win government contracts, build past performance, and scale your federal contracting portfolio with ongoing support.",
+      "Strengthen capture execution, proposal quality, teaming, readiness and post-award performance with ongoing support.",
     icon: Award,
   },
 ];
@@ -42,7 +42,7 @@ export function HowItWorks() {
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             A proven four-step process to help your business navigate federal procurement 
-            and win government contracts.
+            and become more prepared, competitive, and strategically positioned for government contracting opportunities.
           </p>
         </div>
 

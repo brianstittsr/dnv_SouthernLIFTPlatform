@@ -24,7 +24,7 @@ const stats = [
     suffix: "B+",
     prefix: "$",
     icon: DollarSign,
-    description: "In awarded contract value",
+    description: "Experience associated with public- and private-sector transactions",
   },
   {
     label: "Resource Partners",
@@ -36,9 +36,15 @@ const stats = [
 ];
 
 function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: string; prefix?: string }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(value);
 
   useEffect(() => {
+    // Check if already animated in this session
+    if (sessionStorage.getItem('stats_animated') === 'true') {
+      setCount(value);
+      return;
+    }
+
     const duration = 2000;
     const steps = 60;
     const increment = value / steps;
@@ -48,6 +54,7 @@ function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: str
       current += increment;
       if (current >= value) {
         setCount(value);
+        sessionStorage.setItem('stats_animated', 'true');
         clearInterval(timer);
       } else {
         setCount(Math.floor(current));

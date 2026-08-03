@@ -26,7 +26,7 @@ export default function UnauthorizedPage() {
           <div className="bg-muted/50 p-4 rounded-lg border">
             <p className="text-xs text-muted-foreground text-center">
               <strong>Platform Admin?</strong> If you're the designated platform admin 
-              (bstitt@strategicvalueplus.com), you can grant yourself admin access at{" "}
+              (bstitt@kdm-assoc.com), you can grant yourself admin access at{" "}
               <Link href="/admin-setup" className="text-primary hover:underline font-medium">
                 /admin-setup
               </Link>

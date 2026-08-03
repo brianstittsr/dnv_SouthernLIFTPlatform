@@ -28,7 +28,7 @@ import {
 export const metadata: Metadata = {
   title: "CMMC Level 1 Cohort Training | KDM & Associates",
   description:
-    "Join KDM & Associates' CMMC Level 1 cohort training program. A team-based 90-180 day approach to DoD cybersecurity compliance for defense contractors. Achieve CMMC certification and win federal contracts.",
+    "Join KDM & Associates' CMMC Level 1 cohort training program. A team-based 90-180 day approach to DoD cybersecurity readiness for defense contractors. Achieve CMMC assessment readiness and become more competitive for federal contracts.",
   keywords: [
     "CMMC Level 1 training",
     "CMMC cohort program",
@@ -58,7 +58,7 @@ export default function CMMCTrainingPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://strategicvalueplus.com/_next/image?url=%2Fcmmc%2Fagefis-qh-mar1Tzo8-unsplash.jpg&w=750&q=75"
+            src="/cmmc/agefis-qh-mar1Tzo8-unsplash.jpg"
             alt="CMMC Cybersecurity"
             fill
             className="object-cover"
@@ -69,12 +69,12 @@ export default function CMMCTrainingPage() {
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            {/* V+ and KDM Collaboration Logos */}
+            {/* KDM Consortium Logo */}
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-6 md:gap-10">
                 <Image
                   src="/VPlus_logo.webp"
-                  alt="Strategic Value Plus"
+                  alt="KDM & Associates"
                   width={150}
                   height={60}
                   className="object-contain h-12 md:h-16 w-auto"
@@ -171,7 +171,7 @@ export default function CMMCTrainingPage() {
                 Team-Based Approach to CMMC Level 1 Compliance
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                The KDM Consortium brings a team-based approach to CMMC Level 1 cybersecurity compliance through the CMMC Cohorts, powered by Strategic Value Plus Solutions, LLC (V+). We help you get ready for your third-party C3PAO assessment.
+                The KDM Consortium brings a team-based approach to CMMC Level 1 cybersecurity readiness through the CMMC Cohorts. We help you prepare for your third-party C3PAO assessment.
               </p>
             </div>
 
@@ -396,7 +396,7 @@ export default function CMMCTrainingPage() {
               </Badge>
               <h2 className="text-4xl font-bold mb-4">Turnkey CMMC Level 1 Compliance for Defense Contractors</h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                KDM & Associates is a trusted partner of Strategic Value Plus Solutions, LLC (V+), leveraging the power of the <strong>CMMC Accelerator</strong> to deliver the Cohort Program — a turnkey solution purpose-built for small and mid-sized contractors seeking CMMC Level 1 certification.
+                KDM & Associates leverages the power of the <strong>CMMC Accelerator</strong> to deliver the Cohort Program — a turnkey solution purpose-built for small and mid-sized contractors seeking CMMC Level 1 assessment readiness.
               </p>
             </div>
 
@@ -504,7 +504,7 @@ export default function CMMCTrainingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Pass, remediate, or re-test depending on findings. Achieve official CMMC certification and protect your contracts.
+                    Pass, remediate, or re-test depending on findings. Achieve formal CMMC assessment through an accredited C3PAO and protect your contracts.
                   </p>
                 </CardContent>
               </Card>
@@ -556,14 +556,14 @@ export default function CMMCTrainingPage() {
             <Accordion type="single" collapsible className="space-y-4">
               <AccordionItem value="item-1" className="bg-white border-2 rounded-lg px-6">
                 <AccordionTrigger className="text-lg font-semibold hover:no-underline">
-                  Do we really need CMMC certification if we're only a subcontractor and not a prime?
+                  Do we really need CMMC assessment if we're only a subcontractor and not a prime?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-gray-700 pt-4">
                   <p className="mb-4">
                     <strong>Yes, absolutely.</strong> Prime contractors are required to flow down CMMC requirements to all subcontractors who handle Controlled Unclassified Information (CUI) or Federal Contract Information (FCI).
                   </p>
                   <p>
-                    Without CMMC certification, you risk losing existing subcontracts and being excluded from future opportunities. Many primes are already requiring proof of CMMC compliance before awarding subcontracts. <strong>Don't wait until you lose business—get certified now.</strong>
+                    Without CMMC assessment, you risk losing existing subcontracts and being excluded from future opportunities. Many primes are already requiring proof of CMMC compliance before awarding subcontracts. <strong>Don't wait until you lose business—get assessed now.</strong>
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -590,14 +590,14 @@ export default function CMMCTrainingPage() {
 
               <AccordionItem value="item-3" className="bg-white border-2 rounded-lg px-6">
                 <AccordionTrigger className="text-lg font-semibold hover:no-underline">
-                  What's the difference between a readiness assessment and the formal CMMC certification audit?
+                  What's the difference between a readiness assessment and the formal CMMC assessment?
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-gray-700 pt-4">
                   <p className="mb-4">
-                    A <strong>readiness assessment</strong> is an internal evaluation conducted by your team or a consultant (like KDM) to identify gaps and prepare for certification. It's not official and doesn't result in certification.
+                    A <strong>readiness assessment</strong> is an internal evaluation conducted by your team or a consultant (like KDM) to identify gaps and prepare for assessment. It's not official and doesn't result in certification.
                   </p>
                   <p className="mb-4">
-                    The <strong>formal CMMC certification audit</strong> is conducted by an independent, accredited C3PAO (Certified Third-Party Assessment Organization). This is the official audit that results in your CMMC certification if you pass.
+                    The <strong>formal CMMC assessment</strong> is conducted by an independent, accredited C3PAO (Certified Third-Party Assessment Organization). This is the official assessment that results in your CMMC certification if you pass.
                   </p>
                   <p>
                     <strong>Think of it like this:</strong> The readiness assessment is your practice test. The formal audit is the real exam. Our cohort program ensures you're fully prepared before scheduling the formal audit, <strong>saving you time and money by avoiding failed audits.</strong>
@@ -611,7 +611,7 @@ export default function CMMCTrainingPage() {
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-gray-700 pt-4">
                   <p className="mb-4">
-                    CMMC certification is <strong>valid for 3 years</strong>, but maintaining compliance is an ongoing effort. You must:
+                    CMMC certification is <strong>valid for 3 years</strong>, but maintaining readiness is an ongoing effort. You must:
                   </p>
                   <ul className="list-disc pl-6 space-y-2 mb-4">
                     <li>Continuously maintain your security controls</li>
@@ -645,7 +645,7 @@ export default function CMMCTrainingPage() {
                     Manufacturers who invest now will be positioned ahead of competitors as security becomes a procurement requirement—not an option.
                   </p>
                   <p className="mt-4">
-                    <strong>Bottom line:</strong> CMMC certification isn't just about DoD contracts anymore. It's becoming the gold standard for cybersecurity maturity across industries. <strong>Get ahead of the curve.</strong>
+                    <strong>Bottom line:</strong> CMMC assessment isn't just about DoD contracts anymore. It's becoming the gold standard for cybersecurity maturity across industries. <strong>Get ahead of the curve.</strong>
                   </p>
                 </AccordionContent>
               </AccordionItem>

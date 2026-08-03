@@ -242,14 +242,14 @@ export default function TBMNCSupplierReadinessPage() {
 </head>
 <body>
   <div class="header">
-    <div class="logo">Strategic Value<span class="logo-accent">+</span></div>
+    <div class="logo">KDM &amp; Associates</div>
     <div class="subtitle">Toyota Battery Manufacturing North Carolina - Supplier Qualification Program</div>
   </div>
   
   <div class="title">Supplier Registration Form</div>
   
   <div class="instructions">
-    <strong>Instructions:</strong> Complete all required fields (*) and return this form along with the required attachments to begin the supplier qualification process. For questions, contact your Strategic Value+ representative.
+    <strong>Instructions:</strong> Complete all required fields (*) and return this form along with the required attachments to begin the supplier qualification process. For questions, contact your KDM & Associates representative.
   </div>
 
   <div class="section">
@@ -351,8 +351,8 @@ export default function TBMNCSupplierReadinessPage() {
   </div>
 
   <div class="footer">
-    <p><strong>Strategic Value+</strong> | Toyota Battery Manufacturing NC Supplier Qualification Program</p>
-    <p>For questions, contact your Strategic Value+ representative or email support@strategicvalueplus.com</p>
+    <p><strong>KDM & Associates</strong> | Toyota Battery Manufacturing NC Supplier Qualification Program</p>
+    <p>For questions, contact your KDM & Associates representative or email support@kdm-assoc.com</p>
     <p>Form Version 1.0 | Generated ${new Date().toLocaleDateString()}</p>
   </div>
 </body>
@@ -1298,7 +1298,7 @@ export default function TBMNCSupplierReadinessPage() {
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm text-muted-foreground mb-4">
                     Please review your registration information before submitting. Once submitted,
-                    a Strategic Value+ representative will review your application and contact you
+                    a KDM & Associates representative will review your application and contact you
                     within 3-5 business days.
                   </p>
                   <div className="space-y-2">

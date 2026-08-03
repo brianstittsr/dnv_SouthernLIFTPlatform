@@ -15,7 +15,7 @@ import {
 export const metadata: Metadata = {
   title: "Values, Mission & Vision | KDM & Associates",
   description:
-    "Discover KDM & Associates' mission, vision, and core values that guide our commitment to helping businesses win government contracts.",
+    "Discover KDM & Associates' mission, vision, and core values that guide our commitment to helping businesses become more prepared and competitive for government contracting.",
 };
 
 const values = [
@@ -189,7 +189,7 @@ export default function ValuesMissionVisionPage() {
               Join Us in Our Mission
             </h2>
             <p className="text-lg text-primary-foreground/90 mb-8">
-              Whether you're a business seeking to win government contracts or a partner 
+              Whether you're a business seeking to compete more effectively for government contracts or a partner 
               interested in collaborating with us, we'd love to hear from you.
             </p>
             <a

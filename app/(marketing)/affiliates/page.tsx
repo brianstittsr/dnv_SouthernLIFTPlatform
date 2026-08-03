@@ -8,7 +8,7 @@ import { ArrowRight, CheckCircle, Users, Target, Briefcase, ShieldCheck } from "
 export const metadata: Metadata = {
   title: "Affiliate Network",
   description:
-    "Join the Strategic Value+ affiliate network and help manufacturers become OEM-qualified suppliers through targeted execution and measurable outcomes.",
+    "Join the KDM Consortium affiliate network and help manufacturers become OEM-qualified suppliers through targeted execution and measurable outcomes.",
 };
 
 const benefits = [

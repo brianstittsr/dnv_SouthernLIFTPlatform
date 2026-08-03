@@ -596,7 +596,7 @@ export default function TractionDashboardPage() {
                   Traction Dashboard
                   <Badge variant="secondary" className="text-xs"><Sparkles className="h-3 w-3 mr-1" />EOS</Badge>
                 </h1>
-                <p className="text-sm text-muted-foreground">Strategic Value Plus • {currentQuarter}</p>
+                <p className="text-sm text-muted-foreground">KDM & Associates • {currentQuarter}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -963,7 +963,7 @@ export default function TractionDashboardPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h1 className="text-2xl font-bold">VISION/TRACTION ORGANIZER®</h1>
-                    <p className="text-muted-foreground">V+ VTO Dec25</p>
+                    <p className="text-muted-foreground">KDM VTO Dec25</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">Draft</Badge>

@@ -154,9 +154,9 @@ const defaultSlides: HeroSlide[] = [
   {
     id: "9",
     badge: "Government Contracting Excellence",
-    headline: "Strategic Value+",
+    headline: "KDM Consortium",
     highlightedText: "Partnership",
-    subheadline: "KDM & Associates and Strategic Value+ unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
+    subheadline: "KDM & Associates and its participating resource partners unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
     benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
     primaryCta: { text: "Learn More", href: "/about" },
     secondaryCta: { text: "Contact Us", href: "/contact" },
@@ -512,15 +512,15 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
               </div>
               <div className="flex flex-col items-center text-center">
                 <span className="text-lg font-bold text-white">$50B+</span>
-                <span className="text-xs text-white/70">Contract Transactions</span>
+                <span className="text-xs text-white/70">Transaction Experience</span>
               </div>
               <div className="flex flex-col items-center text-center">
                 <span className="text-lg font-bold text-white">30+</span>
                 <span className="text-xs text-white/70">Resource Partners</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">MBDA</span>
-                <span className="text-xs text-white/70">Federal Procurement Center</span>
+                <span className="text-lg font-bold text-white">KDM</span>
+                <span className="text-xs text-white/70">Federal Procurement &amp; Industrial Readiness Center</span>
               </div>
             </div>
           </div>

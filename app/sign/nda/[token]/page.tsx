@@ -32,7 +32,7 @@ const MOCK_NDA_DATA = {
   disclosingParty: {
     name: "Nelinia Varenas",
     title: "CEO",
-    company: "Strategic Value Plus",
+    company: "KDM & Associates",
   },
   receivingParty: {
     name: "Sarah Johnson",
@@ -47,7 +47,7 @@ const MOCK_NDA_DATA = {
       title: "Parties",
       content: `This Non-Disclosure Agreement ("Agreement") is entered into as of December 15, 2024 by and between:
 
-**Disclosing Party:** Nelinia Varenas, Strategic Value Plus
+**Disclosing Party:** Nelinia Varenas, KDM & Associates
 **Receiving Party:** Sarah Johnson, TechStart Inc`,
     },
     {
@@ -306,7 +306,7 @@ export default function NDASigningPage() {
           <div className="flex items-center gap-3">
             <Shield className="h-8 w-8 text-primary" />
             <div>
-              <h1 className="font-semibold">Strategic Value Plus</h1>
+              <h1 className="font-semibold">KDM & Associates</h1>
               <p className="text-sm text-muted-foreground">Document Signing</p>
             </div>
           </div>
@@ -487,7 +487,7 @@ export default function NDASigningPage() {
       {/* Footer */}
       <footer className="border-t bg-white mt-12">
         <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>Powered by Strategic Value Plus Document Management</p>
+          <p>Powered by KDM & Associates Document Management</p>
           <p className="mt-1">This document is confidential and intended only for the named recipient.</p>
         </div>
       </footer>

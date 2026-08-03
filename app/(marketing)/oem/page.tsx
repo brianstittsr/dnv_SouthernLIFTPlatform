@@ -8,7 +8,7 @@ import { ArrowRight, CheckCircle, Factory, ShieldCheck, Timer, Users } from "luc
 export const metadata: Metadata = {
   title: "For OEM Buyers",
   description:
-    "Strategic Value+ helps OEMs qualify and develop supplier capacity through a readiness program designed for small and mid-sized manufacturers.",
+    "KDM & Associates helps OEMs qualify and develop supplier capacity through a readiness program designed for small and mid-sized manufacturers.",
 };
 
 const outcomes = [
@@ -50,7 +50,7 @@ export default function OEMPage() {
               Qualify suppliers faster. <span className="text-primary">Build capacity with confidence.</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Strategic Value+ runs a supplier readiness program that helps capable manufacturers meet OEM requirements—
+              KDM & Associates runs a supplier readiness program that helps capable manufacturers meet OEM requirements—
               with clear stages, measurable deliverables, and hands-on execution support.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">

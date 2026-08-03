@@ -819,7 +819,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
             "3. Schedule facility audit with OEM quality team",
             "4. Establish project tracking dashboard",
           ],
-          insight: "Strategic Value Plus can facilitate all steps",
+          insight: "KDM Consortium can facilitate all steps",
           insightHighlight: "Full-Service Support Available",
           order: 6,
           notes: "Clear call to action",
@@ -872,7 +872,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
       
       setNdaStatus("sent");
       
-      alert(`NDA sent to ${ndaSignerName} (${ndaSignerEmail}) for signature.\n\nWorkflow:\n1. ${ndaSignerName} will receive an email with a signing link\n2. After signing, Nelinia Varenas (nelinia@strategicvalueplus.com) will receive the NDA for countersignature\n3. Once countersigned, the NDA will be stored in the system\n4. A PDF copy will be emailed to ${ndaSignerEmail} for their records`);
+      alert(`NDA sent to ${ndaSignerName} (${ndaSignerEmail}) for signature.\n\nWorkflow:\n1. ${ndaSignerName} will receive an email with a signing link\n2. After signing, Nelinia Varenas (nelinia@kdm-assoc.com) will receive the NDA for countersignature\n3. Once countersigned, the NDA will be stored in the system\n4. A PDF copy will be emailed to ${ndaSignerEmail} for their records`);
       
       // Update proposal with NDA details
       setProposalData((prev) => ({
@@ -2005,7 +2005,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                           <p className="font-medium text-amber-800">Countersigner</p>
                           <p className="text-sm text-amber-700 mt-1">
                             After the signer completes their signature, the NDA will automatically be sent to 
-                            <strong> Nelinia Varenas (nelinia@strategicvalueplus.com)</strong> for countersignature.
+                            <strong> Nelinia Varenas (nelinia@kdm-assoc.com)</strong> for countersignature.
                           </p>
                         </div>
                       </div>
@@ -2213,7 +2213,7 @@ Make it clear, professional, and highlight the value proposition and expected ou
                           <div>
                             <p className="font-medium">Countersignature</p>
                             <p className="text-sm text-muted-foreground">
-                              Nelinia Varenas (nelinia@strategicvalueplus.com) countersigns
+                              Nelinia Varenas (nelinia@kdm-assoc.com) countersigns
                             </p>
                           </div>
                         </div>

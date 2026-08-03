@@ -58,7 +58,7 @@ function PaymentSuccessContent() {
         <p className="text-lg text-muted-foreground mb-8">
           Your membership is now active. You're among an exclusive group of{" "}
           {userType === "buyer" ? "procurement professionals" : "verified suppliers"}{" "}
-          positioned to win federal contracts.
+          positioned to compete effectively for federal contracts.
         </p>
 
         <div className="grid md:grid-cols-3 gap-4 mb-8">

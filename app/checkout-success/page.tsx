@@ -50,7 +50,7 @@ function CheckoutSuccessContent() {
           <div className="flex items-center gap-4">
             <Image src="/kdm-logo.png" alt="KDM & Associates" width={120} height={40} className="object-contain" />
             <Separator orientation="vertical" className="h-8" />
-            <Image src="/VPlus_logo.webp" alt="Strategic Value Plus" width={120} height={40} className="object-contain" />
+            <Image src="/VPlus_logo.webp" alt="KDM & Associates" width={120} height={40} className="object-contain" />
           </div>
         </div>
       </header>

@@ -377,9 +377,9 @@ export function AffiliateOnboardingWizard() {
                   <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                     <Handshake className="h-10 w-10 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Welcome to the SVP Affiliate Network!</h3>
+                  <h3 className="text-xl font-semibold mb-2">Welcome to the KDM Affiliate Network!</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">
-                    Thank you for joining Strategic Value Plus as an affiliate partner. This onboarding process will help you understand your commitments and set up your networking profile.
+                    Thank you for joining KDM & Associates as an affiliate partner. This onboarding process will help you understand your commitments and set up your networking profile.
                   </p>
                 </div>
 

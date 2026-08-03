@@ -30,7 +30,7 @@ const fallbackTeam: Leadershipmember[] = [
     bio: "20+ years in manufacturing consulting and supplier development.",
     avatar: "/team/ceo.jpg",
     linkedIn: "#",
-    email: "ceo@strategicvalueplus.com",
+    email: "ceo@kdm-assoc.com",
     leadershipRole: "CEO",
   },
   {
@@ -40,7 +40,7 @@ const fallbackTeam: Leadershipmember[] = [
     bio: "Expert in lean manufacturing and Industry 4.0 transformation.",
     avatar: "/team/ops.jpg",
     linkedIn: "#",
-    email: "ops@strategicvalueplus.com",
+    email: "ops@kdm-assoc.com",
     leadershipRole: "COO",
   },
   {
@@ -50,7 +50,7 @@ const fallbackTeam: Leadershipmember[] = [
     bio: "ISO Lead Auditor with extensive QMS implementation experience.",
     avatar: "/team/quality.jpg",
     linkedIn: "#",
-    email: "quality@strategicvalueplus.com",
+    email: "quality@kdm-assoc.com",
     leadershipRole: "CRO",
   },
   {
@@ -60,7 +60,7 @@ const fallbackTeam: Leadershipmember[] = [
     bio: "Specializes in digital twin technology and manufacturing automation.",
     avatar: "/team/cto.jpg",
     linkedIn: "#",
-    email: "cto@strategicvalueplus.com",
+    email: "cto@kdm-assoc.com",
     leadershipRole: "CTO",
   },
 ];

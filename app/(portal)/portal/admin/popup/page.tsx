@@ -205,7 +205,7 @@ export default function PopupManagementPage() {
                   id="title"
                   value={config.title}
                   onChange={(e) => updateConfig("title", e.target.value)}
-                  placeholder="Strategic Value+ Solutions"
+                  placeholder="KDM & Associates"
                 />
               </div>
 

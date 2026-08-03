@@ -17,6 +17,8 @@ const footerLinks = {
     { title: "KDM Team", href: "/team" },
     { title: "Our Work", href: "/our-work", hidden: true },
     { title: "Partners", href: "/partners", hidden: true },
+    { title: "Case Studies", href: "/case-studies" },
+    { title: "Capability Statement", href: "/capability-statement" },
     { title: "Contact Us", href: "/contact" },
   ],
   resources: [
@@ -26,10 +28,15 @@ const footerLinks = {
     { title: "News", href: "/news", hidden: true },
     { title: "Media & Video", href: "/media", hidden: true },
     { title: "membership", href: "/membership", hidden: true },
+    { title: "Capabilities", href: "/capabilities" },
+    { title: "For Buyers", href: "/for-buyers" },
+    { title: "Defense & Rapid Acquisition", href: "/capabilities/defense-rapid-acquisition" },
   ],
   legal: [
-    { title: "Privacy Policy", href: "/privacy-policy" },
-    { title: "Terms of Service", href: "/terms-of-service" },
+    { title: "Privacy Policy", href: "/privacy" },
+    { title: "Terms of Service", href: "/terms" },
+    { title: "Procurement Integrity", href: "/policies/procurement-integrity" },
+    { title: "OCI Policy", href: "/policies/organizational-conflicts" },
     { title: "FAQs", href: "/faq" },
   ],
 };
@@ -45,8 +52,7 @@ export function Footer() {
               <span className="text-xl font-bold text-white">KDM & Associates</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
-              Helping businesses win government contracts through 
-              strategic teaming, capacity building, CMMC readiness, and supply chain integration.
+              Supporting federal-market readiness through strategic teaming, capability development, compliant capture support, CMMC readiness and industrial-supply-chain coordination. KDM does not guarantee contract awards or represent any government agency.
             </p>
             <div className="flex gap-4">
               <Link href="https://www.linkedin.com/company/kdmassoc" className="text-gray-400 hover:text-primary transition-colors">
@@ -125,6 +131,13 @@ export function Footer() {
         </div>
 
         <Separator className="my-8 bg-gray-800" />
+
+        {/* Government-Affiliation Disclaimer */}
+        <div className="mb-6">
+          <p className="text-xs text-gray-500 max-w-4xl">
+            KDM &amp; Associates and KDM Consortium are independent private-sector organizations. Unless expressly stated in writing, KDM is not an agency or instrumentality of the United States Government and is not authorized to act on behalf of any federal agency. References to agencies, programs, certifications or contracting vehicles are provided for informational purposes and do not imply sponsorship, endorsement or guaranteed access. KDM does not guarantee eligibility, certification, funding, contract award or procurement outcome. Government contracting decisions are made solely by authorized government officials in accordance with applicable law and acquisition procedures.
+          </p>
+        </div>
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">

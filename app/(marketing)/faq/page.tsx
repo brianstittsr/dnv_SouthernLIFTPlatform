@@ -14,13 +14,13 @@ import { FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 export const metadata: Metadata = {
   title: "FAQ | Government Contracting Questions Answered | KDM & Associates",
   description:
-    "Answers to the most common questions about KDM & Associates: how we help small businesses win federal contracts, 8(a) certification, CMMC compliance, the KDM Consortium, teaming, and the MBDA Federal Procurement Center.",
+    "Answers to the most common questions about KDM & Associates: how we help small businesses become more prepared for federal contracts, 8(a) certification, CMMC readiness, the KDM Consortium, teaming, and the Federal Procurement & Industrial Readiness Center.",
   keywords: [
     "government contracting FAQ",
     "8(a) certification questions",
     "CMMC compliance FAQ",
     "KDM Consortium FAQ",
-    "MBDA Federal Procurement Center FAQ",
+    "Federal Procurement and Industrial Readiness Center FAQ",
     "small business federal contracts questions",
     "HUBZone FAQ",
   ],
@@ -41,7 +41,7 @@ const faqs = [
     questions: [
       {
         question: "What is KDM & Associates?",
-        answer: "KDM & Associates, LLC is a business development, government affairs, and public relations firm focused on helping clients navigate the government procurement process and win government contracts. We are renowned for providing strategic teaming and building capacity for small and mid-sized businesses."
+        answer: "KDM & Associates, LLC is a business development, government affairs, and public relations firm focused on helping clients navigate the government procurement process and become more prepared and competitive for government contracting. We are renowned for providing strategic teaming and building capacity for small and mid-sized businesses."
       },
       {
         question: "Who can benefit from KDM services?",
@@ -61,8 +61,8 @@ const faqs = [
         answer: "We offer a comprehensive range of services including: Digital Solutions (websites, digital ecosystems, e-commerce), Technology Solutions (blockchain, CRM & AI, cybersecurity), Grants & RFPs (proposal management, grant writing), Marketing Solutions, Operations/Performance consulting, and Contracting Vehicles guidance (certifications, mentor-protégé programs, SBA programs)."
       },
       {
-        question: "What is the MBDA Federal Procurement Center?",
-        answer: "The MBDA Federal Procurement Center (FPC) has transitioned its operations to KDM & Associates. This center provides Government contracting support services with a focus on empowering emerging small businesses through intense capacity building, mentorship, and defined support services to achieve sustainable success."
+        question: "What is the Federal Procurement & Industrial Readiness Center?",
+        answer: "The Federal Procurement & Industrial Readiness Center is operated by KDM & Associates. This center provides government contracting support services with a focus on empowering emerging small businesses through intense capacity building, mentorship, and defined support services to achieve sustainable success."
       },
       {
         question: "How can KDM help with certifications?",

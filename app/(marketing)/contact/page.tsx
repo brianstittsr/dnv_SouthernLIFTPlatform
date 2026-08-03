@@ -204,7 +204,7 @@ export default function ContactPage() {
               <span className="text-primary">Journey</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Ready to win government contracts? Schedule an introductory session 
+              Ready to compete more effectively? Schedule an introductory session 
               or reach out to discuss how KDM & Associates can help your business grow.
             </p>
           </div>

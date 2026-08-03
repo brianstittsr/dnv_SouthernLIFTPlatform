@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Accessibility Statement",
   description:
-    "Strategic Value+ is committed to ensuring digital accessibility for people with disabilities. Learn about our accessibility features and WCAG compliance.",
+    "KDM & Associates is committed to ensuring digital accessibility for people with disabilities. Learn about our accessibility features and WCAG compliance.",
 };
 
 const accessibilityFeatures = [
@@ -103,7 +103,7 @@ export default function AccessibilityPage() {
               Accessibility Statement
             </h1>
             <p className="mt-6 text-xl text-gray-300">
-              Strategic Value+ is committed to ensuring digital accessibility for people 
+              KDM & Associates is committed to ensuring digital accessibility for people 
               with disabilities. We continually improve the user experience for everyone 
               and apply the relevant accessibility standards.
             </p>
@@ -118,7 +118,7 @@ export default function AccessibilityPage() {
             <h2 className="text-2xl font-bold mb-6">Our Commitment</h2>
             <p className="text-muted-foreground mb-4">
               We believe that the internet should be accessible to everyone, regardless of 
-              ability. Strategic Value+ strives to conform to the Web Content Accessibility 
+              ability. KDM & Associates strives to conform to the Web Content Accessibility 
               Guidelines (WCAG) 2.1 and 2.2 at Level AA, and we are working toward Level AAA 
               compliance where feasible.
             </p>
@@ -231,7 +231,7 @@ export default function AccessibilityPage() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button asChild>
-                <Link href="mailto:accessibility@strategicvalueplus.com">
+                <Link href="mailto:accessibility@kdm-assoc.com">
                   <Mail className="mr-2 h-4 w-4" />
                   Email Us
                 </Link>

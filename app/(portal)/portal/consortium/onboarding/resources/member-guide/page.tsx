@@ -34,7 +34,7 @@ export default function MemberGuidePage() {
         <CardContent className="space-y-4">
           <p>
             The KDM Consortium is a curated network of businesses, primes, and government buyers
-            working together to win federal contracts. Members gain access to AI-powered matching,
+            working together to compete effectively for federal contracts. Members gain access to AI-powered matching,
             shared opportunities, teaming partnerships, and readiness support.
           </p>
         </CardContent>
@@ -93,7 +93,7 @@ export default function MemberGuidePage() {
           <CardContent>
             <p className="text-sm text-muted-foreground">
               Engage with opportunities, submit proposals, and collaborate with consortium members
-              to pursue and win federal contracts.
+              to pursue and compete effectively for federal contracts.
             </p>
           </CardContent>
         </Card>

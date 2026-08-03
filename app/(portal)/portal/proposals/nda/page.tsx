@@ -103,8 +103,8 @@ import {
 const CEO_INFO = {
   name: "Nelinia Varenas",
   title: "Chief Executive Officer",
-  company: "Strategic Value Plus",
-  email: "nvarenas@strategicvalueplus.com",
+  company: "KDM & Associates",
+  email: "nvarenas@kdm-assoc.com",
 };
 
 // Default NDA Template Sections
@@ -275,8 +275,8 @@ const MOCK_DOCUMENTS: NDADocument[] = [
     disclosingParty: {
       name: "Nelinia Varenas",
       title: "CEO",
-      company: "Strategic Value Plus",
-      email: "nvarenas@strategicvalueplus.com",
+      company: "KDM & Associates",
+      email: "nvarenas@kdm-assoc.com",
     },
     receivingParty: {
       name: "John Smith",
@@ -311,8 +311,8 @@ const MOCK_DOCUMENTS: NDADocument[] = [
     disclosingParty: {
       name: "Nelinia Varenas",
       title: "CEO",
-      company: "Strategic Value Plus",
-      email: "nvarenas@strategicvalueplus.com",
+      company: "KDM & Associates",
+      email: "nvarenas@kdm-assoc.com",
     },
     receivingParty: {
       name: "Sarah Johnson",
@@ -337,8 +337,8 @@ const MOCK_DOCUMENTS: NDADocument[] = [
     disclosingParty: {
       name: "Nelinia Varenas",
       title: "CEO",
-      company: "Strategic Value Plus",
-      email: "nvarenas@strategicvalueplus.com",
+      company: "KDM & Associates",
+      email: "nvarenas@kdm-assoc.com",
     },
     receivingParty: {
       name: "",

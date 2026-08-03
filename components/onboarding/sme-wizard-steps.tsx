@@ -461,6 +461,9 @@ export function ProofPackStep() {
 
   return (
     <div className="space-y-6">
+      <div className="border border-amber-300 bg-amber-50 rounded-lg p-4 text-sm text-amber-900">
+        <strong>Data Security Notice:</strong> Do NOT upload classified information, Controlled Unclassified Information (CUI), export-controlled technical data, source-selection information, or procurement-sensitive information. This platform is not authorized to store or process such data. Only upload publicly releasable or commercially cleared documents.
+      </div>
       <div className="border-2 border-dashed rounded-lg p-8 text-center">
         <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
         <h3 className="font-medium mb-2">Upload Your Documents</h3>

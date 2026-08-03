@@ -18,12 +18,12 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About KDM & Associates | MBDA Federal Procurement Center",
+  title: "About KDM & Associates | Federal Procurement & Industrial Readiness Center",
   description:
-    "KDM & Associates is a business development firm and MBDA Federal Procurement Center operator helping small businesses win government contracts through strategic teaming, capacity building, CMMC compliance, and mentorship.",
+    "KDM & Associates is a business development firm and Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, CMMC readiness, and mentorship.",
   keywords: [
     "about KDM Associates",
-    "MBDA Federal Procurement Center",
+    "Federal Procurement and Industrial Readiness Center",
     "small business development",
     "small business government contracting",
     "government contracting consulting firm",
@@ -32,13 +32,13 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "https://kdm-assoc.com/about" },
   openGraph: {
-    title: "About KDM & Associates | MBDA Federal Procurement Center",
-    description: "MBDA Federal Procurement Center helping small businesses win government contracts through teaming, CMMC, and mentorship.",
+    title: "About KDM & Associates | Federal Procurement & Industrial Readiness Center",
+    description: "Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting through teaming, CMMC readiness, and mentorship.",
     url: "https://kdm-assoc.com/about",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About KDM & Associates" }],
   },
-  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "MBDA Federal Procurement Center helping small businesses win government contracts." },
+  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting." },
 };
 
 const values = [
@@ -46,7 +46,7 @@ const values = [
     icon: Target,
     title: "Results-Driven",
     description:
-      "We measure success by your success. Every engagement is focused on delivering measurable outcomes and contract wins.",
+      "We measure success by your success. Every engagement is focused on delivering measurable outcomes and competitive positioning.",
   },
   {
     icon: Users,
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
                   To help small businesses 
-                  compete and win government contracts by providing accessible, results-driven 
+                  compete more effectively for government contracts by providing accessible, results-driven 
                   support services that bridge the gap between current capabilities 
                   and federal procurement requirements.
                 </p>
@@ -134,7 +134,7 @@ export default function AboutPage() {
             </div>
             <div className="prose prose-lg max-w-none">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                On April 30, 2025, KDM & Associates, LLC took a bold step - privatizing and expanding the mission of the Department of Commerce&apos;s MBDA Federal Procurement Center to deliver expanded, value-added support directly to the large Prime Government Contractor community.
+                On April 30, 2025, KDM & Associates, LLC took a bold step - expanding its mission as a Federal Procurement & Industrial Readiness Center to deliver expanded, value-added support directly to the large Prime Government Contractor community.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
                 With a broader and more focused mandate, KDM directed its primary attention to the U.S. manufacturing, critical minerals, defense, and Opportunity Zone sectors — building on its foundation as the nation&apos;s most recently awarded Federal Procurement Center (FPC) since July 2021. This evolution reflects a deepened commitment to capacity building for the nation&apos;s most eligible and procurement-ready small businesses.
@@ -143,14 +143,14 @@ export default function AboutPage() {
                 This privatization marks a strategic realignment — bringing new leadership, fresh initiatives, and stronger partnerships to more effectively meet the escalating demand for supply chain-ready small businesses that can address the nation&apos;s most critical procurement needs. Historical data confirms that small businesses have consistently faced significant barriers to entry in the federal acquisition sector. KDM exists to change that.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                KDM & Associates, LLC is a business development, government affairs, and public relations firm dedicated to helping clients successfully navigate the government procurement process and win more contracts. Beyond the win, we help our clients deliver more effective and efficient solutions — creating lasting value for both their customers and our federal partners.
+                KDM & Associates, LLC is a business development, government affairs, and public relations firm dedicated to helping clients successfully navigate the government procurement process and become more competitive. Beyond the contract, we help our clients deliver more effective and efficient solutions — creating lasting value for both their customers and our federal partners.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Strategic Value Plus Partnership */}
+      {/* KDM Consortium Resource Partner Network */}
       <section className="py-20 md:py-28">
         <div className="container">
           <div className="max-w-5xl mx-auto">
@@ -159,7 +159,7 @@ export default function AboutPage() {
                 Strategic Partnership
               </Badge>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Strategic Value Plus (V+) Partnership
+                KDM Consortium Resource Partner Network
               </h2>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 Uniting manufacturing excellence with government contracting expertise
@@ -174,9 +174,9 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-xl font-bold mb-4">A Powerful Alliance</h3>
                   <p className="text-muted-foreground">
-                    KDM & Associates has partnered with Strategic Value Plus (V+), an industry leader 
+                    KDM & Associates has built a network of participating resource partners, including industry leaders 
                     in operational excellence and manufacturing consulting. This strategic alliance 
-                    combines V+&apos;s deep manufacturing expertise with KDM&apos;s proven government 
+                    combines deep manufacturing expertise with KDM&apos;s proven government 
                     contracting capabilities to deliver comprehensive solutions for businesses 
                     seeking to enter or expand in federal manufacturing contracts.
                   </p>
@@ -190,7 +190,7 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-xl font-bold mb-4">Manufacturing + Gov Con = America First</h3>
                   <p className="text-muted-foreground">
-                    The V+ and KDM partnership was purpose-built for the intersection where manufacturing excellence meets federal procurement — a space where most firms struggle and few succeed. Together, we dramatically expand the number of manufacturing firms equipped to navigate complex federal requirements, optimize production capabilities, and consistently meet the stringent standards and deliverables that government contracts demand.
+                    The KDM Consortium was purpose-built for the intersection where manufacturing excellence meets federal procurement — a space where most firms struggle and few succeed. Together with our resource partners, we dramatically expand the number of manufacturing firms equipped to navigate complex federal requirements, optimize production capabilities, and consistently meet the stringent standards and deliverables that government contracts demand.
                   </p>
                 </CardContent>
               </Card>
@@ -204,7 +204,7 @@ export default function AboutPage() {
                   </div>
                   <h4 className="text-lg font-semibold mb-2">Enhanced Capabilities</h4>
                   <p className="text-muted-foreground text-sm">
-                    Access to V+&apos;s proven methodologies for operational excellence, lean manufacturing, 
+                    Access to proven methodologies for operational excellence, lean manufacturing, 
                     and supply chain optimization combined with KDM&apos;s government contracting expertise.
                   </p>
                 </CardContent>
@@ -240,6 +240,20 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Equal Opportunity Statement */}
+      <section className="py-16 md:py-20 bg-muted/30">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-6">
+              Equal Opportunity &amp; Merit-Based Participation
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              KDM Consortium supports fair, lawful, and merit-based participation in its programs and activities. KDM evaluates organizations and professionals based on relevant capabilities, qualifications, experience, readiness, performance, and opportunity requirements. KDM does not discriminate on the basis of race, color, national origin, sex, religion, age, disability, veteran status, or any other protected class. All participants are held to the same standards of professional conduct and procurement integrity.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Values */}
       <section className="py-20 md:py-28">
         <div className="container">
@@ -271,7 +285,7 @@ export default function AboutPage() {
         <div className="container text-center">
           <Building2 className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Win Government Contracts?
+            Ready to Compete More Effectively?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
             Join the growing community of emerging small businesses who&apos;ve partnered with 

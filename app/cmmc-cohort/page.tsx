@@ -113,7 +113,7 @@ export default function CMMCCohortPage() {
               <Separator orientation="vertical" className="h-8" />
               <Image
                 src="/VPlus_logo.webp"
-                alt="Strategic Value Plus"
+                alt="KDM & Associates"
                 width={120}
                 height={40}
                 className="object-contain"

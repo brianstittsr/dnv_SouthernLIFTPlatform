@@ -52,8 +52,8 @@ const videos = [
 
 const pressReleases = [
   {
-    id: "mbda-transition",
-    title: "KDM Associates Assumes MBDA Federal Procurement Center Operations",
+    id: "fpc-transition",
+    title: "KDM Associates Expands Federal Procurement & Industrial Readiness Center Operations",
     date: "2025-11-15",
     excerpt: "Strategic transition brings new leadership and enhanced support for diverse businesses in federal contracting.",
     category: "Company News"

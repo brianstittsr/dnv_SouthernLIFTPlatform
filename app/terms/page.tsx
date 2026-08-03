@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Terms of Service | Strategic Value+",
-  description: "Terms of Service for Strategic Value+ platform and services.",
+  title: "Terms of Service | KDM & Associates",
+  description: "Terms of Service for KDM & Associates platform and services.",
 };
 
 export default function TermsPage() {
@@ -28,14 +28,14 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using the Strategic Value Plus Solutions LLC (&quot;V+&quot;) platform and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
+              By accessing or using the KDM & Associates (&quot;KDM&quot;) platform and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">2. Description of Services</h2>
             <p>
-              V+ provides manufacturing transformation services, consulting, and a digital platform designed to help U.S. manufacturers modernize operations, achieve certifications, and connect with OEM opportunities.
+              KDM provides manufacturing transformation services, consulting, and a digital platform designed to help U.S. manufacturers modernize operations, achieve certifications, and connect with OEM opportunities.
             </p>
           </section>
 
@@ -65,33 +65,51 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property</h2>
             <p>
-              All content, features, and functionality of the V+ platform are owned by Strategic Value Plus Solutions LLC and are protected by intellectual property laws. You may not copy, modify, or distribute our content without permission.
+              All content, features, and functionality of the KDM platform are owned by KDM & Associates and are protected by intellectual property laws. You may not copy, modify, or distribute our content without permission.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">6. Limitation of Liability</h2>
             <p>
-              V+ shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use our services.
+              KDM shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use our services.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">7. Changes to Terms</h2>
+            <h2 className="text-2xl font-semibold mb-4">7. Data Handling &amp; Prohibited Uploads</h2>
+            <p className="mb-4">
+              The KDM platform is not authorized to store, process, or transmit classified information, Controlled Unclassified Information (CUI), export-controlled technical data, source-selection information, or procurement-sensitive information. By using the platform, you agree that you will not upload any of the following:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Classified information of any kind</li>
+              <li>Controlled Unclassified Information (CUI)</li>
+              <li>Export-controlled technical data subject to ITAR or EAR</li>
+              <li>Source-selection information or non-public procurement-sensitive information</li>
+              <li>Proprietary proposal information belonging to other companies</li>
+              <li>Any data requiring handling controls beyond the platform&apos;s security posture</li>
+            </ul>
+            <p className="mt-4">
+              Users are solely responsible for ensuring all uploaded information is appropriately cleared for commercial-platform use. KDM reserves the right to remove any content that appears to violate these restrictions.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">8. Changes to Terms</h2>
             <p>
               We reserve the right to modify these terms at any time. We will notify users of significant changes via email or platform notification.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">8. Contact Us</h2>
+            <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
             <p>
               If you have any questions about these Terms of Service, please contact us at:
             </p>
             <p className="mt-2">
-              <strong>Strategic Value Plus Solutions LLC</strong><br />
-              Email: legal@strategicvalueplus.com<br />
-              Website: <Link href="https://strategicvalueplus.com" className="text-primary hover:underline">strategicvalueplus.com</Link>
+              <strong>KDM & Associates</strong><br />
+              Email: legal@kdm-assoc.com<br />
+              Website: <Link href="https://www.kdm-assoc.com" className="text-primary hover:underline">kdm-assoc.com</Link>
             </p>
           </section>
         </div>

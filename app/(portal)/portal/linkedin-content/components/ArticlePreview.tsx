@@ -59,7 +59,7 @@ export function ArticlePreview({
               <div className="flex-1">
                 <p className="font-semibold text-gray-900">KDM & Associates</p>
                 <p className="text-xs text-gray-500">
-                  Government Contracting Experts • MBDA Federal Procurement Center
+                  Government Contracting Experts • Federal Procurement & Industrial Readiness Center
                 </p>
                 <p className="text-xs text-gray-400">Just now • 🌐</p>
               </div>

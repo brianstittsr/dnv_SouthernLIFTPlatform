@@ -86,7 +86,7 @@ export default function HeaderFooterManager() {
       name: "Main Header",
       isActive: true,
       logo: {
-        text: "Strategic Value Plus",
+        text: "KDM & Associates",
         height: 40,
       },
       navigation: [
@@ -245,7 +245,7 @@ export default function HeaderFooterManager() {
         animation: "scale",
       },
       copyright: {
-        text: "© 2026 Strategic Value Plus. All rights reserved.",
+        text: "© 2026 KDM & Associates. All rights reserved.",
         year: "auto",
       },
       newsletter: {

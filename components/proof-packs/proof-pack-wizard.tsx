@@ -23,6 +23,7 @@ import {
   Briefcase,
   Building2,
   Shield,
+  ShieldAlert,
   Award,
   FileCheck,
   TrendingUp
@@ -493,6 +494,17 @@ export function ProofPackWizard({ onComplete, onCancel }: ProofPackWizardProps) 
               <Upload className="h-4 w-4" />
               <AlertDescription>
                 Upload documents for each selected category. Your Pack Health score increases as you add documents. You can add more documents later.
+              </AlertDescription>
+            </Alert>
+
+            <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950/50">
+              <ShieldAlert className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-900 dark:text-amber-200">
+                <strong>Data Security Notice:</strong> Do NOT upload classified information,
+                Controlled Unclassified Information (CUI), export-controlled technical data,
+                source-selection information, or procurement-sensitive information. This platform
+                is not authorized to store or process such data. Only upload publicly releasable
+                or commercially cleared documents.
               </AlertDescription>
             </Alert>
 

@@ -65,7 +65,7 @@ export default function CMMCPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://strategicvalueplus.com/_next/image?url=%2Fcmmc%2Fagefis-qh-mar1Tzo8-unsplash.jpg&w=750&q=75"
+            src="/cmmc/agefis-qh-mar1Tzo8-unsplash.jpg"
             alt="CMMC Cybersecurity"
             fill
             className="object-cover"

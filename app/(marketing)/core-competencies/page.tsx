@@ -95,7 +95,7 @@ const competencies = [
 
 const differentiators = [
   {
-    title: "Minority-Owned & MBDA Certified",
+    title: "Minority-Owned Business",
     description:
       "As a certified minority-owned business, we bring authentic understanding of diverse business challenges and opportunities.",
   },
@@ -107,7 +107,7 @@ const differentiators = [
   {
     title: "Proven Track Record",
     description:
-      "Years of success helping businesses win government contracts and achieve sustainable growth.",
+      "Years of success helping businesses become more prepared and competitive for government contracting and achieve sustainable growth.",
   },
   {
     title: "Integrated Service Model",

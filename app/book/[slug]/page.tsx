@@ -621,7 +621,7 @@ export default function BookingPage() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground">
-          <p>Powered by Strategic Value Plus</p>
+          <p>Powered by KDM & Associates</p>
         </div>
       </div>
     </div>

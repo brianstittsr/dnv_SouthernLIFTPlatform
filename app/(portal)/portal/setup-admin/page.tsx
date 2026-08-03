@@ -174,7 +174,7 @@ export default function SetupAdminPage() {
           {!userInfo?.canSetup && (
             <Alert>
               <AlertDescription>
-                Only the designated platform admin email (bstitt@strategicvalueplus.com) can grant admin access.
+                Only the designated platform admin email (bstitt@kdm-assoc.com) can grant admin access.
                 Please contact the platform administrator.
               </AlertDescription>
             </Alert>

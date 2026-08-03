@@ -180,6 +180,9 @@ export function AIGeneratorSection() {
                     <label className="block text-sm font-medium mb-2">
                       Upload a Document
                     </label>
+                    <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-2 mb-2">
+                      <strong>Data Security Notice:</strong> Do NOT upload classified information, CUI, export-controlled technical data, or procurement-sensitive information. Only upload publicly releasable documents.
+                    </p>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors">
                       <input
                         type="file"

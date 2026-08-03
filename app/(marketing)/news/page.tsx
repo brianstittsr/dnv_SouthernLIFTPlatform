@@ -17,14 +17,14 @@ import { getAllArticles } from "@/lib/articles-data";
 export const metadata: Metadata = {
   title: "News & Insights | KDM & Associates",
   description:
-    "Latest news, federal contracting updates, CMMC insights, HUBZone opportunities, and government procurement news from KDM & Associates — your MBDA Federal Procurement Center.",
+    "Latest news, federal contracting updates, CMMC insights, HUBZone opportunities, and government procurement news from KDM & Associates — your Federal Procurement & Industrial Readiness Center.",
   keywords: [
     "government contracting news",
     "CMMC updates",
     "federal procurement news",
     "HUBZone news",
     "small business contracting insights",
-    "MBDA news",
+    "KDM Consortium news",
     "KDM Associates news",
   ],
   alternates: { canonical: "https://kdm-assoc.com/news" },

@@ -203,7 +203,7 @@ export default function SignUpPage() {
             </CardTitle>
             <CardDescription className="text-center">
               {step === 1 
-                ? "Select how you'd like to join Strategic Value+" 
+                ? "Select how you'd like to join the KDM Consortium" 
                 : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>
@@ -240,7 +240,7 @@ export default function SignUpPage() {
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
                         Government agencies, prime contractors, and OEMs looking to procure products and services from qualified suppliers. 
-                        Access our network of CMMC-ready SMEs, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
+                        Access our network of CMMC-ready suppliers, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
                         <li>• Post opportunities and RFPs for government and manufacturing contracts</li>
@@ -268,12 +268,12 @@ export default function SignUpPage() {
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Register as a government subcontractor or manufacturing supplier to access V+ services, 
+                        Register as a government subcontractor or manufacturing supplier to access KDM consulting and procurement services, 
                         connect with prime contractors and government buyers, and grow your business in both defense and commercial markets.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Access to V+ consulting and procurement services</li>
-                        <li>• Supplier qualification and CMMC certification programs</li>
+                        <li>• Access to KDM consulting and procurement services</li>
+                        <li>• Supplier qualification and CMMC readiness programs</li>
                         <li>• Manufacturing assessments and Industry 4.0 support</li>
                         <li>• Connect with government buyers and prime contractors</li>
                       </ul>
@@ -298,7 +298,7 @@ export default function SignUpPage() {
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
                         Join the KDM Consortium to access exclusive opportunities, teaming partnerships, and government contracting resources. 
-                        Connect with other consortium members and leverage collective capabilities to win federal contracts.
+                        Connect with other consortium members and leverage collective capabilities to compete more effectively for federal contracts.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
                         <li>• Access to SAM.gov opportunities with teaming features</li>

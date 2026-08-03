@@ -17,10 +17,10 @@ import {
 export const metadata: Metadata = {
   title: "Strategic Partners | KDM & Associates",
   description:
-    "KDM & Associates partners with SBA, MBDA, and leading solution providers to connect diverse small businesses with federal contracting opportunities, capital access, and compliance resources.",
+    "KDM & Associates partners with SBA and leading solution providers to connect diverse small businesses with federal contracting opportunities, capital access, and compliance resources.",
   keywords: [
     "KDM Associates partners",
-    "MBDA Federal Procurement Center partners",
+    "Federal Procurement and Industrial Readiness Center partners",
     "SBA partner network",
     "government contracting partners",
     "small business partner program",
@@ -29,12 +29,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://kdm-assoc.com/partners" },
   openGraph: {
     title: "Strategic Partners | KDM & Associates",
-    description: "Our partner ecosystem connects diverse businesses with the resources, capital, and relationships needed to win federal contracts.",
+    description: "Our partner ecosystem connects diverse businesses with the resources, capital, and relationships needed to compete effectively for federal contracts.",
     url: "https://kdm-assoc.com/partners",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Partners" }],
   },
-  twitter: { card: "summary_large_image", title: "Strategic Partners | KDM & Associates", description: "SBA, MBDA, and solutions partners powering diverse business success in federal markets." },
+  twitter: { card: "summary_large_image", title: "Strategic Partners | KDM & Associates", description: "SBA and solutions partners powering diverse business success in federal markets." },
 };
 
 const partnerBenefits = [
@@ -56,7 +56,7 @@ const partnerBenefits = [
   {
     icon: Award,
     title: "Credibility & Trust",
-    description: "Benefit from association with the MBDA Federal Procurement Center network."
+    description: "Benefit from association with the Federal Procurement & Industrial Readiness Center network."
   }
 ];
 
@@ -76,7 +76,7 @@ const partnerTypes = [
     title: "Prime Contractors",
     description: "Large contractors seeking qualified small business subcontractors and teaming partners.",
     features: [
-      "Access to pre-vetted small business firms",
+      "Access to KDM-reviewed small business firms",
       "Streamlined teaming arrangements",
       "Mentor-protégé opportunities",
       "Joint venture facilitation",

@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "KDM Consortium Members | Join Our Network",
   description:
-    "Join the KDM Consortium - a selective network of 12-50 expert companies collaborating to win government contracts. View our members and their capabilities.",
+    "Join the KDM Consortium - a selective network of 12-50 expert companies collaborating to compete more effectively for government contracts. View our members and their capabilities.",
   keywords:
     "KDM Consortium members, government contracting network, manufacturing consortium, defense contractors, critical minerals",
 };
@@ -105,7 +105,7 @@ const FAQS = [
   {
     question: "Is there a long-term contract?",
     answer:
-      "Membership is month-to-month after the first 3 months. You can cancel anytime with 30 days notice. We want members who are committed to collaborating and winning together.",
+      "Membership is month-to-month after the first 3 months. You can cancel anytime with 30 days notice. We want members who are committed to collaborating and competing together.",
   },
   {
     question: "How many members are in the consortium?",
@@ -237,7 +237,7 @@ export default function ConsortiumMembersPage() {
               <div>
                 <h2 className="text-3xl font-bold mb-4">Ready to Join?</h2>
                 <p className="text-gray-300 mb-6">
-                  Become part of a selective network that is winning government contracts together.
+                  Become part of a selective network that is competing effectively for government contracts together.
                   Limited founder pricing available.
                 </p>
                 <ul className="space-y-3 mb-6">
@@ -313,7 +313,7 @@ export default function ConsortiumMembersPage() {
           </h2>
           <p className="text-slate-800 mb-8 max-w-2xl mx-auto">
             Don't miss this opportunity to be part of a selective network of expert companies
-            winning government contracts together.
+            competing effectively for government contracts together.
           </p>
           <Button
             size="lg"

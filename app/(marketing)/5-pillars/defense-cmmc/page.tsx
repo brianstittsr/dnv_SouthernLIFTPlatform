@@ -226,7 +226,7 @@ export default function GovernmentContractingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Capability briefs, past performance snapshots, compliance badges, and capacity indicators help KDM match the right teams to the right pursuit.
+                    Capability briefs, past performance snapshots, KDM readiness badges, and capacity indicators help KDM match the right teams to the right pursuit.
                   </p>
                 </CardContent>
               </Card>

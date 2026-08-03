@@ -247,7 +247,7 @@ export default function SetupAdminPage() {
           <h3 className="font-semibold mb-2">Need Help?</h3>
           <p className="text-sm text-muted-foreground">
             If you're experiencing issues with admin access, please ensure you're signed in 
-            with the correct email address ({status?.canSetup ? "bstitt@strategicvalueplus.com" : "designated admin email"}).
+            with the correct email address ({status?.canSetup ? "bstitt@kdm-assoc.com" : "designated admin email"}).
           </p>
         </div>
       </div>

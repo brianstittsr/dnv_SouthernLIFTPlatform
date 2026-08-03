@@ -9,11 +9,11 @@ import { ArrowRight, Linkedin, Mail } from "lucide-react";
 export const metadata: Metadata = {
   title: "Leadership Team | KDM & Associates",
   description:
-    "Meet the KDM & Associates leadership team — seasoned experts in federal procurement, MBDA operations, government contracting, manufacturing, and CMMC compliance driving success for diverse businesses.",
+    "Meet the KDM & Associates leadership team — seasoned experts in federal procurement, government contracting, manufacturing, and CMMC readiness driving success for diverse businesses.",
   keywords: [
     "KDM Associates leadership",
     "Keith Moore CEO",
-    "MBDA Federal Procurement Center team",
+    "Federal Procurement and Industrial Readiness Center team",
     "government contracting experts",
     "federal procurement consultants",
   ],

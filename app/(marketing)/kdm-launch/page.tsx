@@ -51,7 +51,7 @@ const PLATFORM_CAPABILITIES = [
 ];
 
 const FOUNDING_PARTNERS = [
-  { name: "Strategic Value Plus", role: "Platform Development" },
+  { name: "KDM & Associates", role: "Platform Development" },
   { name: "End to End Enterprise Solutions", role: "System Integration" },
   { name: "HUBZone Council", role: "Zone Development" },
   { name: "Logicore", role: "Readiness Solutions" },
@@ -132,7 +132,7 @@ export default function KDMLaunchPage() {
                 </div>
                 
                 <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                  Powered by Strategic Value Plus Solutions, LLC, the KDM Consortium will officially 
+                  The KDM Consortium will officially 
                   launch <span className="text-amber-400 font-semibold">KDM-Assoc.com</span> at a 
                   free virtual public event during National Small Business Week, May 3-9, 2026.
                 </p>
@@ -255,7 +255,7 @@ export default function KDMLaunchPage() {
                 and executable. That platform will launch May 6th."
               </p>
               <footer className="text-amber-400 font-semibold">
-                — Nel Varenas, MBA, Co-Founder, KDM Consortium; CEO, Strategic Value Plus Solutions, LLC
+                — Nel Varenas, MBA, Co-Founder, KDM Consortium; CEO, KDM & Associates
               </footer>
             </blockquote>
           </div>
@@ -330,9 +330,9 @@ export default function KDMLaunchPage() {
 
             <Card className="bg-slate-800/50 border-slate-700">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">About Strategic Value Plus</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">About KDM & Associates</h3>
                 <p className="text-gray-400 leading-relaxed">
-                  Strategic Value Plus Solutions, LLC (V+) is a U.S. manufacturing consulting firm 
+                  KDM & Associates, LLC is a U.S. manufacturing consulting firm 
                   specializing in helping reshoring OEMs build domestic supplier bases and helping 
                   candidate manufacturers increase their capabilities through quality systems, 
                   digital transformation, automation, AI integration, and workforce development initiatives.

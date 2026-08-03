@@ -37,7 +37,7 @@ const memberSHIP_TIERS = [
       'Monthly buyer briefings',
       'Resource library access',
       'member directory listing',
-      'Compliance badge display',
+      'KDM Readiness Badge display',
       '2 hours concierge support/month',
       'Priority pursuit notifications',
       'Team workspace access',
@@ -88,12 +88,12 @@ const BENEFITS = [
   {
     icon: Target,
     title: 'Curated Opportunities',
-    description: 'Access pre-vetted government contracting opportunities matched to your capabilities.',
+    description: 'Access curated government contracting opportunities matched to your capabilities.',
   },
   {
     icon: Users,
     title: 'Team Assembly',
-    description: 'Connect with complementary contractors to form winning pursuit teams.',
+    description: 'Connect with complementary contractors to form capable, opportunity-aligned pursuit teams.',
   },
   {
     icon: FileText,
@@ -103,7 +103,7 @@ const BENEFITS = [
   {
     icon: Calendar,
     title: 'Buyer Briefings',
-    description: 'Exclusive access to monthly briefings with government decision-makers.',
+    description: 'Participate in educational briefings, industry days, and public outreach sessions with government and prime-contractor representatives.',
   },
   {
     icon: Shield,
@@ -113,7 +113,7 @@ const BENEFITS = [
   {
     icon: Zap,
     title: 'Fast Track',
-    description: 'Priority notifications and early access to high-value opportunities.',
+    description: 'Priority notification of publicly announced opportunities and authorized teaming requests.',
   },
 ];
 
@@ -161,9 +161,14 @@ export default function membershipPage() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Join the Consortium
           </h1>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-4">
             Access curated government contracting opportunities, connect with teaming partners, 
-            and accelerate your path to winning federal contracts.
+            and accelerate your path to competing for federal contracting opportunities.
+          </p>
+          <p className="text-sm text-blue-200 max-w-2xl mx-auto mb-8">
+            For current pricing and promotional offers, please visit our{' '}
+            <Link href="/pricing" className="underline font-semibold hover:text-white">authoritative pricing page</Link>.
+            The tiers below describe the different service levels available.
           </p>
           <div className="flex items-center justify-center gap-3">
             <Label htmlFor="billing-toggle" className={!isAnnual ? 'font-semibold' : 'text-blue-200'}>
@@ -282,13 +287,49 @@ export default function membershipPage() {
         </div>
       </section>
 
+      {/* Service Level Comparison */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-4">Service Level Comparison</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              KDM offers different service levels to meet varying needs. See our{' '}
+              <Link href="/pricing" className="text-primary hover:underline font-semibold">pricing page</Link>{' '}
+              for current rates and promotional offers.
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4 font-semibold">Feature</th>
+                  <th className="text-center py-3 px-4 font-semibold">KDM Consortium</th>
+                  <th className="text-center py-3 px-4 font-semibold">Pursuit Pack</th>
+                  <th className="text-center py-3 px-4 font-semibold">Enterprise</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                <tr className="border-b"><td className="py-3 px-4 font-medium">Opportunity Alerts</td><td className="text-center">✓ Curated</td><td className="text-center">Single pursuit</td><td className="text-center">✓ Custom</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">Team Assembly</td><td className="text-center">✓ Full access</td><td className="text-center">One opportunity</td><td className="text-center">✓ Unlimited</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">Proposal Workspace</td><td className="text-center">✓</td><td className="text-center">✓ (90 days)</td><td className="text-center">✓</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">Concierge Support</td><td className="text-center">2 hrs/month</td><td className="text-center">—</td><td className="text-center">Unlimited</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">KDM Readiness Badge</td><td className="text-center">✓</td><td className="text-center">—</td><td className="text-center">✓</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">CMMC Readiness Assessment</td><td className="text-center">✓</td><td className="text-center">—</td><td className="text-center">✓</td></tr>
+                <tr className="border-b"><td className="py-3 px-4 font-medium">Dedicated Account Manager</td><td className="text-center">—</td><td className="text-center">—</td><td className="text-center">✓</td></tr>
+                <tr><td className="py-3 px-4 font-medium">Founders Membership</td><td colSpan={3} className="text-center text-muted-foreground py-3 px-4">One-time recognition payment — founding member badge, founder privileges, and consortium benefits for the founding period. See <Link href="/pricing" className="text-primary hover:underline">pricing page</Link> for details.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Why Join the Consortium?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              The KDM Consortium provides everything you need to compete and win in the government contracting space.
+              The KDM Consortium provides resources and support to help you become more prepared, competitive, and strategically positioned for government contracting opportunities.
             </p>
           </div>
           
@@ -346,9 +387,9 @@ export default function membershipPage() {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="font-semibold mb-2">How do buyer briefings work?</h3>
               <p className="text-muted-foreground">
-                Each month, we host exclusive briefings with government buyers and decision-makers. 
+                Each month, we host educational briefings with government and prime-contractor representatives. 
                 These sessions provide insights into upcoming opportunities, procurement priorities, 
-                and direct networking with agency representatives.
+                and structured networking with agency representatives. KDM does not provide access to source-selection information, nonpublic procurement-sensitive information, or preferential treatment by any government agency.
               </p>
             </div>
           </div>
@@ -358,10 +399,10 @@ export default function membershipPage() {
       {/* CTA Section */}
       <section className="py-20 bg-blue-900 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Win More Contracts?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Compete More Effectively?</h2>
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Join the KDM Consortium today and start accessing curated opportunities, 
-            building winning teams, and growing your government contracting business.
+            building capable teams, and growing your government contracting business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 

@@ -20,7 +20,7 @@ import {
 export const metadata: Metadata = {
   title: "Core Team",
   description:
-    "Meet the Strategic Value+ team - veteran experts with complementary expertise in manufacturing, finance, international business, and technology.",
+    "Meet the KDM & Associates team - veteran experts with complementary expertise in manufacturing, finance, international business, and technology.",
 };
 
 const expertiseAreas = [
@@ -79,7 +79,7 @@ const values = [
     icon: Target,
     title: "Dedication to Your Success",
     description:
-      "We don't just consult—we partner with you. Our team is deeply invested in your success, and we take pride in seeing your business thrive. With Strategic Value+ Solutions, you gain trusted advisors committed to driving your business forward.",
+      "We don't just consult—we partner with you. Our team is deeply invested in your success, and we take pride in seeing your business thrive. With KDM & Associates, you gain trusted advisors committed to driving your business forward.",
   },
 ];
 

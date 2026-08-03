@@ -62,7 +62,7 @@ export interface PopupConfig {
 export const defaultPopupConfig: PopupConfig = {
   enabled: true,
   title: "KDM & Associates",
-  subtitle: "Schedule an introductory session to explore how we can help you win government contracts.",
+  subtitle: "Schedule an introductory session to explore how we can help you become more prepared and competitive for government contracting opportunities.",
   description: "Tell us about your business and contracting goals. We'll follow up with next steps.",
   buttonText: "Schedule Session",
   successMessage: "Thank you! We'll be in touch within 24 hours.",

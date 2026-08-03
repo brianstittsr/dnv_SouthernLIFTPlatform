@@ -28,7 +28,7 @@ const audiences = [
     icon: Landmark,
     badge: "For Buyers",
     title: "Federal, State & Local Government Buyers",
-    description: "Streamline your small business sourcing with access to a curated directory of pre-vetted, certified contractors ready to support your mission.",
+    description: "Streamline your small business sourcing with access to a curated directory of KDM-reviewed, certified contractors ready to support your mission.",
     idealFor: [
       "Contracting Officers (COs/KOs)",
       "Small Business Specialists",

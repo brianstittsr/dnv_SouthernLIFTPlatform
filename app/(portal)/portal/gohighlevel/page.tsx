@@ -141,14 +141,14 @@ interface ImportedWorkflow {
   importedAt: string;
 }
 
-// Workflow Templates for Strategic Value Plus
+// Workflow Templates for KDM & Associates
 const WORKFLOW_TEMPLATES = [
   {
     id: 'supplier_onboarding',
     name: 'Supplier Onboarding',
-    description: 'Welcome new suppliers to the V+ network with a comprehensive onboarding sequence',
+    description: 'Welcome new suppliers to the KDM Consortium network with a comprehensive onboarding sequence',
     category: 'onboarding',
-    defaultPrompt: 'Create a supplier onboarding sequence for Strategic Value Plus that welcomes new manufacturing suppliers, introduces our services, and guides them through the certification process over 7 days',
+    defaultPrompt: 'Create a supplier onboarding sequence for KDM & Associates that welcomes new manufacturing suppliers, introduces our services, and guides them through the readiness process over 7 days',
     suggestedType: 'email',
   },
   {
@@ -156,7 +156,7 @@ const WORKFLOW_TEMPLATES = [
     name: 'Workshop Lead Nurture',
     description: 'Nurture leads interested in Supplier Success Workshops',
     category: 'nurture',
-    defaultPrompt: 'Create a 5-day nurture sequence for manufacturers interested in V+ Supplier Success Workshops, highlighting benefits of becoming OEM-ready and CMMC certified',
+    defaultPrompt: 'Create a 5-day nurture sequence for manufacturers interested in KDM Supplier Success Workshops, highlighting benefits of becoming OEM-ready and CMMC ready',
     suggestedType: 'mixed',
   },
   {
@@ -164,7 +164,7 @@ const WORKFLOW_TEMPLATES = [
     name: 'CMMC Readiness Campaign',
     description: 'Guide defense suppliers through CMMC certification preparation',
     category: 'nurture',
-    defaultPrompt: 'Create an educational sequence about CMMC certification requirements for defense supply chain manufacturers, with calls to action for V+ readiness assessments',
+    defaultPrompt: 'Create an educational sequence about CMMC assessment requirements for defense supply chain manufacturers, with calls to action for KDM readiness assessments',
     suggestedType: 'email',
   },
   {
@@ -178,7 +178,7 @@ const WORKFLOW_TEMPLATES = [
   {
     id: 'event_reminder',
     name: 'Event/Webinar Reminder',
-    description: 'Remind registrants about upcoming V+ events and webinars',
+    description: 'Remind registrants about upcoming KDM events and webinars',
     category: 'event',
     defaultPrompt: 'Create an event reminder sequence with confirmations 1 week before, 1 day before, and 1 hour before the event, plus a follow-up after',
     suggestedType: 'email',
@@ -186,9 +186,9 @@ const WORKFLOW_TEMPLATES = [
   {
     id: 'reengagement',
     name: 'Supplier Re-engagement',
-    description: 'Re-engage inactive suppliers in the V+ network',
+    description: 'Re-engage inactive suppliers in the KDM Consortium network',
     category: 'reengagement',
-    defaultPrompt: 'Create a re-engagement campaign for suppliers who haven\'t engaged with V+ in 90 days, highlighting new OEM opportunities and success stories',
+    defaultPrompt: 'Create a re-engagement campaign for suppliers who haven\'t engaged with KDM in 90 days, highlighting new OEM opportunities and success stories',
     suggestedType: 'mixed',
   },
 ];
@@ -637,7 +637,7 @@ export default function GoHighLevelPage() {
                 </Badge>
               </h1>
               <p className="text-sm text-muted-foreground">
-                Manage CRM integrations and AI-powered marketing automation for V+
+                Manage CRM integrations and AI-powered marketing automation for KDM
               </p>
             </div>
           </div>
@@ -812,7 +812,7 @@ export default function GoHighLevelPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-orange-500" />
-                      Workflow Templates for V+
+                      Workflow Templates for KDM
                     </CardTitle>
                     <CardDescription>
                       Select a template to get started or write your own description
@@ -852,7 +852,7 @@ export default function GoHighLevelPage() {
                     <Textarea
                       value={workflowPrompt}
                       onChange={(e) => setWorkflowPrompt(e.target.value)}
-                      placeholder="e.g., Create a 5-day email sequence for new suppliers that introduces V+ services, explains the certification process, and schedules a discovery call..."
+                      placeholder="e.g., Create a 5-day email sequence for new suppliers that introduces KDM services, explains the readiness process, and schedules a discovery call..."
                       rows={4}
                     />
                     <div className="flex gap-4">
@@ -902,21 +902,21 @@ export default function GoHighLevelPage() {
                     <div className="space-y-2 text-sm">
                       <button 
                         className="w-full text-left p-3 rounded-lg border hover:bg-muted transition-colors"
-                        onClick={() => setWorkflowPrompt("Create a welcome sequence for new manufacturing suppliers joining the V+ network. Include an introduction to our services, information about OEM opportunities, and a call to schedule a Supplier Success Workshop.")}
+                        onClick={() => setWorkflowPrompt("Create a welcome sequence for new manufacturing suppliers joining the KDM Consortium network. Include an introduction to our services, information about OEM opportunities, and a call to schedule a Supplier Success Workshop.")}
                       >
                         <span className="font-medium">Supplier Welcome Series</span>
-                        <p className="text-muted-foreground mt-1">Welcome new suppliers with V+ services overview and workshop invitation</p>
+                        <p className="text-muted-foreground mt-1">Welcome new suppliers with KDM services overview and workshop invitation</p>
                       </button>
                       <button 
                         className="w-full text-left p-3 rounded-lg border hover:bg-muted transition-colors"
-                        onClick={() => setWorkflowPrompt("Create a CMMC certification awareness campaign for defense supply chain manufacturers. Explain the requirements, timeline, and how V+ can help them achieve compliance.")}
+                        onClick={() => setWorkflowPrompt("Create a CMMC readiness awareness campaign for defense supply chain manufacturers. Explain the requirements, timeline, and how KDM can help them prepare for assessment.")}
                       >
                         <span className="font-medium">CMMC Awareness Campaign</span>
-                        <p className="text-muted-foreground mt-1">Educate defense suppliers about CMMC requirements and V+ certification services</p>
+                        <p className="text-muted-foreground mt-1">Educate defense suppliers about CMMC requirements and KDM readiness services</p>
                       </button>
                       <button 
                         className="w-full text-left p-3 rounded-lg border hover:bg-muted transition-colors"
-                        onClick={() => setWorkflowPrompt("Create a follow-up sequence for suppliers who attended a V+ webinar but haven't scheduled a consultation. Include case studies and success stories from similar manufacturers.")}
+                        onClick={() => setWorkflowPrompt("Create a follow-up sequence for suppliers who attended a KDM webinar but haven't scheduled a consultation. Include case studies and success stories from similar manufacturers.")}
                       >
                         <span className="font-medium">Webinar Follow-up</span>
                         <p className="text-muted-foreground mt-1">Convert webinar attendees with case studies and consultation offers</p>
@@ -1143,7 +1143,7 @@ export default function GoHighLevelPage() {
           <DialogHeader>
             <DialogTitle>Add GoHighLevel Integration</DialogTitle>
             <DialogDescription>
-              Connect a GoHighLevel account to sync supplier data with V+
+              Connect a GoHighLevel account to sync supplier data with KDM
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -1153,7 +1153,7 @@ export default function GoHighLevelPage() {
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="V+ Main Account"
+                placeholder="KDM Main Account"
               />
             </div>
             <div className="space-y-2">

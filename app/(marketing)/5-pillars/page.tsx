@@ -222,7 +222,7 @@ export default function FivePillarsPage() {
               Your Competition Is Already Here. Are You?
             </h2>
             <p className="text-xl mb-4 text-white/90">
-              100+ manufacturers are leveraging all 5 pillars to win federal contracts, achieve CMMC compliance, and scale their operations.
+              100+ manufacturers are leveraging all 5 pillars to compete effectively for federal contracts, achieve CMMC readiness, and scale their operations.
             </p>
             <p className="text-lg mb-8 text-white/80">
               Stop navigating complex federal requirements alone. Get expert guidance across manufacturing, CMMC, capital access, and more.

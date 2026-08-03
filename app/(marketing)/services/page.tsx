@@ -123,7 +123,7 @@ export default function ServicesPage() {
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
             Schedule an introductory session to discuss how our services can help 
-            your business win government contracts.
+            your business become more prepared and competitive for government contracting.
           </p>
           <Button
             size="lg"

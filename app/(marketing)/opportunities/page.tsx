@@ -17,7 +17,7 @@ import {
 export const metadata: Metadata = {
   title: "Federal Contract Opportunities | KDM & Associates",
   description:
-    "Explore federal contracting opportunities, teaming partnerships, and business development programs available through the KDM Consortium and MBDA Federal Procurement Center.",
+    "Explore federal contracting opportunities, teaming partnerships, and business development programs available through the KDM Consortium and Federal Procurement & Industrial Readiness Center.",
   keywords: [
     "federal contract opportunities",
     "government teaming opportunities",
@@ -25,12 +25,12 @@ export const metadata: Metadata = {
     "HUBZone opportunities",
     "8(a) business opportunities",
     "KDM Consortium opportunities",
-    "MBDA procurement opportunities",
+    "Federal Procurement and Industrial Readiness Center opportunities",
   ],
   alternates: { canonical: "https://kdm-assoc.com/opportunities" },
   openGraph: {
     title: "Federal Contract Opportunities | KDM & Associates",
-    description: "Federal contracting opportunities and teaming programs through the KDM Consortium and MBDA Federal Procurement Center.",
+    description: "Federal contracting opportunities and teaming programs through the KDM Consortium and Federal Procurement & Industrial Readiness Center.",
     url: "https://kdm-assoc.com/opportunities",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM Federal Contract Opportunities" }],

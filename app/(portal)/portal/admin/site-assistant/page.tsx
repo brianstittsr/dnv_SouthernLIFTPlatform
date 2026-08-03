@@ -71,7 +71,7 @@ interface ExecutionStep {
 const SUGGESTED_REQUESTS = [
   "Add a new testimonial to the homepage testimonials section",
   "Update the hero banner headline and subtitle on the main landing page",
-  "Create a new press release about our MBDA partnership milestone",
+  "Create a new press release about our federal procurement center milestone",
   "Add an upcoming event for a CMMC webinar next month",
   "Change the consortium membership pricing description",
   "Update the about page with new team member information",

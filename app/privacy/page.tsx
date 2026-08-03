@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Privacy Policy | Strategic Value+",
-  description: "Privacy Policy for Strategic Value+ platform and services.",
+  title: "Privacy Policy | KDM & Associates",
+  description: "Privacy Policy for KDM & Associates platform and services.",
 };
 
 export default function PrivacyPage() {
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
             <p>
-              Strategic Value Plus Solutions LLC (&quot;V+&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you use our platform and services.
+              KDM & Associates (&quot;KDM&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) respects your privacy and is committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you use our platform and services.
             </p>
           </section>
 
@@ -75,14 +75,34 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">6. Contact Us</h2>
+            <h2 className="text-2xl font-semibold mb-4">6. Data Governance &amp; Prohibited Uploads</h2>
+            <p className="mb-4">
+              The KDM platform is a private-sector commercial platform and is not authorized to store, process, or transmit classified information, Controlled Unclassified Information (CUI), export-controlled technical data, source-selection information, or procurement-sensitive information.
+            </p>
+            <p className="font-semibold mb-2">You must NOT upload any of the following to the platform:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Classified information of any kind (Confidential, Secret, Top Secret, or SAP/SAR)</li>
+              <li>Controlled Unclassified Information (CUI) including but not limited to CUI Basic, CUI Specified, and CUI Limited Dissemination</li>
+              <li>Export-controlled technical data or defense articles subject to ITAR or EAR</li>
+              <li>Source-selection information, including non-public evaluation data, source-selection plans, or proprietary proposal information belonging to other companies</li>
+              <li>Procurement-sensitive information not publicly available, including pre-solicitation acquisition plans or internal agency budget data not publicly disclosed</li>
+              <li>Personally Identifiable Information (PII) of third parties without proper authorization</li>
+              <li>Any other data that requires handling controls exceeding the platform&apos;s security posture</li>
+            </ul>
+            <p className="mt-4">
+              KDM does not assume liability for improper uploads by users. Users are responsible for ensuring that all information they upload is appropriately cleared for public or commercial-platform use. If you are uncertain whether information may be uploaded, do not upload it and contact KDM for guidance.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
-              <strong>Strategic Value Plus Solutions LLC</strong><br />
-              Email: privacy@strategicvalueplus.com<br />
-              Website: <Link href="https://strategicvalueplus.com" className="text-primary hover:underline">strategicvalueplus.com</Link>
+              <strong>KDM & Associates</strong><br />
+              Email: privacy@kdm-assoc.com<br />
+              Website: <Link href="https://www.kdm-assoc.com" className="text-primary hover:underline">kdm-assoc.com</Link>
             </p>
           </section>
         </div>

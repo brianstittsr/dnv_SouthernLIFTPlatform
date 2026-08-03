@@ -529,7 +529,7 @@ export default function NetworkingPage() {
             <CardHeader>
               <CardTitle>Request One-to-One with Leadership</CardTitle>
               <CardDescription>
-                Schedule a meeting with Strategic Value+ leadership team members
+                Schedule a meeting with KDM Consortium leadership team members
               </CardDescription>
             </CardHeader>
             <CardContent>

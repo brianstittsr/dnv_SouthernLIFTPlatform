@@ -22,11 +22,11 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+    "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
   keywords: [
     "government contracting",
     "federal procurement",
-    "MBDA",
+    "federal procurement center",
     "8(a) certification",
     "WOSB",
     "SDVOSB",
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     "small business government contracts",
     "mentor protege",
     "SBA programs",
-    "CMMC certification",
-    "CMMC compliance",
+    "CMMC assessment readiness",
+    "CMMC Level 1 readiness",
     "defense contracting",
     "defense manufacturing consulting",
     "U.S. manufacturing reshoring",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     "defense industrial base",
     "small business defense contracts",
     "manufacturing compliance",
-    "Strategic Value Plus",
+    "KDM Consortium",
     "supplier success workshops",
   ],
   authors: [{ name: "KDM & Associates", url: "https://kdm-assoc.com" }],
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     siteName: "KDM & Associates",
     title: "KDM & Associates | Federal Procurement & Government Contracting",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
     images: [
       {
         url: "/og-image.png",
@@ -96,9 +96,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KDM & Associates | Federal Procurement & Government Contracting",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting.",
     images: ["/og-image.png"],
-    creator: "@mbdafpcenter",
+    creator: "@kdmassoc",
   },
   category: "business",
 };

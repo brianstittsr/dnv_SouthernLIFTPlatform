@@ -1671,7 +1671,7 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle>SVP Tools</CardTitle>
               <CardDescription>
-                Access Strategic Value+ platform tools based on your role
+                Access KDM Consortium platform tools based on your role
                 {(profile.role === "team_member" || profile.role === "admin") && (
                   <Badge variant="secondary" className="ml-2">Team Access</Badge>
                 )}

@@ -228,7 +228,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       <p className="text-muted-foreground mb-6">
                         Whether you&apos;re a small manufacturer seeking defense contracts, a government buyer
                         looking for qualified suppliers, or a business owner pursuing CMMC certification,
-                        KDM &amp; Associates and the V+KDM Consortium are here to help.
+                        KDM &amp; Associates and the KDM Consortium are here to help.
                       </p>
                       <p className="font-semibold mb-4">Join the KDM Consortium Platform today:</p>
                       <div className="flex flex-col sm:flex-row gap-4">

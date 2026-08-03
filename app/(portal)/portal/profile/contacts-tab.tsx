@@ -81,7 +81,7 @@ const INVITATION_TEMPLATE = {
   subject: "Invitation to join KDM & Associates SVP Platform",
   body: (inviterName: string, inviterCompany: string) => `
     <h2>You've been invited to join the KDM & Associates SVP Platform!</h2>
-    <p><strong>${inviterName}</strong> from <strong>${inviterCompany}</strong> has invited you to join our Strategic Value+ Platform.</p>
+    <p><strong>${inviterName}</strong> from <strong>${inviterCompany}</strong> has invited you to join the KDM Consortium Platform.</p>
     <h3>Platform Benefits:</h3>
     <ul>
       <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>

@@ -8,7 +8,7 @@ export function CTASection() {
       <div className="container">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            Ready to Win Government Contracts?
+            Ready to Compete More Effectively?
           </h2>
           <p className="mt-4 text-xl opacity-95 max-w-3xl mx-auto font-medium">
             Supporting U.S. Manufacturing, Defense Industrial Base Readiness, Critical Minerals, and Supply Chain Resilience.

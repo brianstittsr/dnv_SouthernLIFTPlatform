@@ -6,11 +6,11 @@ export function OrganizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "KDM & Associates",
-    alternateName: "MBDA Federal Procurement Center",
+    alternateName: "KDM Federal Procurement & Industrial Readiness Center",
     url: "https://kdm-assoc.com",
     logo: "https://kdm-assoc.com/kdm-logo.png",
     description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses win government contracts through strategic teaming, capacity building, and mentorship.",
+      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
     foundingDate: "2020",
     founders: [
       {
@@ -366,7 +366,7 @@ export function WebsiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "KDM & Associates",
-    alternateName: "MBDA Federal Procurement Center",
+    alternateName: "KDM Federal Procurement & Industrial Readiness Center",
     url: "https://kdm-assoc.com",
     potentialAction: {
       "@type": "SearchAction",

@@ -159,9 +159,9 @@ const initialSlides: HeroSlide[] = [
   {
     id: "9",
     badge: "Government Contracting Excellence",
-    headline: "Strategic Value+",
+    headline: "KDM Consortium",
     highlightedText: "Partnership",
-    subheadline: "KDM & Associates and Strategic Value+ unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
+    subheadline: "KDM & Associates and its participating resource partners unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
     benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
     primaryCta: { text: "Learn More", href: "/about" },
     secondaryCta: { text: "Contact Us", href: "/contact" },

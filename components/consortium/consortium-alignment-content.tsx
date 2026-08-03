@@ -167,11 +167,11 @@ export function ConsortiumAlignmentContent() {
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">Member Benefits</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Everything You Need to Win Government Contracts
+                Everything You Need to Compete Effectively
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Powerful tools and features designed to help consortium members identify opportunities, 
-                form winning teams, and deliver contracts successfully.
+                form capable, opportunity-aligned teams, and perform successfully on contracts.
               </p>
             </div>
 

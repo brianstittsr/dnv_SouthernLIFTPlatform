@@ -48,7 +48,7 @@ const PRICING_TIERS = [
       "Monthly buyer briefings",
       "Resource library access",
       "Member directory listing",
-      "Compliance badge verification",
+      "KDM Readiness Badge display",
       "2 hours concierge support/month",
       "Priority pursuit notifications",
       "Private workspace access",
@@ -61,14 +61,14 @@ const PRICING_TIERS = [
   {
     id: "founders",
     name: "KDM Founders Membership",
-    description: "One-time founding member payment - Limited time offer for smart business leaders",
+    description: "One-time founding member payment - Founding Member recognition and founder privileges",
     price: 625,
     isOneTime: true,
     popular: false,
     features: [
-      "Lifetime Founding Member status",
-      "All Consortium membership benefits",
-      "Early access to high-value opportunities",
+      "Founding Member recognition & badge",
+      "Consortium membership benefits for the founding period",
+      "Priority notification of publicly announced opportunities",
       "Founding member badge & recognition",
       "Exclusive founding member events",
       "Priority support & concierge service",
@@ -85,20 +85,20 @@ const PRICING_TIERS = [
   {
     id: "cmmc-cohort",
     name: "CMMC Cohort Training",
-    description: "Intensive 12-week program to achieve CMMC certification readiness",
+    description: "Intensive 12-week program for CMMC 2.0 Level 2 assessment readiness",
     price: 7500,
     isOneTime: true,
     popular: false,
     features: [
-      "12-week guided certification program",
+      "12-week guided readiness program",
       "Expert-led training sessions",
-      "CMMC 2.0 Level 1 preparation",
+      "CMMC 2.0 Level 2 preparation",
       "Documentation templates & tools",
       "Mock assessments & gap analysis",
       "1-on-1 mentor sessions (4 hours)",
       "Access to certified RPOs",
       "Ongoing alumni support group",
-      "Certification exam preparation",
+      "Assessment preparation support",
       "Compliance roadmap development",
       "Policy & procedure creation",
       "C3PAO referral network",
@@ -113,37 +113,37 @@ const MEMBERSHIP_BENEFITS = [
   {
     icon: Target,
     title: "Curated Opportunities",
-    description: "Get matched with pre-vetted government contracts aligned with your capabilities.",
+    description: "Get matched with curated government contracting opportunities aligned with your capabilities.",
   },
   {
     icon: Users,
     title: "Team Assembly",
-    description: "Connect with complementary businesses to form winning pursuit teams.",
+    description: "Connect with complementary businesses to form capable, opportunity-aligned pursuit teams.",
   },
   {
     icon: FileText,
     title: "Proposal Support",
-    description: "Access templates, tools, and expert guidance for winning proposals.",
+    description: "Access templates, tools, and expert guidance for responsive, compliant, and competitive proposals.",
   },
   {
     icon: Calendar,
     title: "Buyer Briefings",
-    description: "Monthly exclusive sessions with government procurement decision-makers.",
+    description: "Participate in educational briefings, industry days, and public outreach sessions with government and prime-contractor representatives.",
   },
   {
     icon: Shield,
     title: "Compliance Ready",
-    description: "CMMC readiness assessment and guidance for cybersecurity compliance.",
+    description: "CMMC readiness assessment and guidance for cybersecurity compliance. A KDM Readiness Badge is an informational platform designation and is not a government certification, contracting-officer determination, security clearance, CMMC assessment result, or endorsement.",
   },
   {
     icon: Zap,
-    title: "Priority Access",
-    description: "Early notifications for high-value opportunities before public release.",
+    title: "Advance Market Intelligence",
+    description: "Receive timely alerts based on publicly available procurement forecasts, agency notices, industry outreach, and published opportunity data.",
   },
   {
     icon: Globe,
     title: "Network Access",
-    description: "Connect with 500+ verified contractors, suppliers, and government buyers.",
+    description: "Connect with 500+ directory-listed contractors, suppliers, and government buyers.",
   },
   {
     icon: TrendingUp,
@@ -155,13 +155,13 @@ const MEMBERSHIP_BENEFITS = [
 const CMMC_BENEFITS = [
   {
     icon: Award,
-    title: "Certification Ready",
-    description: "Complete preparation for CMMC 2.0 Level 2 certification assessment.",
+    title: "Assessment Ready",
+    description: "Complete preparation for CMMC 2.0 Level 2 assessment.",
   },
   {
     icon: Clock,
     title: "12-Week Program",
-    description: "Structured timeline with milestones to keep you on track for certification.",
+    description: "Structured timeline with milestones to keep you on track for assessment readiness.",
   },
   {
     icon: Users,
@@ -311,7 +311,7 @@ export default function PricingPage() {
           </h1>
           <p className="text-xl text-primary-foreground/80 max-w-3xl mx-auto mb-8">
             Join the KDM Consortium to access exclusive government contracting opportunities, 
-            or accelerate your CMMC certification with our intensive cohort program.
+            or accelerate your CMMC assessment readiness with our intensive cohort program.
           </p>
         </div>
       </section>
@@ -589,7 +589,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <Badge className="mb-4" variant="secondary">
-              CMMC Certification
+              CMMC Assessment Readiness
             </Badge>
             <h2 className="text-3xl font-bold mb-4">
               Accelerate Your CMMC Journey
@@ -634,8 +634,8 @@ export default function PricingPage() {
               </h3>
               <p className="text-muted-foreground">
                 Full access to our opportunity intelligence platform, team assembly tools, 
-                proposal support resources, monthly buyer briefings with government 
-                decision-makers, compliance badge verification, and 2 hours of concierge 
+                proposal support resources, monthly educational briefings with government and 
+                prime-contractor representatives, KDM Readiness Badge display, and 2 hours of concierge 
                 support per month.
               </p>
             </div>
@@ -694,7 +694,7 @@ export default function PricingPage() {
           </h2>
           <p className="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
             Whether you are looking to join our exclusive contracting network or 
-            achieve CMMC certification, we have the program to help you succeed.
+            achieve CMMC assessment readiness, we have the program to help you succeed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <AddToCartButton
