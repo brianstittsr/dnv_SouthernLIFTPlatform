@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -101,6 +102,8 @@ export default function BookingPage() {
     company: '',
     notes: '',
   });
+  const [smsConsentTransactional, setSmsConsentTransactional] = useState(false);
+  const [smsConsentMarketing, setSmsConsentMarketing] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState<{
     date: string;
     time: string;
@@ -201,6 +204,9 @@ export default function BookingPage() {
         clientPhone: bookingDetails.phone || undefined,
         clientCompany: bookingDetails.company || undefined,
         clientNotes: bookingDetails.notes || undefined,
+        smsConsentTransactional,
+        smsConsentMarketing,
+        smsConsentTimestamp: (smsConsentTransactional || smsConsentMarketing) ? Timestamp.now() : null,
         meetingTypeId: selectedMeetingType.id,
         meetingTypeName: selectedMeetingType.name,
         date: dateStr,
@@ -510,7 +516,7 @@ export default function BookingPage() {
                 <div className="space-y-2">
                   <Label htmlFor="phone">
                     <Phone className="h-4 w-4 inline mr-1" />
-                    Phone Number
+                    Phone Number <span className="text-muted-foreground font-normal">(optional)</span>
                   </Label>
                   <Input
                     id="phone"
@@ -544,6 +550,36 @@ export default function BookingPage() {
                   onChange={(e) => setBookingDetails({ ...bookingDetails, notes: e.target.value })}
                   rows={3}
                 />
+              </div>
+
+              {/* SMS Opt-In Checkboxes */}
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="booking-sms-transactional"
+                    checked={smsConsentTransactional}
+                    onCheckedChange={(checked) => setSmsConsentTransactional(checked === true)}
+                  />
+                  <Label htmlFor="booking-sms-transactional" className="text-sm font-normal">
+                    I consent to receive non-marketing text messages from KDM &amp; Associates about appointment reminders and service inquiries. Message frequency may vary, message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                  </Label>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="booking-sms-marketing"
+                    checked={smsConsentMarketing}
+                    onCheckedChange={(checked) => setSmsConsentMarketing(checked === true)}
+                  />
+                  <Label htmlFor="booking-sms-marketing" className="text-sm font-normal">
+                    I consent to receive marketing text messages, about special offers, discounts, and service updates, from KDM &amp; Associates at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                  </Label>
+                </div>
+
+                <div className="flex gap-4 text-sm">
+                  <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a>
+                  <a href="/terms-of-service" className="text-primary hover:underline">Terms of Service</a>
+                </div>
               </div>
 
               <div className="pt-4">
@@ -609,6 +645,8 @@ export default function BookingPage() {
                     setSelectedDate(null);
                     setSelectedTime(null);
                     setBookingDetails({ name: '', email: '', phone: '', company: '', notes: '' });
+                    setSmsConsentTransactional(false);
+                    setSmsConsentMarketing(false);
                     setConfirmedBooking(null);
                   }}
                 >

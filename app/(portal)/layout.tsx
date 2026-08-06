@@ -7,6 +7,7 @@ import { ProfileCompletionWizard } from "@/components/portal/profile-completion-
 import { AffiliateOnboardingWizard } from "@/components/portal/affiliate-onboarding-wizard";
 import { ConsortiumOnboardingWizard } from "@/components/portal/consortium-onboarding-wizard";
 import { CompanyIntelligenceWizard } from "@/components/portal/company-intelligence-wizard";
+import { OnboardingPrepBanner } from "@/components/portal/onboarding-prep-banner";
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default function PortalLayout({
@@ -21,6 +22,7 @@ export default function PortalLayout({
           <SidebarProvider>
             <PortalSidebar />
             <SidebarInset>
+              <OnboardingPrepBanner />
               <PortalHeader />
               <main className="flex-1 p-4 md:p-6">{children}</main>
             </SidebarInset>

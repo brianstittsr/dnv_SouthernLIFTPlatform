@@ -16,6 +16,8 @@ interface ContactFormData {
   service: string;
   message?: string;
   newsletter: boolean;
+  smsConsentTransactional?: boolean;
+  smsConsentMarketing?: boolean;
 }
 
 export async function POST(request: NextRequest) {
@@ -64,6 +66,9 @@ export async function POST(request: NextRequest) {
         service: body.service,
         message: body.message || null,
         newsletter: body.newsletter,
+        smsConsentTransactional: body.smsConsentTransactional || false,
+        smsConsentMarketing: body.smsConsentMarketing || false,
+        smsConsentTimestamp: (body.smsConsentTransactional || body.smsConsentMarketing) ? Timestamp.now() : null,
         status: "new",
         emailSent: false,
         confirmationEmailSent: false,
@@ -144,6 +149,14 @@ export async function POST(request: NextRequest) {
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd;"><strong>Newsletter</strong></td>
               <td style="padding: 8px; border: 1px solid #ddd;">${body.newsletter ? "Yes" : "No"}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd;"><strong>SMS Consent (Transactional)</strong></td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${body.smsConsentTransactional ? "Yes" : "No"}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ddd;"><strong>SMS Consent (Marketing)</strong></td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${body.smsConsentMarketing ? "Yes" : "No"}</td>
             </tr>
           </table>
           <p style="margin-top: 20px;">Please respond within 24 hours.</p>

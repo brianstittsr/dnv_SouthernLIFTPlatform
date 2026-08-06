@@ -8,6 +8,40 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover",
 });
 
+const PRODUCT_TYPE_TO_CORE_TIER_ID: Record<string, string> = {
+  consortium: "kdm-consortium",
+  founders: "founders",
+  "cmmc-cohort": "cmmc-cohort",
+};
+
+/**
+ * Look up an active admin-configured price override for a core pricing tier.
+ * Falls back to null if no override exists or the database is unavailable.
+ */
+async function getCoreTierPriceOverride(productType: string): Promise<number | null> {
+  const coreTierId = PRODUCT_TYPE_TO_CORE_TIER_ID[productType];
+  if (!coreTierId || !db) return null;
+
+  try {
+    const snapshot = await db
+      .collection("consortiumPricing")
+      .where("coreTierId", "==", coreTierId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) return null;
+
+    const data = snapshot.docs[0].data();
+    if (data.active === false) return null;
+
+    const overridePrice = coreTierId === "kdm-consortium" ? data.monthlyPrice ?? data.price : data.price;
+    return typeof overridePrice === "number" ? overridePrice : null;
+  } catch (error) {
+    console.error("Error fetching core tier price override:", error);
+    return null;
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -61,7 +95,9 @@ export async function POST(req: NextRequest) {
           );
         }
 
-        const unitAmount = Math.round(product.price * 100);
+        const priceOverride = await getCoreTierPriceOverride(product.type);
+        const effectivePrice = priceOverride ?? product.price;
+        const unitAmount = Math.round(effectivePrice * 100);
         totalAmount += unitAmount * item.quantity;
 
         lineItems.push({
@@ -89,7 +125,7 @@ export async function POST(req: NextRequest) {
           productId: product.id,
           productName: product.name,
           quantity: item.quantity,
-          price: product.price,
+          price: effectivePrice,
         });
       }
 

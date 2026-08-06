@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, setDoc, Timestamp, getDoc } from "firebase/firestore";
@@ -124,6 +124,8 @@ interface FormData {
     type: "sam_registration" | "duns_number" | "cage_code" | "capability_statement" | "past_performance" | "certifications" | "financials" | "insurance" | "other";
     fileName: string;
     fileUrl: string;
+    attachmentId?: string;
+    markdownExtracted?: boolean;
   }[];
   // Stage 5: Matching Preferences
   targetContractSizes: string[];
@@ -133,15 +135,17 @@ interface FormData {
 
 // ─── Readiness Step sub-component ────────────────────────────────────────────
 
-type ReadinessDocType = FormData["readinessDocuments"][number]["type"];
+export type ReadinessDocType = FormData["readinessDocuments"][number]["type"];
 
-interface ReadinessDocEntry {
+export interface ReadinessDocEntry {
   type: ReadinessDocType;
   fileName: string;
   fileUrl: string;
+  attachmentId?: string;
+  markdownExtracted?: boolean;
 }
 
-const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
+export const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
   { type: "sam_registration", label: "SAM Registration" },
   { type: "duns_number", label: "DUNS Number" },
   { type: "cage_code", label: "CAGE Code" },
@@ -152,36 +156,65 @@ const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
   { type: "insurance", label: "Insurance Certificates" },
 ];
 
-function ReadinessStep({
+export function ReadinessStep({
   readinessDocuments,
   onAdd,
   onRemove,
+  userId,
+  companyId,
 }: {
   readinessDocuments: ReadinessDocEntry[];
   onAdd: (entry: ReadinessDocEntry) => void;
   onRemove: (type: ReadinessDocType) => void;
+  userId: string;
+  companyId: string;
 }) {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [uploadingType, setUploadingType] = useState<string | null>(null);
 
-  const handleFileChange = (
+  const handleFileChange = async (
     type: ReadinessDocType,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
+    setUploadingType(type);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("category", "readiness");
+      formData.append("userId", userId);
+      formData.append("companyId", companyId);
+      formData.append("attachmentType", type);
+
+      const res = await fetch("/api/upload-file", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
       onAdd({
         type,
         fileName: file.name,
-        fileUrl: reader.result as string,
+        fileUrl: data.fileUrl || "",
+        attachmentId: data.attachmentId,
+        markdownExtracted: data.markdownExtracted,
       });
-    };
-    reader.readAsDataURL(file);
 
-    // Reset the input so the same file can be re-selected after removal
-    e.target.value = "";
+      toast.success(
+        data.markdownExtracted
+          ? `${file.name} uploaded and text extracted (${data.pageCount} pages)`
+          : `${file.name} uploaded`
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to upload file");
+    } finally {
+      setUploadingType(null);
+      e.target.value = "";
+    }
   };
 
   return (
@@ -232,6 +265,11 @@ function ReadinessStep({
                         <X className="h-4 w-4 mr-1" />
                         Remove
                       </Button>
+                    ) : uploadingType === item.type ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Uploading...
+                      </div>
                     ) : (
                       <>
                         <input
@@ -277,6 +315,9 @@ export function ConsortiumOnboardingWizard() {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [teamMemberId, setTeamMemberId] = useState<string | null>(null);
+  const [companyMatches, setCompanyMatches] = useState<{ id: string; companyName: string; source: string }[]>([]);
+  const [searchingCompanies, setSearchingCompanies] = useState(false);
+  const [linkedCompanyId, setLinkedCompanyId] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -355,6 +396,36 @@ export function ConsortiumOnboardingWizard() {
   const updateFormData = (field: keyof FormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Debounced company name search for dedup suggestions
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCompanyNameChange = useCallback((value: string) => {
+    updateFormData("companyName", value);
+    setLinkedCompanyId(null);
+
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+
+    if (value.trim().length < 2) {
+      setCompanyMatches([]);
+      return;
+    }
+
+    setSearchingCompanies(true);
+    searchTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/admin/companies/search?q=${encodeURIComponent(value.trim())}`);
+        const data = await res.json();
+        if (res.ok && data.matches) {
+          setCompanyMatches(data.matches);
+        }
+      } catch {
+        setCompanyMatches([]);
+      } finally {
+        setSearchingCompanies(false);
+      }
+    }, 400);
+  }, []);
 
   const toggleArrayItem = (field: "naicsCodes" | "certifications" | "pillarFocus", value: string) => {
     setFormData((prev) => {
@@ -437,6 +508,7 @@ export function ConsortiumOnboardingWizard() {
         bio: formData.ceoBio,
         avatar: formData.avatar,
         companyName: formData.companyName,
+        linkedCompanyId: linkedCompanyId || null,
         companyDescription: formData.companyDescription,
         website: formData.website,
         linkedIn: formData.linkedIn,
@@ -626,9 +698,54 @@ export function ConsortiumOnboardingWizard() {
               <Input
                 id="companyName"
                 value={formData.companyName}
-                onChange={(e) => updateFormData("companyName", e.target.value)}
+                onChange={(e) => handleCompanyNameChange(e.target.value)}
                 placeholder="Acme Manufacturing Inc."
               />
+              {searchingCompanies && (
+                <p className="text-xs text-muted-foreground">Searching existing companies...</p>
+              )}
+              {!searchingCompanies && companyMatches.length > 0 && !linkedCompanyId && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2">
+                  <p className="text-sm font-medium text-amber-900">
+                    We found existing companies with a similar name:
+                  </p>
+                  <p className="text-xs text-amber-700">
+                    If your company is already listed, please select it to link your profile.
+                  </p>
+                  <div className="space-y-1">
+                    {companyMatches.map((match) => (
+                      <button
+                        key={`${match.id}-${match.source}`}
+                        onClick={() => {
+                          updateFormData("companyName", match.companyName);
+                          setLinkedCompanyId(match.id);
+                          setCompanyMatches([]);
+                        }}
+                        className="flex items-center gap-2 w-full text-left p-2 rounded-md hover:bg-amber-100 transition-colors"
+                      >
+                        <Building2 className="h-4 w-4 text-amber-600 shrink-0" />
+                        <span className="text-sm font-medium">{match.companyName}</span>
+                        <Badge variant="outline" className="text-xs ml-auto">{match.source}</Badge>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {linkedCompanyId && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-2 flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span className="text-sm text-green-800">Linked to existing company profile</span>
+                  <button
+                    onClick={() => {
+                      setLinkedCompanyId(null);
+                      updateFormData("companyName", "");
+                    }}
+                    className="ml-auto text-xs text-red-500 hover:text-red-700"
+                  >
+                    Unlink
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -795,6 +912,8 @@ export function ConsortiumOnboardingWizard() {
                 formData.readinessDocuments.filter((d) => d.type !== type)
               )
             }
+            userId={profile.id}
+            companyId={formData.companyName}
           />
         );
 

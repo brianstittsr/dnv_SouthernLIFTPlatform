@@ -710,7 +710,14 @@ export interface ConsortiumMemberDoc {
   consortiumPillarFocus?: string[];
   // Tags for categorization
   tags?: string[];
-  
+
+  // Stripe sync tracking
+  source?: "stripe" | "manual" | "firebase";
+  stripeSyncStatus?: "not_started" | "registered" | "linked" | "active";
+  stripeCustomerId?: string;
+  linkedCompanyId?: string;
+  lastStripeSyncAt?: Timestamp;
+
   // Company Intelligence Data Elements
   companyIntelligence?: {
     // Basic Company Information
@@ -800,6 +807,27 @@ export interface ConsortiumMemberDoc {
   };
   
   createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Member Attachment document in Firestore — stores PDF-extracted markdown for AI context */
+export interface MemberAttachmentDoc {
+  id: string;
+  userId: string;
+  companyId?: string;
+  type: "sam_registration" | "duns_number" | "cage_code" | "capability_statement" | "past_performance" | "certifications" | "financials" | "insurance" | "other";
+  originalFileName: string;
+  originalFileType: string;
+  originalFileSize: number;
+  markdownContent: string | null;
+  pageCount: number;
+  metadata: {
+    title?: string;
+    author?: string;
+    subject?: string;
+  };
+  storagePath: string;
+  uploadedAt: Timestamp;
   updatedAt: Timestamp;
 }
 
@@ -1495,6 +1523,10 @@ export interface BookingDoc {
   clientPhone?: string;
   clientCompany?: string;
   clientNotes?: string;
+  // SMS consent (A2P 10DLC)
+  smsConsentTransactional?: boolean;
+  smsConsentMarketing?: boolean;
+  smsConsentTimestamp?: Timestamp | null;
   // Meeting details
   meetingTypeId?: string;
   meetingTypeName: string;
@@ -2495,6 +2527,8 @@ export const COLLECTIONS = {
   ANALYTICS_SCHEDULED_REPORTS: "analyticsScheduledReports",
   // Company Profiles (shared across multiple users)
   COMPANIES: "companies",
+  // Member Attachments (PDF text extracted as markdown for AI context)
+  MEMBER_ATTACHMENTS: "member_attachments",
 } as const;
 
 // ... existing code ...

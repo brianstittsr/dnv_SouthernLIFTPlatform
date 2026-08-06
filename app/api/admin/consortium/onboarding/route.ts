@@ -84,6 +84,10 @@ interface MemberData {
   readinessValidationStatus?: string;
   aiMatchingActivated?: boolean;
   engagementScore?: number;
+  source?: "stripe" | "manual" | "firebase";
+  stripeSyncStatus?: "not_started" | "registered" | "linked" | "active";
+  stripeCustomerId?: string;
+  linkedCompanyId?: string;
   updatedAt?: Timestamp | Date;
   createdAt?: Timestamp | Date;
 }
@@ -115,6 +119,9 @@ interface MemberOnboardingData {
   aiMatchingActivated?: boolean;
   engagementScore?: number;
   profileCompleteness?: number;
+  source?: "stripe" | "manual" | "firebase";
+  stripeSyncStatus?: "not_started" | "registered" | "linked" | "active";
+  stripeCustomerId?: string;
   updatedAt?: string;
   createdAt?: string;
 }
@@ -296,6 +303,9 @@ export async function GET(request: NextRequest) {
           (profile?.engagementMetrics?.marketplaceListingsCount ?? 0) > 0,
         engagementScore: profile?.engagementMetrics?.activeEngagementScore ?? memberData.engagementScore,
         profileCompleteness: profile?.engagementMetrics?.profileCompleteness,
+        source: memberData.source || undefined,
+        stripeSyncStatus: memberData.stripeSyncStatus || undefined,
+        stripeCustomerId: memberData.stripeCustomerId || undefined,
         updatedAt: timestampToIso(memberData.updatedAt || profile?.updatedAt),
         createdAt: timestampToIso(memberData.createdAt || profile?.createdAt || user?.createdAt),
       });

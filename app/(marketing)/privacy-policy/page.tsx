@@ -80,10 +80,17 @@ export default function PrivacyPolicyPage() {
               <li><strong>Business Transfers:</strong> Your information may be transferred as part of a merger, acquisition, or sale of assets</li>
               <li><strong>With Your Consent:</strong> We may disclose your information with your explicit consent for any purpose</li>
             </ul>
+            <h3>SMS Text Messaging & Non-Sharing Disclosure</h3>
+            <p>
+              No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. Information sharing to subcontractors in support services, such as customer service, is permitted. All other use case categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.
+            </p>
+            <p>
+              We use SMS text messages for appointment confirmations, reminders, and responses to service inquiries. Message frequency varies. Message and data rates may apply. By opting into our SMS services, you represent that you are at least 18 years of age.
+            </p>
 
             <h2>5. Security of Your Information</h2>
             <p>
-              We use administrative, technical, and physical security measures to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
+              We use reasonable administrative, technical, and physical safeguards to protect your personal information against unauthorized access, alteration, disclosure, or destruction. All form submissions on our website are transmitted using SSL (Secure Sockets Layer) encryption. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
             </p>
 
             <h2>6. Contact Information</h2>
@@ -106,9 +113,9 @@ export default function PrivacyPolicyPage() {
               Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information.
             </p>
 
-            <h2>9. Children's Privacy</h2>
+            <h2>9. Children's Privacy & COPPA Compliance</h2>
             <p>
-              Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from children. If we become aware that a child has provided us with personal information, we will delete such information and terminate the child's account.
+              Our website and services are not directed to or intended for children under the age of 13. We do not knowingly collect personal information from children under 13 years of age in compliance with the Children's Online Privacy Protection Act (COPPA). If we become aware that a child under 13 has provided us with personal information, we will promptly delete such information and take appropriate steps to prevent future collection. If you believe we have collected information from a child under 13, please contact us immediately.
             </p>
 
             <h2>10. Your Privacy Rights</h2>
@@ -150,6 +157,19 @@ export default function PrivacyPolicyPage() {
             <p>
               If you are located in the European Union, we comply with the General Data Protection Regulation (GDPR). We only process your personal data with your consent or as necessary to fulfill our contractual obligations. You have the right to access, rectify, erase, or restrict the processing of your personal data. To exercise these rights, please contact us.
             </p>
+          </div>
+
+          {/* Triple-Match Contact Footer */}
+          <div className="mt-12 pt-8 border-t border-gray-300 max-w-3xl mx-auto">
+            <h2>Contact & Business Information</h2>
+            <ul>
+              <li><strong>Legal Business Name:</strong> KDM &amp; Associates</li>
+              <li><strong>EIN:</strong> [INSERT EIN]</li>
+              <li><strong>Registered Address:</strong> 300 New Jersey Avenue NW, Washington, DC 20001</li>
+              <li><strong>Business Phone (SMS Campaign Number):</strong> (202) 469-3423</li>
+              <li><strong>Support Email:</strong> privacy@kdm-assoc.com</li>
+              <li><strong>Website URL:</strong> https://www.kdm-assoc.com</li>
+            </ul>
           </div>
         </div>
       </section>

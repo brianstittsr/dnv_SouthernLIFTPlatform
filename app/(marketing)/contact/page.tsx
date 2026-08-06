@@ -57,6 +57,8 @@ const businessTypes = [
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [smsConsentTransactional, setSmsConsentTransactional] = useState(false);
+  const [smsConsentMarketing, setSmsConsentMarketing] = useState(false);
   const [bookCallOpen, setBookCallOpen] = useState(false);
   const [isBookingCall, setIsBookingCall] = useState(false);
   const [businessType, setBusinessType] = useState("");
@@ -110,6 +112,8 @@ export default function ContactPage() {
           service: service,
           message: pendingFormData.get("message") || undefined,
           newsletter: pendingFormData.get("newsletter") === "on",
+          smsConsentTransactional,
+          smsConsentMarketing,
         }),
       });
 
@@ -128,6 +132,8 @@ export default function ContactPage() {
       if (form) form.reset();
       setBusinessType("");
       setService("");
+      setSmsConsentTransactional(false);
+      setSmsConsentMarketing(false);
       setPendingFormData(null);
     } catch (error) {
       console.error("Contact form error:", error);
@@ -163,6 +169,23 @@ export default function ContactPage() {
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
+
+      fetch("/api/book-call-leads/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: bookCallForm.firstName,
+          lastName: bookCallForm.lastName,
+          email: bookCallForm.email,
+          phone: bookCallForm.phone || undefined,
+          company: bookCallForm.company || undefined,
+          jobTitle: bookCallForm.jobTitle || undefined,
+          preferredDate: bookCallForm.preferredDate || undefined,
+          preferredTime: bookCallForm.preferredTime || undefined,
+          message: bookCallForm.message || undefined,
+          source: "contact-page",
+        }),
+      }).catch((err) => console.error("Failed to send book-call-lead notification:", err));
 
       toast.success("Call request submitted!", {
         description: "We'll contact you shortly to schedule your call.",
@@ -243,7 +266,7 @@ export default function ContactPage() {
                         <Input id="email" name="email" type="email" required placeholder="john@company.com" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone">Phone <span className="text-muted-foreground font-normal">(optional)</span></Label>
                         <Input id="phone" name="phone" type="tel" placeholder="(555) 123-4567" />
                       </div>
                     </div>
@@ -312,6 +335,38 @@ export default function ContactPage() {
                       <Label htmlFor="newsletter" className="text-sm font-normal">
                         Subscribe to our newsletter for government contracting insights and updates
                       </Label>
+                    </div>
+
+                    {/* SMS Opt-In Checkboxes */}
+                    <div className="space-y-4 pt-4 border-t">
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="sms-consent-transactional"
+                            checked={smsConsentTransactional}
+                            onCheckedChange={(checked) => setSmsConsentTransactional(checked === true)}
+                          />
+                          <Label htmlFor="sms-consent-transactional" className="text-sm font-normal">
+                            I consent to receive non-marketing text messages from KDM &amp; Associates about appointment reminders and service inquiries. Message frequency may vary, message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                          </Label>
+                        </div>
+
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="sms-consent-marketing"
+                            checked={smsConsentMarketing}
+                            onCheckedChange={(checked) => setSmsConsentMarketing(checked === true)}
+                          />
+                          <Label htmlFor="sms-consent-marketing" className="text-sm font-normal">
+                            I consent to receive marketing text messages, about special offers, discounts, and service updates, from KDM &amp; Associates at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                          </Label>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 text-sm">
+                        <Link href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>
+                        <Link href="/terms-of-service" className="text-primary hover:underline">Terms of Service</Link>
+                      </div>
                     </div>
 
                     <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>

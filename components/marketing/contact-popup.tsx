@@ -172,6 +172,19 @@ export function ContactPopup({ config = defaultPopupConfig }: ContactPopupProps)
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
+
+        fetch("/api/book-call-leads/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: firstName || undefined,
+            lastName: lastName || undefined,
+            email,
+            phone: phone || undefined,
+            industry,
+            source: "popup",
+          }),
+        }).catch((err) => console.error("Failed to send book-call-lead notification:", err));
       }
 
       // Send confirmation email to user

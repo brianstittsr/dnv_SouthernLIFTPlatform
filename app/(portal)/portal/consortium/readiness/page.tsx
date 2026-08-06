@@ -17,6 +17,18 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  ReadinessStep,
+  type ReadinessDocEntry,
+  type ReadinessDocType,
+} from "@/components/portal/consortium-onboarding-wizard";
+import {
   FileText,
   Upload,
   CheckCircle,
@@ -48,6 +60,7 @@ export default function ConsortiumReadinessPage() {
   const [uploading, setUploading] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const [uploadedDocuments, setUploadedDocuments] = useState<
     Array<{
@@ -301,6 +314,53 @@ export default function ConsortiumReadinessPage() {
   const uploadedCount = uploadedDocuments.length;
   const requiredProgress = totalDocs > 0 ? (uploadedCount / totalDocs) * 100 : 0;
 
+  const wizardReadinessDocs: ReadinessDocEntry[] = uploadedDocuments.map((d) => ({
+    type: d.type as ReadinessDocEntry["type"],
+    fileName: d.fileName,
+    fileUrl: d.fileUrl,
+  }));
+
+  const handleWizardAdd = async (entry: ReadinessDocEntry) => {
+    if (!userId || !db) {
+      toast.error("Not authenticated");
+      return;
+    }
+    try {
+      const newDoc = {
+        type: entry.type,
+        fileName: entry.fileName,
+        fileUrl: entry.fileUrl,
+        attachmentId: entry.attachmentId,
+        markdownExtracted: entry.markdownExtracted,
+        uploadedAt: FirestoreTimestamp.now(),
+        status: "pending" as const,
+      };
+
+      const profileRef = doc(db, "consortium_profiles", userId);
+      const profileSnap = await getDoc(profileRef);
+      const currentDocs = profileSnap.exists() ? (profileSnap.data().readinessDocuments || []) : [];
+      const filteredDocs = currentDocs.filter((d: any) => d.type !== entry.type);
+
+      await updateDoc(profileRef, {
+        readinessDocuments: [...filteredDocs, newDoc],
+        readinessValidationStatus: "in_progress",
+        updatedAt: FirestoreTimestamp.now(),
+      });
+
+      setUploadedDocuments((prev) => {
+        const filtered = prev.filter((d) => d.type !== entry.type);
+        return [...filtered, { ...newDoc, uploadedAt: new Date() }];
+      });
+    } catch (error) {
+      console.error("Error saving uploaded document:", error);
+      toast.error("Failed to save uploaded document");
+    }
+  };
+
+  const handleWizardRemove = (type: ReadinessDocType) => {
+    handleDeleteDocument(type);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -311,12 +371,36 @@ export default function ConsortiumReadinessPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Government Contracting Readiness</h1>
-        <p className="text-muted-foreground mt-1">
-          Upload and manage your government contracting documentation
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Government Contracting Readiness</h1>
+          <p className="text-muted-foreground mt-1">
+            Upload and manage your government contracting documentation
+          </p>
+        </div>
+        <Button onClick={() => setWizardOpen(true)} className="shrink-0">
+          <Upload className="h-4 w-4 mr-2" />
+          Upload Documents
+        </Button>
       </div>
+
+      <Dialog open={wizardOpen} onOpenChange={setWizardOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Readiness Validation</DialogTitle>
+            <DialogDescription>Government contracting documentation</DialogDescription>
+          </DialogHeader>
+          {userId && (
+            <ReadinessStep
+              readinessDocuments={wizardReadinessDocs}
+              onAdd={handleWizardAdd}
+              onRemove={handleWizardRemove}
+              userId={userId}
+              companyId={profile?.companyName || profile?.company || ""}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Automated Readiness Score */}
       <Card className={`border-2 ${readinessLevel.bg}`}>

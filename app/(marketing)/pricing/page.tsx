@@ -207,6 +207,16 @@ interface SpecialOffer {
   validUntil?: string;
 }
 
+interface CoreTierOverride {
+  price?: number;
+  monthlyPrice?: number;
+  annualPrice?: number;
+  description?: string;
+  features?: string[];
+  cta?: string;
+  active: boolean;
+}
+
 export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
@@ -214,6 +224,7 @@ export default function PricingPage() {
   const [trackerLoading, setTrackerLoading] = useState(true);
   const [specialOffers, setSpecialOffers] = useState<SpecialOffer[]>([]);
   const [specialOffersLoading, setSpecialOffersLoading] = useState(true);
+  const [tierOverrides, setTierOverrides] = useState<Record<string, CoreTierOverride>>({});
 
   // Fetch membership tracker status on component mount
   useEffect(() => {
@@ -244,6 +255,7 @@ export default function PricingPage() {
         }
         const result = await response.json();
         setSpecialOffers(result.data || []);
+        setTierOverrides(result.tierOverrides || {});
       } catch (error) {
         console.error("Error fetching special offers:", error);
       } finally {
@@ -320,8 +332,15 @@ export default function PricingPage() {
       <section className="py-20 -mt-10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {PRICING_TIERS.map((tier) => {
+            {PRICING_TIERS.filter((tier) => tierOverrides[tier.id]?.active !== false).map((tier) => {
               const TierIcon = tier.icon;
+              const override = tierOverrides[tier.id];
+              const displayDescription = override?.description || tier.description;
+              const displayFeatures = override?.features?.length ? override.features : tier.features;
+              const displayCta = override?.cta || tier.cta;
+              const displayPrice = override?.price ?? tier.price;
+              const displayMonthlyPrice = override?.monthlyPrice ?? tier.monthlyPrice;
+              const displayAnnualPrice = override?.annualPrice ?? tier.annualPrice;
 
               return (
                 <Card
@@ -346,7 +365,7 @@ export default function PricingPage() {
                     </div>
                     <CardTitle className="text-2xl">{tier.name}</CardTitle>
                     <CardDescription className="min-h-[48px] mt-2">
-                      {tier.description}
+                      {displayDescription}
                     </CardDescription>
                   </CardHeader>
 
@@ -355,7 +374,7 @@ export default function PricingPage() {
                       {tier.isOneTime ? (
                         <>
                           <div className="text-4xl font-bold">
-                            {formatPrice(tier.price!)}
+                            {formatPrice(displayPrice!)}
                           </div>
                           <div className="text-muted-foreground">
                             one-time payment
@@ -366,7 +385,7 @@ export default function PricingPage() {
                           {tier.id === "kdm-consortium" && trackerStatus?.discountActive && (
                             <div className="mb-2">
                               <div className="text-sm line-through text-muted-foreground">
-                                {formatPrice(tier.monthlyPrice!)}
+                                {formatPrice(displayMonthlyPrice!)}
                               </div>
                               <Badge className="bg-red-500 text-white text-xs mb-2">
                                 50% OFF - Limited Time
@@ -375,14 +394,14 @@ export default function PricingPage() {
                           )}
                           <div className="text-4xl font-bold">
                             {tier.id === "kdm-consortium" && trackerStatus?.discountActive
-                              ? formatPrice(Math.floor(tier.monthlyPrice! / 2))
-                              : formatPrice(tier.monthlyPrice!)}
+                              ? formatPrice(Math.floor(displayMonthlyPrice! / 2))
+                              : formatPrice(displayMonthlyPrice!)}
                           </div>
                           <div className="text-muted-foreground">per month</div>
                           <div className="text-sm text-muted-foreground mt-1">
                             or {tier.id === "kdm-consortium" && trackerStatus?.discountActive
-                              ? formatPrice(Math.floor(tier.annualPrice! / 2))
-                              : formatPrice(tier.annualPrice!)} billed annually
+                              ? formatPrice(Math.floor(displayAnnualPrice! / 2))
+                              : formatPrice(displayAnnualPrice!)} billed annually
                             <Badge className="ml-2 bg-green-500 text-white text-xs">
                               {tier.id === "kdm-consortium" && trackerStatus?.discountActive
                                 ? "50% + 10% = 55% OFF"
@@ -403,7 +422,7 @@ export default function PricingPage() {
                     <Separator className="my-6" />
 
                     <ul className="space-y-3">
-                      {tier.features.map((feature, index) => (
+                      {displayFeatures.map((feature, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
                           <span className="text-sm">{feature}</span>
@@ -415,30 +434,30 @@ export default function PricingPage() {
                   <CardFooter className="pt-4">
                     {tier.id === "kdm-consortium" ? (
                       <AddToCartButton
-                        product={PRODUCTS.consortium}
+                        product={{ ...PRODUCTS.consortium, price: displayMonthlyPrice ?? PRODUCTS.consortium.price }}
                         variant={tier.popular ? "default" : "outline"}
                         size="lg"
                         className="w-full"
                       >
-                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                        {displayCta} <ArrowRight className="ml-2 h-4 w-4" />
                       </AddToCartButton>
                     ) : tier.id === "founders" ? (
                       <AddToCartButton
-                        product={PRODUCTS.founders}
+                        product={{ ...PRODUCTS.founders, price: displayPrice ?? PRODUCTS.founders.price }}
                         variant="default"
                         size="lg"
                         className="w-full bg-amber-600 hover:bg-amber-700"
                       >
-                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                        {displayCta} <ArrowRight className="ml-2 h-4 w-4" />
                       </AddToCartButton>
                     ) : tier.id === "cmmc-cohort" ? (
                       <AddToCartButton
-                        product={PRODUCTS["cmmc-cohort"]}
+                        product={{ ...PRODUCTS["cmmc-cohort"], price: displayPrice ?? PRODUCTS["cmmc-cohort"].price }}
                         variant={tier.popular ? "default" : "outline"}
                         size="lg"
                         className="w-full"
                       >
-                        {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                        {displayCta} <ArrowRight className="ml-2 h-4 w-4" />
                       </AddToCartButton>
                     ) : (
                       <Button
@@ -455,7 +474,7 @@ export default function PricingPage() {
                           </>
                         ) : (
                           <>
-                            {tier.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                            {displayCta} <ArrowRight className="ml-2 h-4 w-4" />
                           </>
                         )}
                       </Button>

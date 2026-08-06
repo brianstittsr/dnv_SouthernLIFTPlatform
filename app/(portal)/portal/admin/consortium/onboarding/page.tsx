@@ -27,6 +27,10 @@ import {
   Circle,
   ArrowRight,
   TrendingUp,
+  Mail,
+  Zap,
+  Link2,
+  AlertCircle,
 } from "lucide-react";
 
 interface StageProgress {
@@ -57,6 +61,9 @@ interface Member {
   aiMatchingActivated?: boolean;
   engagementScore?: number;
   profileCompleteness?: number;
+  source?: "stripe" | "manual" | "firebase";
+  stripeSyncStatus?: "not_started" | "registered" | "linked" | "active";
+  stripeCustomerId?: string;
   updatedAt?: string;
   createdAt?: string;
 }
@@ -87,6 +94,25 @@ const TIER_LABELS: Record<string, string> = {
   standard: "Standard",
 };
 
+const SOURCE_LABELS: Record<string, string> = {
+  stripe: "Stripe",
+  manual: "Manual",
+  firebase: "Firebase",
+};
+
+const SOURCE_BADGE: Record<string, string> = {
+  stripe: "bg-violet-100 text-violet-800 border-violet-300",
+  manual: "bg-blue-100 text-blue-800 border-blue-300",
+  firebase: "bg-orange-100 text-orange-800 border-orange-300",
+};
+
+const SYNC_STATUS_BADGE: Record<string, string> = {
+  not_started: "bg-slate-100 text-slate-800 border-slate-300",
+  registered: "bg-blue-100 text-blue-800 border-blue-300",
+  linked: "bg-indigo-100 text-indigo-800 border-indigo-300",
+  active: "bg-green-100 text-green-800 border-green-300",
+};
+
 export default function ConsortiumOnboardingDashboardPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,6 +120,9 @@ export default function ConsortiumOnboardingDashboardPage() {
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
+  const [syncFilter, setSyncFilter] = useState<string>("all");
+  const [sendingEmail, setSendingEmail] = useState<string | null>(null);
 
   const getToken = async () => {
     const currentUser = firebaseAuth?.currentUser;
@@ -135,18 +164,55 @@ export default function ConsortiumOnboardingDashboardPage() {
 
       const matchesLevel = levelFilter === "all" || String(member.onboardedLevel) === levelFilter;
       const matchesStatus = statusFilter === "all" || member.membershipStatus === statusFilter;
+      const matchesSource = sourceFilter === "all" || member.source === sourceFilter;
+      const matchesSync = syncFilter === "all" || member.stripeSyncStatus === syncFilter;
 
-      return matchesSearch && matchesLevel && matchesStatus;
+      return matchesSearch && matchesLevel && matchesStatus && matchesSource && matchesSync;
     });
-  }, [members, searchQuery, levelFilter, statusFilter]);
+  }, [members, searchQuery, levelFilter, statusFilter, sourceFilter, syncFilter]);
 
   const summary = useMemo(() => {
     const total = members.length;
     const complete = members.filter((m) => m.onboardingComplete).length;
     const inProgress = members.filter((m) => !m.onboardingComplete && m.onboardedLevel > 0).length;
     const notStarted = members.filter((m) => m.onboardedLevel === 0).length;
-    return { total, complete, inProgress, notStarted };
+    const fromStripe = members.filter((m) => m.source === "stripe").length;
+    const fromManual = members.filter((m) => m.source === "manual").length;
+    const syncActive = members.filter((m) => m.stripeSyncStatus === "active").length;
+    const syncNotStarted = members.filter((m) => m.stripeSyncStatus === "not_started").length;
+    const syncLinked = members.filter((m) => m.stripeSyncStatus === "linked").length;
+    return { total, complete, inProgress, notStarted, fromStripe, fromManual, syncActive, syncNotStarted, syncLinked };
   }, [members]);
+
+  const notStartedMembers = useMemo(() => {
+    return members.filter((m) => m.onboardedLevel === 0);
+  }, [members]);
+
+  const handleSendPrepEmail = async (member: Member) => {
+    setSendingEmail(member.id);
+    try {
+      const token = await getToken();
+      const res = await fetch("/api/admin/send-onboarding-prep-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: member.email,
+          firstName: member.firstName,
+          lastName: member.lastName,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send email");
+      toast.success(`Onboarding prep email sent to ${member.email}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to send email");
+    } finally {
+      setSendingEmail(null);
+    }
+  };
 
   const formatDate = (value?: string) => {
     if (!value) return "—";
@@ -190,7 +256,7 @@ export default function ConsortiumOnboardingDashboardPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Members</CardTitle>
@@ -232,6 +298,28 @@ export default function ConsortiumOnboardingDashboardPage() {
             <div className="flex items-center gap-2">
               <Circle className="h-5 w-5 text-slate-400" />
               <span className="text-3xl font-bold">{summary.notStarted}</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">From Stripe</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-violet-600" />
+              <span className="text-3xl font-bold">{summary.fromStripe}</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Sync: Active</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <Link2 className="h-5 w-5 text-green-600" />
+              <span className="text-3xl font-bold">{summary.syncActive}</span>
             </div>
           </CardContent>
         </Card>
@@ -288,6 +376,33 @@ export default function ConsortiumOnboardingDashboardPage() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="w-full md:w-40">
+              <Select value={sourceFilter} onValueChange={setSourceFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sources</SelectItem>
+                  <SelectItem value="stripe">Stripe</SelectItem>
+                  <SelectItem value="manual">Manual</SelectItem>
+                  <SelectItem value="firebase">Firebase</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-full md:w-48">
+              <Select value={syncFilter} onValueChange={setSyncFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sync status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sync</SelectItem>
+                  <SelectItem value="not_started">Not Started</SelectItem>
+                  <SelectItem value="registered">Registered</SelectItem>
+                  <SelectItem value="linked">Linked</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <Button variant="outline" onClick={fetchMembers}>
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
@@ -295,6 +410,72 @@ export default function ConsortiumOnboardingDashboardPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Follow-up Queue */}
+      {notStartedMembers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-amber-600" />
+              Follow-up Queue
+            </CardTitle>
+            <CardDescription>
+              {notStartedMembers.length} member{notStartedMembers.length !== 1 ? "s" : ""} not started onboarding — send them a prep email
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {notStartedMembers.slice(0, 10).map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-3 rounded-lg border bg-amber-50/30"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={member.avatar} />
+                      <AvatarFallback className="text-xs">{getInitials(member)}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {member.firstName} {member.lastName}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{member.email}</p>
+                    </div>
+                    {member.source && (
+                      <Badge variant="outline" className={SOURCE_BADGE[member.source]}>
+                        {SOURCE_LABELS[member.source]}
+                      </Badge>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={sendingEmail === member.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSendPrepEmail(member);
+                    }}
+                  >
+                    {sendingEmail === member.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Mail className="mr-1 h-4 w-4" />
+                        Send Prep Email
+                      </>
+                    )}
+                  </Button>
+                </div>
+              ))}
+              {notStartedMembers.length > 10 && (
+                <p className="text-xs text-muted-foreground text-center pt-2">
+                  Showing 10 of {notStartedMembers.length} not-started members
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Members Table */}
       <Card>
@@ -338,6 +519,16 @@ export default function ConsortiumOnboardingDashboardPage() {
                             </Badge>
                             {member.membershipTier && (
                               <Badge variant="secondary">{TIER_LABELS[member.membershipTier] || member.membershipTier}</Badge>
+                            )}
+                            {member.source && (
+                              <Badge variant="outline" className={SOURCE_BADGE[member.source]}>
+                                {SOURCE_LABELS[member.source]}
+                              </Badge>
+                            )}
+                            {member.stripeSyncStatus && (
+                              <Badge variant="outline" className={SYNC_STATUS_BADGE[member.stripeSyncStatus]}>
+                                {member.stripeSyncStatus.replace("_", " ")}
+                              </Badge>
                             )}
                             {member.onboardingComplete && (
                               <Badge className="bg-green-100 text-green-800">Complete</Badge>
@@ -406,6 +597,18 @@ export default function ConsortiumOnboardingDashboardPage() {
                   <p className="text-muted-foreground">Tier</p>
                   <p className="font-medium capitalize">
                     {TIER_LABELS[selectedMember.membershipTier || ""] || selectedMember.membershipTier || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Source</p>
+                  <p className="font-medium capitalize">
+                    {selectedMember.source ? SOURCE_LABELS[selectedMember.source] : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Stripe Sync</p>
+                  <p className="font-medium capitalize">
+                    {selectedMember.stripeSyncStatus ? selectedMember.stripeSyncStatus.replace("_", " ") : "—"}
                   </p>
                 </div>
                 <div>

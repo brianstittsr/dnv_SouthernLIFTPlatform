@@ -47,7 +47,92 @@ interface MembershipPrice {
   productType?: 'founders' | 'consortium' | 'cmmc-cohort';
   /** Call-to-action label */
   cta?: string;
+  /** When set, this doc overrides one of the 3 core cards on the public /pricing page */
+  coreTierId?: 'kdm-consortium' | 'founders' | 'cmmc-cohort';
+  /** Annual price override (dollars) for the consortium monthly tier */
+  annualPrice?: number;
 }
+
+type CoreTierId = 'kdm-consortium' | 'founders' | 'cmmc-cohort';
+
+const CORE_TIER_DEFAULTS: Record<CoreTierId, {
+  name: string;
+  priceType: 'monthly' | 'one-time';
+  price: number;
+  annualPrice?: number;
+  description: string;
+  features: string[];
+  productType: 'founders' | 'consortium' | 'cmmc-cohort';
+  cta: string;
+}> = {
+  'kdm-consortium': {
+    name: 'KDM Consortium Membership',
+    priceType: 'monthly',
+    price: 625,
+    annualPrice: 6750,
+    description: 'Join our exclusive network of government contractors and suppliers',
+    features: [
+      'Curated federal opportunity alerts',
+      'Team assembly & partner matching',
+      'Proposal development support',
+      'Monthly buyer briefings',
+      'Resource library access',
+      'Member directory listing',
+      'KDM Readiness Badge display',
+      '2 hours concierge support/month',
+      'Priority pursuit notifications',
+      'Private workspace access',
+      'Networking events access',
+      'CMMC readiness assessment',
+    ],
+    productType: 'consortium',
+    cta: 'Join the Consortium',
+  },
+  'founders': {
+    name: 'KDM Founders Membership',
+    priceType: 'one-time',
+    price: 625,
+    description: 'One-time founding member payment - Founding Member recognition and founder privileges',
+    features: [
+      'Founding Member recognition & badge',
+      'Consortium membership benefits for the founding period',
+      'Priority notification of publicly announced opportunities',
+      'Founding member badge & recognition',
+      'Exclusive founding member events',
+      'Priority support & concierge service',
+      'Direct access to KDM leadership',
+      'Lifetime price guarantee',
+      'Strategic partner introductions',
+      'Custom opportunity matching',
+      'Alumni network access',
+      'Legacy benefits for future growth',
+    ],
+    productType: 'founders',
+    cta: 'Claim Founders Spot',
+  },
+  'cmmc-cohort': {
+    name: 'CMMC Cohort Training',
+    priceType: 'one-time',
+    price: 7500,
+    description: 'Intensive 12-week program for CMMC 2.0 Level 2 assessment readiness',
+    features: [
+      '12-week guided readiness program',
+      'Expert-led training sessions',
+      'CMMC 2.0 Level 2 preparation',
+      'Documentation templates & tools',
+      'Mock assessments & gap analysis',
+      '1-on-1 mentor sessions (4 hours)',
+      'Access to certified RPOs',
+      'Ongoing alumni support group',
+      'Assessment preparation support',
+      'Compliance roadmap development',
+      'Policy & procedure creation',
+      'C3PAO referral network',
+    ],
+    productType: 'cmmc-cohort',
+    cta: 'Register for Cohort',
+  },
+};
 
 const COLLECTION_NAME = "consortiumPricing";
 
@@ -71,6 +156,8 @@ export default function ConsortiumPricingAdminPage() {
   const [productType, setProductType] = useState<'founders' | 'consortium' | 'cmmc-cohort'>('founders');
   const [cta, setCta] = useState<string>("");
   const [active, setActive] = useState(true);
+  const [coreTierId, setCoreTierId] = useState<CoreTierId | undefined>(undefined);
+  const [annualPrice, setAnnualPrice] = useState<number>(0);
 
   useEffect(() => {
     loadPrices();
@@ -88,7 +175,7 @@ export default function ConsortiumPricingAdminPage() {
       const q = query(
         collection(db, COLLECTION_NAME),
         orderBy("createdAt", "desc"),
-        limit(10)
+        limit(50)
       );
       const snapshot = await getDocs(q);
 
@@ -124,6 +211,8 @@ export default function ConsortiumPricingAdminPage() {
     setProductType(p.productType || 'founders');
     setCta(p.cta || "");
     setActive(p.active);
+    setCoreTierId(p.coreTierId);
+    setAnnualPrice(p.annualPrice || 0);
 
     if (p.validFrom) {
       const date = p.validFrom.toDate();
@@ -147,7 +236,43 @@ export default function ConsortiumPricingAdminPage() {
     setProductType('founders');
     setCta("");
     setActive(true);
+    setCoreTierId(undefined);
+    setAnnualPrice(0);
     setEditingId(null);
+  };
+
+  const handleEditCoreTier = (tierId: CoreTierId) => {
+    const existing = prices.find((p) => p.coreTierId === tierId);
+    if (existing) {
+      handleEdit(existing);
+      setCoreTierId(tierId);
+      return;
+    }
+
+    resetForm();
+    const def = CORE_TIER_DEFAULTS[tierId];
+    setName(def.name);
+    setPriceType(def.priceType);
+    setPrice(def.price);
+    setAnnualPrice(def.annualPrice || 0);
+    setDescription(def.description);
+    setFeatures(def.features.join("\n"));
+    setProductType(def.productType);
+    setCta(def.cta);
+    setActive(true);
+    setCoreTierId(tierId);
+  };
+
+  const getCoreTierEffective = (tierId: CoreTierId) => {
+    const override = prices.find((p) => p.coreTierId === tierId);
+    const def = CORE_TIER_DEFAULTS[tierId];
+    return {
+      price: override?.price ?? def.price,
+      annualPrice: override?.annualPrice ?? def.annualPrice,
+      active: override ? override.active !== false : true,
+      hasOverride: !!override,
+      override,
+    };
   };
 
   const handleEdit = (p: MembershipPrice) => {
@@ -168,6 +293,7 @@ export default function ConsortiumPricingAdminPage() {
         name,
         priceType,
         price,
+        annualPrice: annualPrice || undefined,
         isPromotional,
         promotionalPrice: isPromotional ? promotionalPrice * 100 : undefined, // Convert to cents
         validFrom: validFrom ? Timestamp.fromDate(new Date(validFrom)) : undefined,
@@ -178,6 +304,7 @@ export default function ConsortiumPricingAdminPage() {
         productType,
         cta: cta || undefined,
         active,
+        coreTierId: coreTierId || undefined,
         updatedAt: Timestamp.now(),
       };
 
@@ -282,16 +409,68 @@ export default function ConsortiumPricingAdminPage() {
         </p>
       </div>
 
+      {/* Core Pricing Tiers - the 3 main cards shown on the public /pricing page */}
+      <div className="mb-8 space-y-3">
+        <div>
+          <h2 className="text-xl font-semibold">Core Pricing Tiers</h2>
+          <p className="text-sm text-muted-foreground">
+            These are the three main cards shown on the public <strong>/pricing</strong> page. Edit any tier to override its price, description, features, or CTA. Deactivate a tier to hide it from the public page entirely.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {(Object.keys(CORE_TIER_DEFAULTS) as CoreTierId[]).map((tierId) => {
+            const def = CORE_TIER_DEFAULTS[tierId];
+            const effective = getCoreTierEffective(tierId);
+            return (
+              <Card key={tierId} className={!effective.active ? "opacity-60" : undefined}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{def.name}</CardTitle>
+                  {effective.hasOverride && (
+                    <Badge className={effective.active ? "bg-green-500 w-fit" : "bg-gray-400 w-fit"}>
+                      {effective.active ? "Admin Override Active" : "Hidden from Pricing Page"}
+                    </Badge>
+                  )}
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <p className="text-2xl font-bold">
+                    {formatPrice(effective.price)}
+                    {def.priceType === 'monthly' ? '/mo' : ''}
+                  </p>
+                  {def.priceType === 'monthly' && effective.annualPrice ? (
+                    <p className="text-xs text-muted-foreground">or {formatPrice(effective.annualPrice)}/yr</p>
+                  ) : null}
+                  <div className="flex gap-2 pt-2">
+                    <Button size="sm" variant="outline" onClick={() => handleEditCoreTier(tierId)}>
+                      <Pencil className="h-3 w-3 mr-1" /> Edit
+                    </Button>
+                    {effective.hasOverride && effective.override?.id && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-destructive"
+                        onClick={() => handleDelete(effective.override!.id!)}
+                      >
+                        Reset to Default
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2">
         {/* Pricing Form */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5" />
-              {editingId ? "Edit Pricing" : "Create New Pricing"}
+              {coreTierId ? `Editing Core Tier: ${CORE_TIER_DEFAULTS[coreTierId].name}` : editingId ? "Edit Pricing" : "Create New Pricing"}
             </CardTitle>
             <CardDescription>
-              Set the membership price and optional promotional pricing
+              {coreTierId ? "Overriding one of the 3 core cards on the public /pricing page" : "Set the membership price and optional promotional pricing"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -339,6 +518,19 @@ export default function ConsortiumPricingAdminPage() {
                 }
               />
             </div>
+
+            {priceType === 'monthly' && (
+              <div className="space-y-2">
+                <Label htmlFor="annualPrice">Annual Price ($) (optional)</Label>
+                <Input
+                  id="annualPrice"
+                  type="number"
+                  value={annualPrice}
+                  onChange={(e) => setAnnualPrice(Number(e.target.value))}
+                  placeholder="6750"
+                />
+              </div>
+            )}
 
             <div className="flex items-center space-x-2">
               <Switch
@@ -463,7 +655,7 @@ export default function ConsortiumPricingAdminPage() {
                 )}
                 {editingId ? "Update" : "Save"}
               </Button>
-              {editingId && (
+              {(editingId || coreTierId) && (
                 <Button variant="outline" onClick={resetForm}>
                   Cancel
                 </Button>
@@ -572,6 +764,11 @@ export default function ConsortiumPricingAdminPage() {
                            p.priceType === 'training' ? '/training' : 
                            ''}
                         </span>
+                        {p.coreTierId && (
+                          <Badge className="bg-blue-500 text-white">
+                            Core Tier: {CORE_TIER_DEFAULTS[p.coreTierId].name}
+                          </Badge>
+                        )}
                         {p.specialTag && (
                           <Badge className="bg-amber-500 text-white">{p.specialTag}</Badge>
                         )}

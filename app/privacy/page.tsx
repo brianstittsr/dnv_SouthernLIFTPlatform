@@ -58,12 +58,22 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">4. Data Security</h2>
             <p>
-              We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.
+              We use reasonable administrative, technical, and physical safeguards to protect your personal data against unauthorized access, alteration, disclosure, or destruction. All form submissions on our website are transmitted using SSL (Secure Sockets Layer) encryption. However, no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">5. Your Rights</h2>
+            <h2 className="text-2xl font-semibold mb-4">5. SMS Text Messaging & Non-Sharing Disclosure</h2>
+            <p className="mb-4">
+              No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. Information sharing to subcontractors in support services, such as customer service, is permitted. All other use case categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.
+            </p>
+            <p className="mb-4">
+              We use SMS text messages for appointment confirmations, reminders, and responses to service inquiries. Message frequency varies. Message and data rates may apply. By opting into our SMS services, you represent that you are at least 18 years of age.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">6. Your Rights</h2>
             <p>You have the right to:</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
               <li>Access your personal data</li>
@@ -75,7 +85,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">6. Data Governance &amp; Prohibited Uploads</h2>
+            <h2 className="text-2xl font-semibold mb-4">7. Data Governance &amp; Prohibited Uploads</h2>
             <p className="mb-4">
               The KDM platform is a private-sector commercial platform and is not authorized to store, process, or transmit classified information, Controlled Unclassified Information (CUI), export-controlled technical data, source-selection information, or procurement-sensitive information.
             </p>
@@ -95,16 +105,38 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
+            <h2 className="text-2xl font-semibold mb-4">8. Children&apos;s Privacy & COPPA Compliance</h2>
+            <p>
+              Our website and services are not directed to or intended for children under the age of 13. We do not knowingly collect personal information from children under 13 years of age in compliance with the Children&apos;s Online Privacy Protection Act (COPPA). If we become aware that a child under 13 has provided us with personal information, we will promptly delete such information and take appropriate steps to prevent future collection.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
               <strong>KDM & Associates</strong><br />
               Email: privacy@kdm-assoc.com<br />
+              Phone: (202) 469-3423<br />
+              Address: 300 New Jersey Avenue NW, Washington, DC 20001<br />
               Website: <Link href="https://www.kdm-assoc.com" className="text-primary hover:underline">kdm-assoc.com</Link>
             </p>
           </section>
+
+          {/* Triple-Match Contact Footer */}
+          <div className="mt-12 pt-8 border-t border-gray-300">
+            <h2 className="text-2xl font-semibold mb-4">Business Information</h2>
+            <ul className="list-disc pl-6 space-y-1">
+              <li><strong>Legal Business Name:</strong> KDM &amp; Associates</li>
+              <li><strong>EIN:</strong> [INSERT EIN]</li>
+              <li><strong>Registered Address:</strong> 300 New Jersey Avenue NW, Washington, DC 20001</li>
+              <li><strong>Business Phone (SMS Campaign Number):</strong> (202) 469-3423</li>
+              <li><strong>Support Email:</strong> privacy@kdm-assoc.com</li>
+              <li><strong>Website URL:</strong> https://www.kdm-assoc.com</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

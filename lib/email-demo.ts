@@ -109,6 +109,111 @@ KDM Consortium | KDM & Associates`;
   return { to: email, subject: 'Welcome to KDM Consortium — Your Account is Ready', html, text };
 }
 
+/**
+ * Send onboarding prep email to not-started users.
+ * Lists the PDF documents they should prepare before starting onboarding.
+ */
+export async function sendOnboardingPrepEmail(params: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}): Promise<{ to: string; subject: string; html: string; text: string }> {
+  const { email, firstName, lastName } = params;
+  const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.kdm-assoc.com';
+  const onboardingUrl = `${baseUrl}/portal/consortium/onboarding`;
+  const displayName = firstName ? `${firstName} ${lastName || ''}`.trim() : 'there';
+
+  const html = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+      <div style="background: linear-gradient(135deg, #1e3a5f 0%, #c9a227 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0; font-size: 24px;">Prepare for Your KDM Onboarding</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">Get your documents ready to accelerate the process</p>
+      </div>
+
+      <div style="padding: 30px; background: #f9f9f9;">
+        <p>Hi ${displayName},</p>
+        <p>Your KDM Consortium membership is active and we're excited to get you onboarded! To make the process smooth and fast, please prepare the following documents <strong>in PDF format</strong> before you begin.</p>
+
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #c9a227;">
+          <h3 style="color: #1e3a5f; margin-top: 0;">Documents to Prepare (PDF Format)</h3>
+          <ol style="margin: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>SAM Registration</strong> — Your active SAM.gov registration confirmation</li>
+            <li style="margin-bottom: 8px;"><strong>CAGE Code Documentation</strong> — Your CAGE code assignment letter</li>
+            <li style="margin-bottom: 8px;"><strong>Capability Statement</strong> — Your one-page company capability statement</li>
+            <li style="margin-bottom: 8px;"><strong>Past Performance References</strong> — 3-5 references from prior government or commercial contracts</li>
+            <li style="margin-bottom: 8px;"><strong>Certifications</strong> — CMMC, ISO, 8(a), HUBZone, WOSB, SDVOSB, or other relevant certifications</li>
+            <li style="margin-bottom: 8px;"><strong>Financial Statements</strong> — Most recent annual financial statements</li>
+            <li style="margin-bottom: 8px;"><strong>Insurance Certificates</strong> — Current liability and workers' comp certificates</li>
+          </ol>
+        </div>
+
+        <div style="background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <p style="margin: 0; font-size: 14px; color: #92400e;">
+            <strong>Tip:</strong> Having all documents ready before starting will significantly speed up your onboarding. The AI-powered platform will use these documents to match you with relevant SAM.gov RFI and RFP opportunities.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${onboardingUrl}" style="background: #c9a227; color: #1e3a5f; padding: 14px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 16px;">
+            Start Your Onboarding
+          </a>
+        </div>
+
+        <p style="font-size: 14px; color: #666;">Need help or have questions? Contact us at <a href="mailto:kmoore@kdm-assoc.com" style="color: #c9a227;">kmoore@kdm-assoc.com</a></p>
+      </div>
+
+      <div style="background: #1e3a5f; color: white; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">
+        <p style="margin: 0; font-size: 14px;">KDM &amp; Associates — Federal Procurement &amp; Industrial Readiness</p>
+        <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.7;">© 2026 KDM &amp; Associates. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  const text = `Prepare for Your KDM Onboarding
+
+Hi ${displayName},
+
+Your KDM Consortium membership is active! Please prepare the following documents in PDF format before starting onboarding:
+
+1. SAM Registration
+2. CAGE Code Documentation
+3. Capability Statement
+4. Past Performance References (3-5)
+5. Certifications (CMMC, ISO, 8(a), HUBZone, WOSB, SDVOSB)
+6. Financial Statements
+7. Insurance Certificates
+
+Start your onboarding: ${onboardingUrl}
+
+Questions? Contact kmoore@kdm-assoc.com
+
+KDM & Associates`;
+
+  const resend = getResend();
+  if (resend) {
+    try {
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: email,
+        cc: CC_EMAILS,
+        subject: 'Prepare for Your KDM Onboarding — Documents to Gather',
+        html,
+        text,
+      });
+      console.log('Onboarding prep email sent via Resend to', email);
+    } catch (error) {
+      console.error('Resend failed to send onboarding prep email:', error);
+    }
+  } else {
+    console.warn('RESEND_API_KEY not set — logging onboarding prep email instead of sending');
+    console.log('=== ONBOARDING PREP EMAIL (not sent) ===');
+    console.log('To:', email);
+    console.log('======================================');
+  }
+
+  return { to: email, subject: 'Prepare for Your KDM Onboarding — Documents to Gather', html, text };
+}
+
 export async function sendDemoNotification(email: string, subject: string, message: string) {
   console.log('=== DEMO NOTIFICATION ===');
   console.log('To:', email);

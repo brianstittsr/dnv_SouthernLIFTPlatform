@@ -14,9 +14,22 @@ interface SpecialOfferResponse {
   validUntil?: string;
 }
 
+export interface CoreTierOverride {
+  price?: number;
+  monthlyPrice?: number;
+  annualPrice?: number;
+  description?: string;
+  features?: string[];
+  cta?: string;
+  active: boolean;
+}
+
+const CORE_TIER_IDS = ["kdm-consortium", "founders", "cmmc-cohort"] as const;
+
 /**
  * GET /api/pricing/special-offers
- * Returns active special pricing offers (e.g., HubZone Conference Special).
+ * Returns active special pricing offers (e.g., HubZone Conference Special)
+ * plus admin-managed overrides for the three core pricing tiers.
  * Publicly accessible so unauthenticated visitors can view current offers.
  */
 export async function GET(): Promise<NextResponse> {
@@ -49,7 +62,31 @@ export async function GET(): Promise<NextResponse> {
       };
     });
 
-    return NextResponse.json({ data: offers });
+    const tierOverrides: Record<string, CoreTierOverride> = {};
+    try {
+      const tierSnapshot = await db
+        .collection("consortiumPricing")
+        .where("coreTierId", "in", CORE_TIER_IDS as unknown as string[])
+        .get();
+
+      tierSnapshot.docs.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
+        if (!data.coreTierId) return;
+        tierOverrides[data.coreTierId] = {
+          price: data.price,
+          monthlyPrice: data.monthlyPrice,
+          annualPrice: data.annualPrice,
+          description: data.description,
+          features: data.features,
+          cta: data.cta,
+          active: data.active !== false,
+        };
+      });
+    } catch (tierError) {
+      console.error("Error fetching core tier overrides:", tierError);
+    }
+
+    return NextResponse.json({ data: offers, tierOverrides });
   } catch (error) {
     console.error("Error fetching special offers:", error);
     const message = error instanceof Error ? error.message : "Failed to fetch special offers";
