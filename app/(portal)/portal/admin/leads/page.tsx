@@ -23,11 +23,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Loader2, 
-  RefreshCw, 
-  Eye, 
-  Phone, 
+import {
+  Loader2,
+  RefreshCw,
+  Eye,
+  Phone,
   Mail,
   Building2,
   DollarSign,
@@ -36,9 +36,11 @@ import {
   ChevronRight,
   CheckCircle2,
   XCircle,
-  Clock
+  Clock,
+  Upload
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import type { LeadListItem } from "@/lib/subscription-leads/types";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -73,6 +75,7 @@ export default function LeadsPage() {
     priority: "",
     search: "",
   });
+  const [migrating, setMigrating] = useState(false);
 
   const limit = 20;
 
@@ -123,6 +126,36 @@ export default function LeadsPage() {
     fetchLeads();
   };
 
+  const handleMigrateBookCallLeads = async () => {
+    try {
+      setMigrating(true);
+      const currentUser = auth?.currentUser;
+      if (!currentUser) {
+        router.push("/sign-in");
+        return;
+      }
+
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/admin/migrate-book-call-leads", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to migrate leads");
+      }
+
+      toast.success(data.message || `Migrated ${data.migrated} leads`);
+      fetchLeads();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to migrate leads");
+    } finally {
+      setMigrating(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -145,10 +178,26 @@ export default function LeadsPage() {
   return (
     <div className="container mx-auto py-8 px-4 max-w-9xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Subscription Leads</h1>
-        <p className="text-muted-foreground">
-          Manage DWY and DFY subscription leads and track follow-ups
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Subscription Leads</h1>
+            <p className="text-muted-foreground">
+              Manage DWY and DFY subscription leads and track follow-ups
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleMigrateBookCallLeads}
+            disabled={migrating}
+          >
+            {migrating ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
+            Migrate Book Call Leads
+          </Button>
+        </div>
       </div>
 
       {error && (

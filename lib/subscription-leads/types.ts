@@ -7,7 +7,7 @@
 
 export type SubscriptionTier = "diy" | "dwy" | "dfy";
 export type LeadStatus = "new" | "contacted" | "qualified" | "converted" | "lost";
-export type LeadSource = "subscription_checkout" | "proof_pack" | "manual";
+export type LeadSource = "subscription_checkout" | "proof_pack" | "manual" | "book_call";
 
 export interface SubscriptionLead {
   id: string;

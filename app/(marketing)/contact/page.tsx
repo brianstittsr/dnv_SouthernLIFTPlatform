@@ -170,6 +170,38 @@ export default function ContactPage() {
         updatedAt: Timestamp.now(),
       });
 
+      const now = new Date().toISOString();
+      await addDoc(collection(db, COLLECTIONS.SUBSCRIPTION_LEADS), {
+        userId: `book_call_${Date.now()}`,
+        email: bookCallForm.email,
+        companyName: bookCallForm.company || "Unknown",
+        industry: "Unknown",
+        userType: "sme",
+        roleTag: "Unknown",
+        tier: "dwy",
+        tierName: "DWY (Done With You)",
+        price: 299,
+        subscriptionStatus: "pending",
+        contactInfo: {
+          firstName: bookCallForm.firstName || null,
+          lastName: bookCallForm.lastName || null,
+          phone: bookCallForm.phone || null,
+          jobTitle: bookCallForm.jobTitle || null,
+        },
+        status: "new",
+        source: "book_call",
+        priority: "medium",
+        svpSync: {
+          syncStatus: "pending",
+        },
+        followUp: {
+          emailsSent: 0,
+          notes: [],
+        },
+        createdAt: now,
+        updatedAt: now,
+      });
+
       fetch("/api/book-call-leads/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

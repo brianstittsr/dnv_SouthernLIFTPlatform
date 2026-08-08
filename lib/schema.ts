@@ -2401,6 +2401,7 @@ export const COLLECTIONS = {
   TRACTION_MEETINGS: "tractionMeetings",
   CALENDAR_EVENTS: "calendarEvents",
   BOOK_CALL_LEADS: "bookCallLeads",
+  SUBSCRIPTION_LEADS: "subscriptionLeads",
   CONTACT_MESSAGES: "contactMessages",
   CONTACT_EMAIL_RECIPIENTS: "contactEmailRecipients",
   INTEGRATIONS: "integrations",
