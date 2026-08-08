@@ -203,7 +203,16 @@ async function authorize(request: NextRequest): Promise<{ success: boolean; erro
     return { success: false, error: "Invalid token", status: 401 };
   }
 
-  if (!decoded.admin && !decoded.email?.endsWith("@kdm-assoc.com")) {
+  const claims = decoded as { role?: string; admin?: boolean; email?: string };
+  let isAdmin = claims.role === "platform_admin" || claims.admin === true;
+
+  if (!isAdmin) {
+    const userDoc = await db.collection("users").doc(decoded.uid).get();
+    const userData = userDoc.data();
+    isAdmin = userData?.role === "platform_admin" || userData?.svpRole === "platform_admin";
+  }
+
+  if (!isAdmin) {
     return { success: false, error: "Forbidden", status: 403 };
   }
 
