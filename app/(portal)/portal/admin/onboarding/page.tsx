@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,12 +26,12 @@ import {
   Search,
   UserPlus,
   RefreshCw,
-  Play,
   CheckCircle,
   Clock,
   XCircle,
 } from "lucide-react";
 import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
+import { auth as firebaseAuth } from "@/lib/firebase";
 
 interface User {
   uid: string;
@@ -49,7 +49,6 @@ interface User {
 
 export default function OnboardingManagementPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -58,77 +57,17 @@ export default function OnboardingManagementPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedOnboardingType, setSelectedOnboardingType] = useState<"consortium" | "affiliate" | "founder">("consortium");
 
+  const getToken = async () => {
+    const currentUser = firebaseAuth?.currentUser;
+    if (!currentUser) throw new Error("You must be signed in");
+    return currentUser.getIdToken();
+  };
+
   useEffect(() => {
     loadUsers();
   }, []);
 
-  useEffect(() => {
-    filterUsers();
-  }, [users, searchQuery, statusFilter]);
-
-  const loadUsers = async () => {
-    setLoading(true);
-    try {
-      // In production, fetch from Firestore
-      // For now, use mock data
-      const mockUsers: User[] = [
-        {
-          uid: "user_1",
-          email: "john.doe@example.com",
-          displayName: "John Doe",
-          firstName: "John",
-          lastName: "Doe",
-          company: "Tech Solutions Inc",
-          onboardingStatus: "not_started",
-          onboardingType: "consortium",
-          createdAt: "2024-06-01",
-        },
-        {
-          uid: "user_2",
-          email: "jane.smith@example.com",
-          displayName: "Jane Smith",
-          firstName: "Jane",
-          lastName: "Smith",
-          company: "Defense Contractors LLC",
-          onboardingStatus: "in_progress",
-          onboardingType: "affiliate",
-          onboardingStartedAt: "2024-06-02",
-          createdAt: "2024-05-28",
-        },
-        {
-          uid: "user_3",
-          email: "mike.johnson@example.com",
-          displayName: "Mike Johnson",
-          firstName: "Mike",
-          lastName: "Johnson",
-          company: "Innovative Solutions",
-          onboardingStatus: "completed",
-          onboardingType: "consortium",
-          onboardingStartedAt: "2024-05-20",
-          onboardingCompletedAt: "2024-05-22",
-          createdAt: "2024-05-15",
-        },
-        {
-          uid: "user_4",
-          email: "sarah.williams@example.com",
-          displayName: "Sarah Williams",
-          firstName: "Sarah",
-          lastName: "Williams",
-          company: "Federal Services Group",
-          onboardingStatus: "skipped",
-          onboardingType: "founder",
-          createdAt: "2024-06-03",
-        },
-      ];
-      setUsers(mockUsers);
-    } catch (error) {
-      toast.error("Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filterUsers = () => {
+  const filteredUsers = useMemo(() => {
     let filtered = [...users];
 
     if (searchQuery) {
@@ -144,7 +83,39 @@ export default function OnboardingManagementPage() {
       filtered = filtered.filter((user) => user.onboardingStatus === statusFilter);
     }
 
-    setFilteredUsers(filtered);
+    return filtered;
+  }, [users, searchQuery, statusFilter]);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const token = await getToken();
+      const res = await fetch("/api/admin/users?limit=500", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load users");
+
+      const apiUsers: User[] = (data.users || []).map((u: Record<string, unknown>) => ({
+        uid: u.uid as string,
+        email: u.email as string,
+        displayName: u.displayName as string | undefined,
+        firstName: u.firstName as string | undefined,
+        lastName: u.lastName as string | undefined,
+        company: u.company as string | undefined,
+        onboardingStatus: u.onboardingStatus as User["onboardingStatus"] | undefined,
+        onboardingType: u.onboardingType as User["onboardingType"] | undefined,
+        onboardingStartedAt: u.onboardingStartedAt as string | undefined,
+        onboardingCompletedAt: u.onboardingCompletedAt as string | undefined,
+        createdAt: u.createdAt as string,
+      }));
+      setUsers(apiUsers);
+    } catch (error) {
+      console.error("Error loading users:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to load users");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const triggerOnboarding = async (userId: string, onboardingType: string) => {
