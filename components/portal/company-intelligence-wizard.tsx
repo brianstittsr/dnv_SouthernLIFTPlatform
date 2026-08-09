@@ -244,6 +244,7 @@ export function CompanyIntelligenceWizard() {
   const [statesServedInput, setStatesServedInput] = useState("");
   const [regionsServedInput, setRegionsServedInput] = useState("");
   const [primaryServiceCategoriesInput, setPrimaryServiceCategoriesInput] = useState("");
+  const [gsaScheduleInput, setGsaScheduleInput] = useState("");
 
   // Notable contract form state
   const [notableContractForm, setNotableContractForm] = useState({
@@ -322,6 +323,35 @@ export function CompanyIntelligenceWizard() {
     if (setter) setter("");
   };
 
+  const addCertificationItem = (
+    field: "isoCertifications" | "otherCertifications",
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    if (!value.trim()) return;
+    setFormData((prev) => ({
+      ...prev,
+      certifications: {
+        ...prev.certifications,
+        [field]: [...prev.certifications[field], value.trim()],
+      },
+    }));
+    setter("");
+  };
+
+  const removeCertificationItem = (
+    field: "isoCertifications" | "otherCertifications",
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      certifications: {
+        ...prev.certifications,
+        [field]: prev.certifications[field].filter((i) => i !== value),
+      },
+    }));
+  };
+
   const addNotableContract = () => {
     const { contractTitle, client, description, value, outcomes } = notableContractForm;
     if (!contractTitle.trim() || !client.trim() || !description.trim()) return;
@@ -377,27 +407,48 @@ export function CompanyIntelligenceWizard() {
   };
 
   const handleComplete = async () => {
-    if (!db || !teamMemberId) return;
+    if (!db || !teamMemberId || !profile.id) return;
 
     setLoading(true);
     try {
       const teamMemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, teamMemberId);
-      
-      await updateDoc(teamMemberRef, {
-        companyIntelligence: {
-          ...formData,
-          samRegistration: {
-            status: formData.samRegistrationStatus,
-          },
-          gsaSchedule: {
-            isHolder: formData.gsaScheduleHolder,
-            scheduleNumbers: formData.gsaScheduleNumbers,
-          },
-          marketplaceSellerProfile: {
-            enabled: formData.marketplaceSellerEnabled,
-            primaryServiceCategories: formData.primaryServiceCategories,
-          },
+      const userRef = doc(db, COLLECTIONS.USERS, profile.id);
+
+      const companyIntelligencePayload = {
+        ...formData,
+        samRegistration: {
+          status: formData.samRegistrationStatus,
         },
+        gsaSchedule: {
+          isHolder: formData.gsaScheduleHolder,
+          scheduleNumbers: formData.gsaScheduleNumbers,
+        },
+        marketplaceSellerProfile: {
+          enabled: formData.marketplaceSellerEnabled,
+          primaryServiceCategories: formData.primaryServiceCategories,
+        },
+      };
+
+      await updateDoc(teamMemberRef, {
+        companyIntelligence: companyIntelligencePayload,
+        updatedAt: Timestamp.now(),
+      });
+
+      await updateDoc(userRef, {
+        companyIntelligence: companyIntelligencePayload,
+        companyIntelligenceComplete: true,
+        legalCompanyName: formData.legalCompanyName,
+        city: formData.city,
+        state: formData.state,
+        companyDescription: formData.companyDescription,
+        naicsCodes: formData.primaryNaicsCodes,
+        certifications: [
+          ...formData.certifications.isoCertifications,
+          ...formData.certifications.otherCertifications,
+          ...(formData.certifications.cmmcLevel ? [`CMMC Level ${formData.certifications.cmmcLevel}`] : []),
+        ],
+        companyId: teamMemberId,
+        companyName: formData.legalCompanyName,
         updatedAt: Timestamp.now(),
       });
 
@@ -681,11 +732,11 @@ export function CompanyIntelligenceWizard() {
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("certifications.isoCertifications" as any, isoCertInput, setIsoCertInput);
+                        addCertificationItem("isoCertifications", isoCertInput, setIsoCertInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("certifications.isoCertifications" as any, isoCertInput, setIsoCertInput)}>
+                  <Button onClick={() => addCertificationItem("isoCertifications", isoCertInput, setIsoCertInput)}>
                     Add
                   </Button>
                 </div>
@@ -695,7 +746,7 @@ export function CompanyIntelligenceWizard() {
                       <Badge key={cert} variant="secondary" className="text-sm">
                         {cert}
                         <button
-                          onClick={() => removeArrayItem("certifications.isoCertifications" as any, cert)}
+                          onClick={() => removeCertificationItem("isoCertifications", cert)}
                           className="ml-2 hover:text-red-600"
                         >
                           <X className="h-3 w-3" />
@@ -716,11 +767,11 @@ export function CompanyIntelligenceWizard() {
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("certifications.otherCertifications" as any, otherCertInput, setOtherCertInput);
+                        addCertificationItem("otherCertifications", otherCertInput, setOtherCertInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("certifications.otherCertifications" as any, otherCertInput, setOtherCertInput)}>
+                  <Button onClick={() => addCertificationItem("otherCertifications", otherCertInput, setOtherCertInput)}>
                     Add
                   </Button>
                 </div>
@@ -730,7 +781,7 @@ export function CompanyIntelligenceWizard() {
                       <Badge key={cert} variant="secondary" className="text-sm">
                         {cert}
                         <button
-                          onClick={() => removeArrayItem("certifications.otherCertifications" as any, cert)}
+                          onClick={() => removeCertificationItem("otherCertifications", cert)}
                           className="ml-2 hover:text-red-600"
                         >
                           <X className="h-3 w-3" />
@@ -1105,15 +1156,34 @@ export function CompanyIntelligenceWizard() {
                   </Label>
                 </div>
                 {formData.gsaScheduleHolder && (
-                  <div className="mt-2">
-                    <Input
-                      placeholder="GSA Schedule numbers (comma-separated)"
-                      value={formData.gsaScheduleNumbers.join(", ")}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        gsaScheduleNumbers: e.target.value.split(",").map(s => s.trim()).filter(Boolean),
-                      })}
-                    />
+                  <div className="mt-2 space-y-3">
+                    <Label>GSA Schedule Numbers</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="e.g., 70, 00CORP"
+                        value={gsaScheduleInput}
+                        onChange={(e) => setGsaScheduleInput(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addArrayItem("gsaScheduleNumbers", gsaScheduleInput, setGsaScheduleInput);
+                          }
+                        }}
+                      />
+                      <Button onClick={() => addArrayItem("gsaScheduleNumbers", gsaScheduleInput, setGsaScheduleInput)}>Add</Button>
+                    </div>
+                    {formData.gsaScheduleNumbers.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.gsaScheduleNumbers.map((number) => (
+                          <Badge key={number} variant="secondary" className="text-sm">
+                            {number}
+                            <button onClick={() => removeArrayItem("gsaScheduleNumbers", number)} className="ml-2 hover:text-red-600">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
