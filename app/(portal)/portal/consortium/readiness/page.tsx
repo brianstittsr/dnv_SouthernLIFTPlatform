@@ -145,7 +145,7 @@ export default function ConsortiumReadinessPage() {
       const fileName = file.name;
       const storagePath = `consortium/readiness/${userId}/${type}/${fileName}`;
       const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file, { contentType: file.type || "application/octet-stream" });
       const fileUrl = await getDownloadURL(storageRef);
 
       const newDoc = {

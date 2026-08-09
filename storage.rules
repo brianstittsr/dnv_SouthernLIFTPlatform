@@ -82,5 +82,14 @@ service firebase.storage {
                       isValidDocumentType() && 
                       isValidFileSize(25);
     }
+
+    // Consortium readiness documents (per user)
+    match /consortium/readiness/{userId}/{type}/{fileName} {
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if isAuthenticated() && 
+                      isOwner(userId) &&
+                      (isValidDocumentType() || isValidImageType()) && 
+                      isValidFileSize(50);
+    }
   }
 }

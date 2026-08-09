@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
 
     // Parse request body
     const body = await req.json();
-    const { email, password, displayName, firstName, lastName, role, tenantId } = body;
+    const { email, password, displayName, firstName, lastName, role, svpRoles, tenantId } = body;
 
     // Validate inputs
     if (!email || !password || !role) {
@@ -164,6 +164,11 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const normalizedSvpRoles = Array.isArray(svpRoles)
+      ? svpRoles.filter((r: string) => Object.keys(USER_ROLES).includes(r))
+      : [];
+    const primarySvpRole = normalizedSvpRoles[0] || role;
 
     // Create user in Firebase Auth
     const userRecord = await auth.createUser({
@@ -184,7 +189,8 @@ export async function POST(req: NextRequest) {
       firstName: firstName || email.split("@")[0],
       lastName: lastName || "",
       role,
-      svpRole: role, // For compatibility
+      svpRole: primarySvpRole, // Primary SVP role for compatibility
+      svpRoles: normalizedSvpRoles, // Multiple SVP roles
       tenantId: tenantId || "kdm-svp-platform",
       hasAvatar: false,
       createdAt: Timestamp.now(),
@@ -192,6 +198,15 @@ export async function POST(req: NextRequest) {
     };
 
     await db.collection("users").doc(userRecord.uid).set(userDoc);
+
+    // Also store svpRoles in custom claims for token-based access
+    await auth.setCustomUserClaims(userRecord.uid, {
+      role,
+      svpRole: primarySvpRole,
+      svpRoles: normalizedSvpRoles,
+      tenantId: tenantId || "kdm-svp-platform",
+      isActive: true,
+    });
 
     // Log audit event
     await db.collection("auditLogs").add({
@@ -250,7 +265,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { userId, displayName, firstName, lastName, role, newPassword, tenantId } = body;
+    const { userId, displayName, firstName, lastName, role, svpRoles, newPassword, tenantId } = body;
 
     if (!userId) {
       return NextResponse.json({ error: "Missing required field: userId" }, { status: 400 });
@@ -275,6 +290,11 @@ export async function PATCH(req: NextRequest) {
       await assignUserRole(userId, role as UserRole, tenantId || "kdm-svp-platform");
     }
 
+    const normalizedSvpRoles = Array.isArray(svpRoles)
+      ? svpRoles.filter((r: string) => Object.keys(USER_ROLES).includes(r))
+      : undefined;
+    const primarySvpRole = normalizedSvpRoles?.[0] || role;
+
     // Update Firestore user document
     const firestoreUpdate: Record<string, any> = { updatedAt: Timestamp.now() };
     if (displayName !== undefined) firestoreUpdate.displayName = displayName;
@@ -282,15 +302,28 @@ export async function PATCH(req: NextRequest) {
     if (lastName !== undefined) firestoreUpdate.lastName = lastName;
     if (role) {
       firestoreUpdate.role = role;
-      firestoreUpdate.svpRole = role;
+      firestoreUpdate.svpRole = primarySvpRole || role;
     }
+    if (normalizedSvpRoles !== undefined) firestoreUpdate.svpRoles = normalizedSvpRoles;
     if (tenantId) firestoreUpdate.tenantId = tenantId;
 
     await db.collection("users").doc(userId).set(firestoreUpdate, { merge: true });
 
+    // Sync svpRoles to custom claims when changed
+    if (normalizedSvpRoles !== undefined) {
+      const currentUser = await auth.getUser(userId);
+      const existingClaims = currentUser.customClaims || {};
+      await auth.setCustomUserClaims(userId, {
+        ...existingClaims,
+        svpRole: primarySvpRole,
+        svpRoles: normalizedSvpRoles,
+      });
+    }
+
     // Audit log
     const auditDetails: Record<string, any> = { passwordChanged: !!newPassword };
     if (role) auditDetails.role = role;
+    if (normalizedSvpRoles !== undefined) auditDetails.svpRoles = normalizedSvpRoles;
 
     await db.collection("auditLogs").add({
       userId: decodedToken.uid,

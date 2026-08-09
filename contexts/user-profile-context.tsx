@@ -21,8 +21,9 @@ export interface UserProfile {
   avatarUrl: string;
   role: "admin" | "affiliate" | "customer" | "team_member" | "consortium_member";
   
-  // SVP Platform role
+  // SVP Platform role(s)
   svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member";
+  svpRoles?: ("platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member")[];
   
   // Onboarding fields
   isOnboardingComplete?: boolean;
@@ -235,13 +236,21 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
 
   let userDoc: any = null;
   let svpRole: UserProfile["svpRole"] = undefined;
+  let svpRoles: UserProfile["svpRoles"] = undefined;
 
   try {
     const userDocRef = doc(db, "users", userId);
     const userDocSnap = await getDoc(userDocRef);
     if (userDocSnap.exists()) {
       userDoc = userDocSnap.data();
-      svpRole = userDoc.svpRole;
+      const savedRoles = userDoc.svpRoles;
+      if (Array.isArray(savedRoles) && savedRoles.length > 0) {
+        svpRoles = savedRoles.filter((r): r is NonNullable<typeof svpRole> => !!r);
+        svpRole = svpRoles[0];
+      } else if (userDoc.svpRole) {
+        svpRole = userDoc.svpRole;
+        svpRoles = [svpRole as NonNullable<typeof svpRole>];
+      }
     }
   } catch (error) {
     console.error("Error fetching user document:", error);
@@ -275,6 +284,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
         createdAt: userDoc.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
       }),
       svpRole,
+      svpRoles,
       updatedAt: new Date().toISOString(),
     };
   }
@@ -296,6 +306,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     profileCompletedAt: userDoc?.profileCompletedAt?.toDate?.()?.toISOString() || null,
     createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
     svpRole,
+    svpRoles,
     updatedAt: new Date().toISOString(),
   };
 }

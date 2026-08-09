@@ -839,17 +839,18 @@ export function PortalSidebar() {
   const profileComplete = isProfileComplete(profile);
   const isNewUser = !profileComplete;
   
-  // The effective role for filtering (either preview role or actual svpRole)
-  const effectiveRole = previewRole || profile.svpRole || profile.role;
+  // The effective roles for filtering (preview role, or all assigned SVP roles)
+  const effectiveRoles = previewRole
+    ? [previewRole]
+    : (profile.svpRoles?.length ? profile.svpRoles : [profile.svpRole || profile.role].filter(Boolean));
   
-  // Check if a SVP section should be visible based on role
+  // Check if a SVP section should be visible based on any assigned role
   const isSvpSectionVisible = (sectionKey: string) => {
-    // Admins see all sections
+    // Admins see all sections when not previewing a single role
     if (isAdmin && !previewRole) return true;
     
-    // Check SVP role sections
-    const visibleSections = SVP_ROLE_SECTIONS[effectiveRole] || [];
-    return visibleSections.includes(sectionKey);
+    // Check SVP role sections union
+    return effectiveRoles.some((role) => (SVP_ROLE_SECTIONS[role] || []).includes(sectionKey));
   };
 
   // Subscribe to BookCallLeads count (new leads only)
@@ -957,20 +958,21 @@ export function PortalSidebar() {
     return () => unsubscribe();
   }, []);
   
-  // Filter nav items based on role-based visibility
+  // Filter nav items based on role-based visibility (item is hidden only if hidden for ALL effective roles)
   const filterNavItems = (items: typeof mainNavItems) => {
     return items.filter(item => {
       // If admin is not previewing, show all items
       if (isAdmin && !previewRole) return true;
       
-      // Check role-based visibility
-      const roleHiddenItems = roleVisibility[effectiveRole] || [];
-      const isHiddenForRole = roleHiddenItems.includes(item.href);
+      // Check role-based visibility: hide only if every effective role hides it
+      const hiddenForAllRoles = effectiveRoles.length > 0 && effectiveRoles.every((role) =>
+        (roleVisibility[role] || []).includes(item.href)
+      );
       
       // Also check legacy hiddenItems for backwards compatibility
       const isGloballyHidden = hiddenNavItems.includes(item.href);
       
-      return !isHiddenForRole && !isGloballyHidden;
+      return !hiddenForAllRoles && !isGloballyHidden;
     });
   };
 
@@ -990,10 +992,9 @@ export function PortalSidebar() {
     return filterNavItemsBySearch(items).length > 0;
   };
   
-  // Check if item should show as hidden (for admin preview)
+  // Check if item should show as hidden (for admin preview): hidden if any effective role hides it
   const isItemHidden = (href: string) => {
-    const roleHiddenItems = roleVisibility[effectiveRole] || [];
-    return roleHiddenItems.includes(href) || hiddenNavItems.includes(href);
+    return effectiveRoles.some((role) => (roleVisibility[role] || []).includes(href)) || hiddenNavItems.includes(href);
   };
   
   // Collapsible state for each section
@@ -1466,7 +1467,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
-        {effectiveRole !== "consortium_member" && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
+        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>

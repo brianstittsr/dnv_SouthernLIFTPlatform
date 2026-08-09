@@ -46,10 +46,12 @@ export function AuthGuard({
       if (requireAdmin) {
         try {
           const idTokenResult = await user.getIdTokenResult();
+          const claims = idTokenResult.claims;
+          const svpRoles = Array.isArray(claims.svpRoles) ? claims.svpRoles : (claims.svpRole ? [claims.svpRole] : []);
           const isAdmin = 
-            idTokenResult.claims.role === "admin" ||
-            idTokenResult.claims.role === "platform_admin" ||
-            idTokenResult.claims.svpRole === "platform_admin";
+            claims.role === "admin" ||
+            claims.role === "platform_admin" ||
+            svpRoles.includes("platform_admin");
 
           console.log("AuthGuard: Admin check -", {
             email: user.email,

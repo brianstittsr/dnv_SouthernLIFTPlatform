@@ -94,6 +94,8 @@ interface User {
   email: string;
   displayName?: string;
   role: UserRole | "none";
+  svpRole?: UserRole;
+  svpRoles?: UserRole[];
   disabled: boolean;
   createdAt: string;
   lastSignIn?: string;
@@ -119,6 +121,7 @@ export default function AdminUsersPage() {
   const [newUserLastName, setNewUserLastName] = useState("");
   const [newUserDisplayName, setNewUserDisplayName] = useState("");
   const [newUserRole, setNewUserRole] = useState<UserRole>("sme_user");
+  const [newUserSvpRoles, setNewUserSvpRoles] = useState<UserRole[]>(["sme_user"]);
   const [newUserTenantId, setNewUserTenantId] = useState("kdm-svp-platform");
   const [creating, setCreating] = useState(false);
 
@@ -129,6 +132,7 @@ export default function AdminUsersPage() {
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
   const [editRole, setEditRole] = useState<UserRole>("sme_user");
+  const [editSvpRoles, setEditSvpRoles] = useState<UserRole[]>(["sme_user"]);
   const [editing, setEditing] = useState(false);
 
   // Change password dialog state
@@ -215,6 +219,7 @@ export default function AdminUsersPage() {
           lastName: newUserLastName,
           displayName: newUserDisplayName || `${newUserFirstName} ${newUserLastName}`.trim(),
           role: newUserRole,
+          svpRoles: newUserSvpRoles,
           tenantId: newUserTenantId,
         }),
       });
@@ -231,6 +236,7 @@ export default function AdminUsersPage() {
       setNewUserLastName("");
       setNewUserDisplayName("");
       setNewUserRole("sme_user");
+      setNewUserSvpRoles(["sme_user"]);
       setNewUserTenantId("kdm-svp-platform");
       setCreateDialogOpen(false);
 
@@ -250,6 +256,13 @@ export default function AdminUsersPage() {
     setEditFirstName("");
     setEditLastName("");
     setEditRole((user.role as UserRole) || "sme_user");
+    setEditSvpRoles(
+      user.svpRoles?.length
+        ? user.svpRoles
+        : user.svpRole
+          ? [user.svpRole as UserRole]
+          : [(user.role as UserRole) || "sme_user"]
+    );
     setEditDialogOpen(true);
   };
 
@@ -271,6 +284,7 @@ export default function AdminUsersPage() {
           firstName: editFirstName.trim() || undefined,
           lastName: editLastName.trim() || undefined,
           role: editRole,
+          svpRoles: editSvpRoles,
         }),
       });
 
@@ -512,9 +526,13 @@ export default function AdminUsersPage() {
                   <TableCell className="font-medium">{user.email}</TableCell>
                   <TableCell>{user.displayName || "-"}</TableCell>
                   <TableCell>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>
-                      {USER_ROLES[user.role as UserRole] || "None"}
-                    </Badge>
+                    <div className="flex flex-wrap gap-1">
+                      {(user.svpRoles?.length ? user.svpRoles : [user.svpRole || user.role]).map((r) => (
+                        <Badge key={r} variant={getRoleBadgeVariant(r)}>
+                          {USER_ROLES[r as UserRole] || "None"}
+                        </Badge>
+                      ))}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant={user.disabled ? "secondary" : "default"}>
@@ -656,6 +674,28 @@ export default function AdminUsersPage() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label>SVP Roles (multiple)</Label>
+              <div className="mt-2 grid grid-cols-2 gap-2 border rounded-md p-3">
+                {Object.entries(USER_ROLES).map(([key, label]) => (
+                  <label key={key} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={editSvpRoles.includes(key as UserRole)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setEditSvpRoles((prev) => [...prev, key as UserRole]);
+                        } else {
+                          setEditSvpRoles((prev) => prev.filter((r) => r !== key));
+                        }
+                      }}
+                      className="h-4 w-4 rounded border-gray-300"
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -816,6 +856,28 @@ export default function AdminUsersPage() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">SVP Roles (multiple)</label>
+              <div className="mt-2 grid grid-cols-2 gap-2 border rounded-md p-3">
+                {Object.entries(USER_ROLES).map(([key, label]) => (
+                  <label key={key} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={newUserSvpRoles.includes(key as UserRole)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setNewUserSvpRoles((prev) => [...prev, key as UserRole]);
+                        } else {
+                          setNewUserSvpRoles((prev) => prev.filter((r) => r !== key));
+                        }
+                      }}
+                      className="h-4 w-4 rounded border-gray-300"
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
             </div>
             <div>
               <label className="text-sm font-medium">Tenant ID</label>

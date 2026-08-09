@@ -91,6 +91,7 @@ export function RequireAuth({
         const userData = userDoc.data();
         const userRole = userData.role;
         const userSvpRole = userData.svpRole;
+        const userSvpRoles = Array.isArray(userData.svpRoles) ? userData.svpRoles : (userSvpRole ? [userSvpRole] : []);
 
         let roleMatch = true;
         let svpRoleMatch = true;
@@ -101,11 +102,11 @@ export function RequireAuth({
           roleMatch = roles.includes(userRole);
         }
 
-        // Check SVP role
+        // Check SVP role (any of the user's assigned SVP roles)
         if (requiredSvpRole) {
           const svpRoles = Array.isArray(requiredSvpRole) ? requiredSvpRole : [requiredSvpRole];
           // Platform admins have access to everything
-          svpRoleMatch = userSvpRole === "platform_admin" || svpRoles.includes(userSvpRole);
+          svpRoleMatch = userSvpRoles.includes("platform_admin") || userSvpRoles.some((r: string) => svpRoles.includes(r));
         }
 
         if (roleMatch && svpRoleMatch) {

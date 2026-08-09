@@ -267,6 +267,8 @@ export interface UserPermissionsDoc {
 
 export interface CustomClaims {
   role: UserRole;
+  svpRole?: UserRole;
+  svpRoles?: UserRole[];
   tenantId: string;
   isActive: boolean;
 }
