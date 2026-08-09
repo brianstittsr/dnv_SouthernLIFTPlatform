@@ -231,7 +231,29 @@ export function CompanyIntelligenceWizard() {
     primaryServiceCategories: [],
   });
 
-  const [tempInput, setTempInput] = useState("");
+  // Dedicated input states so each array field captures data independently
+  const [naicsInput, setNaicsInput] = useState("");
+  const [isoCertInput, setIsoCertInput] = useState("");
+  const [otherCertInput, setOtherCertInput] = useState("");
+  const [technicalExpertiseInput, setTechnicalExpertiseInput] = useState("");
+  const [serviceOfferingsInput, setServiceOfferingsInput] = useState("");
+  const [technologySpecializationsInput, setTechnologySpecializationsInput] = useState("");
+  const [industryFocusAreasInput, setIndustryFocusAreasInput] = useState("");
+  const [keyDifferentiatorsInput, setKeyDifferentiatorsInput] = useState("");
+  const [clientReferencesInput, setClientReferencesInput] = useState("");
+  const [statesServedInput, setStatesServedInput] = useState("");
+  const [regionsServedInput, setRegionsServedInput] = useState("");
+  const [primaryServiceCategoriesInput, setPrimaryServiceCategoriesInput] = useState("");
+
+  // Notable contract form state
+  const [notableContractForm, setNotableContractForm] = useState({
+    contractTitle: "",
+    client: "",
+    description: "",
+    value: "",
+    outcomes: "",
+  });
+  const [showContractForm, setShowContractForm] = useState(false);
 
   // Check if user needs to complete company intelligence
   useEffect(() => {
@@ -287,13 +309,52 @@ export function CompanyIntelligenceWizard() {
     });
   };
 
-  const addArrayItem = (field: keyof CompanyIntelligenceData, value: string) => {
+  const addArrayItem = (
+    field: keyof CompanyIntelligenceData,
+    value: string,
+    setter?: React.Dispatch<React.SetStateAction<string>>
+  ) => {
     if (!value.trim()) return;
     setFormData((prev) => ({
       ...prev,
       [field]: [...(prev[field] as string[]), value.trim()],
     }));
-    setTempInput("");
+    if (setter) setter("");
+  };
+
+  const addNotableContract = () => {
+    const { contractTitle, client, description, value, outcomes } = notableContractForm;
+    if (!contractTitle.trim() || !client.trim() || !description.trim()) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      notableContracts: [
+        ...prev.notableContracts,
+        {
+          contractTitle: contractTitle.trim(),
+          client: client.trim(),
+          description: description.trim(),
+          value: value ? parseFloat(value) : undefined,
+          outcomes: outcomes.split(",").map((o) => o.trim()).filter(Boolean),
+        },
+      ],
+    }));
+
+    setNotableContractForm({
+      contractTitle: "",
+      client: "",
+      description: "",
+      value: "",
+      outcomes: "",
+    });
+    setShowContractForm(false);
+  };
+
+  const removeNotableContract = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      notableContracts: prev.notableContracts.filter((_, i) => i !== index),
+    }));
   };
 
   const removeArrayItem = (field: keyof CompanyIntelligenceData, value: string) => {
@@ -504,13 +565,13 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Enter NAICS code (e.g., 332710)"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={naicsInput}
+                    onChange={(e) => setNaicsInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         if (formData.primaryNaicsCodes.length < 5) {
-                          addArrayItem("primaryNaicsCodes", tempInput);
+                          addArrayItem("primaryNaicsCodes", naicsInput, setNaicsInput);
                         } else {
                           toast.error("Maximum of 5 NAICS codes reached");
                         }
@@ -520,7 +581,7 @@ export function CompanyIntelligenceWizard() {
                   <Button
                     onClick={() => {
                       if (formData.primaryNaicsCodes.length < 5) {
-                        addArrayItem("primaryNaicsCodes", tempInput);
+                        addArrayItem("primaryNaicsCodes", naicsInput, setNaicsInput);
                       } else {
                         toast.error("Maximum of 5 NAICS codes reached");
                       }
@@ -615,16 +676,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="e.g., ISO 9001, ISO 27001"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={isoCertInput}
+                    onChange={(e) => setIsoCertInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("certifications.isoCertifications" as any, tempInput);
+                        addArrayItem("certifications.isoCertifications" as any, isoCertInput, setIsoCertInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("certifications.isoCertifications" as any, tempInput)}>
+                  <Button onClick={() => addArrayItem("certifications.isoCertifications" as any, isoCertInput, setIsoCertInput)}>
                     Add
                   </Button>
                 </div>
@@ -650,16 +711,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Other certifications"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={otherCertInput}
+                    onChange={(e) => setOtherCertInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("certifications.otherCertifications" as any, tempInput);
+                        addArrayItem("certifications.otherCertifications" as any, otherCertInput, setOtherCertInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("certifications.otherCertifications" as any, tempInput)}>
+                  <Button onClick={() => addArrayItem("certifications.otherCertifications" as any, otherCertInput, setOtherCertInput)}>
                     Add
                   </Button>
                 </div>
@@ -692,16 +753,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Areas of technical expertise"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={technicalExpertiseInput}
+                    onChange={(e) => setTechnicalExpertiseInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("technicalExpertise", tempInput);
+                        addArrayItem("technicalExpertise", technicalExpertiseInput, setTechnicalExpertiseInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("technicalExpertise", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("technicalExpertise", technicalExpertiseInput, setTechnicalExpertiseInput)}>Add</Button>
                 </div>
                 {formData.technicalExpertise.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -722,16 +783,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Services you offer"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={serviceOfferingsInput}
+                    onChange={(e) => setServiceOfferingsInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("serviceOfferings", tempInput);
+                        addArrayItem("serviceOfferings", serviceOfferingsInput, setServiceOfferingsInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("serviceOfferings", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("serviceOfferings", serviceOfferingsInput, setServiceOfferingsInput)}>Add</Button>
                 </div>
                 {formData.serviceOfferings.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -752,16 +813,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Technology specializations"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={technologySpecializationsInput}
+                    onChange={(e) => setTechnologySpecializationsInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("technologySpecializations", tempInput);
+                        addArrayItem("technologySpecializations", technologySpecializationsInput, setTechnologySpecializationsInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("technologySpecializations", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("technologySpecializations", technologySpecializationsInput, setTechnologySpecializationsInput)}>Add</Button>
                 </div>
                 {formData.technologySpecializations.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -782,16 +843,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Industry focus areas"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={industryFocusAreasInput}
+                    onChange={(e) => setIndustryFocusAreasInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("industryFocusAreas", tempInput);
+                        addArrayItem("industryFocusAreas", industryFocusAreasInput, setIndustryFocusAreasInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("industryFocusAreas", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("industryFocusAreas", industryFocusAreasInput, setIndustryFocusAreasInput)}>Add</Button>
                 </div>
                 {formData.industryFocusAreas.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -819,16 +880,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="What makes your company unique?"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={keyDifferentiatorsInput}
+                    onChange={(e) => setKeyDifferentiatorsInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("keyDifferentiators", tempInput);
+                        addArrayItem("keyDifferentiators", keyDifferentiatorsInput, setKeyDifferentiatorsInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("keyDifferentiators", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("keyDifferentiators", keyDifferentiatorsInput, setKeyDifferentiatorsInput)}>Add</Button>
                 </div>
                 {formData.keyDifferentiators.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -849,16 +910,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Client names or organizations"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={clientReferencesInput}
+                    onChange={(e) => setClientReferencesInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("clientReferences", tempInput);
+                        addArrayItem("clientReferences", clientReferencesInput, setClientReferencesInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("clientReferences", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("clientReferences", clientReferencesInput, setClientReferencesInput)}>Add</Button>
                 </div>
                 {formData.clientReferences.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -877,10 +938,118 @@ export function CompanyIntelligenceWizard() {
               <div className="space-y-3">
                 <Label>Notable Contracts</Label>
                 <p className="text-sm text-muted-foreground">Add your most significant government contracts</p>
-                <Button variant="outline" size="sm">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Add Contract
-                </Button>
+
+                {!showContractForm && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowContractForm(true)}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Add Contract
+                  </Button>
+                )}
+
+                {showContractForm && (
+                  <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="contractTitle">Contract Title *</Label>
+                        <Input
+                          id="contractTitle"
+                          placeholder="e.g., IT Support Services"
+                          value={notableContractForm.contractTitle}
+                          onChange={(e) => setNotableContractForm({ ...notableContractForm, contractTitle: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contractClient">Client/Agency *</Label>
+                        <Input
+                          id="contractClient"
+                          placeholder="e.g., Department of Defense"
+                          value={notableContractForm.client}
+                          onChange={(e) => setNotableContractForm({ ...notableContractForm, client: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contractDescription">Description *</Label>
+                      <Textarea
+                        id="contractDescription"
+                        rows={2}
+                        placeholder="Brief description of the work performed"
+                        value={notableContractForm.description}
+                        onChange={(e) => setNotableContractForm({ ...notableContractForm, description: e.target.value })}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="contractValue">Contract Value (USD)</Label>
+                        <Input
+                          id="contractValue"
+                          type="number"
+                          placeholder="e.g., 500000"
+                          value={notableContractForm.value}
+                          onChange={(e) => setNotableContractForm({ ...notableContractForm, value: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contractOutcomes">Outcomes (comma-separated)</Label>
+                        <Input
+                          id="contractOutcomes"
+                          placeholder="e.g., On-time delivery, Cost savings"
+                          value={notableContractForm.outcomes}
+                          onChange={(e) => setNotableContractForm({ ...notableContractForm, outcomes: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={addNotableContract}>
+                        Save Contract
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setShowContractForm(false);
+                          setNotableContractForm({
+                            contractTitle: "",
+                            client: "",
+                            description: "",
+                            value: "",
+                            outcomes: "",
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {formData.notableContracts.length > 0 && (
+                  <div className="space-y-2 mt-2">
+                    {formData.notableContracts.map((contract, index) => (
+                      <div key={index} className="flex items-start justify-between p-3 border rounded-lg bg-muted/30">
+                        <div>
+                          <p className="font-medium">{contract.contractTitle}</p>
+                          <p className="text-sm text-muted-foreground">{contract.client}</p>
+                          {contract.value !== undefined && (
+                            <p className="text-sm text-muted-foreground">
+                              Value: ${contract.value.toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => removeNotableContract(index)}
+                          className="text-muted-foreground hover:text-red-600"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </ScrollArea>
@@ -979,16 +1148,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="State abbreviations (e.g., VA, MD, DC)"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={statesServedInput}
+                    onChange={(e) => setStatesServedInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("statesServed", tempInput.toUpperCase());
+                        addArrayItem("statesServed", statesServedInput.toUpperCase(), setStatesServedInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("statesServed", tempInput.toUpperCase())}>Add</Button>
+                  <Button onClick={() => addArrayItem("statesServed", statesServedInput.toUpperCase(), setStatesServedInput)}>Add</Button>
                 </div>
                 {formData.statesServed.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -1009,16 +1178,16 @@ export function CompanyIntelligenceWizard() {
                 <div className="flex gap-2">
                   <Input
                     placeholder="Regions (e.g., Northeast, Mid-Atlantic)"
-                    value={tempInput}
-                    onChange={(e) => setTempInput(e.target.value)}
+                    value={regionsServedInput}
+                    onChange={(e) => setRegionsServedInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        addArrayItem("regionsServed", tempInput);
+                        addArrayItem("regionsServed", regionsServedInput, setRegionsServedInput);
                       }
                     }}
                   />
-                  <Button onClick={() => addArrayItem("regionsServed", tempInput)}>Add</Button>
+                  <Button onClick={() => addArrayItem("regionsServed", regionsServedInput, setRegionsServedInput)}>Add</Button>
                 </div>
                 {formData.regionsServed.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -1212,16 +1381,16 @@ export function CompanyIntelligenceWizard() {
                     <div className="flex gap-2 mt-2">
                       <Input
                         placeholder="Service categories"
-                        value={tempInput}
-                        onChange={(e) => setTempInput(e.target.value)}
+                        value={primaryServiceCategoriesInput}
+                        onChange={(e) => setPrimaryServiceCategoriesInput(e.target.value)}
                         onKeyPress={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
-                            addArrayItem("primaryServiceCategories", tempInput);
+                            addArrayItem("primaryServiceCategories", primaryServiceCategoriesInput, setPrimaryServiceCategoriesInput);
                           }
                         }}
                       />
-                      <Button onClick={() => addArrayItem("primaryServiceCategories", tempInput)}>Add</Button>
+                      <Button onClick={() => addArrayItem("primaryServiceCategories", primaryServiceCategoriesInput, setPrimaryServiceCategoriesInput)}>Add</Button>
                     </div>
                     {formData.primaryServiceCategories.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
