@@ -2,72 +2,58 @@
 
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
-import { auth, db, storage } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import {
   doc,
   getDoc,
-  updateDoc,
+  setDoc,
   Timestamp as FirestoreTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import {
-  ReadinessStep,
-  type ReadinessDocEntry,
-  type ReadinessDocType,
-} from "@/components/portal/consortium-onboarding-wizard";
+import { Textarea } from "@/components/ui/textarea";
 import {
   FileText,
-  Upload,
   CheckCircle,
   Clock,
   AlertCircle,
   X,
-  Download,
   TrendingUp,
   Shield,
   Target,
   AlertTriangle,
   Loader2,
+  Save,
 } from "lucide-react";
 import { toast } from "sonner";
 
 const DOCUMENT_TYPES = [
-  { type: "sam_registration", label: "SAM Registration", required: false },
-  { type: "duns_number", label: "DUNS Number", required: false },
-  { type: "cage_code", label: "CAGE Code", required: false },
-  { type: "capability_statement", label: "Capability Statement", required: false },
-  { type: "past_performance", label: "Past Performance References", required: false },
-  { type: "certifications", label: "Certifications (CMMC, ISO, etc.)", required: false },
-  { type: "financials", label: "Financial Statements", required: false },
-  { type: "insurance", label: "Insurance Certificates", required: false },
+  { type: "sam_registration", label: "SAM Registration", placeholder: "Enter your SAM UEI number (e.g., 123456789)", multiline: false },
+  { type: "duns_number", label: "DUNS Number", placeholder: "Enter your DUNS number (e.g., 123456789)", multiline: false },
+  { type: "cage_code", label: "CAGE Code", placeholder: "Enter your CAGE code (e.g., 1AB23)", multiline: false },
+  { type: "capability_statement", label: "Capability Statement", placeholder: "Enter your capability statement summary or a URL to the document", multiline: true },
+  { type: "past_performance", label: "Past Performance References", placeholder: "Enter past performance references (agency, contract value, period) or a URL", multiline: true },
+  { type: "certifications", label: "Certifications (CMMC, ISO, etc.)", placeholder: "List certifications (e.g., CMMC Level 2, ISO 9001, HUBZone, 8a)", multiline: true },
+  { type: "financials", label: "Financial Statements", placeholder: "Enter financial statement details or a URL to the document", multiline: true },
+  { type: "insurance", label: "Insurance Certificates", placeholder: "Enter insurance certificate details (type, coverage amount, insurer) or a URL", multiline: true },
 ] as const;
 
 export default function ConsortiumReadinessPage() {
   const { profile } = useUserProfile();
-  const [uploading, setUploading] = useState<string | null>(null);
+  const [saving, setSaving] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [wizardOpen, setWizardOpen] = useState(false);
 
-  const [uploadedDocuments, setUploadedDocuments] = useState<
+  const [textInputs, setTextInputs] = useState<Record<string, string>>({});
+
+  const [savedDocuments, setSavedDocuments] = useState<
     Array<{
       type: string;
-      fileName: string;
-      fileUrl: string;
-      storagePath?: string;
+      value: string;
       uploadedAt: Date;
       status: "pending" | "under_review" | "approved" | "rejected" | "pending_review";
     }>
@@ -87,13 +73,18 @@ export default function ConsortiumReadinessPage() {
         const profileSnap = await getDoc(profileRef);
         if (profileSnap.exists()) {
           const data = profileSnap.data();
-          const docs = (data.readinessDocuments || []).map((doc: any) => ({
-            ...doc,
-            uploadedAt: doc.uploadedAt?.toDate?.()
-              ? doc.uploadedAt.toDate()
-              : new Date(doc.uploadedAt),
+          const docs = (data.readinessDocuments || []).map((d: any) => ({
+            type: d.type,
+            value: d.value || d.fileName || "",
+            uploadedAt: d.uploadedAt?.toDate?.()
+              ? d.uploadedAt.toDate()
+              : new Date(d.uploadedAt),
+            status: d.status || "pending",
           }));
-          setUploadedDocuments(docs);
+          setSavedDocuments(docs);
+          const inputs: Record<string, string> = {};
+          docs.forEach((d: any) => { inputs[d.type] = d.value; });
+          setTextInputs(inputs);
         }
       } catch (error) {
         console.error("Error fetching readiness documents:", error);
@@ -109,17 +100,17 @@ export default function ConsortiumReadinessPage() {
   const calculateReadinessScore = () => {
     let score = 0;
 
-    // Document coverage (70 points) — all documents are now optional/recommended
+    // Document coverage (70 points)
     const totalDocTypes = DOCUMENT_TYPES.length;
-    const approvedDocs = uploadedDocuments.filter((doc) => doc.status === "approved").length;
+    const approvedDocs = savedDocuments.filter((doc) => doc.status === "approved").length;
     if (totalDocTypes > 0) {
       score += (approvedDocs / totalDocTypes) * 70;
     }
 
-    // Document quality (30 points) — based on approval status of uploaded docs
-    const totalUploaded = uploadedDocuments.length;
-    if (totalUploaded > 0) {
-      score += (approvedDocs / totalUploaded) * 30;
+    // Document quality (30 points)
+    const totalSaved = savedDocuments.length;
+    if (totalSaved > 0) {
+      score += (approvedDocs / totalSaved) * 30;
     }
 
     return Math.round(score);
@@ -135,24 +126,25 @@ export default function ConsortiumReadinessPage() {
   
   const readinessLevel = getReadinessLevel(readinessScore);
 
-  const handleFileUpload = async (type: string, file: File) => {
-    if (!userId || !storage || !db) {
-      toast.error("Not authenticated or storage unavailable");
+  const handleSaveText = async (type: string) => {
+    if (!userId || !db) {
+      toast.error("Not authenticated");
       return;
     }
-    setUploading(type);
+    const value = (textInputs[type] || "").trim();
+    if (!value) {
+      toast.error("Please enter a value before saving");
+      return;
+    }
+    if (value.length > 900000) {
+      toast.error("Text too long — please keep under 900,000 characters");
+      return;
+    }
+    setSaving(type);
     try {
-      const fileName = file.name;
-      const storagePath = `consortium/readiness/${userId}/${type}/${fileName}`;
-      const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, file, { contentType: file.type || "application/octet-stream" });
-      const fileUrl = await getDownloadURL(storageRef);
-
       const newDoc = {
         type,
-        fileName,
-        fileUrl,
-        storagePath,
+        value,
         uploadedAt: FirestoreTimestamp.now(),
         status: "pending" as const,
       };
@@ -162,24 +154,24 @@ export default function ConsortiumReadinessPage() {
       const currentDocs = profileSnap.exists()
         ? (profileSnap.data().readinessDocuments || [])
         : [];
-      const filteredDocs = currentDocs.filter((doc: any) => doc.type !== type);
+      const filteredDocs = currentDocs.filter((d: any) => d.type !== type);
 
-      await updateDoc(profileRef, {
+      await setDoc(profileRef, {
         readinessDocuments: [...filteredDocs, newDoc],
         readinessValidationStatus: "in_progress",
         updatedAt: FirestoreTimestamp.now(),
-      });
+      }, { merge: true });
 
-      setUploadedDocuments((prev) => {
-        const filtered = prev.filter((doc) => doc.type !== type);
+      setSavedDocuments((prev) => {
+        const filtered = prev.filter((d) => d.type !== type);
         return [...filtered, { ...newDoc, uploadedAt: new Date() }];
       });
-      toast.success("Document uploaded successfully");
+      toast.success("Saved successfully");
     } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("Failed to upload document");
+      console.error("Save error:", error);
+      toast.error("Failed to save");
     } finally {
-      setUploading(null);
+      setSaving(null);
     }
   };
 
@@ -189,23 +181,11 @@ export default function ConsortiumReadinessPage() {
       return;
     }
     try {
-      const docToDelete = uploadedDocuments.find((doc) => doc.type === type);
-      if (!docToDelete) return;
-
-      if (storage && docToDelete.storagePath) {
-        try {
-          const storageRef = ref(storage, docToDelete.storagePath);
-          await deleteObject(storageRef);
-        } catch (storageError) {
-          console.warn("Could not delete storage object:", storageError);
-        }
-      }
-
       const profileRef = doc(db, "consortium_profiles", userId);
       const profileSnap = await getDoc(profileRef);
       if (profileSnap.exists()) {
         const currentDocs = profileSnap.data().readinessDocuments || [];
-        const updatedDocs = currentDocs.filter((doc: any) => doc.type !== type);
+        const updatedDocs = currentDocs.filter((d: any) => d.type !== type);
         const updatePayload: any = {
           readinessDocuments: updatedDocs,
           updatedAt: FirestoreTimestamp.now(),
@@ -213,14 +193,15 @@ export default function ConsortiumReadinessPage() {
         if (updatedDocs.length === 0) {
           updatePayload.readinessValidationStatus = "not_started";
         }
-        await updateDoc(profileRef, updatePayload);
+        await setDoc(profileRef, updatePayload, { merge: true });
       }
 
-      setUploadedDocuments((prev) => prev.filter((doc) => doc.type !== type));
-      toast.success("Document removed");
+      setSavedDocuments((prev) => prev.filter((d) => d.type !== type));
+      setTextInputs((prev) => { const next = { ...prev }; delete next[type]; return next; });
+      toast.success("Entry removed");
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error("Failed to remove document");
+      toast.error("Failed to remove entry");
     }
   };
 
@@ -229,8 +210,8 @@ export default function ConsortiumReadinessPage() {
       toast.error("Not authenticated");
       return;
     }
-    if (uploadedDocuments.length === 0) {
-      toast.error("Upload at least one document before submitting");
+    if (savedDocuments.length === 0) {
+      toast.error("Save at least one entry before submitting");
       return;
     }
     setSubmitting(true);
@@ -249,29 +230,28 @@ export default function ConsortiumReadinessPage() {
               ? `${profile.firstName} ${profile.lastName}`
               : profile?.email || "",
           email: profile?.email || "",
-          documents: uploadedDocuments.map((doc) => ({
-            type: doc.type,
-            fileName: doc.fileName,
-            fileUrl: doc.fileUrl,
-            status: doc.status,
+          documents: savedDocuments.map((d) => ({
+            type: d.type,
+            value: d.value,
+            status: d.status,
           })),
         }),
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || "Failed to submit documents");
+        throw new Error(data.error || "Failed to submit");
       }
       if (data.warning) {
         toast.warning(data.warning);
       } else {
-        toast.success("Documents submitted for review");
+        toast.success("Submitted for review");
       }
-      setUploadedDocuments((prev) =>
-        prev.map((doc) => ({ ...doc, status: "pending_review" as const }))
+      setSavedDocuments((prev) =>
+        prev.map((d) => ({ ...d, status: "pending_review" as const }))
       );
     } catch (error: any) {
       console.error("Submit error:", error);
-      toast.error(error.message || "Failed to submit documents");
+      toast.error(error.message || "Failed to submit");
     } finally {
       setSubmitting(false);
     }
@@ -311,55 +291,8 @@ export default function ConsortiumReadinessPage() {
   };
 
   const totalDocs = DOCUMENT_TYPES.length;
-  const uploadedCount = uploadedDocuments.length;
-  const requiredProgress = totalDocs > 0 ? (uploadedCount / totalDocs) * 100 : 0;
-
-  const wizardReadinessDocs: ReadinessDocEntry[] = uploadedDocuments.map((d) => ({
-    type: d.type as ReadinessDocEntry["type"],
-    fileName: d.fileName,
-    fileUrl: d.fileUrl,
-  }));
-
-  const handleWizardAdd = async (entry: ReadinessDocEntry) => {
-    if (!userId || !db) {
-      toast.error("Not authenticated");
-      return;
-    }
-    try {
-      const newDoc = {
-        type: entry.type,
-        fileName: entry.fileName,
-        fileUrl: entry.fileUrl,
-        attachmentId: entry.attachmentId,
-        markdownExtracted: entry.markdownExtracted,
-        uploadedAt: FirestoreTimestamp.now(),
-        status: "pending" as const,
-      };
-
-      const profileRef = doc(db, "consortium_profiles", userId);
-      const profileSnap = await getDoc(profileRef);
-      const currentDocs = profileSnap.exists() ? (profileSnap.data().readinessDocuments || []) : [];
-      const filteredDocs = currentDocs.filter((d: any) => d.type !== entry.type);
-
-      await updateDoc(profileRef, {
-        readinessDocuments: [...filteredDocs, newDoc],
-        readinessValidationStatus: "in_progress",
-        updatedAt: FirestoreTimestamp.now(),
-      });
-
-      setUploadedDocuments((prev) => {
-        const filtered = prev.filter((d) => d.type !== entry.type);
-        return [...filtered, { ...newDoc, uploadedAt: new Date() }];
-      });
-    } catch (error) {
-      console.error("Error saving uploaded document:", error);
-      toast.error("Failed to save uploaded document");
-    }
-  };
-
-  const handleWizardRemove = (type: ReadinessDocType) => {
-    handleDeleteDocument(type);
-  };
+  const savedCount = savedDocuments.length;
+  const requiredProgress = totalDocs > 0 ? (savedCount / totalDocs) * 100 : 0;
 
   if (loading) {
     return (
@@ -371,36 +304,12 @@ export default function ConsortiumReadinessPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Government Contracting Readiness</h1>
-          <p className="text-muted-foreground mt-1">
-            Upload and manage your government contracting documentation
-          </p>
-        </div>
-        <Button onClick={() => setWizardOpen(true)} className="shrink-0">
-          <Upload className="h-4 w-4 mr-2" />
-          Upload Documents
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold">Government Contracting Readiness</h1>
+        <p className="text-muted-foreground mt-1">
+          Enter and manage your government contracting information
+        </p>
       </div>
-
-      <Dialog open={wizardOpen} onOpenChange={setWizardOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Readiness Validation</DialogTitle>
-            <DialogDescription>Government contracting documentation</DialogDescription>
-          </DialogHeader>
-          {userId && (
-            <ReadinessStep
-              readinessDocuments={wizardReadinessDocs}
-              onAdd={handleWizardAdd}
-              onRemove={handleWizardRemove}
-              userId={userId}
-              companyId={profile?.companyName || profile?.company || ""}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* Automated Readiness Score */}
       <Card className={`border-2 ${readinessLevel.bg}`}>
@@ -432,7 +341,7 @@ export default function ConsortiumReadinessPage() {
               <div className="text-2xl font-bold">
                 {Math.round(
                   (DOCUMENT_TYPES.filter((d) =>
-                    uploadedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
+                    savedDocuments.some((doc) => doc.type === d.type && doc.status === "approved")
                   ).length / DOCUMENT_TYPES.length) * 70
                 )}
               </div>
@@ -440,21 +349,21 @@ export default function ConsortiumReadinessPage() {
             </div>
             <div className="text-center p-4 bg-white/50 rounded-lg">
               <Target className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-              <div className="text-2xl font-bold">{uploadedDocuments.length}</div>
-              <div className="text-sm text-muted-foreground">Documents Uploaded</div>
+              <div className="text-2xl font-bold">{savedDocuments.length}</div>
+              <div className="text-sm text-muted-foreground">Entries Saved</div>
             </div>
             <div className="text-center p-4 bg-white/50 rounded-lg">
               <CheckCircle className="h-6 w-6 mx-auto mb-2 text-amber-600" />
               <div className="text-2xl font-bold">
-                {uploadedDocuments.length > 0
-                  ? Math.round((uploadedDocuments.filter((doc) => doc.status === "approved").length / uploadedDocuments.length) * 30)
+                {savedDocuments.length > 0
+                  ? Math.round((savedDocuments.filter((doc) => doc.status === "approved").length / savedDocuments.length) * 30)
                   : 0}
               </div>
               <div className="text-sm text-muted-foreground">Quality Score</div>
             </div>
           </div>
           <p className="text-sm text-muted-foreground mt-4">
-            This score is used for AI matching and partner selection. Improve your score by uploading additional documentation and ensuring all documents are approved.
+            This score is used for AI matching and partner selection. Improve your score by adding more information and ensuring all entries are approved.
           </p>
         </CardContent>
       </Card>
@@ -464,9 +373,9 @@ export default function ConsortiumReadinessPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Document Progress</CardTitle>
+              <CardTitle>Progress</CardTitle>
               <CardDescription>
-                {uploadedDocuments.length} of {DOCUMENT_TYPES.length} documents uploaded
+                {savedDocuments.length} of {DOCUMENT_TYPES.length} entries completed
               </CardDescription>
             </div>
             <Badge variant={requiredProgress === 100 ? "default" : "secondary"}>
@@ -479,58 +388,51 @@ export default function ConsortiumReadinessPage() {
         </CardContent>
       </Card>
 
-      {/* Document Upload Section */}
+      {/* Data Entry Section */}
       <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Document Management</h2>
-        
-        {/* Completed Documents */}
+        <h2 className="text-xl font-semibold">Readiness Information</h2>
+
+        {/* Completed Entries */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-600" />
-            Completed Documents
+            Completed Entries
           </h3>
-          {DOCUMENT_TYPES.filter((doc) => {
-            const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
-            return uploaded && uploaded.status === "approved";
+          {DOCUMENT_TYPES.filter((d) => {
+            const saved = savedDocuments.find((s) => s.type === d.type);
+            return saved && saved.status === "approved";
           }).length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
                 <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">No completed documents yet</p>
+                <p className="text-muted-foreground">No approved entries yet</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
-              {DOCUMENT_TYPES.filter((doc) => {
-                const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
-                return uploaded && uploaded.status === "approved";
-              }).map((doc) => {
-                const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
+              {DOCUMENT_TYPES.filter((d) => {
+                const saved = savedDocuments.find((s) => s.type === d.type);
+                return saved && saved.status === "approved";
+              }).map((d) => {
+                const saved = savedDocuments.find((s) => s.type === d.type)!;
                 return (
-                  <Card key={doc.type} className="border-green-200 bg-green-50">
+                  <Card key={d.type} className="border-green-200 bg-green-50">
                     <CardContent className="pt-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
-                            <CheckCircle className="h-6 w-6 text-green-600" />
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
                           </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">{doc.label}</p>
-                              {doc.required && (
-                                <Badge variant="destructive" className="text-xs">Required</Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 mt-1">
-                              <p className="text-sm text-muted-foreground">{uploaded?.fileName}</p>
-                              <Badge className="bg-green-100 text-green-800">Approved</Badge>
-                            </div>
+                          <div className="min-w-0">
+                            <p className="font-medium">{d.label}</p>
+                            <p className="text-sm text-muted-foreground truncate mt-1">{saved.value}</p>
+                            <Badge className="bg-green-100 text-green-800 mt-1">Approved</Badge>
                           </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDeleteDocument(doc.type)}
+                          onClick={() => handleDeleteDocument(d.type)}
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -543,126 +445,99 @@ export default function ConsortiumReadinessPage() {
           )}
         </div>
 
-        {/* Still Needed */}
+        {/* All Entry Fields */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
-            Still Needed
+            Information Entry
           </h3>
-          {DOCUMENT_TYPES.filter((doc) => {
-            const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
-            return !uploaded || uploaded.status !== "approved";
-          }).length === 0 ? (
-            <Card>
-              <CardContent className="py-8 text-center">
-                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-600" />
-                <p className="text-muted-foreground">All documents completed!</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {DOCUMENT_TYPES.filter((doc) => {
-                const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
-                return !uploaded || uploaded.status !== "approved";
-              }).map((doc) => {
-                const uploaded = uploadedDocuments.find((d) => d.type === doc.type);
-                return (
-                  <Card key={doc.type} className={uploaded ? "border-amber-200 bg-amber-50" : ""}>
-                    <CardContent className="pt-6">
+          <div className="grid gap-4">
+            {DOCUMENT_TYPES.map((d) => {
+              const saved = savedDocuments.find((s) => s.type === d.type);
+              const isApproved = saved?.status === "approved";
+              return (
+                <Card key={d.type} className={saved && !isApproved ? "border-amber-200" : ""}>
+                  <CardContent className="pt-6">
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
-                            <FileText className="h-6 w-6 text-muted-foreground" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">{doc.label}</p>
-                              {doc.required && (
-                                <Badge variant="destructive" className="text-xs">Required</Badge>
-                              )}
-                            </div>
-                            {uploaded ? (
-                              <div className="flex items-center gap-2 mt-1">
-                                <p className="text-sm text-muted-foreground">{uploaded.fileName}</p>
-                                {getStatusBadge(uploaded.status)}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground mt-1">Not uploaded</p>
-                            )}
-                          </div>
-                        </div>
                         <div className="flex items-center gap-2">
-                          {uploaded ? (
+                          <FileText className="h-5 w-5 text-muted-foreground" />
+                          <Label className="font-medium">{d.label}</Label>
+                          {saved && getStatusBadge(saved.status)}
+                        </div>
+                        {saved && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteDocument(d.type)}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {d.multiline ? (
+                        <Textarea
+                          value={textInputs[d.type] || ""}
+                          onChange={(e) =>
+                            setTextInputs((prev) => ({ ...prev, [d.type]: e.target.value }))
+                          }
+                          placeholder={d.placeholder}
+                          rows={3}
+                        />
+                      ) : (
+                        <Input
+                          value={textInputs[d.type] || ""}
+                          onChange={(e) =>
+                            setTextInputs((prev) => ({ ...prev, [d.type]: e.target.value }))
+                          }
+                          placeholder={d.placeholder}
+                        />
+                      )}
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground">
+                          {(textInputs[d.type] || "").length} characters
+                        </p>
+                        <Button
+                          size="sm"
+                          disabled={saving === d.type || !(textInputs[d.type] || "").trim()}
+                          onClick={() => handleSaveText(d.type)}
+                        >
+                          {saving === d.type ? (
                             <>
-                              {getStatusIcon(uploaded.status)}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDeleteDocument(doc.type)}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Saving...
                             </>
                           ) : (
                             <>
-                              <Input
-                                type="file"
-                                id={`file-${doc.type}`}
-                                className="hidden"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleFileUpload(doc.type, file);
-                                }}
-                              />
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={uploading === doc.type}
-                                onClick={() => document.getElementById(`file-${doc.type}`)?.click()}
-                              >
-                                {uploading === doc.type ? (
-                                  <>
-                                    <Clock className="h-4 w-4 mr-2 animate-spin" />
-                                    Uploading...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Upload className="h-4 w-4 mr-2" />
-                                    Upload
-                                  </>
-                                )}
-                              </Button>
+                              <Save className="h-4 w-4 mr-2" />
+                              Save
                             </>
                           )}
-                        </div>
+                        </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Submit Section */}
-      {uploadedDocuments.length > 0 && (
+      {savedDocuments.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Submit for Review</CardTitle>
             <CardDescription>
-              Submit your documents for KDM staff review and validation
+              Submit your entries for KDM staff review and validation
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
-              <Button onClick={handleSubmitForReview} disabled={submitting}>
-                {submitting ? "Submitting..." : "Submit Documents for Review"}
-              </Button>
-              <Button variant="outline">
-                Save as Draft
-              </Button>
-            </div>
+            <Button onClick={handleSubmitForReview} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit for Review"}
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -670,16 +545,16 @@ export default function ConsortiumReadinessPage() {
       {/* Information Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Document Requirements</CardTitle>
+          <CardTitle>Information Requirements</CardTitle>
           <CardDescription>
-            Information about required documents for government contracting
+            Information about recommended entries for government contracting
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h4 className="font-medium mb-2">Recommended Documents</h4>
+            <h4 className="font-medium mb-2">Recommended Information</h4>
             <p className="text-sm text-muted-foreground">
-              Upload any documents you have available to strengthen your contracting readiness and improve matching with opportunities. All uploads are optional — you can return and add more documentation at any time.
+              Enter any information you have available to strengthen your contracting readiness and improve matching with opportunities. All entries are optional — you can return and update at any time.
             </p>
           </div>
         </CardContent>
