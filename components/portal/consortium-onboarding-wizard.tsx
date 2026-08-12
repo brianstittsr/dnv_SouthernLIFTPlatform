@@ -397,6 +397,41 @@ export function ConsortiumOnboardingWizard() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      e.target.value = "";
+      return;
+    }
+
+    const MAX_SIZE = 300 * 1024; // 300KB, keeps base64 well under Firestore's 1MB doc limit
+    if (file.size > MAX_SIZE) {
+      toast.error("Image too large. Please choose a photo under 300KB.");
+      e.target.value = "";
+      return;
+    }
+
+    setAvatarUploading(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      updateFormData("avatar", reader.result as string);
+      setAvatarUploading(false);
+      toast.success("Photo updated");
+    };
+    reader.onerror = () => {
+      toast.error("Failed to read image");
+      setAvatarUploading(false);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
   // Debounced company name search for dedup suggestions
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -638,11 +673,38 @@ export function ConsortiumOnboardingWizard() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <Button variant="outline" size="sm">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Upload Photo
-                </Button>
-                <p className="text-xs text-muted-foreground mt-1">Recommended: 400x400px</p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={avatarInputRef}
+                  onChange={handleAvatarChange}
+                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={avatarUploading}
+                    onClick={() => avatarInputRef.current?.click()}
+                  >
+                    {avatarUploading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4 mr-2" />
+                    )}
+                    Upload Photo
+                  </Button>
+                  {formData.avatar && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => updateFormData("avatar", "")}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Recommended: 400x400px, under 300KB</p>
               </div>
             </div>
 
