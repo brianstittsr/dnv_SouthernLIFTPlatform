@@ -166,6 +166,8 @@ export default function TeammembersPage() {
     teamTag: "affiliate" as TeamMemberDoc["teamTag"],
     // Display order within team tag
     displayOrder: 0,
+    // Controls visibility on the public /team page
+    showOnTeamPage: true,
     // Multi-tags
     tags: [] as string[],
   });
@@ -459,10 +461,26 @@ export default function TeammembersPage() {
       isCRO: member.isCRO || false,
       teamTag: member.teamTag || "affiliate",
       displayOrder: member.displayOrder || 0,
+      showOnTeamPage: member.showOnTeamPage !== false,
       tags: member.tags || [],
     });
     setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
+  };
+
+  // Quick toggle for public /team page visibility, directly from the table row
+  const handleToggleShowOnTeamPage = async (member: TeamMemberDoc, next: boolean) => {
+    if (!db) return;
+    try {
+      const docRef = doc(db, COLLECTIONS.TEAM_MEMBERS, member.id);
+      await updateDoc(docRef, { showOnTeamPage: next, updatedAt: Timestamp.now() });
+      setMembers((prev) =>
+        prev.map((m) => (m.id === member.id ? { ...m, showOnTeamPage: next } : m))
+      );
+    } catch (error) {
+      console.error("Error toggling team page visibility:", error);
+      alert("Failed to update team page visibility.");
+    }
   };
 
   const resetForm = () => {
@@ -489,6 +507,7 @@ export default function TeammembersPage() {
       isCRO: false,
       teamTag: "affiliate",
       displayOrder: 0,
+      showOnTeamPage: true,
       tags: [],
     });
   };
@@ -1021,6 +1040,20 @@ export default function TeammembersPage() {
                     rows={3}
                   />
                 </div>
+
+                {/* Public Team Page Visibility */}
+                <div className="flex items-center space-x-2 p-3 border rounded-lg bg-muted/50">
+                  <input
+                    type="checkbox"
+                    id="showOnTeamPage"
+                    checked={formData.showOnTeamPage}
+                    onChange={(e) => setFormData({ ...formData, showOnTeamPage: e.target.checked })}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <Label htmlFor="showOnTeamPage" className="text-sm font-normal cursor-pointer">
+                    Display this profile on the public Team page (kdm-assoc.com/team)
+                  </Label>
+                </div>
                 
                 {/* Leadership Role Flags */}
                 <div className="space-y-3 p-4 border rounded-lg bg-muted/50">
@@ -1271,6 +1304,7 @@ export default function TeammembersPage() {
                     <TableHead>Role</TableHead>
                     <TableHead className="hidden lg:table-cell">Tags</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="text-center" title="Display on public Team page (kdm-assoc.com/team)">Team Page</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -1363,6 +1397,15 @@ export default function TeammembersPage() {
                             Inactive
                           </Badge>
                         )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <input
+                          type="checkbox"
+                          checked={member.showOnTeamPage !== false}
+                          onChange={(e) => handleToggleShowOnTeamPage(member, e.target.checked)}
+                          title="Display on public Team page (kdm-assoc.com/team)"
+                          className="h-4 w-4 rounded border-gray-300 cursor-pointer"
+                        />
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
@@ -1467,21 +1510,32 @@ export default function TeammembersPage() {
                   )}
                 </div>
                 <div className="flex items-center justify-between pt-2">
-                  {member.status === "active" ? (
-                    <Badge variant="outline" className="text-green-600 border-green-600">
-                      <UserCheck className="h-3 w-3 mr-1" />
-                      Active
-                    </Badge>
-                  ) : member.status === "pending" ? (
-                    <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                      Pending
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-gray-600">
-                      <UserX className="h-3 w-3 mr-1" />
-                      Inactive
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {member.status === "active" ? (
+                      <Badge variant="outline" className="text-green-600 border-green-600">
+                        <UserCheck className="h-3 w-3 mr-1" />
+                        Active
+                      </Badge>
+                    ) : member.status === "pending" ? (
+                      <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                        Pending
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-gray-600">
+                        <UserX className="h-3 w-3 mr-1" />
+                        Inactive
+                      </Badge>
+                    )}
+                    <label className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer" title="Display on public Team page (kdm-assoc.com/team)">
+                      <input
+                        type="checkbox"
+                        checked={member.showOnTeamPage !== false}
+                        onChange={(e) => handleToggleShowOnTeamPage(member, e.target.checked)}
+                        className="h-3.5 w-3.5 rounded border-gray-300 cursor-pointer"
+                      />
+                      Team Page
+                    </label>
+                  </div>
                   <div className="flex gap-1">
                     <Button
                       variant={isInSchedulingList(member.id) ? "secondary" : "outline"}

@@ -148,6 +148,8 @@ export default function TeamPage() {
       const affiliateMembers: DisplayMember[] = [];
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data() as TeamMemberDoc;
+        // Skip profiles explicitly hidden from the public team page
+        if (data.showOnTeamPage === false) return;
         const member: DisplayMember = {
           id: docSnap.id,
           name: `${data.firstName} ${data.lastName}`,

@@ -49,7 +49,7 @@ export default function TeamMemberPage() {
         const docRef = doc(db, COLLECTIONS.TEAM_MEMBERS, id);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
+        if (docSnap.exists() && (docSnap.data() as TeamMemberDoc).showOnTeamPage !== false) {
           const data = docSnap.data() as TeamMemberDoc;
           setMember({
             id: docSnap.id,
