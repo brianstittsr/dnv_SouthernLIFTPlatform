@@ -297,26 +297,16 @@ export async function listImages(category?: ImageCategory): Promise<ImageMetadat
     if (!db) throw new Error("Firebase not initialized");
     
     const imagesRef = collection(db, IMAGES_COLLECTION);
-    let q = query(
-      imagesRef,
-      where("isActive", "==", true),
-      orderBy("createdAt", "desc")
-    );
-
-    if (category) {
-      q = query(
-        imagesRef,
-        where("isActive", "==", true),
-        where("category", "==", category),
-        orderBy("createdAt", "desc")
-      );
-    }
+    const q = query(imagesRef, orderBy("createdAt", "desc"));
 
     const querySnapshot = await getDocs(q);
     const images: ImageMetadata[] = [];
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      if (data.isActive === false) return;
+      if (category && data.category !== category) return;
+
       images.push({
         id: doc.id,
         name: data.name,

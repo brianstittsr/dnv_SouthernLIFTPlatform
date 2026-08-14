@@ -69,7 +69,8 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { listImages, getImage, base64ToDataUrl, type ImageMetadata } from "@/lib/firebase-images";
+import { listImages, getImage, base64ToDataUrl, uploadImage, type ImageMetadata } from "@/lib/firebase-images";
+import { toast } from "sonner";
 import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
@@ -141,6 +142,8 @@ export default function TeammembersPage() {
   const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
   const [loadingGallery, setLoadingGallery] = useState(false);
   const [imageManagerOpen, setImageManagerOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -233,10 +236,42 @@ export default function TeammembersPage() {
     try {
       const imgs = await listImages();
       setGalleryImages(imgs);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching gallery:", error);
+      toast.error(error.message || "Failed to load images");
     } finally {
       setLoadingGallery(false);
+    }
+  };
+
+  // Upload a new image from the Image Manager dialog
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const imageId = await uploadImage(file, {
+        name: file.name.replace(/\.[^/.]+$/, ""),
+        category: "team",
+      });
+
+      if (imageId) {
+        setSelectedImageId(imageId);
+        const full = await getImage(imageId);
+        if (full) {
+          setAvatarUrl(base64ToDataUrl(full.base64Data, full.mimeType));
+        }
+        await fetchGalleryImages();
+        toast.success("Image uploaded and selected");
+        setImageManagerOpen(false);
+      }
+    } catch (error: any) {
+      console.error("Error uploading image:", error);
+      toast.error(error.message || "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
+      if (e.target) e.target.value = "";
     }
   };
 
@@ -740,7 +775,7 @@ export default function TeammembersPage() {
                         Image Manager
                       </DialogTitle>
                       <DialogDescription>
-                        Select a photo from the Image Library. Upload new photos via Admin → Image Management.
+                        Select a photo from the Image Library or upload a new one.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
@@ -748,15 +783,34 @@ export default function TeammembersPage() {
                         <p className="text-sm text-muted-foreground">
                           {galleryImages.length} image{galleryImages.length !== 1 ? "s" : ""} in library
                         </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={fetchGalleryImages}
-                          disabled={loadingGallery}
-                        >
-                          <RefreshCw className={`h-4 w-4 mr-2 ${loadingGallery ? "animate-spin" : ""}`} />
-                          Refresh
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="team-image-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleGalleryUpload}
+                            disabled={uploadingImage}
+                          />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => document.getElementById("team-image-upload")?.click()}
+                            disabled={uploadingImage}
+                          >
+                            <Upload className="h-4 w-4 mr-2" />
+                            {uploadingImage ? "Uploading..." : "Upload"}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={fetchGalleryImages}
+                            disabled={loadingGallery}
+                          >
+                            <RefreshCw className={`h-4 w-4 mr-2 ${loadingGallery ? "animate-spin" : ""}`} />
+                            Refresh
+                          </Button>
+                        </div>
                       </div>
                       {loadingGallery ? (
                         <div className="flex items-center justify-center py-8">
@@ -767,14 +821,14 @@ export default function TeammembersPage() {
                           <ImageIcon className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-40" />
                           <p className="text-sm font-medium">No images in library</p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Go to <strong>Admin → Image Management</strong> to upload photos first.
+                            Use the <strong>Upload</strong> button to add a photo.
                           </p>
                         </div>
                       ) : (
                         <div className="grid grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
                           {galleryImages.map((img) => {
                             const linkedmember = members.find((m) => m.avatar === img.id);
-                            const isSelected = avatarUrl === img.id;
+                            const isSelected = selectedImageId === img.id;
                             return (
                               <GalleryImageTile
                                 key={img.id}
@@ -782,6 +836,7 @@ export default function TeammembersPage() {
                                 isSelected={isSelected}
                                 linkedmemberName={linkedmember ? `${linkedmember.firstName} ${linkedmember.lastName}` : undefined}
                                 onSelect={async (id) => {
+                                  setSelectedImageId(id);
                                   const full = await getImage(id);
                                   if (full) {
                                     setAvatarUrl(base64ToDataUrl(full.base64Data, full.mimeType));

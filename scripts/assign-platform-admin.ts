@@ -1,5 +1,12 @@
 // Script to assign platform_admin role to a user
-// Run with: npx tsx scripts/assign-platform-admin.ts
+// Run with: npx tsx scripts/assign-platform-admin.ts <email> <firstName> <lastName>
+//
+// IMPORTANT: firstName/lastName are REQUIRED and are only used if a new
+// Firebase Auth user must be created, or to correct the name on the
+// Firestore user document. Previously this script had a hardcoded name
+// ("Manpreet Hundal") which caused it to silently overwrite a different
+// user's name when run with someone else's email — always pass the
+// correct name explicitly to avoid this class of bug.
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
@@ -21,7 +28,8 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-async function assignPlatformAdmin(email: string) {
+async function assignPlatformAdmin(email: string, firstName: string, lastName: string) {
+  const displayName = `${firstName} ${lastName}`;
   try {
     console.log(`🔍 Looking up user: ${email}`);
     
@@ -37,7 +45,7 @@ async function assignPlatformAdmin(email: string) {
         console.log(`🔧 User not found; creating new account for ${email}`);
         userRecord = await auth.createUser({
           email,
-          displayName: 'Manpreet Hundal',
+          displayName,
           password: tempPassword,
           emailVerified: true,
         });
@@ -61,9 +69,9 @@ async function assignPlatformAdmin(email: string) {
     
     if (userDoc.exists) {
       await userDocRef.update({
-        firstName: 'Manpreet',
-        lastName: 'Hundal',
-        displayName: userRecord.displayName || 'Manpreet Hundal',
+        firstName,
+        lastName,
+        displayName: userRecord.displayName || displayName,
         role: 'platform_admin',
         svpRole: 'platform_admin',
         tenantId: 'kdm-svp-platform',
@@ -75,9 +83,9 @@ async function assignPlatformAdmin(email: string) {
       await userDocRef.set({
         id: userRecord.uid,
         email: userRecord.email,
-        firstName: 'Manpreet',
-        lastName: 'Hundal',
-        displayName: userRecord.displayName || 'Manpreet Hundal',
+        firstName,
+        lastName,
+        displayName: userRecord.displayName || displayName,
         role: 'platform_admin',
         svpRole: 'platform_admin',
         tenantId: 'kdm-svp-platform',
@@ -124,8 +132,13 @@ async function assignPlatformAdmin(email: string) {
   }
 }
 
-// Get email from command line argument or use default
-const email = process.argv[2] || 'bstitt@strategicvalueplus.com';
+// Get email/name from command line arguments — all three are required
+const [email, firstName, lastName] = process.argv.slice(2);
 
-console.log(`\n🚀 Assigning platform_admin role to: ${email}\n`);
-assignPlatformAdmin(email);
+if (!email || !firstName || !lastName) {
+  console.error('Usage: npx tsx scripts/assign-platform-admin.ts <email> <firstName> <lastName>');
+  process.exit(1);
+}
+
+console.log(`\n🚀 Assigning platform_admin role to: ${firstName} ${lastName} (${email})\n`);
+assignPlatformAdmin(email, firstName, lastName);
