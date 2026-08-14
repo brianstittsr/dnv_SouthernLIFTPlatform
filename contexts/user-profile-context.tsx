@@ -57,10 +57,31 @@ export interface UserProfile {
   companyId?: string;
   companyName?: string;
 
+  // Government contracting readiness documents/entries
+  readinessDocuments?: ReadinessDocumentRecord[];
+  readinessScore?: number;
+  readinessValidationStatus?: string;
+
   // Profile completion tracking
   profileCompletedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// Lightweight readiness document/entry shape (mirrors ReadinessDocEntry from
+// components/portal/consortium-onboarding-wizard.tsx, duplicated here to avoid
+// a circular import between that component and this context).
+export interface ReadinessDocumentRecord {
+  type: string;
+  fileName?: string;
+  fileUrl?: string;
+  attachmentId?: string;
+  textValue?: string;
+  dataBase64?: string;
+  mimeType?: string;
+  fileSize?: number;
+  uploadedAt?: any;
+  status?: string;
 }
 
 // Default empty profile
@@ -264,6 +285,17 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     teammember = await findAndLinkTeammember(userEmail, userId);
   }
 
+  // Readiness data is stored on the team member document (and mirrored to the
+  // user document as a fallback). Cast to `any` since these fields aren't part
+  // of the strict TeamMemberDoc type but are present in the raw Firestore data.
+  const teammemberRaw = teammember as any;
+  const readinessDocuments: ReadinessDocumentRecord[] | undefined =
+    teammemberRaw?.readinessDocuments || userDoc?.readinessDocuments || undefined;
+  const readinessScore: number | undefined =
+    teammemberRaw?.readinessScore ?? userDoc?.readinessScore ?? undefined;
+  const readinessValidationStatus: string | undefined =
+    teammemberRaw?.readinessValidationStatus || userDoc?.readinessValidationStatus || undefined;
+
   if (teammember) {
     const mappedProfile = mapTeammemberToProfile(teammember);
     return {
@@ -285,6 +317,9 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
       }),
       svpRole,
       svpRoles,
+      readinessDocuments,
+      readinessScore,
+      readinessValidationStatus,
       updatedAt: new Date().toISOString(),
     };
   }
@@ -307,6 +342,9 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     createdAt: userDoc?.createdAt?.toDate?.()?.toISOString() || defaultProfile.createdAt,
     svpRole,
     svpRoles,
+    readinessDocuments,
+    readinessScore,
+    readinessValidationStatus,
     updatedAt: new Date().toISOString(),
   };
 }

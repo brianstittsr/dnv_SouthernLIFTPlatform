@@ -82,7 +82,13 @@ import {
   Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useUserProfile } from "@/contexts/user-profile-context";
+import { useUserProfile, type ReadinessDocumentRecord } from "@/contexts/user-profile-context";
+import {
+  READINESS_TEXT_FIELDS,
+  READINESS_FILE_FIELDS,
+  isReadinessEntryMisaligned,
+  downloadReadinessEntry,
+} from "@/components/portal/consortium-onboarding-wizard";
 import { USER_ROLES } from "@/lib/rbac-types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ContactsTab from "./contacts-tab";
@@ -841,12 +847,12 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">Readiness Score</p>
                     <p className="text-sm text-muted-foreground">
-                      {(userProfile as any).readinessScore || 0}/100
+                      {userProfile.readinessScore || 0}/100
                     </p>
                   </div>
                 </div>
-                <Badge variant={(userProfile as any).readinessScore >= 80 ? "default" : "secondary"}>
-                  {(userProfile as any).readinessScore >= 80 ? "Strong" : (userProfile as any).readinessScore >= 60 ? "Good" : "Needs Improvement"}
+                <Badge variant={(userProfile.readinessScore || 0) >= 80 ? "default" : "secondary"}>
+                  {(userProfile.readinessScore || 0) >= 80 ? "Strong" : (userProfile.readinessScore || 0) >= 60 ? "Good" : "Needs Improvement"}
                 </Badge>
               </div>
 
@@ -856,33 +862,119 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">Validation Status</p>
                     <p className="text-sm text-muted-foreground">
-                      {(userProfile as any).readinessValidationStatus || "Not Started"}
+                      {userProfile.readinessValidationStatus || "Not Started"}
                     </p>
                   </div>
                 </div>
-                <Badge variant={(userProfile as any).readinessValidationStatus === "approved" ? "default" : "secondary"}>
-                  {(userProfile as any).readinessValidationStatus || "Not Started"}
+                <Badge variant={userProfile.readinessValidationStatus === "approved" ? "default" : "secondary"}>
+                  {userProfile.readinessValidationStatus || "Not Started"}
                 </Badge>
               </div>
 
-              {((userProfile as any).readinessDocuments || []).length > 0 && (
-                <div className="space-y-2">
-                  <Label>Uploaded Documents</Label>
-                  <div className="space-y-2">
-                    {(userProfile as any).readinessDocuments.map((doc: any, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{doc.fileName}</span>
-                        </div>
-                        <Badge variant={doc.status === "approved" ? "default" : "secondary"}>
-                          {doc.status}
-                        </Badge>
+              {(() => {
+                const readinessDocuments: ReadinessDocumentRecord[] = userProfile.readinessDocuments || [];
+                const findEntry = (type: string) => readinessDocuments.find((d) => d.type === type);
+                const misalignedCount = readinessDocuments.filter((d) => isReadinessEntryMisaligned(d)).length;
+
+                return (
+                  <>
+                    {misalignedCount > 0 && (
+                      <Alert variant="destructive">
+                        <AlertDescription>
+                          {misalignedCount} readiness {misalignedCount === 1 ? "entry needs" : "entries need"} to be
+                          updated. These were saved under an older format and must be re-entered or re-uploaded.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    {/* Registration details (text fields) */}
+                    <div className="space-y-2">
+                      <Label>Registration Details</Label>
+                      <div className="space-y-2">
+                        {READINESS_TEXT_FIELDS.map((field) => {
+                          const entry = findEntry(field.type);
+                          const misaligned = isReadinessEntryMisaligned(entry);
+                          return (
+                            <div
+                              key={field.type}
+                              className={cn(
+                                "flex items-center justify-between p-3 rounded-lg",
+                                misaligned ? "bg-red-50 border border-red-200" : "bg-muted"
+                              )}
+                            >
+                              <div>
+                                <p className="text-sm font-medium">{field.label}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {entry?.textValue || (misaligned ? "Needs update" : "Not provided")}
+                                </p>
+                              </div>
+                              {misaligned ? (
+                                <Badge variant="destructive">Needs Update</Badge>
+                              ) : entry?.textValue ? (
+                                <Badge variant="default">Saved</Badge>
+                              ) : (
+                                <Badge variant="secondary">Not Set</Badge>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    </div>
+
+                    {/* Uploaded documents */}
+                    <div className="space-y-2">
+                      <Label>Uploaded Documents</Label>
+                      <div className="space-y-2">
+                        {READINESS_FILE_FIELDS.map((field) => {
+                          const entry = findEntry(field.type);
+                          const misaligned = isReadinessEntryMisaligned(entry);
+                          const hasDoc = !!entry?.dataBase64;
+                          return (
+                            <div
+                              key={field.type}
+                              className={cn(
+                                "flex items-center justify-between p-3 rounded-lg",
+                                misaligned ? "bg-red-50 border border-red-200" : "bg-muted"
+                              )}
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium">{field.label}</p>
+                                  <p className="text-sm text-muted-foreground truncate">
+                                    {entry?.fileName || (misaligned ? "Needs re-upload" : "Not uploaded")}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                {hasDoc && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => downloadReadinessEntry(entry!)}
+                                    title="Download"
+                                  >
+                                    <FileText className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                {misaligned ? (
+                                  <Badge variant="destructive">Needs Update</Badge>
+                                ) : entry?.status ? (
+                                  <Badge variant={entry.status === "approved" ? "default" : "secondary"}>
+                                    {entry.status}
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="secondary">Not Set</Badge>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
 
               <Button variant="outline" asChild>
                 <a href="/portal/consortium/readiness">Manage Documents</a>

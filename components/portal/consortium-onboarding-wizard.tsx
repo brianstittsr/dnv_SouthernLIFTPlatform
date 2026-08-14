@@ -37,6 +37,7 @@ import {
   Upload,
   Loader2,
   X,
+  Download,
 } from "lucide-react";
 import {
   Select,
@@ -106,6 +107,108 @@ const PILLARS = [
   { id: "opportunity-zones", label: "Opportunity Zones", icon: Globe },
 ];
 
+// ─── Readiness Step sub-component ────────────────────────────────────────────
+
+export type ReadinessDocType =
+  | "sam_registration"
+  | "duns_number"
+  | "cage_code"
+  | "capability_statement"
+  | "past_performance"
+  | "certifications"
+  | "financials"
+  | "insurance"
+  | "other";
+
+export interface ReadinessDocEntry {
+  type: ReadinessDocType;
+  fileName?: string;
+  /** Legacy external file URL (e.g. Firebase Storage). Presence without dataBase64
+   *  or textValue indicates a record that predates the base64/text migration. */
+  fileUrl?: string;
+  attachmentId?: string;
+  markdownExtracted?: boolean;
+  /** Plain text value — used for SAM/DUNS/CAGE and other manually entered fields */
+  textValue?: string;
+  /** Base64 data URI of the uploaded document, stored directly in Firestore */
+  dataBase64?: string;
+  mimeType?: string;
+  fileSize?: number;
+  uploadedAt?: any;
+  status?: "pending" | "under_review" | "approved" | "rejected" | "pending_review" | "needs_update";
+}
+
+// Fields captured as plain text (registration numbers, not documents)
+export const READINESS_TEXT_FIELDS: { type: ReadinessDocType; label: string; placeholder: string }[] = [
+  { type: "sam_registration", label: "SAM Registration", placeholder: "Enter your SAM UEI / registration number" },
+  { type: "duns_number", label: "DUNS Number", placeholder: "Enter your DUNS number" },
+  { type: "cage_code", label: "CAGE Code", placeholder: "Enter your CAGE code" },
+];
+
+// Fields captured as uploaded documents, stored as base64 in Firestore
+export const READINESS_FILE_FIELDS: { type: ReadinessDocType; label: string }[] = [
+  { type: "capability_statement", label: "Capability Statement" },
+  { type: "past_performance", label: "Past Performance References" },
+  { type: "certifications", label: "Certifications (CMMC, ISO, etc.)" },
+  { type: "financials", label: "Financial Statements" },
+  { type: "insurance", label: "Insurance Certificates" },
+];
+
+export const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
+  ...READINESS_TEXT_FIELDS.map(({ type, label }) => ({ type, label })),
+  ...READINESS_FILE_FIELDS,
+];
+
+/** Minimal shape shared by ReadinessDocEntry and the lighter
+ *  ReadinessDocumentRecord (defined in contexts/user-profile-context.tsx) so
+ *  alignment/download helpers can operate on either. */
+export interface ReadinessEntryLike {
+  type: string;
+  fileName?: string;
+  fileUrl?: string;
+  attachmentId?: string;
+  textValue?: string;
+  dataBase64?: string;
+}
+
+/**
+ * A record is "misaligned" if it was created under the old storage scheme
+ * (external fileUrl only) and hasn't been migrated to the new text/base64
+ * storage. These records should be flagged so the user can update them.
+ */
+export function isReadinessEntryMisaligned(entry?: ReadinessEntryLike): boolean {
+  if (!entry) return false;
+  const isTextType = READINESS_TEXT_FIELDS.some((f) => f.type === entry.type);
+  if (isTextType) {
+    return !entry.textValue && !!(entry.fileUrl || entry.fileName);
+  }
+  return !entry.dataBase64 && !!(entry.fileUrl || entry.attachmentId);
+}
+
+const MAX_READINESS_FILE_BYTES = 700 * 1024; // ~700KB keeps base64 well under Firestore's 1MB doc limit
+
+const readFileAsBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsDataURL(file);
+  });
+};
+
+export function downloadReadinessEntry(entry: ReadinessEntryLike) {
+  if (entry.dataBase64) {
+    const link = document.createElement("a");
+    link.href = entry.dataBase64;
+    link.download = entry.fileName || `${entry.type}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else if (entry.fileUrl) {
+    window.open(entry.fileUrl, "_blank", "noopener,noreferrer");
+  }
+}
+
 interface FormData {
   firstName: string;
   lastName: string;
@@ -120,48 +223,17 @@ interface FormData {
   certifications: string[];
   pillarFocus: string[];
   // Stage 4: Readiness Documents
-  readinessDocuments: {
-    type: "sam_registration" | "duns_number" | "cage_code" | "capability_statement" | "past_performance" | "certifications" | "financials" | "insurance" | "other";
-    fileName: string;
-    fileUrl: string;
-    attachmentId?: string;
-    markdownExtracted?: boolean;
-  }[];
+  readinessDocuments: ReadinessDocEntry[];
   // Stage 5: Matching Preferences
   targetContractSizes: string[];
   targetAgencies: string[];
   targetRegions: string[];
 }
 
-// ─── Readiness Step sub-component ────────────────────────────────────────────
-
-export type ReadinessDocType = FormData["readinessDocuments"][number]["type"];
-
-export interface ReadinessDocEntry {
-  type: ReadinessDocType;
-  fileName: string;
-  fileUrl: string;
-  attachmentId?: string;
-  markdownExtracted?: boolean;
-}
-
-export const READINESS_DOC_TYPES: { type: ReadinessDocType; label: string }[] = [
-  { type: "sam_registration", label: "SAM Registration" },
-  { type: "duns_number", label: "DUNS Number" },
-  { type: "cage_code", label: "CAGE Code" },
-  { type: "capability_statement", label: "Capability Statement" },
-  { type: "past_performance", label: "Past Performance References" },
-  { type: "certifications", label: "Certifications (CMMC, ISO, etc.)" },
-  { type: "financials", label: "Financial Statements" },
-  { type: "insurance", label: "Insurance Certificates" },
-];
-
 export function ReadinessStep({
   readinessDocuments,
   onAdd,
   onRemove,
-  userId,
-  companyId,
 }: {
   readinessDocuments: ReadinessDocEntry[];
   onAdd: (entry: ReadinessDocEntry) => void;
@@ -171,6 +243,13 @@ export function ReadinessStep({
 }) {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [uploadingType, setUploadingType] = useState<string | null>(null);
+  const [textInputs, setTextInputs] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    readinessDocuments.forEach((d) => {
+      if (d.textValue) initial[d.type] = d.textValue;
+    });
+    return initial;
+  });
 
   const handleFileChange = async (
     type: ReadinessDocType,
@@ -179,42 +258,39 @@ export function ReadinessStep({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.size > MAX_READINESS_FILE_BYTES) {
+      toast.error(`File too large. Please choose a file under ${Math.round(MAX_READINESS_FILE_BYTES / 1024)}KB.`);
+      e.target.value = "";
+      return;
+    }
+
     setUploadingType(type);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("category", "readiness");
-      formData.append("userId", userId);
-      formData.append("companyId", companyId);
-      formData.append("attachmentType", type);
-
-      const res = await fetch("/api/upload-file", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-
+      const dataBase64 = await readFileAsBase64(file);
       onAdd({
         type,
         fileName: file.name,
-        fileUrl: data.fileUrl || "",
-        attachmentId: data.attachmentId,
-        markdownExtracted: data.markdownExtracted,
+        dataBase64,
+        mimeType: file.type || "application/octet-stream",
+        fileSize: file.size,
       });
-
-      toast.success(
-        data.markdownExtracted
-          ? `${file.name} uploaded and text extracted (${data.pageCount} pages)`
-          : `${file.name} uploaded`
-      );
+      toast.success(`${file.name} saved`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to upload file");
+      toast.error(error instanceof Error ? error.message : "Failed to process file");
     } finally {
       setUploadingType(null);
       e.target.value = "";
     }
+  };
+
+  const handleSaveText = (type: ReadinessDocType) => {
+    const value = (textInputs[type] || "").trim();
+    if (!value) {
+      toast.error("Please enter a value before saving");
+      return;
+    }
+    onAdd({ type, textValue: value });
+    toast.success("Saved");
   };
 
   return (
@@ -224,38 +300,106 @@ export function ReadinessStep({
           <Award className="h-12 w-12 text-amber-600 mx-auto mb-2" />
           <h3 className="text-xl font-semibold">Government Contracting Readiness</h3>
           <p className="text-sm text-muted-foreground">
-            Upload documentation to validate your government contracting readiness
+            Provide documentation to validate your government contracting readiness
           </p>
         </div>
 
+        {/* Text fields: SAM Registration, DUNS Number, CAGE Code */}
+        <div className="space-y-4">
+          <Label>Registration Details</Label>
+          <div className="grid gap-3">
+            {READINESS_TEXT_FIELDS.map((item) => {
+              const uploaded = readinessDocuments.find((d) => d.type === item.type);
+              const misaligned = isReadinessEntryMisaligned(uploaded);
+              return (
+                <div
+                  key={item.type}
+                  className={`p-3 border rounded-lg space-y-2 transition-colors ${
+                    misaligned ? "border-red-300 bg-red-50" : uploaded?.textValue ? "border-green-400 bg-green-50" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">{item.label}</Label>
+                    {uploaded?.textValue && !misaligned && (
+                      <Badge className="bg-green-100 text-green-800">Saved</Badge>
+                    )}
+                    {misaligned && <Badge variant="destructive">Needs Update</Badge>}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={textInputs[item.type] ?? ""}
+                      onChange={(e) =>
+                        setTextInputs((prev) => ({ ...prev, [item.type]: e.target.value }))
+                      }
+                      placeholder={item.placeholder}
+                    />
+                    <Button size="sm" onClick={() => handleSaveText(item.type)}>
+                      Save
+                    </Button>
+                    {uploaded && (
+                      <Button variant="ghost" size="sm" onClick={() => onRemove(item.type)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  {misaligned && (
+                    <p className="text-xs text-red-600">
+                      This was previously uploaded as a file. Please re-enter it as text above.
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* File fields: documents stored as base64 */}
         <div className="space-y-4">
           <Label>Upload Documents</Label>
           <p className="text-sm text-muted-foreground">
-            Upload your government contracting documentation. You can skip this step and upload later.
+            Upload your government contracting documentation (max {Math.round(MAX_READINESS_FILE_BYTES / 1024)}KB each). You can skip this step and upload later.
           </p>
 
           <div className="grid gap-3">
-            {READINESS_DOC_TYPES.map((item) => {
+            {READINESS_FILE_FIELDS.map((item) => {
               const uploaded = readinessDocuments.find((d) => d.type === item.type);
+              const misaligned = isReadinessEntryMisaligned(uploaded);
+              const hasValidDoc = !!uploaded?.dataBase64;
               return (
                 <div
                   key={item.type}
                   className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
-                    uploaded ? "border-green-400 bg-green-50" : ""
+                    hasValidDoc ? "border-green-400 bg-green-50" : misaligned ? "border-red-300 bg-red-50" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <FileText className={`h-5 w-5 shrink-0 ${uploaded ? "text-green-600" : "text-muted-foreground"}`} />
+                    <FileText className={`h-5 w-5 shrink-0 ${hasValidDoc ? "text-green-600" : misaligned ? "text-red-500" : "text-muted-foreground"}`} />
                     <div className="min-w-0">
-                      <p className="text-sm font-medium">{item.label}</p>
-                      {uploaded && (
-                        <p className="text-xs text-green-700 truncate max-w-[180px]">{uploaded.fileName}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">{item.label}</p>
+                        {misaligned && <Badge variant="destructive" className="text-xs">Needs Update</Badge>}
+                      </div>
+                      {hasValidDoc && (
+                        <p className="text-xs text-green-700 truncate max-w-[180px]">{uploaded!.fileName}</p>
+                      )}
+                      {misaligned && (
+                        <p className="text-xs text-red-600">Please re-upload this document</p>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    {uploaded ? (
+                    {hasValidDoc && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => downloadReadinessEntry(uploaded!)}
+                        title="Download"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {uploaded && (
                       <Button
                         variant="ghost"
                         size="sm"
@@ -265,10 +409,11 @@ export function ReadinessStep({
                         <X className="h-4 w-4 mr-1" />
                         Remove
                       </Button>
-                    ) : uploadingType === item.type ? (
+                    )}
+                    {uploadingType === item.type ? (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Uploading...
+                        Processing...
                       </div>
                     ) : (
                       <>
@@ -285,7 +430,7 @@ export function ReadinessStep({
                           onClick={() => fileInputRefs.current[item.type]?.click()}
                         >
                           <Upload className="h-4 w-4 mr-2" />
-                          Upload
+                          {hasValidDoc || misaligned ? "Replace" : "Upload"}
                         </Button>
                       </>
                     )}
