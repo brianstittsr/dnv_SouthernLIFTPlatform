@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
+import { useUserProfile } from "@/contexts/user-profile-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Building2, ArrowRight } from "lucide-react";
+import { CompanyLogoUploadDialog } from "@/components/portal/company-logo-upload-dialog";
+import { Loader2, Building2, ArrowRight, Pencil } from "lucide-react";
 
 interface CompanyIntelligence {
   legalCompanyName?: string;
@@ -43,10 +45,20 @@ function getInitials(firstName?: string, lastName?: string): string {
 }
 
 export default function ConsortiumMembersPage() {
+  const { profile: userProfile } = useUserProfile();
   const [founders, setFounders] = useState<CompanyGroup[]>([]);
   const [members, setMembers] = useState<CompanyGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingCompany, setEditingCompany] = useState<CompanyGroup | null>(null);
+  const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth?.onAuthStateChanged((user) => {
+      setCurrentUserUid(user?.uid || null);
+    });
+    return () => unsubscribe?.();
+  }, []);
 
   useEffect(() => {
     async function fetchMembers() {
@@ -137,10 +149,51 @@ export default function ConsortiumMembersPage() {
 
       {!loading && !error && (
         <div className="space-y-12">
-          <CompanySection title="Founders" companies={founders} badge="Founding Member" />
-          <CompanySection title="KDM Consortium Members" companies={members} badge="Consortium Member" />
+          <CompanySection
+            title="Founders"
+            companies={founders}
+            badge="Founding Member"
+            currentUserUid={currentUserUid}
+            userProfile={userProfile}
+            onEditLogo={setEditingCompany}
+          />
+          <CompanySection
+            title="KDM Consortium Members"
+            companies={members}
+            badge="Consortium Member"
+            currentUserUid={currentUserUid}
+            userProfile={userProfile}
+            onEditLogo={setEditingCompany}
+          />
         </div>
       )}
+
+      <CompanyLogoUploadDialog
+        teamMemberId={editingCompany?.primaryMember.id || ""}
+        companyName={editingCompany?.companyName}
+        currentLogo={editingCompany?.companyLogo}
+        open={!!editingCompany}
+        onOpenChange={(open) => !open && setEditingCompany(null)}
+        onUpdated={(logo) => {
+          if (!editingCompany) return;
+          const updater = (list: CompanyGroup[]) =>
+            list.map((c) =>
+              c.key === editingCompany.key
+                ? {
+                    ...c,
+                    companyLogo: logo,
+                    primaryMember: {
+                      ...c.primaryMember,
+                      companyIntelligence: { ...(c.primaryMember.companyIntelligence || {}), companyLogo: logo },
+                    },
+                  }
+                : c
+            );
+          setFounders((prev) => updater(prev));
+          setMembers((prev) => updater(prev));
+          setEditingCompany(null);
+        }}
+      />
     </div>
   );
 }
@@ -149,18 +202,29 @@ function CompanySection({
   title,
   companies,
   badge,
+  currentUserUid,
+  userProfile,
+  onEditLogo,
 }: {
   title: string;
   companies: CompanyGroup[];
   badge: string;
+  currentUserUid: string | null;
+  userProfile: ReturnType<typeof useUserProfile>["profile"];
+  onEditLogo: (company: CompanyGroup) => void;
 }) {
   if (companies.length === 0) return null;
+
+  const isAdmin = userProfile.svpRole === "platform_admin" || userProfile.role === "admin";
 
   return (
     <section className="space-y-6">
       <h2 className="text-2xl font-bold tracking-tight border-b pb-2">{title}</h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {companies.map((company) => (
+        {companies.map((company) => {
+          const canEditLogo = isAdmin || company.primaryMember.firebaseUid === currentUserUid || company.primaryMember.id === currentUserUid;
+
+          return (
           <Link
             key={company.key}
             href={`/portal/company/consortium-members/${company.primaryMember.id}`}
@@ -168,7 +232,7 @@ function CompanySection({
           >
             <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
               <CardContent className="p-0">
-                <div className="bg-muted h-32 flex items-center justify-center p-4">
+                <div className="relative bg-muted h-32 flex items-center justify-center p-4">
                   {company.companyLogo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -178,6 +242,20 @@ function CompanySection({
                     />
                   ) : (
                     <Building2 className="h-12 w-12 text-muted-foreground/60" />
+                  )}
+                  {canEditLogo && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onEditLogo(company);
+                      }}
+                      className="absolute top-2 right-2 p-2 rounded-full bg-background/90 hover:bg-background shadow-sm border"
+                      aria-label="Edit company logo"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
                   )}
                 </div>
                 <div className="p-5 space-y-4">
@@ -224,7 +302,8 @@ function CompanySection({
               </CardContent>
             </Card>
           </Link>
-        ))}
+        );
+      })}
       </div>
     </section>
   );

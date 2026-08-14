@@ -21,6 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { resizeImage } from "@/lib/image-utils";
 import {
   Building2,
   ChevronLeft,
@@ -246,53 +247,6 @@ export function CompanyIntelligenceWizard() {
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const [logoUploading, setLogoUploading] = useState(false);
 
-  const MAX_LOGO_DIMENSION = 400; // px
-  const MAX_LOGO_BYTES = 300 * 1024; // 300KB, keeps base64 well under Firestore's 1MB doc limit
-
-  const resizeLogo = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new window.Image();
-        img.onload = () => {
-          // Compute proportional dimensions so the logo fits within
-          // MAX_LOGO_DIMENSION x MAX_LOGO_DIMENSION without stretching.
-          let { width, height } = img;
-          const scale = Math.min(
-            MAX_LOGO_DIMENSION / width,
-            MAX_LOGO_DIMENSION / height,
-            1 // never upscale smaller images
-          );
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            reject(new Error("Canvas not supported"));
-            return;
-          }
-          ctx.drawImage(img, 0, 0, width, height);
-
-          // Progressively lower JPEG quality until under the size budget.
-          let quality = 0.92;
-          let dataUrl = canvas.toDataURL("image/jpeg", quality);
-          while (dataUrl.length * 0.75 > MAX_LOGO_BYTES && quality > 0.3) {
-            quality -= 0.1;
-            dataUrl = canvas.toDataURL("image/jpeg", quality);
-          }
-          resolve(dataUrl);
-        };
-        img.onerror = () => reject(new Error("Failed to load image"));
-        img.src = reader.result as string;
-      };
-      reader.onerror = () => reject(new Error("Failed to read image"));
-      reader.readAsDataURL(file);
-    });
-  };
-
   const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -305,7 +259,10 @@ export function CompanyIntelligenceWizard() {
 
     setLogoUploading(true);
     try {
-      const resizedDataUrl = await resizeLogo(file);
+      const resizedDataUrl = await resizeImage(file, {
+        maxDimension: 400,
+        maxBytes: 300 * 1024,
+      });
       setFormData((prev) => ({ ...prev, companyLogo: resizedDataUrl }));
       toast.success("Logo updated");
     } catch (error) {
@@ -537,6 +494,7 @@ export function CompanyIntelligenceWizard() {
         state: formData.state,
         zip: formData.zip,
         companyDescription: formData.companyDescription,
+        companyLogo: formData.companyLogo || "",
         naicsCodes: formData.primaryNaicsCodes,
         certifications: [
           ...formData.certifications.isoCertifications,

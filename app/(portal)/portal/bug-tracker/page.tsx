@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { db, auth } from "@/lib/firebase";
 import {
   collection,
@@ -180,6 +181,7 @@ function fromFirestore(id: string, data: Record<string, unknown>): TrackerItem {
 }
 
 export default function BugTrackerPage() {
+  const searchParams = useSearchParams();
   const [items, setItems] = useState<TrackerItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -199,6 +201,13 @@ export default function BugTrackerPage() {
   // Form state
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM);
   const [editData, setEditData] = useState<FormData>(DEFAULT_FORM);
+
+  // Auto-open the "new entry" dialog when the URL contains ?open=new
+  useEffect(() => {
+    if (searchParams.get("open") === "new") {
+      setShowAddDialog(true);
+    }
+  }, [searchParams]);
 
   const currentUser = auth?.currentUser;
   const reporterName = currentUser?.displayName || currentUser?.email?.split("@")[0] || "Current User";

@@ -72,6 +72,7 @@ export interface UserProfile {
   state?: string;
   zip?: string;
   companyDescription?: string;
+  companyLogo?: string;
   naicsCodes?: string[];
   cageCode?: string;
   uei?: string;
@@ -332,6 +333,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
         state: userDoc.state || undefined,
         zip: userDoc.zip || undefined,
         companyDescription: userDoc.companyDescription || undefined,
+        companyLogo: userDoc.companyLogo || userDoc.companyIntelligence?.companyLogo || undefined,
         naicsCodes: userDoc.naicsCodes || undefined,
         certifications: userDoc.certifications || undefined,
         cageCode: userDoc.cageCode || undefined,

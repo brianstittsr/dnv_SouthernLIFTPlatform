@@ -84,6 +84,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProfile, type ReadinessDocumentRecord } from "@/contexts/user-profile-context";
+import { resizeImage } from "@/lib/image-utils";
 import {
   READINESS_FILE_FIELDS,
   isReadinessEntryMisaligned,
@@ -235,6 +236,7 @@ export default function ProfilePage() {
     state: "",
     zip: "",
     companyDescription: "",
+    companyLogo: "",
     naicsCodes: [] as string[],
     certifications: [] as string[],
     cageCode: "",
@@ -246,6 +248,8 @@ export default function ProfilePage() {
   const [naicsCodeInput, setNaicsCodeInput] = useState("");
   const [certificationInput, setCertificationInput] = useState("");
   const [isSavingCompanyIntel, setIsSavingCompanyIntel] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const companyLogoInputRef = useRef<HTMLInputElement>(null);
   
   // Data loaded from Firebase
   const [recordings, setRecordings] = useState<any[]>([]);
@@ -307,6 +311,7 @@ export default function ProfilePage() {
         state: userProfile.state || "",
         zip: userProfile.zip || "",
         companyDescription: userProfile.companyDescription || "",
+        companyLogo: userProfile.companyLogo || "",
         naicsCodes: userProfile.naicsCodes || [],
         certifications: userProfile.certifications || [],
         cageCode: userProfile.cageCode || "",
@@ -324,6 +329,7 @@ export default function ProfilePage() {
     userProfile.state,
     userProfile.zip,
     userProfile.companyDescription,
+    userProfile.companyLogo,
     userProfile.naicsCodes,
     userProfile.certifications,
     userProfile.cageCode,
@@ -335,6 +341,33 @@ export default function ProfilePage() {
 
   const updateCompanyIntel = (field: keyof typeof companyIntel, value: any) => {
     setCompanyIntel((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCompanyLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      e.target.value = "";
+      return;
+    }
+
+    setLogoUploading(true);
+    try {
+      const resizedDataUrl = await resizeImage(file, {
+        maxDimension: 400,
+        maxBytes: 300 * 1024,
+      });
+      updateCompanyIntel("companyLogo", resizedDataUrl);
+      toast.success("Company logo updated");
+    } catch (error) {
+      console.error("Error resizing company logo:", error);
+      toast.error("Failed to process company logo");
+    } finally {
+      setLogoUploading(false);
+      e.target.value = "";
+    }
   };
 
   const addNaicsCode = () => {
@@ -389,6 +422,7 @@ export default function ProfilePage() {
         state: companyIntel.state,
         zip: companyIntel.zip,
         companyDescription: companyIntel.companyDescription,
+        companyLogo: companyIntel.companyLogo || "",
         naicsCodes: companyIntel.naicsCodes,
         certifications: companyIntel.certifications,
         cageCode: companyIntel.cageCode,
@@ -414,12 +448,14 @@ export default function ProfilePage() {
             "companyIntelligence.state": companyIntel.state,
             "companyIntelligence.zip": companyIntel.zip,
             "companyIntelligence.companyDescription": companyIntel.companyDescription,
+            "companyIntelligence.companyLogo": companyIntel.companyLogo || "",
             "companyIntelligence.primaryNaicsCodes": companyIntel.naicsCodes,
             "companyIntelligence.cageCode": companyIntel.cageCode,
             "companyIntelligence.uei": companyIntel.uei,
             "companyIntelligence.dunsNumber": companyIntel.dunsNumber,
             "companyIntelligence.samRegistrationStatus": companyIntel.samRegistrationStatus,
             "companyIntelligence.gsaScheduleHolder": companyIntel.gsaScheduleHolder,
+            companyLogo: companyIntel.companyLogo || "",
             updatedAt: now,
           });
         } catch (error) {
@@ -962,6 +998,54 @@ export default function ProfilePage() {
                 <Badge variant={userProfile.companyIntelligenceComplete ? "default" : "secondary"}>
                   {userProfile.companyIntelligenceComplete ? "Complete" : "Incomplete"}
                 </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Company Logo</Label>
+                <div className="flex items-center gap-4">
+                  {companyIntel.companyLogo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={companyIntel.companyLogo}
+                      alt="Company logo preview"
+                      className="h-16 w-16 rounded-md object-contain border"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 rounded-md bg-muted flex items-center justify-center border">
+                      <Building2 className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={companyLogoInputRef}
+                    onChange={handleCompanyLogoChange}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={logoUploading}
+                    onClick={() => companyLogoInputRef.current?.click()}
+                  >
+                    {logoUploading ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4 mr-2" />
+                    )}
+                    Upload Logo
+                  </Button>
+                  {companyIntel.companyLogo && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => updateCompanyIntel("companyLogo", "")}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                  <p className="text-sm text-muted-foreground">Recommended: 400x400px</p>
+                </div>
               </div>
 
               <div className="space-y-2">
