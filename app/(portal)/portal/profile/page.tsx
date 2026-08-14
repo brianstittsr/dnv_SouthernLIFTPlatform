@@ -84,7 +84,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useUserProfile, type ReadinessDocumentRecord } from "@/contexts/user-profile-context";
 import {
-  READINESS_TEXT_FIELDS,
   READINESS_FILE_FIELDS,
   isReadinessEntryMisaligned,
   downloadReadinessEntry,
@@ -175,7 +174,7 @@ const premiumAITools: SVPTool[] = [
 // Data will be loaded from Firebase - no mock data
 
 export default function ProfilePage() {
-  const { profile: userProfile, getDisplayName, getInitials } = useUserProfile();
+  const { profile: userProfile, getDisplayName, getInitials, setShowCompanyIntelligenceWizard } = useUserProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   
@@ -776,40 +775,40 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">Company Intelligence Status</p>
                     <p className="text-sm text-muted-foreground">
-                      {(userProfile as any).companyIntelligenceComplete ? "Complete" : "Incomplete"}
+                      {userProfile.companyIntelligenceComplete ? "Complete" : "Incomplete"}
                     </p>
                   </div>
                 </div>
-                <Badge variant={(userProfile as any).companyIntelligenceComplete ? "default" : "secondary"}>
-                  {(userProfile as any).companyIntelligenceComplete ? "Complete" : "Incomplete"}
+                <Badge variant={userProfile.companyIntelligenceComplete ? "default" : "secondary"}>
+                  {userProfile.companyIntelligenceComplete ? "Complete" : "Incomplete"}
                 </Badge>
               </div>
 
               <div className="space-y-2">
                 <Label>Legal Company Name</Label>
-                <Input value={(userProfile as any).legalCompanyName || ""} disabled />
+                <Input value={userProfile.legalCompanyName || ""} disabled />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>City</Label>
-                  <Input value={(userProfile as any).city || ""} disabled />
+                  <Input value={userProfile.city || ""} disabled />
                 </div>
                 <div className="space-y-2">
                   <Label>State</Label>
-                  <Input value={(userProfile as any).state || ""} disabled />
+                  <Input value={userProfile.state || ""} disabled />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Company Description</Label>
-                <Textarea rows={3} value={(userProfile as any).companyDescription || ""} disabled />
+                <Textarea rows={3} value={userProfile.companyDescription || ""} disabled />
               </div>
 
               <div className="space-y-2">
                 <Label>NAICS Codes</Label>
                 <div className="flex flex-wrap gap-2">
-                  {((userProfile as any).naicsCodes || []).map((code: string, idx: number) => (
+                  {(userProfile.naicsCodes || []).map((code: string, idx: number) => (
                     <Badge key={idx} variant="outline">{code}</Badge>
                   ))}
                 </div>
@@ -818,14 +817,43 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label>Certifications</Label>
                 <div className="flex flex-wrap gap-2">
-                  {((userProfile as any).certifications || []).map((cert: string, idx: number) => (
+                  {(userProfile.certifications || []).map((cert: string, idx: number) => (
                     <Badge key={idx} variant="secondary">{cert}</Badge>
                   ))}
                 </div>
               </div>
 
-              <Button variant="outline" asChild>
-                <a href="/portal/consortium/onboarding">Update Company Intelligence</a>
+              {/* Government contracting identifiers — single source of truth for
+                  CAGE Code, UEI/SAM registration, and DUNS Number */}
+              <div className="space-y-2 pt-2 border-t">
+                <Label className="text-base font-semibold">Government Contracting Registration</Label>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">CAGE Code</Label>
+                    <Input value={userProfile.cageCode || ""} placeholder="Not set" disabled />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">UEI / SAM Registration</Label>
+                    <Input value={userProfile.uei || ""} placeholder="Not set" disabled />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">DUNS Number</Label>
+                    <Input value={userProfile.dunsNumber || ""} placeholder="Not set" disabled />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <Label className="text-xs text-muted-foreground">SAM.gov Status:</Label>
+                  <Badge variant={userProfile.samRegistrationStatus === "active" ? "default" : "secondary"}>
+                    {userProfile.samRegistrationStatus || "Not set"}
+                  </Badge>
+                  {userProfile.gsaScheduleHolder && (
+                    <Badge variant="outline">GSA Schedule Holder</Badge>
+                  )}
+                </div>
+              </div>
+
+              <Button variant="outline" onClick={() => setShowCompanyIntelligenceWizard(true)}>
+                Update Company Intelligence
               </Button>
             </CardContent>
           </Card>
@@ -887,38 +915,13 @@ export default function ProfilePage() {
                       </Alert>
                     )}
 
-                    {/* Registration details (text fields) */}
-                    <div className="space-y-2">
-                      <Label>Registration Details</Label>
-                      <div className="space-y-2">
-                        {READINESS_TEXT_FIELDS.map((field) => {
-                          const entry = findEntry(field.type);
-                          const misaligned = isReadinessEntryMisaligned(entry);
-                          return (
-                            <div
-                              key={field.type}
-                              className={cn(
-                                "flex items-center justify-between p-3 rounded-lg",
-                                misaligned ? "bg-red-50 border border-red-200" : "bg-muted"
-                              )}
-                            >
-                              <div>
-                                <p className="text-sm font-medium">{field.label}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {entry?.textValue || (misaligned ? "Needs update" : "Not provided")}
-                                </p>
-                              </div>
-                              {misaligned ? (
-                                <Badge variant="destructive">Needs Update</Badge>
-                              ) : entry?.textValue ? (
-                                <Badge variant="default">Saved</Badge>
-                              ) : (
-                                <Badge variant="secondary">Not Set</Badge>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
+                    {/* CAGE Code, UEI/SAM registration, and DUNS Number now live in the
+                        Company Intelligence tab to avoid duplicate data entry. */}
+                    <div className="bg-muted rounded-lg p-3 flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        CAGE Code, UEI/SAM registration, and DUNS Number are managed in the{" "}
+                        <strong>Company Intel</strong> tab.
+                      </p>
                     </div>
 
                     {/* Uploaded documents */}

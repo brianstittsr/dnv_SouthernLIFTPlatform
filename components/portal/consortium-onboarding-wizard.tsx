@@ -243,13 +243,6 @@ export function ReadinessStep({
 }) {
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [uploadingType, setUploadingType] = useState<string | null>(null);
-  const [textInputs, setTextInputs] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    readinessDocuments.forEach((d) => {
-      if (d.textValue) initial[d.type] = d.textValue;
-    });
-    return initial;
-  });
 
   const handleFileChange = async (
     type: ReadinessDocType,
@@ -283,16 +276,6 @@ export function ReadinessStep({
     }
   };
 
-  const handleSaveText = (type: ReadinessDocType) => {
-    const value = (textInputs[type] || "").trim();
-    if (!value) {
-      toast.error("Please enter a value before saving");
-      return;
-    }
-    onAdd({ type, textValue: value });
-    toast.success("Saved");
-  };
-
   return (
     <ScrollArea className="h-[400px] pr-4">
       <div className="space-y-6">
@@ -304,53 +287,16 @@ export function ReadinessStep({
           </p>
         </div>
 
-        {/* Text fields: SAM Registration, DUNS Number, CAGE Code */}
-        <div className="space-y-4">
-          <Label>Registration Details</Label>
-          <div className="grid gap-3">
-            {READINESS_TEXT_FIELDS.map((item) => {
-              const uploaded = readinessDocuments.find((d) => d.type === item.type);
-              const misaligned = isReadinessEntryMisaligned(uploaded);
-              return (
-                <div
-                  key={item.type}
-                  className={`p-3 border rounded-lg space-y-2 transition-colors ${
-                    misaligned ? "border-red-300 bg-red-50" : uploaded?.textValue ? "border-green-400 bg-green-50" : ""
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">{item.label}</Label>
-                    {uploaded?.textValue && !misaligned && (
-                      <Badge className="bg-green-100 text-green-800">Saved</Badge>
-                    )}
-                    {misaligned && <Badge variant="destructive">Needs Update</Badge>}
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      value={textInputs[item.type] ?? ""}
-                      onChange={(e) =>
-                        setTextInputs((prev) => ({ ...prev, [item.type]: e.target.value }))
-                      }
-                      placeholder={item.placeholder}
-                    />
-                    <Button size="sm" onClick={() => handleSaveText(item.type)}>
-                      Save
-                    </Button>
-                    {uploaded && (
-                      <Button variant="ghost" size="sm" onClick={() => onRemove(item.type)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                  {misaligned && (
-                    <p className="text-xs text-red-600">
-                      This was previously uploaded as a file. Please re-enter it as text above.
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        {/* CAGE Code, UEI/SAM Registration, and DUNS Number are managed in the
+            Company Intelligence profile to avoid duplicate data entry. */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+          <Building2 className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+          <p className="text-sm text-amber-900">
+            Your <strong>CAGE Code</strong>, <strong>UEI / SAM registration</strong>, and{" "}
+            <strong>DUNS Number</strong> are managed in your Company Intelligence profile
+            (Government Contracting section) so they only need to be entered once. Update the{" "}
+            <strong>Company Intel</strong> tab on your profile page if these need to be added or changed.
+          </p>
         </div>
 
         {/* File fields: documents stored as base64 */}

@@ -57,6 +57,23 @@ export interface UserProfile {
   companyId?: string;
   companyName?: string;
 
+  // Company Intelligence (captured via CompanyIntelligenceWizard) — the single
+  // source of truth for CAGE/UEI/DUNS/SAM registration data.
+  companyIntelligenceComplete?: boolean;
+  legalCompanyName?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  companyDescription?: string;
+  naicsCodes?: string[];
+  cageCode?: string;
+  uei?: string;
+  dunsNumber?: string;
+  samRegistrationStatus?: "active" | "inactive" | "pending";
+  gsaScheduleHolder?: boolean;
+  gsaScheduleNumbers?: string[];
+
   // Government contracting readiness documents/entries
   readinessDocuments?: ReadinessDocumentRecord[];
   readinessScore?: number;
@@ -235,6 +252,8 @@ interface UserProfileContextType {
   setShowProfileWizard: (show: boolean) => void;
   showAffiliateOnboarding: boolean;
   setShowAffiliateOnboarding: (show: boolean) => void;
+  showCompanyIntelligenceWizard: boolean;
+  setShowCompanyIntelligenceWizard: (show: boolean) => void;
   getDisplayName: () => string;
   getInitials: () => string;
   isLoading: boolean;
@@ -296,6 +315,28 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
   const readinessValidationStatus: string | undefined =
     teammemberRaw?.readinessValidationStatus || userDoc?.readinessValidationStatus || undefined;
 
+  // Company Intelligence data is written by CompanyIntelligenceWizard onto the
+  // user document, which is the single source of truth for CAGE/UEI/DUNS/SAM.
+  const companyIntelligenceFields = userDoc
+    ? {
+        companyIntelligenceComplete: userDoc.companyIntelligenceComplete || false,
+        legalCompanyName: userDoc.legalCompanyName || undefined,
+        address: userDoc.address || undefined,
+        city: userDoc.city || undefined,
+        state: userDoc.state || undefined,
+        zip: userDoc.zip || undefined,
+        companyDescription: userDoc.companyDescription || undefined,
+        naicsCodes: userDoc.naicsCodes || undefined,
+        certifications: userDoc.certifications || undefined,
+        cageCode: userDoc.cageCode || undefined,
+        uei: userDoc.uei || undefined,
+        dunsNumber: userDoc.dunsNumber || undefined,
+        samRegistrationStatus: userDoc.samRegistrationStatus || undefined,
+        gsaScheduleHolder: userDoc.gsaScheduleHolder || false,
+        gsaScheduleNumbers: userDoc.gsaScheduleNumbers || undefined,
+      }
+    : {};
+
   if (teammember) {
     const mappedProfile = mapTeammemberToProfile(teammember);
     return {
@@ -320,6 +361,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
       readinessDocuments,
       readinessScore,
       readinessValidationStatus,
+      ...companyIntelligenceFields,
       updatedAt: new Date().toISOString(),
     };
   }
@@ -345,6 +387,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     readinessDocuments,
     readinessScore,
     readinessValidationStatus,
+    ...companyIntelligenceFields,
     updatedAt: new Date().toISOString(),
   };
 }
@@ -355,6 +398,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [impersonatedUserId, setImpersonatedUserId] = useState<string | null>(null);
   const [showProfileWizard, setShowProfileWizard] = useState(false);
   const [showAffiliateOnboarding, setShowAffiliateOnboarding] = useState(false);
+  const [showCompanyIntelligenceWizard, setShowCompanyIntelligenceWizard] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [linkedTeammember, setLinkedTeammember] = useState<TeamMemberDoc | null>(null);
@@ -488,6 +532,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         setShowProfileWizard,
         showAffiliateOnboarding,
         setShowAffiliateOnboarding,
+        showCompanyIntelligenceWizard,
+        setShowCompanyIntelligenceWizard,
         getDisplayName,
         getInitials,
         isLoading,

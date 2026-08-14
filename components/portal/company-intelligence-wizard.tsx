@@ -143,6 +143,7 @@ interface CompanyIntelligenceData {
   // Government Contracting Details
   cageCode?: string;
   uei?: string;
+  dunsNumber?: string;
   samRegistrationStatus: "active" | "inactive" | "pending";
   gsaScheduleHolder: boolean;
   gsaScheduleNumbers: string[];
@@ -170,12 +171,21 @@ interface CompanyIntelligenceData {
 }
 
 export function CompanyIntelligenceWizard() {
-  const { profile } = useUserProfile();
+  const { profile, showCompanyIntelligenceWizard, setShowCompanyIntelligenceWizard } = useUserProfile();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [teamMemberId, setTeamMemberId] = useState<string | null>(null);
+
+  // Allow other pages (e.g. the Profile page's "Update Company Intelligence"
+  // button) to open this wizard on demand via shared context state.
+  useEffect(() => {
+    if (showCompanyIntelligenceWizard) {
+      setIsOpen(true);
+      setShowCompanyIntelligenceWizard(false);
+    }
+  }, [showCompanyIntelligenceWizard, setShowCompanyIntelligenceWizard]);
 
   const [formData, setFormData] = useState<CompanyIntelligenceData>({
     legalCompanyName: "",
@@ -212,6 +222,7 @@ export function CompanyIntelligenceWizard() {
     keyDifferentiators: [],
     cageCode: "",
     uei: "",
+    dunsNumber: "",
     samRegistrationStatus: "pending",
     gsaScheduleHolder: false,
     gsaScheduleNumbers: [],
@@ -352,6 +363,14 @@ export function CompanyIntelligenceWizard() {
 
           // Check if company intelligence is missing or incomplete
           const hasCompanyIntelligence = teamMemberData.companyIntelligence;
+
+          // Pre-fill the form with any existing data so re-opening the wizard
+          // (e.g. from the Profile page) lets the user edit rather than
+          // starting from a blank form.
+          if (hasCompanyIntelligence) {
+            setFormData((prev) => ({ ...prev, ...hasCompanyIntelligence }));
+          }
+
           const isComplete = hasCompanyIntelligence && 
             hasCompanyIntelligence.legalCompanyName &&
             hasCompanyIntelligence.address &&
@@ -513,8 +532,10 @@ export function CompanyIntelligenceWizard() {
         companyIntelligence: companyIntelligencePayload,
         companyIntelligenceComplete: true,
         legalCompanyName: formData.legalCompanyName,
+        address: formData.address,
         city: formData.city,
         state: formData.state,
+        zip: formData.zip,
         companyDescription: formData.companyDescription,
         naicsCodes: formData.primaryNaicsCodes,
         certifications: [
@@ -522,6 +543,14 @@ export function CompanyIntelligenceWizard() {
           ...formData.certifications.otherCertifications,
           ...(formData.certifications.cmmcLevel ? [`CMMC Level ${formData.certifications.cmmcLevel}`] : []),
         ],
+        // Government contracting identifiers — the single source of truth for
+        // CAGE/UEI/DUNS/SAM status, mirrored flat here for easy profile access
+        cageCode: formData.cageCode || "",
+        uei: formData.uei || "",
+        dunsNumber: formData.dunsNumber || "",
+        samRegistrationStatus: formData.samRegistrationStatus,
+        gsaScheduleHolder: formData.gsaScheduleHolder,
+        gsaScheduleNumbers: formData.gsaScheduleNumbers,
         companyId: teamMemberId,
         companyName: formData.legalCompanyName,
         updatedAt: Timestamp.now(),
@@ -1218,7 +1247,7 @@ export function CompanyIntelligenceWizard() {
         return (
           <ScrollArea className="h-[500px] pr-4">
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="cageCode">CAGE Code</Label>
                   <Input
@@ -1228,11 +1257,19 @@ export function CompanyIntelligenceWizard() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="uei">UEI (Unique Entity ID)</Label>
+                  <Label htmlFor="uei">UEI / SAM Registration (Unique Entity ID)</Label>
                   <Input
                     id="uei"
                     value={formData.uei}
                     onChange={(e) => setFormData({ ...formData, uei: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dunsNumber">DUNS Number</Label>
+                  <Input
+                    id="dunsNumber"
+                    value={formData.dunsNumber}
+                    onChange={(e) => setFormData({ ...formData, dunsNumber: e.target.value })}
                   />
                 </div>
               </div>
