@@ -277,7 +277,6 @@ async function handleConsortiumSignup(session: Stripe.Checkout.Session) {
       expertise: "KDM Consortium Member",
       role: "affiliate",
       status: "active",
-      teamTag: "affiliate",
       tags: ["kdm-consortium"],
       consortiumOnboardingComplete: false,
       consortiumJoinedAt: FieldValue.serverTimestamp(),

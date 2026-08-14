@@ -49,7 +49,6 @@ interface TeamMemberData {
   avatar?: string;
   linkedIn?: string;
   status?: string;
-  teamTag?: string;
   isCEO?: boolean;
   isCOO?: boolean;
   isCTO?: boolean;

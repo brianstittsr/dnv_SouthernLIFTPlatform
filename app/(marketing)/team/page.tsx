@@ -21,9 +21,7 @@ interface DisplayMember {
   staticImageUrl?: string;
   bio: string;
   shortBio?: string;
-  teamTag?: "leadership" | "staff" | "affiliate";
   avatar?: string;
-  displayOrder?: number;
 }
 
 function getInitials(firstName?: string, lastName?: string): string {
@@ -133,7 +131,7 @@ function MemberSection({ title, members }: { title: string; members: DisplayMemb
 export default function TeamPage() {
   const [leadership, setLeadership] = useState<DisplayMember[]>([]);
   const [staff, setStaff] = useState<DisplayMember[]>([]);
-  const [affiliates, setAffiliates] = useState<DisplayMember[]>([]);
+  const [team, setTeam] = useState<DisplayMember[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchTeamMembers(); }, []);
@@ -145,7 +143,7 @@ export default function TeamPage() {
       const querySnapshot = await getDocs(q);
       const leadershipMembers: DisplayMember[] = [];
       const staffMembers: DisplayMember[] = [];
-      const affiliateMembers: DisplayMember[] = [];
+      const teamMembers: DisplayMember[] = [];
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data() as TeamMemberDoc;
         // Skip profiles explicitly hidden from the public team page
@@ -160,26 +158,21 @@ export default function TeamPage() {
           staticImageUrl: data.avatar,
           bio: data.bio || `${data.expertise || "KDM Team Member"}`,
           shortBio: data.title || data.expertise || "KDM Team Member",
-          teamTag: data.teamTag || "affiliate",
           avatar: data.avatar,
-          displayOrder: data.displayOrder || 0,
         };
-        switch (data.teamTag) {
-          case "leadership": leadershipMembers.push(member); break;
-          case "staff": staffMembers.push(member); break;
-          case "affiliate":
-          default: affiliateMembers.push(member); break;
+        const tags = data.tags || [];
+        if (tags.includes("kdm-leadership")) {
+          leadershipMembers.push(member);
+        } else if (tags.includes("kdm-staff")) {
+          staffMembers.push(member);
+        } else {
+          teamMembers.push(member);
         }
       });
-      const sortByDisplayOrder = (a: DisplayMember, b: DisplayMember) => {
-        const orderA = a.displayOrder ?? 999;
-        const orderB = b.displayOrder ?? 999;
-        if (orderA !== orderB) return orderA - orderB;
-        return a.name.localeCompare(b.name);
-      };
-      setLeadership(leadershipMembers.sort(sortByDisplayOrder));
-      setStaff(staffMembers.sort(sortByDisplayOrder));
-      setAffiliates(affiliateMembers.sort(sortByDisplayOrder));
+      const sortByName = (a: DisplayMember, b: DisplayMember) => a.name.localeCompare(b.name);
+      setLeadership(leadershipMembers.sort(sortByName));
+      setStaff(staffMembers.sort(sortByName));
+      setTeam(teamMembers.sort(sortByName));
     } catch (error) { console.error("Error fetching team members:", error); }
     finally { setLoading(false); }
   }
@@ -204,8 +197,8 @@ export default function TeamPage() {
             <>
               <MemberSection title="KDM Leadership" members={leadership} />
               <MemberSection title="KDM Staff" members={staff} />
-              <MemberSection title="KDM Affiliates" members={affiliates} />
-              {leadership.length === 0 && staff.length === 0 && affiliates.length === 0 && (
+              <MemberSection title="Team" members={team} />
+              {leadership.length === 0 && staff.length === 0 && team.length === 0 && (
                 <div className="text-center py-20"><p className="text-muted-foreground">No team members found.</p></div>
               )}
             </>

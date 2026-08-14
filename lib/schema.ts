@@ -621,9 +621,9 @@ export interface TeamMemberDoc {
   isCOO?: boolean;
   isCTO?: boolean;
   isCRO?: boolean;
-  // Team display tags for grouping on public team page
+  // Deprecated: migrated to the `tags` array; kept for backward compatibility
   teamTag?: "leadership" | "staff" | "affiliate";
-  // Display order within team tag (for sorting team members within each tag)
+  // Deprecated: display order no longer managed in the UI; kept for backward compatibility
   displayOrder?: number;
   // Controls whether this profile is shown on the public /team page.
   // Defaults to true (visible) when undefined, for backward compatibility.
@@ -637,6 +637,17 @@ export interface TeamMemberDoc {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+/** Allowed team member tag values for the unified Tags dropdown. */
+export const TEAM_MEMBER_TAGS = [
+  "kdm-consortium",
+  "kdm-founder",
+  "kdm-leadership",
+  "kdm-staff",
+] as const;
+
+/** Type-safe union of allowed team member tags. */
+export type TeamMemberTag = (typeof TEAM_MEMBER_TAGS)[number];
 
 /** Consortium Member document in Firestore */
 export interface ConsortiumMemberDoc {

@@ -22,7 +22,7 @@ interface DisplayMember {
   bio: string;
   fullBio: string;
   linkedIn?: string;
-  teamTag?: string;
+  tags?: string[];
   avatar?: string;
 }
 
@@ -61,7 +61,7 @@ export default function TeamMemberPage() {
             bio: data.bio || `${data.expertise || "KDM Team Member"}`,
             fullBio: data.bio || "",
             linkedIn: data.linkedIn,
-            teamTag: data.teamTag || "affiliate",
+            tags: data.tags || [],
             avatar: data.avatar,
           } as DisplayMember);
         } else {
@@ -116,6 +116,15 @@ export default function TeamMemberPage() {
             <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
               {member.title}
             </Badge>
+            {member.tags && member.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {member.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               {member.name}
             </h1>

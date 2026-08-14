@@ -155,6 +155,14 @@ const mainNavItems = [
   },
 ];
 
+const companyItems = [
+  {
+    title: "KDM Consortium Members",
+    href: "/portal/company/consortium-members",
+    icon: Building2,
+  },
+];
+
 const workItems = [
   {
     title: "Resource Library",
@@ -801,6 +809,7 @@ const SVP_ROLE_SECTIONS: Record<string, string[]> = {
 // Export all nav items for use in settings
 export const ALL_NAV_ITEMS = [
   ...mainNavItems.map(item => ({ ...item, section: "Navigation" })),
+  ...companyItems.map(item => ({ ...item, section: "Company" })),
   ...workItems.map(item => ({ ...item, section: "Work" })),
   ...aiItems.map(item => ({ ...item, section: "Intelligence" })),
   ...adminItems.map(item => ({ ...item, section: "Admin" })),
@@ -1010,6 +1019,7 @@ export function PortalSidebar() {
     // Other sections - grouped under OTHER
     other: false,
     navigation: false,
+    company: false,
     work: false,
     intelligence: false,
     admin: false,
@@ -1023,6 +1033,7 @@ export function PortalSidebar() {
         ...prev,
         other: true,
         navigation: true,
+        company: true,
         work: true,
         intelligence: true,
         admin: true,
@@ -1467,7 +1478,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
-        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
+        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(companyItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1519,6 +1530,50 @@ export function PortalSidebar() {
                                 {item.badge && !hidden && (
                                   <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
                                 )}
+                              </SidebarMenuItem>
+                            );
+                          })}
+                        </SidebarMenu>
+                      </SidebarGroupContent>
+                    </CollapsibleContent>
+                  </SidebarGroup>
+                </Collapsible>
+                )}
+
+                {/* Company */}
+                {(!searchQuery.trim() || sectionHasMatchingItems(companyItems)) && (
+                <Collapsible open={openSections.company} onOpenChange={() => toggleSection("company")}>
+                  <SidebarGroup>
+                    <CollapsibleTrigger asChild>
+                      <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2 text-sm">
+                        <span>Company</span>
+                        {openSections.company ? (
+                          <ChevronDown className="h-3 w-3 text-sidebar-foreground/60" />
+                        ) : (
+                          <ChevronRight className="h-3 w-3 text-sidebar-foreground/60" />
+                        )}
+                      </SidebarGroupLabel>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarGroupContent>
+                        <SidebarMenu>
+                          {filterNavItemsBySearch(companyItems).map((item) => {
+                            const hidden = isItemHidden(item.href);
+                            return (
+                              <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
+                                <SidebarMenuButton
+                                  asChild
+                                  isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                                  tooltip={item.title}
+                                >
+                                  <Link href={item.href}>
+                                    <item.icon className="h-4 w-4" />
+                                    <span>{item.title}</span>
+                                    {hidden && isAdmin && !previewRole && (
+                                      <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
+                                    )}
+                                  </Link>
+                                </SidebarMenuButton>
                               </SidebarMenuItem>
                             );
                           })}

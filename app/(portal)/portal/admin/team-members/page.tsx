@@ -71,7 +71,7 @@ import {
 import { db } from "@/lib/firebase";
 import { listImages, getImage, base64ToDataUrl, uploadImage, type ImageMetadata } from "@/lib/firebase-images";
 import { toast } from "sonner";
-import { COLLECTIONS, type TeamMemberDoc, type OneToOneQueueItemDoc } from "@/lib/schema";
+import { COLLECTIONS, type TeamMemberDoc, type TeamMemberTag, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
 import { InviteUserDialog } from "@/components/admin/invite-user-dialog";
@@ -165,14 +165,10 @@ export default function TeammembersPage() {
     isCOO: false,
     isCTO: false,
     isCRO: false,
-    // Team display tag
-    teamTag: "affiliate" as TeamMemberDoc["teamTag"],
-    // Display order within team tag
-    displayOrder: 0,
     // Controls visibility on the public /team page
     showOnTeamPage: true,
     // Multi-tags
-    tags: [] as string[],
+    tags: [] as TeamMemberTag[],
   });
 
   // Fetch members from Firebase
@@ -289,9 +285,14 @@ export default function TeammembersPage() {
       const collectionRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
       
       for (const member of seedTeamMembers) {
+        const tags: TeamMemberTag[] = [];
+        if (member.role === "affiliate") tags.push("kdm-consortium");
+        if (member.role === "team" || member.role === "admin") tags.push("kdm-staff");
+
         const docRef = doc(collectionRef);
         batch.set(docRef, {
           ...member,
+          tags,
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
@@ -494,10 +495,8 @@ export default function TeammembersPage() {
       isCOO: member.isCOO || false,
       isCTO: member.isCTO || false,
       isCRO: member.isCRO || false,
-      teamTag: member.teamTag || "affiliate",
-      displayOrder: member.displayOrder || 0,
       showOnTeamPage: member.showOnTeamPage !== false,
-      tags: member.tags || [],
+      tags: (member.tags || []) as TeamMemberTag[],
     });
     setAvatarUrl(member.avatar || "");
     setDialogOpen(true);
@@ -540,8 +539,6 @@ export default function TeammembersPage() {
       isCOO: false,
       isCTO: false,
       isCRO: false,
-      teamTag: "affiliate",
-      displayOrder: 0,
       showOnTeamPage: true,
       tags: [],
     });
@@ -899,7 +896,7 @@ export default function TeammembersPage() {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="mobile">Mobile</Label>
                     <Input
@@ -929,38 +926,6 @@ export default function TeammembersPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="teamTag">Team Display Tag</Label>
-                    <Select
-                      value={formData.teamTag}
-                      onValueChange={(value) => 
-                        setFormData({ ...formData, teamTag: value as TeamMemberDoc["teamTag"] })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select display tag" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="leadership">KDM Leadership</SelectItem>
-                        <SelectItem value="staff">KDM Staff</SelectItem>
-                        <SelectItem value="affiliate">KDM Affiliate</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="displayOrder">Display Order (within Team Display Tag)</Label>
-                  <Input
-                    id="displayOrder"
-                    type="number"
-                    value={formData.displayOrder}
-                    onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                    min="0"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Lower numbers appear first. Use this to control the order of team members within each display tag (Leadership, Staff, Affiliate).
-                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="tags">Tags</Label>
@@ -985,10 +950,11 @@ export default function TeammembersPage() {
                   </div>
                   <Select
                     onValueChange={(value) => {
-                      if (!formData.tags?.includes(value)) {
+                      const tag = value as TeamMemberTag;
+                      if (!formData.tags?.includes(tag)) {
                         setFormData({
                           ...formData,
-                          tags: [...(formData.tags || []), value],
+                          tags: [...(formData.tags || []), tag],
                         });
                       }
                     }}
@@ -998,15 +964,13 @@ export default function TeammembersPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
-                      <SelectItem value="leadership">Leadership</SelectItem>
-                      <SelectItem value="staff">Staff</SelectItem>
-                      <SelectItem value="affiliate">Affiliate</SelectItem>
-                      <SelectItem value="founder">Founder</SelectItem>
-                      <SelectItem value="partner">Partner</SelectItem>
+                      <SelectItem value="kdm-founder">Founder</SelectItem>
+                      <SelectItem value="kdm-leadership">KDM Leadership</SelectItem>
+                      <SelectItem value="kdm-staff">KDM Staff</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    Add multiple tags to categorize this team member. KDM Consortium tag is auto-added for paying members.
+                    Add tags to control where this member appears: Team Page (KDM Leadership / KDM Staff) or KDM Consortium Members page (Founder / KDM Consortium).
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -1274,11 +1238,9 @@ export default function TeammembersPage() {
               <SelectContent>
                 <SelectItem value="all">All Tags</SelectItem>
                 <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
-                <SelectItem value="leadership">Leadership</SelectItem>
-                <SelectItem value="staff">Staff</SelectItem>
-                <SelectItem value="affiliate">Affiliate</SelectItem>
-                <SelectItem value="founder">Founder</SelectItem>
-                <SelectItem value="partner">Partner</SelectItem>
+                <SelectItem value="kdm-founder">Founder</SelectItem>
+                <SelectItem value="kdm-leadership">KDM Leadership</SelectItem>
+                <SelectItem value="kdm-staff">KDM Staff</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex items-center gap-1 border rounded-md p-1">

@@ -237,22 +237,24 @@ export function KdmTeamSync() {
           const existingDoc = snapshot.docs[0];
           const existingData = existingDoc.data();
           
-          const teamTag = member.isCEO ? "leadership" : 
-                         member.isCOO ? "leadership" :
-                         member.role === "affiliate" ? "affiliate" : "staff";
+          const tags = member.isCEO || member.isCOO || member.isCTO || member.isCRO
+            ? ["kdm-leadership"]
+            : member.role === "affiliate"
+            ? ["kdm-consortium"]
+            : ["kdm-staff"];
 
+          const existingTags = existingData.tags || [];
           const needsUpdate =
-            !existingData.teamTag ||
-            existingData.teamTag !== teamTag ||
             existingData.title !== member.title ||
-            existingData.expertise !== member.expertise;
+            existingData.expertise !== member.expertise ||
+            JSON.stringify(existingTags.sort()) !== JSON.stringify(tags.sort());
 
           if (needsUpdate) {
             // Only update metadata — preserve the existing bio in Firestore
             const updatePayload: Record<string, unknown> = {
               title: member.title,
               expertise: member.expertise,
-              teamTag,
+              tags,
               updatedAt: Timestamp.now(),
             };
             // Only write bio if the record has none at all
@@ -272,9 +274,11 @@ export function KdmTeamSync() {
         }
 
         // Create new team member
-        const teamTag = member.isCEO ? "leadership" : 
-                       member.isCOO ? "leadership" :
-                       member.role === "affiliate" ? "affiliate" : "staff";
+        const tags = member.isCEO || member.isCOO || member.isCTO || member.isCRO
+          ? ["kdm-leadership"]
+          : member.role === "affiliate"
+          ? ["kdm-consortium"]
+          : ["kdm-staff"];
         const teammemberData = {
           firstName: member.firstName,
           lastName: member.lastName,
@@ -283,7 +287,7 @@ export function KdmTeamSync() {
           title: member.title,
           bio: member.bio,
           role: member.role,
-          teamTag,
+          tags,
           status: "active",
           isCEO: member.isCEO || false,
           isCOO: member.isCOO || false,

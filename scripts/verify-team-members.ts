@@ -29,10 +29,9 @@ interface TeamMemberDoc {
   bio?: string;
   fullBio?: string;
   status?: string;
-  teamTag?: string;
   avatar?: string;
   linkedIn?: string;
-  displayOrder?: number;
+  tags?: string[];
 }
 
 async function verifyTeamMembers() {
@@ -59,7 +58,7 @@ async function verifyTeamMembers() {
       console.log(`\n📋 ${member.firstName} ${member.lastName}`);
       console.log(`   ID: ${doc.id}`);
       console.log(`   Status: ${data.status || '❌ MISSING'}`);
-      console.log(`   Team Tag: ${data.teamTag || 'affiliate'}`);
+      console.log(`   Tags: ${data.tags?.join(', ') || 'none'}`);
       console.log(`   Title: ${data.title || data.expertise || '❌ MISSING'}`);
       console.log(`   Bio: ${data.bio ? '✓' : '❌ MISSING'}`);
       console.log(`   Avatar: ${data.avatar ? '✓' : '❌ MISSING'}`);
@@ -119,12 +118,6 @@ async function fixTeamMembers() {
       if (!data.status || data.status !== 'active') {
         updates.status = 'active';
         console.log(`✓ Fixed status for ${data.firstName} ${data.lastName}`);
-      }
-
-      // Fix teamTag if missing
-      if (!data.teamTag) {
-        updates.teamTag = 'affiliate';
-        console.log(`✓ Set teamTag to 'affiliate' for ${data.firstName} ${data.lastName}`);
       }
 
       // Update if there are changes

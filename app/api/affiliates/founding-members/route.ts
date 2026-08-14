@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
       website: "",
       role: "affiliate" as const,
       status: "active" as const,
-      teamTag: "affiliate" as const,
+      tags: ["kdm-founder"],
       isFoundingMember: true,
       membershipTier: "founder" as const,
       membershipStatus: "active" as const,
