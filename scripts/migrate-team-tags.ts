@@ -9,7 +9,7 @@
  * - Remove old tag values from tags: "leadership", "staff", "affiliate", "partner"
  *
  * Usage:
- *   npx ts-node scripts/migrate-team-tags.ts [--dry-run]
+ *   npx tsx scripts/migrate-team-tags.ts [--dry-run]
  */
 
 import { initializeApp, cert, getApps } from "firebase-admin/app";
