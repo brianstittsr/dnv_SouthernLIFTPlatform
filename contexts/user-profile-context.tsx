@@ -33,6 +33,12 @@ export interface UserProfile {
   onboardingCompletedAt?: string;
   primaryNaics?: string[];
   certifications?: string[];
+
+  // Professional profile (Basic/Professional tabs)
+  website?: string;
+  professionalCategories?: string[];
+  professionalIndustries?: string[];
+  skills?: string[];
   
   // Affiliate-specific fields
   isAffiliate: boolean;
@@ -337,6 +343,17 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
       }
     : {};
 
+  // Basic/Professional tab fields — website, categories, industries, and
+  // skills are edited directly on the profile page.
+  const professionalFields = userDoc
+    ? {
+        website: userDoc.website || undefined,
+        professionalCategories: userDoc.professionalCategories || undefined,
+        professionalIndustries: userDoc.professionalIndustries || undefined,
+        skills: userDoc.skills || undefined,
+      }
+    : {};
+
   if (teammember) {
     const mappedProfile = mapTeammemberToProfile(teammember);
     return {
@@ -362,6 +379,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
       readinessScore,
       readinessValidationStatus,
       ...companyIntelligenceFields,
+      ...professionalFields,
       updatedAt: new Date().toISOString(),
     };
   }
@@ -388,6 +406,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     readinessScore,
     readinessValidationStatus,
     ...companyIntelligenceFields,
+    ...professionalFields,
     updatedAt: new Date().toISOString(),
   };
 }

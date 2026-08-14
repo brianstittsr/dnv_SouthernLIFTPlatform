@@ -279,6 +279,10 @@ export default function ProfilePage() {
         company: userProfile.company || "",
         location: userProfile.location || "",
         bio: userProfile.bio || "",
+        website: userProfile.website || "",
+        categories: userProfile.professionalCategories || [],
+        industries: userProfile.professionalIndustries || [],
+        expertise: userProfile.skills || [],
       }));
       
       // Set avatar preview from context if available
@@ -288,7 +292,8 @@ export default function ProfilePage() {
     }
   }, [userProfile.id, userProfile.firstName, userProfile.lastName, userProfile.email, 
       userProfile.phone, userProfile.jobTitle, userProfile.company, userProfile.location, 
-      userProfile.bio, userProfile.role, userProfile.avatarUrl]);
+      userProfile.bio, userProfile.role, userProfile.avatarUrl, userProfile.website,
+      userProfile.professionalCategories, userProfile.professionalIndustries, userProfile.skills]);
 
   // Sync editable Company Intelligence fields with data captured by the
   // CompanyIntelligenceWizard onboarding modal
@@ -524,6 +529,10 @@ export default function ProfilePage() {
         location: profile.location,
         bio: profile.bio,
         avatarUrl: avatarPreview || userProfile.avatarUrl || "",
+        website: profile.website,
+        professionalCategories: profile.categories,
+        professionalIndustries: profile.industries,
+        skills: profile.expertise,
         updatedAt: now,
       });
       
