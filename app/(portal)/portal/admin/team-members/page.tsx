@@ -655,6 +655,198 @@ export default function TeammembersPage() {
     }
   };
 
+  // Group active members by tag for the admin list view
+  const activeMembers = filteredmembers.filter((m) => m.status === "active");
+  const inactiveMembers = filteredmembers.filter((m) => m.status !== "active");
+  const activeFounders = activeMembers.filter((m) => m.tags?.includes("kdm-founder"));
+  const activeStaff = activeMembers.filter((m) => m.tags?.includes("kdm-staff"));
+  const activeConsortiumOnly = activeMembers.filter(
+    (m) => m.tags?.includes("kdm-consortium") && !m.tags?.includes("kdm-founder") && !m.tags?.includes("kdm-staff")
+  );
+  const activeOthers = activeMembers.filter(
+    (m) => !m.tags?.some((tag) => ["kdm-founder", "kdm-staff", "kdm-consortium"].includes(tag))
+  );
+
+  const MemberRow = ({ member }: { member: TeamMemberDoc }) => (
+    <TableRow key={member.id}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={getAvatarSrc(member)} />
+            <AvatarFallback className="text-xs">
+              {getInitials(member.firstName, member.lastName)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <button
+              onClick={() => handleEditMember(member)}
+              className="font-medium hover:underline text-left text-primary"
+            >
+              {member.firstName} {member.lastName}
+            </button>
+            {member.title && (
+              <p className="text-xs text-muted-foreground">{member.title}</p>
+            )}
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="space-y-1">
+          <div className="flex items-center gap-1 text-sm">
+            <Mail className="h-3 w-3 text-muted-foreground" />
+            <a href={`mailto:${member.emailPrimary}`} className="hover:underline">
+              {member.emailPrimary}
+            </a>
+          </div>
+          {member.mobile && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Phone className="h-3 w-3" />
+              {member.mobile}
+            </div>
+          )}
+        </div>
+      </TableCell>
+      <TableCell className="hidden lg:table-cell max-w-xs">
+        <p className="text-sm truncate" title={member.expertise}>
+          {member.expertise}
+        </p>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        {member.website ? (
+          <a
+            href={member.website.startsWith('http') ? member.website : `https://${member.website}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <Globe className="h-3 w-3" />
+            <span className="truncate max-w-[120px]">
+              {member.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+            </span>
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        ) : (
+          <span className="text-muted-foreground text-sm">—</span>
+        )}
+      </TableCell>
+      <TableCell>{getRoleBadge(member.role)}</TableCell>
+      <TableCell className="hidden lg:table-cell">
+        <div className="flex flex-wrap gap-1">
+          {member.tags?.map((tag) => (
+            <Badge key={tag} variant="outline" className="text-xs">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      </TableCell>
+      <TableCell>
+        {member.status === "active" ? (
+          <Badge variant="outline" className="text-green-600 border-green-600">
+            <UserCheck className="h-3 w-3 mr-1" />
+            Active
+          </Badge>
+        ) : member.status === "pending" ? (
+          <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+            Pending
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="text-gray-600">
+            <UserX className="h-3 w-3 mr-1" />
+            Inactive
+          </Badge>
+        )}
+      </TableCell>
+      <TableCell className="text-center">
+        <input
+          type="checkbox"
+          checked={member.showOnTeamPage !== false}
+          onChange={(e) => handleToggleShowOnTeamPage(member, e.target.checked)}
+          title="Display on public Team page (kdm-assoc.com/team)"
+          className="h-4 w-4 rounded border-gray-300 cursor-pointer"
+        />
+      </TableCell>
+      <TableCell className="text-right">
+        <div className="flex justify-end gap-1">
+          <Button
+            variant={isInSchedulingList(member.id) ? "secondary" : "ghost"}
+            size="icon"
+            onClick={() => {
+              const queueItemId = getQueueItemId(member.id);
+              if (queueItemId) {
+                removeFromSchedulingList(queueItemId);
+              } else {
+                addToSchedulingList(member);
+              }
+            }}
+            title={isInSchedulingList(member.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
+          >
+            <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(member.id) ? "text-primary" : ""}`} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleResendWelcomeEmail(member)}
+            title="Resend welcome email"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleEditMember(member)}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleDeleteMember(member.id, `${member.firstName} ${member.lastName}`)}
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+
+  const MemberTable = ({ title, members }: { title: string; members: TeamMemberDoc[] }) => {
+    if (members.length === 0) return null;
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>
+            {members.length} member{members.length !== 1 ? "s" : ""}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead className="hidden lg:table-cell">Expertise</TableHead>
+                  <TableHead className="hidden md:table-cell">Website</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead className="hidden lg:table-cell">Tags</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-center" title="Display on public Team page (kdm-assoc.com/team)">Team Page</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {members.map((member) => (
+                  <MemberRow key={member.id} member={member} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 max-w-9xl space-y-6">
       {/* Header */}
@@ -1301,177 +1493,16 @@ export default function TeammembersPage() {
           </CardContent>
         </Card>
       ) : viewMode === "list" ? (
-        /* List View */
-        <Card>
-          <CardHeader>
-            <CardTitle>Team Directory</CardTitle>
-            <CardDescription>
-              {filteredmembers.length} member{filteredmembers.length !== 1 ? "s" : ""} found
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead className="hidden lg:table-cell">Expertise</TableHead>
-                    <TableHead className="hidden md:table-cell">Website</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead className="hidden lg:table-cell">Tags</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-center" title="Display on public Team page (kdm-assoc.com/team)">Team Page</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredmembers.map((member) => (
-                    <TableRow key={member.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-9 w-9">
-                            <AvatarImage src={getAvatarSrc(member)} />
-                            <AvatarFallback className="text-xs">
-                              {getInitials(member.firstName, member.lastName)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <button
-                              onClick={() => handleEditMember(member)}
-                              className="font-medium hover:underline text-left text-primary"
-                            >
-                              {member.firstName} {member.lastName}
-                            </button>
-                            {member.title && (
-                              <p className="text-xs text-muted-foreground">{member.title}</p>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3 text-muted-foreground" />
-                            <a href={`mailto:${member.emailPrimary}`} className="hover:underline">
-                              {member.emailPrimary}
-                            </a>
-                          </div>
-                          {member.mobile && (
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                              <Phone className="h-3 w-3" />
-                              {member.mobile}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell max-w-xs">
-                        <p className="text-sm truncate" title={member.expertise}>
-                          {member.expertise}
-                        </p>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {member.website ? (
-                          <a
-                            href={member.website.startsWith('http') ? member.website : `https://${member.website}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-primary hover:underline"
-                          >
-                            <Globe className="h-3 w-3" />
-                            <span className="truncate max-w-[120px]">
-                              {member.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                            </span>
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">—</span>
-                        )}
-                      </TableCell>
-                      <TableCell>{getRoleBadge(member.role)}</TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {member.tags?.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {member.status === "active" ? (
-                          <Badge variant="outline" className="text-green-600 border-green-600">
-                            <UserCheck className="h-3 w-3 mr-1" />
-                            Active
-                          </Badge>
-                        ) : member.status === "pending" ? (
-                          <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                            Pending
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-gray-600">
-                            <UserX className="h-3 w-3 mr-1" />
-                            Inactive
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <input
-                          type="checkbox"
-                          checked={member.showOnTeamPage !== false}
-                          onChange={(e) => handleToggleShowOnTeamPage(member, e.target.checked)}
-                          title="Display on public Team page (kdm-assoc.com/team)"
-                          className="h-4 w-4 rounded border-gray-300 cursor-pointer"
-                        />
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          <Button
-                            variant={isInSchedulingList(member.id) ? "secondary" : "ghost"}
-                            size="icon"
-                            onClick={() => {
-                              const queueItemId = getQueueItemId(member.id);
-                              if (queueItemId) {
-                                removeFromSchedulingList(queueItemId);
-                              } else {
-                                addToSchedulingList(member);
-                              }
-                            }}
-                            title={isInSchedulingList(member.id) ? "Remove from 1-to-1 list" : "Add to 1-to-1 list"}
-                          >
-                            <CalendarPlus className={`h-4 w-4 ${isInSchedulingList(member.id) ? "text-primary" : ""}`} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleResendWelcomeEmail(member)}
-                            title="Resend welcome email"
-                          >
-                            <Send className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEditMember(member)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteMember(member.id, `${member.firstName} ${member.lastName}`)}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+        /* Grouped List View */
+        <div className="space-y-8">
+          <MemberTable title="KDM Founder" members={activeFounders} />
+          <MemberTable title="KDM Staff" members={activeStaff} />
+          <MemberTable title="KDM Consortium" members={activeConsortiumOnly} />
+          {activeOthers.length > 0 && (
+            <MemberTable title="Active - Other" members={activeOthers} />
+          )}
+          <MemberTable title="Inactive" members={inactiveMembers} />
+        </div>
       ) : (
         /* Card View */
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
