@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp, getDoc } from "firebase/firestore";
@@ -28,6 +28,7 @@ import {
   CheckCircle,
   Upload,
   X,
+  Loader2,
   Award,
   Target,
   MapPin,
@@ -230,6 +231,80 @@ export function CompanyIntelligenceWizard() {
     marketplaceSellerEnabled: false,
     primaryServiceCategories: [],
   });
+
+  const logoInputRef = useRef<HTMLInputElement | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+
+  const MAX_LOGO_DIMENSION = 400; // px
+  const MAX_LOGO_BYTES = 300 * 1024; // 300KB, keeps base64 well under Firestore's 1MB doc limit
+
+  const resizeLogo = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new window.Image();
+        img.onload = () => {
+          // Compute proportional dimensions so the logo fits within
+          // MAX_LOGO_DIMENSION x MAX_LOGO_DIMENSION without stretching.
+          let { width, height } = img;
+          const scale = Math.min(
+            MAX_LOGO_DIMENSION / width,
+            MAX_LOGO_DIMENSION / height,
+            1 // never upscale smaller images
+          );
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Canvas not supported"));
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Progressively lower JPEG quality until under the size budget.
+          let quality = 0.92;
+          let dataUrl = canvas.toDataURL("image/jpeg", quality);
+          while (dataUrl.length * 0.75 > MAX_LOGO_BYTES && quality > 0.3) {
+            quality -= 0.1;
+            dataUrl = canvas.toDataURL("image/jpeg", quality);
+          }
+          resolve(dataUrl);
+        };
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = reader.result as string;
+      };
+      reader.onerror = () => reject(new Error("Failed to read image"));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      e.target.value = "";
+      return;
+    }
+
+    setLogoUploading(true);
+    try {
+      const resizedDataUrl = await resizeLogo(file);
+      setFormData((prev) => ({ ...prev, companyLogo: resizedDataUrl }));
+      toast.success("Logo updated");
+    } catch (error) {
+      console.error("Error resizing logo:", error);
+      toast.error("Failed to process image");
+    } finally {
+      setLogoUploading(false);
+      e.target.value = "";
+    }
+  };
 
   // Dedicated input states so each array field captures data independently
   const [naicsInput, setNaicsInput] = useState("");
@@ -593,10 +668,43 @@ export function CompanyIntelligenceWizard() {
               <div className="space-y-2">
                 <Label>Company Logo</Label>
                 <div className="flex items-center gap-4">
-                  <Button variant="outline" size="sm">
-                    <Upload className="h-4 w-4 mr-2" />
+                  {formData.companyLogo && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={formData.companyLogo}
+                      alt="Company logo preview"
+                      className="h-12 w-12 rounded-md object-contain border"
+                    />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={logoInputRef}
+                    onChange={handleLogoChange}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={logoUploading}
+                    onClick={() => logoInputRef.current?.click()}
+                  >
+                    {logoUploading ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4 mr-2" />
+                    )}
                     Upload Logo
                   </Button>
+                  {formData.companyLogo && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setFormData((prev) => ({ ...prev, companyLogo: "" }))}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                   <p className="text-sm text-muted-foreground">Recommended: 400x400px</p>
                 </div>
               </div>
