@@ -96,6 +96,7 @@ import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 import { toast } from "sonner";
 
 // SVP Role descriptions for display
@@ -405,7 +406,7 @@ export default function ProfilePage() {
       //    captured by the full wizard (technicalExpertise, notableContracts, etc.)
       if (userProfile.id) {
         try {
-          const teammemberRef = doc(db, "team_members", userProfile.id);
+          const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, userProfile.id);
           await updateDoc(teammemberRef, {
             "companyIntelligence.legalCompanyName": companyIntel.legalCompanyName,
             "companyIntelligence.address": companyIntel.address,
@@ -540,7 +541,7 @@ export default function ProfilePage() {
       if (userProfile.id && userProfile.id !== auth.currentUser.uid) {
         // If there's a linked team member, update it
         try {
-          const teammemberRef = doc(db, "team_members", userProfile.id);
+          const teammemberRef = doc(db, COLLECTIONS.TEAM_MEMBERS, userProfile.id);
           await updateDoc(teammemberRef, {
             firstName: profile.firstName,
             lastName: profile.lastName,
@@ -1286,7 +1287,7 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle>AI Matching Configuration</CardTitle>
               <CardDescription>
-                Capability categorization and matching preferences
+                NAICS-based opportunity and teaming partner matching
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1296,58 +1297,46 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">AI Matching Status</p>
                     <p className="text-sm text-muted-foreground">
-                      {(userProfile as any).aiMatchingActivated ? "Activated" : "Not Activated"}
+                      {(userProfile.naicsCodes?.length || 0) > 0
+                        ? `Active — matching on ${userProfile.naicsCodes!.length} NAICS code${userProfile.naicsCodes!.length > 1 ? "s" : ""}`
+                        : "Inactive — add NAICS codes in Company Intel to activate"}
                     </p>
                   </div>
                 </div>
-                <Badge variant={(userProfile as any).aiMatchingActivated ? "default" : "secondary"}>
-                  {(userProfile as any).aiMatchingActivated ? "Active" : "Inactive"}
+                <Badge variant={(userProfile.naicsCodes?.length || 0) > 0 ? "default" : "secondary"}>
+                  {(userProfile.naicsCodes?.length || 0) > 0 ? "Active" : "Inactive"}
                 </Badge>
               </div>
 
               <div className="space-y-2">
-                <Label>Capability Categories</Label>
+                <Label>NAICS Codes Used for Matching</Label>
                 <div className="flex flex-wrap gap-2">
-                  {((userProfile as any).capabilityCategories || []).map((cat: string, idx: number) => (
-                    <Badge key={idx} variant="outline">{cat}</Badge>
-                  ))}
+                  {(userProfile.naicsCodes || []).length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      No NAICS codes on file yet — add them in the Company Intel tab.
+                    </p>
+                  ) : (
+                    (userProfile.naicsCodes || []).map((code: string, idx: number) => (
+                      <Badge key={idx} variant="outline">{code}</Badge>
+                    ))
+                  )}
                 </div>
               </div>
 
-              {(userProfile as any).matchingPreferences && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Target Contract Sizes</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {((userProfile as any).matchingPreferences.targetContractSizes || []).map((size: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">{size}</Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Target Agencies</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {((userProfile as any).matchingPreferences.targetAgencies || []).map((agency: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">{agency}</Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Target Regions</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {((userProfile as any).matchingPreferences.targetRegions || []).map((region: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">{region}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <Button variant="outline" asChild>
-                <a href="/portal/consortium/matching">Configure AI Matching</a>
-              </Button>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Button variant="outline" asChild>
+                  <a href="/portal/consortium/matching">
+                    <FileSearch className="h-4 w-4 mr-2" />
+                    View SAM.gov Opportunity Matches
+                  </a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href="/portal/consortium/matching">
+                    <Users className="h-4 w-4 mr-2" />
+                    Explore Like People Teaming Matches
+                  </a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

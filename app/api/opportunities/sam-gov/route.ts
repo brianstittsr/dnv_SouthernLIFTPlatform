@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase-admin";
+import { getSamGovConfig } from "@/lib/sam-gov-config";
 
 /**
  * SAM.gov API Proxy Route
@@ -23,33 +23,6 @@ interface SAMSearchParams {
   "modified_date.from"?: string;
   "modified_date.to"?: string;
   includeFullDetails?: boolean;
-}
-
-async function getSamGovConfig(): Promise<{ apiKey: string; serverUrl: string } | null> {
-  try {
-    if (!db) return null;
-    
-    const settingsDoc = await db.collection("platformSettings").doc("global").get();
-    
-    if (!settingsDoc.exists) {
-      return null;
-    }
-    
-    const data = settingsDoc.data();
-    const samgov = data?.integrations?.samgov;
-    
-    if (!samgov?.apiKey || !samgov?.serverUrl) {
-      return null;
-    }
-    
-    return {
-      apiKey: samgov.apiKey,
-      serverUrl: samgov.serverUrl.replace(/\/$/, ""), // Remove trailing slash
-    };
-  } catch (error) {
-    console.error("Error fetching SAM.gov config:", error);
-    return null;
-  }
 }
 
 /**
