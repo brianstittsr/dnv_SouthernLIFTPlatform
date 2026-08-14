@@ -400,7 +400,54 @@ export function ConsortiumOnboardingWizard() {
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const MAX_AVATAR_DIMENSION = 400; // px
+  const MAX_AVATAR_BYTES = 300 * 1024; // 300KB, keeps base64 well under Firestore's 1MB doc limit
+
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          // Compute proportional dimensions so the image fits within
+          // MAX_AVATAR_DIMENSION x MAX_AVATAR_DIMENSION without stretching.
+          let { width, height } = img;
+          const scale = Math.min(
+            MAX_AVATAR_DIMENSION / width,
+            MAX_AVATAR_DIMENSION / height,
+            1 // never upscale smaller images
+          );
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Canvas not supported"));
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Progressively lower JPEG quality until under the size budget.
+          let quality = 0.92;
+          let dataUrl = canvas.toDataURL("image/jpeg", quality);
+          while (dataUrl.length * 0.75 > MAX_AVATAR_BYTES && quality > 0.3) {
+            quality -= 0.1;
+            dataUrl = canvas.toDataURL("image/jpeg", quality);
+          }
+          resolve(dataUrl);
+        };
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = reader.result as string;
+      };
+      reader.onerror = () => reject(new Error("Failed to read image"));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -410,26 +457,18 @@ export function ConsortiumOnboardingWizard() {
       return;
     }
 
-    const MAX_SIZE = 300 * 1024; // 300KB, keeps base64 well under Firestore's 1MB doc limit
-    if (file.size > MAX_SIZE) {
-      toast.error("Image too large. Please choose a photo under 300KB.");
-      e.target.value = "";
-      return;
-    }
-
     setAvatarUploading(true);
-    const reader = new FileReader();
-    reader.onload = () => {
-      updateFormData("avatar", reader.result as string);
-      setAvatarUploading(false);
+    try {
+      const resizedDataUrl = await resizeImage(file);
+      updateFormData("avatar", resizedDataUrl);
       toast.success("Photo updated");
-    };
-    reader.onerror = () => {
-      toast.error("Failed to read image");
+    } catch (error) {
+      console.error("Error resizing avatar:", error);
+      toast.error("Failed to process image");
+    } finally {
       setAvatarUploading(false);
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
+      e.target.value = "";
+    }
   };
 
   // Debounced company name search for dedup suggestions
@@ -704,7 +743,7 @@ export function ConsortiumOnboardingWizard() {
                     </Button>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Recommended: 400x400px, under 300KB</p>
+                <p className="text-xs text-muted-foreground mt-1">Images are automatically resized to fit 400x400px</p>
               </div>
             </div>
 
