@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -223,6 +224,27 @@ export default function ProfilePage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [showCertDialog, setShowCertDialog] = useState(false);
+
+  // Editable Company Intelligence fields (linked to data captured by the
+  // CompanyIntelligenceWizard onboarding modal)
+  const [companyIntel, setCompanyIntel] = useState({
+    legalCompanyName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    companyDescription: "",
+    naicsCodes: [] as string[],
+    certifications: [] as string[],
+    cageCode: "",
+    uei: "",
+    dunsNumber: "",
+    samRegistrationStatus: "pending" as "active" | "inactive" | "pending",
+    gsaScheduleHolder: false,
+  });
+  const [naicsCodeInput, setNaicsCodeInput] = useState("");
+  const [certificationInput, setCertificationInput] = useState("");
+  const [isSavingCompanyIntel, setIsSavingCompanyIntel] = useState(false);
   
   // Data loaded from Firebase
   const [recordings, setRecordings] = useState<any[]>([]);
@@ -267,6 +289,146 @@ export default function ProfilePage() {
   }, [userProfile.id, userProfile.firstName, userProfile.lastName, userProfile.email, 
       userProfile.phone, userProfile.jobTitle, userProfile.company, userProfile.location, 
       userProfile.bio, userProfile.role, userProfile.avatarUrl]);
+
+  // Sync editable Company Intelligence fields with data captured by the
+  // CompanyIntelligenceWizard onboarding modal
+  useEffect(() => {
+    if (userProfile.id) {
+      setCompanyIntel({
+        legalCompanyName: userProfile.legalCompanyName || "",
+        address: userProfile.address || "",
+        city: userProfile.city || "",
+        state: userProfile.state || "",
+        zip: userProfile.zip || "",
+        companyDescription: userProfile.companyDescription || "",
+        naicsCodes: userProfile.naicsCodes || [],
+        certifications: userProfile.certifications || [],
+        cageCode: userProfile.cageCode || "",
+        uei: userProfile.uei || "",
+        dunsNumber: userProfile.dunsNumber || "",
+        samRegistrationStatus: userProfile.samRegistrationStatus || "pending",
+        gsaScheduleHolder: userProfile.gsaScheduleHolder || false,
+      });
+    }
+  }, [
+    userProfile.id,
+    userProfile.legalCompanyName,
+    userProfile.address,
+    userProfile.city,
+    userProfile.state,
+    userProfile.zip,
+    userProfile.companyDescription,
+    userProfile.naicsCodes,
+    userProfile.certifications,
+    userProfile.cageCode,
+    userProfile.uei,
+    userProfile.dunsNumber,
+    userProfile.samRegistrationStatus,
+    userProfile.gsaScheduleHolder,
+  ]);
+
+  const updateCompanyIntel = (field: keyof typeof companyIntel, value: any) => {
+    setCompanyIntel((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const addNaicsCode = () => {
+    const value = naicsCodeInput.trim();
+    if (value && !companyIntel.naicsCodes.includes(value)) {
+      updateCompanyIntel("naicsCodes", [...companyIntel.naicsCodes, value]);
+      setNaicsCodeInput("");
+    }
+  };
+
+  const removeNaicsCode = (code: string) => {
+    updateCompanyIntel("naicsCodes", companyIntel.naicsCodes.filter((c) => c !== code));
+  };
+
+  const addCompanyCertification = () => {
+    const value = certificationInput.trim();
+    if (value && !companyIntel.certifications.includes(value)) {
+      updateCompanyIntel("certifications", [...companyIntel.certifications, value]);
+      setCertificationInput("");
+    }
+  };
+
+  const removeCompanyCertification = (cert: string) => {
+    updateCompanyIntel("certifications", companyIntel.certifications.filter((c) => c !== cert));
+  };
+
+  const saveCompanyIntelligence = async () => {
+    if (!auth?.currentUser || !db) {
+      toast.error("Authentication required");
+      return;
+    }
+
+    setIsSavingCompanyIntel(true);
+    try {
+      const now = Timestamp.now();
+      const isComplete = !!(
+        companyIntel.legalCompanyName &&
+        companyIntel.address &&
+        companyIntel.city &&
+        companyIntel.state &&
+        companyIntel.zip &&
+        companyIntel.companyDescription &&
+        companyIntel.naicsCodes.length > 0
+      );
+
+      // 1. Update flat fields on the users doc (source of truth for this tab)
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        legalCompanyName: companyIntel.legalCompanyName,
+        address: companyIntel.address,
+        city: companyIntel.city,
+        state: companyIntel.state,
+        zip: companyIntel.zip,
+        companyDescription: companyIntel.companyDescription,
+        naicsCodes: companyIntel.naicsCodes,
+        certifications: companyIntel.certifications,
+        cageCode: companyIntel.cageCode,
+        uei: companyIntel.uei,
+        dunsNumber: companyIntel.dunsNumber,
+        samRegistrationStatus: companyIntel.samRegistrationStatus,
+        gsaScheduleHolder: companyIntel.gsaScheduleHolder,
+        companyIntelligenceComplete: isComplete,
+        companyName: companyIntel.legalCompanyName || userProfile.companyName,
+        updatedAt: now,
+      });
+
+      // 2. Mirror into the linked team member's nested companyIntelligence map
+      //    using dot-notation field paths so we don't clobber other data
+      //    captured by the full wizard (technicalExpertise, notableContracts, etc.)
+      if (userProfile.id) {
+        try {
+          const teammemberRef = doc(db, "team_members", userProfile.id);
+          await updateDoc(teammemberRef, {
+            "companyIntelligence.legalCompanyName": companyIntel.legalCompanyName,
+            "companyIntelligence.address": companyIntel.address,
+            "companyIntelligence.city": companyIntel.city,
+            "companyIntelligence.state": companyIntel.state,
+            "companyIntelligence.zip": companyIntel.zip,
+            "companyIntelligence.companyDescription": companyIntel.companyDescription,
+            "companyIntelligence.primaryNaicsCodes": companyIntel.naicsCodes,
+            "companyIntelligence.cageCode": companyIntel.cageCode,
+            "companyIntelligence.uei": companyIntel.uei,
+            "companyIntelligence.dunsNumber": companyIntel.dunsNumber,
+            "companyIntelligence.samRegistrationStatus": companyIntel.samRegistrationStatus,
+            "companyIntelligence.gsaScheduleHolder": companyIntel.gsaScheduleHolder,
+            updatedAt: now,
+          });
+        } catch (error) {
+          console.log("No linked team member to update or error:", error);
+        }
+      }
+
+      toast.success("Company Intelligence saved successfully!");
+    } catch (error) {
+      console.error("Error saving company intelligence:", error);
+      toast.error("Failed to save company intelligence. Please try again.");
+    } finally {
+      setIsSavingCompanyIntel(false);
+    }
+  };
 
   const updateProfile = (field: string, value: any) => {
     setProfile({ ...profile, [field]: value });
@@ -763,10 +925,18 @@ export default function ProfilePage() {
         <TabsContent value="company-intelligence" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Company Intelligence</CardTitle>
-              <CardDescription>
-                Detailed organizational data captured during onboarding
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Company Intelligence</CardTitle>
+                  <CardDescription>
+                    Data captured during onboarding — linked and editable here
+                  </CardDescription>
+                </div>
+                <Button onClick={saveCompanyIntelligence} disabled={isSavingCompanyIntel}>
+                  <Save className="mr-2 h-4 w-4" />
+                  {isSavingCompanyIntel ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
@@ -785,40 +955,118 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Legal Company Name</Label>
-                <Input value={userProfile.legalCompanyName || ""} disabled />
+                <Label htmlFor="ci-legalCompanyName">Legal Company Name</Label>
+                <Input
+                  id="ci-legalCompanyName"
+                  value={companyIntel.legalCompanyName}
+                  onChange={(e) => updateCompanyIntel("legalCompanyName", e.target.value)}
+                  placeholder="Acme Manufacturing Inc."
+                />
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="ci-address">Address</Label>
+                <Input
+                  id="ci-address"
+                  value={companyIntel.address}
+                  onChange={(e) => updateCompanyIntel("address", e.target.value)}
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
-                  <Label>City</Label>
-                  <Input value={userProfile.city || ""} disabled />
+                  <Label htmlFor="ci-city">City</Label>
+                  <Input
+                    id="ci-city"
+                    value={companyIntel.city}
+                    onChange={(e) => updateCompanyIntel("city", e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>State</Label>
-                  <Input value={userProfile.state || ""} disabled />
+                  <Label htmlFor="ci-state">State</Label>
+                  <Input
+                    id="ci-state"
+                    value={companyIntel.state}
+                    onChange={(e) => updateCompanyIntel("state", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ci-zip">ZIP</Label>
+                  <Input
+                    id="ci-zip"
+                    value={companyIntel.zip}
+                    onChange={(e) => updateCompanyIntel("zip", e.target.value)}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Company Description</Label>
-                <Textarea rows={3} value={userProfile.companyDescription || ""} disabled />
+                <Label htmlFor="ci-companyDescription">Company Description</Label>
+                <Textarea
+                  id="ci-companyDescription"
+                  rows={3}
+                  value={companyIntel.companyDescription}
+                  onChange={(e) => updateCompanyIntel("companyDescription", e.target.value)}
+                  placeholder="Describe your company for public view..."
+                />
               </div>
 
               <div className="space-y-2">
                 <Label>NAICS Codes</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter NAICS code (e.g., 332710)"
+                    value={naicsCodeInput}
+                    onChange={(e) => setNaicsCodeInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addNaicsCode();
+                      }
+                    }}
+                  />
+                  <Button variant="outline" onClick={addNaicsCode}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <div className="flex flex-wrap gap-2">
-                  {(userProfile.naicsCodes || []).map((code: string, idx: number) => (
-                    <Badge key={idx} variant="outline">{code}</Badge>
+                  {companyIntel.naicsCodes.map((code: string, idx: number) => (
+                    <Badge key={idx} variant="outline" className="gap-1">
+                      {code}
+                      <button onClick={() => removeNaicsCode(code)} className="ml-1 hover:text-red-600">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Certifications</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="e.g., CMMC Level 2, ISO 9001"
+                    value={certificationInput}
+                    onChange={(e) => setCertificationInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addCompanyCertification();
+                      }
+                    }}
+                  />
+                  <Button variant="outline" onClick={addCompanyCertification}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <div className="flex flex-wrap gap-2">
-                  {(userProfile.certifications || []).map((cert: string, idx: number) => (
-                    <Badge key={idx} variant="secondary">{cert}</Badge>
+                  {companyIntel.certifications.map((cert: string, idx: number) => (
+                    <Badge key={idx} variant="secondary" className="gap-1">
+                      {cert}
+                      <button onClick={() => removeCompanyCertification(cert)} className="ml-1 hover:text-red-600">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
                   ))}
                 </div>
               </div>
@@ -829,32 +1077,69 @@ export default function ProfilePage() {
                 <Label className="text-base font-semibold">Government Contracting Registration</Label>
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">CAGE Code</Label>
-                    <Input value={userProfile.cageCode || ""} placeholder="Not set" disabled />
+                    <Label htmlFor="ci-cageCode" className="text-xs text-muted-foreground">CAGE Code</Label>
+                    <Input
+                      id="ci-cageCode"
+                      value={companyIntel.cageCode}
+                      onChange={(e) => updateCompanyIntel("cageCode", e.target.value)}
+                      placeholder="Not set"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">UEI / SAM Registration</Label>
-                    <Input value={userProfile.uei || ""} placeholder="Not set" disabled />
+                    <Label htmlFor="ci-uei" className="text-xs text-muted-foreground">UEI / SAM Registration</Label>
+                    <Input
+                      id="ci-uei"
+                      value={companyIntel.uei}
+                      onChange={(e) => updateCompanyIntel("uei", e.target.value)}
+                      placeholder="Not set"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">DUNS Number</Label>
-                    <Input value={userProfile.dunsNumber || ""} placeholder="Not set" disabled />
+                    <Label htmlFor="ci-dunsNumber" className="text-xs text-muted-foreground">DUNS Number</Label>
+                    <Input
+                      id="ci-dunsNumber"
+                      value={companyIntel.dunsNumber}
+                      onChange={(e) => updateCompanyIntel("dunsNumber", e.target.value)}
+                      placeholder="Not set"
+                    />
                   </div>
                 </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <Label className="text-xs text-muted-foreground">SAM.gov Status:</Label>
-                  <Badge variant={userProfile.samRegistrationStatus === "active" ? "default" : "secondary"}>
-                    {userProfile.samRegistrationStatus || "Not set"}
-                  </Badge>
-                  {userProfile.gsaScheduleHolder && (
-                    <Badge variant="outline">GSA Schedule Holder</Badge>
-                  )}
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="ci-samStatus" className="text-xs text-muted-foreground">SAM.gov Status</Label>
+                    <select
+                      id="ci-samStatus"
+                      className="px-2 py-1 text-sm border rounded-md"
+                      value={companyIntel.samRegistrationStatus}
+                      onChange={(e) => updateCompanyIntel("samRegistrationStatus", e.target.value)}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="ci-gsaScheduleHolder"
+                      checked={companyIntel.gsaScheduleHolder}
+                      onCheckedChange={(checked) => updateCompanyIntel("gsaScheduleHolder", checked as boolean)}
+                    />
+                    <Label htmlFor="ci-gsaScheduleHolder" className="text-sm font-normal cursor-pointer">
+                      GSA Schedule Holder
+                    </Label>
+                  </div>
                 </div>
               </div>
 
-              <Button variant="outline" onClick={() => setShowCompanyIntelligenceWizard(true)}>
-                Update Company Intelligence
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button onClick={saveCompanyIntelligence} disabled={isSavingCompanyIntel}>
+                  <Save className="mr-2 h-4 w-4" />
+                  {isSavingCompanyIntel ? "Saving..." : "Save Changes"}
+                </Button>
+                <Button variant="outline" onClick={() => setShowCompanyIntelligenceWizard(true)}>
+                  Open Full Onboarding Wizard
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
