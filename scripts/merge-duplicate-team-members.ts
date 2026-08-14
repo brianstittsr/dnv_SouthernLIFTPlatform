@@ -45,10 +45,11 @@ interface TeamMemberData {
 function getArgs() {
   const email = process.argv.find((arg, idx) => arg === "--email" && process.argv[idx + 1]) ? process.argv[process.argv.indexOf("--email") + 1] : undefined;
   const name = process.argv.find((arg, idx) => arg === "--name" && process.argv[idx + 1]) ? process.argv[process.argv.indexOf("--name") + 1] : undefined;
+  const primaryEmail = process.argv.find((arg, idx) => arg === "--primary-email" && process.argv[idx + 1]) ? process.argv[process.argv.indexOf("--primary-email") + 1] : undefined;
   const dryRun = process.argv.includes("--dry-run");
   const execute = process.argv.includes("--execute");
   const notify = process.argv.includes("--notify");
-  return { email, name, dryRun, execute, notify };
+  return { email, name, primaryEmail, dryRun, execute, notify };
 }
 
 function scoreRecord(data: TeamMemberData): number {
@@ -101,11 +102,11 @@ function buildEmailHtml(name: string, bugTrackerUrl: string): string {
 }
 
 async function main() {
-  const { email, name, dryRun, execute, notify } = getArgs();
+  const { email, name, primaryEmail, dryRun, execute, notify } = getArgs();
 
   if (!email && !name) {
     console.error("Please provide --email <email> or --name <name> to identify duplicates.");
-    console.error("Usage: npx tsx scripts/merge-duplicate-team-members.ts --email <email> [--dry-run | --execute] [--notify]");
+    console.error("Usage: npx tsx scripts/merge-duplicate-team-members.ts --email <email> | --name <name> [--primary-email <email>] [--dry-run | --execute] [--notify]");
     process.exit(1);
   }
 
@@ -145,7 +146,14 @@ async function main() {
   }
 
   // Sort by score descending; highest score is the primary record to keep.
-  candidates.sort((a, b) => scoreRecord(b) - scoreRecord(a));
+  // If --primary-email is provided, force a matching record to the top.
+  candidates.sort((a, b) => {
+    const aIsPrimary = primaryEmail && a.emailPrimary?.toLowerCase() === primaryEmail.toLowerCase();
+    const bIsPrimary = primaryEmail && b.emailPrimary?.toLowerCase() === primaryEmail.toLowerCase();
+    if (aIsPrimary && !bIsPrimary) return -1;
+    if (bIsPrimary && !aIsPrimary) return 1;
+    return scoreRecord(b) - scoreRecord(a);
+  });
   const [primary, ...duplicates] = candidates;
 
   console.log(`\nFound ${candidates.length} matching records for ${email || name}`);
@@ -184,6 +192,31 @@ async function main() {
   if (duplicates.some((d) => d.membershipTier)) {
     const tier = duplicates.find((d) => d.membershipTier)?.membershipTier;
     if (tier) updates.membershipTier = tier;
+  }
+  // If a primary email was requested, ensure the kept record uses it
+  if (primaryEmail) {
+    updates.emailPrimary = primaryEmail;
+  }
+  // Backfill any missing fields from the duplicates so no data is lost
+  const fieldBackfill: (keyof TeamMemberData)[] = [
+    "firstName",
+    "lastName",
+    "title",
+    "expertise",
+    "bio",
+    "company",
+    "avatar",
+    "mobile",
+    "linkedIn",
+    "website",
+    "location",
+    "firebaseUid",
+  ];
+  for (const field of fieldBackfill) {
+    if (!primary[field] && duplicates.some((d) => d[field])) {
+      const value = duplicates.find((d) => d[field])?.[field];
+      if (value) updates[field] = value;
+    }
   }
 
   await primaryRef.update(updates);
