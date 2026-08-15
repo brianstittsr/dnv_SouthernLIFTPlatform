@@ -148,7 +148,13 @@ export default function KdmConsortiumPage() {
           resolvedImageUrl,
         });
       });
-      result.sort((a, b) => a.name.localeCompare(b.name));
+      // Sort by company name, then by member name so members from the same company are grouped together
+      result.sort((a, b) => {
+        const companyA = (a.company || "").toLowerCase();
+        const companyB = (b.company || "").toLowerCase();
+        if (companyA !== companyB) return companyA.localeCompare(companyB);
+        return a.name.localeCompare(b.name);
+      });
       setMembers(result);
     } catch (error) {
       console.error("Error fetching consortium members:", error);
