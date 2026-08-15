@@ -153,15 +153,15 @@ const mainNavItems = [
     href: "/portal/customers",
     icon: Building,
   },
-];
-
-const companyItems = [
   {
-    title: "KDM Consortium Members",
+    title: "KDM Consortium",
     href: "/portal/company/consortium-members",
     icon: Building2,
+    badge: "KDM",
   },
 ];
+
+const companyItems: { title: string; href: string; icon: typeof Building2 }[] = [];
 
 const workItems = [
   {
@@ -1541,7 +1541,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Company */}
-                {(!searchQuery.trim() || sectionHasMatchingItems(companyItems)) && (
+                {companyItems.length > 0 && (!searchQuery.trim() || sectionHasMatchingItems(companyItems)) && (
                 <Collapsible open={openSections.company} onOpenChange={() => toggleSection("company")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>

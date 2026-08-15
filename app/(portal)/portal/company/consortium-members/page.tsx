@@ -150,7 +150,7 @@ export default function ConsortiumMembersPage() {
       {!loading && !error && (
         <div className="space-y-12">
           <CompanySection
-            title="Founders"
+            title="Founding Members"
             companies={founders}
             badge="Founding Member"
             currentUserUid={currentUserUid}
