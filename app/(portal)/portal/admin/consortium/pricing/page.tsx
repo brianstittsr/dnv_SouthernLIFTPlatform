@@ -280,6 +280,58 @@ export default function ConsortiumPricingAdminPage() {
     populateForm(p);
   };
 
+  /**
+   * One-click show/hide for a core pricing tier card. If no override doc
+   * exists yet, creates one seeded from the tier defaults with the flipped
+   * `active` value. If an override already exists, just flips its `active`
+   * field. This does not touch any other field on the override.
+   */
+  const handleToggleCoreTierActive = async (tierId: CoreTierId) => {
+    if (!db) {
+      toast.error("Database not initialized");
+      return;
+    }
+
+    const effective = getCoreTierEffective(tierId);
+    const nextActive = !effective.active;
+
+    try {
+      if (effective.override?.id) {
+        await updateDoc(doc(db, COLLECTION_NAME, effective.override.id), {
+          active: nextActive,
+          updatedAt: Timestamp.now(),
+        });
+      } else {
+        const def = CORE_TIER_DEFAULTS[tierId];
+        await addDoc(collection(db, COLLECTION_NAME), {
+          name: def.name,
+          priceType: def.priceType,
+          price: def.price,
+          annualPrice: def.annualPrice,
+          description: def.description,
+          features: def.features,
+          productType: def.productType,
+          cta: def.cta,
+          coreTierId: tierId,
+          isPromotional: false,
+          active: nextActive,
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        });
+      }
+      toast.success(`${CORE_TIER_DEFAULTS[tierId].name} ${nextActive ? "shown" : "hidden"} on the public pricing page`);
+      loadPrices();
+    } catch (error) {
+      console.error("Error toggling core tier visibility:", error);
+      const message = error instanceof Error ? error.message : "Failed to update visibility";
+      toast.error(
+        message.includes("permission")
+          ? "Permission denied — your admin role may need to be refreshed. Try signing out and back in."
+          : message
+      );
+    }
+  };
+
   const handleSave = async () => {
     if (!db) {
       toast.error("Database not initialized");
@@ -424,12 +476,19 @@ export default function ConsortiumPricingAdminPage() {
             return (
               <Card key={tierId} className={!effective.active ? "opacity-60" : undefined}>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{def.name}</CardTitle>
-                  {effective.hasOverride && (
-                    <Badge className={effective.active ? "bg-green-500 w-fit" : "bg-gray-400 w-fit"}>
-                      {effective.active ? "Admin Override Active" : "Hidden from Pricing Page"}
-                    </Badge>
-                  )}
+                  <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="text-base">{def.name}</CardTitle>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Switch
+                        checked={effective.active}
+                        onCheckedChange={() => handleToggleCoreTierActive(tierId)}
+                        aria-label={effective.active ? "Hide from pricing page" : "Show on pricing page"}
+                      />
+                    </div>
+                  </div>
+                  <Badge className={effective.active ? "bg-green-500 w-fit" : "bg-gray-400 w-fit"}>
+                    {effective.active ? "Shown on Pricing Page" : "Hidden from Pricing Page"}
+                  </Badge>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-2xl font-bold">
