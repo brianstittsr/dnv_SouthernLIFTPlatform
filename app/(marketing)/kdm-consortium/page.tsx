@@ -82,25 +82,27 @@ function ConsortiumMemberCard({ member }: { member: DisplayMember }) {
     <Link href={`/kdm-consortium/${member.id}`} className="block">
       <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardContent className="pt-8 pb-6">
-          <div className="relative w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
+          <div className="w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
             {imageUrl ? (
               <img src={imageUrl} alt={member.name} className="w-full h-full object-cover object-top" />
             ) : (
               <span className="text-primary text-4xl font-semibold">{member.initials}</span>
             )}
-            {member.companyLogo && (
-              <div className="absolute bottom-1 right-1 h-10 w-10 rounded-full bg-white border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
-                <img
-                  src={member.companyLogo}
-                  alt={member.company ? `${member.company} logo` : "Company logo"}
-                  className="h-full w-full object-contain"
-                />
-              </div>
-            )}
           </div>
+          {member.companyLogo ? (
+            <div className="w-full max-w-48 mx-auto mb-4 h-16 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-3 py-2">
+              <img
+                src={member.companyLogo}
+                alt={member.company ? `${member.company} logo` : "Company logo"}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="h-4" />
+          )}
           <h3 className="text-lg font-semibold">{member.name}</h3>
           {member.company && (
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-600 mb-1">{member.company}</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-amber-600 mb-1">{member.company}</p>
           )}
           <p className="text-sm text-primary font-medium">{member.title}</p>
           <p className="mt-3 text-sm text-primary underline underline-offset-2 hover:text-primary/80 transition-colors font-medium">

@@ -86,7 +86,7 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
       <div className="grid md:grid-cols-[300px_1fr] gap-8 md:gap-12">
         {/* Photo Column */}
         <div className="flex flex-col items-center md:items-start">
-          <div className="relative w-full max-w-[280px] rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4] mb-6">
+          <div className="w-full max-w-[280px] rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4] mb-4">
             {imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -99,17 +99,17 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
                 {member.initials}
               </span>
             )}
-            {member.companyLogo && (
-              <div className="absolute bottom-2 right-2 h-14 w-14 rounded-full bg-white border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={member.companyLogo}
-                  alt="Company logo"
-                  className="h-full w-full object-contain"
-                />
-              </div>
-            )}
           </div>
+          {member.companyLogo && (
+            <div className="w-full max-w-[280px] mb-6 h-20 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-4 py-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={member.companyLogo}
+                alt="Company logo"
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          )}
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold mb-2">{member.name}</h2>
             <p className="text-lg text-primary font-medium mb-3">{member.title}</p>
