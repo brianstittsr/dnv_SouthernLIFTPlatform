@@ -58,6 +58,7 @@ import {
   Link as LinkIcon,
   Send,
   Loader2,
+  FileText,
 } from "lucide-react";
 import { 
   collection, 
@@ -77,6 +78,7 @@ import { COLLECTIONS, type TeamMemberDoc, type TeamMemberTag, type OneToOneQueue
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
 import { InviteUserDialog } from "@/components/admin/invite-user-dialog";
+import { TeamMemberReportDialog } from "@/components/admin/team-member-report-dialog";
 import Link from "next/link";
 
 // Seed data for Team members
@@ -136,6 +138,7 @@ export default function TeammembersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [tagFilter, setTagFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [schedulingList, setSchedulingList] = useState<OneToOneQueueItemDoc[]>([]);
   const [showSchedulingPanel, setShowSchedulingPanel] = useState(false);
   const [loadingQueue, setLoadingQueue] = useState(false);
@@ -907,6 +910,12 @@ export default function TeammembersPage() {
             <Button variant="outline" onClick={updateWebsitesFromEmail}>
               <Globe className="mr-2 h-4 w-4" />
               Update Websites
+            </Button>
+          )}
+          {members.length > 0 && (
+            <Button variant="outline" onClick={() => setReportDialogOpen(true)}>
+              <FileText className="mr-2 h-4 w-4" />
+              Member Report
             </Button>
           )}
           <InviteUserDialog>
@@ -1810,6 +1819,12 @@ export default function TeammembersPage() {
           1-to-1 List ({schedulingList.length})
         </Button>
       )}
+
+      <TeamMemberReportDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        members={members}
+      />
     </div>
   );
 }
