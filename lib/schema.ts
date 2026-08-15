@@ -725,6 +725,14 @@ export interface ConsortiumMemberDoc {
   // Tags for categorization
   tags?: string[];
 
+  // Admin Onboarding Review (content sufficiency for AI search/recommendations/teaming)
+  onboardingReviewStatus?: "not_reviewed" | "changes_requested" | "approved";
+  onboardingReviewedAt?: Timestamp;
+  onboardingReviewedBy?: string; // admin uid
+  onboardingApprovedAt?: Timestamp;
+  lastReviewRequestSentAt?: Timestamp;
+  lastReviewRequestItems?: string[]; // snapshot of flagged field labels
+
   // Stripe sync tracking
   source?: "stripe" | "manual" | "firebase";
   stripeSyncStatus?: "not_started" | "registered" | "linked" | "active";
@@ -2374,6 +2382,34 @@ export interface UserNotificationDoc {
   createdAt: Timestamp;
 }
 
+/**
+ * Audit trail entry for the Admin Onboarding Review workflow. One doc per
+ * admin action (request-changes or approve) against a consortium member's
+ * onboarding profile content.
+ */
+export interface OnboardingReviewDoc {
+  id: string;
+  memberId: string; // consortiumMembers doc id
+  userId?: string; // Firebase Auth UID, if linked
+  adminId: string;
+  adminName?: string;
+  action: "requested_changes" | "approved";
+
+  // Snapshot of the sufficiency analysis at the time of this action
+  checklistSnapshot?: {
+    field: string;
+    severity: "missing" | "weak" | "ok";
+    note?: string;
+  }[];
+  aiSummary?: string;
+
+  // Only present for "requested_changes"
+  emailMessage?: string;
+  emailSentAt?: Timestamp;
+
+  createdAt: Timestamp;
+}
+
 /** Contract Floor Analysis - pipeline forecasting */
 export interface ContractFloorAnalysisDoc {
   id: string;
@@ -2630,6 +2666,8 @@ export const COLLECTIONS = {
   SAMGOV_NAICS_SUGGESTIONS: "samgovNaicsSuggestions",
   // Persistent in-app notification inbox
   USER_NOTIFICATIONS: "userNotifications",
+  // Admin Onboarding Review audit trail
+  ONBOARDING_REVIEWS: "onboardingReviews",
 } as const;
 
 // ... existing code ...

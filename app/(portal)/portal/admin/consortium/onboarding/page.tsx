@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import Link from "next/link";
 import {
   Loader2,
   Users,
@@ -31,6 +32,7 @@ import {
   Zap,
   Link2,
   AlertCircle,
+  ClipboardCheck,
 } from "lucide-react";
 
 interface StageProgress {
@@ -248,11 +250,19 @@ export default function ConsortiumOnboardingDashboardPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Consortium Onboarding Tracker</h1>
-        <p className="text-muted-foreground">
-          Track all registered KDM Consortium members and their current onboarding completion step.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-bold">Consortium Onboarding Tracker</h1>
+          <p className="text-muted-foreground">
+            Track all registered KDM Consortium members and their current onboarding completion step.
+          </p>
+        </div>
+        <Button variant="outline" asChild>
+          <Link href="/portal/admin/consortium/onboarding-review">
+            <ClipboardCheck className="mr-2 h-4 w-4" />
+            Onboarding Review
+          </Link>
+        </Button>
       </div>
 
       {/* Summary Cards */}

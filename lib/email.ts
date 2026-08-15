@@ -1089,6 +1089,60 @@ export const emailTemplates = {
     `,
     text: `Our AI recommends teaming with ${params.partnerCompanyName} on "${params.opportunityTitle}" (match score ${params.matchScore}/100). Review at: ${params.portalUrl}`,
   }),
+
+  /**
+   * Sent when an admin reviews a member's onboarding profile and requests
+   * updates before it can be approved for AI search/recommendations/teaming.
+   */
+  onboardingChangesRequested: (params: {
+    name: string;
+    items: { field: string; note: string }[];
+    customMessage?: string;
+    profileUrl: string;
+  }) => ({
+    subject: "Action Needed: Please Update Your KDM Consortium Profile",
+    html: `
+      <h1>Hi ${params.name},</h1>
+      ${params.customMessage ? `<p>${params.customMessage}</p>` : `<p>Thanks for completing your KDM Consortium onboarding! Our team reviewed your profile and found a few items that need more detail before we can activate AI-powered opportunity matching, recommendations, and teaming for your account.</p>`}
+      <h3>Items to update:</h3>
+      <ul>
+        ${params.items.map((item) => `<li><strong>${item.field}:</strong> ${item.note}</li>`).join("")}
+      </ul>
+      <h3>How to update your profile</h3>
+      <ol>
+        <li>Log in to the KDM Consortium portal.</li>
+        <li>Click <strong>Profile</strong> in the left-hand navigation menu.</li>
+        <li>Open the <strong>Company Intel</strong> tab to update the items listed above.</li>
+        <li>Save your changes — our team will review and follow up.</li>
+      </ol>
+      <p><a href="${params.profileUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Update My Profile</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Hi ${params.name}, our team reviewed your KDM Consortium profile and found items that need updating before AI matching can be activated: ${params.items
+      .map((i) => `${i.field} — ${i.note}`)
+      .join("; ")}. Update your profile at: ${params.profileUrl}`,
+  }),
+
+  /**
+   * Sent when an admin approves a member's onboarding content, unlocking
+   * full access to KDM Opportunities, AI Recommendations, and AI Teaming.
+   */
+  onboardingApproved: (params: { name: string; portalUrl: string; opportunitiesUrl: string; teamingUrl: string }) => ({
+    subject: "You're Approved! Full KDM Consortium AI Access Unlocked",
+    html: `
+      <h1>Congratulations, ${params.name}!</h1>
+      <p>Your KDM Consortium onboarding profile has been reviewed and approved. You now have full access to our AI-powered features:</p>
+      <ul>
+        <li><strong>KDM Opportunities</strong> — daily AI-matched SAM.gov RFI/RFP opportunities tailored to your profile.</li>
+        <li><strong>AI Recommendations</strong> — NAICS code suggestions and profile insights to strengthen your competitiveness.</li>
+        <li><strong>AI Teaming Matches</strong> — AI-recommended KDM Consortium partners to strengthen your proposals.</li>
+      </ul>
+      <p><a href="${params.portalUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Log In to the Portal</a></p>
+      <p>Once logged in, visit <a href="${params.opportunitiesUrl}">KDM Opportunities</a> to view your matched opportunities, or <a href="${params.teamingUrl}">AI Teaming Matches</a> to review potential partners.</p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Congratulations ${params.name}! Your KDM Consortium onboarding is approved. Log in at ${params.portalUrl} to explore KDM Opportunities (${params.opportunitiesUrl}) and AI Teaming Matches (${params.teamingUrl}).`,
+  }),
 };
 
 /**

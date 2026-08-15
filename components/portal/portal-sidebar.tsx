@@ -327,6 +327,12 @@ const adminItems = [
     badge: "New",
   },
   {
+    title: "Onboarding Review",
+    href: "/portal/admin/consortium/onboarding-review",
+    icon: ClipboardCheck,
+    badge: "AI",
+  },
+  {
     title: "SAM.gov Monitor",
     href: "/portal/admin/samgov-monitor",
     icon: Globe,

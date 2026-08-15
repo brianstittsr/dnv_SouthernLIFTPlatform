@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS, type SamgovOpportunityDoc, type AiTeamingRecommendationDoc } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +28,7 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
   const [opportunities, setOpportunities] = useState<SamgovOpportunityDoc[]>([]);
   const [recommendations, setRecommendations] = useState<AiTeamingRecommendationDoc[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviewStatus, setReviewStatus] = useState<"not_reviewed" | "changes_requested" | "approved" | null>(null);
 
   useEffect(() => {
     if (!auth) {
@@ -43,10 +44,17 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
 
   useEffect(() => {
     if (!userId || !db) return;
+    const currentUserId = userId;
 
     async function fetchData() {
       setLoading(true);
       try {
+        const userDocSnap = await getDoc(doc(db!, COLLECTIONS.USERS, currentUserId));
+        setReviewStatus(
+          (userDocSnap.data()?.onboardingReviewStatus as "not_reviewed" | "changes_requested" | "approved" | undefined) ||
+            "not_reviewed"
+        );
+
         const oppSnap = await getDocs(
           query(collection(db!, COLLECTIONS.SAMGOV_OPPORTUNITIES), where("userId", "==", userId))
         );
@@ -131,6 +139,22 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
         </p>
       </div>
 
+      {reviewStatus !== "approved" ? (
+        <Card>
+          <CardContent className="py-16 text-center space-y-2">
+            <Sparkles className="h-10 w-10 text-muted-foreground mx-auto" />
+            <h3 className="text-lg font-semibold">Pending Admin Approval</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              {reviewStatus === "changes_requested"
+                ? "Our team requested a few profile updates before AI matching can be activated. Check your email or visit your Profile page for details."
+                : "Our team is reviewing your onboarding profile. Once approved, AI-matched SAM.gov opportunities and teaming recommendations will appear here."}
+            </p>
+            <Button variant="outline" asChild className="mt-2">
+              <Link href="/portal/profile">Go to Profile</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
       <Tabs defaultValue={initialTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="opportunities">Opportunities ({opportunities.length})</TabsTrigger>
@@ -258,6 +282,7 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
           )}
         </TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }

@@ -89,10 +89,11 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // ─── 2. Load eligible members (active + onboarding complete) ────────
+    // ─── 2. Load eligible members (active + onboarding complete + admin-approved) ─
     const usersSnap = await db
       .collection(COLLECTIONS.USERS)
       .where("companyIntelligenceComplete", "==", true)
+      .where("onboardingReviewStatus", "==", "approved")
       .get();
 
     const eligibleMembers: EligibleMember[] = usersSnap.docs.map((docSnap) => {
