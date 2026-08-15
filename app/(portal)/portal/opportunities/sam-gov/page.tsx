@@ -182,7 +182,7 @@ export default function SAMOpportunitiesPage() {
         const mapped: Opportunity[] = (data.opportunitiesData || []).map((opp: Record<string, unknown>) => ({
           id: opp.noticeId as string || "",
           title: opp.title as string || "Untitled",
-          agency: (opp.organizationHierarchy as string || opp.department as string || "Unknown Agency").split("::").pop() || "Unknown Agency",
+          agency: (opp.organizationHierarchy || opp.department || "Unknown Agency").toString().split("::").pop() || "Unknown Agency",
           solicitationNumber: opp.solicitationNumber as string || "",
           postedDate: opp.postedDate as string || "",
           deadline: opp.responseDeadLine as string || "",
