@@ -101,7 +101,7 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
             )}
           </div>
           {member.companyLogo && (
-            <div className="w-full max-w-[280px] mb-6 h-20 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-4 py-2">
+            <div className="w-full max-w-[280px] mb-6 h-32 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-4 py-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={member.companyLogo}

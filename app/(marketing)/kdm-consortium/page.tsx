@@ -90,7 +90,7 @@ function ConsortiumMemberCard({ member }: { member: DisplayMember }) {
             )}
           </div>
           {member.companyLogo ? (
-            <div className="w-full max-w-48 mx-auto mb-4 h-16 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-3 py-2">
+            <div className="w-full max-w-48 mx-auto mb-4 h-24 flex items-center justify-center bg-white rounded-lg border border-slate-100 px-3 py-2">
               <img
                 src={member.companyLogo}
                 alt={member.company ? `${member.company} logo` : "Company logo"}
