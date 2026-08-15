@@ -2246,6 +2246,8 @@ export interface AiTeamingRecommendationDoc {
   opportunityId: string;
   pursuitBriefId?: string;
   forMemberId: string; // Member requesting recommendation
+  sourceType?: "pursuit" | "samgov"; // where this recommendation originated
+  samgovOpportunityDocId?: string; // reference into samgovOpportunities when sourceType === "samgov"
   
   // Opportunity summary
   opportunityTitle: string;
@@ -2274,6 +2276,10 @@ export interface AiTeamingRecommendationDoc {
     contacted: boolean;
     contactStatus?: "pending" | "interested" | "not-interested" | "teamed";
     contactNotes?: string;
+
+    // Mutual notification tracking (SAM.gov teaming flow)
+    requesterNotifiedAt?: Timestamp;
+    partnerNotifiedAt?: Timestamp;
   }[];
   
   // Suggested team structure
@@ -2291,6 +2297,81 @@ export interface AiTeamingRecommendationDoc {
   
   createdAt: Timestamp;
   updatedAt: Timestamp;
+}
+
+/**
+ * SAM.gov Opportunity match delivered to a specific member.
+ * One doc per (userId, noticeId) pair. Never deleted when the response
+ * deadline passes — `hidden` is flipped to true instead so admins retain
+ * full history while members only see active opportunities.
+ */
+export interface SamgovOpportunityDoc {
+  id: string;
+  userId: string; // Firebase Auth UID of the recipient member
+  teamMemberId?: string; // Linked teamMembers doc id, if any
+
+  // Raw SAM.gov fields (from Cgray proxy)
+  noticeId: string;
+  title: string;
+  solicitationNumber?: string;
+  agency?: string;
+  organizationHierarchy?: string;
+  noticeType?: string;
+  naicsCode?: string;
+  classificationCode?: string;
+  typeOfSetAsideDescription?: string;
+  postedDate?: string;
+  responseDeadline: Timestamp | null;
+  uiLink?: string;
+  description?: string;
+
+  // AI ranking
+  matchScore: number; // 0-100
+  matchReasons: string[];
+
+  // Lifecycle
+  deliveredAt: Timestamp;
+  hidden: boolean; // true once responseDeadline has passed
+  hiddenAt?: Timestamp;
+  viewedAt?: Timestamp;
+
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** AI-generated NAICS code recommendation for a member's profile */
+export interface SamgovNaicsSuggestionDoc {
+  id: string;
+  userId: string;
+  teamMemberId?: string;
+
+  suggestedCodes: {
+    code: string;
+    title: string;
+    reason: string;
+    confidence: number; // 0-100
+  }[];
+
+  basedOn: string; // short summary of the profile data used (capabilities/description)
+  status: "active" | "dismissed" | "applied";
+
+  generatedAt: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Persistent in-app notification inbox entry */
+export interface UserNotificationDoc {
+  id: string;
+  userId: string; // recipient Firebase Auth UID
+  type: "samgov_opportunity" | "samgov_teaming" | "system" | "other";
+  title: string;
+  message: string;
+  link?: string; // in-app route to navigate to
+  read: boolean;
+  readAt?: Timestamp;
+  metadata?: Record<string, unknown>;
+  createdAt: Timestamp;
 }
 
 /** Contract Floor Analysis - pipeline forecasting */
@@ -2544,6 +2625,11 @@ export const COLLECTIONS = {
   COMPANIES: "companies",
   // Member Attachments (PDF text extracted as markdown for AI context)
   MEMBER_ATTACHMENTS: "member_attachments",
+  // SAM.gov Opportunity Feed Integration
+  SAMGOV_OPPORTUNITIES: "samgovOpportunities",
+  SAMGOV_NAICS_SUGGESTIONS: "samgovNaicsSuggestions",
+  // Persistent in-app notification inbox
+  USER_NOTIFICATIONS: "userNotifications",
 } as const;
 
 // ... existing code ...

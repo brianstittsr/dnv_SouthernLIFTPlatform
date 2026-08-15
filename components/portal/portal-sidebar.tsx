@@ -165,6 +165,12 @@ const companyItems: { title: string; href: string; icon: typeof Building2 }[] = 
 
 const workItems = [
   {
+    title: "SAM.gov Opportunities",
+    href: "/portal/samgov-opportunities",
+    icon: Globe,
+    badge: "AI",
+  },
+  {
     title: "Resource Library",
     href: "/portal/resources",
     icon: FileText,
@@ -319,6 +325,12 @@ const adminItems = [
     href: "/portal/admin/consortium/onboarding",
     icon: UserPlus,
     badge: "New",
+  },
+  {
+    title: "SAM.gov Monitor",
+    href: "/portal/admin/samgov-monitor",
+    icon: Globe,
+    badge: "AI",
   },
   {
     title: "Pipeline Kanban",

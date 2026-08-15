@@ -1027,6 +1027,68 @@ export const emailTemplates = {
     `,
     text: `CMMC Training Enrollment Confirmed! Your payment of $${params.amount.toFixed(2)} for ${params.trainingLevel} CMMC training has been confirmed on ${params.paymentDate}. Company: ${params.companyInfo}. You will receive training schedule and access information shortly.`,
   }),
+
+  /**
+   * Daily digest of AI-matched SAM.gov opportunities for a member
+   */
+  samgovOpportunityDigest: (params: {
+    name: string;
+    opportunities: { title: string; agency?: string; matchScore: number; responseDeadline?: string; uiLink?: string }[];
+    portalUrl: string;
+  }) => ({
+    subject: `${params.opportunities.length} New SAM.gov Opportunit${params.opportunities.length === 1 ? "y" : "ies"} Matched to Your Profile`,
+    html: `
+      <h1>New SAM.gov Opportunities for ${params.name}</h1>
+      <p>Our AI matched ${params.opportunities.length} federal opportunit${params.opportunities.length === 1 ? "y" : "ies"} to your company profile today:</p>
+      <div style="margin: 20px 0;">
+        ${params.opportunities
+          .map(
+            (opp) => `
+          <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #0066cc;">
+            <h3 style="margin: 0 0 8px 0;">${opp.title}</h3>
+            ${opp.agency ? `<p style="margin: 0 0 4px 0; color: #555;">${opp.agency}</p>` : ""}
+            <p style="margin: 0 0 4px 0;"><strong>Match Score:</strong> ${opp.matchScore}/100</p>
+            ${opp.responseDeadline ? `<p style="margin: 0 0 4px 0;"><strong>Response Deadline:</strong> ${opp.responseDeadline}</p>` : ""}
+            ${opp.uiLink ? `<p style="margin: 8px 0 0 0;"><a href="${opp.uiLink}" target="_blank">View on SAM.gov</a></p>` : ""}
+          </div>`
+          )
+          .join("")}
+      </div>
+      <p><a href="${params.portalUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">View All Opportunities</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Our AI matched ${params.opportunities.length} SAM.gov opportunities to your profile today. View them at: ${params.portalUrl}`,
+  }),
+
+  /**
+   * AI teaming partner recommendation notification (sent to both members)
+   */
+  teamingRecommendation: (params: {
+    name: string;
+    partnerCompanyName: string;
+    opportunityTitle: string;
+    matchScore: number;
+    matchReasons: string[];
+    portalUrl: string;
+  }) => ({
+    subject: `AI Teaming Recommendation: Partner with ${params.partnerCompanyName}`,
+    html: `
+      <h1>AI Teaming Recommendation for ${params.name}</h1>
+      <p>Our AI identified a potential teaming opportunity for the following SAM.gov opportunity:</p>
+      <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <h3 style="margin-top: 0;">${params.opportunityTitle}</h3>
+        <p><strong>Recommended Partner:</strong> ${params.partnerCompanyName}</p>
+        <p><strong>Match Score:</strong> ${params.matchScore}/100</p>
+      </div>
+      <h3>Why this recommendation?</h3>
+      <ul>
+        ${params.matchReasons.map((reason) => `<li>${reason}</li>`).join("")}
+      </ul>
+      <p><a href="${params.portalUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Review Recommendation</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Our AI recommends teaming with ${params.partnerCompanyName} on "${params.opportunityTitle}" (match score ${params.matchScore}/100). Review at: ${params.portalUrl}`,
+  }),
 };
 
 /**

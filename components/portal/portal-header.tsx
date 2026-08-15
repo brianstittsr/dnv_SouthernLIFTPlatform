@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { useCart } from "@/contexts/cart-context";
 import { ShoppingCart } from "@/components/marketplace/shopping-cart";
+import { auth, db } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  onSnapshot,
+  doc,
+  updateDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,39 +54,92 @@ const quickActions = [
   { title: "Upload Document", href: "/portal/documents/new", icon: FileText },
 ];
 
-const notifications = [
-  {
-    id: 1,
-    title: "New lead from ABC Manufacturing",
-    time: "5 minutes ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    title: "Meeting with XYZ Corp in 30 minutes",
-    time: "25 minutes ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    title: "Proposal approved by client",
-    time: "1 hour ago",
-    unread: false,
-  },
-  {
-    id: 4,
-    title: "Rock deadline approaching: Q1 Goals",
-    time: "2 hours ago",
-    unread: false,
-  },
-];
+interface HeaderNotification {
+  id: string;
+  title: string;
+  message: string;
+  link?: string;
+  time: string;
+  unread: boolean;
+}
+
+function getRelativeTime(date: Date): string {
+  const diffMs = Date.now() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  return date.toLocaleDateString();
+}
 
 export function PortalHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [notifications, setNotifications] = useState<HeaderNotification[]>([]);
   const { getDisplayName, getInitials, profile } = useUserProfile();
   const { getTotalItems } = useCart();
   const unreadCount = notifications.filter((n) => n.unread).length;
+
+  // Subscribe to this member's persistent in-app notifications
+  useEffect(() => {
+    if (!auth || !db) return;
+
+    let unsubscribeNotifications: (() => void) | undefined;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (unsubscribeNotifications) {
+        unsubscribeNotifications();
+        unsubscribeNotifications = undefined;
+      }
+      if (!user || !db) {
+        setNotifications([]);
+        return;
+      }
+
+      const notifQuery = query(
+        collection(db, COLLECTIONS.USER_NOTIFICATIONS),
+        where("userId", "==", user.uid),
+        orderBy("createdAt", "desc"),
+        limit(10)
+      );
+
+      unsubscribeNotifications = onSnapshot(notifQuery, (snapshot) => {
+        const items: HeaderNotification[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          const createdAt: Timestamp | undefined = data.createdAt;
+          return {
+            id: docSnap.id,
+            title: data.title || "Notification",
+            message: data.message || "",
+            link: data.link || undefined,
+            time: createdAt ? getRelativeTime(createdAt.toDate()) : "",
+            unread: !data.read,
+          };
+        });
+        setNotifications(items);
+      });
+    });
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeNotifications) unsubscribeNotifications();
+    };
+  }, []);
+
+  const markNotificationRead = async (notificationId: string) => {
+    if (!db) return;
+    try {
+      await updateDoc(doc(db, COLLECTIONS.USER_NOTIFICATIONS, notificationId), {
+        read: true,
+        readAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error("Error marking notification read:", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -143,19 +210,33 @@ export function PortalHeader() {
               </Link>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {notifications.map((notification) => (
-              <DropdownMenuItem key={notification.id} className="flex flex-col items-start py-3">
-                <div className="flex items-start gap-2 w-full">
-                  {notification.unread && (
-                    <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
-                  )}
-                  <div className={notification.unread ? "" : "ml-4"}>
-                    <p className="text-sm font-medium">{notification.title}</p>
-                    <p className="text-xs text-muted-foreground">{notification.time}</p>
-                  </div>
-                </div>
-              </DropdownMenuItem>
-            ))}
+            {notifications.length === 0 ? (
+              <div className="py-6 text-center text-sm text-muted-foreground">
+                No notifications yet
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <DropdownMenuItem key={notification.id} className="flex flex-col items-start py-3" asChild>
+                  <Link
+                    href={notification.link || "/portal/notifications"}
+                    onClick={() => notification.unread && markNotificationRead(notification.id)}
+                  >
+                    <div className="flex items-start gap-2 w-full">
+                      {notification.unread && (
+                        <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
+                      )}
+                      <div className={notification.unread ? "" : "ml-4"}>
+                        <p className="text-sm font-medium">{notification.title}</p>
+                        {notification.message && (
+                          <p className="text-xs text-muted-foreground">{notification.message}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground">{notification.time}</p>
+                      </div>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+              ))
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

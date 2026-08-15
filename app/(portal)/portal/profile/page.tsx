@@ -81,6 +81,7 @@ import {
   FileSearch,
   TrendingUp,
   Store,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProfile, type ReadinessDocumentRecord } from "@/contexts/user-profile-context";
@@ -247,6 +248,10 @@ export default function ProfilePage() {
   });
   const [naicsCodeInput, setNaicsCodeInput] = useState("");
   const [certificationInput, setCertificationInput] = useState("");
+  const [naicsSuggestions, setNaicsSuggestions] = useState<
+    { code: string; title: string; reason: string; confidence: number }[]
+  >([]);
+  const [loadingNaicsSuggestions, setLoadingNaicsSuggestions] = useState(false);
   const [isSavingCompanyIntel, setIsSavingCompanyIntel] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const companyLogoInputRef = useRef<HTMLInputElement>(null);
@@ -380,6 +385,33 @@ export default function ProfilePage() {
 
   const removeNaicsCode = (code: string) => {
     updateCompanyIntel("naicsCodes", companyIntel.naicsCodes.filter((c) => c !== code));
+  };
+
+  const generateNaicsSuggestions = async () => {
+    if (!userProfile.id) return;
+    setLoadingNaicsSuggestions(true);
+    try {
+      const res = await fetch("/api/samgov/naics-suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userProfile.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate suggestions");
+      setNaicsSuggestions(data.suggestions || []);
+    } catch (error: any) {
+      console.error("Error generating NAICS suggestions:", error);
+      alert(error.message || "Failed to generate NAICS suggestions. Ensure the LLM is configured in Settings.");
+    } finally {
+      setLoadingNaicsSuggestions(false);
+    }
+  };
+
+  const applyNaicsSuggestion = (code: string) => {
+    if (!companyIntel.naicsCodes.includes(code)) {
+      updateCompanyIntel("naicsCodes", [...companyIntel.naicsCodes, code]);
+    }
+    setNaicsSuggestions((prev) => prev.filter((s) => s.code !== code));
   };
 
   const addCompanyCertification = () => {
@@ -1132,6 +1164,47 @@ export default function ProfilePage() {
                       </button>
                     </Badge>
                   ))}
+                </div>
+
+                {/* AI NAICS Suggestions */}
+                <div className="mt-3 rounded-lg border border-dashed p-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      AI NAICS Recommendations
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={generateNaicsSuggestions}
+                      disabled={loadingNaicsSuggestions}
+                    >
+                      {loadingNaicsSuggestions ? (
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Sparkles className="mr-2 h-3.5 w-3.5" />
+                      )}
+                      Generate Suggestions
+                    </Button>
+                  </div>
+                  {naicsSuggestions.length > 0 && (
+                    <div className="space-y-2">
+                      {naicsSuggestions.map((s) => (
+                        <div key={s.code} className="flex items-start justify-between gap-3 rounded-md bg-muted/50 p-2">
+                          <div>
+                            <p className="text-sm font-medium">
+                              {s.code} — {s.title}{" "}
+                              <span className="text-xs text-muted-foreground">({s.confidence}% confidence)</span>
+                            </p>
+                            <p className="text-xs text-muted-foreground">{s.reason}</p>
+                          </div>
+                          <Button size="sm" variant="secondary" onClick={() => applyNaicsSuggestion(s.code)}>
+                            <Plus className="mr-1 h-3.5 w-3.5" /> Add
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
