@@ -16,6 +16,7 @@ interface Teammember {
   bio: string;
   fullBio: string;
   linkedIn?: string;
+  companyLogo?: string;
 }
 
 interface TeammemberBioProps {
@@ -85,7 +86,7 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
       <div className="grid md:grid-cols-[300px_1fr] gap-8 md:gap-12">
         {/* Photo Column */}
         <div className="flex flex-col items-center md:items-start">
-          <div className="w-full max-w-[280px] rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4] mb-6">
+          <div className="relative w-full max-w-[280px] rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4] mb-6">
             {imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -97,6 +98,16 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
               <span className="text-primary text-6xl font-semibold">
                 {member.initials}
               </span>
+            )}
+            {member.companyLogo && (
+              <div className="absolute bottom-2 right-2 h-14 w-14 rounded-full bg-white border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={member.companyLogo}
+                  alt="Company logo"
+                  className="h-full w-full object-contain"
+                />
+              </div>
             )}
           </div>
           <div className="text-center md:text-left">

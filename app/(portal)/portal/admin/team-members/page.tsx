@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +57,7 @@ import {
   CheckCircle2,
   Link as LinkIcon,
   Send,
+  Loader2,
 } from "lucide-react";
 import { 
   collection, 
@@ -70,6 +71,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { listImages, getImage, base64ToDataUrl, uploadImage, type ImageMetadata } from "@/lib/firebase-images";
+import { resizeImage } from "@/lib/image-utils";
 import { toast } from "sonner";
 import { COLLECTIONS, type TeamMemberDoc, type TeamMemberTag, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
@@ -139,6 +141,10 @@ export default function TeammembersPage() {
   const [loadingQueue, setLoadingQueue] = useState(false);
   // Avatar upload / Image Manager state
   const [avatarUrl, setAvatarUrl] = useState("");
+  // Company logo upload state (distinct from personal avatar), shown on /kdm-consortium
+  const [companyLogoUrl, setCompanyLogoUrl] = useState("");
+  const [companyLogoUploading, setCompanyLogoUploading] = useState(false);
+  const companyLogoInputRef = useRef<HTMLInputElement | null>(null);
   const [galleryImages, setGalleryImages] = useState<ImageMetadata[]>([]);
   const [loadingGallery, setLoadingGallery] = useState(false);
   const [imageManagerOpen, setImageManagerOpen] = useState(false);
@@ -240,6 +246,35 @@ export default function TeammembersPage() {
     }
   };
 
+  // Upload and resize a company logo (separate from the personal avatar),
+  // displayed on the public /kdm-consortium page.
+  const handleCompanyLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      e.target.value = "";
+      return;
+    }
+
+    setCompanyLogoUploading(true);
+    try {
+      const resizedDataUrl = await resizeImage(file, {
+        maxDimension: 400,
+        maxBytes: 300 * 1024,
+      });
+      setCompanyLogoUrl(resizedDataUrl);
+      toast.success("Company logo updated");
+    } catch (error) {
+      console.error("Error resizing company logo:", error);
+      toast.error("Failed to process company logo");
+    } finally {
+      setCompanyLogoUploading(false);
+      e.target.value = "";
+    }
+  };
+
   // Upload a new image from the Image Manager dialog
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -321,6 +356,7 @@ export default function TeammembersPage() {
         await updateDoc(docRef, {
           ...formData,
           ...(avatarUrl ? { avatar: avatarUrl } : {}),
+          companyLogo: companyLogoUrl || "",
           updatedAt: Timestamp.now(),
         });
         // Log activity
@@ -334,6 +370,8 @@ export default function TeammembersPage() {
       } else {
         const docRef = await addDoc(collection(db, COLLECTIONS.TEAM_MEMBERS), {
           ...formData,
+          ...(avatarUrl ? { avatar: avatarUrl } : {}),
+          companyLogo: companyLogoUrl || "",
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
@@ -499,6 +537,7 @@ export default function TeammembersPage() {
       tags: (member.tags || []) as TeamMemberTag[],
     });
     setAvatarUrl(member.avatar || "");
+    setCompanyLogoUrl(member.companyLogo || "");
     setDialogOpen(true);
   };
 
@@ -520,6 +559,7 @@ export default function TeammembersPage() {
   const resetForm = () => {
     setEditingMember(null);
     setAvatarUrl("");
+    setCompanyLogoUrl("");
     setFormData({
       firstName: "",
       lastName: "",
@@ -1193,6 +1233,57 @@ export default function TeammembersPage() {
                       placeholder="Company name"
                     />
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Company Logo</Label>
+                  <div className="flex items-center gap-4">
+                    {companyLogoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={companyLogoUrl}
+                        alt="Company logo preview"
+                        className="h-14 w-14 rounded-md object-contain border"
+                      />
+                    ) : (
+                      <div className="h-14 w-14 rounded-md border border-dashed flex items-center justify-center text-muted-foreground">
+                        <ImageIcon className="h-5 w-5" />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={companyLogoInputRef}
+                      onChange={handleCompanyLogoChange}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={companyLogoUploading}
+                      onClick={() => companyLogoInputRef.current?.click()}
+                    >
+                      {companyLogoUploading ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Upload className="h-4 w-4 mr-2" />
+                      )}
+                      Upload Logo
+                    </Button>
+                    {companyLogoUrl && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setCompanyLogoUrl("")}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Shown on the public KDM Consortium page alongside this member. Recommended: 400x400px.
+                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

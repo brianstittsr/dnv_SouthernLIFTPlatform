@@ -24,6 +24,7 @@ interface DisplayMember {
   linkedIn?: string;
   tags?: string[];
   avatar?: string;
+  companyLogo?: string;
 }
 
 function getInitials(firstName: string, lastName: string): string {
@@ -63,6 +64,7 @@ export default function ConsortiumMemberPage() {
             linkedIn: data.linkedIn,
             tags: data.tags || [],
             avatar: data.avatar,
+            companyLogo: data.companyLogo,
           } as DisplayMember);
         } else {
           setError(true);

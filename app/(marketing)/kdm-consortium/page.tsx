@@ -22,6 +22,7 @@ interface DisplayMember {
   bio: string;
   shortBio?: string;
   avatar?: string;
+  companyLogo?: string;
 }
 
 function getInitials(firstName?: string, lastName?: string): string {
@@ -81,11 +82,20 @@ function ConsortiumMemberCard({ member }: { member: DisplayMember }) {
     <Link href={`/kdm-consortium/${member.id}`} className="block">
       <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardContent className="pt-8 pb-6">
-          <div className="w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
+          <div className="relative w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
             {imageUrl ? (
               <img src={imageUrl} alt={member.name} className="w-full h-full object-cover object-top" />
             ) : (
               <span className="text-primary text-4xl font-semibold">{member.initials}</span>
+            )}
+            {member.companyLogo && (
+              <div className="absolute bottom-1 right-1 h-10 w-10 rounded-full bg-white border-2 border-white shadow-md overflow-hidden flex items-center justify-center">
+                <img
+                  src={member.companyLogo}
+                  alt={member.company ? `${member.company} logo` : "Company logo"}
+                  className="h-full w-full object-contain"
+                />
+              </div>
             )}
           </div>
           <h3 className="text-lg font-semibold">{member.name}</h3>
@@ -137,6 +147,7 @@ export default function KdmConsortiumPage() {
           bio: data.bio || data.expertise || "KDM Consortium Member",
           shortBio: data.title || data.expertise || "KDM Consortium Member",
           avatar: data.avatar,
+          companyLogo: data.companyLogo,
         });
       });
       result.sort((a, b) => a.name.localeCompare(b.name));
