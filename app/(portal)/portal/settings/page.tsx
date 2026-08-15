@@ -471,7 +471,7 @@ function SettingsPageContent() {
     
     // Test SAM.gov API Server connection
     if (configId === "samgov") {
-      const serverUrl = apiKeys["samgov"]?.serverUrl;
+      const serverUrl = apiKeys["samgov"]?.serverUrl?.trim().replace(/\/+$/, "");
       const apiKey = apiKeys["samgov"]?.apiKey;
       if (serverUrl && apiKey) {
         try {
