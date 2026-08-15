@@ -11,6 +11,8 @@ import { TeammemberBio } from "@/components/marketing/team-member-bio";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
+import { listImages } from "@/lib/firebase-images";
+import { findMatchingImage, buildImageUrl } from "@/lib/team-image-utils";
 
 interface DisplayMember {
   id: string;
@@ -25,6 +27,7 @@ interface DisplayMember {
   tags?: string[];
   avatar?: string;
   companyLogo?: string;
+  resolvedImageUrl?: string;
 }
 
 function getInitials(firstName: string, lastName: string): string {
@@ -52,6 +55,24 @@ export default function ConsortiumMemberPage() {
 
         if (docSnap.exists() && (docSnap.data() as TeamMemberDoc).tags?.includes("kdm-consortium")) {
           const data = docSnap.data() as TeamMemberDoc;
+
+          // Resolve image URL: avatar > matched Firestore image
+          let resolvedImageUrl: string | undefined;
+          if (data.avatar) {
+            resolvedImageUrl = data.avatar;
+          } else {
+            const memberInfo = { imageName: `${data.firstName}_${data.lastName}`, name: `${data.firstName} ${data.lastName}` };
+            let images = await listImages("team");
+            let match = findMatchingImage(memberInfo, images);
+            if (!match) {
+              images = await listImages();
+              match = findMatchingImage(memberInfo, images);
+            }
+            if (match) {
+              resolvedImageUrl = buildImageUrl(match.id);
+            }
+          }
+
           setMember({
             id: docSnap.id,
             name: `${data.firstName} ${data.lastName}`,
@@ -65,6 +86,7 @@ export default function ConsortiumMemberPage() {
             tags: data.tags || [],
             avatar: data.avatar,
             companyLogo: data.companyLogo,
+            resolvedImageUrl,
           } as DisplayMember);
         } else {
           setError(true);

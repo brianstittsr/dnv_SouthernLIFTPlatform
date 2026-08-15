@@ -9,7 +9,8 @@ import { ArrowRight, Users } from "lucide-react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
-import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
+import { listImages } from "@/lib/firebase-images";
+import { findMatchingImage, buildImageUrl } from "@/lib/team-image-utils";
 
 interface DisplayMember {
   id: string;
@@ -22,6 +23,7 @@ interface DisplayMember {
   bio: string;
   shortBio?: string;
   avatar?: string;
+  resolvedImageUrl?: string;
 }
 
 function getInitials(firstName?: string, lastName?: string): string {
@@ -29,63 +31,7 @@ function getInitials(firstName?: string, lastName?: string): string {
 }
 
 function TeamMemberCard({ member }: { member: DisplayMember }) {
-  const [imageUrl, setImageUrl] = useState<string | null>(member.avatar || member.staticImageUrl || null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadMemberImage();
-  }, [member.imageName]);
-
-  function findMatch(images: { id: string; name: string }[]) {
-    const memberImageNameLower = member.imageName.toLowerCase();
-    const memberNameLower = member.name.toLowerCase();
-    const nameParts = member.name.split(" ");
-    const firstName = nameParts[0].toLowerCase();
-    const lastName = nameParts[nameParts.length - 1].toLowerCase();
-
-    return images.find((img) => {
-      const n = img.name.toLowerCase();
-      if (n === memberImageNameLower) return true;
-      if (n.includes(memberImageNameLower)) return true;
-      if (n.includes(`${lastName}_${firstName}`)) return true;
-      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
-      if (n.includes(firstName) && n.includes(lastName)) return true;
-      return false;
-    });
-  }
-
-  async function loadMemberImage() {
-    try {
-      setIsLoading(true);
-      
-      // Priority 1: Use avatar from Firestore if available
-      if (member.avatar || member.staticImageUrl) {
-        setImageUrl(member.avatar || member.staticImageUrl || null);
-        setIsLoading(false);
-        return;
-      }
-      
-      // Priority 2: Fall back to searching Firebase Storage
-      let images = await listImages("team");
-      let matchingImage = findMatch(images);
-      if (!matchingImage) {
-        images = await listImages();
-        matchingImage = findMatch(images);
-      }
-      if (matchingImage) {
-        const fullImage = await getImage(matchingImage.id);
-        if (fullImage?.base64Data) {
-          setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
-          return;
-        }
-      }
-    } catch (error) {
-      console.error("Error loading member image:", error);
-      // Keep initials fallback
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const imageUrl = member.resolvedImageUrl || null;
 
   return (
     <Link href={`/team/${member.id}`} className="block">
@@ -93,7 +39,7 @@ function TeamMemberCard({ member }: { member: DisplayMember }) {
         <CardContent className="pt-8 pb-6">
           <div className="w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
             {imageUrl ? (
-              <img src={imageUrl} alt={member.name} className="w-full h-full object-cover object-top" />
+              <img src={imageUrl} alt={member.name} className="w-full h-full object-cover object-top" loading="lazy" decoding="async" />
             ) : (
               <span className="text-primary text-4xl font-semibold">{member.initials}</span>
             )}
@@ -141,6 +87,28 @@ export default function TeamPage() {
     try {
       const q = query(collection(db, COLLECTIONS.TEAM_MEMBERS), where("status", "==", "active"));
       const querySnapshot = await getDocs(q);
+
+      // Batch-fetch image metadata once for all members
+      let teamImages: { id: string; name: string }[] = [];
+      let allImages: { id: string; name: string }[] = [];
+      try {
+        teamImages = await listImages("team");
+      } catch {
+        // will try allImages below
+      }
+
+      // Check if any member lacks an avatar and needs image matching
+      const needsAllImages = querySnapshot.docs.some((docSnap) => {
+        const data = docSnap.data() as TeamMemberDoc;
+        if (data.showOnTeamPage === false) return false;
+        if (data.avatar) return false;
+        const memberInfo = { imageName: `${data.firstName}_${data.lastName}`, name: `${data.firstName} ${data.lastName}` };
+        return !findMatchingImage(memberInfo, teamImages);
+      });
+      if (needsAllImages) {
+        try { allImages = await listImages(); } catch { /* ignore */ }
+      }
+
       const leadershipMembers: DisplayMember[] = [];
       const staffMembers: DisplayMember[] = [];
       const teamMembers: DisplayMember[] = [];
@@ -148,6 +116,22 @@ export default function TeamPage() {
         const data = docSnap.data() as TeamMemberDoc;
         // Skip profiles explicitly hidden from the public team page
         if (data.showOnTeamPage === false) return;
+
+        // Resolve image URL: avatar > staticImageUrl > matched Firestore image
+        let resolvedImageUrl: string | undefined;
+        if (data.avatar) {
+          resolvedImageUrl = data.avatar;
+        } else {
+          const memberInfo = { imageName: `${data.firstName}_${data.lastName}`, name: `${data.firstName} ${data.lastName}` };
+          let match = findMatchingImage(memberInfo, teamImages);
+          if (!match) {
+            match = findMatchingImage(memberInfo, allImages);
+          }
+          if (match) {
+            resolvedImageUrl = buildImageUrl(match.id);
+          }
+        }
+
         const member: DisplayMember = {
           id: docSnap.id,
           name: `${data.firstName} ${data.lastName}`,
@@ -159,6 +143,7 @@ export default function TeamPage() {
           bio: data.bio || `${data.expertise || "KDM Team Member"}`,
           shortBio: data.title || data.expertise || "KDM Team Member",
           avatar: data.avatar,
+          resolvedImageUrl,
         };
         const tags = data.tags || [];
         if (tags.includes("kdm-leadership")) {

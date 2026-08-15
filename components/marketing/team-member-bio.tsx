@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Linkedin } from "lucide-react";
-import { listImages, getImage, base64ToDataUrl } from "@/lib/firebase-images";
+import { listImages } from "@/lib/firebase-images";
+import { findMatchingImage, buildImageUrl } from "@/lib/team-image-utils";
 
 interface Teammember {
   id: string;
@@ -17,6 +18,7 @@ interface Teammember {
   fullBio: string;
   linkedIn?: string;
   companyLogo?: string;
+  resolvedImageUrl?: string;
 }
 
 interface TeammemberBioProps {
@@ -24,58 +26,35 @@ interface TeammemberBioProps {
 }
 
 export function TeammemberBio({ member }: TeammemberBioProps) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(member.resolvedImageUrl || member.staticImageUrl || null);
+  const [isLoading, setIsLoading] = useState(!imageUrl);
 
   useEffect(() => {
     loadmemberImage();
   }, [member.imageName]);
 
-  function findMatch(images: { id: string; name: string }[]) {
-    const memberImageNameLower = member.imageName.toLowerCase();
-    const memberNameLower = member.name.toLowerCase();
-    const nameParts = member.name.split(" ");
-    const firstName = nameParts[0].toLowerCase();
-    const lastName = nameParts[nameParts.length - 1].toLowerCase();
-    return images.find((img) => {
-      const n = img.name.toLowerCase();
-      if (n === memberImageNameLower) return true;
-      if (n.includes(memberImageNameLower)) return true;
-      if (n.includes(`${lastName}_${firstName}`)) return true;
-      if (n.replace(/_/g, " ").includes(memberNameLower)) return true;
-      if (n.includes(firstName) && n.includes(lastName)) return true;
-      return false;
-    });
-  }
-
   async function loadmemberImage() {
     try {
-      setIsLoading(true);
-      
-      // Priority 1: Use staticImageUrl from Firestore (avatar field) if available
-      if (member.staticImageUrl) {
-        setImageUrl(member.staticImageUrl);
+      // Priority 1: Use resolvedImageUrl or staticImageUrl if available
+      if (member.resolvedImageUrl || member.staticImageUrl) {
+        setImageUrl(member.resolvedImageUrl || member.staticImageUrl || null);
         setIsLoading(false);
         return;
       }
       
-      // Priority 2: Fall back to searching Firebase Storage
+      // Priority 2: Fall back to searching Firebase images collection
       let images = await listImages("team");
-      let matchingImage = findMatch(images);
+      let matchingImage = findMatchingImage(member, images);
       if (!matchingImage) {
         images = await listImages();
-        matchingImage = findMatch(images);
+        matchingImage = findMatchingImage(member, images);
       }
       if (matchingImage) {
-        const fullImage = await getImage(matchingImage.id);
-        if (fullImage?.base64Data) {
-          setImageUrl(base64ToDataUrl(fullImage.base64Data, fullImage.mimeType));
-          return;
-        }
+        setImageUrl(buildImageUrl(matchingImage.id));
+        return;
       }
     } catch (error) {
       console.error("Error loading team member image:", error);
-      // Keep any existing imageUrl or leave as null to show initials
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +72,8 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
                 src={imageUrl}
                 alt={member.name}
                 className="w-full h-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
               />
             ) : (
               <span className="text-primary text-6xl font-semibold">
@@ -107,6 +88,8 @@ export function TeammemberBio({ member }: TeammemberBioProps) {
                 src={member.companyLogo}
                 alt="Company logo"
                 className="max-h-full max-w-full object-contain"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           )}
