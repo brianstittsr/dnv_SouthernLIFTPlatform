@@ -78,7 +78,7 @@ function ConsortiumMemberCard({ member }: { member: DisplayMember }) {
   }
 
   return (
-    <Link href={`/team/${member.id}`} className="block">
+    <Link href={`/kdm-consortium/${member.id}`} className="block">
       <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
         <CardContent className="pt-8 pb-6">
           <div className="w-full max-w-48 mx-auto mb-4 rounded-2xl overflow-hidden bg-muted flex items-center justify-center aspect-[3/4]">
@@ -121,7 +121,9 @@ export default function KdmConsortiumPage() {
       const result: DisplayMember[] = [];
       snapshot.forEach((docSnap) => {
         const data = docSnap.data() as TeamMemberDoc;
-        if (data.showOnTeamPage === false) return;
+        // Note: intentionally not gated by showOnTeamPage — that flag only
+        // controls the /team page. Members can be hidden there (e.g. KDM
+        // Founders) while still appearing here as consortium members.
         if (!data.tags?.includes("kdm-consortium")) return;
 
         result.push({
