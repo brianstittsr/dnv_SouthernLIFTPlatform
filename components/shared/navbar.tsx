@@ -84,6 +84,7 @@ const companyLinks = [
   { title: "Home", href: "/", icon: Globe },
   { title: "About Us", href: "/about", icon: Globe },
   { title: "KDM Team", href: "/team", icon: Users },
+  { title: "KDM Consortium", href: "/kdm-consortium", icon: Building2 },
   { title: "5 Pillars", href: "/5-pillars", icon: Columns },
 ];
 
@@ -234,6 +235,14 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                 >
                   KDM Team
+                </Link>
+                <Link
+                  href="/kdm-consortium"
+                  className="flex items-center gap-2 py-2 font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Building2 className="h-4 w-4 text-primary" />
+                  KDM Consortium
                 </Link>
                 <Link
                   href="/5-pillars"
