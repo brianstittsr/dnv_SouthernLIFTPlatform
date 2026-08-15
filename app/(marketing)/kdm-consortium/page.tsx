@@ -148,11 +148,12 @@ export default function KdmConsortiumPage() {
           resolvedImageUrl,
         });
       });
-      // Sort by company name, then by member name so members from the same company are grouped together
+      // Sort by company name (ascending), then by member name (ascending)
       result.sort((a, b) => {
-        const companyA = (a.company || "").toLowerCase();
-        const companyB = (b.company || "").toLowerCase();
-        if (companyA !== companyB) return companyA.localeCompare(companyB);
+        const companyA = (a.company || "").trim().toLowerCase();
+        const companyB = (b.company || "").trim().toLowerCase();
+        const companyCompare = companyA.localeCompare(companyB);
+        if (companyCompare !== 0) return companyCompare;
         return a.name.localeCompare(b.name);
       });
       setMembers(result);
