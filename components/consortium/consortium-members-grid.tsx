@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Building2, Globe, ExternalLink } from "lucide-react";
+import { normalizeUrl } from "@/lib/utils";
 
 interface ConsortiumMember {
   id: string;
@@ -223,9 +224,9 @@ export function ConsortiumMembersGrid({ limit, showFilters = false }: Consortium
 
               {/* Links */}
               <div className="flex gap-3 pt-3 border-t">
-                {member.website && (
+                {normalizeUrl(member.website) && (
                   <a
-                    href={member.website}
+                    href={normalizeUrl(member.website)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-amber-600 hover:text-amber-700 flex items-center gap-1"
@@ -235,9 +236,9 @@ export function ConsortiumMembersGrid({ limit, showFilters = false }: Consortium
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
-                {member.linkedIn && (
+                {normalizeUrl(member.linkedIn) && (
                   <a
-                    href={member.linkedIn}
+                    href={normalizeUrl(member.linkedIn)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-amber-600 hover:text-amber-700 flex items-center gap-1"
