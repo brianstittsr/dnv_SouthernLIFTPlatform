@@ -10,14 +10,22 @@ async function authorize(request: NextRequest): Promise<{ success: boolean; erro
   }
 
   const idToken = authorization.split("Bearer ")[1];
-  let decoded;
+  let decoded: any;
   try {
     decoded = await auth.verifyIdToken(idToken);
   } catch {
     return { success: false, error: "Invalid token", status: 401 };
   }
 
-  if (!decoded.admin && !decoded.email?.endsWith("@kdm-assoc.com")) {
+  const isAdmin =
+    decoded.admin === true ||
+    decoded.role === "admin" ||
+    decoded.role === "platform_admin" ||
+    decoded.svpRole === "platform_admin" ||
+    (Array.isArray(decoded.svpRoles) && decoded.svpRoles.includes("platform_admin")) ||
+    decoded.email?.endsWith("@kdm-assoc.com");
+
+  if (!isAdmin) {
     return { success: false, error: "Forbidden", status: 403 };
   }
 
