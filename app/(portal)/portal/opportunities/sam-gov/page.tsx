@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,6 +50,48 @@ interface Opportunity {
   interestedInTeaming: boolean;
   teamingCount: number;
   isMockData: boolean;
+}
+
+interface CompanyIntelligence {
+  legalCompanyName?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  companyDescription?: string;
+  primaryNaicsCodes?: string[];
+  federalDesignations?: {
+    eightA?: boolean;
+    wosb?: boolean;
+    sdvosb?: boolean;
+    hubzone?: boolean;
+    mbe?: boolean;
+    otherDesignations?: string[];
+  };
+  certifications?: {
+    cmmcLevel?: string;
+    isoCertifications?: string[];
+    otherCertifications?: string[];
+  };
+  technicalExpertise?: string[];
+  serviceOfferings?: string[];
+  technologySpecializations?: string[];
+  industryFocusAreas?: string[];
+  cageCode?: string;
+  uei?: string;
+  dunsNumber?: string;
+  samRegistrationStatus?: "active" | "inactive" | "pending";
+  gsaScheduleHolder?: boolean;
+  preferredContractTypes?: string[];
+  statesServed?: string[];
+  regionsServed?: string[];
+  willingToPrime?: boolean;
+  willingToSub?: boolean;
+  seekingPartners?: boolean;
+  contractSizePreferences?: string[];
+  setAsidePreferences?: string[];
+  annualRevenueRange?: string;
+  employeeCountRange?: string;
 }
 
 const mockSAMOpportunities: Opportunity[] = [
@@ -145,6 +190,7 @@ export default function SAMOpportunitiesPage() {
   const [aiMatches, setAiMatches] = useState<any[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [companyIntelligence, setCompanyIntelligence] = useState<CompanyIntelligence | null>(null);
 
   useEffect(() => {
     loadOpportunities();
@@ -207,6 +253,60 @@ export default function SAMOpportunitiesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const firestore = db;
+    if (!firestore || !profile.id) return;
+
+    const loadCompanyIntelligence = async () => {
+      try {
+        const snap = await getDoc(doc(firestore, COLLECTIONS.USERS, profile.id));
+        const data = snap.data()?.companyIntelligence as CompanyIntelligence | undefined;
+        setCompanyIntelligence(data || null);
+      } catch (error) {
+        console.error("Failed to load Company Intelligence:", error);
+      }
+    };
+
+    loadCompanyIntelligence();
+  }, [profile.id]);
+
+  const { recommendTeaming, teamingReasons } = useMemo(() => {
+    if (!companyIntelligence) {
+      return { recommendTeaming: false, teamingReasons: ["No Company Intelligence data available"] };
+    }
+
+    const reasons: string[] = [];
+
+    if (companyIntelligence.seekingPartners) {
+      reasons.push("Actively seeking partners");
+    }
+    if (companyIntelligence.willingToSub && !companyIntelligence.willingToPrime) {
+      reasons.push("Prefer to work as a subcontractor");
+    }
+    if (companyIntelligence.willingToPrime && !companyIntelligence.willingToSub) {
+      reasons.push("Prefer to act as prime contractor");
+    }
+    if (companyIntelligence.employeeCountRange && ["1-10", "11-50"].includes(companyIntelligence.employeeCountRange)) {
+      reasons.push("Smaller team size may benefit from partners");
+    }
+    if (companyIntelligence.contractSizePreferences?.some((range) => range.includes("1M") || range.includes("5M") || range.includes("10M"))) {
+      reasons.push("Contract size preferences include larger opportunities");
+    }
+
+    const recommend =
+      !!companyIntelligence.seekingPartners ||
+      (companyIntelligence.willingToSub === true && companyIntelligence.willingToPrime !== true) ||
+      (["1-10", "11-50"].includes(companyIntelligence.employeeCountRange || "") && !companyIntelligence.willingToPrime) ||
+      companyIntelligence.contractSizePreferences?.some((range) => range.includes("1M") || range.includes("5M") || range.includes("10M")) ||
+      false;
+
+    if (reasons.length === 0) {
+      reasons.push("No strong Company Intelligence signal for teaming");
+    }
+
+    return { recommendTeaming: recommend, teamingReasons: reasons };
+  }, [companyIntelligence]);
 
   const filterOpportunities = () => {
     let filtered = [...opportunities];
@@ -331,6 +431,159 @@ export default function SAMOpportunitiesPage() {
           </Button>
         </div>
       </div>
+
+      {/* Active Filter Variables */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Active Search &amp; Filter Variables
+          </CardTitle>
+          <CardDescription>
+            Variables from your Company Intelligence and current filter selections used to find opportunities.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!companyIntelligence ? (
+            <p className="text-sm text-muted-foreground">Loading Company Intelligence...</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Company</p>
+                <p className="font-medium">{companyIntelligence.legalCompanyName || profile.company || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Primary NAICS</p>
+                <div className="flex flex-wrap gap-1">
+                  {(companyIntelligence.primaryNaicsCodes || profile.naicsCodes || []).length > 0 ? (
+                    (companyIntelligence.primaryNaicsCodes || profile.naicsCodes || []).map((code) => (
+                      <Badge key={code} variant="outline" className="text-xs">{code}</Badge>
+                    ))
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Location</p>
+                <p className="font-medium">
+                  {companyIntelligence.city ? `${companyIntelligence.city}, ${companyIntelligence.state}` : profile.state || "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">States Served</p>
+                <p className="font-medium">{(companyIntelligence.statesServed || []).join(", ") || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Federal Designations</p>
+                <div className="flex flex-wrap gap-1">
+                  {companyIntelligence.federalDesignations ? (
+                    <>
+                      {companyIntelligence.federalDesignations.eightA && <Badge variant="outline" className="text-xs">8(a)</Badge>}
+                      {companyIntelligence.federalDesignations.wosb && <Badge variant="outline" className="text-xs">WOSB</Badge>}
+                      {companyIntelligence.federalDesignations.sdvosb && <Badge variant="outline" className="text-xs">SDVOSB</Badge>}
+                      {companyIntelligence.federalDesignations.hubzone && <Badge variant="outline" className="text-xs">HUBZone</Badge>}
+                      {companyIntelligence.federalDesignations.mbe && <Badge variant="outline" className="text-xs">MBE</Badge>}
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Contract Size Preferences</p>
+                <p className="font-medium">{(companyIntelligence.contractSizePreferences || []).join(", ") || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Set-Aside Preferences</p>
+                <p className="font-medium">{(companyIntelligence.setAsidePreferences || []).join(", ") || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">CMMC Level</p>
+                <p className="font-medium">{companyIntelligence.certifications?.cmmcLevel ? `Level ${companyIntelligence.certifications.cmmcLevel}` : "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Other Certifications</p>
+                <p className="font-medium">{(companyIntelligence.certifications?.otherCertifications || []).join(", ") || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">SAM Registration</p>
+                <p className="font-medium">{companyIntelligence.samRegistrationStatus || profile.samRegistrationStatus || "—"}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">CAGE / UEI</p>
+                <p className="font-medium">{`${companyIntelligence.cageCode || profile.cageCode || "—"} / ${companyIntelligence.uei || profile.uei || "—"}`}</p>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Service Offerings</p>
+                <p className="font-medium">{(companyIntelligence.serviceOfferings || []).join(", ") || "—"}</p>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Technology Specializations</p>
+                <p className="font-medium">{(companyIntelligence.technologySpecializations || []).join(", ") || "—"}</p>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Industry Focus Areas</p>
+                <p className="font-medium">{(companyIntelligence.industryFocusAreas || []).join(", ") || "—"}</p>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Capabilities Statement</p>
+                <p className="font-medium">{companyIntelligence.companyDescription || profile.companyDescription || "—"}</p>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Readiness / Capabilities Documents</p>
+                <div className="flex flex-wrap gap-2">
+                  {profile.readinessDocuments && profile.readinessDocuments.length > 0 ? (
+                    profile.readinessDocuments.map((doc, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">{doc.type}</Badge>
+                    ))
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </div>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <p className="text-muted-foreground">Current UI Filters</p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary" className="text-xs">Search: {searchQuery || "—"}</Badge>
+                  <Badge variant="secondary" className="text-xs">Agency: {agencyFilter}</Badge>
+                  <Badge variant="secondary" className="text-xs">Set-Aside: {setAsideFilter}</Badge>
+                  <Badge variant="secondary" className="text-xs">{useMockData ? "Mock Data" : "Live SAM.gov"}</Badge>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Teaming Recommendation */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Handshake className="h-5 w-5" />
+            Teaming Recommendation
+          </CardTitle>
+          <CardDescription>
+            Suggested default for the &quot;Flag for Teaming&quot; switch based on your Company Intelligence.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${recommendTeaming ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
+              {recommendTeaming ? <Handshake className="h-5 w-5" /> : <Users className="h-5 w-5" />}
+            </div>
+            <div className="flex-1">
+              <p className="font-medium">
+                {recommendTeaming ? "Teaming is recommended (toggle ON)" : "Teaming is not recommended by default (toggle OFF)"}
+              </p>
+              <p className="text-sm text-muted-foreground">{teamingReasons.join(" • ")}</p>
+            </div>
+            <Badge variant={recommendTeaming ? "default" : "secondary"}>
+              {recommendTeaming ? "ON" : "OFF"}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <Card>
