@@ -13,26 +13,79 @@ export interface VercelAnalyticsData {
   to: string;
 }
 
-interface VercelAnalyticsAPIResponse {
-  metrics: Array<{
-    key: string;
-    label: string;
-    value: number;
-    format?: string;
-  }>;
-  topPages?: Array<{
-    path: string;
-    value: number;
-    visitors: number;
-  }>;
-  topSources?: Array<{
-    source: string;
-    value: number;
-  }>;
+interface VercelAggregateRow {
+  route?: string;
+  requestPath?: string;
+  referrerHostname?: string;
+  source?: string;
+  timestamp?: string;
+  pageviews?: number;
+  visitors?: number;
+  count?: number;
+}
+
+interface VercelAggregateResponse {
+  data: VercelAggregateRow[];
 }
 
 function formatDate(date: Date): string {
   return date.toISOString().split("T")[0];
+}
+
+function toISO(date: Date): string {
+  return date.toISOString();
+}
+
+function getVercelToken(): string {
+  const token = process.env.VERCEL_TOKEN || process.env.VERCEL_ANALYTICS_TOKEN;
+  if (!token) {
+    throw new Error("Vercel API token not configured. Set VERCEL_TOKEN or VERCEL_ANALYTICS_TOKEN.");
+  }
+  return token;
+}
+
+function getProjectId(projectId?: string): string {
+  return projectId || process.env.VERCEL_PROJECT_ID || process.env.NEXT_PUBLIC_VERCEL_PROJECT_ID || "";
+}
+
+async function fetchAggregate(
+  projectId: string,
+  since: string,
+  until: string,
+  environment: string,
+  by: string[],
+  limit?: number
+): Promise<VercelAggregateResponse> {
+  const params = new URLSearchParams();
+  params.set("projectId", projectId);
+  params.set("since", since);
+  params.set("until", until);
+  by.forEach((dimension) => params.append("by", dimension));
+  if (limit) params.set("limit", String(limit));
+  if (environment) {
+    params.set("filter", `environment eq '${environment}'`);
+  }
+
+  const teamId = process.env.VERCEL_TEAM_ID;
+  if (teamId) params.set("teamId", teamId);
+
+  const url = `https://api.vercel.com/v1/query/web-analytics/visits/aggregate?${params.toString()}`;
+  const token = getVercelToken();
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Vercel Web Analytics API error ${response.status}: ${errorText}`);
+  }
+
+  return (await response.json()) as VercelAggregateResponse;
 }
 
 function formatDuration(seconds: number): string {
@@ -46,59 +99,58 @@ export async function fetchVercelAnalytics(
   days: number,
   environment: string
 ): Promise<VercelAnalyticsData> {
-  const token = process.env.VERCEL_ANALYTICS_TOKEN;
-  if (!token || !projectId) {
-    throw new Error("Vercel analytics not configured");
+  const effectiveProjectId = getProjectId(projectId);
+  if (!effectiveProjectId) {
+    throw new Error("Vercel project ID not configured. Set VERCEL_PROJECT_ID or NEXT_PUBLIC_VERCEL_PROJECT_ID.");
   }
 
-  const toDate = new Date();
-  const fromDate = new Date();
-  fromDate.setDate(toDate.getDate() - days);
-  const fromDateStr = formatDate(fromDate);
-  const toDateStr = formatDate(toDate);
+  const until = new Date();
+  const since = new Date();
+  since.setDate(until.getDate() - days);
+  const sinceStr = toISO(since);
+  const untilStr = toISO(until);
+  const fromDateStr = formatDate(since);
+  const toDateStr = formatDate(until);
 
-  const params = new URLSearchParams({
-    from: fromDateStr,
-    to: toDateStr,
-    environment,
-    projectId,
+  const [daily, byRoute, byReferrer] = await Promise.all([
+    fetchAggregate(effectiveProjectId, sinceStr, untilStr, environment, ["day"]),
+    fetchAggregate(effectiveProjectId, sinceStr, untilStr, environment, ["route"], 10),
+    fetchAggregate(effectiveProjectId, sinceStr, untilStr, environment, ["referrerHostname"], 10),
+  ]);
+
+  const dailyVisitors: { date: string; visitors: number; pageviews: number }[] = (daily.data || [])
+    .map((row) => {
+      const date = row.timestamp ? row.timestamp.split("T")[0] : fromDateStr;
+      const pageviews = row.pageviews ?? row.count ?? 0;
+      const visitors = row.visitors ?? 0;
+      return { date, visitors, pageviews };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const totalVisitors = dailyVisitors.reduce((sum, d) => sum + d.visitors, 0);
+  const totalPageviews = dailyVisitors.reduce((sum, d) => sum + d.pageviews, 0);
+
+  const topPages = (byRoute.data || []).map((row) => {
+    const path = row.route || row.requestPath || "/";
+    const pageviews = row.pageviews ?? row.count ?? 0;
+    const visitors = row.visitors ?? 0;
+    return { path, views: pageviews, visitors };
   });
 
-  const response = await fetch(`https://api.vercel.com/v6/analytics?${params.toString()}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+  const topSources = (byReferrer.data || []).map((row) => {
+    const source = row.referrerHostname || row.source || "direct";
+    const visitors = row.visitors ?? row.count ?? 0;
+    return { source, visitors };
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Vercel Analytics API error ${response.status}: ${errorText}`);
-  }
-
-  const data = (await response.json()) as VercelAnalyticsAPIResponse;
-
-  const totalVisitors = data.metrics?.find((m) => m.key === "visitors")?.value ?? 0;
-  const totalPageviews = data.metrics?.find((m) => m.key === "pageviews")?.value ?? 0;
-  const bounceRate = data.metrics?.find((m) => m.key === "bounce_rate")?.value ?? null;
-  const avgSessionDuration = data.metrics?.find((m) => m.key === "duration")?.value ?? null;
 
   return {
     totalVisitors,
     totalPageviews,
-    bounceRate,
-    avgSessionDuration,
-    topPages: (data.topPages || []).slice(0, 10).map((p) => ({
-      path: p.path,
-      views: p.value,
-      visitors: p.visitors || 0,
-    })),
-    topSources: (data.topSources || []).slice(0, 10).map((s) => ({
-      source: s.source || "direct",
-      visitors: s.value,
-    })),
-    dailyVisitors: [],
+    bounceRate: null,
+    avgSessionDuration: null,
+    topPages,
+    topSources,
+    dailyVisitors,
     from: fromDateStr,
     to: toDateStr,
   };

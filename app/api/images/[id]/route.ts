@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
@@ -15,7 +15,7 @@ export async function GET(
       );
     }
 
-    const imageId = params.id;
+    const { id: imageId } = await params;
     if (!imageId) {
       return NextResponse.json(
         { error: "Image ID is required" },
