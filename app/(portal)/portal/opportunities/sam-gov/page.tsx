@@ -94,6 +94,121 @@ interface CompanyIntelligence {
   employeeCountRange?: string;
 }
 
+const safeString = (value: unknown): string => {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.map(safeString).filter(Boolean).join(", ");
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    return (
+      safeString(obj.name) ||
+      safeString(obj.organizationName) ||
+      safeString(obj.value) ||
+      safeString(obj.label) ||
+      safeString(obj.description) ||
+      safeString(obj.title) ||
+      safeString(obj.city) ||
+      JSON.stringify(value)
+    );
+  }
+  return String(value);
+};
+
+const safeStringList = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.map(safeString).filter(Boolean);
+  if (typeof value === "string") return value.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
+  if (typeof value === "number") return [String(value)];
+  return [];
+};
+
+const getAgencyName = (value: unknown): string => {
+  if (Array.isArray(value)) {
+    const names = value
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object") {
+          const obj = item as Record<string, unknown>;
+          return (
+            safeString(obj.organizationName) ||
+            safeString(obj.name) ||
+            safeString(obj.department) ||
+            safeString(obj.agency) ||
+            safeString(obj.office) ||
+            safeString(obj.subTier) ||
+            ""
+          );
+        }
+        return "";
+      })
+      .filter(Boolean);
+    if (names.length) return names.join(" :: ");
+  }
+  if (typeof value === "string" && value) return value;
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    return (
+      safeString(obj.organizationName) ||
+      safeString(obj.name) ||
+      safeString(obj.department) ||
+      safeString(obj.agency) ||
+      safeString(obj.office) ||
+      safeString(obj.subTier) ||
+      "Unknown Agency"
+    );
+  }
+  return "Unknown Agency";
+};
+
+const getLocationName = (value: unknown): string => {
+  if (typeof value === "string" && value) return value;
+  if (Array.isArray(value)) return value.map(getLocationName).filter(Boolean).join("; ");
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const city =
+      safeString(obj.city) ||
+      safeString(obj.cityName) ||
+      safeString(obj.placeOfPerformanceCity) ||
+      "";
+    const state =
+      safeString(obj.state) ||
+      safeString(obj.stateCode) ||
+      safeString(obj.placeOfPerformanceState) ||
+      safeString(obj.province) ||
+      "";
+    const zip =
+      safeString(obj.zip) ||
+      safeString(obj.zipCode) ||
+      safeString(obj.postalCode) ||
+      "";
+    const country =
+      safeString(obj.country) ||
+      safeString(obj.countryCode) ||
+      safeString(obj.placeOfPerformanceCountry) ||
+      "";
+    const parts = [city, state, zip, country].filter(Boolean);
+    if (parts.length) return parts.join(", ");
+    return safeString(obj.formatted) || safeString(obj.location) || "Not specified";
+  }
+  return "Not specified";
+};
+
+const getDeadlineString = (value: unknown): string => {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    return (
+      safeString(obj.iso) ||
+      safeString(obj.date) ||
+      safeString(obj.value) ||
+      safeString(obj.raw) ||
+      safeString(obj.responseDeadLine) ||
+      safeString(obj.deadline) ||
+      ""
+    );
+  }
+  return safeString(value);
+};
+
 const mockSAMOpportunities: Opportunity[] = [
   {
     id: "sam_1",
@@ -226,19 +341,17 @@ export default function SAMOpportunitiesPage() {
 
         const data = await response.json();
         const mapped: Opportunity[] = (data.opportunitiesData || []).map((opp: Record<string, unknown>) => ({
-          id: opp.noticeId as string || "",
-          title: opp.title as string || "Untitled",
-          agency: (opp.organizationHierarchy || opp.department || "Unknown Agency").toString().split("::").pop() || "Unknown Agency",
-          solicitationNumber: opp.solicitationNumber as string || "",
-          postedDate: opp.postedDate as string || "",
-          deadline: opp.responseDeadLine as string || "",
-          location: opp.placeOfPerformance
-            ? `${(opp.placeOfPerformance as { city?: string; state?: string }).city || ""}, ${(opp.placeOfPerformance as { city?: string; state?: string }).state || ""}`.replace(/^, |, $/g, "")
-            : "Not specified",
+          id: safeString(opp.noticeId) || safeString(opp.solicitationNumber) || Math.random().toString(36).slice(2),
+          title: safeString(opp.title) || "Untitled",
+          agency: getAgencyName(opp.organizationHierarchy || opp.department),
+          solicitationNumber: safeString(opp.solicitationNumber),
+          postedDate: safeString(opp.postedDate),
+          deadline: getDeadlineString(opp.responseDeadLine),
+          location: getLocationName(opp.placeOfPerformance),
           value: "See solicitation",
-          naicsCodes: opp.naicsCode ? [opp.naicsCode as string] : [],
-          description: opp.description as string || "",
-          setAside: opp.typeOfSetAsideDescription as string || undefined,
+          naicsCodes: opp.naicsCode ? safeStringList(opp.naicsCode) : opp.naicsCodes ? safeStringList(opp.naicsCodes) : opp.naics ? safeStringList(opp.naics) : [],
+          description: safeString(opp.description),
+          setAside: safeString(opp.typeOfSetAsideDescription || opp.setAside) || undefined,
           interestedInTeaming: false,
           teamingCount: 0,
           isMockData: false,
@@ -260,7 +373,7 @@ export default function SAMOpportunitiesPage() {
 
     const loadCompanyIntelligence = async () => {
       try {
-        const snap = await getDoc(doc(firestore, COLLECTIONS.USERS, profile.id));
+        const snap = await getDoc(doc(firestore, COLLECTIONS.TEAM_MEMBERS, profile.id));
         const data = snap.data()?.companyIntelligence as CompanyIntelligence | undefined;
         setCompanyIntelligence(data || null);
       } catch (error) {
@@ -389,15 +502,19 @@ export default function SAMOpportunitiesPage() {
     }
   };
 
-  const getDaysUntilDeadline = (deadline: string) => {
+  const getDaysUntilDeadline = (deadline: string): number | null => {
+    if (!deadline) return null;
     const deadlineDate = new Date(deadline);
+    if (isNaN(deadlineDate.getTime())) return null;
     const today = new Date();
     const diffTime = deadlineDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
 
-  const getDeadlineColor = (days: number) => {
+  const getDeadlineColor = (days: number | null): string => {
+    if (days === null) return "text-muted-foreground";
+    if (days < 0) return "text-red-600";
     if (days <= 7) return "text-red-600";
     if (days <= 30) return "text-yellow-600";
     return "text-green-600";
@@ -699,7 +816,7 @@ export default function SAMOpportunitiesPage() {
                           <div>
                             <div className="text-muted-foreground">Deadline</div>
                             <div className={`font-medium ${getDeadlineColor(daysUntilDeadline)}`}>
-                              {daysUntilDeadline} days
+                              {daysUntilDeadline === null ? "No deadline" : `${daysUntilDeadline} days`}
                             </div>
                           </div>
                         </div>
