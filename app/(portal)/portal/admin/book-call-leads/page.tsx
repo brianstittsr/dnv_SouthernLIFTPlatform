@@ -5,6 +5,8 @@ import { db } from "@/lib/firebase";
 import {
   collection,
   query,
+  getDocs,
+  where,
   orderBy,
   onSnapshot,
   doc,
@@ -12,7 +14,7 @@ import {
   deleteDoc,
   Timestamp,
 } from "firebase/firestore";
-import { COLLECTIONS, BookCallLeadDoc } from "@/lib/schema";
+import { COLLECTIONS, BookCallLeadDoc, type TeamMemberDoc } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +61,7 @@ import {
   XCircle,
   Loader2,
   MessageSquare,
+  Send,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -71,6 +74,12 @@ interface Lead extends Omit<BookCallLeadDoc, "createdAt" | "updatedAt" | "schedu
   updatedAt: Date;
   scheduledCallDate?: Date;
   completedAt?: Date;
+}
+
+interface Recipient {
+  id: string;
+  name: string;
+  email: string;
 }
 
 const statusColors: Record<LeadStatus, string> = {
@@ -97,6 +106,9 @@ export default function BookCallLeadsPage() {
   const [updating, setUpdating] = useState(false);
   const [notes, setNotes] = useState("");
   const [filterStatus, setFilterStatus] = useState<LeadStatus | "all">("all");
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
+  const [selectedRecipient, setSelectedRecipient] = useState<string>("");
+  const [sendingReport, setSendingReport] = useState(false);
 
   useEffect(() => {
     if (!db) {
@@ -140,6 +152,37 @@ export default function BookCallLeadsPage() {
     });
 
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!db) return;
+    const firestore = db;
+
+    const loadRecipients = async () => {
+      try {
+        const q = query(
+          collection(firestore, COLLECTIONS.TEAM_MEMBERS),
+          where("status", "==", "active")
+        );
+        const snap = await getDocs(q);
+        const members: Recipient[] = snap.docs
+          .map((d) => {
+            const data = d.data() as TeamMemberDoc;
+            return {
+              id: d.id,
+              name: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
+              email: data.emailPrimary,
+            };
+          })
+          .filter((m) => m.email);
+        setRecipients(members);
+      } catch (error) {
+        console.error("Error loading team members:", error);
+        toast.error("Failed to load team member recipients");
+      }
+    };
+
+    loadRecipients();
   }, []);
 
   const updateLeadStatus = async (leadId: string, newStatus: LeadStatus) => {
@@ -209,6 +252,42 @@ export default function BookCallLeadsPage() {
 
   const newLeadsCount = leads.filter(l => l.status === "new").length;
 
+  const sendReport = async () => {
+    if (!selectedRecipient || filteredLeads.length === 0) return;
+    setSendingReport(true);
+
+    try {
+      const recipient = recipients.find((r) => r.email === selectedRecipient);
+      if (!recipient) {
+        toast.error("Please select a valid recipient");
+        return;
+      }
+
+      const response = await fetch("/api/admin/book-call-leads/send-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: recipient.email,
+          toName: recipient.name,
+          leads: filteredLeads,
+          filterStatus,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send report");
+      }
+
+      toast.success(`Report sent to ${recipient.name}`);
+    } catch (error) {
+      console.error("Error sending report:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to send report");
+    } finally {
+      setSendingReport(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -219,17 +298,44 @@ export default function BookCallLeadsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-9xl space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Book Call Leads</h1>
           <p className="text-muted-foreground">
             Manage incoming call booking requests from the contact page
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 flex-wrap">
           <Badge variant="secondary" className="text-lg px-4 py-2">
             {newLeadsCount} New
           </Badge>
+          <Select value={selectedRecipient} onValueChange={setSelectedRecipient}>
+            <SelectTrigger className="w-[220px]">
+              <SelectValue placeholder="Select recipient" />
+            </SelectTrigger>
+            <SelectContent>
+              {recipients.length === 0 ? (
+                <SelectItem value="-" disabled>No recipients loaded</SelectItem>
+              ) : (
+                recipients.map((recipient) => (
+                  <SelectItem key={recipient.id} value={recipient.email}>
+                    {recipient.name}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={sendReport}
+            disabled={!selectedRecipient || filteredLeads.length === 0 || sendingReport}
+          >
+            {sendingReport ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <Send className="h-4 w-4 mr-2" />
+            )}
+            Send Report
+          </Button>
           <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as LeadStatus | "all")}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
