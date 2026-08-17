@@ -182,7 +182,6 @@ export default function TeamPage() {
             <>
               <MemberSection title="KDM Leadership" members={leadership} />
               <MemberSection title="KDM Staff" members={staff} />
-              <MemberSection title="Team" members={team} />
               {leadership.length === 0 && staff.length === 0 && team.length === 0 && (
                 <div className="text-center py-20"><p className="text-muted-foreground">No team members found.</p></div>
               )}
