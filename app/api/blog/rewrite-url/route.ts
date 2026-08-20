@@ -4,9 +4,16 @@ import { db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 import { BLOG_CATEGORIES } from "@/lib/blog/types";
 import { rewriteContent } from "@/lib/rewrite-content";
+import {
+  searchStockImage,
+  downloadImageAsBase64,
+  type StockImageResult,
+} from "@/lib/stock-images";
 
 const BLOG_IMPORTS_COLLECTION = "blogImports";
 const VISIBILITY_COLLECTION = "blogVisibility";
+const IMAGES_COLLECTION = "images";
+const HERO_SLIDES_COLLECTION = "hero_slides";
 
 function generateSlug(title: string): string {
   return title
@@ -18,6 +25,20 @@ function generateSlug(title: string): string {
 
 function formatDate(date: Date): string {
   return date.toISOString().split("T")[0];
+}
+
+async function getNextHeroOrder(): Promise<number> {
+  if (!db) return 0;
+
+  const snapshot = await db
+    .collection(HERO_SLIDES_COLLECTION)
+    .orderBy("order", "desc")
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) return 0;
+  const data = snapshot.docs[0].data();
+  return (data.order || 0) + 1;
 }
 
 export async function POST(request: NextRequest) {
@@ -189,6 +210,41 @@ export async function POST(request: NextRequest) {
         ? articleContent.substring(0, 280).trim() + "..."
         : articleContent);
 
+    // Find a matching stock image for the article
+    const imageKeyword = `${title} ${tags.slice(0, 3).join(" ")}`.trim();
+    const stockImage: StockImageResult = await searchStockImage(imageKeyword);
+
+    // Download the stock image for the image manager
+    let imageManagerId: string | null = null;
+    let imageManagerUrl = stockImage.url;
+    try {
+      const { base64, mimeType, size } = await downloadImageAsBase64(
+        stockImage.url
+      );
+      if (size <= 950 * 1024) {
+        const imageDocRef = await db.collection(IMAGES_COLLECTION).add({
+          name: `${title} - Stock Image`,
+          description:
+            stockImage.description || `Stock image for ${title}`,
+          category: "marketing",
+          mimeType,
+          base64Data: base64,
+          size,
+          createdAt: Timestamp.now(),
+          tags: [...tags.slice(0, 5), "stock", "ai-rewrite"],
+          isActive: true,
+          createdBy: "AI Rewrite",
+          sourceUrl: imageManagerUrl,
+          source: stockImage.source,
+        });
+        imageManagerId = imageDocRef.id;
+      } else {
+        console.warn("Stock image too large for image manager:", size);
+      }
+    } catch (imageError) {
+      console.warn("Could not save stock image to image manager:", imageError);
+    }
+
     const postData = {
       slug,
       title,
@@ -199,7 +255,7 @@ export async function POST(request: NextRequest) {
       category: BLOG_CATEGORIES[0],
       tags,
       readTime,
-      imageUrl: imageUrl || null,
+      imageUrl: imageManagerUrl,
       linkedinUrl: targetUrl.toString(),
       importedAt: Timestamp.now(),
     };
@@ -216,10 +272,52 @@ export async function POST(request: NextRequest) {
       { merge: true }
     );
 
+    // Add a hero slide entry for the new article
+    const heroId = `blog-hero-${slug}`;
+    const nextOrder = await getNextHeroOrder();
+    const heroSlide = {
+      id: heroId,
+      badge: "New Article",
+      headline: title,
+      middleLine: "",
+      highlightedText: "Read",
+      subheadline: excerpt,
+      benefits: tags.slice(0, 3),
+      primaryCta: {
+        text: "Read Article",
+        href: `/blog/${slug}`,
+        action: "link",
+      },
+      secondaryCta: {
+        text: "All Blogs",
+        href: "/blog",
+      },
+      isPublished: false,
+      order: nextOrder,
+      backgroundType: "image",
+      backgroundImage: imageManagerUrl,
+      backgroundOverlay: true,
+      backgroundOverlayOpacity: 60,
+      fullScreenBg: true,
+      showRibbon: true,
+      ribbonColor: "dark",
+      showWaves: false,
+      highlightOnSecondLine: false,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    };
+
+    await db.collection(HERO_SLIDES_COLLECTION).doc(heroId).set(heroSlide);
+
     return NextResponse.json(
       {
         success: true,
-        data: postData,
+        data: {
+          ...postData,
+          heroId,
+          imageManagerId,
+          imageUrl: imageManagerUrl,
+        },
       },
       { status: 201 }
     );

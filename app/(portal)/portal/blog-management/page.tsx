@@ -229,7 +229,7 @@ export default function BlogManagementPage() {
       }
 
       setToast({
-        message: `Created draft: ${data.data.title}`,
+        message: `Created blog, hero slide, and image: ${data.data.title}`,
         type: "success",
       });
       setRewriteDialogOpen(false);
@@ -397,7 +397,7 @@ export default function BlogManagementPage() {
               <DialogHeader>
                 <DialogTitle>AI Rewrite from URL</DialogTitle>
                 <DialogDescription>
-                  Enter a URL to an article. We&apos;ll extract the metadata and use AI to rewrite it as a new blog draft.
+                  Enter a URL to an article. We&apos;ll extract the metadata, use AI to rewrite it, and add it to the blog, image manager, and hero carousel.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={rewriteFromUrl} className="space-y-4">
@@ -431,7 +431,7 @@ export default function BlogManagementPage() {
                     ) : (
                       <Wand2 className="h-4 w-4 mr-2" />
                     )}
-                    Rewrite & Create
+                    Rewrite & Add
                   </Button>
                 </DialogFooter>
               </form>
