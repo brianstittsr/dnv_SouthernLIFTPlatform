@@ -22,6 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   BookOpen,
   Search,
   Eye,
@@ -40,6 +49,7 @@ import {
   Linkedin,
   FileText,
   Plus,
+  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog/types";
@@ -69,6 +79,9 @@ export default function BlogManagementPage() {
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [rewriteDialogOpen, setRewriteDialogOpen] = useState(false);
+  const [rewriteUrl, setRewriteUrl] = useState("");
+  const [rewriting, setRewriting] = useState(false);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -195,6 +208,41 @@ export default function BlogManagementPage() {
       setToast({ message: "Failed to bulk update", type: "error" });
     } finally {
       setTogglingSlug(null);
+    }
+  };
+
+  const rewriteFromUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!rewriteUrl.trim()) return;
+    setRewriting(true);
+
+    try {
+      const response = await fetch("/api/blog/rewrite-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: rewriteUrl.trim() }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to rewrite article");
+      }
+
+      setToast({
+        message: `Created draft: ${data.data.title}`,
+        type: "success",
+      });
+      setRewriteDialogOpen(false);
+      setRewriteUrl("");
+      fetchData();
+    } catch (error) {
+      console.error("Error rewriting article:", error);
+      setToast({
+        message: error instanceof Error ? error.message : "Failed to rewrite article",
+        type: "error",
+      });
+    } finally {
+      setRewriting(false);
     }
   };
 
@@ -338,6 +386,57 @@ export default function BlogManagementPage() {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          <Dialog open={rewriteDialogOpen} onOpenChange={setRewriteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary" size="sm">
+                <Wand2 className="h-3 w-3 mr-1" />
+                Rewrite from URL
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>AI Rewrite from URL</DialogTitle>
+                <DialogDescription>
+                  Enter a URL to an article. We&apos;ll extract the metadata and use AI to rewrite it as a new blog draft.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={rewriteFromUrl} className="space-y-4">
+                <div>
+                  <Label htmlFor="rewriteUrl">Article URL</Label>
+                  <Input
+                    id="rewriteUrl"
+                    type="url"
+                    placeholder="https://example.com/article"
+                    value={rewriteUrl}
+                    onChange={(e) => setRewriteUrl(e.target.value)}
+                    required
+                    disabled={rewriting}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setRewriteDialogOpen(false)}
+                    disabled={rewriting}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={!rewriteUrl.trim() || rewriting}
+                  >
+                    {rewriting ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Wand2 className="h-4 w-4 mr-2" />
+                    )}
+                    Rewrite & Create
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <Button
             variant="default"
             size="sm"
