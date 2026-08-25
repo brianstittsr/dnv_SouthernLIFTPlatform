@@ -27,13 +27,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Use SetupIntent to collect card details first.
+    // Use SetupIntent to collect payment details first (card, bank transfer/ACH, etc.).
     // After payment method is confirmed, we create the subscription separately.
     // This avoids the invoice PaymentIntent 400 error with Stripe Elements.
+    // `automatic_payment_methods` (instead of a hardcoded `payment_method_types`)
+    // lets Stripe dynamically offer any payment method enabled in the Dashboard,
+    // including "Pay by bank" / ACH direct debit (us_bank_account).
     const setupIntent = await stripe.setupIntents.create({
       customer: customer.id,
       usage: "off_session",
-      payment_method_types: ["card"],
+      automatic_payment_methods: { enabled: true },
       metadata: {
         priceId: priceId || "",
         membershipType: "kdm-consortium",

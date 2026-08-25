@@ -31,9 +31,11 @@ export async function POST(req: NextRequest) {
     const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
       amount: Math.round(amount * 100), // Convert to cents
       currency: "usd",
+      // Omitting `allow_redirects` (defaults to "always") so bank transfer / ACH
+      // direct debit (us_bank_account) and other eligible methods remain available.
+      // The client confirms with `redirect: 'if_required'` to stay embedded when possible.
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never", // Disable redirect-based payment methods for embedded form
       },
       metadata,
       description: productName || "CMMC Cohort Registration",

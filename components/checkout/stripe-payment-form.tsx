@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import {
-  CardElement,
+  PaymentElement,
   Elements,
   useStripe,
   useElements,
@@ -108,15 +108,9 @@ function CheckoutForm({
     setIsProcessing(true);
 
     try {
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        toast.error("Card element not found. Please refresh and try again.");
-        setIsProcessing(false);
-        return;
-      }
-
       let confirmError: { message?: string } | null = null;
       let intentId: string | null = null;
+      let isPending = false;
 
       // Validate client secret format - must contain _secret_ to be a valid client secret
       if (!subscriptionId || !subscriptionId.includes('_secret_')) {
@@ -126,17 +120,31 @@ function CheckoutForm({
         return;
       }
 
-      // Use appropriate confirmation method based on intent type
+      const returnUrl = `${window.location.origin}/checkout-success`;
+      const billingDetails = {
+        email: formData.email,
+        name: `${formData.firstName} ${formData.lastName}`,
+      };
+
+      // Use appropriate confirmation method based on intent type.
+      // confirmSetup/confirmPayment are payment-method-agnostic, so they work
+      // for cards, bank transfers (ACH direct debit / us_bank_account), and any
+      // other method surfaced by the PaymentElement.
       if (isSetupIntent) {
         // SetupIntent for subscription payments
-        console.log("Using confirmCardSetup for SetupIntent:", subscriptionId?.substring(0, 25));
-        const { error, setupIntent } = await stripe.confirmCardSetup(
-          subscriptionId!,
-          { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
-        );
+        console.log("Using confirmSetup for SetupIntent:", subscriptionId?.substring(0, 25));
+        const { error, setupIntent } = await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+            payment_method_data: { billing_details: billingDetails },
+          },
+          redirect: "if_required",
+        });
         confirmError = error || null;
-        if (setupIntent?.status === "succeeded" && setupIntent.payment_method) {
+        if (setupIntent && (setupIntent.status === "succeeded" || setupIntent.status === "processing") && setupIntent.payment_method) {
           intentId = setupIntent.id;
+          isPending = setupIntent.status === "processing";
           const subResponse = await fetch("/api/checkout/confirm-subscription", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -154,20 +162,27 @@ function CheckoutForm({
         }
       } else {
         // PaymentIntent for one-time payments (e.g., CMMC cohort)
-        console.log("Using confirmCardPayment for PaymentIntent:", subscriptionId?.substring(0, 25));
-        const { error, paymentIntent } = await stripe.confirmCardPayment(
-          subscriptionId!,
-          { payment_method: { card: cardElement, billing_details: { email: formData.email, name: `${formData.firstName} ${formData.lastName}` } } }
-        );
+        console.log("Using confirmPayment for PaymentIntent:", subscriptionId?.substring(0, 25));
+        const { error, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+            payment_method_data: { billing_details: billingDetails },
+          },
+          redirect: "if_required",
+        });
         confirmError = error || null;
-        if (paymentIntent?.status === "succeeded") {
+        // ACH / bank transfer payments settle as "processing" for several days
+        // instead of resolving to "succeeded" immediately like card payments.
+        if (paymentIntent && (paymentIntent.status === "succeeded" || paymentIntent.status === "processing")) {
           intentId = paymentIntent.id;
+          isPending = paymentIntent.status === "processing";
         }
       }
 
       if (confirmError) {
         console.error("Stripe error:", confirmError);
-        toast.error(confirmError.message || "Payment failed. Please check your card details and try again.");
+        toast.error(confirmError.message || "Payment failed. Please check your payment details and try again.");
         setIsProcessing(false);
       } else if (intentId) {
         try {
@@ -227,7 +242,11 @@ function CheckoutForm({
             console.warn("Confirmation email failed to send - user account was still created");
           }
 
-          toast.success("Account created and payment successful!");
+          toast.success(
+            isPending
+              ? "Account created! Your bank transfer is processing and typically clears within a few business days."
+              : "Account created and payment successful!"
+          );
           router.push(`/checkout-success?session_id=${intentId}`);
         } catch (signupError) {
           console.error("Account creation error:", signupError);
@@ -236,7 +255,7 @@ function CheckoutForm({
         }
       } else {
         console.error("No intent ID returned from Stripe");
-        toast.error("Payment failed. No transaction details received.");
+        toast.error("Payment could not be completed. Please try again or use a different payment method.");
         setIsProcessing(false);
       }
     } catch (err) {
@@ -353,37 +372,25 @@ function CheckoutForm({
             Payment Details
           </CardTitle>
           <CardDescription>
-            Choose your payment method - Credit card or Buy now, pay later options available
+            Choose your payment method - credit/debit card, bank transfer (ACH), or Buy now, pay later where available
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
             <p className="text-sm text-blue-900">
-              <strong>Secure Payment:</strong> Enter your credit or debit card details below. Your card will be charged ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} for your KDM Consortium Membership.
+              <strong>Secure Payment:</strong> Select a payment method below. You will be charged ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} for your KDM Consortium Membership. Bank transfers (ACH) typically clear in 1-4 business days.
             </p>
           </div>
           <div className="border border-gray-300 rounded-lg p-4 bg-white">
-            <CardElement
+            <PaymentElement
               onReady={() => setIsElementsReady(true)}
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#1f2937",
-                    fontFamily: "system-ui, sans-serif",
-                    "::placeholder": { color: "#9ca3af" },
-                    iconColor: "#2563eb",
-                  },
-                  invalid: { color: "#ef4444", iconColor: "#ef4444" },
-                },
-                hidePostalCode: false,
-              }}
+              options={{ layout: "tabs" }}
             />
           </div>
           {!isElementsReady && (
             <div className="flex items-center justify-center py-4">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              <span className="text-sm text-muted-foreground">Loading card form...</span>
+              <span className="text-sm text-muted-foreground">Loading payment form...</span>
             </div>
           )}
         </CardContent>
@@ -447,7 +454,7 @@ export function StripePaymentForm({
   }
 
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe" } }}>
       <CheckoutForm 
         amount={amount} 
         productName={productName}
