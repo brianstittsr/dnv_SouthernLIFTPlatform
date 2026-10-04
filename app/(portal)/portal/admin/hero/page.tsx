@@ -60,19 +60,6 @@ const initialSlides: HeroSlide[] = [
     backgroundOverlayOpacity: 60,
   },
   {
-    id: "1",
-    badge: "Introducing EDGE-X™ — Next-Gen Manufacturing Intelligence",
-    headline: "Win OEM Contracts.",
-    middleLine: "&",
-    highlightedText: "Transform",
-    subheadline: "We help small- and mid-sized U.S. manufacturers become qualified suppliers through ISO certification, operational readiness, and supplier development.",
-    benefits: ["OEM Supplier Qualification", "ISO/QMS Certification", "Industry 4.0 Ready"],
-    primaryCta: { text: "Get Your Free Assessment", href: "/contact" },
-    secondaryCta: { text: "See Success Stories", href: "/case-studies" },
-    isPublished: true,
-    order: 1,
-  },
-  {
     id: "2",
     badge: "V+ TwinEDGE™ — Digital Twin Solutions",
     headline: "Visualize Your Factory.",
@@ -155,18 +142,6 @@ const initialSlides: HeroSlide[] = [
     secondaryCta: { text: "Learn About CMMC", href: "/services/cmmc" },
     isPublished: false,
     order: 8,
-  },
-  {
-    id: "9",
-    badge: "Government Contracting Excellence",
-    headline: "KDM Consortium",
-    highlightedText: "Partnership",
-    subheadline: "KDM & Associates and its participating resource partners unite to deliver unparalleled support for small businesses. Combined expertise for accelerated government contracting success.",
-    benefits: ["Combined Expertise", "Expanded Resources", "Accelerated Growth"],
-    primaryCta: { text: "Learn More", href: "/about" },
-    secondaryCta: { text: "Contact Us", href: "/contact" },
-    isPublished: false,
-    order: 9,
   },
 ];
 
