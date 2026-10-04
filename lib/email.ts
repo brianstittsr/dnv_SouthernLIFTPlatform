@@ -1143,6 +1143,50 @@ export const emailTemplates = {
     `,
     text: `Congratulations ${params.name}! Your KDM Consortium onboarding is approved. Log in at ${params.portalUrl} to explore KDM Opportunities (${params.opportunitiesUrl}) and AI Teaming Matches (${params.teamingUrl}).`,
   }),
+
+  /**
+   * Readiness reminder — sent when an admin readiness scan finds a member's
+   * government-contracting profile is incomplete or below the contract-ready
+   * threshold. Throttled by lastReadinessReminderSentAt on the member doc.
+   */
+  profileReminder: (params: {
+    name: string;
+    score?: number;
+    gaps: string[];
+    profileUrl: string;
+    isNewMember?: boolean;
+  }) => ({
+    subject: params.isNewMember
+      ? "Complete Your KDM Consortium Profile"
+      : "Action Needed: Update Your Government Contracting Profile",
+    html: `
+      <h1>Hi ${params.name},</h1>
+      ${params.isNewMember
+        ? `<p>Welcome to the KDM Consortium! To start receiving AI-matched government contracting opportunities, we need you to complete your Company Intelligence profile.</p>`
+        : `<p>A recent review of your KDM Consortium profile found your government contracting readiness needs attention${typeof params.score === "number" ? ` — current score: <strong>${params.score}/100</strong>` : ""}.</p>`}
+      ${params.gaps.length ? `<h3>What's missing:</h3><ul>${params.gaps.map((g) => `<li>${g}</li>`).join("")}</ul>` : ""}
+      <p>Completing your profile takes about 10 minutes and unlocks SAM.gov opportunity matching and AI teaming recommendations.</p>
+      <p><a href="${params.profileUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Update My Profile</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Hi ${params.name}, ${params.isNewMember ? "please complete your KDM Consortium profile" : `your government contracting readiness needs attention${typeof params.score === "number" ? ` (score ${params.score}/100)` : ""}`}. ${params.gaps.length ? `Missing: ${params.gaps.join("; ")}. ` : ""}Update your profile at: ${params.profileUrl}`,
+  }),
+
+  /**
+   * Onboarding link — emails a prospective client a direct link to the
+   * public client onboarding wizard (no account required).
+   */
+  onboardingLink: (params: { name: string; onboardingUrl: string; senderName?: string }) => ({
+    subject: "Complete Your KDM Client Profile",
+    html: `
+      <h1>Hi ${params.name},</h1>
+      <p>${params.senderName ? `${params.senderName} from ` : ""}KDM &amp; Associates has invited you to complete your client profile. This guided wizard collects the information we need to match you with government contracting opportunities and consortium partners.</p>
+      <p><a href="${params.onboardingUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Complete My Profile</a></p>
+      <p>The wizard takes about 10–15 minutes. No account login is required.</p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Hi ${params.name}, you've been invited to complete your KDM client profile (about 10–15 minutes, no login required): ${params.onboardingUrl}`,
+  }),
 };
 
 /**

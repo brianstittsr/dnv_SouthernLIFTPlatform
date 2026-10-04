@@ -508,6 +508,36 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // SAM.gov opportunity matches - members read their own; written by cron (admin SDK)
+    match /samgovOpportunities/{docId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // AI teaming recommendations - requester or recommended partner can read;
+    // status updates go through /api/samgov/teaming-respond (admin SDK).
+    // partnerIds is a denormalized string[] of recommendation.memberId values.
+    match /aiTeamingRecommendations/{docId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.forMemberId == request.auth.uid ||
+         request.auth.uid in resource.data.partnerIds ||
+         isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // SAM.gov NAICS suggestions - members read their own
+    match /samgovNaicsSuggestions/{docId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // SAM.gov sync run log - admin only
+    match /samgovSyncRuns/{docId} {
+      allow read, write: if isAdmin();
+    }
+
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

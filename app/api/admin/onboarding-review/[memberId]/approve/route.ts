@@ -79,15 +79,33 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Mirror onto the users doc — this is the collection the SAM.gov cron
     // eligibility query (and AI teaming candidate pool) actually reads from.
-    const userId = member.firebaseUid || memberId;
-    await db.collection(COLLECTIONS.USERS).doc(userId).set(
-      { onboardingReviewStatus: "approved" },
-      { merge: true }
-    );
+    // Resolve the real users doc: prefer member.firebaseUid, otherwise look the
+    // member up by email so we don't write approval onto an orphan stub doc.
+    let userId = member.firebaseUid;
+    if (!userId && member.emailPrimary) {
+      const userSnap = await db
+        .collection(COLLECTIONS.USERS)
+        .where("email", "==", member.emailPrimary)
+        .limit(1)
+        .get();
+      if (!userSnap.empty) {
+        userId = userSnap.docs[0].id;
+        // Backfill the link so future lookups don't need the email query
+        await memberRef.update({ firebaseUid: userId, updatedAt: now });
+      }
+    }
+    if (userId) {
+      await db.collection(COLLECTIONS.USERS).doc(userId).set(
+        { onboardingReviewStatus: "approved" },
+        { merge: true }
+      );
+    } else {
+      console.warn(`approve: no users doc found for member ${memberId} (${member.emailPrimary}) — approval recorded on member only`);
+    }
 
     await db.collection(COLLECTIONS.ONBOARDING_REVIEWS).add({
       memberId,
-      userId,
+      userId: userId || null,
       adminId: authResult.uid,
       adminName: authResult.name || "Admin",
       action: "approved",
@@ -111,13 +129,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       });
     }
 
-    await createUserNotification({
-      userId,
-      type: "system",
-      title: "Onboarding Approved!",
-      message: "Your profile is approved. Explore KDM Opportunities, AI Recommendations, and AI Teaming Matches now.",
-      link: "/portal/samgov-opportunities",
-    });
+    if (userId) {
+      await createUserNotification({
+        userId,
+        type: "system",
+        title: "Onboarding Approved!",
+        message: "Your profile is approved. Explore KDM Opportunities, AI Recommendations, and AI Teaming Matches now.",
+        link: "/portal/samgov-opportunities",
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

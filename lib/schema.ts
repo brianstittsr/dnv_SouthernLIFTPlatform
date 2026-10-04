@@ -830,7 +830,28 @@ export interface ConsortiumMemberDoc {
       primaryServiceCategories: string[];
     };
   };
-  
+
+  // Admin-computed GovCon readiness (written by /api/admin/team-members/readiness-scan)
+  govReadinessScore?: {
+    overallScore: number;
+    breakdown: {
+      samRegistration: number;
+      uei: number;
+      cageCode: number;
+      naicsCoverage: number;
+      federalCertifications: number;
+      pastPerformance: number;
+      gsaSchedule: number;
+    };
+    gaps: string[];
+    remediationRecommendations: string[];
+    lastCalculated: Timestamp;
+  };
+  govReadinessLastScannedAt?: Timestamp;
+  lastReadinessReminderSentAt?: Timestamp;
+  readinessReminderCount?: number;
+  lastOnboardingLinkSentAt?: Timestamp;
+
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -2667,6 +2688,7 @@ export const COLLECTIONS = {
   // SAM.gov Opportunity Feed Integration
   SAMGOV_OPPORTUNITIES: "samgovOpportunities",
   SAMGOV_NAICS_SUGGESTIONS: "samgovNaicsSuggestions",
+  SAMGOV_SYNC_RUNS: "samgovSyncRuns",
   // Persistent in-app notification inbox
   USER_NOTIFICATIONS: "userNotifications",
   // Admin Onboarding Review audit trail
@@ -3544,6 +3566,7 @@ export interface ClientRegistrationDoc extends BaseDocument {
   assignedTo?: string; // admin user ID
   reviewedBy?: string;
   reviewedAt?: Timestamp;
+  linkedMemberId?: string; // teamMembers doc id when submitted via an admin onboarding link
 }
 
 /** Home Page Settings document in Firestore */

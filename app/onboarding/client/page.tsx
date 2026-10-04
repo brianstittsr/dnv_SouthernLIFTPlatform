@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -111,7 +112,9 @@ export default function ClientOnboardingPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("company");
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [completedTabs, setCompletedTabs] = useState<string[]>([]);
+  const [linkedMemberId, setLinkedMemberId] = useState<string | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -171,20 +174,25 @@ export default function ClientOnboardingPage() {
     agreeToTerms: false,
   });
 
-  // Load session data on mount
+  // Load session data on mount; admin-sent onboarding links carry ?email=&member= prefill
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const inviteEmail = params.get("email") || "";
+    const memberId = params.get("member") || "";
+    if (memberId) setLinkedMemberId(memberId);
+
     const userName = sessionStorage.getItem("svp_user_name") || "";
-    const userEmail = sessionStorage.getItem("svp_user_email") || "";
+    const userEmail = sessionStorage.getItem("svp_user_email") || inviteEmail;
     const userCompany = sessionStorage.getItem("svp_user_company") || "";
     const userPhone = sessionStorage.getItem("svp_user_phone") || "";
 
-    if (userName) {
+    if (userName || userEmail) {
       setFormData(prev => ({
         ...prev,
-        contactName: userName,
-        contactEmail: userEmail,
-        companyName: userCompany,
-        contactPhone: userPhone,
+        contactName: userName || prev.contactName,
+        contactEmail: userEmail || prev.contactEmail,
+        companyName: userCompany || prev.companyName,
+        contactPhone: userPhone || prev.contactPhone,
       }));
     }
   }, []);
@@ -262,20 +270,102 @@ export default function ClientOnboardingPage() {
   const handleSubmit = async () => {
     setIsSaving(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In production, save to Firebase here
-      console.log("Client onboarding data:", formData);
-      
-      // Redirect to portal
-      router.push("/portal");
+      const nameParts = formData.contactName.trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "-";
+
+      const profileNotes = [
+        `Industry sectors: ${formData.industrySectors.join(", ") || "none"}`,
+        `Capabilities: ${formData.capabilities.join(", ") || "none"}`,
+        `Certifications: ${formData.certifications.join(", ") || "none"}`,
+        `Facility size: ${formData.facilitySize || "n/a"} · Production capacity: ${formData.productionCapacity || "n/a"}`,
+        `Quality systems: ${[
+          formData.qualityManual && "quality manual",
+          formData.documentedProcesses && "documented processes",
+          formData.internalAudits && "internal audits",
+          formData.correctiveActionProcess && "corrective action",
+          formData.supplierQualification && "supplier qualification",
+        ].filter(Boolean).join(", ") || "none indicated"}`,
+        `Budget: ${formData.budget || "n/a"}`,
+        formData.additionalNotes ? `Notes: ${formData.additionalNotes}` : "",
+      ].filter(Boolean).join("\n");
+
+      const response = await fetch("/api/client-registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: "KDM & Associates Client",
+          fieldLabel: "Client Onboarding Wizard",
+          prefix: "",
+          firstName,
+          lastName,
+          title: formData.contactTitle || "Primary Contact",
+          companyOwnerEthnicity: "",
+          linkedInUrl: "",
+          companyName: formData.companyName,
+          streetAddress: formData.streetAddress,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          mobilePhone: formData.contactPhone,
+          companyPhone: formData.contactPhone,
+          companyEmail: formData.contactEmail,
+          websiteUrl: formData.website,
+          samRegistration: "",
+          dunsNumber: formData.dunsnumber,
+          naicsCodes: [],
+          approximateAnnualRevenue: formData.annualRevenue,
+          applyingAs: "prime_contractor",
+          ableToWorkOutOfState: false,
+          howFoundKDMAssociates: formData.howDidYouHear || "KDM onboarding link",
+          referredBy: linkedMemberId ? `team-member:${linkedMemberId}` : "",
+          helpNeededFromKDM: formData.primaryGoals || "See onboarding submission",
+          servicesInterestedIn: formData.servicesInterested,
+          topCompanyNeed: formData.currentChallenges || "See onboarding submission",
+          notes: profileNotes,
+          linkedMemberId,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed");
+      }
+
+      setIsSubmitted(true);
+      window.scrollTo({ top: 0 });
     } catch (error) {
       console.error("Error saving client data:", error);
+      toast.error(error instanceof Error ? error.message : "Could not submit your profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-6">
+        <Card className="max-w-lg w-full">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+            <CardTitle className="text-2xl">Profile Submitted</CardTitle>
+            <CardDescription>
+              Thank you, {formData.contactName || "there"}. Your company profile has been sent to the KDM
+              &amp; Associates team. We&apos;ll review it and follow up about next steps, including portal
+              access for SAM.gov opportunity matching.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <Button onClick={() => router.push("/")} variant="outline" className="w-full">
+              Return to Homepage
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">

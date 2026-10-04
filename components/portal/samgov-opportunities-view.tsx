@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS, type SamgovOpportunityDoc, type AiTeamingRecommendationDoc } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -70,10 +70,14 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
         const recAsRequester = recSnap.docs.map((d) => ({ id: d.id, ...d.data() } as AiTeamingRecommendationDoc));
 
         // Also find recommendations where this member is the recommended partner
-        const allRecSnap = await getDocs(collection(db!, COLLECTIONS.AI_TEAMMING_RECOMMENDATIONS));
-        const recAsPartner = allRecSnap.docs
+        // (partnerIds is a denormalized string[] so this is a proper query —
+        // a full-collection read would be denied by Firestore rules)
+        const partnerSnap = await getDocs(
+          query(collection(db!, COLLECTIONS.AI_TEAMMING_RECOMMENDATIONS), where("partnerIds", "array-contains", userId))
+        );
+        const recAsPartner = partnerSnap.docs
           .map((d) => ({ id: d.id, ...d.data() } as AiTeamingRecommendationDoc))
-          .filter((r) => r.forMemberId !== userId && r.recommendations?.some((rec) => rec.memberId === userId));
+          .filter((r) => r.forMemberId !== userId);
 
         const combined = [...recAsRequester, ...recAsPartner];
         const dedupedMap = new Map(combined.map((r) => [r.id, r]));
@@ -90,17 +94,20 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
   }, [userId]);
 
   async function respondToRecommendation(rec: AiTeamingRecommendationDoc, status: "interested" | "not-interested") {
-    if (!db) return;
+    if (!auth?.currentUser) return;
     try {
+      const idToken = await auth.currentUser.getIdToken();
+      const res = await fetch("/api/samgov/teaming-respond", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ recommendationId: rec.id, status }),
+      });
+      if (!res.ok) throw new Error(`teaming-respond ${res.status}`);
       const updatedRecs = rec.recommendations.map((r) =>
         r.memberId === userId || rec.forMemberId === userId
           ? { ...r, contacted: true, contactStatus: status }
           : r
       );
-      await updateDoc(doc(db, COLLECTIONS.AI_TEAMMING_RECOMMENDATIONS, rec.id), {
-        recommendations: updatedRecs,
-        updatedAt: Timestamp.now(),
-      });
       setRecommendations((prev) =>
         prev.map((r) => (r.id === rec.id ? { ...r, recommendations: updatedRecs } : r))
       );

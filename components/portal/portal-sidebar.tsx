@@ -43,6 +43,7 @@ import {
   LayoutDashboard,
   Target,
   FolderKanban,
+  ShieldCheck,
   Users,
   Building,
   FileText,
@@ -360,6 +361,12 @@ const adminItems = [
     title: "Team members",
     href: "/portal/admin/team-members",
     icon: UserCog,
+  },
+  {
+    title: "Readiness Kanban",
+    href: "/portal/admin/readiness-kanban",
+    icon: ShieldCheck,
+    badge: "New",
   },
   {
     title: "Strategic Partners",

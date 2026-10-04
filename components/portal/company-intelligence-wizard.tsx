@@ -488,6 +488,11 @@ export function CompanyIntelligenceWizard() {
       await updateDoc(userRef, {
         companyIntelligence: companyIntelligencePayload,
         companyIntelligenceComplete: true,
+        // Completing Company Intelligence auto-approves the member for
+        // SAM.gov opportunity matching (admins can still request changes).
+        onboardingReviewStatus: "approved",
+        aiMatchingActivated: true,
+        aiMatchingActivatedAt: Timestamp.now(),
         legalCompanyName: formData.legalCompanyName,
         address: formData.address,
         city: formData.city,

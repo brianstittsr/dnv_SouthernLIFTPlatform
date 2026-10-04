@@ -64,7 +64,7 @@ import { ALL_NAV_ITEMS } from "@/components/portal/portal-sidebar";
 import { cn } from "@/lib/utils";
 import { WEBHOOK_EVENTS, testWebhookConnection, sendToBrianStitt, type WebhookEventType } from "@/lib/mattermost";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { COLLECTIONS, type PlatformSettingsDoc } from "@/lib/schema";
 import { logSettingsUpdated } from "@/lib/activity-logger";
 import { 
@@ -469,32 +469,39 @@ function SettingsPageContent() {
       }
     }
     
-    // Test SAM.gov API Server connection
+    // Test SAM.gov API Server connection (server-side — avoids CORS false
+    // failures and keeps the API key out of browser requests)
     if (configId === "samgov") {
-      const serverUrl = apiKeys["samgov"]?.serverUrl?.trim().replace(/\/+$/, "");
+      const serverUrl = apiKeys["samgov"]?.serverUrl?.trim();
       const apiKey = apiKeys["samgov"]?.apiKey;
       if (serverUrl && apiKey) {
         try {
-          const res = await fetch(`${serverUrl}/api/naics`, {
+          const idToken = await auth?.currentUser?.getIdToken();
+          if (!idToken) {
+            setTestingStatus(prev => ({ ...prev, [configId]: "error" }));
+            alert("You must be signed in to test the connection.");
+            return;
+          }
+          const res = await fetch("/api/samgov/test-connection", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-API-Key": apiKey,
+              Authorization: `Bearer ${idToken}`,
             },
-            body: JSON.stringify({ q: "541511" }),
+            body: JSON.stringify({ serverUrl, apiKey }),
           });
+          const result = await res.json().catch(() => ({}));
           setTestingStatus(prev => ({
             ...prev,
-            [configId]: res.ok ? "success" : "error",
+            [configId]: result.ok ? "success" : "error",
           }));
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            alert(`SAM.gov API test failed (${res.status}): ${errData.error || "Unknown error"}`);
+          if (!result.ok) {
+            alert(`SAM.gov API test failed: ${result.error || `HTTP ${result.status || res.status}`}`);
           }
           return;
         } catch (err) {
           setTestingStatus(prev => ({ ...prev, [configId]: "error" }));
-          alert(`SAM.gov API test failed: Could not connect to server at ${serverUrl}`);
+          alert(`SAM.gov API test failed: ${err instanceof Error ? err.message : "Unknown error"}`);
           return;
         }
       } else {

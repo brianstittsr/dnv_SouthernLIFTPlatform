@@ -52,6 +52,8 @@ export interface SamGovSearchResponse {
   error?: string;
 }
 
+const REQUEST_TIMEOUT_MS = 60_000; // cold Vercel functions on the proxy can be slow
+
 async function samgovRequest<T>(endpoint: string, body: Record<string, unknown>): Promise<T> {
   const config = await getSamGovConfig();
   if (!config) {
@@ -60,21 +62,40 @@ async function samgovRequest<T>(endpoint: string, body: Record<string, unknown>)
     );
   }
 
-  const res = await fetch(`${config.serverUrl}${endpoint}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": config.apiKey,
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({} as { error?: string }));
-    throw new Error(`SAM.gov API error (${res.status}): ${errData.error || res.statusText}`);
+  let res: Response;
+  try {
+    res = await fetch(`${config.serverUrl}${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": config.apiKey,
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === "TimeoutError") {
+      throw new Error(`SAM.gov API timed out after ${REQUEST_TIMEOUT_MS / 1000}s (${config.serverUrl})`);
+    }
+    throw new Error(
+      `Could not reach SAM.gov API Server at ${config.serverUrl}: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 
-  return res.json() as Promise<T>;
+  const data = (await res.json().catch(() => null)) as (T & { error?: string }) | null;
+
+  if (!res.ok) {
+    throw new Error(`SAM.gov API error (${res.status}): ${data?.error || res.statusText}`);
+  }
+  // The proxy sometimes returns HTTP 200 with an error payload
+  if (data && typeof data === "object" && typeof data.error === "string" && data.error) {
+    throw new Error(`SAM.gov API error: ${data.error}`);
+  }
+  if (data === null) {
+    throw new Error("SAM.gov API returned an empty or non-JSON response");
+  }
+
+  return data as T;
 }
 
 /** Run a broad opportunity search against the Cgray SAM.gov proxy. */

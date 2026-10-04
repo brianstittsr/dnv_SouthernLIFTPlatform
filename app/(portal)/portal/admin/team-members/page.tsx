@@ -59,6 +59,7 @@ import {
   Send,
   Loader2,
   FileText,
+  Radar,
 } from "lucide-react";
 import { 
   collection, 
@@ -79,6 +80,9 @@ import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
 import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
 import { InviteUserDialog } from "@/components/admin/invite-user-dialog";
 import { TeamMemberReportDialog } from "@/components/admin/team-member-report-dialog";
+import { ReadinessReportDialog } from "@/components/admin/readiness-report-dialog";
+import { ReadinessScanDialog } from "@/components/admin/readiness-scan-dialog";
+import { SendOnboardingLinkDialog } from "@/components/admin/send-onboarding-link-dialog";
 import Link from "next/link";
 
 // Seed data for Team members
@@ -139,6 +143,9 @@ export default function TeammembersPage() {
   const [tagFilter, setTagFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [readinessScanOpen, setReadinessScanOpen] = useState(false);
+  const [readinessReportOpen, setReadinessReportOpen] = useState(false);
+  const [onboardingLinkOpen, setOnboardingLinkOpen] = useState(false);
   const [schedulingList, setSchedulingList] = useState<OneToOneQueueItemDoc[]>([]);
   const [showSchedulingPanel, setShowSchedulingPanel] = useState(false);
   const [loadingQueue, setLoadingQueue] = useState(false);
@@ -910,6 +917,30 @@ export default function TeammembersPage() {
             <Button variant="outline" onClick={updateWebsitesFromEmail}>
               <Globe className="mr-2 h-4 w-4" />
               Update Websites
+            </Button>
+          )}
+          {members.length > 0 && (
+            <Button variant="outline" onClick={() => setReadinessScanOpen(true)}>
+              <Radar className="mr-2 h-4 w-4" />
+              Scan Readiness
+            </Button>
+          )}
+          {members.length > 0 && (
+            <Button variant="outline" onClick={() => setOnboardingLinkOpen(true)}>
+              <LinkIcon className="mr-2 h-4 w-4" />
+              Send Onboarding Link
+            </Button>
+          )}
+          <Link href="/portal/admin/readiness-kanban">
+            <Button variant="outline">
+              <LayoutGrid className="mr-2 h-4 w-4" />
+              Readiness Kanban
+            </Button>
+          </Link>
+          {members.length > 0 && (
+            <Button variant="outline" onClick={() => setReadinessReportOpen(true)}>
+              <FileText className="mr-2 h-4 w-4" />
+              Readiness Report
             </Button>
           )}
           {members.length > 0 && (
@@ -1823,6 +1854,21 @@ export default function TeammembersPage() {
       <TeamMemberReportDialog
         open={reportDialogOpen}
         onOpenChange={setReportDialogOpen}
+        members={members}
+      />
+      <ReadinessReportDialog
+        open={readinessReportOpen}
+        onOpenChange={setReadinessReportOpen}
+        members={members}
+      />
+      <ReadinessScanDialog
+        open={readinessScanOpen}
+        onOpenChange={setReadinessScanOpen}
+        onScanComplete={fetchMembers}
+      />
+      <SendOnboardingLinkDialog
+        open={onboardingLinkOpen}
+        onOpenChange={setOnboardingLinkOpen}
         members={members}
       />
     </div>

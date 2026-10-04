@@ -67,8 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Required field validation
     const requiredFields = [
-      "prefix", "firstName", "lastName",
-      "title", "companyOwnerEthnicity",
+      "firstName", "lastName", "title",
       "companyName", "streetAddress", "city", "state", "zipCode",
       "mobilePhone", "companyEmail",
       "helpNeededFromKDM", "topCompanyNeed", "howFoundKDMAssociates"
@@ -82,10 +81,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate naicsCodes array
-    if (!body.naicsCodes || !Array.isArray(body.naicsCodes) || body.naicsCodes.length === 0) {
+    // Validate naicsCodes array when provided (the public onboarding wizard
+    // collects industry sectors rather than NAICS codes)
+    if (body.naicsCodes !== undefined && !Array.isArray(body.naicsCodes)) {
       return NextResponse.json(
-        { error: "At least one NAICS code is required" },
+        { error: "naicsCodes must be an array" },
         { status: 400 }
       );
     }
@@ -169,6 +169,7 @@ export async function POST(request: NextRequest) {
       assignedTo: null,
       reviewedBy: null,
       reviewedAt: null,
+      linkedMemberId: body.linkedMemberId || null,
 
       // Timestamps
       createdAt: now,

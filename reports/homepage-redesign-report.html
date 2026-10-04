@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KDM Homepage Redesign &amp; Growth Strategy — Proposal for Keith Moore</title>
+<style>
+  :root {
+    --navy: #0f2740;
+    --navy-2: #16344f;
+    --amber: #f59e0b;
+    --amber-dk: #b45309;
+    --ink: #1f2937;
+    --muted: #5b6472;
+    --line: #dbe2ea;
+    --bg-soft: #f4f7fa;
+    --good: #047857;
+    --warn: #b45309;
+    --risk: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: #ffffff;
+    margin: 0;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { color: var(--navy); line-height: 1.25; }
+  h2 {
+    font-size: 17pt;
+    border-bottom: 3px solid var(--amber);
+    padding-bottom: 6px;
+    margin: 0 0 14px 0;
+  }
+  h3 { font-size: 12.5pt; margin: 18px 0 6px 0; }
+  h4 { font-size: 10.5pt; margin: 12px 0 4px 0; text-transform: uppercase; letter-spacing: .4px; color: var(--navy-2); }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0 10px 0; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .section { page-break-inside: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px 0; font-size: 9pt; }
+  th { background: var(--navy); color: #fff; text-align: left; padding: 7px 8px; font-weight: 600; }
+  td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: var(--bg-soft); }
+  .tag { display: inline-block; font-size: 7.5pt; font-weight: 700; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; letter-spacing: .4px; }
+  .tag-new { background: #fef3c7; color: var(--amber-dk); }
+  .tag-keep { background: #d1fae5; color: var(--good); }
+  .tag-rework { background: #fee2e2; color: var(--risk); }
+  .tag-consolidate { background: #e0e7ff; color: #3730a3; }
+  .callout {
+    border-left: 4px solid var(--amber);
+    background: #fffbeb;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .callout-blue { border-left-color: var(--navy); background: var(--bg-soft); }
+  .callout-red { border-left-color: var(--risk); background: #fef2f2; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kpi-row { display: flex; gap: 12px; margin: 14px 0; }
+  .kpi { flex: 1; border: 1px solid var(--line); border-top: 4px solid var(--amber); border-radius: 6px; padding: 10px 12px; background: #fff; }
+  .kpi .n { font-size: 20pt; font-weight: 800; color: var(--navy); }
+  .kpi .l { font-size: 8.5pt; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 8.5pt; }
+  .num { font-weight: 700; color: var(--navy); }
+  .arrow-flow { display: flex; align-items: center; gap: 0; margin: 12px 0; flex-wrap: wrap; }
+  .flow-step { background: var(--navy); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 9pt; font-weight: 600; }
+  .flow-arrow { color: var(--amber-dk); font-weight: 800; padding: 0 8px; font-size: 12pt; }
+  .wireframe { border: 1.5px dashed #9fb2c4; border-radius: 8px; padding: 10px 14px; margin: 10px 0; background: #fff; }
+  .wireframe .bar { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 5px; padding: 7px 10px; margin: 6px 0; font-size: 9pt; }
+  .wireframe .bar b { color: var(--navy); }
+  .checklist li { list-style: none; margin-left: -18px; margin-bottom: 5px; }
+  .checklist li::before { content: "☐ "; color: var(--amber-dk); font-weight: 700; }
+  .src { font-size: 7.5pt; color: var(--muted); }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    height: 100%;
+    min-height: 960px;
+    background: linear-gradient(160deg, #0b1f33 0%, #16344f 55%, #1d4266 100%);
+    color: #fff;
+    padding: 70px 64px;
+    position: relative;
+    page-break-after: always;
+  }
+  .cover .brand { font-size: 11pt; letter-spacing: 3px; text-transform: uppercase; color: var(--amber); font-weight: 700; }
+  .cover h1 { color: #fff; font-size: 34pt; line-height: 1.15; margin: 26px 0 18px 0; }
+  .cover .sub { font-size: 13.5pt; color: #cbd5e1; max-width: 560px; line-height: 1.5; }
+  .cover .meta { position: absolute; bottom: 70px; left: 64px; font-size: 10pt; color: #94a3b8; line-height: 1.9; }
+  .cover .meta b { color: #fff; }
+  .cover .conf { position: absolute; bottom: 70px; right: 64px; font-size: 8.5pt; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid #334155; padding: 6px 12px; border-radius: 4px; }
+  .cover .rule { width: 90px; height: 5px; background: var(--amber); margin-top: 34px; border-radius: 3px; }
+  .cover .agenda { margin-top: 40px; font-size: 10pt; color: #cbd5e1; }
+  .cover .agenda div { padding: 7px 0; border-bottom: 1px solid #263d55; }
+  .cover .agenda span { color: var(--amber); font-weight: 700; margin-right: 10px; }
+
+  /* ---------- TOC ---------- */
+  .toc-item { display: flex; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 10.5pt; }
+  .toc-item .n { color: var(--amber-dk); font-weight: 700; width: 34px; }
+  .toc-item .d { flex: 1; }
+  .toc-item .d small { display: block; color: var(--muted); font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<!-- ======================= COVER ======================= -->
+<div class="cover">
+  <div class="brand">KDM &amp; Associates · KDM Consortium</div>
+  <h1>Homepage Redesign &amp;<br>Recurring-Revenue Strategy</h1>
+  <div class="rule"></div>
+  <p class="sub">
+    A proposal to reposition the KDM homepage around what the platform actually does —
+    membership, the government-contracting pipeline, AI opportunity matching, teaming, and
+    the Five-Pillar ecosystem — with defensible claims, a new <b>KDM Gallery</b> momentum
+    section, and a subscription-first pricing model benchmarked against the GovCon market.
+  </p>
+  <div class="agenda">
+    <div><span>01</span> Executive Summary</div>
+    <div><span>02</span> Homepage Redesign — Proposed Architecture</div>
+    <div><span>03</span> Claims Audit — What We Can (and Can't) Prove</div>
+    <div><span>04</span> KDM Gallery — New Momentum Section</div>
+    <div><span>05</span> Recurring-Revenue Product &amp; Pricing Strategy</div>
+    <div><span>06</span> Competitive Landscape — Services KDM Could Offer</div>
+    <div><span>07</span> Rollout Roadmap &amp; Decisions Needed</div>
+  </div>
+  <div class="meta">
+    Prepared for <b>Keith Moore</b><br>
+    Prepared by <b>KDM Platform Team</b><br>
+    <!--DATE-->
+  </div>
+  <div class="conf">Internal — For Review &amp; Input</div>
+</div>
+
+<!-- ======================= TOC + EXEC SUMMARY ======================= -->
+<div class="page">
+  <h2>Contents</h2>
+  <div class="toc-item"><div class="n">1</div><div class="d"><b>Executive Summary</b><small>The three moves this report recommends and why</small></div></div>
+  <div class="toc-item"><div class="n">2</div><div class="d"><b>Homepage Redesign — Proposed Architecture</b><small>Current state audit and the recommended section-by-section story</small></div></div>
+  <div class="toc-item"><div class="n">3</div><div class="d"><b>Claims Audit — What We Can (and Can't) Prove</b><small>Line-by-line review of success claims and provable replacements</small></div></div>
+  <div class="toc-item"><div class="n">4</div><div class="d"><b>KDM Gallery — New Momentum Section</b><small>Live network activity plus curated photography</small></div></div>
+  <div class="toc-item"><div class="n">5</div><div class="d"><b>Recurring-Revenue Product &amp; Pricing Strategy</b><small>Tiered membership plus subscription add-ons that compound</small></div></div>
+  <div class="toc-item"><div class="n">6</div><div class="d"><b>Competitive Landscape — Services KDM Could Offer</b><small>For consideration: how comparable GovCon firms monetize</small></div></div>
+  <div class="toc-item"><div class="n">7</div><div class="d"><b>Rollout Roadmap &amp; Decisions Needed</b><small>Phased implementation and the questions only Keith can answer</small></div></div>
+  <div class="toc-item"><div class="n">A</div><div class="d"><b>Appendix — Live Platform Metrics &amp; Sources</b><small>Actual Firestore counts as of report date and research citations</small></div></div>
+
+  <h2 style="margin-top:34px">1 · Executive Summary</h2>
+  <p>
+    The KDM platform has quietly become something most GovCon consultancies cannot offer:
+    a <b>working system</b> — member registration, a guided Company Intelligence onboarding
+    wizard, a SAM.gov opportunity pipeline with AI matching, AI-generated teaming
+    recommendations, a member portal, events, press releases, and an admin back office.
+    The current homepage tells almost none of that story. It leads with a generic consulting
+    narrative and hardcoded performance numbers that cannot be substantiated from the platform
+    itself.
+  </p>
+  <div class="callout">
+    <b>The core recommendation:</b> stop selling the consulting pitch and start showing the
+    machine. The redesigned homepage should walk a visitor through a provable sequence —
+    <i>join → build your intelligence profile → get matched to real SAM.gov opportunities →
+    get recommended a teaming partner → pursue as part of a Five-Pillar consortium.</i>
+    Every claim on the page should trace to data the system can show on demand.
+  </div>
+  <h3>Three moves</h3>
+  <ol>
+    <li><b>Redesign the homepage around the real product.</b> Reorder the page to lead with what KDM <i>is</i> (a consortium + a working platform), then the pipeline (SAM.gov leads → AI matching → teaming), then the network and Five Pillars, closing with momentum (new KDM Gallery) and proof (live metrics).</li>
+    <li><b>Replace aspirational claims with provable ones.</b> The "475 Clients / $50B+ / 14+ agreements / 30+ partners" strip and the "500+ directory" line cannot be verified by the system. Section 3 rewrites every claim into language that is either live-computed or defensibly phrased.</li>
+    <li><b>Shift pricing from one-time sales to network-driven subscriptions.</b> Today the only recurring product is the $625/mo Consortium membership; Founders ($625) and CMMC Cohort ($7,500) are one-time. Section 5 proposes a tier ladder plus subscription add-ons — buyer-side subscriptions, an alerts/matching SaaS tier, retainers, sponsorships — modeled on how GovWin, GovTribe, HigherGov, USFCR, and the associations actually make recurring money.</li>
+  </ol>
+  <div class="callout-blue">
+    <b>Honesty note on current numbers.</b> As of this report the platform shows 31 team members,
+    23 consortium members, 32 portal users, 3 press releases, and 4 company profiles. The SAM.gov
+    pipeline is built but has delivered 0 matched opportunities and 0 teaming recommendations so far
+    (the eligibility funnel is being fixed in parallel work). This report treats that honestly:
+    the live-metrics section is designed to switch on as real activity accrues, and Phase 1 of the
+    roadmap requires no inflated numbers at all.
+  </div>
+</div>
+
+<!-- ======================= SECTION 2 ======================= -->
+<div class="page">
+  <h2>2 · Homepage Redesign — Proposed Architecture</h2>
+
+  <h3>2.1 Current state audit</h3>
+  <p>The homepage today renders: Hero carousel (Firestore-driven) → Five Pillars (large, dominant) → hardcoded Stats band → generic "How It Works" consulting steps → Testimonials → CTA. Gaps against the intended story:</p>
+  <table>
+    <tr><th style="width:34%">What the page must convey</th><th style="width:18%">Today</th><th>Gap</th></tr>
+    <tr><td>KDM Platform features &amp; benefits</td><td><span class="tag tag-rework">Missing</span></td><td>No section explains the portal, dashboard, or tools members actually get.</td></tr>
+    <tr><td>KDM Consortium — what it is</td><td><span class="tag tag-rework">Implied</span></td><td>Present via pillar copy, but the membership product itself is never defined on the homepage.</td></tr>
+    <tr><td>Government-contracting platform</td><td><span class="tag tag-rework">Missing</span></td><td>The SAM.gov pipeline, matching, and teaming — the strongest differentiator — is invisible to visitors.</td></tr>
+    <tr><td>Onboarding process</td><td><span class="tag tag-rework">Wrong</span></td><td>"How It Works" describes consulting steps (consultation → certification → teaming → support), not the actual platform journey.</td></tr>
+    <tr><td>SAM.gov leads &amp; opportunity matching</td><td><span class="tag tag-rework">Missing</span></td><td>Not mentioned anywhere on the page.</td></tr>
+    <tr><td>Teaming approach to leads</td><td><span class="tag tag-rework">Missing</span></td><td>AI teaming recommendations exist in-product; invisible to prospects.</td></tr>
+    <tr><td>Access to the KDM network</td><td><span class="tag tag-consolidate">Partial</span></td><td>Public member directory exists at /consortium/members but isn't surfaced.</td></tr>
+    <tr><td>Five Pillars / whole-team approach</td><td><span class="tag tag-keep">Strong</span></td><td>Dominant and well-built — recommend consolidating, not replacing.</td></tr>
+    <tr><td>Network momentum (Gallery)</td><td><span class="tag tag-rework">Missing</span></td><td>No visible evidence the network is alive — new members, events, activity.</td></tr>
+    <tr><td>Claims / stats</td><td><span class="tag tag-rework">Unverifiable</span></td><td>Hardcoded numbers; see Section 3.</td></tr>
+  </table>
+
+  <h3>2.2 Recommended page flow</h3>
+  <div class="wireframe">
+    <div class="bar"><b>1 · Hero Carousel</b> — CMS-driven slides (existing). Retune copy to lead with the platform: "AI-matched SAM.gov opportunities. Consortium teaming. One pipeline." <span class="tag tag-keep">keep</span></div>
+    <div class="bar"><b>2 · The KDM Platform</b> — 6-card features/benefits strip: member portal, Company Intelligence profile, opportunity feed, teaming engine, events &amp; briefings, compliance resources. <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>3 · The KDM Consortium</b> — what membership is, who it's for, member directory preview + link to /consortium/members. <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>4 · The Contracting Pipeline</b> — the signature section: SAM.gov leads → AI opportunity matching → AI teaming recommendation → pursue together. Visual flow diagram. <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>5 · How Onboarding Works</b> — the real journey: Register → Company Intelligence wizard → instant approval → matched opportunities appear in your portal. 4 steps, honest about automation. <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>6 · The KDM Network</b> — constituents: member companies, prime contractors, government buyers &amp; resource partners. <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>7 · Five Pillars</b> — consolidated version of the existing section (keep pillar diagram + videos; remove duplicate "Why KDM" block). <span class="tag tag-consolidate">consolidate</span></div>
+    <div class="bar"><b>8 · KDM Gallery</b> — live momentum feed + curated photos (Section 4 spec). <span class="tag tag-new">new</span></div>
+    <div class="bar"><b>9 · Live Metrics Band</b> — counts computed from Firestore at render time (Section 3 spec). <span class="tag tag-rework">rework</span></div>
+    <div class="bar"><b>10 · Testimonials → CTA</b> — keep; strengthen CTA to "Join the Consortium" + "See how matching works." <span class="tag tag-keep">keep</span></div>
+  </div>
+
+  <h3>2.3 The signature section in detail — "The Contracting Pipeline"</h3>
+  <p>This is the differentiator no competitor in Section 6 can replicate at KDM's price point: the platform already performs this flow nightly.</p>
+  <div class="arrow-flow">
+    <div class="flow-step">SAM.gov opportunities</div><div class="flow-arrow">→</div>
+    <div class="flow-step">AI match vs. your profile</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Top matches in your portal</div><div class="flow-arrow">→</div>
+    <div class="flow-step">AI recommends a teaming partner</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Pursue as a consortium team</div>
+  </div>
+  <p>
+    Copy direction: "Every night, KDM's pipeline scans fresh SAM.gov notices and scores them
+    against your Company's Intelligence profile — NAICS codes, certifications, capabilities.
+    Your best matches land in your portal with a match score and reasoning. Then our AI looks
+    across the consortium for a partner whose strengths complement yours on that exact pursuit."
+    This is accurate today — the language describes the built system, not a roadmap.
+  </p>
+</div>
+
+<!-- ======================= SECTION 3 ======================= -->
+<div class="page">
+  <h2>3 · Claims Audit — What We Can (and Can't) Prove</h2>
+  <p>
+    The platform already carries a careful government-affiliation disclaimer in the footer and a
+    Readiness-Badge disclaimer on pricing — the right instinct. The homepage stats strip and a few
+    marketing lines go the other way: hardcoded figures with no data source behind them. In
+    GovCon marketing, unsupported performance claims carry real FTC truth-in-advertising and
+    reputational risk — especially claims read as endorsement or past-performance.
+  </p>
+
+  <h3>3.1 Claim-by-claim review</h3>
+  <table>
+    <tr><th style="width:22%">Current claim</th><th style="width:14%">Verdict</th><th style="width:30%">Issue</th><th>Recommended replacement</th></tr>
+    <tr>
+      <td>"475 Clients"</td>
+      <td><span class="tag tag-rework">Unverifiable</span></td>
+      <td>No client registry supports it; the platform shows 31 team / 23 consortium / 32 portal members today.</td>
+      <td>"Clients served across 15+ years of federal advisory work" — only if Keith can substantiate via engagement records; otherwise replace with live count: <b>"{N} member companies"</b> pulled from Firestore.</td>
+    </tr>
+    <tr>
+      <td>"$50B+ Contract Transactions"</td>
+      <td><span class="tag tag-rework">High risk</span></td>
+      <td>Reads as awards won. If it represents cumulative team/firm experience across past employers, it isn't KDM's number to claim.</td>
+      <td>Attribute honestly: "Advisory leadership with experience spanning billions in federal transactions" — and only if Keith approves the wording as accurate for KDM &amp; Associates specifically. Otherwise remove; the pipeline metrics below are stronger anyway.</td>
+    </tr>
+    <tr>
+      <td>"14+ Shared Outcome Agreements"</td>
+      <td><span class="tag tag-consolidate">Substantiate</span></td>
+      <td>Plausibly real but untracked in the system.</td>
+      <td>Either keep with Keith's written confirmation of the count, or migrate the agreements into the platform and make it a live count. Recommend the latter — it becomes self-proving.</td>
+    </tr>
+    <tr>
+      <td>"30+ Resource Partners"</td>
+      <td><span class="tag tag-consolidate">Substantiate</span></td>
+      <td>resourcePartners collection is currently empty.</td>
+      <td>Populate the collection (or map to an existing partner list) and render the live count. Until then: "a growing resource-partner network."</td>
+    </tr>
+    <tr>
+      <td>"500+ directory-listed contractors, suppliers and government buyers" (pricing page)</td>
+      <td><span class="tag tag-rework">Unverifiable</span></td>
+      <td>Platform membership is ~23–32 accounts; mock/directory seed data should never anchor a sales claim.</td>
+      <td>"a curated network of member companies" + live member count. Never price-copy numbers the directory can't demonstrate.</td>
+    </tr>
+    <tr>
+      <td>"Clients who transformed their government contracting business" (testimonials intro)</td>
+      <td><span class="tag tag-consolidate">OK if real</span></td>
+      <td>Fine only if every testimonial is from a real, consenting client — verify the testimonial records are genuine.</td>
+      <td>Keep, but ensure testimonials carry name/company the member directory can corroborate.</td>
+    </tr>
+  </table>
+
+  <h3>3.2 The provable-metrics band (replacement for the stats strip)</h3>
+  <p>
+    Replace the hardcoded strip with counters computed live from Firestore at render time —
+    each labeled precisely for what it measures. Recommended metrics (with today's real values):
+  </p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="n">23</div><div class="l">Consortium member companies</div></div>
+    <div class="kpi"><div class="n">6</div><div class="l">Events on the calendar</div></div>
+    <div class="kpi"><div class="n">5</div><div class="l">Pillars, one consortium</div></div>
+    <div class="kpi"><div class="n">—</div><div class="l">Opportunities AI-matched (activates at first sync)</div></div>
+  </div>
+  <ul>
+    <li><b>Member companies</b> — count of consortiumMembers (23 today; grows automatically).</li>
+    <li><b>Events hosted/scheduled</b> — from the events feed (6 published; move static events into the Firestore events collection so the admin event-manager drives this too).</li>
+    <li><b>Opportunities matched</b> — count of samgovOpportunities docs; hidden until &gt; 0. Label exactly: "SAM.gov opportunities AI-matched to member profiles" — never "contracts won."</li>
+    <li><b>Teaming recommendations made</b> — count of aiTeamingRecommendations; same activation rule.</li>
+    <li><b>Five Pillars</b> — the one fixed number that needs no proof.</li>
+  </ul>
+  <div class="callout">
+    <b>Design rule for the band:</b> a metric only renders when its count is real and non-zero.
+    A stats band that quietly grows as the network grows is itself a momentum story — and it's
+    the only kind of "proof" that can't be challenged.
+  </div>
+</div>
+
+<!-- ======================= SECTION 4 ======================= -->
+<div class="page">
+  <h2>4 · KDM Gallery — New Momentum Section</h2>
+  <p>
+    Per direction, the Gallery combines an <b>automatic momentum feed</b> (real network activity)
+    with an <b>admin-curated photo strip</b> (events, handshakes, site visits). Positioned after
+    the Five Pillars and before the metrics band — it answers the prospect's silent question:
+    <i>"is this network actually alive?"</i>
+  </p>
+
+  <h3>4.1 Layout concept</h3>
+  <div class="wireframe">
+    <div class="bar"><b>KDM Gallery</b> — "The network in motion" · newest members · latest events · recent press</div>
+    <div class="bar">Row A — <b>Momentum feed</b> (auto): card carousel of latest activity — "Acme Fabrication joined the Consortium · Manufacturing pillar", "IAEOZ Summit 2025 · Nov 12–14", "New press release: KDM announces…", "142 opportunities matched this month".</div>
+    <div class="bar">Row B — <b>Photo strip</b> (curated): 4–6 admin-selected photos with captions from the existing image library (event photos, teaming signings, site visits).</div>
+  </div>
+
+  <h3>4.2 Data sources (all already exist)</h3>
+  <table>
+    <tr><th style="width:30%">Feed item</th><th style="width:30%">Source</th><th>Notes</th></tr>
+    <tr><td>Newest members (name, company, pillar)</td><td>teamMembers / consortiumMembers, ordered by createdAt</td><td>Public directory already exposes this data — reuse the members-grid pattern.</td></tr>
+    <tr><td>Upcoming &amp; recent events</td><td>events collection + events-data.ts</td><td><b>Action:</b> migrate the 6 static events into the Firestore events collection so the admin event-manager drives both the /events page and the Gallery.</td></tr>
+    <tr><td>Press releases</td><td>pressReleases (3 today)</td><td>Auto-card: title + publish date + link.</td></tr>
+    <tr><td>Match/teaming counters</td><td>samgovOpportunities, aiTeamingRecommendations, samgovSyncRuns</td><td>Renders only when non-zero; e.g. "AI matched 212 opportunities in the last 30 days."</td></tr>
+    <tr><td>Curated photos</td><td>Existing ImageManager library (Firebase Storage)</td><td>New "gallery" tag/flag on stored images; admin picks captions + publish toggle in the existing hero admin or a small Gallery admin card.</td></tr>
+  </table>
+
+  <h3>4.3 Content rules</h3>
+  <ul>
+    <li><b>Auto items are real by construction</b> — they render only if the underlying record exists, so nothing can overstate activity.</li>
+    <li><b>Privacy:</b> show member company names/logos only (same data already public in the directory); never emails, match scores, or member-specific opportunity titles.</li>
+    <li><b>Empty state:</b> if no feed items exist yet, the section collapses to the curated photo strip only — never shows "0 new members."</li>
+    <li><b>Cadence:</b> the photo strip depends on Keith's team photographing events — recommend a standing "3 photos per event" habit; this is the one operational dependency.</li>
+  </ul>
+</div>
+
+<!-- ======================= SECTION 5 ======================= -->
+<div class="page">
+  <h2>5 · Recurring-Revenue Product &amp; Pricing Strategy</h2>
+  <p>
+    Current pricing: KDM Consortium <b>$625/mo</b> (or $6,750/yr) · Founders <b>$625 one-time</b> ·
+    CMMC Cohort <b>$7,500 one-time</b>. Two of three revenue products are one-time — exactly the
+    hunt-forever model to retire. The market reference points (Section 6) show the standard
+    GovCon playbook: a free/cheap network layer feeding paid tiers, plus subscription add-ons
+    that compound as network activity grows.
+  </p>
+
+  <h3>5.1 Recommended membership ladder</h3>
+  <table>
+    <tr><th style="width:16%">Tier</th><th style="width:16%">Suggested price</th><th style="width:38%">What it unlocks</th><th>Role in the funnel</th></tr>
+    <tr>
+      <td><b>Network (free)</b></td><td>Free</td>
+      <td>Directory listing, public events, monthly market-intel digest, KDM Gallery presence</td>
+      <td>Feeds the top of funnel; every free member makes the paid matching pool bigger (network effect).</td>
+    </tr>
+    <tr>
+      <td><b>Consortium Member</b></td><td>~$495–625/mo (anchor at current $625)</td>
+      <td>SAM.gov opportunity matching, portal, teaming recommendations, member-only events, proposal-resource library</td>
+      <td>The core product — keep current price; the new homepage finally justifies it.</td>
+    </tr>
+    <tr>
+      <td><b>Alliance / Prime tier</b></td><td>~$1,500–2,500/mo</td>
+      <td>Everything in Member + priority pursuit notifications, dedicated capture support hours, featured directory placement, co-marketing, direct introductions to buyers</td>
+      <td>For companies actively pursuing — high-margin, sells services capacity KDM already provides ad hoc.</td>
+    </tr>
+  </table>
+  <p class="small muted">Price points are directional for Keith's review — validated against GovTribe ($1,350–5,500/yr for <i>software alone</i>), GovWin ($12k–42k/yr), and USFCR ($599–5k+ for registration services). KDM's membership bundles software + humans, which supports premium pricing.</p>
+
+  <h3>5.2 Subscription add-ons (where recurring compounding happens)</h3>
+  <table>
+    <tr><th style="width:26%">Add-on</th><th style="width:16%">Model</th><th>Why it fits KDM</th></tr>
+    <tr><td><b>Opportunity Alerts+</b> — stand-alone SAM.gov alerts + AI matching for non-members</td><td>~$99–199/mo SaaS</td><td>The pipeline already exists; selling it unbundled converts free-network members upward. Direct competitor to GovTribe Launch ($1,350/yr) with a network attached.</td></tr>
+    <tr><td><b>Buyer/Prime subscription</b> — primes &amp; agency liaisons post teaming needs and search the vetted supplier pool</td><td>~$299–500/mo per seat</td><td>Attracts the government-buyer side the user asked about; primes already pay GovWin for teaming-network access — a curated, certification-verified supplier pool is the same product, narrower and cheaper.</td></tr>
+    <tr><td><b>Proposal support retainer</b> — monthly block of proposal/capture hours</td><td>$1,000–3,000/mo retainer</td><td>Converts one-off proposal work into MRR; standard OST/SM&amp;A revenue model.</td></tr>
+    <tr><td><b>CMMC-as-a-Service</b> — ongoing compliance maintenance (not one-time cohort)</td><td>$300–600/mo after cohort</td><td>CMMC requires annual affirmation — sell the maintenance, not just the prep. Cohort stays as the one-time on-ramp.</td></tr>
+    <tr><td><b>Verified Supplier Badge</b> — KDM-verified profile (SAM status, certifications verified)</td><td>~$50/mo or bundled</td><td>USFCR sells exactly this ("Verified Vendor seal"). Pair with the existing Readiness-Badge concept — keep the disclaimer language.</td></tr>
+    <tr><td><b>Sponsored directory placement</b></td><td>~$100–200/mo</td><td>Standard association revenue; low effort once the directory has traffic.</td></tr>
+    <tr><td><b>Training &amp; webinar pass</b> — all-events access</td><td>~$99/mo or bundled into Member</td><td>OST sells courses at $795–2,995 each; a pass smooths revenue.</td></tr>
+    <tr><td><b>Event sponsorships</b> — sponsors underwrite events for exposure</td><td>Per-event packages</td><td>Associations (SAME, NCMA) fund much of operations this way; feeds the Gallery too.</td></tr>
+    <tr><td><b>Market-intel reports</b> — pillar-specific opportunity briefs (Manufacturing, Critical Minerals…)</td><td>~$199/mo or per-report</td><td>Repurposes the SAM.gov pipeline output by pillar — near-zero marginal cost.</td></tr>
+  </table>
+
+  <h3>5.3 The compounding logic</h3>
+  <div class="arrow-flow">
+    <div class="flow-step">Free Network members join</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Bigger matching/teaming pool</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Membership &amp; add-ons more valuable</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Gallery shows momentum</div><div class="flow-arrow">→</div>
+    <div class="flow-step">More members join</div>
+  </div>
+  <p>
+    Every subscription product above monetizes <i>network activity</i> — matches made, partners
+    found, buyers connected — rather than Keith's personal hours. That is the structural fix for
+    the "always hunting new clients" problem: the network itself becomes the product being renewed.
+  </p>
+</div>
+
+<!-- ======================= SECTION 6 ======================= -->
+<div class="page">
+  <h2>6 · Competitive Landscape — Services KDM Could Offer</h2>
+  <p>
+    <b>For Keith's consideration.</b> How comparable GovCon companies package and price services,
+    and which offerings KDM could adopt — with an honest read of fit. Prices are public or
+    reported ranges as of research date and should be re-verified before any pricing decision.
+  </p>
+
+  <h3>6.1 Market-intelligence software (subscription)</h3>
+  <table>
+    <tr><th style="width:16%">Company</th><th style="width:30%">What they sell</th><th style="width:22%">Pricing model</th><th>Lesson for KDM</th></tr>
+    <tr><td>Deltek GovWin IQ</td><td>Analyst-curated opportunity intel, forecasts, labor rates, teaming network</td><td>~$12k–42k/yr, sales-led, annual+ terms</td><td>The enterprise ceiling. KDM shouldn't chase this — but note they <i>charge for teaming-network access alone</i>.</td></tr>
+    <tr><td>GovTribe</td><td>SAM.gov + SLED opportunity search, pursuits, contacts</td><td>$1,350–5,500/yr self-serve tiers; 14-day trial</td><td>Proof a low-friction SaaS tier converts; KDM's "Alerts+" add-on maps to their Launch tier — but KDM adds humans + consortium.</td></tr>
+    <tr><td>HigherGov</td><td>Multi-source opportunities, forecasts, market intel</td><td>$500–2,500/yr published</td><td>Price anchor for the Alerts+ standalone tier.</td></tr>
+    <tr><td>Federal Compass</td><td>Federal-first intel + AI summarization</td><td>Contact-sales, ~1-yr term</td><td>Mid-market positioning KDM can undercut while bundling services.</td></tr>
+    <tr><td>BidSparq / EZGovOpps / BidPrime</td><td>Opportunity aggregation + AI scoring</td><td>$249/mo; ~$2,695–9,500/yr</td><td>Crowded space — KDM should differentiate on network/teaming, not raw feed volume.</td></tr>
+  </table>
+
+  <h3>6.2 Full-service registration &amp; readiness</h3>
+  <table>
+    <tr><th>Company</th><th>What they sell</th><th>Pricing model</th><th>Lesson for KDM</th></tr>
+    <tr><td>USFCR</td><td>Done-for-you SAM registration, set-aside certifications, DSBS optimization, case manager, Verified Vendor seal</td><td>Platform $149/mo; services $599–$5k+ (BBB-reported)</td><td>Two adoptable products: <b>registration/certification concierge</b> (fits the onboarding wizard) and a <b>verification badge subscription</b>. Watch their complaint history — service delivery must match the promise.</td></tr>
+  </table>
+
+  <h3>6.3 Capture &amp; proposal consulting</h3>
+  <table>
+    <tr><th>Company</th><th>What they sell</th><th>Pricing model</th><th>Lesson for KDM</th></tr>
+    <tr><td>OST Global Solutions</td><td>Capture/proposal consulting, price-to-win, orals coaching, Bid &amp; Proposal Academy courses ($795–2,995), GovCon Catalyst pipeline service</td><td>Hourly/day-rate consulting + course sales + packaged programs</td><td>Template for the proposal retainer add-on and the "pipeline-as-a-service" concept — KDM could sell managed capture for consortium members.</td></tr>
+    <tr><td>SM&amp;A</td><td>Capture management, proposal leadership for large pursuits</td><td>Engagement/day-rate, enterprise-scale</td><td>Out of league on price — but their model validates "Alliance tier" dedicated-support hours.</td></tr>
+    <tr><td>Richter &amp; Company</td><td>Price-to-win analysis, competitive pricing intelligence</td><td>Per-engagement</td><td>Niche add-on worth watching; later phase.</td></tr>
+  </table>
+
+  <h3>6.4 Associations &amp; the free baseline</h3>
+  <table>
+    <tr><th>Organization</th><th>Model</th><th>Lesson for KDM</th></tr>
+    <tr><td>NCMA</td><td>~100k members, certifications, events — dues ~$75–175/yr individual; corporate tiers</td><td>Certification + community = durable dues base.</td></tr>
+    <tr><td>SAME</td><td>Industry society — individual $55–125/yr; sustaining-company dues $325–1,700/yr scaled by size</td><td><b>Revenue-scaled company dues</b> is a proven model KDM could mirror (dues by company size).</td></tr>
+    <tr><td>HUBZone Council</td><td>Trade association — dues scaled to member revenue; advocacy + events</td><td>Advocacy dimension KDM could add around its pillars (OZs, critical minerals).</td></tr>
+    <tr><td>APEX Accelerators (PTAC)</td><td>Federally funded — <b>free</b> counseling, bid-matching, training for small businesses</td><td>The real "competitor": why would a small business pay? Answer: APEX advises but can't assemble teams, match partners, or run a consortium. Position membership as what the free channel can't do.</td></tr>
+  </table>
+
+  <h3>6.5 Offerings worth adopting — shortlist</h3>
+  <ol>
+    <li><b>Registration/certification concierge</b> (USFCR model) — monetize the onboarding wizard; pairs with the free APEX channel rather than competing with it.</li>
+    <li><b>Standalone alerts/matching SaaS tier</b> (GovTribe/HigherGov model) — sell the pipeline unbundled.</li>
+    <li><b>Buyer-side subscription</b> (GovWin teaming-network model) — the missing two-sided-market revenue; primes pay to access vetted suppliers.</li>
+    <li><b>Managed capture / proposal retainer</b> (OST Catalyst model) — services revenue that renews monthly.</li>
+    <li><b>Verification badge subscription</b> (USFCR seal model) — cheap, high-margin, and it strengthens directory trust.</li>
+    <li><b>Company-size-scaled dues</b> (SAME model) — optional alternative to flat pricing if Keith wants lower entry friction.</li>
+    <li><b>Event sponsorships + training pass</b> (association model) — turns Gallery activity into revenue.</li>
+  </ol>
+  <div class="callout-blue">
+    <b>What to avoid:</b> competing on raw opportunity-feed volume (crowded, commoditized),
+    enterprise sales-led pricing (no sales team), and any "win-rate" or "contracts won"
+    marketing — the big firms get away with soft claims that would be riskier for a newer brand.
+  </div>
+</div>
+
+<!-- ======================= SECTION 7 ======================= -->
+<div class="page">
+  <h2>7 · Rollout Roadmap &amp; Decisions Needed</h2>
+
+  <h3>7.1 Phased implementation</h3>
+  <table>
+    <tr><th style="width:12%">Phase</th><th style="width:44%">Work</th><th>Dependencies</th></tr>
+    <tr>
+      <td><b>1 — Credibility</b><br><span class="small muted">low risk, ship first</span></td>
+      <td>Replace hardcoded stats with live-Firestore metrics band (renders only real counts); fix "500+ directory" line; move static events into the events collection.</td>
+      <td>None. Pure win — no layout risk.</td>
+    </tr>
+    <tr>
+      <td><b>2 — Story</b></td>
+      <td>New sections: Platform features, Consortium, Contracting Pipeline, real Onboarding journey, KDM Network; consolidate Five Pillars; retune hero copy.</td>
+      <td>Copy approval from Keith.</td>
+    </tr>
+    <tr>
+      <td><b>3 — Momentum</b></td>
+      <td>KDM Gallery: auto momentum feed + curated photo strip + gallery flag on stored images + small admin UI.</td>
+      <td>Phase 1 events migration; photo-capture habit.</td>
+    </tr>
+    <tr>
+      <td><b>4 — Revenue</b></td>
+      <td>Pricing page restructure: free Network tier, Alliance tier, add-on products; checkout/billing wiring for new SKUs.</td>
+      <td>Keith's sign-off on tiers/prices; Stripe product setup (infrastructure exists).</td>
+    </tr>
+  </table>
+
+  <h3>7.2 Decisions needed from Keith</h3>
+  <ul class="checklist">
+    <li>Which legacy claims can be substantiated with records (475 clients, $50B+, 14+ agreements, 30+ partners)? Each needs either documentation or removal.</li>
+    <li>Approve the live-metrics approach — show real counts only, hidden until non-zero?</li>
+    <li>Membership ladder: free Network tier — yes/no? Alliance tier price point?</li>
+    <li>Which add-ons to launch first (recommend: Alerts+ and Verified Badge — cheapest to ship, existing tech).</li>
+    <li>Buyer-side subscription: does KDM have prime/agency relationships warm enough to seed it?</li>
+    <li>Gallery: who supplies event photography? Standing rule of 3+ photos per event?</li>
+    <li>Move the 6 static events into the Firestore events collection (lets admins manage events without code changes)?</li>
+    <li>Founders tier — keep as one-time scarcity offer, or fold into the new ladder?</li>
+  </ul>
+
+  <h2 style="margin-top:30px">Appendix · Live Metrics &amp; Sources</h2>
+  <h3>A.1 Platform counts as of report date (queried live from Firestore, project kdm-svp-platform)</h3>
+  <table>
+    <tr><th>Collection</th><th>Count</th><th>Notes</th></tr>
+    <tr><td>teamMembers</td><td>31</td><td>Team + staff records</td></tr>
+    <tr><td>consortiumMembers</td><td>23</td><td>The real "network" number for the member-count metric</td></tr>
+    <tr><td>users</td><td>32</td><td>Portal accounts</td></tr>
+    <tr><td>events</td><td>0</td><td>Firestore collection empty — 6 events live in static code (lib/events-data.ts); migration recommended</td></tr>
+    <tr><td>pressReleases</td><td>3</td><td>Published content for Gallery feed</td></tr>
+    <tr><td>companies</td><td>4</td><td>Shared company profiles</td></tr>
+    <tr><td>samgovOpportunities</td><td>0</td><td>Pipeline built; first deliveries pending (parallel work in progress)</td></tr>
+    <tr><td>aiTeamingRecommendations</td><td>0</td><td>Activates when matching runs</td></tr>
+    <tr><td>hero_slides</td><td>7</td><td>CMS-driven hero carousel</td></tr>
+  </table>
+
+  <h3>A.2 Research sources</h3>
+  <ul class="small">
+    <li>GovTribe published plans ($1,350–5,500/yr): govtribe.com user guide &amp; pricing.</li>
+    <li>HigherGov published plans ($500–2,500/yr): highergov.com.</li>
+    <li>Deltek GovWin IQ tier structure + reported $12k–42k/yr range: deltek.com; buyer-reported ranges via industry comparisons.</li>
+    <li>USFCR services &amp; platform plans ($149/mo; service fees reported $599–$5k+): usfcr.com; BBB-reported figures.</li>
+    <li>BidSparq $249/mo published pricing; EZGovOpps ~$2,695/yr; BidPrime $4,600–9,500/yr published PDF.</li>
+    <li>OST Global Solutions services &amp; course prices ($795–2,995): ostglobalsolutions.com.</li>
+    <li>NCMA dues (~$75–175/yr); SAME dues (individual $55–125/yr, company $325–1,700/yr by size); HUBZone Council revenue-scaled dues.</li>
+    <li>APEX Accelerators (free, federally funded PTAC successor) — apexaccelerators.us.</li>
+  </ul>
+  <p class="small muted">Competitor figures are public or reported ranges as of this report's date and should be re-verified before external use. This document is internal strategy material — not marketing copy.</p>
+</div>
+
+</body>
+</html>

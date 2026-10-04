@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { COLLECTIONS, type SamgovOpportunityDoc, type AiTeamingRecommendationDoc } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +17,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ExternalLink, Search, Handshake, Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, ExternalLink, Search, Handshake, Target, PlayCircle, CheckCircle2, XCircle } from "lucide-react";
 
 interface EnrichedOpportunity extends SamgovOpportunityDoc {
   memberName: string;
@@ -28,11 +29,81 @@ interface EnrichedRecommendation extends AiTeamingRecommendationDoc {
   requesterName: string;
 }
 
+interface SyncRun {
+  id: string;
+  triggeredBy: string;
+  status: "running" | "completed" | "completed_with_errors";
+  startedAt: string | null;
+  finishedAt: string | null;
+  results: {
+    eligibleMembers?: number;
+    opportunitiesFetched?: number;
+    newMatchesDelivered?: number;
+    teamingRecommendationsCreated?: number;
+    errors?: string[];
+    message?: string;
+  } | null;
+}
+
 export default function SamgovMonitorPage() {
   const [opportunities, setOpportunities] = useState<EnrichedOpportunity[]>([]);
   const [recommendations, setRecommendations] = useState<EnrichedRecommendation[]>([]);
+  const [syncRuns, setSyncRuns] = useState<SyncRun[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+
+  async function getIdToken(): Promise<string | null> {
+    if (!auth) return null;
+    if (auth.currentUser) return auth.currentUser.getIdToken();
+    // Auth may not be resolved on first render — wait for it once
+    return new Promise((resolve) => {
+      const unsub = auth!.onAuthStateChanged(async (user) => {
+        unsub();
+        resolve(user ? user.getIdToken() : null);
+      });
+    });
+  }
+
+  async function fetchRuns() {
+    try {
+      const idToken = await getIdToken();
+      if (!idToken) return;
+      const res = await fetch("/api/admin/samgov/sync-now", {
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setSyncRuns(data.runs || []);
+    } catch (error) {
+      console.error("Error loading sync runs:", error);
+    }
+  }
+
+  async function runSyncNow() {
+    setSyncing(true);
+    setSyncFeedback(null);
+    try {
+      const idToken = await getIdToken();
+      if (!idToken) throw new Error("Not signed in");
+      const res = await fetch("/api/admin/samgov/sync-now", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      setSyncFeedback(
+        data.message ||
+          `Sync complete: ${data.newMatchesDelivered ?? 0} new matches, ${data.teamingRecommendationsCreated ?? 0} teaming recs, ${data.eligibleMembers ?? 0} eligible members.${data.errors?.length ? ` (${data.errors.length} errors)` : ""}`
+      );
+    } catch (error) {
+      setSyncFeedback(`Sync failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    } finally {
+      setSyncing(false);
+      await fetchRuns();
+    }
+  }
 
   useEffect(() => {
     async function fetchAll() {
@@ -89,6 +160,7 @@ export default function SamgovMonitorPage() {
       }
     }
     fetchAll();
+    fetchRuns();
   }, []);
 
   const filteredOpps = opportunities.filter(
@@ -109,12 +181,55 @@ export default function SamgovMonitorPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">SAM.gov Integration Monitor</h1>
-        <p className="text-muted-foreground">
-          All AI-matched opportunities pushed to members and AI teaming recommendations generated.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight">SAM.gov Integration Monitor</h1>
+          <p className="text-muted-foreground">
+            All AI-matched opportunities pushed to members and AI teaming recommendations generated.
+          </p>
+        </div>
+        <Button onClick={runSyncNow} disabled={syncing}>
+          {syncing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlayCircle className="mr-2 h-4 w-4" />}
+          {syncing ? "Syncing…" : "Sync Now"}
+        </Button>
       </div>
+
+      {syncFeedback && (
+        <p className="text-sm rounded-md border px-3 py-2 bg-muted/50">{syncFeedback}</p>
+      )}
+
+      {syncRuns.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Recent Sync Runs</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {syncRuns.map((run) => (
+              <div key={run.id} className="flex flex-wrap items-center gap-3 text-sm border-b last:border-0 pb-2 last:pb-0">
+                {run.status === "completed" ? (
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                ) : run.status === "running" ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <XCircle className="h-4 w-4 text-amber-600" />
+                )}
+                <Badge variant="secondary" className="capitalize">{run.triggeredBy}</Badge>
+                <span className="text-muted-foreground">
+                  {run.startedAt ? new Date(run.startedAt).toLocaleString() : "—"}
+                </span>
+                <span className="text-muted-foreground">
+                  {run.results
+                    ? `${run.results.newMatchesDelivered ?? 0} new matches · ${run.results.eligibleMembers ?? 0} members · ${run.results.opportunitiesFetched ?? 0} fetched`
+                    : run.status}
+                </span>
+                {run.results?.errors?.length ? (
+                  <span className="text-xs text-amber-700">{run.results.errors.length} error(s)</span>
+                ) : null}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
