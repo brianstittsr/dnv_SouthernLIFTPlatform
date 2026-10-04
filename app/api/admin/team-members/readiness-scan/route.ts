@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 import { db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
-import { computeMemberReadiness, isReminderDue, bucketForScore, type CompanyIntelligence } from "@/lib/member-readiness";
+import { computeMemberReadiness, resolveMemberCi, deriveReadinessStage, isReminderDue, bucketForScore, type CompanyIntelligence, type StageSource } from "@/lib/member-readiness";
 import { sendTemplatedEmail } from "@/lib/email";
 
 /**
@@ -39,9 +39,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const sendReminders = body?.sendReminders === true;
 
-    const [memberSnap, userSnap] = await Promise.all([
+    const [memberSnap, userSnap, consortiumSnap] = await Promise.all([
       db.collection(COLLECTIONS.TEAM_MEMBERS).get(),
       db.collection(COLLECTIONS.USERS).get(),
+      db.collection(COLLECTIONS.CONSORTIUM_MEMBERS).get(),
     ]);
 
     // Index users by email → companyIntelligence; also track which emails have a portal account
@@ -55,6 +56,22 @@ export async function POST(request: NextRequest) {
       if (data.companyIntelligence) {
         userCiByEmail.set(email, data.companyIntelligence as CompanyIntelligence);
       }
+    });
+
+    // Index consortiumMembers by email → CI + onboarding flags
+    const consortiumByEmail = new Map<string, StageSource>();
+    consortiumSnap.docs.forEach((d) => {
+      const data = d.data();
+      const email = (data.emailPrimary as string | undefined)?.trim().toLowerCase();
+      if (!email) return;
+      consortiumByEmail.set(email, {
+        companyIntelligence: data.companyIntelligence as CompanyIntelligence | undefined,
+        onboardingStage: data.onboardingStage as StageSource["onboardingStage"],
+        onboardingComplete: data.onboardingComplete,
+        consortiumOnboardingComplete: data.consortiumOnboardingComplete,
+        aiMatchingActivated: data.aiMatchingActivated,
+        readinessValidationStatus: data.readinessValidationStatus,
+      });
     });
 
     const now = Timestamp.now();
@@ -71,13 +88,18 @@ export async function POST(request: NextRequest) {
       errors: [] as string[],
     };
 
-    const members: { doc: FirebaseFirestore.QueryDocumentSnapshot; member: TeamMemberDoc; score: ReturnType<typeof computeMemberReadiness> }[] = [];
+    const members: { doc: FirebaseFirestore.QueryDocumentSnapshot; member: TeamMemberDoc; score: ReturnType<typeof computeMemberReadiness>; missingCi: boolean }[] = [];
 
     for (const docSnap of memberSnap.docs) {
       const member = { id: docSnap.id, ...docSnap.data() } as TeamMemberDoc;
-      const userCi = member.emailPrimary ? userCiByEmail.get(member.emailPrimary.trim().toLowerCase()) : undefined;
-      const score = computeMemberReadiness(member, userCi);
-      members.push({ doc: docSnap, member, score });
+      const emailKey = member.emailPrimary?.trim().toLowerCase();
+      const linked = emailKey ? consortiumByEmail.get(emailKey) : undefined;
+      const userCi = emailKey ? userCiByEmail.get(emailKey) : undefined;
+      const score = computeMemberReadiness(member, linked?.companyIntelligence, userCi);
+      const effectiveCi = resolveMemberCi(member, linked?.companyIntelligence, userCi);
+      const missingCi = !effectiveCi?.legalCompanyName;
+      const stage = deriveReadinessStage(member, linked);
+      members.push({ doc: docSnap, member, score, missingCi });
 
       results.scanned += 1;
       results.byBucket[bucketForScore(score.overallScore)] += 1;
@@ -94,12 +116,13 @@ export async function POST(request: NextRequest) {
             lastCalculated: now,
           },
           govReadinessLastScannedAt: now,
+          govReadinessStage: stage,
           updatedAt: now,
         },
         { merge: true }
       );
 
-      const needsAttention = !member.companyIntelligence?.legalCompanyName || score.overallScore < 60;
+      const needsAttention = missingCi || score.overallScore < 60;
       if (needsAttention) {
         results.incomplete.push({
           id: member.id,
@@ -113,8 +136,8 @@ export async function POST(request: NextRequest) {
 
     // Reminders — throttled email + flag
     if (sendReminders) {
-      for (const { doc: docSnap, member, score } of members) {
-        const needsAttention = !member.companyIntelligence?.legalCompanyName || score.overallScore < 60;
+      for (const { doc: docSnap, member, score, missingCi } of members) {
+        const needsAttention = missingCi || score.overallScore < 60;
         if (!needsAttention) continue;
 
         if (!member.emailPrimary) {
@@ -126,7 +149,7 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        const isNewMember = !member.companyIntelligence?.legalCompanyName;
+        const isNewMember = missingCi;
         // Members with a portal account go to their profile; everyone else gets
         // the public onboarding wizard (no login required)
         const emailKey = member.emailPrimary.trim().toLowerCase();

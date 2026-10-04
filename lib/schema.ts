@@ -637,6 +637,40 @@ export interface TeamMemberDoc {
   clientNotes?: string; // Notes about them as a client
   // Tags for categorization
   tags?: string[];
+
+  // GovCon readiness — may be denormalized from the linked consortiumMembers
+  // doc by the admin readiness scan (matched on emailPrimary). Partial because
+  // team member records often carry a loosely-populated copy.
+  companyIntelligence?: Partial<ConsortiumMemberDoc["companyIntelligence"]>;
+  onboardingStage?: "profile" | "readiness" | "categorization" | "active" | "complete";
+  onboardingComplete?: boolean;
+  consortiumOnboardingComplete?: boolean;
+  readinessValidationStatus?: "not_started" | "in_progress" | "pending_review" | "approved" | "rejected";
+  aiMatchingActivated?: boolean;
+
+  // Admin-computed GovCon readiness (written by /api/admin/team-members/readiness-scan)
+  govReadinessScore?: {
+    overallScore: number;
+    breakdown: {
+      samRegistration: number;
+      uei: number;
+      cageCode: number;
+      naicsCoverage: number;
+      federalCertifications: number;
+      pastPerformance: number;
+      gsaSchedule: number;
+    };
+    gaps: string[];
+    remediationRecommendations: string[];
+    lastCalculated: Timestamp;
+  };
+  govReadinessLastScannedAt?: Timestamp;
+  /** Derived onboarding/readiness stage snapshot for the readiness Kanban */
+  govReadinessStage?: "profile" | "readiness" | "categorization" | "active" | "complete";
+  lastReadinessReminderSentAt?: Timestamp;
+  readinessReminderCount?: number;
+  lastOnboardingLinkSentAt?: Timestamp;
+
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -830,27 +864,6 @@ export interface ConsortiumMemberDoc {
       primaryServiceCategories: string[];
     };
   };
-
-  // Admin-computed GovCon readiness (written by /api/admin/team-members/readiness-scan)
-  govReadinessScore?: {
-    overallScore: number;
-    breakdown: {
-      samRegistration: number;
-      uei: number;
-      cageCode: number;
-      naicsCoverage: number;
-      federalCertifications: number;
-      pastPerformance: number;
-      gsaSchedule: number;
-    };
-    gaps: string[];
-    remediationRecommendations: string[];
-    lastCalculated: Timestamp;
-  };
-  govReadinessLastScannedAt?: Timestamp;
-  lastReadinessReminderSentAt?: Timestamp;
-  readinessReminderCount?: number;
-  lastOnboardingLinkSentAt?: Timestamp;
 
   createdAt: Timestamp;
   updatedAt: Timestamp;

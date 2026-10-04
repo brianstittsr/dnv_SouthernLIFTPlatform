@@ -9,11 +9,21 @@
  * lastCalculated with whichever Firestore Timestamp factory they have.
  */
 
-import type { TeamMemberDoc } from "@/lib/schema";
+import type { TeamMemberDoc, ConsortiumMemberDoc } from "@/lib/schema";
 import { calculateReadinessScore, getReadinessCategory, type ReadinessScoreInput } from "@/lib/readiness-scoring";
 
-export type CompanyIntelligence = NonNullable<TeamMemberDoc["companyIntelligence"]>;
-export type KanbanStage = NonNullable<TeamMemberDoc["onboardingStage"]>;
+export type CompanyIntelligence = Partial<NonNullable<ConsortiumMemberDoc["companyIntelligence"]>>;
+export type KanbanStage = NonNullable<ConsortiumMemberDoc["onboardingStage"]>;
+
+/** Optional consortium-side flags used to derive a member's readiness stage. */
+export interface StageSource {
+  onboardingStage?: KanbanStage;
+  onboardingComplete?: boolean;
+  consortiumOnboardingComplete?: boolean;
+  aiMatchingActivated?: boolean;
+  readinessValidationStatus?: string;
+  companyIntelligence?: CompanyIntelligence;
+}
 
 export interface MemberReadinessResult {
   overallScore: number;
@@ -131,23 +141,39 @@ export function mergeCompanyIntelligence(
     ...userCi,
     ...memberCi,
     samRegistration: memberCi.samRegistration?.status !== undefined ? memberCi.samRegistration : userCi.samRegistration,
-    federalDesignations: { ...userCi.federalDesignations, ...memberCi.federalDesignations },
-    certifications: { ...userCi.certifications, ...memberCi.certifications },
-    gsaSchedule: { ...userCi.gsaSchedule, ...memberCi.gsaSchedule },
+    federalDesignations: { ...userCi.federalDesignations, ...memberCi.federalDesignations } as CompanyIntelligence["federalDesignations"],
+    certifications: { ...userCi.certifications, ...memberCi.certifications } as CompanyIntelligence["certifications"],
+    gsaSchedule: { ...userCi.gsaSchedule, ...memberCi.gsaSchedule } as CompanyIntelligence["gsaSchedule"],
     primaryNaicsCodes: memberCi.primaryNaicsCodes?.length ? memberCi.primaryNaicsCodes : userCi.primaryNaicsCodes,
     notableContracts: memberCi.notableContracts?.length ? memberCi.notableContracts : userCi.notableContracts,
   };
 }
 
 /**
- * Score a member. `userCi` is the linked users doc's companyIntelligence, when
- * the member has a portal account matched by email.
+ * Resolve the member's effective Company Intelligence by layering fallback
+ * sources (linked consortiumMembers/users docs, matched by email) under the
+ * member's own block. Member fields win.
+ */
+export function resolveMemberCi(
+  member: TeamMemberDoc,
+  ...fallbackCis: (CompanyIntelligence | undefined)[]
+): CompanyIntelligence | undefined {
+  return fallbackCis.reduce<CompanyIntelligence | undefined>(
+    (acc, fallback) => mergeCompanyIntelligence(acc, fallback),
+    member.companyIntelligence
+  );
+}
+
+/**
+ * Score a member. `fallbackCis` are Company Intelligence blocks from linked
+ * records (consortiumMembers doc, users doc — matched by email), applied in
+ * order: earlier entries win over later ones, member's own CI always wins.
  */
 export function computeMemberReadiness(
   member: TeamMemberDoc,
-  userCi?: CompanyIntelligence
+  ...fallbackCis: (CompanyIntelligence | undefined)[]
 ): MemberReadinessResult {
-  const ci = mergeCompanyIntelligence(member.companyIntelligence, userCi);
+  const ci = resolveMemberCi(member, ...fallbackCis);
   const score = calculateReadinessScore(ciToScoringInput(ci));
 
   const gaps = [...score.gaps];
@@ -165,13 +191,19 @@ export function computeMemberReadiness(
   };
 }
 
-/** Best-effort stage derivation when `onboardingStage` is unset on the doc. */
-export function deriveReadinessStage(member: TeamMemberDoc): KanbanStage {
-  if (member.onboardingStage) return member.onboardingStage;
-  if (member.consortiumOnboardingComplete || member.onboardingComplete) return "complete";
-  if (member.aiMatchingActivated) return "active";
-  if (member.readinessValidationStatus === "approved") return "categorization";
-  if (hasCompanyIntelligence(member.companyIntelligence)) return "readiness";
+/**
+ * Best-effort stage derivation. `linked` is the member's consortiumMembers
+ * doc (matched by email) when it exists — its onboarding flags fill in when
+ * the team member doc lacks them.
+ */
+export function deriveReadinessStage(member: TeamMemberDoc, linked?: StageSource): KanbanStage {
+  if (member.govReadinessStage) return member.govReadinessStage;
+  const stage = member.onboardingStage ?? linked?.onboardingStage;
+  if (stage) return stage;
+  if (member.consortiumOnboardingComplete || member.onboardingComplete || linked?.consortiumOnboardingComplete || linked?.onboardingComplete) return "complete";
+  if (member.aiMatchingActivated || linked?.aiMatchingActivated) return "active";
+  if (member.readinessValidationStatus === "approved" || linked?.readinessValidationStatus === "approved") return "categorization";
+  if (hasCompanyIntelligence(member.companyIntelligence) || hasCompanyIntelligence(linked?.companyIntelligence)) return "readiness";
   return "profile";
 }
 
