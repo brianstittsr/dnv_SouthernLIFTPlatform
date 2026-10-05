@@ -55,18 +55,6 @@ const STORAGE_KEY = "hero-slides-v2";
 const defaultSlides: HeroSlide[] = [
   // FORCE REBUILD - v2
   {
-    id: "2",
-    badge: "V+ TwinEDGE™ — Digital Twin Solutions",
-    headline: "Visualize Your Factory.",
-    highlightedText: "Optimize",
-    subheadline: "Create digital replicas of your manufacturing processes to simulate, analyze, and improve operations before making costly physical changes.",
-    benefits: ["Real-time Monitoring", "Predictive Analytics", "Process Simulation"],
-    primaryCta: { text: "Explore Digital Twins", href: "/services/twinedge" },
-    secondaryCta: { text: "Watch Demo", href: "/demo" },
-    isPublished: true,
-    order: 2,
-  },
-  {
     id: "3",
     badge: "V+ IntellEDGE™ — AI-Powered Insights",
     headline: "Make Smarter Decisions.",
