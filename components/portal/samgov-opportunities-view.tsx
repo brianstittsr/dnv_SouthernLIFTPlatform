@@ -4,14 +4,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, getDoc, Timestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS, type SamgovOpportunityDoc, type AiTeamingRecommendationDoc } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ExternalLink, Clock, Handshake, ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
+import { Loader2, ExternalLink, Clock, Handshake, ThumbsUp, ThumbsDown, Sparkles, BellRing } from "lucide-react";
 import { toast } from "sonner";
+
+/** Canonical SAM.gov opportunity page; the stored uiLink isn't always reliable. */
+function samGovViewUrl(opp: SamgovOpportunityDoc): string | null {
+  const nid = opp.noticeId || "";
+  if (/^[a-f0-9]{32}$/i.test(nid)) return `https://sam.gov/opp/${nid}/view`;
+  if (opp.uiLink?.includes("sam.gov/opp/")) return opp.uiLink;
+  if (opp.solicitationNumber) {
+    return `https://sam.gov/search/?keywords=${encodeURIComponent(opp.solicitationNumber)}`;
+  }
+  return null;
+}
 
 function formatDeadline(deadline: Timestamp | null): { label: string; urgent: boolean } {
   if (!deadline) return { label: "No deadline listed", urgent: false };
@@ -29,6 +41,8 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
   const [recommendations, setRecommendations] = useState<AiTeamingRecommendationDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [reviewStatus, setReviewStatus] = useState<"not_reviewed" | "changes_requested" | "approved" | null>(null);
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(true);
 
   useEffect(() => {
     if (!auth) {
@@ -50,10 +64,19 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
       setLoading(true);
       try {
         const userDocSnap = await getDoc(doc(db!, COLLECTIONS.USERS, currentUserId));
+        const userData = userDocSnap.data();
         setReviewStatus(
-          (userDocSnap.data()?.onboardingReviewStatus as "not_reviewed" | "changes_requested" | "approved" | undefined) ||
+          (userData?.onboardingReviewStatus as "not_reviewed" | "changes_requested" | "approved" | undefined) ||
             "not_reviewed"
         );
+        setProfileComplete(
+          Boolean(
+            userData?.companyIntelligenceComplete ||
+              userData?.isOnboardingComplete ||
+              userData?.onboardingReviewStatus === "approved"
+          )
+        );
+        setPushEnabled(userData?.samgovOpportunitiesEnabled !== false);
 
         const oppSnap = await getDocs(
           query(collection(db!, COLLECTIONS.SAMGOV_OPPORTUNITIES), where("userId", "==", userId))
@@ -92,6 +115,27 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
 
     fetchData();
   }, [userId]);
+
+  async function togglePush(enabled: boolean) {
+    if (!userId || !db) return;
+    setPushEnabled(enabled);
+    try {
+      await setDoc(
+        doc(db, COLLECTIONS.USERS, userId),
+        { samgovOpportunitiesEnabled: enabled },
+        { merge: true }
+      );
+      toast.success(
+        enabled
+          ? "SAM.gov matching enabled — new matches will be pushed to your profile"
+          : "SAM.gov matching paused"
+      );
+    } catch (error) {
+      console.error("Error updating matching preference:", error);
+      setPushEnabled(!enabled);
+      toast.error("Failed to update preference");
+    }
+  }
 
   async function respondToRecommendation(rec: AiTeamingRecommendationDoc, status: "interested" | "not-interested") {
     if (!auth?.currentUser) return;
@@ -146,15 +190,15 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
         </p>
       </div>
 
-      {reviewStatus !== "approved" ? (
+      {!profileComplete ? (
         <Card>
           <CardContent className="py-16 text-center space-y-2">
             <Sparkles className="h-10 w-10 text-muted-foreground mx-auto" />
-            <h3 className="text-lg font-semibold">Pending Admin Approval</h3>
+            <h3 className="text-lg font-semibold">Complete Your Profile</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
               {reviewStatus === "changes_requested"
                 ? "Our team requested a few profile updates before AI matching can be activated. Check your email or visit your Profile page for details."
-                : "Our team is reviewing your onboarding profile. Once approved, AI-matched SAM.gov opportunities and teaming recommendations will appear here."}
+                : "Finish your company profile (onboarding + company intelligence) and AI-matched SAM.gov opportunities will be pushed here automatically."}
             </p>
             <Button variant="outline" asChild className="mt-2">
               <Link href="/portal/profile">Go to Profile</Link>
@@ -162,6 +206,23 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
           </CardContent>
         </Card>
       ) : (
+      <>
+      <Card>
+        <CardContent className="flex items-center justify-between gap-4 py-4">
+          <div className="flex items-start gap-3">
+            <BellRing className="h-5 w-5 text-primary mt-0.5" />
+            <div>
+              <p className="font-medium text-sm">Push matched opportunities to my profile</p>
+              <p className="text-xs text-muted-foreground">
+                {pushEnabled
+                  ? "On — our daily AI sync delivers new SAM.gov matches here and notifies you."
+                  : "Off — matching is paused; existing matches stay visible below."}
+              </p>
+            </div>
+          </div>
+          <Switch checked={pushEnabled} onCheckedChange={togglePush} aria-label="SAM.gov opportunity matching" />
+        </CardContent>
+      </Card>
       <Tabs defaultValue={initialTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="opportunities">Opportunities ({opportunities.length})</TabsTrigger>
@@ -172,7 +233,7 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
           {opportunities.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
-                No active opportunities yet. Our AI reviews SAM.gov daily and will deliver matches here as they're found.
+                No active opportunities yet. Our AI reviews SAM.gov daily and will deliver matches here as they&apos;re found.
               </CardContent>
             </Card>
           ) : (
@@ -212,9 +273,9 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
                         </ul>
                       </div>
                     )}
-                    {opp.uiLink && (
+                    {samGovViewUrl(opp) && (
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={opp.uiLink} target="_blank" rel="noopener noreferrer">
+                        <Link href={samGovViewUrl(opp)!} target="_blank" rel="noopener noreferrer">
                           View on SAM.gov <ExternalLink className="ml-2 h-3.5 w-3.5" />
                         </Link>
                       </Button>
@@ -289,6 +350,7 @@ export function SamgovOpportunitiesView({ initialTab = "opportunities" }: { init
           )}
         </TabsContent>
       </Tabs>
+      </>
       )}
     </div>
   );

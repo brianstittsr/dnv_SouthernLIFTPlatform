@@ -126,14 +126,18 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
       return results;
     }
 
-    // ─── 2. Load eligible members (active + onboarding complete + admin-approved) ─
+    // ─── 2. Load eligible members (complete profile + push enabled) ──────
+    // Any member with a completed profile is eligible. Members can opt out
+    // via the "SAM.gov opportunity matching" toggle on their opportunities
+    // page (samgovOpportunitiesEnabled === false).
     const usersSnap = await db
       .collection(COLLECTIONS.USERS)
       .where("companyIntelligenceComplete", "==", true)
-      .where("onboardingReviewStatus", "==", "approved")
       .get();
 
-    const eligibleMembers: EligibleMember[] = usersSnap.docs.map((docSnap) => {
+    const eligibleMembers: EligibleMember[] = usersSnap.docs
+      .filter((docSnap) => docSnap.data().samgovOpportunitiesEnabled !== false)
+      .map((docSnap) => {
       const data = docSnap.data();
       return {
         userId: docSnap.id,
@@ -191,6 +195,11 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
           if (!opportunity) continue;
 
           const noticeId = String(opportunity.noticeId || opportunity.id);
+          // The proxy's uiLink is unreliable — always build the canonical URL.
+          const uiLink =
+            typeof opportunity.uiLink === "string" && opportunity.uiLink.includes("sam.gov/opp/")
+              ? opportunity.uiLink
+              : `https://sam.gov/opp/${noticeId}/view`;
           const docId = `${member.userId}_${noticeId}`;
           const docRef = db.collection(COLLECTIONS.SAMGOV_OPPORTUNITIES).doc(docId);
           const existing = await docRef.get();
@@ -210,7 +219,7 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
               typeOfSetAsideDescription: opportunity.typeOfSetAsideDescription || null,
               postedDate: opportunity.postedDate || null,
               responseDeadline: parseDeadline(opportunity.responseDeadLine as string | undefined),
-              uiLink: opportunity.uiLink || null,
+              uiLink,
               description: typeof opportunity.description === "string" ? opportunity.description.slice(0, 2000) : null,
               matchScore: match.matchScore,
               matchReasons: match.matchReasons || [],
@@ -237,7 +246,7 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
               agency: opportunity.organizationHierarchy,
               matchScore: match.matchScore,
               responseDeadline: opportunity.responseDeadLine as string | undefined,
-              uiLink: opportunity.uiLink,
+              uiLink,
             });
           }
 

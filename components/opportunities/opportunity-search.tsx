@@ -33,6 +33,8 @@ import { toast } from "sonner";
 
 interface Opportunity {
   id: string;
+  noticeId?: string;
+  uiLink?: string;
   title: string;
   agency: string;
   solicitationNumber: string;
@@ -46,6 +48,14 @@ interface Opportunity {
   matchScore: number;
   matchReason: string;
   status: string;
+}
+
+/** Canonical SAM.gov opportunity page — noticeId is a 32-char hex id. */
+function samGovUrl(opp: Opportunity): string {
+  const nid = opp.noticeId || "";
+  if (/^[a-f0-9]{32}$/i.test(nid)) return `https://sam.gov/opp/${nid}/view`;
+  if (opp.uiLink?.includes("sam.gov/opp/")) return opp.uiLink;
+  return `https://sam.gov/search/?keywords=${encodeURIComponent(opp.solicitationNumber || opp.title)}`;
 }
 
 export function OpportunitySearch() {
@@ -92,7 +102,7 @@ export function OpportunitySearch() {
     await searchOpportunities();
   };
 
-  const searchOpportunities = async (forceRefresh = false) => {
+  const searchOpportunities = async (forceRefresh = false, query = "") => {
     if (!auth?.currentUser) {
       toast.error("You must be logged in");
       return;
@@ -107,7 +117,7 @@ export function OpportunitySearch() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ forceRefresh }),
+        body: JSON.stringify({ forceRefresh, query }),
       });
 
       const data = await response.json();
@@ -271,15 +281,34 @@ export function OpportunitySearch() {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
               <Label>Search</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search opportunities..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+              <div className="relative flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search SAM.gov opportunities..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && searchQuery.trim()) {
+                        e.preventDefault();
+                        searchOpportunities(true, searchQuery.trim());
+                      }
+                    }}
+                    className="pl-10"
+                  />
+                </div>
+                <Button
+                  variant="secondary"
+                  onClick={() => searchOpportunities(true, searchQuery.trim())}
+                  disabled={loading || !searchQuery.trim()}
+                >
+                  <Search className="mr-2 h-4 w-4" />
+                  Search SAM.gov
+                </Button>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Filters the list as you type. Click Search SAM.gov (or press Enter) to run a live keyword search on SAM.gov.
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Set-Aside Type</Label>
@@ -350,11 +379,15 @@ export function OpportunitySearch() {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <Badge className={getMatchScoreColor(opportunity.matchScore)}>
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          {opportunity.matchScore}% - {getMatchScoreLabel(opportunity.matchScore)}
-                        </Badge>
-                        {getUrgencyBadge(opportunity.dueDate)}
+                        {opportunity.matchScore > 0 ? (
+                          <Badge className={getMatchScoreColor(opportunity.matchScore)}>
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            {opportunity.matchScore}% - {getMatchScoreLabel(opportunity.matchScore)}
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">SAM.gov result</Badge>
+                        )}
+                        {opportunity.dueDate && getUrgencyBadge(opportunity.dueDate)}
                       </div>
                     </div>
 
@@ -373,7 +406,9 @@ export function OpportunitySearch() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span>Due: {new Date(opportunity.dueDate).toLocaleDateString()}</span>
+                        <span>
+                          Due: {opportunity.dueDate ? new Date(opportunity.dueDate).toLocaleDateString() : "—"}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline">{opportunity.setAside}</Badge>
@@ -399,7 +434,7 @@ export function OpportunitySearch() {
                   <div className="flex flex-col gap-2">
                     <Button size="sm" asChild>
                       <a
-                        href={`https://sam.gov/search/?keywords=${opportunity.solicitationNumber}`}
+                        href={samGovUrl(opportunity)}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

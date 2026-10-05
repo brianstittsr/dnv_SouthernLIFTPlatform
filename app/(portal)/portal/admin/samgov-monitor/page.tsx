@@ -319,11 +319,16 @@ export default function SamgovMonitorPage() {
                             )}
                           </TableCell>
                           <TableCell className="text-right">
-                            {opp.uiLink && (
-                              <Link href={opp.uiLink} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4 inline text-primary" />
-                              </Link>
-                            )}
+                            {(() => {
+                              const url = /^[a-f0-9]{32}$/i.test(opp.noticeId || "")
+                                ? `https://sam.gov/opp/${opp.noticeId}/view`
+                                : opp.uiLink;
+                              return url ? (
+                                <Link href={url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="h-4 w-4 inline text-primary" />
+                                </Link>
+                              ) : null;
+                            })()}
                           </TableCell>
                         </TableRow>
                       ))

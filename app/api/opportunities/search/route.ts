@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/firebase-admin";
 import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS } from "@/lib/schema";
+import { searchSamGovOpportunities, type SamGovOpportunity } from "@/lib/samgov-service";
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,7 +36,31 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { forceRefresh = false } = body;
+    const { forceRefresh = false, query = "" } = body;
+
+    // Manual keyword search — hit SAM.gov directly, bypassing the cache
+    if (typeof query === "string" && query.trim()) {
+      try {
+        const live = await searchSamGovOpportunities({
+          q: query.trim(),
+          qMode: "ALL",
+          size: 25,
+        });
+        const results = (live.opportunitiesData || []).map(mapLiveResult);
+        return NextResponse.json({
+          opportunities: results,
+          fromCache: false,
+          live: true,
+          lastUpdated: new Date().toISOString(),
+        });
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : "Unknown error";
+        return NextResponse.json(
+          { error: `Live SAM.gov search failed: ${msg}` },
+          { status: 502 }
+        );
+      }
+    }
 
     // Get user's NAICS codes and certifications from onboarding data
     const naicsCodes = userData?.primaryNaics || [];
@@ -107,6 +132,29 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/** Map a raw SAM.gov proxy result into the Opportunity shape the UI expects. */
+function mapLiveResult(o: SamGovOpportunity) {
+  const noticeId = String(o.noticeId || o.id || "");
+  return {
+    id: noticeId,
+    noticeId,
+    title: o.title || "Untitled opportunity",
+    agency: o.organizationHierarchy || "Federal Agency",
+    solicitationNumber: o.solicitationNumber || "",
+    naicsCodes: o.naicsCode ? [o.naicsCode] : [],
+    description: typeof o.description === "string" ? o.description.slice(0, 600) : "",
+    postedDate: o.postedDate || "",
+    dueDate: o.responseDeadLine || "",
+    value: "See listing",
+    location: "",
+    setAside: o.typeOfSetAsideDescription || "None listed",
+    matchScore: 0,
+    matchReason: "Keyword match from live SAM.gov search",
+    status: "active",
+    uiLink: `https://sam.gov/opp/${noticeId}/view`,
+  };
 }
 
 // Simulated AI-powered opportunity matching

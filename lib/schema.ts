@@ -762,6 +762,9 @@ export interface ConsortiumMemberDoc {
   // Tags for categorization
   tags?: string[];
 
+  /** SAM.gov push matching — undefined means enabled; members can opt out on their opportunities page. */
+  samgovOpportunitiesEnabled?: boolean;
+
   // Admin Onboarding Review (content sufficiency for AI search/recommendations/teaming)
   onboardingReviewStatus?: "not_reviewed" | "changes_requested" | "approved";
   onboardingReviewedAt?: Timestamp;
@@ -915,7 +918,30 @@ export interface BookCallLeadDoc {
   notes?: string;
   scheduledCallDate?: Timestamp;
   completedAt?: Timestamp;
+  // Conversion tracking
+  convertedToSubscription?: boolean;
+  subscriptionPlan?: string;
+  convertedAt?: Timestamp;
+  conversionNotes?: string;
   // Metadata
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Book-call lead notification recipient — who receives new lead contact info */
+export interface BookCallLeadRecipientDoc {
+  id: string;
+  email: string;
+  label?: string;
+  createdAt: Timestamp;
+}
+
+/** Reusable canned email message for lead outreach */
+export interface CannedEmailMessageDoc {
+  id: string;
+  name: string;
+  subject: string;
+  body: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -2572,6 +2598,8 @@ export const COLLECTIONS = {
   SUBSCRIPTION_LEADS: "subscriptionLeads",
   CONTACT_MESSAGES: "contactMessages",
   CONTACT_EMAIL_RECIPIENTS: "contactEmailRecipients",
+  BOOK_CALL_LEAD_EMAIL_RECIPIENTS: "bookCallLeadEmailRecipients",
+  CANNED_EMAIL_MESSAGES: "cannedEmailMessages",
   INTEGRATIONS: "integrations",
   SETTINGS: "settings",
   HERO_SLIDES: "heroSlides",
