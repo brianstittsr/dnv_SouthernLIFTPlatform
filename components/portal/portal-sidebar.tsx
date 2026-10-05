@@ -65,8 +65,6 @@ import {
   User,
   ImageIcon,
   Shield,
-  Rocket,
-  Battery,
   UserCog,
   Building2,
   Search,
@@ -77,14 +75,12 @@ import {
   Bug,
   Heart,
   Phone,
-  CalendarClock,
   Eye,
   EyeOff,
   UserCheck,
   Mail,
   Package,
   ClipboardCheck,
-  Wand2,
   Share2,
   UserPlus,
   RotateCcw,
@@ -100,7 +96,6 @@ import {
   BookOpen,
   FileCheck,
   Radio,
-  MapPin,
   X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -119,12 +114,6 @@ const mainNavItems = [
     title: "Command Center",
     href: "/portal/command-center",
     icon: LayoutDashboard,
-  },
-  {
-    title: "Pursuit Board",
-    href: "/portal/pursuits",
-    icon: Target,
-    badge: "KDM",
   },
   {
     title: "Opportunities",
@@ -304,12 +293,6 @@ const adminItems = [
     badge: "New",
   },
   {
-    title: "memberships",
-    href: "/portal/admin/memberships",
-    icon: Users,
-    badge: "KDM",
-  },
-  {
     title: "Consortium Pricing",
     href: "/portal/admin/consortium/pricing",
     icon: DollarSign,
@@ -369,11 +352,6 @@ const adminItems = [
     badge: "New",
   },
   {
-    title: "Strategic Partners",
-    href: "/portal/admin/strategic-partners",
-    icon: Building2,
-  },
-  {
     title: "Hero Management",
     href: "/portal/admin/hero",
     icon: ImageIcon,
@@ -395,52 +373,10 @@ const adminItems = [
     icon: Settings,
   },
   {
-    title: "Events",
-    href: "/portal/admin/events",
-    icon: CalendarClock,
-  },
-  {
-    title: "Event Manager",
-    href: "/portal/admin/event-manager",
-    icon: CalendarClock,
-    badge: "New",
-  },
-  {
-    title: "MailChimp",
-    href: "/portal/admin/mailchimp",
-    icon: Mail,
-    badge: "Email",
-  },
-  {
     title: "Contact Form Submissions",
     href: "/portal/admin/contact-submissions",
     icon: Mail,
     badge: "Forms",
-  },
-  {
-    title: "Client Registrations",
-    href: "/portal/admin/client-registrations",
-    icon: UserPlus,
-    badge: "KDM",
-  },
-  {
-    title: "Zenthium Submissions",
-    href: "/portal/admin/zenthium-referrals/submissions",
-    icon: MapPin,
-    badge: "New",
-  },
-];
-
-const initiativeItems = [
-  {
-    title: "Initiatives",
-    href: "/portal/admin/initiatives",
-    icon: Rocket,
-  },
-  {
-    title: "TBMNC Suppliers",
-    href: "/portal/admin/initiatives/tbmnc",
-    icon: Battery,
   },
 ];
 
@@ -652,30 +588,9 @@ const svpAdminItems = [
     badge: "Forms",
   },
   {
-    title: "Zenthium Submissions",
-    href: "/portal/admin/zenthium-referrals/submissions",
-    icon: MapPin,
-    badge: "New",
-  },
-  {
     title: "User Management",
     href: "/portal/admin/users",
     icon: Users,
-  },
-  {
-    title: "All Proof Packs",
-    href: "/portal/admin/proof-packs",
-    icon: Package,
-  },
-  {
-    title: "QA Management",
-    href: "/portal/admin/qa",
-    icon: ClipboardCheck,
-  },
-  {
-    title: "Lead Routing Rules",
-    href: "/portal/admin/routing-rules",
-    icon: Target,
   },
   {
     title: "Revenue Config",
@@ -691,18 +606,6 @@ const svpAdminItems = [
     title: "All Cohorts",
     href: "/portal/admin/cohorts",
     icon: GraduationCap,
-  },
-  {
-    title: "Page Designer",
-    href: "/portal/admin/page-designer",
-    icon: Wand2,
-    badge: "AI",
-  },
-  {
-    title: "Site Assistant",
-    href: "/portal/admin/site-assistant",
-    icon: Bot,
-    badge: "AI",
   },
   {
     title: "Header & Footer",
@@ -838,7 +741,6 @@ export const ALL_NAV_ITEMS = [
   ...workItems.map(item => ({ ...item, section: "Work" })),
   ...aiItems.map(item => ({ ...item, section: "Intelligence" })),
   ...adminItems.map(item => ({ ...item, section: "Admin" })),
-  ...initiativeItems.map(item => ({ ...item, section: "Initiatives" })),
   // SVP Platform items
   ...svpSmeItems.map(item => ({ ...item, section: "Vendor" })),
   ...svpPartnerItems.map(item => ({ ...item, section: "SVP - Partner" })),
@@ -1048,7 +950,6 @@ export function PortalSidebar() {
     work: false,
     intelligence: false,
     admin: false,
-    initiatives: false,
   });
 
   // Auto-expand sections when searching
@@ -1062,7 +963,6 @@ export function PortalSidebar() {
         work: true,
         intelligence: true,
         admin: true,
-        initiatives: true,
         svpSme: true,
         svpPartner: true,
         svpBuyer: true,
@@ -1503,7 +1403,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
-        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(companyItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems)) || sectionHasMatchingItems(initiativeItems)) && (
+        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(companyItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems))) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1758,49 +1658,6 @@ export function PortalSidebar() {
                 </Collapsible>
                 )}
 
-                {/* Initiatives */}
-                {(!searchQuery.trim() || sectionHasMatchingItems(initiativeItems)) && (
-                <Collapsible open={openSections.initiatives} onOpenChange={() => toggleSection("initiatives")}>
-                  <SidebarGroup>
-                    <CollapsibleTrigger asChild>
-                      <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2 text-sm">
-                        <span>Initiatives</span>
-                        {openSections.initiatives ? (
-                          <ChevronDown className="h-3 w-3 text-sidebar-foreground/60" />
-                        ) : (
-                          <ChevronRight className="h-3 w-3 text-sidebar-foreground/60" />
-                        )}
-                      </SidebarGroupLabel>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarGroupContent>
-                        <SidebarMenu>
-                          {filterNavItemsBySearch(initiativeItems).map((item) => {
-                            const hidden = isItemHidden(item.href);
-                            return (
-                              <SidebarMenuItem key={item.href} className={cn(hidden && isAdmin && !previewRole && "opacity-50")}>
-                                <SidebarMenuButton
-                                  asChild
-                                  isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
-                                  tooltip={item.title}
-                                >
-                                  <Link href={item.href}>
-                                    <item.icon className="h-4 w-4" />
-                                    <span>{item.title}</span>
-                                    {hidden && isAdmin && !previewRole && (
-                                      <EyeOff className="h-3 w-3 ml-auto text-muted-foreground" />
-                                    )}
-                                  </Link>
-                                </SidebarMenuButton>
-                              </SidebarMenuItem>
-                            );
-                          })}
-                        </SidebarMenu>
-                      </SidebarGroupContent>
-                    </CollapsibleContent>
-                  </SidebarGroup>
-                </Collapsible>
-                )}
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>

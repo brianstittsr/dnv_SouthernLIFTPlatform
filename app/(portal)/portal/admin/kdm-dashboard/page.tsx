@@ -524,12 +524,6 @@ export default function KDMDashboardPage() {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" asChild>
-              <a href="/portal/admin/memberships">Manage memberships</a>
-            </Button>
-            <Button variant="outline" asChild>
-              <a href="/portal/admin/events">Manage Events</a>
-            </Button>
-            <Button variant="outline" asChild>
               <a href="/portal/admin/pursuits">Manage Pursuits</a>
             </Button>
             <Button variant="outline" asChild>
