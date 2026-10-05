@@ -7,15 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Eye, 
-  Edit, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Eye,
+  Edit,
   Trash2,
   Download,
-  MoreVertical
+  MoreVertical,
+  LayoutTemplate
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -27,12 +28,15 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import type { PressRelease } from '@/lib/press-releases-schema';
+import { PressReleaseHeroDialog } from '@/components/admin/press-release-hero-dialog';
 
 export default function AdminPressReleasesPage() {
   const [pressReleases, setPressReleases] = useState<PressRelease[]>([]);
   const [filteredReleases, setFilteredReleases] = useState<PressRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [heroRelease, setHeroRelease] = useState<PressRelease | null>(null);
+  const [heroDialogOpen, setHeroDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchPressReleases();
@@ -197,6 +201,15 @@ export default function AdminPressReleasesPage() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem
+                        onClick={() => {
+                          setHeroRelease(release);
+                          setHeroDialogOpen(true);
+                        }}
+                      >
+                        <LayoutTemplate className="h-4 w-4 mr-2" />
+                        Create Hero Slide
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
                         onClick={() => handleDelete(release.id)}
                         className="text-destructive"
                       >
@@ -228,6 +241,12 @@ export default function AdminPressReleasesPage() {
           ))}
         </div>
       )}
+
+      <PressReleaseHeroDialog
+        release={heroRelease}
+        open={heroDialogOpen}
+        onOpenChange={setHeroDialogOpen}
+      />
     </div>
   );
 }
