@@ -11,6 +11,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  addDoc,
   deleteDoc,
   Timestamp,
 } from "firebase/firestore";
@@ -18,7 +19,10 @@ import { COLLECTIONS, BookCallLeadDoc, type TeamMemberDoc } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
@@ -62,18 +66,24 @@ import {
   Loader2,
   MessageSquare,
   Send,
+  UserPlus,
+  X,
+  Copy,
+  MailCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { LeadEmailComposer, type ComposerRecipient } from "@/components/admin/lead-email-composer";
 
 type LeadStatus = "new" | "contacted" | "scheduled" | "completed" | "cancelled";
 
-interface Lead extends Omit<BookCallLeadDoc, "createdAt" | "updatedAt" | "scheduledCallDate" | "completedAt"> {
+interface Lead extends Omit<BookCallLeadDoc, "createdAt" | "updatedAt" | "scheduledCallDate" | "completedAt" | "convertedAt"> {
   id: string;
   createdAt: Date;
   updatedAt: Date;
   scheduledCallDate?: Date;
   completedAt?: Date;
+  convertedAt?: Date;
 }
 
 interface Recipient {
@@ -81,6 +91,20 @@ interface Recipient {
   name: string;
   email: string;
 }
+
+interface NotifyRecipient {
+  id: string;
+  email: string;
+  label?: string;
+}
+
+const SUBSCRIPTION_PLANS: { value: string; label: string }[] = [
+  { value: "founder", label: "Founder" },
+  { value: "core-capture", label: "Core Capture" },
+  { value: "elite", label: "Elite" },
+  { value: "standard", label: "Standard" },
+  { value: "other", label: "Other" },
+];
 
 const statusColors: Record<LeadStatus, string> = {
   new: "bg-blue-500",
@@ -109,6 +133,17 @@ export default function BookCallLeadsPage() {
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [selectedRecipient, setSelectedRecipient] = useState<string>("");
   const [sendingReport, setSendingReport] = useState(false);
+  const [notifyRecipients, setNotifyRecipients] = useState<NotifyRecipient[]>([]);
+  const [newRecipientEmail, setNewRecipientEmail] = useState("");
+  const [newRecipientLabel, setNewRecipientLabel] = useState("");
+  const [savingRecipient, setSavingRecipient] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [composerRecipients, setComposerRecipients] = useState<ComposerRecipient[]>([]);
+  const [dedupeOpen, setDedupeOpen] = useState(false);
+  const [converted, setConverted] = useState(false);
+  const [subPlan, setSubPlan] = useState("");
+  const [conversionNotes, setConversionNotes] = useState("");
 
   useEffect(() => {
     if (!db) {
@@ -141,6 +176,10 @@ export default function BookCallLeadsPage() {
           assignedTo: data.assignedTo,
           assignedToName: data.assignedToName,
           notes: data.notes,
+          convertedToSubscription: data.convertedToSubscription,
+          subscriptionPlan: data.subscriptionPlan,
+          conversionNotes: data.conversionNotes,
+          convertedAt: data.convertedAt?.toDate(),
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date(),
           scheduledCallDate: data.scheduledCallDate?.toDate(),
@@ -184,6 +223,138 @@ export default function BookCallLeadsPage() {
 
     loadRecipients();
   }, []);
+
+  useEffect(() => {
+    if (!db) return;
+    const recipientsRef = collection(db, COLLECTIONS.BOOK_CALL_LEAD_EMAIL_RECIPIENTS);
+    const recipientsQuery = query(recipientsRef, orderBy("createdAt", "asc"));
+    return onSnapshot(recipientsQuery, (snapshot) => {
+      setNotifyRecipients(
+        snapshot.docs.map((d) => ({
+          id: d.id,
+          email: d.data().email,
+          label: d.data().label,
+        }))
+      );
+    });
+  }, []);
+
+  const addNotifyRecipient = async () => {
+    if (!db || !newRecipientEmail.trim()) return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = newRecipientEmail.trim().toLowerCase();
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email address");
+      return;
+    }
+    if (notifyRecipients.some((r) => r.email === email)) {
+      toast.error("This email is already in the list");
+      return;
+    }
+    setSavingRecipient(true);
+    try {
+      await addDoc(collection(db, COLLECTIONS.BOOK_CALL_LEAD_EMAIL_RECIPIENTS), {
+        email,
+        label: newRecipientLabel.trim() || null,
+        createdAt: Timestamp.now(),
+      });
+      setNewRecipientEmail("");
+      setNewRecipientLabel("");
+      toast.success("Recipient added — they will receive new lead notifications");
+    } catch (error) {
+      console.error("Error adding recipient:", error);
+      toast.error("Failed to add recipient");
+    } finally {
+      setSavingRecipient(false);
+    }
+  };
+
+  const removeNotifyRecipient = async (recipientId: string) => {
+    if (!db) return;
+    try {
+      await deleteDoc(doc(db, COLLECTIONS.BOOK_CALL_LEAD_EMAIL_RECIPIENTS, recipientId));
+      toast.success("Recipient removed");
+    } catch (error) {
+      console.error("Error removing recipient:", error);
+      toast.error("Failed to remove recipient");
+    }
+  };
+
+  const saveConversion = async (leadId: string) => {
+    if (!db) return;
+    setUpdating(true);
+    try {
+      await updateDoc(doc(db, COLLECTIONS.BOOK_CALL_LEADS, leadId), {
+        convertedToSubscription: converted,
+        subscriptionPlan: converted ? subPlan || null : null,
+        conversionNotes: conversionNotes || null,
+        convertedAt: converted ? Timestamp.now() : null,
+        updatedAt: Timestamp.now(),
+      });
+      toast.success(converted ? "Marked as converted to KDM Subscription" : "Conversion status saved");
+    } catch (error) {
+      console.error("Error saving conversion:", error);
+      toast.error("Failed to save conversion details");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const toggleSelectLead = (leadId: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(leadId);
+      else next.delete(leadId);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = (checked: boolean) => {
+    setSelectedIds(checked ? new Set(filteredLeads.map((l) => l.id)) : new Set());
+  };
+
+  const openComposer = (targets: Lead[]) => {
+    setComposerRecipients(
+      targets.map((l) => ({
+        name: `${l.firstName} ${l.lastName}`.trim(),
+        email: l.email,
+      }))
+    );
+    setComposerOpen(true);
+  };
+
+  const duplicateGroups = (() => {
+    const byEmail = new Map<string, Lead[]>();
+    for (const lead of leads) {
+      const key = lead.email?.trim().toLowerCase();
+      if (!key) continue;
+      const group = byEmail.get(key) || [];
+      group.push(lead);
+      byEmail.set(key, group);
+    }
+    return [...byEmail.entries()].filter(([, group]) => group.length > 1);
+  })();
+
+  const removeDuplicate = async (leadId: string) => {
+    await deleteLead(leadId);
+  };
+
+  const removeAllDuplicates = async () => {
+    if (!db) return;
+    const firestore = db;
+    const toRemove = duplicateGroups.flatMap(([, group]) =>
+      group.slice(1).map((l) => l.id)
+    );
+    try {
+      await Promise.all(
+        toRemove.map((id) => deleteDoc(doc(firestore, COLLECTIONS.BOOK_CALL_LEADS, id)))
+      );
+      toast.success(`Removed ${toRemove.length} duplicate lead${toRemove.length === 1 ? "" : "s"}`);
+    } catch (error) {
+      console.error("Error removing duplicates:", error);
+      toast.error("Failed to remove duplicates");
+    }
+  };
 
   const updateLeadStatus = async (leadId: string, newStatus: LeadStatus) => {
     if (!db) return;
@@ -243,6 +414,9 @@ export default function BookCallLeadsPage() {
   const openDetails = (lead: Lead) => {
     setSelectedLead(lead);
     setNotes(lead.notes || "");
+    setConverted(lead.convertedToSubscription || false);
+    setSubPlan(lead.subscriptionPlan || "");
+    setConversionNotes(lead.conversionNotes || "");
     setDetailsOpen(true);
   };
 
@@ -349,8 +523,88 @@ export default function BookCallLeadsPage() {
               <SelectItem value="cancelled">Cancelled</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            variant="outline"
+            onClick={() => openComposer(leads.filter((l) => selectedIds.has(l.id)))}
+            disabled={selectedIds.size === 0}
+          >
+            <MailCheck className="h-4 w-4 mr-2" />
+            Email Selected ({selectedIds.size})
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setDedupeOpen(true)}
+          >
+            <Copy className="h-4 w-4 mr-2" />
+            Find Duplicates
+          </Button>
         </div>
       </div>
+
+      {/* Notification recipients — who receives each new lead's contact info */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <UserPlus className="h-5 w-5" />
+            Notification Recipients
+          </CardTitle>
+          <CardDescription>
+            These people receive the contact information for every new booked call lead
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {notifyRecipients.length > 0 && (
+            <div className="space-y-2">
+              {notifyRecipients.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between rounded-md border px-3 py-2"
+                >
+                  <div className="text-sm">
+                    {r.label && <span className="font-medium mr-2">{r.label}</span>}
+                    <span className="text-muted-foreground">{r.email}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeNotifyRecipient(r.id)}
+                    title="Remove recipient"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex gap-2 flex-wrap">
+            <Input
+              className="w-[240px]"
+              placeholder="Email address"
+              type="email"
+              value={newRecipientEmail}
+              onChange={(e) => setNewRecipientEmail(e.target.value)}
+            />
+            <Input
+              className="w-[200px]"
+              placeholder="Name (optional)"
+              value={newRecipientLabel}
+              onChange={(e) => setNewRecipientLabel(e.target.value)}
+            />
+            <Button
+              variant="outline"
+              onClick={addNotifyRecipient}
+              disabled={savingRecipient || !newRecipientEmail.trim()}
+            >
+              {savingRecipient ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <UserPlus className="h-4 w-4 mr-2" />
+              )}
+              Add Recipient
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -369,6 +623,16 @@ export default function BookCallLeadsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[40px]">
+                    <Checkbox
+                      checked={
+                        filteredLeads.length > 0 &&
+                        filteredLeads.every((l) => selectedIds.has(l.id))
+                      }
+                      onCheckedChange={(checked) => toggleSelectAll(checked === true)}
+                      aria-label="Select all leads"
+                    />
+                  </TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Company</TableHead>
@@ -385,6 +649,15 @@ export default function BookCallLeadsPage() {
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => openDetails(lead)}
                   >
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={selectedIds.has(lead.id)}
+                        onCheckedChange={(checked) =>
+                          toggleSelectLead(lead.id, checked === true)
+                        }
+                        aria-label={`Select ${lead.firstName} ${lead.lastName}`}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">
                       {lead.firstName} {lead.lastName}
                     </TableCell>
@@ -410,9 +683,16 @@ export default function BookCallLeadsPage() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge className={statusColors[lead.status as LeadStatus]}>
-                        {statusLabels[lead.status as LeadStatus]}
-                      </Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge className={statusColors[lead.status as LeadStatus]}>
+                          {statusLabels[lead.status as LeadStatus]}
+                        </Badge>
+                        {lead.convertedToSubscription && (
+                          <Badge variant="outline" className="text-green-700 border-green-300 text-xs">
+                            Subscribed
+                          </Badge>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {format(lead.createdAt, "MMM d, yyyy")}
@@ -428,6 +708,10 @@ export default function BookCallLeadsPage() {
                           <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openDetails(lead); }}>
                             <Eye className="mr-2 h-4 w-4" />
                             View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openComposer([lead]); }}>
+                            <Mail className="mr-2 h-4 w-4" />
+                            Send Email
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={(e) => { e.stopPropagation(); updateLeadStatus(lead.id, "contacted"); }}>
                             <Phone className="mr-2 h-4 w-4" />
@@ -573,6 +857,68 @@ export default function BookCallLeadsPage() {
                 </Button>
               </div>
 
+              {/* KDM Subscription Conversion */}
+              <div className="rounded-lg border p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      KDM Subscription Conversion
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      Track whether this contact converted to a KDM Subscription
+                    </p>
+                  </div>
+                  <Switch
+                    checked={converted}
+                    onCheckedChange={setConverted}
+                    aria-label="Converted to KDM Subscription"
+                  />
+                </div>
+                {converted && (
+                  <>
+                    <div className="space-y-1">
+                      <Label htmlFor="sub-plan">Subscription plan</Label>
+                      <Select value={subPlan} onValueChange={setSubPlan}>
+                        <SelectTrigger id="sub-plan">
+                          <SelectValue placeholder="Select plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SUBSCRIPTION_PLANS.map((plan) => (
+                            <SelectItem key={plan.value} value={plan.value}>
+                              {plan.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="conversion-notes">Conversion notes</Label>
+                      <Textarea
+                        id="conversion-notes"
+                        rows={2}
+                        value={conversionNotes}
+                        onChange={(e) => setConversionNotes(e.target.value)}
+                        placeholder="Plan details, sales notes..."
+                      />
+                    </div>
+                  </>
+                )}
+                {selectedLead.convertedAt && selectedLead.convertedToSubscription && (
+                  <p className="text-xs text-muted-foreground">
+                    Converted on {format(selectedLead.convertedAt, "PPp")}
+                  </p>
+                )}
+                <Button
+                  size="sm"
+                  onClick={() => saveConversion(selectedLead.id)}
+                  disabled={updating}
+                >
+                  {updating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Save Conversion Details
+                </Button>
+              </div>
+
               {/* Actions */}
               <div className="flex justify-between pt-4 border-t">
                 <Button
@@ -583,10 +929,89 @@ export default function BookCallLeadsPage() {
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete Lead
                 </Button>
-                <Button variant="outline" onClick={() => setDetailsOpen(false)}>
-                  Close
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => openComposer([selectedLead])}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Email
+                  </Button>
+                  <Button variant="outline" onClick={() => setDetailsOpen(false)}>
+                    Close
+                  </Button>
+                </div>
               </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Email composer (single or bulk) */}
+      <LeadEmailComposer
+        open={composerOpen}
+        onOpenChange={setComposerOpen}
+        recipients={composerRecipients}
+      />
+
+      {/* Duplicates dialog */}
+      <Dialog open={dedupeOpen} onOpenChange={setDedupeOpen}>
+        <DialogContent className="sm:max-w-[640px]">
+          <DialogHeader>
+            <DialogTitle>Duplicate Leads</DialogTitle>
+            <DialogDescription>
+              Leads sharing the same email address. The most recent submission is kept.
+            </DialogDescription>
+          </DialogHeader>
+          {duplicateGroups.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              No duplicates found
+            </p>
+          ) : (
+            <div className="space-y-4 max-h-[50vh] overflow-y-auto">
+              {duplicateGroups.map(([email, group]) => (
+                <div key={email} className="rounded-md border p-3 space-y-2">
+                  <p className="font-medium text-sm">{email}</p>
+                  {group.map((lead, idx) => (
+                    <div
+                      key={lead.id}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span>
+                        {lead.firstName} {lead.lastName}
+                        <span className="text-muted-foreground ml-2">
+                          {format(lead.createdAt, "MMM d, yyyy")}
+                        </span>
+                        {idx === 0 && (
+                          <Badge variant="secondary" className="ml-2 text-xs">
+                            Keep
+                          </Badge>
+                        )}
+                      </span>
+                      {idx > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive"
+                          onClick={() => removeDuplicate(lead.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+          {duplicateGroups.length > 0 && (
+            <div className="flex justify-end pt-2 border-t">
+              <Button variant="destructive" size="sm" onClick={removeAllDuplicates}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Remove All Duplicates
+              </Button>
             </div>
           )}
         </DialogContent>

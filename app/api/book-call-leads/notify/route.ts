@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
+import { db } from "@/lib/firebase-admin";
 
-const NOTIFY_RECIPIENTS = ["kmoore@kdm-assoc.com", "mhundal@mbdafpcenter.com"];
+const DEFAULT_NOTIFY_RECIPIENTS = ["kmoore@kdm-assoc.com", "mhundal@mbdafpcenter.com"];
+
+async function getNotifyRecipients(): Promise<string[]> {
+  if (!db) return DEFAULT_NOTIFY_RECIPIENTS;
+  try {
+    const snap = await db.collection("bookCallLeadEmailRecipients").get();
+    const emails = snap.docs
+      .map((d) => (d.data().email as string | undefined)?.trim().toLowerCase())
+      .filter((e): e is string => !!e);
+    return emails.length > 0 ? emails : DEFAULT_NOTIFY_RECIPIENTS;
+  } catch (error) {
+    console.error("Failed to load book-call-lead recipients:", error);
+    return DEFAULT_NOTIFY_RECIPIENTS;
+  }
+}
 
 interface BookCallLeadNotification {
   firstName?: string;
@@ -87,8 +102,10 @@ export async function POST(request: NextRequest) {
 
     const text = `New Book a Call Lead\n\nName: ${fullName}\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company || "Not provided"}\nJob Title: ${body.jobTitle || "Not provided"}\nPreferred Date: ${body.preferredDate || "Not specified"}\nPreferred Time: ${body.preferredTime || "Not specified"}\nIndustry: ${body.industry || "Not provided"}\nMessage: ${body.message || "No message provided"}\nSource: ${body.source || "Unknown"}`;
 
+    const recipients = await getNotifyRecipients();
+
     const result = await sendEmail({
-      to: NOTIFY_RECIPIENTS,
+      to: recipients,
       subject: `New Book a Call Lead: ${fullName}`,
       html,
       text,
