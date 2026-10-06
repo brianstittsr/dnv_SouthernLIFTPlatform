@@ -59,7 +59,10 @@ export default function ConsortiumReadinessPage() {
     }>
   >([]);
 
-  const userId = profile?.id;
+  // consortium_profiles is keyed by the Firebase Auth uid (Firestore rules
+  // and the submit API require uid == doc id). profile.id may be the linked
+  // teamMembers doc id, so prefer authUid.
+  const userId = profile?.authUid || profile?.id;
 
   // Fetch documents from Firestore on mount
   useEffect(() => {

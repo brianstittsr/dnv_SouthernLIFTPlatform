@@ -17,6 +17,12 @@ export interface MemberProfileSummary {
   naicsCodes?: string[];
   certifications?: string[];
   expertise?: string;
+  matchingPreferences?: {
+    targetContractSizes?: string[];
+    targetAgencies?: string[];
+    targetRegions?: string[];
+    preferredPartnerships?: string[];
+  };
 }
 
 export interface ScoredOpportunityMatch {
@@ -54,6 +60,15 @@ export async function scoreOpportunitiesForMember(
     profile.naicsCodes?.length ? `NAICS Codes: ${profile.naicsCodes.join(", ")}` : null,
     profile.certifications?.length ? `Certifications: ${profile.certifications.join(", ")}` : null,
     profile.expertise ? `Expertise: ${profile.expertise}` : null,
+    profile.matchingPreferences?.targetContractSizes?.length
+      ? `Target Contract Sizes: ${profile.matchingPreferences.targetContractSizes.join(", ")}`
+      : null,
+    profile.matchingPreferences?.targetAgencies?.length
+      ? `Target Agencies: ${profile.matchingPreferences.targetAgencies.join(", ")}`
+      : null,
+    profile.matchingPreferences?.targetRegions?.length
+      ? `Target Regions: ${profile.matchingPreferences.targetRegions.join(", ")}`
+      : null,
   ]
     .filter(Boolean)
     .join("\n");

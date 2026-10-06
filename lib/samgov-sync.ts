@@ -46,6 +46,8 @@ interface EligibleMember {
   companyDescription?: string;
   naicsCodes?: string[];
   certifications?: string[];
+  skills?: string[];
+  matchingPreferences?: MemberProfileSummary["matchingPreferences"];
 }
 
 function toProfileSummary(member: EligibleMember): MemberProfileSummary {
@@ -56,6 +58,8 @@ function toProfileSummary(member: EligibleMember): MemberProfileSummary {
     companyDescription: member.companyDescription,
     naicsCodes: member.naicsCodes,
     certifications: member.certifications,
+    expertise: member.skills?.join(", "),
+    matchingPreferences: member.matchingPreferences,
   };
 }
 
@@ -147,6 +151,8 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
         companyDescription: data.companyDescription || undefined,
         naicsCodes: Array.isArray(data.naicsCodes) ? data.naicsCodes : undefined,
         certifications: Array.isArray(data.certifications) ? data.certifications : undefined,
+        skills: Array.isArray(data.skills) ? data.skills : undefined,
+        matchingPreferences: data.matchingPreferences || undefined,
       };
     });
     results.eligibleMembers = eligibleMembers.length;

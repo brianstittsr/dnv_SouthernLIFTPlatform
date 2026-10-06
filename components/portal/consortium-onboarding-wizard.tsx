@@ -440,7 +440,7 @@ export function ConsortiumOnboardingWizard() {
         if (!isConsortiumMember) return;
 
         // Check if onboarding is already complete in user document
-        const userDocRef = doc(db, "users", profile.id);
+        const userDocRef = doc(db, "users", profile.authUid || profile.id);
         const userDocSnap = await getDoc(userDocRef);
         
         let onboardingComplete = false;
@@ -665,7 +665,7 @@ export function ConsortiumOnboardingWizard() {
 
       const teamMemberData = {
         id: targetId,
-        firebaseUid: profile.id,
+        firebaseUid: profile.authUid || profile.id,
         firstName: formData.firstName,
         lastName: formData.lastName,
         emailPrimary: profile.email,
@@ -719,7 +719,8 @@ export function ConsortiumOnboardingWizard() {
       // Also mark the users document as onboarding complete — and mirror the
       // survey data so the member's profile stays populated (the profile tab
       // and SAM.gov matching read flat fields off the users doc).
-      const userRef = doc(db, "users", profile.id);
+      const authUid = profile.authUid || profile.id;
+      const userRef = doc(db, "users", authUid);
       await setDoc(userRef, {
         consortiumOnboardingComplete: true,
         onboardingStage: "readiness",
@@ -733,8 +734,12 @@ export function ConsortiumOnboardingWizard() {
         companyDescription: formData.companyDescription,
         website: formData.website,
         linkedIn: formData.linkedIn,
+        avatarUrl: formData.avatar || undefined,
         naicsCodes: formData.naicsCodes,
         certifications: formData.certifications,
+        consortiumPillarFocus: formData.pillarFocus,
+        readinessDocuments: readinessDocumentsWithTimestamps,
+        readinessValidationStatus: formData.readinessDocuments.length > 0 ? "in_progress" : "not_started",
         // Mirror matching preferences so the AI Matching Setup Preferences
         // tab opens pre-populated with the member's onboarding selections.
         matchingPreferences: {
@@ -743,6 +748,28 @@ export function ConsortiumOnboardingWizard() {
           targetRegions: formData.targetRegions,
           preferredPartnerships: [],
         },
+        updatedAt: Timestamp.now(),
+      }, { merge: true });
+
+      // Mirror readiness entries onto consortium_profiles/{authUid} — the
+      // Government Contracting Readiness page reads that collection (keyed by
+      // auth uid to satisfy the Firestore rules and the submit API).
+      const consortiumProfileRef = doc(db, "consortium_profiles", authUid);
+      await setDoc(consortiumProfileRef, {
+        userId: authUid,
+        teamMemberId: targetId,
+        email: profile.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        companyName: formData.companyName,
+        readinessDocuments: formData.readinessDocuments.map((rdoc) => ({
+          type: rdoc.type,
+          value: rdoc.textValue || rdoc.fileName || "",
+          fileName: rdoc.fileName || "",
+          uploadedAt: Timestamp.now(),
+          status: "pending" as const,
+        })),
+        readinessValidationStatus: formData.readinessDocuments.length > 0 ? "in_progress" : "not_started",
         updatedAt: Timestamp.now(),
       }, { merge: true });
 

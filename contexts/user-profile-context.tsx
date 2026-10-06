@@ -10,6 +10,9 @@ import type { TeamMemberDoc } from "@/lib/schema";
 // User profile fields
 export interface UserProfile {
   id: string;
+  /** Firebase Auth uid — always the users/{uid} document id. Use this for
+   *  user-scoped reads/writes; `id` may be the linked teamMembers doc id. */
+  authUid: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -120,6 +123,7 @@ export interface ReadinessDocumentRecord {
 // Default empty profile
 const defaultProfile: UserProfile = {
   id: "",
+  authUid: "",
   email: "",
   firstName: "",
   lastName: "",
@@ -288,7 +292,7 @@ const UserProfileContext = createContext<UserProfileContextType | undefined>(und
  * attempts to link a team member record by UID or email.
  */
 async function loadProfileForUser(userId: string): Promise<UserProfile> {
-  if (!db) return { ...defaultProfile, id: userId };
+  if (!db) return { ...defaultProfile, id: userId, authUid: userId };
 
   let userDoc: any = null;
   let svpRole: UserProfile["svpRole"] = undefined;
@@ -370,6 +374,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     return {
       ...defaultProfile,
       ...mappedProfile,
+      authUid: userId,
       ...(userDoc && {
         firstName: userDoc.firstName || mappedProfile.firstName,
         lastName: userDoc.lastName || mappedProfile.lastName,
@@ -400,6 +405,7 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
   return {
     ...defaultProfile,
     id: userId,
+    authUid: userId,
     email: userEmail,
     firstName: userDoc?.firstName || "",
     lastName: userDoc?.lastName || "",
