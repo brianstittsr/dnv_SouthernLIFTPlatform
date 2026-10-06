@@ -16,20 +16,26 @@ import {
   BarChart3,
   ListTodo,
   UserX,
+  Radar,
 } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { getInitials, timeAgo, toDate } from "@/lib/pipeline";
+import { ReadinessScanDialog } from "@/components/admin/readiness-scan-dialog";
 import {
   READINESS_BUCKETS,
   STAGE_COLUMNS,
   READINESS_CONTRACT_READY_THRESHOLD,
   bucketForScore,
   deriveReadinessStage,
+  computeMemberReadiness,
+  resolveMemberCi,
   hasCompanyIntelligence,
+  type CompanyIntelligence,
   type KanbanStage,
+  type StageSource,
 } from "@/lib/member-readiness";
 
 type ViewMode = "score" | "stage";
@@ -52,6 +58,8 @@ const STAGE_META: Record<KanbanStage, { description: string; headerBg: string; a
   complete: { description: "Onboarding complete and validated.", headerBg: "bg-green-50", accent: "text-green-700", badgeBg: "bg-green-100 text-green-800" },
 };
 
+type LinkedMember = StageSource & { emailPrimary?: string };
+
 interface PortalUser {
   id: string;
   firstName?: string;
@@ -61,14 +69,17 @@ interface PortalUser {
   svpRole?: string;
   onboardingComplete?: boolean;
   consortiumOnboardingComplete?: boolean;
+  companyIntelligence?: CompanyIntelligence;
 }
 
 export default function ReadinessKanbanPage() {
   const [members, setMembers] = useState<TeamMemberDoc[]>([]);
   const [portalUsers, setPortalUsers] = useState<PortalUser[]>([]);
+  const [consortiumDocs, setConsortiumDocs] = useState<LinkedMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("score");
+  const [scanOpen, setScanOpen] = useState(false);
 
   const fetchData = async () => {
     if (!db) {
@@ -77,12 +88,16 @@ export default function ReadinessKanbanPage() {
     }
     setLoading(true);
     try {
-      const [snap, userSnap] = await Promise.all([
+      const [snap, userSnap, consortiumSnap] = await Promise.all([
         getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS)),
         getDocs(collection(db, COLLECTIONS.USERS)),
+        getDocs(collection(db, COLLECTIONS.CONSORTIUM_MEMBERS)),
       ]);
       setMembers(snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMemberDoc)));
       setPortalUsers(userSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<PortalUser, "id">) })));
+      setConsortiumDocs(
+        consortiumSnap.docs.map((d) => ({ ...(d.data() as LinkedMember) }))
+      );
     } catch (error) {
       console.error("Error loading team members:", error);
     } finally {
@@ -104,6 +119,63 @@ export default function ReadinessKanbanPage() {
     );
   }, [members, search]);
 
+  // Email-join maps: consortium members and portal users carry the Company
+  // Intelligence that the readiness model scores.
+  const consortiumByEmail = useMemo(() => {
+    const map = new Map<string, LinkedMember>();
+    for (const c of consortiumDocs) {
+      const email = c.emailPrimary?.trim().toLowerCase();
+      if (email) map.set(email, c);
+    }
+    return map;
+  }, [consortiumDocs]);
+
+  const userCiByEmail = useMemo(() => {
+    const map = new Map<string, CompanyIntelligence>();
+    for (const u of portalUsers) {
+      const email = u.email?.trim().toLowerCase();
+      if (email && u.companyIntelligence) map.set(email, u.companyIntelligence);
+    }
+    return map;
+  }, [portalUsers]);
+
+  const linkedFor = (m: TeamMemberDoc): LinkedMember | undefined => {
+    const email = m.emailPrimary?.trim().toLowerCase();
+    return email ? consortiumByEmail.get(email) : undefined;
+  };
+
+  // Persisted govReadinessScore wins when the server-side scan has run;
+  // otherwise compute on the fly so the board is never empty.
+  const memberScores = useMemo(() => {
+    const map = new Map<string, { score: number; topGap?: string; scanned: boolean }>();
+    for (const m of members) {
+      if (m.govReadinessScore) {
+        map.set(m.id, {
+          score: m.govReadinessScore.overallScore,
+          topGap: m.govReadinessScore.gaps?.[0],
+          scanned: true,
+        });
+        continue;
+      }
+      const email = m.emailPrimary?.trim().toLowerCase();
+      const r = computeMemberReadiness(
+        m,
+        email ? consortiumByEmail.get(email)?.companyIntelligence : undefined,
+        email ? userCiByEmail.get(email) : undefined
+      );
+      map.set(m.id, { score: r.overallScore, topGap: r.gaps[0], scanned: false });
+    }
+    return map;
+  }, [members, consortiumByEmail, userCiByEmail]);
+
+  const hasEffectiveCi = (m: TeamMemberDoc): boolean => {
+    const linked = linkedFor(m);
+    const email = m.emailPrimary?.trim().toLowerCase();
+    return hasCompanyIntelligence(
+      resolveMemberCi(m, linked?.companyIntelligence, email ? userCiByEmail.get(email) : undefined)
+    );
+  };
+
   const columns = useMemo<Column[]>(() => {
     if (view === "score") {
       const ranges: Record<string, string> = {
@@ -123,7 +195,7 @@ export default function ReadinessKanbanPage() {
         members: [],
       }));
       for (const m of filtered) {
-        const score = m.govReadinessScore?.overallScore ?? 0;
+        const score = memberScores.get(m.id)?.score ?? 0;
         cols.find((c) => c.id === bucketForScore(score))?.members.push(m);
       }
       return cols;
@@ -138,10 +210,10 @@ export default function ReadinessKanbanPage() {
       members: [],
     }));
     for (const m of filtered) {
-      cols.find((c) => c.id === deriveReadinessStage(m))?.members.push(m);
+      cols.find((c) => c.id === deriveReadinessStage(m, linkedFor(m)))?.members.push(m);
     }
     return cols;
-  }, [filtered, view]);
+  }, [filtered, view, memberScores, consortiumByEmail]);
 
   // Portal users who haven't completed onboarding: either no teamMembers
   // record exists for them, or neither side carries the completion flag.
@@ -172,13 +244,12 @@ export default function ReadinessKanbanPage() {
       .filter((x) => !x.done);
   }, [portalUsers, members]);
 
-  const scored = members.filter((m) => m.govReadinessScore);
-  const avgScore = scored.length
-    ? Math.round(scored.reduce((s, m) => s + (m.govReadinessScore?.overallScore ?? 0), 0) / scored.length)
+  const scannedCount = members.filter((m) => m.govReadinessScore).length;
+  const avgScore = members.length
+    ? Math.round(members.reduce((s, m) => s + (memberScores.get(m.id)?.score ?? 0), 0) / members.length)
     : 0;
-  const contractReady = scored.filter((m) => (m.govReadinessScore?.overallScore ?? 0) >= READINESS_CONTRACT_READY_THRESHOLD).length;
-  const missingCi = members.filter((m) => !hasCompanyIntelligence(m.companyIntelligence)).length;
-  const reminded = members.filter((m) => m.lastReadinessReminderSentAt).length;
+  const contractReady = members.filter((m) => (memberScores.get(m.id)?.score ?? 0) >= READINESS_CONTRACT_READY_THRESHOLD).length;
+  const missingCi = members.filter((m) => !hasEffectiveCi(m)).length;
 
   return (
     <div className="space-y-6">
@@ -187,11 +258,15 @@ export default function ReadinessKanbanPage() {
         <div>
           <h1 className="text-3xl font-bold">Readiness Kanban</h1>
           <p className="text-muted-foreground mt-1">
-            Government-contracting readiness for all team members. Run the readiness scan on the
-            Team Members page to refresh scores.
+            Government-contracting readiness for all team members. Scores are computed live;
+            run a scan to persist them and email reminders.
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" onClick={() => setScanOpen(true)}>
+            <Radar className="h-4 w-4 mr-2" />
+            Scan Readiness
+          </Button>
           <div className="inline-flex rounded-lg border p-1 bg-muted/50">
             <Button
               variant={view === "score" ? "default" : "ghost"}
@@ -232,8 +307,8 @@ export default function ReadinessKanbanPage() {
           <p className="text-sm text-muted-foreground">Members Tracked</p>
         </CardContent></Card>
         <Card><CardContent className="p-4">
-          <div className="text-2xl font-bold">{scored.length}</div>
-          <p className="text-sm text-muted-foreground">Scored</p>
+          <div className="text-2xl font-bold">{scannedCount}</div>
+          <p className="text-sm text-muted-foreground">Scan-Persisted</p>
         </CardContent></Card>
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold">{avgScore}</div>
@@ -274,7 +349,15 @@ export default function ReadinessKanbanPage() {
                   No members here
                 </div>
               ) : (
-                col.members.map((m) => <ReadinessCard key={m.id} member={m} accent={col.accent} />)
+                col.members.map((m) => (
+                  <ReadinessCard
+                    key={m.id}
+                    member={m}
+                    accent={col.accent}
+                    scoreInfo={memberScores.get(m.id)}
+                    hasCi={hasEffectiveCi(m)}
+                  />
+                ))
               )}
             </div>
           </div>
@@ -330,16 +413,31 @@ export default function ReadinessKanbanPage() {
           )}
         </CardContent>
       </Card>
+
+      <ReadinessScanDialog
+        open={scanOpen}
+        onOpenChange={setScanOpen}
+        onScanComplete={fetchData}
+      />
     </div>
   );
 }
 
-function ReadinessCard({ member, accent }: { member: TeamMemberDoc; accent: string }) {
+function ReadinessCard({
+  member,
+  accent,
+  scoreInfo,
+  hasCi,
+}: {
+  member: TeamMemberDoc;
+  accent: string;
+  scoreInfo?: { score: number; topGap?: string; scanned: boolean };
+  hasCi: boolean;
+}) {
   const name = `${member.firstName ?? ""} ${member.lastName ?? ""}`.trim() || member.emailPrimary || "Unknown";
-  const score = member.govReadinessScore?.overallScore;
-  const topGap = member.govReadinessScore?.gaps?.[0];
+  const score = scoreInfo?.score;
+  const topGap = scoreInfo?.topGap;
   const scannedAt = toDate(member.govReadinessLastScannedAt);
-  const hasCi = hasCompanyIntelligence(member.companyIntelligence);
 
   return (
     <Card className="border bg-background shadow-sm transition-shadow hover:shadow-md">
@@ -380,7 +478,7 @@ function ReadinessCard({ member, accent }: { member: TeamMemberDoc; accent: stri
             <Clock className="h-3 w-3" />Scanned {timeAgo(scannedAt)}
           </p>
         ) : (
-          <p className="mt-1 text-[10px] text-muted-foreground">Not scanned yet</p>
+          <p className="mt-1 text-[10px] text-muted-foreground">Live score — not persisted</p>
         )}
       </CardContent>
     </Card>
