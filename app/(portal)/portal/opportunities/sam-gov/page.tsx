@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { db, auth } from "@/lib/firebase";
+import { doc, getDoc, collection, query, where, getDocs, setDoc } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,9 +30,13 @@ import {
   Handshake,
   RefreshCw,
   Sparkles,
+  SlidersHorizontal,
+  ChevronDown,
+  ChevronUp,
+  Send,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
-import { AIMatchingDisplay } from "@/components/consortium/matching/AIMatchingDisplay";
 import { useUserProfile } from "@/contexts/user-profile-context";
 
 interface Opportunity {
@@ -50,6 +54,41 @@ interface Opportunity {
   interestedInTeaming: boolean;
   teamingCount: number;
   isMockData: boolean;
+  url?: string;
+  noticeId?: string;
+}
+
+interface StoredMatch {
+  id: string;
+  noticeId: string;
+  title: string;
+  agency: string;
+  solicitationNumber: string;
+  postedDate: string;
+  deadline: string;
+  naicsCodes: string[];
+  description: string;
+  setAside?: string;
+  matchScore: number;
+  matchReasons: string[];
+  uiLink?: string;
+}
+
+interface OpportunityAnalysis {
+  loading: boolean;
+  matchScore?: number;
+  matchReasons?: string[];
+  partner?: {
+    userId: string;
+    name: string;
+    companyName: string;
+    email: string;
+    matchScore: number;
+    reasons: string[];
+    complementaryCapabilities: string[];
+    relevantCertifications: string[];
+  } | null;
+  error?: string;
 }
 
 interface CompanyIntelligence {
@@ -294,6 +333,7 @@ const mockSAMOpportunities: Opportunity[] = [
 
 export default function SAMOpportunitiesPage() {
   const { profile } = useUserProfile();
+  const authUid = profile?.authUid || profile?.id;
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [filteredOpportunities, setFilteredOpportunities] = useState<Opportunity[]>([]);
   const [useMockData, setUseMockData] = useState(true);
@@ -301,11 +341,26 @@ export default function SAMOpportunitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [agencyFilter, setAgencyFilter] = useState<string>("all");
   const [setAsideFilter, setSetAsideFilter] = useState<string>("all");
-  const [showAIMatching, setShowAIMatching] = useState(false);
-  const [aiMatches, setAiMatches] = useState<any[]>([]);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [companyIntelligence, setCompanyIntelligence] = useState<CompanyIntelligence | null>(null);
+
+  // Advanced search (server-side SAM.gov query params)
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [advNaics, setAdvNaics] = useState("");
+  const [advPsc, setAdvPsc] = useState("");
+  const [advNoticeType, setAdvNoticeType] = useState<string>("all");
+  const [advDeadlineDays, setAdvDeadlineDays] = useState<string>("any");
+
+  // Stored AI matches delivered by the scheduled sync (samgovOpportunities)
+  const [matchedOpps, setMatchedOpps] = useState<StoredMatch[]>([]);
+  const [matchedLoading, setMatchedLoading] = useState(false);
+
+  // On-demand AI analysis per displayed opportunity
+  const [analyses, setAnalyses] = useState<Record<string, OpportunityAnalysis>>({});
+  const [submittingTeaming, setSubmittingTeaming] = useState<Record<string, boolean>>({});
+  const [submittedTeaming, setSubmittedTeaming] = useState<Record<string, boolean>>({});
+
+  // Persisted "Flag for Teaming" state (teamingInterests/{uid}_{noticeId})
+  const [teamingFlags, setTeamingFlags] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadOpportunities();
@@ -342,6 +397,7 @@ export default function SAMOpportunitiesPage() {
         const data = await response.json();
         const mapped: Opportunity[] = (data.opportunitiesData || []).map((opp: Record<string, unknown>) => ({
           id: safeString(opp.noticeId) || safeString(opp.solicitationNumber) || Math.random().toString(36).slice(2),
+          noticeId: safeString(opp.noticeId),
           title: safeString(opp.title) || "Untitled",
           agency: getAgencyName(opp.organizationHierarchy || opp.department),
           solicitationNumber: safeString(opp.solicitationNumber),
@@ -355,6 +411,7 @@ export default function SAMOpportunitiesPage() {
           interestedInTeaming: false,
           teamingCount: 0,
           isMockData: false,
+          url: safeString(opp.uiLink) || undefined,
         }));
         setOpportunities(mapped);
       }
@@ -365,6 +422,315 @@ export default function SAMOpportunitiesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Server-side SAM.gov search using the advanced filter fields
+  const runAdvancedSearch = async () => {
+    setUseMockData(false);
+    setLoading(true);
+    try {
+      const params: Record<string, unknown> = { is_active: true, size: 25, page: 0 };
+      if (searchQuery.trim()) params.q = searchQuery.trim();
+      if (advNaics.trim()) params.naics = advNaics.trim().split(",")[0].trim();
+      if (advPsc.trim()) params.psc = advPsc.trim();
+      if (advNoticeType !== "all") params.notice_type = advNoticeType;
+      if (advDeadlineDays !== "any") {
+        params["response_date.from"] = new Date().toISOString().split("T")[0];
+        params["response_date.to"] = new Date(
+          Date.now() + parseInt(advDeadlineDays, 10) * 86400000
+        ).toISOString().split("T")[0];
+      }
+
+      const response = await fetch("/api/opportunities/sam-gov", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      });
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `API error: ${response.status}`);
+      }
+      const data = await response.json();
+      const mapped: Opportunity[] = (data.opportunitiesData || []).map((opp: Record<string, unknown>) => ({
+        id: safeString(opp.noticeId) || safeString(opp.solicitationNumber) || Math.random().toString(36).slice(2),
+        noticeId: safeString(opp.noticeId),
+        title: safeString(opp.title) || "Untitled",
+        agency: getAgencyName(opp.organizationHierarchy || opp.department),
+        solicitationNumber: safeString(opp.solicitationNumber),
+        postedDate: safeString(opp.postedDate),
+        deadline: getDeadlineString(opp.responseDeadLine),
+        location: getLocationName(opp.placeOfPerformance),
+        value: "See solicitation",
+        naicsCodes: opp.naicsCode ? safeStringList(opp.naicsCode) : opp.naicsCodes ? safeStringList(opp.naicsCodes) : opp.naics ? safeStringList(opp.naics) : [],
+        description: safeString(opp.description),
+        setAside: safeString(opp.typeOfSetAsideDescription || opp.setAside) || undefined,
+        interestedInTeaming: false,
+        teamingCount: 0,
+        isMockData: false,
+        url: safeString(opp.uiLink) || undefined,
+      }));
+      setOpportunities(mapped);
+      if (mapped.length === 0) toast.info("No opportunities matched your search criteria");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Search failed";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Stored AI matches delivered by the scheduled SAM.gov sync
+  useEffect(() => {
+    const firestore = db;
+    if (!firestore || !authUid) return;
+    const loadMatched = async () => {
+      setMatchedLoading(true);
+      try {
+        const q = query(
+          collection(firestore, COLLECTIONS.SAMGOV_OPPORTUNITIES),
+          where("userId", "==", authUid),
+          where("hidden", "==", false)
+        );
+        const snap = await getDocs(q);
+        const rows: StoredMatch[] = snap.docs.map((d) => {
+          const x = d.data();
+          return {
+            id: d.id,
+            noticeId: x.noticeId || "",
+            title: x.title || "Untitled",
+            agency: safeString(x.agency || x.organizationHierarchy) || "Unknown Agency",
+            solicitationNumber: x.solicitationNumber || "",
+            postedDate: x.postedDate || "",
+            deadline: x.responseDeadline?.toDate?.()?.toISOString() || "",
+            naicsCodes: x.naicsCode ? [String(x.naicsCode)] : [],
+            description: x.description || "",
+            setAside: x.typeOfSetAsideDescription || undefined,
+            matchScore: x.matchScore ?? 0,
+            matchReasons: Array.isArray(x.matchReasons) ? x.matchReasons : [],
+            uiLink: x.uiLink || `https://sam.gov/opp/${x.noticeId}/view`,
+          };
+        });
+        rows.sort((a, b) => b.matchScore - a.matchScore);
+        setMatchedOpps(rows);
+      } catch (error) {
+        console.error("Failed to load matched opportunities:", error);
+      } finally {
+        setMatchedLoading(false);
+      }
+    };
+    loadMatched();
+  }, [authUid]);
+
+  // Persisted teaming flags
+  useEffect(() => {
+    const firestore = db;
+    if (!firestore || !authUid) return;
+    const loadFlags = async () => {
+      try {
+        const snap = await getDocs(
+          query(collection(firestore, COLLECTIONS.TEAMING_INTERESTS), where("userId", "==", authUid))
+        );
+        const flags: Record<string, boolean> = {};
+        snap.docs.forEach((d) => {
+          const x = d.data();
+          if (x.noticeId) flags[x.noticeId] = !!x.interested;
+        });
+        setTeamingFlags(flags);
+      } catch (error) {
+        console.error("Failed to load teaming flags:", error);
+      }
+    };
+    loadFlags();
+  }, [authUid]);
+
+  // On-demand AI analysis: fit rationale + suggested KDM partner
+  const analyzeOpportunity = useCallback(
+    async (opp: { id: string; noticeId?: string; title: string; agency?: string; solicitationNumber?: string; naicsCodes: string[]; description: string; setAside?: string; deadline?: string }) => {
+      if (!auth?.currentUser) {
+        toast.error("You must be logged in to run AI analysis");
+        return;
+      }
+      setAnalyses((prev) => ({ ...prev, [opp.id]: { loading: true } }));
+      try {
+        const token = await auth.currentUser.getIdToken();
+        const response = await fetch("/api/samgov/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            opportunity: {
+              id: opp.id,
+              noticeId: opp.noticeId,
+              title: opp.title,
+              agency: opp.agency,
+              solicitationNumber: opp.solicitationNumber,
+              naicsCode: opp.naicsCodes[0],
+              naicsCodes: opp.naicsCodes,
+              description: opp.description,
+              setAside: opp.setAside,
+              deadline: opp.deadline,
+            },
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Analysis failed");
+        setAnalyses((prev) => ({
+          ...prev,
+          [opp.id]: {
+            loading: false,
+            matchScore: data.matchScore,
+            matchReasons: data.matchReasons || [],
+            partner: data.partner || null,
+          },
+        }));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Analysis failed";
+        setAnalyses((prev) => ({ ...prev, [opp.id]: { loading: false, error: message } }));
+        toast.error(message);
+      }
+    },
+    []
+  );
+
+  // Submit a teaming request to the suggested partner
+  const submitTeamingRequest = useCallback(
+    async (
+      opp: { id: string; noticeId?: string; title: string; agency?: string; solicitationNumber?: string; naicsCodes: string[]; description: string; setAside?: string; deadline?: string; url?: string },
+      partner: NonNullable<OpportunityAnalysis["partner"]>,
+      matchReasons?: string[]
+    ) => {
+      if (!auth?.currentUser) {
+        toast.error("You must be logged in to send a teaming request");
+        return;
+      }
+      const key = `${opp.id}_${partner.userId}`;
+      setSubmittingTeaming((prev) => ({ ...prev, [key]: true }));
+      try {
+        const token = await auth.currentUser.getIdToken();
+        const response = await fetch("/api/teaming/request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            partnerUserId: partner.userId,
+            partnerMatchScore: partner.matchScore,
+            partnerReasons: partner.reasons,
+            opportunity: {
+              noticeId: opp.noticeId || opp.id,
+              title: opp.title,
+              agency: opp.agency,
+              solicitationNumber: opp.solicitationNumber,
+              naicsCode: opp.naicsCodes[0],
+              setAside: opp.setAside,
+              responseDeadline: opp.deadline,
+              uiLink: opp.url,
+              description: opp.description,
+            },
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Failed to send");
+        setSubmittedTeaming((prev) => ({ ...prev, [key]: true }));
+        toast.success(`Teaming request sent to ${partner.companyName || partner.name}`);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Failed to send teaming request");
+      } finally {
+        setSubmittingTeaming((prev) => ({ ...prev, [key]: false }));
+      }
+    },
+    []
+  );
+
+  // Shared renderer for the AI rationale + partner suggestion block
+  const renderAnalysisPanel = (
+    oppId: string,
+    opp: { id: string; noticeId?: string; title: string; agency?: string; solicitationNumber?: string; naicsCodes: string[]; description: string; setAside?: string; deadline?: string; url?: string },
+    existingReasons?: string[]
+  ) => {
+    const analysis = analyses[oppId];
+    const reasons = analysis?.matchReasons?.length ? analysis.matchReasons : existingReasons;
+
+    return (
+      <div className="mt-3 space-y-3">
+        {/* AI rationale */}
+        {reasons && reasons.length > 0 && (
+          <div className="p-3 rounded-lg bg-purple-50 border border-purple-200">
+            <p className="text-sm font-medium text-purple-900 flex items-center gap-2 mb-1">
+              <Sparkles className="h-4 w-4" /> Why consider this opportunity
+            </p>
+            <ul className="text-sm text-purple-900 list-disc pl-5 space-y-0.5">
+              {reasons.map((r, i) => (
+                <li key={i}>{r}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Partner suggestion */}
+        {analysis?.loading && (
+          <div className="p-3 rounded-lg bg-muted flex items-center gap-2 text-sm text-muted-foreground">
+            <RefreshCw className="h-4 w-4 animate-spin" /> Analyzing fit and finding partners…
+          </div>
+        )}
+        {analysis?.partner && (
+          <div className="p-3 rounded-lg bg-green-50 border border-green-200 space-y-2">
+            <p className="text-sm font-medium text-green-900 flex items-center gap-2">
+              <Handshake className="h-4 w-4" /> Suggested KDM Consortium Partner
+            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-sm">
+                  {analysis.partner.name || analysis.partner.companyName}
+                  {analysis.partner.companyName && analysis.partner.name && ` — ${analysis.partner.companyName}`}
+                </p>
+                <p className="text-xs text-muted-foreground">{analysis.partner.email}</p>
+              </div>
+              <Badge className="bg-green-600 hover:bg-green-600">{analysis.partner.matchScore}% Match</Badge>
+            </div>
+            {analysis.partner.reasons.length > 0 && (
+              <ul className="text-sm text-green-900 list-disc pl-5 space-y-0.5">
+                {analysis.partner.reasons.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            )}
+            {analysis.partner.complementaryCapabilities.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {analysis.partner.complementaryCapabilities.map((cap) => (
+                  <Badge key={cap} variant="outline" className="text-xs">{cap}</Badge>
+                ))}
+              </div>
+            )}
+            <Button
+              size="sm"
+              onClick={() => submitTeamingRequest(opp, analysis.partner!, reasons)}
+              disabled={submittingTeaming[`${opp.id}_${analysis.partner.userId}`] || submittedTeaming[`${opp.id}_${analysis.partner.userId}`]}
+            >
+              <Send className="h-4 w-4 mr-1" />
+              {submittedTeaming[`${opp.id}_${analysis.partner.userId}`]
+                ? "Teaming Request Sent"
+                : submittingTeaming[`${opp.id}_${analysis.partner.userId}`]
+                  ? "Sending…"
+                  : "Submit Teaming Request"}
+            </Button>
+          </div>
+        )}
+        {analysis && !analysis.loading && !analysis.partner && !analysis.error && (
+          <p className="text-xs text-muted-foreground">
+            No consortium partner with overlapping NAICS was identified for this opportunity.
+          </p>
+        )}
+        {!analysis && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => analyzeOpportunity(opp)}
+            className="text-purple-700 border-purple-300"
+          >
+            <Sparkles className="h-4 w-4 mr-1" />
+            Analyze Fit &amp; Find Partner
+          </Button>
+        )}
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -445,60 +811,41 @@ export default function SAMOpportunitiesPage() {
   };
 
   const toggleTeamingInterest = async (opportunityId: string) => {
-    try {
-      // In production, update in Firestore
-      setOpportunities(
-        opportunities.map((opp) =>
-          opp.id === opportunityId
-            ? { ...opp, interestedInTeaming: !opp.interestedInTeaming }
-            : opp
-        )
-      );
+    const opportunity = opportunities.find((opp) => opp.id === opportunityId);
+    const interested = !opportunity?.interestedInTeaming;
 
-      const opportunity = opportunities.find((opp) => opp.id === opportunityId);
-      if (opportunity?.interestedInTeaming) {
-        toast.success("Flagged for teaming - other partners can now see your interest");
-      } else {
-        toast.info("Teaming flag removed");
-      }
-    } catch (error) {
-      toast.error("Failed to update teaming interest");
-    }
-  };
+    setOpportunities(
+      opportunities.map((opp) =>
+        opp.id === opportunityId ? { ...opp, interestedInTeaming: interested } : opp
+      )
+    );
 
-  const handleAIMatching = async (opportunity: Opportunity) => {
-    if (!profile?.id) {
-      toast.error("You must be logged in to use AI matching");
-      return;
-    }
-
-    setSelectedOpportunity(opportunity);
-    setShowAIMatching(true);
-    setAiLoading(true);
-
-    try {
-      const response = await fetch("/api/consortium/matching/opportunity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          opportunity: {
-            id: opportunity.id,
-            title: opportunity.title,
-            description: opportunity.description,
-            naicsCodes: opportunity.naicsCodes,
-            setAside: opportunity.setAside,
+    // Persist so other members can see teaming interest
+    const noticeId = opportunity?.noticeId || opportunityId;
+    if (db && authUid && !opportunity?.isMockData) {
+      const firestore = db;
+      try {
+        await setDoc(
+          doc(firestore, COLLECTIONS.TEAMING_INTERESTS, `${authUid}_${noticeId}`),
+          {
+            userId: authUid,
+            noticeId,
+            opportunityTitle: opportunity?.title || "",
+            interested,
+            updatedAt: new Date(),
           },
-          options: { threshold: 50, limit: 10 },
-        }),
-      });
+          { merge: true }
+        );
+        setTeamingFlags((prev) => ({ ...prev, [noticeId]: interested }));
+      } catch (error) {
+        console.error("Failed to persist teaming interest:", error);
+      }
+    }
 
-      const data = await response.json();
-      setAiMatches(data.matches || []);
-      toast.success(`Found ${data.matches?.length || 0} matching partners`);
-    } catch (error) {
-      toast.error("Failed to get AI matches");
-    } finally {
-      setAiLoading(false);
+    if (interested) {
+      toast.success("Flagged for teaming - other partners can now see your interest");
+    } else {
+      toast.info("Teaming flag removed");
     }
   };
 
@@ -702,10 +1049,88 @@ export default function SAMOpportunitiesPage() {
         </CardContent>
       </Card>
 
+      {/* Matched for You — AI-scored matches delivered by the scheduled sync */}
+      {(matchedLoading || matchedOpps.length > 0) && (
+        <Card className="border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-purple-600" />
+              Matched for You
+            </CardTitle>
+            <CardDescription>
+              Opportunities our scheduled SAM.gov sync AI-matched to your Company Intelligence profile, with rationale and a suggested consortium partner.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {matchedLoading ? (
+              <div className="flex items-center justify-center py-6">
+                <RefreshCw className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {matchedOpps.map((m) => (
+                  <Card key={m.id} className="bg-purple-50/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-1">
+                            <h3 className="font-semibold">{m.title}</h3>
+                            <Badge className="bg-purple-600 hover:bg-purple-600 ml-2">
+                              {m.matchScore}% Match
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Building2 className="h-4 w-4" />
+                            {m.agency}
+                            {m.solicitationNumber && (
+                              <>
+                                <span>•</span>
+                                <span>{m.solicitationNumber}</span>
+                              </>
+                            )}
+                            {m.deadline && (
+                              <>
+                                <span>•</span>
+                                <span>Due {new Date(m.deadline).toLocaleDateString()}</span>
+                              </>
+                            )}
+                          </div>
+                          {m.setAside && <Badge variant="secondary" className="mt-2">{m.setAside}</Badge>}
+                          {renderAnalysisPanel(`matched_${m.id}`, {
+                            id: `matched_${m.id}`,
+                            noticeId: m.noticeId,
+                            title: m.title,
+                            agency: m.agency,
+                            solicitationNumber: m.solicitationNumber,
+                            naicsCodes: m.naicsCodes,
+                            description: m.description,
+                            setAside: m.setAside,
+                            deadline: m.deadline,
+                            url: m.uiLink,
+                          }, m.matchReasons)}
+                        </div>
+                        {m.uiLink && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={m.uiLink} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-4 w-4 mr-1" />
+                              View on SAM.gov
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Filters */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-wrap gap-4">
+        <CardContent className="p-6 space-y-4">
+          <div className="flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
               <Label htmlFor="search">Search</Label>
               <div className="relative">
@@ -715,6 +1140,7 @@ export default function SAMOpportunitiesPage() {
                   placeholder="Search opportunities..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && runAdvancedSearch()}
                   className="pl-10"
                 />
               </div>
@@ -751,7 +1177,71 @@ export default function SAMOpportunitiesPage() {
                 </SelectContent>
               </Select>
             </div>
+            <Button onClick={runAdvancedSearch} disabled={loading}>
+              <Search className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+              Search SAM.gov
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowAdvanced((v) => !v)}>
+              <SlidersHorizontal className="mr-1 h-4 w-4" />
+              Advanced
+              {showAdvanced ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />}
+            </Button>
           </div>
+
+          {showAdvanced && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t">
+              <div>
+                <Label htmlFor="advNaics">NAICS Code</Label>
+                <Input
+                  id="advNaics"
+                  placeholder="e.g. 541512"
+                  value={advNaics}
+                  onChange={(e) => setAdvNaics(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="advPsc">PSC / Product Service Code</Label>
+                <Input
+                  id="advPsc"
+                  placeholder="e.g. D302"
+                  value={advPsc}
+                  onChange={(e) => setAdvPsc(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="advNoticeType">Notice Type</Label>
+                <Select value={advNoticeType} onValueChange={setAdvNoticeType}>
+                  <SelectTrigger id="advNoticeType">
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="r">Solicitation (RFP)</SelectItem>
+                    <SelectItem value="p">Presolicitation</SelectItem>
+                    <SelectItem value="s">Sources Sought</SelectItem>
+                    <SelectItem value="o">Combined Synopsis/Solicitation</SelectItem>
+                    <SelectItem value="a">Award Notice</SelectItem>
+                    <SelectItem value="g">Sale of Surplus</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="advDeadline">Response Deadline</Label>
+                <Select value={advDeadlineDays} onValueChange={setAdvDeadlineDays}>
+                  <SelectTrigger id="advDeadline">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="7">Next 7 days</SelectItem>
+                    <SelectItem value="30">Next 30 days</SelectItem>
+                    <SelectItem value="60">Next 60 days</SelectItem>
+                    <SelectItem value="90">Next 90 days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -860,44 +1350,59 @@ export default function SAMOpportunitiesPage() {
                       {/* Teaming Flag */}
                       <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
                         <Switch
-                          checked={opportunity.interestedInTeaming}
+                          checked={opportunity.interestedInTeaming || !!teamingFlags[opportunity.noticeId || opportunity.id]}
                           onCheckedChange={() => toggleTeamingInterest(opportunity.id)}
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <Handshake className="h-4 w-4 text-primary" />
                             <span className="font-medium text-sm">
-                              {opportunity.interestedInTeaming
+                              {opportunity.interestedInTeaming || teamingFlags[opportunity.noticeId || opportunity.id]
                                 ? "Interested in Teaming"
                                 : "Flag for Teaming"}
                             </span>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            {opportunity.interestedInTeaming
+                            {opportunity.interestedInTeaming || teamingFlags[opportunity.noticeId || opportunity.id]
                               ? "Other partners on the platform can see your interest"
                               : "Flag this opportunity to find teaming partners"}
                           </p>
                         </div>
                       </div>
+
+                      {/* AI rationale + suggested partner */}
+                      {renderAnalysisPanel(opportunity.id, opportunity)}
                     </div>
 
                     {/* Actions */}
                     <div className="flex flex-col gap-2">
-                      {profile?.role === "consortium_member" && (
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => handleAIMatching(opportunity)}
-                          className="bg-purple-600 hover:bg-purple-700"
-                        >
-                          <Sparkles className="h-4 w-4 mr-1" />
-                          AI Match Partners
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => analyzeOpportunity(opportunity)}
+                        disabled={analyses[opportunity.id]?.loading}
+                        className="bg-purple-600 hover:bg-purple-700"
+                      >
+                        <Sparkles className="h-4 w-4 mr-1" />
+                        AI Match Partners
+                      </Button>
+                      {opportunity.url || opportunity.noticeId ? (
+                        <Button variant="outline" size="sm" asChild>
+                          <a
+                            href={opportunity.url || `https://sam.gov/opp/${opportunity.noticeId}/view`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="h-4 w-4 mr-1" />
+                            View on SAM.gov
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button variant="outline" size="sm" disabled>
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          Sample Notice
                         </Button>
                       )}
-                      <Button variant="outline" size="sm">
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        View on SAM.gov
-                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -907,21 +1412,6 @@ export default function SAMOpportunitiesPage() {
         )}
       </div>
 
-      {/* AI Matching Display */}
-      {showAIMatching && (
-        <div className="mt-6">
-          <AIMatchingDisplay
-            opportunityMatches={aiMatches}
-            loading={aiLoading}
-            onContactPartner={(partnerId) => {
-              toast.info(`Contact partner ${partnerId}`);
-            }}
-            onViewProfile={(partnerId) => {
-              toast.info(`View profile ${partnerId}`);
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 }

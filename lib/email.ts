@@ -1091,6 +1091,76 @@ export const emailTemplates = {
   }),
 
   /**
+   * Sent when a member submits a teaming request to another KDM Consortium
+   * member for a specific SAM.gov opportunity.
+   */
+  teamingRequest: (params: {
+    recipientName: string;
+    requesterName: string;
+    requesterCompany: string;
+    opportunityTitle: string;
+    agency?: string;
+    solicitationNumber?: string;
+    setAside?: string;
+    responseDeadline?: string;
+    uiLink?: string;
+    whyPartner: string[];
+    positioning: string[];
+    message?: string;
+    portalUrl: string;
+  }) => ({
+    subject: `Teaming Request: ${params.requesterCompany} wants to partner on "${params.opportunityTitle}"`,
+    html: `
+      <h1>Teaming Request for ${params.recipientName}</h1>
+      <p><strong>${params.requesterName}</strong> of <strong>${params.requesterCompany}</strong> has invited you to team on a federal opportunity through the KDM Consortium.</p>
+      <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <h3 style="margin-top: 0;">The Opportunity</h3>
+        <p><strong>${params.opportunityTitle}</strong></p>
+        ${params.agency ? `<p><strong>Agency:</strong> ${params.agency}</p>` : ""}
+        ${params.solicitationNumber ? `<p><strong>Solicitation:</strong> ${params.solicitationNumber}</p>` : ""}
+        ${params.setAside ? `<p><strong>Set-Aside:</strong> ${params.setAside}</p>` : ""}
+        ${params.responseDeadline ? `<p><strong>Response Deadline:</strong> ${params.responseDeadline}</p>` : ""}
+        ${params.uiLink ? `<p><a href="${params.uiLink}">View on SAM.gov</a></p>` : ""}
+      </div>
+      <h3>Why you'd be a good partner</h3>
+      <ul>
+        ${params.whyPartner.map((r) => `<li>${r}</li>`).join("")}
+      </ul>
+      <h3>How to position to win</h3>
+      <ul>
+        ${params.positioning.map((r) => `<li>${r}</li>`).join("")}
+      </ul>
+      ${params.message ? `<div style="background-color: #fff8e6; padding: 12px; border-radius: 8px; margin: 16px 0;"><p><strong>Message from ${params.requesterName}:</strong></p><p>${params.message}</p></div>` : ""}
+      <p><a href="${params.portalUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">View Teaming Request</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `${params.requesterName} of ${params.requesterCompany} invited you to team on "${params.opportunityTitle}"${
+      params.agency ? ` (${params.agency})` : ""
+    }. Why you'd be a good partner: ${params.whyPartner.join("; ")}. How to position to win: ${params.positioning.join(
+      "; "
+    )}. View at: ${params.portalUrl}`,
+  }),
+
+  /**
+   * Confirmation to the requester that their teaming request was sent.
+   */
+  teamingRequestConfirmation: (params: {
+    requesterName: string;
+    partnerCompany: string;
+    opportunityTitle: string;
+    portalUrl: string;
+  }) => ({
+    subject: `Teaming request sent — "${params.opportunityTitle}"`,
+    html: `
+      <h1>Teaming Request Sent</h1>
+      <p>Hi ${params.requesterName}, your teaming request for <strong>${params.opportunityTitle}</strong> was sent to <strong>${params.partnerCompany}</strong>. We'll notify you when they respond, and the request is tracked in the Teaming Alerts section for the KDM team.</p>
+      <p><a href="${params.portalUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Open Portal</a></p>
+      <p>Best regards,<br>The KDM Consortium Team</p>
+    `,
+    text: `Your teaming request for "${params.opportunityTitle}" was sent to ${params.partnerCompany}. View at: ${params.portalUrl}`,
+  }),
+
+  /**
    * Sent when an admin reviews a member's onboarding profile and requests
    * updates before it can be approved for AI search/recommendations/teaming.
    */

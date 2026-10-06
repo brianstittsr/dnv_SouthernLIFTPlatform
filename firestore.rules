@@ -538,6 +538,36 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // Teaming alerts - requester or recipient can read; written by
+    // /api/teaming/request (admin SDK). Admins read all for the Teaming
+    // Alerts section.
+    match /teamingAlerts/{docId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.requesterId == request.auth.uid ||
+         resource.data.recipientId == request.auth.uid ||
+         isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Teaming requests - same visibility as alerts; managed via API routes
+    match /teamingRequests/{docId} {
+      allow read: if isAuthenticated() &&
+        (resource.data.requesterId == request.auth.uid ||
+         resource.data.recipientId == request.auth.uid ||
+         isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // "Flag for teaming" interest - members manage their own flags;
+    // any authenticated member can read (partners can see interest)
+    match /teamingInterests/{docId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid || isAdmin();
+    }
+
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

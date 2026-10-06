@@ -191,6 +191,67 @@ export async function recommendTeamingPartner(
   }
 }
 
+export interface TeamingPitch {
+  /** Why the proposed partner is a good fit for this opportunity */
+  whyPartner: string[];
+  /** How the two companies should position themselves to win */
+  positioning: string[];
+}
+
+/**
+ * Generate the narrative content for a teaming request email: why the
+ * partner fits the opportunity and how the team should position to win.
+ * Returns null when the LLM is unavailable.
+ */
+export async function generateTeamingPitch(
+  requester: MemberProfileSummary,
+  partner: MemberProfileSummary,
+  opportunity: { title: string; agency?: string; naicsCode?: string; description?: string; setAside?: string }
+): Promise<TeamingPitch | null> {
+  const openai = await createOpenAIClient();
+  if (!openai) return null;
+
+  const memberText = (m: MemberProfileSummary, label: string) =>
+    [
+      `${label}: ${m.companyName || m.name}`,
+      m.companyDescription ? `Description: ${m.companyDescription}` : null,
+      m.naicsCodes?.length ? `NAICS: ${m.naicsCodes.join(", ")}` : null,
+      m.certifications?.length ? `Certifications: ${m.certifications.join(", ")}` : null,
+      m.expertise ? `Expertise: ${m.expertise}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      response_format: { type: "json_object" },
+      temperature: 0.4,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a federal contracting capture advisor writing a teaming proposal for two KDM Consortium members. Be specific and actionable. Respond ONLY with valid JSON.",
+        },
+        {
+          role: "user",
+          content: `${memberText(requester, "Requesting member")}\n\n${memberText(partner, "Prospective partner")}\n\nOpportunity: ${opportunity.title}\nAgency: ${opportunity.agency || "n/a"}\nNAICS: ${opportunity.naicsCode || "n/a"}\nSet-aside: ${opportunity.setAside || "n/a"}\n${opportunity.description ? `Description: ${opportunity.description.slice(0, 500)}` : ""}\n\nReturn JSON: {"whyPartner": string[] (3-5 specific reasons the partner complements the requester on this opportunity), "positioning": string[] (3-5 concrete steps for how the combined team should position to win — e.g. prime/sub split, set-aside strategy, capability gaps covered)}.`,
+        },
+      ],
+    });
+
+    const parsed = safeJsonParse<TeamingPitch>(response.choices[0]?.message?.content, {
+      whyPartner: [],
+      positioning: [],
+    });
+    if (parsed.whyPartner.length === 0) return null;
+    return parsed;
+  } catch (error) {
+    console.error("generateTeamingPitch: OpenAI request failed", error);
+    return null;
+  }
+}
+
 export interface NaicsSuggestion {
   code: string;
   title: string;

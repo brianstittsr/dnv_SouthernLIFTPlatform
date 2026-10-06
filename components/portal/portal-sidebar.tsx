@@ -323,6 +323,12 @@ const adminItems = [
     badge: "AI",
   },
   {
+    title: "Teaming Alerts",
+    href: "/portal/admin/teaming-alerts",
+    icon: Handshake,
+    badge: "New",
+  },
+  {
     title: "Pipeline Kanban",
     href: "/portal/admin/pipeline-kanban",
     icon: FolderKanban,

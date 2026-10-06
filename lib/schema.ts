@@ -2360,13 +2360,62 @@ export interface AiTeamingRecommendationDoc {
     suggestedMemberId?: string;
     filled: boolean;
   }[];
-  
+
   // Status
   status: "active" | "archived" | "converted";
   generatedAt: Timestamp;
   expiresAt: Timestamp;
-  
+
   createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Teaming alert — a member-initiated teaming request on a SAM.gov
+ *  opportunity. Emails both members and is listed in the admin
+ *  Teaming Alerts section. */
+export interface TeamingAlertDoc {
+  id: string;
+
+  // Parties
+  requesterId: string; // users/{uid} of the member who submitted
+  requesterName: string;
+  requesterCompany: string;
+  requesterEmail: string;
+  recipientId: string; // users/{uid} of the suggested partner
+  recipientName: string;
+  recipientCompany: string;
+  recipientEmail: string;
+
+  // Opportunity context
+  noticeId: string;
+  opportunityTitle: string;
+  agency?: string;
+  solicitationNumber?: string;
+  naicsCode?: string;
+  setAside?: string;
+  responseDeadline?: string;
+  uiLink?: string;
+
+  // AI rationale carried over from the analysis
+  partnerMatchScore?: number;
+  partnerReasons: string[];
+  positioningAdvice: string[];
+  message?: string;
+
+  status: "sent" | "accepted" | "declined" | "expired";
+  emailsSent: { recipient: boolean; requester: boolean };
+
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Member's "flag for teaming" interest on a SAM.gov notice */
+export interface TeamingInterestDoc {
+  id: string; // `${userId}_${noticeId}`
+  userId: string;
+  noticeId: string;
+  opportunityTitle?: string;
+  interested: boolean;
   updatedAt: Timestamp;
 }
 
@@ -2734,6 +2783,10 @@ export const COLLECTIONS = {
   USER_NOTIFICATIONS: "userNotifications",
   // Admin Onboarding Review audit trail
   ONBOARDING_REVIEWS: "onboardingReviews",
+  // Teaming flow (SAM.gov opportunities)
+  TEAMING_ALERTS: "teamingAlerts",
+  TEAMING_REQUESTS: "teamingRequests",
+  TEAMING_INTERESTS: "teamingInterests",
 } as const;
 
 // ... existing code ...
