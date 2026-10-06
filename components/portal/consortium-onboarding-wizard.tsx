@@ -389,7 +389,7 @@ export function ReadinessStep({
 
         <div className="bg-muted rounded-lg p-4">
           <p className="text-sm text-muted-foreground">
-            <strong>Note:</strong> Documents will be reviewed by KDM staff. You'll be notified once your readiness is validated.
+            <strong>Note:</strong> Documents will be reviewed by KDM staff. You&apos;ll be notified once your readiness is validated.
           </p>
         </div>
       </div>
@@ -716,15 +716,25 @@ export function ConsortiumOnboardingWizard() {
       // Use setDoc with merge so it works whether the doc exists or not
       await setDoc(teamMemberRef, teamMemberData, { merge: true });
 
-      // Also mark the users document as onboarding complete
+      // Also mark the users document as onboarding complete — and mirror the
+      // survey data so the member's profile stays populated (the profile tab
+      // and SAM.gov matching read flat fields off the users doc).
       const userRef = doc(db, "users", profile.id);
       await setDoc(userRef, {
         consortiumOnboardingComplete: true,
+        onboardingStage: "readiness",
         firstName: formData.firstName,
         lastName: formData.lastName,
         company: formData.companyName,
+        companyName: formData.companyName,
+        companyId: targetId,
         jobTitle: formData.title || "CEO",
         bio: formData.ceoBio,
+        companyDescription: formData.companyDescription,
+        website: formData.website,
+        linkedIn: formData.linkedIn,
+        naicsCodes: formData.naicsCodes,
+        certifications: formData.certifications,
         updatedAt: Timestamp.now(),
       }, { merge: true });
 
@@ -763,7 +773,7 @@ export function ConsortiumOnboardingWizard() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Welcome to the KDM Consortium!</h3>
               <p className="text-muted-foreground">
-                You're now part of an exclusive network of 12-50 expert companies collaborating
+                You&apos;re now part of an exclusive network of 12-50 expert companies collaborating
                 to win and deliver large government contracts.
               </p>
             </div>
@@ -1124,7 +1134,7 @@ export function ConsortiumOnboardingWizard() {
 
               <div className="space-y-4">
                 <Label>Target Contract Sizes</Label>
-                <p className="text-sm text-muted-foreground">Select the contract sizes you're interested in:</p>
+                <p className="text-sm text-muted-foreground">Select the contract sizes you&apos;re interested in:</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     "$0-100K",

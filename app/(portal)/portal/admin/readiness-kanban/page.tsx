@@ -15,6 +15,7 @@ import {
   MailWarning,
   BarChart3,
   ListTodo,
+  UserX,
 } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -51,8 +52,20 @@ const STAGE_META: Record<KanbanStage, { description: string; headerBg: string; a
   complete: { description: "Onboarding complete and validated.", headerBg: "bg-green-50", accent: "text-green-700", badgeBg: "bg-green-100 text-green-800" },
 };
 
+interface PortalUser {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+  svpRole?: string;
+  onboardingComplete?: boolean;
+  consortiumOnboardingComplete?: boolean;
+}
+
 export default function ReadinessKanbanPage() {
   const [members, setMembers] = useState<TeamMemberDoc[]>([]);
+  const [portalUsers, setPortalUsers] = useState<PortalUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<ViewMode>("score");
@@ -64,8 +77,12 @@ export default function ReadinessKanbanPage() {
     }
     setLoading(true);
     try {
-      const snap = await getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS));
+      const [snap, userSnap] = await Promise.all([
+        getDocs(collection(db, COLLECTIONS.TEAM_MEMBERS)),
+        getDocs(collection(db, COLLECTIONS.USERS)),
+      ]);
       setMembers(snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMemberDoc)));
+      setPortalUsers(userSnap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<PortalUser, "id">) })));
     } catch (error) {
       console.error("Error loading team members:", error);
     } finally {
@@ -126,6 +143,35 @@ export default function ReadinessKanbanPage() {
     return cols;
   }, [filtered, view]);
 
+  // Portal users who haven't completed onboarding: either no teamMembers
+  // record exists for them, or neither side carries the completion flag.
+  const notOnboarded = useMemo(() => {
+    const memberEmails = new Set(
+      members.map((m) => m.emailPrimary?.trim().toLowerCase()).filter(Boolean) as string[]
+    );
+    const memberByEmail = new Map(
+      members
+        .filter((m) => m.emailPrimary)
+        .map((m) => [m.emailPrimary!.trim().toLowerCase(), m])
+    );
+    const memberIds = new Set(members.map((m) => m.id));
+
+    return portalUsers
+      .map((u) => {
+        const email = u.email?.trim().toLowerCase();
+        const member = (email && memberByEmail.get(email)) || (memberIds.has(u.id) ? members.find((m) => m.id === u.id) : undefined);
+        const memberExists = !!member || (email ? memberEmails.has(email) : false) || memberIds.has(u.id);
+        const done = !!(
+          u.consortiumOnboardingComplete ||
+          u.onboardingComplete ||
+          member?.consortiumOnboardingComplete ||
+          member?.onboardingComplete
+        );
+        return { user: u, memberExists, done };
+      })
+      .filter((x) => !x.done);
+  }, [portalUsers, members]);
+
   const scored = members.filter((m) => m.govReadinessScore);
   const avgScore = scored.length
     ? Math.round(scored.reduce((s, m) => s + (m.govReadinessScore?.overallScore ?? 0), 0) / scored.length)
@@ -180,7 +226,7 @@ export default function ReadinessKanbanPage() {
       </div>
 
       {/* Summary stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold">{members.length}</div>
           <p className="text-sm text-muted-foreground">Members Tracked</p>
@@ -200,6 +246,10 @@ export default function ReadinessKanbanPage() {
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold text-amber-700">{missingCi}</div>
           <p className="text-sm text-muted-foreground">Missing Company Intel</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="text-2xl font-bold text-red-700">{notOnboarded.length}</div>
+          <p className="text-sm text-muted-foreground">Not Onboarded</p>
         </CardContent></Card>
       </div>
 
@@ -230,6 +280,56 @@ export default function ReadinessKanbanPage() {
           </div>
         ))}
       </div>
+
+      {/* Portal users who haven't finished onboarding */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <UserX className="h-5 w-5 text-red-600" />
+            <h3 className="font-semibold">Portal Users Without Completed Onboarding</h3>
+            <Badge variant="secondary">{notOnboarded.length}</Badge>
+          </div>
+          {notOnboarded.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Every portal user has completed onboarding.
+            </p>
+          ) : (
+            <div className="divide-y rounded-md border">
+              {notOnboarded
+                .filter(({ user }) => {
+                  const term = search.trim().toLowerCase();
+                  if (!term) return true;
+                  return `${user.firstName ?? ""} ${user.lastName ?? ""} ${user.email ?? ""}`
+                    .toLowerCase()
+                    .includes(term);
+                })
+                .map(({ user, memberExists }) => (
+                  <div key={user.id} className="flex items-center justify-between gap-3 px-3 py-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">
+                        {`${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || user.email || user.id}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {(user.role || user.svpRole) && (
+                        <Badge variant="outline" className="text-xs">
+                          {user.role || user.svpRole}
+                        </Badge>
+                      )}
+                      <Badge
+                        variant="secondary"
+                        className={memberExists ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}
+                      >
+                        {memberExists ? "Onboarding incomplete" : "No team member record"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
