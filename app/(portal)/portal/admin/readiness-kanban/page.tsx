@@ -29,6 +29,7 @@ import {
   STAGE_COLUMNS,
   READINESS_CONTRACT_READY_THRESHOLD,
   bucketForScore,
+  bucketLabel,
   deriveReadinessStage,
   computeMemberReadiness,
   resolveMemberCi,
@@ -438,6 +439,7 @@ function ReadinessCard({
   const score = scoreInfo?.score;
   const topGap = scoreInfo?.topGap;
   const scannedAt = toDate(member.govReadinessLastScannedAt);
+  const bucket = READINESS_BUCKETS.find((b) => b.id === bucketForScore(score ?? 0));
 
   return (
     <Card className="border bg-background shadow-sm transition-shadow hover:shadow-md">
@@ -457,10 +459,28 @@ function ReadinessCard({
               </p>
             )}
           </div>
-          {typeof score === "number" && (
-            <span className={cn("shrink-0 text-sm font-bold", accent)}>{score}</span>
+          {typeof score === "number" && bucket && (
+            <div className={cn("shrink-0 rounded-md px-2 py-1 text-center", bucket.badgeBg)} title={bucket.label}>
+              <div className="text-base font-bold leading-none">{score}</div>
+              <div className="text-[9px] leading-tight">/100</div>
+            </div>
           )}
         </div>
+
+        {typeof score === "number" && (
+          <div className="mt-2">
+            <div className="h-1.5 w-full rounded-full bg-muted">
+              <div
+                className={cn(
+                  "h-1.5 rounded-full",
+                  score >= 90 ? "bg-green-500" : score >= 75 ? "bg-blue-500" : score >= 60 ? "bg-yellow-500" : score >= 40 ? "bg-orange-500" : "bg-red-500"
+                )}
+                style={{ width: `${score}%` }}
+              />
+            </div>
+            <p className={cn("mt-1 text-[10px] font-medium", bucket?.accent)}>{bucketLabel(score)}</p>
+          </div>
+        )}
 
         <div className="mt-2 flex flex-wrap items-center gap-1">
           {!hasCi && <Badge variant="secondary" className="text-[10px]">No Company Intel</Badge>}
