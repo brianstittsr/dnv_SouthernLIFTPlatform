@@ -59,19 +59,45 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // excludeUserId may be a users doc id OR a teamMembers doc id (the
+    // profile context sets profile.id to the linked team member id when one
+    // exists). Resolve it to the set of users ids to exclude so the caller
+    // never sees themselves as a match.
+    const excludedIds = new Set<string>();
+    if (excludeUserId) {
+      excludedIds.add(excludeUserId);
+      const teamSnap = await db.collection("teamMembers").doc(excludeUserId).get();
+      const linkedUid = teamSnap.data()?.firebaseUid;
+      if (typeof linkedUid === "string" && linkedUid) {
+        excludedIds.add(linkedUid);
+      } else {
+        // Maybe it's a users id — exclude its linked team member docs too.
+        const linkedTeam = await db
+          .collection("teamMembers")
+          .where("firebaseUid", "==", excludeUserId)
+          .get();
+        linkedTeam.forEach((d) => excludedIds.add(d.id));
+      }
+    }
+
     // Consortium members store their Company Intelligence NAICS codes flat
-    // on the users/{uid} document (single source of truth).
-    const snapshot = await db
-      .collection("users")
-      .where("svpRole", "==", "consortium_member")
-      .get();
+    // on the users/{uid} document (single source of truth). Membership can be
+    // flagged via the singular svpRole or the svpRoles array (e.g. an admin
+    // who is also a consortium member).
+    const [byRole, byRoles] = await Promise.all([
+      db.collection("users").where("svpRole", "==", "consortium_member").get(),
+      db.collection("users").where("svpRoles", "array-contains", "consortium_member").get(),
+    ]);
+
+    const memberDocs = new Map<string, FirebaseFirestore.DocumentData>();
+    byRole.forEach((d) => memberDocs.set(d.id, d.data()));
+    byRoles.forEach((d) => memberDocs.set(d.id, d.data()));
 
     const partners: TeamingPartnerMatch[] = [];
 
-    snapshot.forEach((docSnap) => {
-      if (docSnap.id === excludeUserId) return;
+    memberDocs.forEach((data, docId) => {
+      if (excludedIds.has(docId)) return;
 
-      const data = docSnap.data();
       const otherNaics: string[] = Array.isArray(data.naicsCodes) ? data.naicsCodes : [];
       if (otherNaics.length === 0) return;
 
@@ -79,7 +105,7 @@ export async function POST(request: NextRequest) {
       if (score <= 0) return;
 
       partners.push({
-        id: docSnap.id,
+        id: docId,
         firstName: data.firstName || "",
         lastName: data.lastName || "",
         company: data.legalCompanyName || data.company || "",

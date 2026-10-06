@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { getAuth } from "firebase/auth";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { COLLECTIONS } from "@/lib/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -367,8 +371,9 @@ function TeamingPartnersTab({ naicsCodes, userId }: { naicsCodes: string[]; user
 }
 
 export default function ConsortiumMatchingPage() {
-  const { profile } = useUserProfile();
+  const { profile, linkedTeammember, updateProfile } = useUserProfile();
   const [saving, setSaving] = useState(false);
+  const [activating, setActivating] = useState(false);
   const naicsCodes = profile.naicsCodes || [];
 
   const [preferences, setPreferences] = useState({
@@ -377,6 +382,18 @@ export default function ConsortiumMatchingPage() {
     targetRegions: [] as string[],
     preferredPartnerships: [] as string[],
   });
+
+  // Pre-populate from onboarding data (written to the users doc at completion)
+  useEffect(() => {
+    if (profile.matchingPreferences) {
+      setPreferences({
+        targetContractSizes: profile.matchingPreferences.targetContractSizes ?? [],
+        targetAgencies: profile.matchingPreferences.targetAgencies ?? [],
+        targetRegions: profile.matchingPreferences.targetRegions ?? [],
+        preferredPartnerships: profile.matchingPreferences.preferredPartnerships ?? [],
+      });
+    }
+  }, [profile.matchingPreferences]);
 
   const toggleArrayItem = (field: keyof typeof preferences, value: string) => {
     setPreferences((prev) => {
@@ -389,12 +406,31 @@ export default function ConsortiumMatchingPage() {
     });
   };
 
+  const persistPreferences = async () => {
+    const uid = getAuth().currentUser?.uid;
+    if (!db || !uid) throw new Error("Not signed in");
+    const now = Timestamp.now();
+    await updateDoc(doc(db, "users", uid), { matchingPreferences: preferences, updatedAt: now });
+    if (linkedTeammember?.id) {
+      try {
+        await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeammember.id), {
+          matchingPreferences: preferences,
+          updatedAt: now,
+        });
+      } catch (e) {
+        console.warn("Could not mirror preferences to team member doc:", e);
+      }
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await persistPreferences();
+      updateProfile({ matchingPreferences: preferences });
       toast.success("Matching preferences saved successfully");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to save preferences");
     } finally {
       setSaving(false);
@@ -402,14 +438,35 @@ export default function ConsortiumMatchingPage() {
   };
 
   const handleActivateAI = async () => {
-    setSaving(true);
+    if (profile.aiMatchingActivated) {
+      toast.info("AI Matching is already active");
+      return;
+    }
+    setActivating(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const uid = getAuth().currentUser?.uid;
+      if (!db || !uid) throw new Error("Not signed in");
+      const now = Timestamp.now();
+      await persistPreferences();
+      await updateDoc(doc(db, "users", uid), { aiMatchingActivated: true, aiMatchingActivatedAt: now, updatedAt: now });
+      if (linkedTeammember?.id) {
+        try {
+          await updateDoc(doc(db, COLLECTIONS.TEAM_MEMBERS, linkedTeammember.id), {
+            aiMatchingActivated: true,
+            aiMatchingActivatedAt: now,
+            updatedAt: now,
+          });
+        } catch (e) {
+          console.warn("Could not mirror activation to team member doc:", e);
+        }
+      }
+      updateProfile({ aiMatchingActivated: true, matchingPreferences: preferences });
       toast.success("AI Matching activated! You'll start receiving matched opportunities.");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to activate AI matching");
     } finally {
-      setSaving(false);
+      setActivating(false);
     }
   };
 
@@ -492,24 +549,29 @@ export default function ConsortiumMatchingPage() {
         {/* Preferences */}
         <TabsContent value="preferences" className="space-y-6">
           {/* AI Status Card */}
-          <Card className="border-amber-200 bg-amber-50">
+          <Card className={profile.aiMatchingActivated ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"}>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
-                  <Zap className="h-6 w-6 text-amber-600" />
+                <div className={`h-12 w-12 rounded-full flex items-center justify-center ${profile.aiMatchingActivated ? "bg-green-100" : "bg-amber-100"}`}>
+                  <Zap className={`h-6 w-6 ${profile.aiMatchingActivated ? "text-green-600" : "text-amber-600"}`} />
                 </div>
                 <div>
                   <CardTitle>AI Matching Status</CardTitle>
                   <CardDescription>
-                    Configure your preferences to fine-tune AI-powered opportunity matching
+                    {profile.aiMatchingActivated
+                      ? "AI Matching is active — you'll receive matched opportunities and teaming recommendations"
+                      : "Configure your preferences to fine-tune AI-powered opportunity matching"}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <Badge variant="outline" className="text-sm">
+                <Badge variant={profile.aiMatchingActivated ? "default" : "outline"} className="text-sm">
                   <Star className="h-3 w-3 mr-1" />
+                  {profile.aiMatchingActivated ? "Active" : "Inactive"}
+                </Badge>
+                <Badge variant="outline" className="text-sm">
                   {naicsCodes.length} NAICS Codes on File
                 </Badge>
                 <p className="text-sm text-muted-foreground">
@@ -693,13 +755,17 @@ export default function ConsortiumMatchingPage() {
 
           {/* Actions */}
           <div className="flex gap-4">
-            <Button onClick={handleSave} disabled={saving} variant="outline">
+            <Button onClick={handleSave} disabled={saving || activating} variant="outline">
               {saving ? "Saving..." : "Save Preferences"}
             </Button>
-            <Button onClick={handleActivateAI} disabled={saving}>
+            <Button onClick={handleActivateAI} disabled={saving || activating || profile.aiMatchingActivated}>
               <Zap className="h-4 w-4 mr-2" />
-              {saving ? "Activating..." : "Activate AI Matching"}
-              <ArrowRight className="h-4 w-4 ml-2" />
+              {profile.aiMatchingActivated
+                ? "AI Matching Active"
+                : activating
+                  ? "Activating..."
+                  : "Activate AI Matching"}
+              {!profile.aiMatchingActivated && <ArrowRight className="h-4 w-4 ml-2" />}
             </Button>
           </div>
         </TabsContent>

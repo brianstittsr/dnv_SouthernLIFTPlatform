@@ -86,6 +86,15 @@ export interface UserProfile {
   readinessScore?: number;
   readinessValidationStatus?: string;
 
+  // AI Matching (written by consortium onboarding + the matching Preferences tab)
+  matchingPreferences?: {
+    targetContractSizes: string[];
+    targetAgencies: string[];
+    targetRegions: string[];
+    preferredPartnerships: string[];
+  };
+  aiMatchingActivated?: boolean;
+
   // Profile completion tracking
   profileCompletedAt: string | null;
   createdAt: string;
@@ -380,6 +389,8 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
       readinessDocuments,
       readinessScore,
       readinessValidationStatus,
+      matchingPreferences: userDoc?.matchingPreferences || teammemberRaw?.matchingPreferences || undefined,
+      aiMatchingActivated: userDoc?.aiMatchingActivated ?? teammemberRaw?.aiMatchingActivated ?? false,
       ...companyIntelligenceFields,
       ...professionalFields,
       updatedAt: new Date().toISOString(),
@@ -407,6 +418,8 @@ async function loadProfileForUser(userId: string): Promise<UserProfile> {
     readinessDocuments,
     readinessScore,
     readinessValidationStatus,
+    matchingPreferences: userDoc?.matchingPreferences || undefined,
+    aiMatchingActivated: userDoc?.aiMatchingActivated ?? false,
     ...companyIntelligenceFields,
     ...professionalFields,
     updatedAt: new Date().toISOString(),

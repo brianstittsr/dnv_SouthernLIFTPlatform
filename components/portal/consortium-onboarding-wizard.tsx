@@ -735,6 +735,14 @@ export function ConsortiumOnboardingWizard() {
         linkedIn: formData.linkedIn,
         naicsCodes: formData.naicsCodes,
         certifications: formData.certifications,
+        // Mirror matching preferences so the AI Matching Setup Preferences
+        // tab opens pre-populated with the member's onboarding selections.
+        matchingPreferences: {
+          targetContractSizes: formData.targetContractSizes,
+          targetAgencies: formData.targetAgencies,
+          targetRegions: formData.targetRegions,
+          preferredPartnerships: [],
+        },
         updatedAt: Timestamp.now(),
       }, { merge: true });
 
