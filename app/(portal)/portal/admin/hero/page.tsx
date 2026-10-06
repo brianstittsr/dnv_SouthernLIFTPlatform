@@ -60,18 +60,6 @@ const initialSlides: HeroSlide[] = [
     backgroundOverlayOpacity: 60,
   },
   {
-    id: "3",
-    badge: "V+ IntellEDGE™ — AI-Powered Insights",
-    headline: "Make Smarter Decisions.",
-    highlightedText: "Faster",
-    subheadline: "Leverage artificial intelligence to gain actionable insights from your manufacturing data, predict maintenance needs, and optimize production schedules.",
-    benefits: ["AI-Driven Analytics", "Predictive Maintenance", "Smart Scheduling"],
-    primaryCta: { text: "Discover AI Solutions", href: "/services/intelledge" },
-    secondaryCta: { text: "Learn More", href: "/about" },
-    isPublished: true,
-    order: 3,
-  },
-  {
     id: "4",
     badge: "Reshoring Initiative Partner",
     headline: "Bring Manufacturing",
