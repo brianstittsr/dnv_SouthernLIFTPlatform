@@ -44,6 +44,10 @@ import {
   Briefcase,
 } from "lucide-react";
 
+import { getProgramBranding } from "@/lib/branding";
+
+const branding = getProgramBranding();
+
 // Company types
 const companyTypes = [
   { id: "manufacturer", name: "Manufacturer" },
@@ -294,7 +298,7 @@ export default function ClientOnboardingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          category: "KDM & Associates Client",
+          category: branding.isLift ? "LIFT Center Client" : "KDM & Associates Client",
           fieldLabel: "Client Onboarding Wizard",
           prefix: "",
           firstName,
@@ -317,7 +321,7 @@ export default function ClientOnboardingPage() {
           approximateAnnualRevenue: formData.annualRevenue,
           applyingAs: "prime_contractor",
           ableToWorkOutOfState: false,
-          howFoundKDMAssociates: formData.howDidYouHear || "KDM onboarding link",
+          howFoundKDMAssociates: formData.howDidYouHear || (branding.isLift ? "LIFT onboarding link" : "KDM onboarding link"),
           referredBy: linkedMemberId ? `team-member:${linkedMemberId}` : "",
           helpNeededFromKDM: formData.primaryGoals || "See onboarding submission",
           servicesInterestedIn: formData.servicesInterested,
@@ -403,7 +407,7 @@ export default function ClientOnboardingPage() {
             </div>
             <h1 className="text-3xl font-bold mb-2">Client Registration</h1>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Complete your company profile to access KDM Consortium services and connect with our network of manufacturing experts.
+              {branding.clientOnboardingIntro}
             </p>
           </div>
 
@@ -472,7 +476,7 @@ export default function ClientOnboardingPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="dunsnumber">DUNS number</Label>
+                      <Label htmlFor="dunsnumber">{branding.isLift ? branding.dunsLabel : "DUNS number"}</Label>
                       <Input
                         id="dunsnumber"
                         value={formData.dunsnumber}
@@ -886,7 +890,7 @@ export default function ClientOnboardingPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Services of Interest</CardTitle>
-                  <CardDescription>Select the KDM services you&apos;re interested in</CardDescription>
+                  <CardDescription>{branding.servicesOfInterestDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -923,7 +927,7 @@ export default function ClientOnboardingPage() {
                       id="primaryGoals"
                       value={formData.primaryGoals}
                       onChange={(e) => updateFormData("primaryGoals", e.target.value)}
-                      placeholder="What are your main objectives for working with KDM Consortium?"
+                      placeholder={branding.primaryGoalsPlaceholder}
                       rows={3}
                     />
                   </div>
@@ -999,7 +1003,7 @@ export default function ClientOnboardingPage() {
                         <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1">
-                        By submitting this form, you consent to KDM Consortium contacting you about our services.
+                        {branding.contactConsentText}
                       </p>
                     </div>
                   </div>

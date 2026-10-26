@@ -83,6 +83,12 @@ service firebase.storage {
                       isValidFileSize(25);
     }
 
+    // LIFT form uploads and signatures: client SDK access is denied.
+    // Files are written and read only by server API routes after validation and ownership checks.
+    match /lift/{allPaths=**} {
+      allow read, write: if false;
+    }
+
     // Consortium readiness documents (per user)
     match /consortium/readiness/{userId}/{type}/{fileName} {
       allow read: if isAuthenticated() && isOwner(userId);

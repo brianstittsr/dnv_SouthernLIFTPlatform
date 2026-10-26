@@ -1,0 +1,338 @@
+@page {
+  size: Letter;
+  margin: 0.85in 0.75in 0.8in 0.75in;
+}
+
+:root {
+  --navy: #0b2545;
+  --blue: #134074;
+  --sky: #13315c;
+  --gold: #c9a227;
+  --ink: #1f2933;
+  --muted: #5f6b7a;
+  --line: #d6dde6;
+  --zebra: #f4f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9.6pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Cover */
+.cover {
+  position: relative;
+  height: 11in;
+  width: 8.5in;
+  padding: 0.9in 0.85in;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 62%, var(--sky) 100%);
+  color: #fff;
+  page-break-after: always;
+  overflow: hidden;
+}
+
+.cover::after {
+  content: "";
+  position: absolute;
+  right: -2.2in;
+  top: -2.2in;
+  width: 5.2in;
+  height: 5.2in;
+  border-radius: 50%;
+  border: 0.3in solid rgba(201, 162, 39, 0.18);
+}
+
+.cover .logos {
+  display: flex;
+  gap: 0.25in;
+  margin-bottom: 1.4in;
+}
+
+.cover .logo-slot {
+  border: 1.5px dashed rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  padding: 0.18in 0.25in;
+  font-size: 8.5pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 1.9in;
+  text-align: center;
+}
+
+.cover .eyebrow {
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10pt;
+  margin-bottom: 0.15in;
+}
+
+.cover h1 {
+  font-size: 30pt;
+  line-height: 1.15;
+  margin: 0 0 0.2in;
+  font-weight: 700;
+  border: none;
+  color: #fff;
+}
+
+.cover .subtitle {
+  font-size: 13pt;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 6.2in;
+  margin-bottom: 0.6in;
+}
+
+.cover .rule {
+  width: 1.2in;
+  height: 4px;
+  background: var(--gold);
+  margin: 0.3in 0 0.35in;
+}
+
+.cover .meta {
+  font-size: 10pt;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.8;
+}
+
+.cover .meta strong {
+  color: #fff;
+}
+
+.cover .footer-note {
+  position: absolute;
+  left: 0.85in;
+  bottom: 0.7in;
+  right: 0.85in;
+  font-size: 8.5pt;
+  color: rgba(255, 255, 255, 0.75);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 0.12in;
+}
+
+/* TOC */
+.toc {
+  page-break-after: always;
+}
+
+.toc h2 {
+  margin-top: 0;
+}
+
+.toc ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc li {
+  display: flex;
+  align-items: baseline;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.toc li.l3 {
+  padding-left: 0.3in;
+  color: var(--muted);
+  font-size: 9pt;
+  border-bottom: none;
+}
+
+.toc a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Body */
+h1,
+h2,
+h3,
+h4 {
+  color: var(--navy);
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+h2 {
+  font-size: 16pt;
+  margin: 0.35in 0 0.12in;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--gold);
+}
+
+h2.section-break {
+  page-break-before: always;
+  break-before: page;
+  margin-top: 0;
+}
+
+h3 {
+  font-size: 12pt;
+  margin: 0.22in 0 0.08in;
+  color: var(--blue);
+}
+
+h4 {
+  font-size: 10.5pt;
+  margin: 0.16in 0 0.06in;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+ul,
+ol {
+  margin: 0 0 8px;
+  padding-left: 0.25in;
+}
+
+li {
+  margin: 2px 0;
+}
+
+a {
+  color: var(--blue);
+}
+
+strong {
+  color: #111827;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 14px;
+  font-size: 8.4pt;
+  line-height: 1.35;
+  page-break-inside: auto;
+}
+
+thead {
+  display: table-header-group;
+}
+
+tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+th {
+  background: var(--navy);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding: 6px 7px;
+  border: 1px solid var(--navy);
+}
+
+td {
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td {
+  background: var(--zebra);
+}
+
+code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 8.2pt;
+  background: #eef2f7;
+  padding: 1px 4px;
+  border-radius: 3px;
+  word-break: break-word;
+}
+
+pre {
+  background: #0f1b2d;
+  color: #e6edf6;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 7.6pt;
+  line-height: 1.4;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+img {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+blockquote {
+  margin: 8px 0;
+  padding: 6px 12px;
+  border-left: 4px solid var(--gold);
+  background: #fbf8ec;
+}
+
+/* Rating badges */
+.badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 7.4pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.badge-ready {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-configure {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-extend {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-build {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Document control table directly after the cover */
+.doc-control table th {
+  display: none;
+}
+
+.doc-control table td:first-child {
+  width: 1.7in;
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--zebra);
+}

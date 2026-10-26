@@ -97,6 +97,8 @@ import {
   FileCheck,
   Radio,
   X,
+  ClipboardList,
+  Inbox,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -398,6 +400,12 @@ const svpSmeItems = [
     icon: LayoutDashboard,
   },
   {
+    title: "My LIFT Forms",
+    href: "/portal/lift/forms",
+    icon: ClipboardList,
+    badge: "LIFT",
+  },
+  {
     title: "My Proof Packs",
     href: "/portal/proof-packs",
     icon: Package,
@@ -570,6 +578,18 @@ const svpAdminItems = [
     badge: "SVP",
   },
   {
+    title: "LIFT Form Studio",
+    href: "/portal/admin/lift/forms",
+    icon: ClipboardList,
+    badge: "LIFT",
+  },
+  {
+    title: "LIFT Form Submissions",
+    href: "/portal/admin/lift/submissions",
+    icon: Inbox,
+    badge: "LIFT",
+  },
+  {
     title: "Webinar Creator",
     href: "/portal/admin/webinar-creator",
     icon: Video,
@@ -651,6 +671,12 @@ const consortiumMemberItems = [
     title: "Profile",
     href: "/portal/profile",
     icon: User,
+  },
+  {
+    title: "My LIFT Forms",
+    href: "/portal/lift/forms",
+    icon: ClipboardList,
+    badge: "LIFT",
   },
   {
     title: "Dashboard",

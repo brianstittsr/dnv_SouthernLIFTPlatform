@@ -24,6 +24,7 @@ import {
 } from "@/components/onboarding";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { getProgramBranding } from "@/lib/branding";
 
 function OnboardingContent() {
   const router = useRouter();
@@ -118,7 +119,7 @@ function OnboardingContent() {
       // Use setDoc with merge: true to create or update the document
       await setDoc(userRef, updateData, { merge: true });
       
-      toast.success("Welcome to the KDM Consortium!", {
+      toast.success(getProgramBranding().welcomeTitle, {
         description: "Your profile is ready. Let's get started!",
       });
 

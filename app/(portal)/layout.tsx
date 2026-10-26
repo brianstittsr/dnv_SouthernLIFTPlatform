@@ -9,6 +9,7 @@ import { ConsortiumOnboardingWizard } from "@/components/portal/consortium-onboa
 import { CompanyIntelligenceWizard } from "@/components/portal/company-intelligence-wizard";
 import { OnboardingPrepBanner } from "@/components/portal/onboarding-prep-banner";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { getProgramBranding } from "@/lib/branding";
 
 export default function PortalLayout({
   children,
@@ -28,7 +29,8 @@ export default function PortalLayout({
             </SidebarInset>
           </SidebarProvider>
           <ProfileCompletionWizard />
-          <AffiliateOnboardingWizard />
+          {/* The KDM affiliate network is out of scope for the LIFT deployment. */}
+          {!getProgramBranding().hideAffiliateWizard && <AffiliateOnboardingWizard />}
           <ConsortiumOnboardingWizard />
           <CompanyIntelligenceWizard />
         </CartProvider>

@@ -1,0 +1,1086 @@
+================================================================================
+SOUTHERN UNIVERSITY LIFT RURAL BUSINESS CENTER
+ONBOARDING-TO-OUTCOME QUESTION CATALOG
+================================================================================
+Document : All questions asked of users from onboarding through the end of the
+           LIFT client lifecycle
+Program  : MBDA Rural Business Center Program, MBDA-OBC-2026-00003
+Version  : 1.0 Draft
+Date     : October 25, 2026
+
+PURPOSE
+-------
+This catalog lists every question the platform asks today (Part A, taken
+directly from the platform code) and every question the LIFT program will ask
+across the full client lifecycle (Part B, from the LIFT Gap Analysis, LIFT
+System Design, and the MBDA Client Intake & Letter of Engagement form). Use it
+to review wording, remove duplicates, confirm required fields, and replace
+KDM / SVP branding before LIFT launch.
+
+LEGEND
+------
+Status
+  [CURRENT]       Built in the platform today; wording copied from the code.
+  [PLANNED-LIFT]  Designed for LIFT; not built yet. Wording is proposed.
+
+Required
+  (Required)      Must be answered to continue or submit.
+  (Optional)      May be skipped.
+
+Field types
+  text, long text, email, phone, number, currency, date, URL, select (one),
+  multi-select, checkbox (yes/no), list entry (add multiple values),
+  file upload, signature, rating, NPS (0-10), Likert scale
+
+Notes
+  BRANDING  Wording references KDM, KDM Consortium, or SVP and must be
+            changed for the LIFT platform.
+  NOTE      Behavior worth reviewing (validation gaps, outdated fields, etc.).
+
+Numbering: Part.Flow.Step.Question, e.g., A1.3.2 = Part A, Flow 1, Step 3,
+Question 2.
+
+================================================================================
+CONTENTS
+================================================================================
+PART A - CURRENT PLATFORM ONBOARDING QUESTIONS
+  A1  Client Registration (MBDA-style intake)
+  A2  Client Onboarding Profile (/onboarding/client)
+  A3  Portal Onboarding Wizard - Small Business (SME) path
+  A4  Portal Onboarding Wizard - Buyer path
+  A5  Consortium Member Onboarding Wizard
+  A6  Consortium Quick Profile (pop-up)
+  A7  Admin Onboarding Review
+  A8  Affiliate Onboarding Wizard
+  A9  Proof Pack Onboarding Wizard (informational)
+
+PART B - PLANNED LIFT CLIENT LIFECYCLE QUESTIONS
+  B1  AI Intake Interview
+  B2  MBDA Client Intake & Letter of Engagement
+  B3  Rural Eligibility Attestation
+  B4  Baseline Assessment Survey
+  B5  Service Plan and Advisor Session Log (staff)
+  B6  Workshop Registration, Attendance, and Feedback
+  B7  Capital Readiness Checklist
+  B8  Proposal Accelerator (SAM.gov responses)
+  B9  Outcome Check-ins (6 and 12 months)
+  B10 Impact Story Consent and Program Exit
+
+APPENDICES
+  Appendix 1  Question components not currently used by any page
+  Appendix 2  Cross-walk: current questions to LIFT questions
+  Appendix 3  Branding and wording to replace
+
+
+################################################################################
+PART A - CURRENT PLATFORM ONBOARDING QUESTIONS                       [CURRENT]
+################################################################################
+
+================================================================================
+A1  CLIENT REGISTRATION (MBDA-STYLE INTAKE)
+================================================================================
+Where shown : Public /resources page, portal /portal/client-registration,
+              admin /portal/admin/client-registrations
+Source      : components/client-registration/client-registration-modal.tsx
+Header      : "Client Registration - Register as a client with KDM &
+              Associates"   BRANDING
+Steps       : Ownership > Professional > Company > Business > Strategy > Review
+
+STEP 1 - OWNERSHIP INFORMATION
+A1.1.1  Prefix (Required, select)
+        Options: Mr., Ms., Mrs., Dr., Prof.
+A1.1.2  First Name (Required, text)
+A1.1.3  Middle Name (Optional, text)
+A1.1.4  Last Name (Required, text)
+
+STEP 2 - PROFESSIONAL IDENTITY
+A1.2.1  Title (Required, text)  Placeholder: "e.g., CEO"
+A1.2.2  LinkedIn URL (Optional, URL)
+A1.2.3  Owner Ethnicity (Required, select)
+        Options: Black or African American; Hispanic or Latino; Asian;
+        Native American or Alaska Native; Native Hawaiian or Pacific Islander;
+        Multi-ethnic; Other
+A1.2.4  Certifications (Optional, select one)
+        Options: 8(a) Certified; MBE Certified; DBE Certified; SBE Certified;
+        WBE Certified; HUBZone Certified; SDVOSB Certified; VOSB Certified;
+        None; In Process
+        NOTE  Single selection only; businesses often hold several.
+
+STEP 3 - COMPANY INFORMATION
+A1.3.1  Company Name (Required, text)
+A1.3.2  Street Address (Required, text)
+A1.3.3  Address Line 2 (Optional, text)
+A1.3.4  City (Required, text)
+A1.3.5  State (Required, select; 50 states + DC)
+A1.3.6  Zip Code (Required, text)
+A1.3.7  Mobile Phone (Required, phone)
+A1.3.8  Company Phone (Optional, phone)
+A1.3.9  Company Email (Required, email)
+A1.3.10 Website URL (Optional, URL)
+
+STEP 4 - BUSINESS IDENTIFIERS
+A1.4.1  SAM Registration (Optional, text)
+A1.4.2  DUNS Number (Optional, text)
+        NOTE  SAM.gov replaced DUNS with the Unique Entity ID (UEI); relabel.
+A1.4.3  NAICS Codes (Required, list entry)  Placeholder: "e.g., 541511"
+A1.4.4  CAGE Codes (Optional, list entry)  Placeholder: "e.g., 1ABC2"
+A1.4.5  Annual Revenue (Optional, select)
+        Options: Under $100K; $100K - $500K; $500K - $1M; $1M - $5M;
+        $5M - $10M; $10M - $25M; $25M - $50M; Over $50M
+A1.4.6  Applying As (Optional, select; default Prime)
+        Options: Prime; Subcontractor; Joint Venture; Other
+A1.4.7  Able to work outside your state? (Optional, checkbox)
+A1.4.8  Have in-house BD team? (Optional, checkbox)
+A1.4.9  How do you currently get business? (Optional, long text)
+A1.4.10 Referred By (Optional, text)
+A1.4.11 How found KDM & Associates * (shown as Required, text)   BRANDING
+        NOTE  Marked required on screen but not enforced by validation.
+
+STEP 5 - STRATEGY & NEEDS
+A1.5.1  Open to teaming arrangement? (Optional, checkbox)
+A1.5.2  Have resources to invest if recommended? (Optional, checkbox)
+A1.5.3  Help needed from KDM & Associates (Required, long text)   BRANDING
+A1.5.4  Top company need (Required, text)
+A1.5.5  Services Interested In (Optional, multi-select)
+        Options: Government Contracting Training; Proposal Writing Support;
+        Capability Statement Development; SAM Registration Assistance;
+        Certification Support; Business Development Strategy; Teaming Partner
+        Matching; Financing Assistance; Legal/Compliance Support;
+        Marketing & Branding
+A1.5.6  Certifications Interested In (Optional, multi-select)
+        Options: 8(a) Business Development; HUBZone Certification;
+        Women-Owned Small Business (WOSB); Service-Disabled Veteran-Owned
+        (SDVOSB); Minority Business Enterprise (MBE); Disadvantaged Business
+        Enterprise (DBE); Small Business Enterprise (SBE)
+A1.5.7  Interested in loans/financing? (Optional, checkbox)
+A1.5.8  Target Government Agencies (Optional, multi-select)
+        Options: Department of Defense (DoD); Department of Veterans Affairs
+        (VA); Department of Homeland Security (DHS); Department of Health and
+        Human Services (HHS); Department of Energy (DOE); Department of
+        Transportation (DOT); Department of Justice (DOJ); Department of
+        Agriculture (USDA); Department of Commerce (DOC); Department of
+        Education; Department of Housing and Urban Development (HUD);
+        Department of Labor (DOL); Department of State; Department of the
+        Treasury; Department of the Interior; Environmental Protection Agency
+        (EPA); National Aeronautics and Space Administration (NASA); General
+        Services Administration (GSA); National Institutes of Health (NIH);
+        Federal Bureau of Investigation (FBI); Other
+A1.5.9  OEM Manufacturers (Optional, list entry)
+        Placeholder: "e.g., Boeing, Lockheed Martin"
+A1.5.10 Notes (Optional, long text)
+
+STEP 6 - REVIEW
+        Read-only summary: Name, Company, Email, Phone, NAICS Codes, Revenue,
+        Services Needed, Top Need. Action: Submit.
+        NOTE  No consent, privacy acknowledgment, or signature is captured.
+
+================================================================================
+A2  CLIENT ONBOARDING PROFILE (/onboarding/client)
+================================================================================
+Where shown : /onboarding/client (also reached from admin-sent onboarding
+              links that prefill email)
+Source      : app/onboarding/client/page.tsx
+Intro       : "Complete your company profile to access KDM Consortium
+              services and connect with our network of manufacturing
+              experts."   BRANDING
+Tabs        : Company > Contacts > Manufacturing > Quality > Services
+
+TAB 1 - COMPANY INFORMATION ("Tell us about your organization")
+A2.1.1  Company Name (Required, text)  Placeholder: "Your Company LLC"
+A2.1.2  Company Type (Required, select)
+        Options: Manufacturer; Supplier/Vendor; OEM (Original Equipment
+        Manufacturer); Tier 1 Supplier; Tier 2 Supplier; Distributor;
+        Service Provider; Other
+A2.1.3  DUNS number (Optional, text)  Placeholder: "00-000-0000"   NOTE (UEI)
+A2.1.4  Year Established (Optional, number)  Placeholder: "1990"
+A2.1.5  Number of Employees (Optional, select)
+        Options: 1-10; 11-50; 51-100; 101-250; 251-500; 500+
+A2.1.6  Website (Optional, URL)
+A2.1.7  Street Address (Required, text)
+A2.1.8  City (Required, text)
+A2.1.9  State (Required, text)
+A2.1.10 ZIP Code (Required, text)
+A2.1.11 Country (Optional, text; default "United States")
+
+TAB 2 - CONTACTS
+Primary Contact ("Main point of contact for your organization")
+A2.2.1  Full Name (Required, text)
+A2.2.2  Title (Optional, text)  Placeholder: "Operations Manager"
+A2.2.3  Email (Required, email)
+A2.2.4  Phone (Required, phone)
+Secondary Contact (Optional) ("Backup contact for your organization")
+A2.2.5  Full Name (Optional, text)
+A2.2.6  Title (Optional, text)
+A2.2.7  Email (Optional, email)
+A2.2.8  Phone (Optional, phone)
+
+TAB 3 - MANUFACTURING
+A2.3.1  Industry Sectors - "Select all industries you serve"
+        (Required: at least one, multi-select)
+        Options: Automotive; Aerospace & Defense; Electronics; Medical
+        Devices; Industrial Equipment; Consumer Products; Energy & Utilities;
+        Food & Beverage; Pharmaceutical; Other
+A2.3.2  Manufacturing Capabilities - "Select your core capabilities"
+        (Optional, multi-select)
+        Options: CNC Machining; Metal Stamping; Injection Molding; Die
+        Casting; Welding & Fabrication; Assembly; Electronics Assembly;
+        Surface Finishing; Testing & Inspection; Packaging
+A2.3.3  Certifications - "Select your current certifications"
+        (Optional, multi-select)
+        Options: ISO 9001; ISO 14001; IATF 16949; AS9100; ISO 13485;
+        ISO 45001; NADCAP; CMMI
+A2.3.4  Facility Size (sq ft) (Optional, number)  Placeholder: "50,000"
+A2.3.5  Production Capacity Description (Optional, text)
+        Placeholder: "e.g., 10,000 units/month"
+
+TAB 4 - QUALITY MANAGEMENT SYSTEM ("Tell us about your quality practices")
+        All optional checkboxes - "Do you have...":
+A2.4.1  Quality Manual
+A2.4.2  Documented Processes
+A2.4.3  Internal Audits
+A2.4.4  Corrective Action Process
+A2.4.5  Supplier Qualification
+
+TAB 5 - SERVICES & GOALS
+A2.5.1  Services of Interest - "Select the KDM services you're interested
+        in" (Required: at least one, multi-select)   BRANDING
+        Options: Lean Manufacturing; Quality Systems & ISO; Automation &
+        Industry 4.0; Workforce Development; Supply Chain Optimization;
+        Digital Transformation; Manufacturing Assessment; Training Programs
+A2.5.2  Primary Goals (Optional, long text)
+        Placeholder: "What are your main objectives for working with KDM
+        Consortium?"   BRANDING
+A2.5.3  Current Challenges (Optional, long text)
+        Placeholder: "What challenges are you currently facing in your
+        operations?"
+A2.5.4  Project Timeline (Optional, select)
+        Options: Immediate (within 1 month); Short-term (1-3 months);
+        Medium-term (3-6 months); Long-term (6+ months); Just exploring
+        options
+A2.5.5  How did you hear about us? (Optional, select)
+        Options: Referral; Online Search; LinkedIn; Trade Show/Event;
+        Partner Organization; Other
+A2.5.6  Additional Notes (Optional, long text)
+A2.5.7  I agree to the Terms of Service and Privacy Policy (Required,
+        checkbox). Helper text: "By submitting this form, you consent to KDM
+        Consortium contacting you about our services."   BRANDING
+
+NOTE  Submissions are saved as a client registration with category "KDM &
+      Associates Client"; owner ethnicity and NAICS are not collected here.
+
+================================================================================
+A3  PORTAL ONBOARDING WIZARD - SMALL BUSINESS (SME) PATH
+================================================================================
+Where shown : /portal/onboarding (default, or ?type=sme)
+Source      : components/onboarding/sme-wizard-steps.tsx,
+              app/(portal)/portal/onboarding/page.tsx
+Completion  : "Welcome to the KDM Consortium!"   BRANDING
+Steps       : Business Information > Certifications (optional) >
+              Capabilities > Contact Information > Proof Pack (optional) >
+              Review
+
+STEP 1 - BUSINESS INFORMATION ("Tell us about your company")
+A3.1.1  Company Name (Required, text)
+A3.1.2  DUNS/UEI number (Required, text)
+A3.1.3  CAGE Code (Optional, text)
+A3.1.4  Website (Optional, URL)
+A3.1.5  Business Address (Required, text)
+A3.1.6  City (Required, text)
+A3.1.7  State (Required, text)
+A3.1.8  ZIP Code (Required, text)
+A3.1.9  Year Established (Optional, number)
+A3.1.10 Number of Employees (Optional, select)
+        Options: 1-10; 11-50; 51-100; 101-250; 251-500; 500+
+
+STEP 2 - CERTIFICATIONS (optional step)
+A3.2.1  Select Your Certifications - "Choose all certifications that apply
+        to your business" (Optional, multi-select)
+        Options: 8(a) Certified; WOSB; EDWOSB; SDVOSB; HUBZone; Other
+
+STEP 3 - CAPABILITIES ("Describe your core capabilities and NAICS codes")
+A3.3.1  Primary NAICS Codes (Required: 1 to 5, multi-select from list)
+        Options: 541511 Custom Computer Programming Services; 541512 Computer
+        Systems Design Services; 541513 Computer Facilities Management
+        Services; 541519 Other Computer Related Services; 541611
+        Administrative Management Consulting; 541612 Human Resources
+        Consulting; 541613 Marketing Consulting; 541614 Process, Physical
+        Distribution, and Logistics Consulting; 541618 Other Management
+        Consulting; 541690 Other Scientific and Technical Consulting; 541990
+        All Other Professional, Scientific, and Technical Services; 561110
+        Office Administrative Services; 561210 Facilities Support Services;
+        561320 Temporary Help Services; 561499 All Other Business Support
+        Services
+        NOTE  List is services-only; rural, agricultural, and manufacturing
+        NAICS codes are missing.
+A3.3.2  Core Capabilities (Required, long text)
+A3.3.3  Past Performance Summary (Optional, long text)
+A3.3.4  Key Differentiators (Optional, long text)
+
+STEP 4 - CONTACT INFORMATION ("How can buyers reach you?")
+A3.4.1  Primary Contact - Full Name (Required, text)
+A3.4.2  Primary Contact - Email (Required, email)
+A3.4.3  Primary Contact - Phone (Required, phone)
+A3.4.4  Preferred Contact Method (Optional, select)
+        Options: Email; Phone; Either
+A3.4.5  Secondary Contact - Full Name (Optional, text)
+A3.4.6  Secondary Contact - Email (Optional, email)
+
+STEP 5 - PROOF PACK (optional step) ("Upload your capability documents")
+        Notice: Do not upload classified information, CUI, export-controlled
+        data, or procurement-sensitive information.
+A3.5.1  Capability Statement (shown as Required, file upload)
+A3.5.2  W-9 Form (Optional, file upload)
+A3.5.3  Certificate of Insurance (Optional, file upload)
+A3.5.4  Past Performance References (Optional, file upload)
+A3.5.5  Certification Documents (Optional, file upload)
+        NOTE  Upload buttons in this step are not connected to storage.
+
+STEP 6 - REVIEW
+        Read-only summary; action: Complete.
+
+================================================================================
+A4  PORTAL ONBOARDING WIZARD - BUYER PATH
+================================================================================
+Where shown : /portal/onboarding?type=buyer
+Source      : components/onboarding/buyer-wizard-steps.tsx
+Steps       : Agency Information > Role & Responsibilities > Procurement
+              Interests (optional) > Contact Preferences (optional) > Review
+NOTE  Buyers (agencies, primes) are not LIFT clients; this path may be
+      disabled for LIFT or repurposed for partner/lender onboarding.
+
+STEP 1 - AGENCY INFORMATION
+A4.1.1  Agency/Organization Name (Required, text)
+A4.1.2  Agency Type (Required, select)
+        Options: Federal Government; State Government; Local Government;
+        Prime Contractor
+A4.1.3  Office/Division (Optional, text)
+A4.1.4  Address (Optional, text)
+A4.1.5  City (Optional, text)
+A4.1.6  State (Optional, text)
+A4.1.7  ZIP Code (Optional, text)
+
+STEP 2 - ROLE & RESPONSIBILITIES
+A4.2.1  Job Title (Required, text)
+A4.2.2  Role Type (Required, select)
+        Options: Contracting Officer (CO/KO); Small Business Specialist;
+        Program Manager; Subcontracting Manager; Other
+A4.2.3  Procurement Authority Level (Optional, select)
+        Options: Unlimited; Up to $10M; Up to $1M; Up to $250K;
+        Micro-purchase only; No direct authority
+A4.2.4  Annual Procurement Budget Range (Optional, select)
+        Options: $100M+; $50M - $100M; $10M - $50M; $1M - $10M; Under $1M;
+        Unknown/Varies
+
+STEP 3 - PROCUREMENT INTERESTS (optional)
+A4.3.1  Certification Preferences (Optional, multi-select)
+        Options: 8(a); WOSB/EDWOSB; SDVOSB; HUBZone; Any Small Business
+A4.3.2  Contract Types (Optional, multi-select)
+        Options: Firm Fixed Price (FFP); Time & Materials (T&M); IDIQ; BPA;
+        GSA Schedule; Other
+A4.3.3  Geographic Preferences (Optional, text)
+        Placeholder: "e.g., DMV area, Nationwide, Specific states..."
+
+STEP 4 - CONTACT PREFERENCES (optional)
+A4.4.1  Preferred Contact Method (Optional, select): Email; Phone; Either
+A4.4.2  Availability for Introductions (Optional, select)
+        Options: Immediately available; Weekly; Monthly; As needed
+A4.4.3  Meeting Preferences (Optional, select)
+        Options: Virtual Only; In-Person Only; Phone Only; Any Format
+A4.4.4  Additional Notes (Optional, long text)
+
+STEP 5 - REVIEW
+        Read-only summary; action: Complete.
+
+================================================================================
+A5  CONSORTIUM MEMBER ONBOARDING WIZARD
+================================================================================
+Where shown : Automatic prompt in the portal for consortium members
+              (portal layout); progress page /portal/consortium/onboarding
+Source      : components/portal/consortium-onboarding-wizard.tsx
+Welcome     : "Welcome to the KDM Consortium!"   BRANDING
+Steps       : Welcome > CEO Profile > Company Info > Capabilities >
+              Readiness Validation > AI Matching Setup > Review
+Progress page stages: 1 Profile Setup; 2 Capabilities; 3 Readiness
+              Validation; 4 AI Matching Setup; 5 Active Engagement
+
+STEP 1 - WELCOME (no questions)
+
+STEP 2 - CEO PROFILE ("Tell us about yourself")
+A5.2.1  First Name (Required, text)
+A5.2.2  Last Name (Required, text)
+A5.2.3  Title (Optional, text)  Placeholder: "CEO / Founder"
+A5.2.4  CEO Bio (Optional, long text)
+        Placeholder: "Tell us about your background and expertise..."
+
+STEP 3 - COMPANY INFO
+A5.3.1  Company Name (Required, text) - the platform searches existing
+        companies and asks: "We found existing companies with a similar
+        name... If your company is already listed, please select it to link
+        your profile." (Optional selection)
+A5.3.2  Company Description (Required, long text)
+        Placeholder: "Brief description of your company for public display
+        (2-3 sentences)..."
+A5.3.3  Website (Optional, URL)
+A5.3.4  LinkedIn (Optional, URL)
+
+STEP 4 - CAPABILITIES (optional)
+A5.4.1  NAICS Codes (Optional, select from list or enter custom code)
+        List: 332710 Machine Shops; 332810 Coating, Engraving, Heat Treating;
+        333120 Commercial Air Conditioning; 333131 Industrial Machinery
+        Manufacturing; 333511 Industrial Mold Manufacturing; 336411 Aircraft
+        Manufacturing; 336413 Aircraft Engine and Engine Parts; 541330
+        Engineering Services; 541511 Custom Computer Programming; 541512
+        Computer Systems Design; 541611 Administrative Management; 541690
+        Other Scientific and Technical Consulting; 541712 Research and
+        Development in Physical Sciences; 562910 Remediation and Other Waste
+        Management; 236220 Commercial and Institutional Building; 237310
+        Highway, Street, and Bridge Construction; 237990 Heavy and Civil
+        Engineering Construction; 541519 Other Computer Related Services;
+        541612 Human Resources Consulting; 541618 Other Management
+        Consulting; 541715 Research and Development in Life Sciences; 541720
+        Research and Development in Social Sciences; 541990 All Other
+        Professional Services; 561110 Office Administrative Services; 561210
+        Facilities Support Services; 561320 Temporary Help Services; 561410
+        Document Preparation Services; 561430 Business Support Services;
+        561490 Other Professional Services; 561710 Travel Agencies; 561720
+        Tour Operators; 561730 Convention and Trade Show Organizers; 561740
+        Event Promotion; 561790 Other Travel Arrangement; 561990 All Other
+        Support Services
+        NOTE  The source list repeats several codes (541330, 541512, 541611,
+        541690, 541712).
+A5.4.2  Certifications (Optional, multi-select)
+        Options: 8(a); HUBZone; SDVOSB; WOSB; CMMC; MBE
+A5.4.3  5 Pillars Focus Areas - "Select which pillars your company serves"
+        (Optional, multi-select)   BRANDING (KDM 5 Pillars)
+        Options: U.S. Manufacturing; Critical Minerals; Defense Contracting;
+        Access to Capital; Opportunity Zones
+
+STEP 5 - READINESS VALIDATION (optional) ("Government Contracting
+         Readiness - Provide documentation to validate your government
+         contracting readiness")
+        Notice: CAGE Code, UEI / SAM registration, and DUNS Number are
+        managed in the Company Intelligence profile.
+A5.5.1  Capability Statement (Optional, file upload)
+A5.5.2  Past Performance References (Optional, file upload)
+A5.5.3  Certifications (CMMC, ISO, etc.) (Optional, file upload)
+A5.5.4  Financial Statements (Optional, file upload)
+A5.5.5  Insurance Certificates (Optional, file upload)
+        Notice: "Documents will be reviewed by KDM staff."   BRANDING
+
+STEP 6 - AI MATCHING SETUP (optional) ("Configure your preferences for
+         AI-powered opportunity matching")
+A5.6.1  Target Contract Sizes (Optional, multi-select)
+        Options: $0-100K; $100K-500K; $500K-1M; $1M-5M; $5M-10M; $10M+
+A5.6.2  Target Agencies (Optional, multi-select)
+        Options: DoD; Department of State; Department of Energy; NASA;
+        Department of Homeland Security; Department of Transportation; VA; GSA
+A5.6.3  Target Regions (Optional, multi-select)
+        Options: National; Northeast; Southeast; Midwest; Southwest; West;
+        International
+
+STEP 7 - REVIEW ("Review Your Profile")
+        Read-only summary; action: Complete. Confirmation: "Your profile is
+        complete. Next step: Upload government contracting documentation."
+
+================================================================================
+A6  CONSORTIUM QUICK PROFILE (POP-UP)
+================================================================================
+Where shown : /portal/profile and admin onboarding page
+Source      : components/modals/ConsortiumOnboardingModal.tsx
+Header      : "Welcome to the KDM Consortium" - Early Access Priority
+              BRANDING
+Journey     : Join > Complete Profile (5 min) > Get Matched > Win Contracts
+              ("$2.5M avg")
+NOTE  After submit, users are sent to /portal/payment (paid membership).
+      Must be removed for grant-funded LIFT services.
+
+Both user types
+A6.1    Company Name / Organization Name (Required, text)
+A6.2    Industry Sector / Primary Industry (Required, select)
+        Options: Aerospace; Defense; Advanced Manufacturing; Critical
+        Minerals; Technology; Other
+
+Buyer only
+A6.3    Contract Types Interested In (Optional, multi-select)
+        Options: Set-Aside; Prime; Subcontractor; Teaming
+A6.4    Annual Procurement Budget (Optional, select)
+        Options: $0-500K; $500K-2M; $2M-10M; $10M+
+
+Supplier only
+A6.5    Current Certifications (Optional, multi-select)
+        Options: CMMC Level 1; CMMC Level 2; CMMC Level 3; SDVOSB; WOSB;
+        8(a); HUBZone; None
+A6.6    Key Capabilities (Optional, long text; comma separated)
+        Placeholder: "e.g., CNC Machining, Titanium Processing, Software
+        Development"
+
+================================================================================
+A7  ADMIN ONBOARDING REVIEW (STAFF)
+================================================================================
+Where shown : /portal/admin/consortium/onboarding-review/[member]
+Source      : app/(portal)/portal/admin/consortium/onboarding-review/
+              [memberId]/page.tsx
+Purpose     : Staff review the member profile after onboarding. An AI
+              Sufficiency Review flags weak or missing fields.
+A7.1    Select flagged items to include in an update request (multi-select
+        checkboxes, one per flagged field)
+A7.2    Request Profile Updates - edit the auto-drafted email to the member
+        (long text) > Send Email
+A7.3    Approve Onboarding Content - confirm approval (warns if items are
+        still flagged) > Approve & Notify
+        Result: "approved - full AI access unlocked"
+
+================================================================================
+A8  AFFILIATE ONBOARDING WIZARD
+================================================================================
+Where shown : Automatic prompt in the portal for affiliates (portal layout)
+Source      : components/portal/affiliate-onboarding-wizard.tsx
+Welcome     : "Welcome to the KDM Affiliate Network!"   BRANDING
+Steps       : Welcome > Commitments > Your Expertise > Networking Profile >
+              Ready to Connect
+NOTE  The affiliate network (referral commissions, revenue sharing) is a KDM
+      business program and is out of scope for LIFT clients.
+
+STEP 1 - WELCOME (no questions)
+
+STEP 2 - COMMITMENTS
+        Commitments listed: Monthly Networking Meetings (2 per month);
+        One-to-One Meetings (4 per month); Referral Generation ("to the SVP
+        network"); Communication (respond within 24-48 hours); Revenue
+        Sharing ("SVP revenue sharing model"); Professional Standards
+        ("represent SVP values")   BRANDING
+A8.2.1  "I understand and acknowledge my commitments as an SVP affiliate"
+        (Required, checkbox)   BRANDING
+
+STEP 3 - YOUR EXPERTISE
+A8.3.1  Areas of Expertise - "Select the categories that best describe your
+        services" (Required: at least one, multi-select)
+        Options: Manufacturing Operations; Quality & ISO; Technology & AI;
+        Finance & Accounting; Sales & Marketing; HR & Workforce; Supply Chain;
+        International Business
+A8.3.2  Specific Expertise (comma separated) (Required, text)
+        Placeholder: "e.g., Six Sigma, ISO 9001, Lean Manufacturing, AI
+        Implementation"
+
+STEP 4 - NETWORKING PROFILE
+A8.4.1  Who is your ideal referral partner? (Required, long text)
+A8.4.2  What is your unique value proposition? (Required, long text)
+A8.4.3  What problems do you solve for clients? (Required, long text)
+A8.4.4  Describe your ideal client (Optional, long text)
+        Placeholder: "Industry, company size, specific needs..."
+A8.4.5  What are your goals this quarter? (Optional, long text)
+
+STEP 5 - READY TO CONNECT (no questions; next steps shown)
+
+================================================================================
+A9  PROOF PACK ONBOARDING WIZARD (INFORMATIONAL)
+================================================================================
+Where shown : /portal/dashboard (first visit)
+Source      : components/portal/proof-pack-onboarding-wizard.tsx
+Header      : "Welcome to the Vendor Platform"
+Steps       : Welcome > What is a Proof Pack? > How It Works > Required
+              Documents > Get Started
+Questions   : None. This wizard explains the Proof Pack and lists the
+              documents a business should prepare:
+  Compliance & Security  : CMMC Level 1 or 2 certification; NIST 800-171
+                           compliance (if applicable); Security clearance
+                           documentation; ITAR/EAR registration (if
+                           applicable)
+  Certifications         : ISO 9001, AS9100 (manufacturing); Small business
+                           certifications; Socioeconomic certifications;
+                           Industry-specific credentials
+  Financial & Past Perf. : Capability statement; Past performance
+                           references; Financial statements; DCAA accounting
+                           system (if applicable)
+  Registration Documents : SAM.gov active registration; CAGE code
+                           documentation; NAICS codes list; UEI verification
+Final step  : "Create Your First Proof Pack" (opens the Proof Pack builder)
+
+
+################################################################################
+PART B - PLANNED LIFT CLIENT LIFECYCLE QUESTIONS                [PLANNED-LIFT]
+################################################################################
+Lifecycle order:
+  Discover > B1 AI Intake Interview > B2 MBDA Intake & Engagement (signed) >
+  B3 Rural Eligibility > B4 Baseline > B5 Service Plan & Sessions >
+  B6 Training > B7 Capital Readiness > B8 Proposal Accelerator >
+  B9 Outcome Check-ins (6 and 12 months) > B10 Impact Story & Exit
+
+Design references: LIFT_Gap_Analysis.md sections 6-8; LIFT_System_Design.md
+modules M2 (Form Builder), M3 (AI Intake Interview), M4 (Intake &
+Eligibility), M5 (Lifecycle), M7 (Learning Hub), M8 (Capital Readiness),
+M9 (Proposal Accelerator), M10 (Outcome Verification), M14 (Feedback).
+
+================================================================================
+B1  AI INTAKE INTERVIEW (conversational, one question at a time)
+================================================================================
+Template : lift-client-intake (public or client portal)
+Rule     : AI drafts the intake record; staff confirm; the client signs the
+           MBDA form (B2) before counting as enrolled. AI never decides
+           eligibility.
+
+START (required before the interview begins)
+B1.0.1  What is your full name? (Required, text)
+B1.0.2  Which LIFT service area best matches what you need? (Required, select)
+        Options: Business Formation & Entrepreneurship; Capital Readiness;
+        Procurement Readiness (CMMC / HUBZone / Opportunity Zones /
+        Mentor-Protege); Advanced Manufacturing (AM Lab); Digital & AI
+        Adoption; Agriculture & Rural Enterprise
+B1.0.3  AI disclosure: "I understand an AI assistant will guide this
+        interview and my answers will be reviewed by LIFT staff."
+        (Required, checkbox)
+
+COVERAGE TOPICS (the assistant asks follow-ups until each is covered)
+B1.1    Business identity - What is your business's legal name, and do you
+        use a different trade name (DBA)?
+B1.2    Ownership - Who owns the business, and what percentage does each
+        owner hold? Is the business majority-owned and controlled by the
+        person(s) completing this interview?
+B1.3    Location - What is the business's physical address, and in which
+        parish is it located?
+B1.4    Industry - What products or services do you provide? Do you know
+        your NAICS code(s)?
+B1.5    Stage - Is your business an idea, a startup (under 2 years), an
+        operating business, or growing/expanding?
+B1.6    Size - About how much revenue did the business earn in the last 12
+        months? How many full-time and part-time employees do you have?
+B1.7    Capital needs - Are you seeking financing or investment? For what
+        purpose and about how much?
+B1.8    Procurement history - Are you registered in SAM.gov (UEI / CAGE)?
+        Have you sold to government agencies, prime contractors, or large
+        companies before?
+B1.9    Certifications - Which certifications do you hold or plan to pursue
+        (8(a), HUBZone, WOSB, SDVOSB, MBE, DBE, CMMC, ISO)?
+B1.10   Digital tools - What tools do you use today (website, e-commerce,
+        accounting software, social media, AI tools)?
+B1.11   Number one need - What is the single most important thing your
+        business needs right now?
+B1.12   Barriers - What is holding your business back?
+B1.13   Goals - What do you want to achieve in the next 12 months?
+B1.14   Preferred services - Which kinds of help interest you (counseling,
+        workshops, capital readiness, contracting, AM program, digital
+        adoption)?
+B1.15   Referral source - How did you hear about the LIFT Center?
+B1.16   Attachments (Optional, file upload) - Upload any documents that
+        help us understand your business (capability statement, financial
+        statement, business plan). Do not upload Social Security numbers or
+        controlled (CUI) documents.
+
+OUTPUT  Draft intake record, needs assessment, and recommended service plan
+        for staff confirmation; prefilled link to the MBDA form (B2).
+
+================================================================================
+B2  MBDA CLIENT INTAKE & LETTER OF ENGAGEMENT (signed form)
+================================================================================
+Source  : MBDA Federal Procurement Center Client Intake & Letter of
+          Engagement (OMB Control No. 0640-0002, shown expiring 01/31/2026;
+          confirm the current OMB-approved version before building)
+Mode    : Form Builder document overlay of the official form; prefilled from
+          B1; signed electronically.
+
+AGREEMENT
+B2.0.1  Certification (MBE under the MBDA Act, 15 U.S.C. 9501), Privacy
+        Disclosure and Information Use, and Public Burden Statement -
+        "Click 'Agree' to Proceed. Do You Agree?" (Required, checkbox)
+
+CLIENT APPLICATION
+B2.1.1  Full Name of Authorized Client Representative (Required, text)
+B2.1.2  Title (Required, text)
+B2.1.3  Company E-mail (Required, email)
+B2.1.4  Company Phone (Required, phone)
+B2.1.5  Mobile Phone (Optional, phone)
+B2.1.6  Company Name (Required, text)
+B2.1.7  Company Address (Required, text)
+B2.1.8  Website URL (Optional, URL)
+B2.1.9  Applying as (Required, select; e.g., LLC, Corporation, Sole
+        Proprietor, Partnership)
+B2.1.10 Minority Business Certification (Optional, select)
+B2.1.11 DUNS No. (form wording; collect UEI) (Optional, text)
+B2.1.12 S.A.M. / CAGE Code (Optional, text)
+B2.1.13 Primary NAICS Code - with definition written out (Required, text)
+B2.1.14 Company Owner Ethnicity (Required, select)
+B2.1.15 Approximate Annual Revenue (Required, currency)
+B2.1.16 Professional Headshot (Optional, file upload) or "Take a Temporary
+        Headshot"
+B2.1.17 1 Page Capability Statement (Optional, file upload)
+B2.1.18 LinkedIn Page URL (Optional, URL)
+B2.1.19 Facebook Page URL (Optional, URL)
+B2.1.20 Twitter Page URL (Optional, URL)
+B2.1.21 "The information provided in this application shall not be shared
+        to anyone else and is kept confidential." - I agree that the
+        information herein are true and correct (Required, yes/no)
+B2.1.22 Signature of Authorized Client Representative (Required, signature)
+
+PRELIMINARY QUESTIONS
+B2.2.1  What is #1 need of your company? (Required, long text)
+B2.2.2  How do you currently get business? (Required, select/text)
+B2.2.3  Is your company open to a teaming arrangement if suggested?
+        (Required, yes/no)
+
+ACCEPTANCE OF CLIENT RELATIONSHIP
+        The client agrees to: (a) acknowledge the relationship with the
+        Business Center; (b) provide firm contact and profile information;
+        (c) disclose outcomes based on services provided; (d) provide
+        documentary verification for transactions resulting from services.
+B2.3.1  Services Interested In (Required, multi-select)
+B2.3.2  What help are you looking for from the Business Center? (Required,
+        long text)
+B2.3.3  How did you find the Business Center? (Required, select)
+B2.3.4  Does your company have resources to invest if recommended?
+        (Required, yes/no)
+B2.3.5  Is your company able to perform work outside your current state?
+        (Required, yes/no)
+B2.3.6  Does your company have an in-house Business Development Team?
+        (Required, yes/no)
+B2.3.7  Is your company interested in obtaining one of the following?
+        (Optional, multi-select): 8(a) Certification; GSA Schedule; HUBZone
+B2.3.8  What agencies are you looking to do business with that you
+        currently are NOT doing business with? (Optional, long text)
+B2.3.9  Who were you referred by? (Optional, text)
+B2.3.10 Notes (Optional, long text)
+
+FOR INTERNAL USE ONLY (staff)
+B2.4.1  Business Center Rep Assigned (staff select)
+B2.4.2  Tags (multi-select)
+B2.4.3  Business Center Location (select)
+B2.4.4  Business Center Staff (select)
+B2.4.5  Interview Date (date)
+B2.4.6  Staff Referral Name (text)
+B2.4.7  CRM Certified Date (date)
+B2.4.8  Referral Date (date)
+
+================================================================================
+B3  RURAL ELIGIBILITY ATTESTATION
+================================================================================
+B3.1    Business physical address (Required, text; prefilled)
+B3.2    Parish (Required, select; auto-suggested from address)
+B3.3    Is this the business's principal place of operation? (Required,
+        yes/no)
+B3.4    Do you operate additional locations? If yes, list them. (Optional,
+        long text)
+B3.5    I attest that the information above is accurate. (Required,
+        checkbox + signature)
+STAFF   Eligibility decision: Eligible / Ineligible / Needs review; rule
+        applied; override reason (if any). The rural definition is still to
+        be confirmed with MBDA.
+
+================================================================================
+B4  BASELINE ASSESSMENT SURVEY (at enrollment)
+================================================================================
+Supports: baseline data captured (Q2), Jobs Supported, Revenue Growth,
+Capital Infusion, Digital Adoption.
+B4.1    Gross revenue for the most recent 12 months (Required, currency)
+B4.2    Full-time employees, including owners (Required, number)
+B4.3    Part-time employees (Required, number)
+B4.4    Annual payroll (Optional, currency)
+B4.5    Total capital raised to date (loans, investment) and sources
+        (Optional, currency + text)
+B4.6    Current government or prime contracts held (Optional, number +
+        list)
+B4.7    Is the business legally registered with the Louisiana Secretary of
+        State? If yes, registration date. (Required, yes/no + date)
+B4.8    Which digital tools do you use? (Optional, multi-select): website;
+        e-commerce/online sales; accounting software; CRM; social media;
+        AI tools; none
+B4.9    Readiness self-ratings, 1 (not ready) to 5 (fully ready) (Likert):
+        a) Access to capital  b) Government contracting  c) Financial
+        management  d) Marketing and sales  e) Technology and cybersecurity
+        f) Operations and production
+B4.10   Upload supporting financials (Optional, file upload)
+
+================================================================================
+B5  SERVICE PLAN AND ADVISOR SESSION LOG (staff and partner advisors)
+================================================================================
+SERVICE PLAN (staff, after assessment)
+B5.1.1  Client goals mapped to measures (Required, list: measure +
+        description + target date)
+B5.1.2  Services planned and provider (Required, list: service area,
+        provider = Center or partner, status)
+B5.1.3  Referrals to partners (Optional; partner, reason, client consent to
+        share data, fields shared)
+B5.1.4  Approved by (staff) and approval date
+
+SESSION LOG (each counseling or technical-assistance session)
+B5.2.1  Client (Required, lookup)
+B5.2.2  Advisor and partner organization (Required, lookup)
+B5.2.3  Service area (Required, select)
+B5.2.4  Session type (Required, select): Counseling; Technical assistance;
+        Assessment; Training follow-up
+B5.2.5  Session date (Required, date)
+B5.2.6  Duration in minutes (Required, number)
+B5.2.7  Notes (Required, long text; staff-only)
+B5.2.8  Next steps and client commitments (Optional, list)
+B5.2.9  Referrals made (Optional, list)
+        AI option: Advisor Session Debrief interview fills B5.2.3-B5.2.9.
+
+================================================================================
+B6  WORKSHOP REGISTRATION, ATTENDANCE, AND FEEDBACK
+================================================================================
+REGISTRATION
+B6.1.1  First and last name (Required, text)
+B6.1.2  Email (Required, email)
+B6.1.3  Phone (Optional, phone)
+B6.1.4  Business name (Optional, text)
+B6.1.5  Are you a current LIFT client? (Required, yes/no)
+B6.1.6  Parish (Optional, select)
+B6.1.7  Consent to be contacted about LIFT services (Required, checkbox)
+B6.1.8  Accessibility or language accommodation needed? (Optional, text)
+
+ATTENDANCE (staff or self check-in)
+B6.2.1  Attended (yes/no); time attended; session or module completed
+
+FEEDBACK (after each workshop or course)
+B6.3.1  How likely are you to recommend this workshop to another business
+        owner? (NPS 0-10)
+B6.3.2  Overall rating of the session (rating 1-5)
+B6.3.3  The content was relevant to my business. (Likert 1-5)
+B6.3.4  I can apply what I learned within the next 90 days. (Likert 1-5)
+B6.3.5  What will you do differently as a result of this session?
+        (Optional, long text)
+B6.3.6  What topics should LIFT offer next? (Optional, long text)
+B6.3.7  May we contact you for a follow-up session? (Optional, yes/no)
+
+================================================================================
+B7  CAPITAL READINESS CHECKLIST
+================================================================================
+B7.1    Purpose of the capital (Required, long text)
+B7.2    Amount sought (Required, currency)
+B7.3    Capital type (Required, select): Loan; Line of credit; Equity;
+        External grant; Microloan; Other
+B7.4    Target lenders or investors (Optional, list)
+B7.5    Document checklist (each item: upload or mark not applicable):
+        Business plan; 2-3 years business tax returns; personal tax returns;
+        year-to-date profit and loss; balance sheet; cash-flow projection;
+        debt schedule; owner personal financial statement; business licenses
+        and registration; collateral documentation
+B7.6    Lender submission log (staff): lender, date submitted, status
+NOTE    The Center records third-party capital only. Award funds are never
+        used for loans, grants, or equity to clients (MOU section 8).
+
+================================================================================
+B8  PROPOSAL ACCELERATOR (SAM.GOV RFI / RFP RESPONSES)
+================================================================================
+CAPABILITY LIBRARY (completed once, updated as needed)
+B8.1.1  Company overview (Required, long text)
+B8.1.2  Core competencies (Required, list)
+B8.1.3  Differentiators (Optional, list)
+B8.1.4  Past performance: customer, contract number, value, period,
+        description (Optional, repeating table)
+B8.1.5  Certifications: name, number, expiration (Optional, repeating table)
+B8.1.6  Key personnel: name, role, summary (Optional, repeating table)
+
+FOR EACH OPPORTUNITY
+B8.2.1  Which SAM.gov notice are you responding to? (Required, lookup)
+B8.2.2  Do any attachments contain CUI or export-controlled information?
+        (Required, yes/no; if yes, do not upload)
+B8.2.3  Go / No-Go: Do you intend to respond? (Required, yes/no; reasons)
+B8.2.4  Response type (Required, select): RFI response; Sources sought;
+        Capability statement; RFP volume
+B8.2.5  Teaming partners to include (Optional, list)
+B8.2.6  Confirm unverified claims flagged in the draft (Required per item)
+B8.2.7  Advisor review notes (staff, long text)
+B8.2.8  Client approval to finalize (Required, checkbox)
+B8.2.9  Submitted? Date and method (Required after submission)
+B8.2.10 Outcome: Awarded / Not awarded / Pending; award amount and date;
+        upload award notice (feeds B9 / Contracts Secured)
+
+================================================================================
+B9  OUTCOME CHECK-INS (6 AND 12 MONTHS; also any time an outcome occurs)
+================================================================================
+Template: lift-outcome-checkin (AI interview or form). Every outcome is
+verified by staff with evidence before it counts toward MBDA measures.
+B9.1    Gross revenue for the last 12 months (Required, currency)
+        [compared with B4.1 for Revenue Growth]
+B9.2    Current full-time and part-time employees (Required, number)
+B9.3    How many jobs were created or retained with LIFT assistance?
+        (Required, number) Evidence: payroll record or signed attestation
+B9.4    Did you obtain capital since your last check-in? Source, type,
+        amount, closing date (Required, yes/no + repeating table)
+        Evidence: closing document, commitment letter, or bank statement
+B9.5    Did you win any contracts? Customer, contract number, value, award
+        date, set-aside type (HUBZone / Prime / OEM / other)
+        (Required, yes/no + repeating table) Evidence: award notice or contract
+B9.6    Did you register a new business? Registration date and number
+        (Required, yes/no + date) Evidence: Secretary of State registration
+B9.7    Which new digital tools did you adopt? (Optional, multi-select)
+B9.8    Did you complete a certification-readiness program or certification
+        (CMMC, HUBZone, OZ, 8(a), other)? (Optional, yes/no + list)
+B9.9    How did LIFT assistance contribute to these results? (Required,
+        long text; attribution)
+B9.10   Upload evidence (Required for each claimed outcome, file upload)
+B9.11   I certify these outcomes are accurate and may be reported to MBDA.
+        (Required, checkbox + signature)
+
+================================================================================
+B10 IMPACT STORY CONSENT AND PROGRAM EXIT
+================================================================================
+IMPACT STORY
+B10.1   May LIFT share your story publicly? (Required, yes/no)
+B10.2   Approved quote or story text (Optional, long text)
+B10.3   Photo or logo (Optional, file upload)
+B10.4   Consent to use your name, business name, and image in LIFT and MBDA
+        communications (Required if B10.1 = yes, checkbox + signature)
+
+EXIT / ALUMNI
+B10.5   Overall, how satisfied are you with the LIFT Center? (rating 1-5)
+B10.6   How likely are you to recommend LIFT? (NPS 0-10)
+B10.7   Which service helped your business the most? (Optional, select)
+B10.8   What should LIFT improve? (Optional, long text)
+B10.9   Would you like to stay connected as an alumni business or mentor?
+        (Optional, yes/no)
+B10.10  Reason for exit (staff select): Goals met; Moved out of service
+        area; Business closed; No longer responsive; Other
+
+
+################################################################################
+APPENDICES
+################################################################################
+
+================================================================================
+APPENDIX 1 - QUESTION COMPONENTS NOT CURRENTLY USED BY ANY PAGE
+================================================================================
+These components contain questions but are not imported by any page, so
+users never see them. Review before deleting or reusing.
+  - components/consortium/onboarding/ConsortiumOnboardingWizard.tsx
+    (legacy consortium onboarding wizard)
+  - components/onboarding/business-profile-wizard.tsx
+    (BusinessProfileWizard)
+
+================================================================================
+APPENDIX 2 - CROSS-WALK: CURRENT QUESTIONS TO LIFT QUESTIONS
+================================================================================
+Topic                         Current question(s)              LIFT question(s)
+----------------------------  -------------------------------  ----------------
+Owner name                    A1.1.1-4, A2.2.1, A3.4.1, A5.2   B1.0.1, B2.1.1
+Owner title                   A1.2.1, A2.2.2, A5.2.3           B2.1.2
+Owner ethnicity / MBE status  A1.2.3, A1.2.4                   B1.2, B2.1.10,
+                                                               B2.1.14
+Business name                 A1.3.1, A2.1.1, A3.1.1, A5.3.1,  B1.1, B2.1.6
+                              A6.1
+Address / location            A1.3.2-6, A2.1.7-11, A3.1.5-8    B1.3, B2.1.7,
+                                                               B3.1-B3.2
+Parish / rural eligibility    (none)                           B1.3, B3
+Contact details               A1.3.7-10, A2.2.3-4, A3.4.2-4    B2.1.3-5
+UEI / DUNS / SAM / CAGE       A1.4.1-2, A1.4.4, A2.1.3,        B1.8, B2.1.11-12
+                              A3.1.2-3
+NAICS                         A1.4.3, A3.3.1, A5.4.1           B1.4, B2.1.13
+Revenue                       A1.4.5                           B1.6, B2.1.15,
+                                                               B4.1, B9.1
+Employees / jobs              A2.1.5, A3.1.10                  B1.6, B4.2-3,
+                                                               B9.2-3
+Certifications                A1.2.4, A1.5.6, A2.3.3, A3.2.1,  B1.9, B2.3.7,
+                              A5.4.2, A6.5                     B9.8
+Capabilities                  A2.3.2, A3.3.2-4, A5.4, A6.6     B8.1
+Capital / financing interest  A1.5.7                           B1.7, B7, B9.4
+Top need / help needed        A1.5.3-4, A2.5.2-3               B1.11-13,
+                                                               B2.2.1, B2.3.2
+How business is obtained      A1.4.9                           B2.2.2
+Teaming                       A1.5.1                           B2.2.3, B8.2.5
+Resources to invest           A1.5.2                           B2.3.4
+Work out of state             A1.4.7                           B2.3.5
+In-house BD team              A1.4.8                           B2.3.6
+Target agencies               A1.5.8, A5.6.2                   B2.3.8
+Referral source               A1.4.10-11, A2.5.5               B1.15, B2.3.3,
+                                                               B2.3.9
+Documents                     A3.5, A5.5, A9                   B1.16, B2.1.16-17,
+                                                               B7.5, B9.10
+Consent / signature           A2.5.7 (terms checkbox only)     B1.0.3, B2.0.1,
+                                                               B2.1.21-22,
+                                                               B3.5, B9.11,
+                                                               B10.4
+Baseline / outcomes           (none)                           B4, B9
+Training feedback             (none)                           B6.3
+Advisor sessions              (none)                           B5.2
+
+Key gaps in today's onboarding:
+  1. No signed MBDA consent or Letter of Engagement.
+  2. No parish or rural eligibility question.
+  3. No baseline (revenue, jobs, payroll) linked to later outcome check-ins.
+  4. No outcome, evidence, or attribution questions.
+  5. DUNS still used instead of UEI.
+  6. Same identity questions are asked in up to five different flows; LIFT
+     should ask once (B1/B2) and prefill everywhere else.
+
+================================================================================
+APPENDIX 3 - BRANDING AND WORDING TO REPLACE FOR LIFT
+================================================================================
+Ref      Current wording                                  Suggested LIFT wording
+-------  -----------------------------------------------  ----------------------
+A1 hdr   Register as a client with KDM & Associates       Register with the
+                                                          Southern University
+                                                          LIFT Center
+A1.4.11  How found KDM & Associates                       How did you hear
+                                                          about the LIFT Center?
+A1.5.3   Help needed from KDM & Associates                What help are you
+                                                          looking for from the
+                                                          LIFT Center?
+A2 intro Complete your company profile to access KDM      Complete your profile
+         Consortium services...                           to access LIFT Center
+                                                          services
+A2.5.1   Select the KDM services you're interested in     Select the LIFT
+                                                          services you're
+                                                          interested in
+A2.5.2   ...objectives for working with KDM Consortium?   ...objectives for
+                                                          working with the LIFT
+                                                          Center?
+A2.5.7   ...consent to KDM Consortium contacting you...   ...consent to the LIFT
+                                                          Center contacting
+                                                          you...
+A3/A5    Welcome to the KDM Consortium!                   Welcome to the LIFT
+                                                          Center!
+A5.4.3   5 Pillars Focus Areas                            LIFT service areas
+A5.5     Documents will be reviewed by KDM staff          Documents will be
+                                                          reviewed by LIFT staff
+A6       Welcome to the KDM Consortium / payment step     Remove paid-membership
+                                                          step for LIFT
+A8       KDM Affiliate Network / SVP affiliate            Out of scope for LIFT
+                                                          (disable)
+
+================================================================================
+APPENDIX 4 - IMPLEMENTATION STATUS (LIFT FORM BUILDER)
+================================================================================
+Part B is implemented as Form Builder templates (lib/form-builder/lift-templates.ts).
+Seed and publish them from the Form Studio (/portal/admin/lift/forms) with
+"Seed LIFT forms (B1-B10)". Wording, options, and mappings stay editable there.
+
+Ref   Form                                  Slug                   Mode / audience           Route
+----  ------------------------------------  ---------------------  ------------------------  -------------------------------
+B1    LIFT Center Intake (+ AI summary)     lift-intake            conversational / public   /forms/lift-intake
+B2    MBDA Client Intake & Letter of        mbda-intake-loe        standard / client         /portal/lift/forms/mbda-intake-loe
+      Engagement (signed; staff-only
+      internal section)
+B3    Rural Eligibility Attestation         rural-eligibility      standard / client         /portal/lift/forms/rural-eligibility
+B4    Baseline Assessment Survey            baseline-survey        conversational / client   /portal/lift/forms/baseline-survey
+B5    Client Service Plan                   service-plan           standard / staff          /portal/lift/forms/service-plan
+B5    Advisor Session Log                   advisor-session-log    standard / staff          /portal/lift/forms/advisor-session-log
+B6    Workshop Registration                 workshop-registration  standard / public         /forms/workshop-registration
+B6    Workshop Feedback                     workshop-feedback      conversational / public   /forms/workshop-feedback
+B7    Capital Readiness Checklist           capital-readiness      standard / client         /portal/lift/forms/capital-readiness
+B8    Capability Library                    capability-library     standard / client         /portal/lift/forms/capability-library
+B8    SAM.gov Opportunity Response          proposal-response      standard / client         /portal/lift/forms/proposal-response
+B9    Outcome Check-in (6/12 months)        outcome-checkin        conversational / client   /portal/lift/forms/outcome-checkin
+B10   Impact Story Consent                  impact-consent         standard / client         /portal/lift/forms/impact-consent
+B10   Program Exit Survey                   program-exit           conversational / client   /portal/lift/forms/program-exit
+
+Implementation notes
+  - B1 is a conversational form (not the Interview Tool). On submit, an AI
+    summary (OpenAI, or a rules-based fallback) proposes a needs assessment and
+    service plan with status "pending staff review"; staff confirm or reject it
+    in /portal/admin/lift/submissions. AI never decides eligibility.
+  - B2 is a sectioned form that reproduces the official MBDA wording rather than
+    an overlay of the PDF. Confirm the current OMB-approved version (the form
+    shows OMB No. 0640-0002 expiring 01/31/2026) and update it in the Form Studio.
+  - B9 creates individual outcome claims (jobs, capital, contracts, new business,
+    revenue change vs. the B4 baseline, readiness, digital adoption) with status
+    "claimed", or "needs_info" when no evidence was uploaded. B8 creates a
+    contract claim when the outcome is "Awarded".
+  - Cross-walk (Appendix 2): answers are indexed per client in liftClientProfiles
+    and prefill later forms. Existing clientRegistrations (A1/A2, matched by
+    login email) and users profiles (A3/A5) are used as fallback prefill sources.
+  - Appendix 3 wording is applied to the existing flows when
+    NEXT_PUBLIC_BRANDING_MODE=lift (default "kdm" leaves the KDM site unchanged).
+  - Appendix 1 components were left untouched.
+
+================================================================================
+END OF DOCUMENT
+================================================================================

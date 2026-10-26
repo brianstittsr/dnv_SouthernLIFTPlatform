@@ -2787,6 +2787,25 @@ export const COLLECTIONS = {
   TEAMING_ALERTS: "teamingAlerts",
   TEAMING_REQUESTS: "teamingRequests",
   TEAMING_INTERESTS: "teamingInterests",
+  // LIFT Form Builder and lifecycle records (server access only; see firestore.rules)
+  LIFT_FORMS: "liftForms",
+  LIFT_FORM_SUBMISSIONS: "liftFormSubmissions",
+  LIFT_FORM_DRAFTS: "liftFormDrafts",
+  LIFT_FORM_UPLOADS: "liftFormUploads",
+  LIFT_CLIENT_PROFILES: "liftClientProfiles",
+  LIFT_CLIENTS: "liftClients",
+  LIFT_BASELINES: "liftBaselines",
+  LIFT_SERVICE_PLANS: "liftServicePlans",
+  LIFT_SESSIONS: "liftSessions",
+  LIFT_TRAINING_ATTENDANCE: "liftTrainingAttendance",
+  LIFT_FEEDBACK: "liftFeedback",
+  LIFT_CAPITAL_PACKAGES: "liftCapitalPackages",
+  LIFT_CAPABILITY_LIBRARIES: "liftCapabilityLibraries",
+  LIFT_PROPOSAL_RESPONSES: "liftProposalResponses",
+  LIFT_OUTCOME_CLAIMS: "liftOutcomeClaims",
+  LIFT_IMPACT_CONSENTS: "liftImpactConsents",
+  LIFT_EXITS: "liftExits",
+  LIFT_AUDIT: "liftAudit",
 } as const;
 
 // ... existing code ...

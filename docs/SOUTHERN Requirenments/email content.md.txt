@@ -1,0 +1,16 @@
+Good Morning Keith and Pam,
+
+I am writing requirements document for Brian and would like to get approvals and send over to him as soon as possible. 
+
+Please confirm: MBDA platform will be sperate than current KDM website and branding; if yes,
+Question 1
+New Platform will have its own
+MBDA domain
+MBDA Branding 
+MBDA email address 
+
+Question 2- Jotform required the business owner/client to sign the form as consent, Do we need to capture the signatures for this program also?
+
+Q1- Platform Deployment and milestone is Platform operational metrics are platform test reports; onboarding logs. 
+Question 3- Platform needs to be fully functional and be ready to report on all the activities of the program and ongoing maintaince (updating platform as we go through the program, Monthly reporting on metrics). 
+

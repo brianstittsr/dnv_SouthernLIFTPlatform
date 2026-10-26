@@ -28,6 +28,9 @@ import { UserType, ProfileFormData, INDUSTRY_OPTIONS, CONTRACT_TYPE_OPTIONS, CER
 import { db } from "@/lib/firebase";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
+import { getProgramBranding } from "@/lib/branding";
+
+const branding = getProgramBranding();
 
 interface ConsortiumOnboardingModalProps {
   open: boolean;
@@ -53,12 +56,19 @@ export function ConsortiumOnboardingModal({
     annualSpend: "",
   });
 
-  const journeySteps = [
-    { step: 1, label: "Join", desc: "You're here!", active: true, icon: UserPlus },
-    { step: 2, label: "Complete Profile", desc: "5 min", active: false, icon: ClipboardList },
-    { step: 3, label: "Get Matched", desc: "AI-powered", active: false, icon: Zap },
-    { step: 4, label: "Win Contracts", desc: "$2.5M avg", active: false, icon: Trophy },
-  ];
+  const journeySteps = branding.isLift
+    ? [
+        { step: 1, label: "Join", desc: "You're here!", active: true, icon: UserPlus },
+        { step: 2, label: "Complete Profile", desc: "5 min", active: false, icon: ClipboardList },
+        { step: 3, label: "LIFT Intake", desc: "Forms & consent", active: false, icon: Zap },
+        { step: 4, label: "Grow", desc: "Advising & training", active: false, icon: Trophy },
+      ]
+    : [
+        { step: 1, label: "Join", desc: "You're here!", active: true, icon: UserPlus },
+        { step: 2, label: "Complete Profile", desc: "5 min", active: false, icon: ClipboardList },
+        { step: 3, label: "Get Matched", desc: "AI-powered", active: false, icon: Zap },
+        { step: 4, label: "Win Contracts", desc: "$2.5M avg", active: false, icon: Trophy },
+      ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +103,8 @@ export function ConsortiumOnboardingModal({
 
       toast.success("Profile completed successfully!");
       onOpenChange(false);
-      router.push("/portal/payment");
+      // LIFT services are grant-funded: no paid-membership step.
+      router.push(branding.skipPaymentStep ? "/portal/lift/forms" : "/portal/payment");
     } catch (error) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile. Please try again.");
@@ -149,7 +160,18 @@ Complete your profile NOW to:
 → Access $2.5M average contract value opportunities`,
   };
 
-  const content = userType === "buyer" ? buyerContent : supplierContent;
+  const liftContent = {
+    title: "Get started with the Southern University LIFT Center",
+    description: `The LIFT Rural Business Center helps rural Louisiana businesses with:
+• Business formation and growth advising
+• Capital readiness and lender-ready packages
+• Government contracting and certification readiness
+• Advanced manufacturing and digital/AI adoption
+
+Complete your profile, then finish your LIFT intake forms to be matched with an advisor.`,
+  };
+
+  const content = branding.isLift ? liftContent : userType === "buyer" ? buyerContent : supplierContent;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -158,14 +180,20 @@ Complete your profile NOW to:
           <div className="text-center mb-6">
             <Badge className="mb-2 bg-amber-100 text-amber-800 border-amber-200">
               <Sparkles className="h-3 w-3 mr-1" />
-              Early Access Priority
+              {branding.isLift ? "MBDA Rural Business Center" : "Early Access Priority"}
             </Badge>
             <DialogTitle className="text-2xl font-bold">
-              Welcome to the KDM Consortium
+              {branding.isLift ? "Welcome to the LIFT Center" : "Welcome to the KDM Consortium"}
             </DialogTitle>
             <p className="text-muted-foreground mt-2">
-              Complete your profile to unlock priority matching with{" "}
-              {userType === "buyer" ? "verified suppliers" : "government buyers"}
+              {branding.isLift ? (
+                "Complete your profile to begin your LIFT Center intake"
+              ) : (
+                <>
+                  Complete your profile to unlock priority matching with{" "}
+                  {userType === "buyer" ? "verified suppliers" : "government buyers"}
+                </>
+              )}
             </p>
           </div>
         </DialogHeader>

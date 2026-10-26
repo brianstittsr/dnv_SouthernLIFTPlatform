@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getProgramBranding } from "@/lib/branding";
 import {
   Building2,
   User,
@@ -99,13 +100,18 @@ const COMMON_NAICS_CODES = [
   { code: "561990", description: "All Other Support Services" },
 ];
 
-const PILLARS = [
+const branding = getProgramBranding();
+
+const KDM_PILLARS = [
   { id: "us-manufacturing", label: "U.S. Manufacturing", icon: Building2 },
   { id: "critical-minerals", label: "Critical Minerals", icon: Target },
   { id: "defense-contracting", label: "Defense Contracting", icon: Award },
   { id: "access-to-capital", label: "Access to Capital", icon: Briefcase },
   { id: "opportunity-zones", label: "Opportunity Zones", icon: Globe },
 ];
+
+/** KDM 5 Pillars, or LIFT service areas when NEXT_PUBLIC_BRANDING_MODE=lift. */
+const PILLARS = branding.isLift ? branding.focusAreaOptions.map((option) => ({ ...option, icon: Target })) : KDM_PILLARS;
 
 // ─── Readiness Step sub-component ────────────────────────────────────────────
 
@@ -389,7 +395,7 @@ export function ReadinessStep({
 
         <div className="bg-muted rounded-lg p-4">
           <p className="text-sm text-muted-foreground">
-            <strong>Note:</strong> Documents will be reviewed by KDM staff. You&apos;ll be notified once your readiness is validated.
+            <strong>Note:</strong> {branding.readinessReviewNote}
           </p>
         </div>
       </div>
@@ -773,7 +779,7 @@ export function ConsortiumOnboardingWizard() {
         updatedAt: Timestamp.now(),
       }, { merge: true });
 
-      toast.success("Welcome to the KDM Consortium!", {
+      toast.success(branding.welcomeTitle, {
         description: "Your profile is complete. Next step: Upload government contracting documentation.",
       });
 
@@ -788,7 +794,7 @@ export function ConsortiumOnboardingWizard() {
   };
 
   const steps = [
-    { id: "welcome", title: "Welcome", description: "Welcome to KDM Consortium" },
+    { id: "welcome", title: "Welcome", description: branding.isLift ? "Welcome to the LIFT Center" : "Welcome to KDM Consortium" },
     { id: "profile", title: "CEO Profile", description: "Tell us about yourself" },
     { id: "company", title: "Company Info", description: "Your company details" },
     { id: "capabilities", title: "Capabilities", description: "What you bring" },
@@ -806,7 +812,7 @@ export function ConsortiumOnboardingWizard() {
               <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Building2 className="w-8 h-8 text-amber-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Welcome to the KDM Consortium!</h3>
+              <h3 className="text-xl font-semibold mb-2">{branding.welcomeTitle}</h3>
               <p className="text-muted-foreground">
                 You&apos;re now part of an exclusive network of 12-50 expert companies collaborating
                 to win and deliver large government contracts.
@@ -995,7 +1001,7 @@ export function ConsortiumOnboardingWizard() {
                 rows={3}
               />
               <p className="text-xs text-muted-foreground">
-                This will be displayed on the KDM Consortium member page
+                {branding.isLift ? "This will be shared with LIFT Center staff and advisors" : "This will be displayed on the KDM Consortium member page"}
               </p>
             </div>
 
@@ -1107,8 +1113,8 @@ export function ConsortiumOnboardingWizard() {
               </div>
 
               <div className="space-y-3">
-                <Label>5 Pillars Focus Areas</Label>
-                <p className="text-sm text-muted-foreground">Select which pillars your company serves:</p>
+                <Label>{branding.focusAreasLabel}</Label>
+                <p className="text-sm text-muted-foreground">{branding.focusAreasHelp}</p>
                 <div className="grid grid-cols-1 gap-2">
                   {PILLARS.map((pillar) => {
                     const Icon = pillar.icon;
@@ -1312,7 +1318,9 @@ export function ConsortiumOnboardingWizard() {
               )}
             </div>
             <p className="text-sm text-muted-foreground">
-              Your profile will be visible on the KDM Consortium member page once approved.
+              {branding.isLift
+                ? "LIFT Center staff will review your profile and follow up with next steps."
+                : "Your profile will be visible on the KDM Consortium member page once approved."}
             </p>
           </div>
         );

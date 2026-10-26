@@ -1,177 +1,171 @@
-# Strategic Value+ Platform
+# Southern University LIFT Rural Business Center Platform
 
-A modern **Next.js 14+** application serving as both a **marketing website** and an **intelligent business orchestration platform** for Strategic Value Plus.
+The digital platform for the **Southern University LIFT (Louisiana Innovation for Thriving Rural Business) Center**, an MBDA Rural Business Center (MBDA-OBC-2026-00003). It is built on the `svp-platform` codebase (Next.js + Firebase) and adds the LIFT client lifecycle: intake, signed MBDA engagement, eligibility, baseline, services, training, capital readiness, procurement support, and outcome reporting.
 
-## Overview
+The same codebase still runs the KDM & Associates / Strategic Value+ site. LIFT-specific wording and behavior are switched on with `NEXT_PUBLIC_BRANDING_MODE=lift` (see [Branding mode](#branding-mode)).
 
-Strategic Value+ helps small- and mid-sized U.S. manufacturers (25-500 employees) win OEM contracts through supplier qualification, ISO certification, and operational readiness.
+## Tech stack
 
-This platform unifies:
-- **Marketing Website** - Lead capture, service showcase, event promotion
-- **Business Portal** - Command center, pipeline management, affiliate coordination
-- **AI Intelligence** - Natural language queries across business data
+- **Framework:** Next.js 15 (App Router), React 19, TypeScript
+- **UI:** Tailwind CSS 4, shadcn/ui (Radix), Lucide icons, Sonner toasts
+- **Data:** Firebase Auth, Firestore, and Storage (Firebase Admin SDK on the server)
+- **Validation:** Zod
+- **AI:** OpenAI (intake summaries, form generation, SAM.gov analysis)
+- **PDF:** Puppeteer (`@sparticuz/chromium` on Vercel)
+- **Package manager:** pnpm
 
-## Tech Stack
-
-- **Framework:** Next.js 14+ (App Router)
-- **UI Components:** shadcn/ui
-- **Styling:** Tailwind CSS
-- **Icons:** Lucide React
-- **State Management:** Zustand
-- **Data Fetching:** TanStack React Query
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or yarn
+- Node.js 20+
+- pnpm 10+
+- A Firebase project (Auth, Firestore, Storage) and a service account
 
 ### Installation
 
 ```bash
-# Install dependencies
-npm install
-
-# Copy environment variables
-cp .env.example .env.local
-
-# Run development server
-npm run dev
+pnpm install --frozen-lockfile   # set CI=true in non-interactive shells
+cp .env.example .env.local       # then fill in the values below
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Project Structure
-
-```
-svp-platform/
-├── app/
-│   ├── (marketing)/          # Public marketing pages
-│   │   ├── page.tsx          # Homepage
-│   │   ├── about/
-│   │   ├── contact/
-│   │   ├── v-edge/
-│   │   └── ...
-│   ├── (portal)/             # Authenticated portal
-│   │   └── portal/
-│   │       ├── command-center/
-│   │       ├── opportunities/
-│   │       ├── projects/
-│   │       ├── affiliates/
-│   │       ├── customers/
-│   │       ├── meetings/
-│   │       ├── rocks/
-│   │       ├── documents/
-│   │       └── ask/          # AI query interface
-│   ├── api/                  # API routes
-│   ├── layout.tsx
-│   └── globals.css
-├── components/
-│   ├── ui/                   # shadcn/ui components
-│   ├── marketing/            # Marketing page components
-│   ├── portal/               # Portal components
-│   └── shared/               # Shared components
-├── lib/                      # Utilities
-├── types/                    # TypeScript types
-└── public/                   # Static assets
-```
-
-## Key Features
-
-### Marketing Website
-- **Homepage** with hero, services overview, testimonials
-- **Service Pages** for V+ EDGE, TwinEDGE, IntellEDGE
-- **Contact Form** with lead capture
-- **About Page** with team and mission
-
-### Business Portal
-- **Command Center** - Real-time dashboard with pipeline, projects, rocks
-- **Opportunities** - Sales pipeline management
-- **Projects** - Active engagement tracking
-- **Affiliates** - Network capability directory
-- **Customers** - CRM functionality
-- **Meetings** - Schedule and AI-extracted insights
-- **Rocks** - 90-day goal tracking (EOS methodology)
-- **Documents** - File management and sharing
-- **Ask IntellEDGE** - AI-powered business queries
-
-## Environment Variables
-
-Create a `.env.local` file with:
+### Environment variables
 
 ```env
-# Database
-DATABASE_URL="postgresql://..."
+# Firebase client
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-# Authentication
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key"
+# Firebase Admin (server only - required for all /api/lift routes)
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
 
-# AI
-OPENAI_API_KEY="sk-..."
+# LIFT deployment
+NEXT_PUBLIC_BRANDING_MODE=lift          # omit or "kdm" for the KDM site
 
-# Integrations (Phase 2)
-GHL_API_KEY="..."
-FIREFLIES_API_KEY="..."
-MATTERMOST_URL="..."
+# AI (optional - a rules-based fallback is used without it)
+OPENAI_API_KEY=
+LIFT_AI_MODEL=gpt-4o-mini
 
-# Accessibility (UserWay)
-NEXT_PUBLIC_USERWAY_ACCOUNT_ID="your-userway-account-id"
+# CAPTCHA for signed-out form submissions (optional)
+TURNSTILE_SECRET_KEY=
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=
+
+# PDF export outside Vercel (optional - otherwise bundled or installed Chrome/Edge)
+CHROME_PATH=
 ```
+
+Never commit `.env*` files or service-account JSON. They are listed in `.gitignore`.
+
+## LIFT Form Builder
+
+A form builder built from `docs/svp-kdm-features/formbuilder/Adams form builder.md`, with LIFT security changes. It delivers the Part B client lifecycle forms defined in `docs/SOUTHERN Requirenments/analysis/LIFT_Onboarding_Questions.txt`.
+
+### Where to find it
+
+| Area | Route | Who |
+| --- | --- | --- |
+| Form Studio (build, preview, publish, AI assist) | `/portal/admin/lift/forms` | Admins |
+| Submissions review (answers, files, PDFs, intake summary) | `/portal/admin/lift/submissions` | Staff |
+| My LIFT Forms | `/portal/lift/forms` | Signed-in clients |
+| Public forms (intake, workshop registration and feedback) | `/forms/[slug]` | Anyone |
+
+### Lifecycle forms (B1-B10)
+
+| Ref | Form | Slug | Audience |
+| --- | --- | --- | --- |
+| B1 | LIFT Center Intake (with AI summary) | `lift-intake` | Public |
+| B2 | MBDA Client Intake & Letter of Engagement (signed) | `mbda-intake-loe` | Client |
+| B3 | Rural Eligibility Attestation | `rural-eligibility` | Client |
+| B4 | Baseline Assessment Survey | `baseline-survey` | Client |
+| B5 | Client Service Plan / Advisor Session Log | `service-plan`, `advisor-session-log` | Staff |
+| B6 | Workshop Registration / Workshop Feedback | `workshop-registration`, `workshop-feedback` | Public |
+| B7 | Capital Readiness Checklist | `capital-readiness` | Client |
+| B8 | Capability Library / SAM.gov Opportunity Response | `capability-library`, `proposal-response` | Client |
+| B9 | Outcome Check-in (6 and 12 months) | `outcome-checkin` | Client |
+| B10 | Impact Story Consent / Program Exit Survey | `impact-consent`, `program-exit` | Client |
+
+**Seeding:** sign in as an admin, open the Form Studio, and click **Seed LIFT forms (B1-B10)** (or `POST /api/lift/forms/seed`; add `?overwrite=true` to republish the templates). All wording, options, and mappings remain editable in the Studio.
+
+### Capabilities
+
+- **Controls:** standard and conversational (one question at a time) modes, conditional questions, staff-only fields and sections, signatures, file uploads, repeating tables, Likert/NPS/star ratings, calculated fields, and platform lookups (parishes, events, partners, advisors, clients).
+- **Records:** each answer can write to a LIFT record such as clients, baselines, sessions, capital packages, or outcome claims. Outcome check-ins create individual outcome claims for staff verification.
+- **Prefill (cross-walk):** answers are indexed per client and prefill later forms. Existing client registrations and portal profiles are used as fallback sources.
+- **Intake summary:** the B1 intake gets an AI needs assessment and recommended service plan, marked "pending staff review". AI never decides eligibility.
+- **Integrity:** forms are versioned. Each submission records its form version, consent-text hash, signature references, and a SHA-256 content hash. Branded PDFs are available to staff and to the respondent.
+
+### Security model
+
+- The browser has no direct access to `lift*` Firestore collections or `lift/**` Storage paths (see `firestore.rules` and `storage.rules`).
+- All reads and writes go through `app/api/lift/**`. These routes check staff or owner access, validate input with Zod, rate-limit, and write `liftAudit` events.
+- Uploads are checked against their real file contents, stored in Storage, and kept only as references and hashes on submissions.
+- Public submissions use a honeypot field and an optional Turnstile CAPTCHA.
+
+### Code layout
+
+```
+lib/form-builder/            # shared logic: types, controls, validation, mapping, cross-walk, templates
+lib/form-builder/server/     # server only: context/auth, repos, submission pipeline, uploads, PDF, AI summary
+components/forms/            # form runner and controls (signature, file upload, tables, lookups)
+components/forms/form-studio # Form Studio property editor
+app/api/lift/                # LIFT API routes
+app/forms/[slug]             # public runner
+app/(portal)/portal/lift     # client portal
+app/(portal)/portal/admin/lift  # Form Studio and submissions
+scripts/verify-form-builder.ts  # logic checks
+```
+
+## Branding mode
+
+`lib/branding.ts` controls wording in the shared onboarding flows. Setting `NEXT_PUBLIC_BRANDING_MODE=lift`:
+
+- Replaces KDM, SVP, and "5 Pillars" wording with LIFT wording (Appendix 3 of the onboarding questions document).
+- Shows LIFT service areas instead of the KDM 5 Pillars.
+- Skips the paid-membership redirect and hides the affiliate wizard.
+- Relabels DUNS as "UEI (formerly DUNS)".
+
+The default (`kdm`) leaves the KDM site unchanged.
 
 ## Development
 
 ```bash
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Run linting
-npm run lint
+pnpm dev                                  # development server
+pnpm type-check                           # TypeScript
+pnpm lint                                 # ESLint (repo has pre-existing errors; lint changed files)
+pnpm build                                # production build
+npx tsx scripts/verify-form-builder.ts    # LIFT Form Builder logic checks
 ```
+
+Deploy Firebase rules after changes:
+
+```bash
+firebase deploy --only firestore:rules,storage
+```
+
+See `AGENTS.md` for detailed agent and contributor notes.
+
+## Project documentation
+
+`docs/SOUTHERN Requirenments/analysis/`:
+
+- `LIFT_Gap_Analysis.md` / `.pdf` - platform gap analysis against program requirements
+- `LIFT_System_Design.md` / `.pdf` - system design for the LIFT modules
+- `LIFT_Onboarding_Questions.txt` - every question from onboarding to program exit, plus implementation status
+- `LIFT_Implementation_Pitch_Deck.pptx` - implementation pitch deck
 
 ## Deployment
 
-Deploy to Vercel:
-
-```bash
-npx vercel
-```
-
-Or use the Vercel Dashboard for automatic deployments from GitHub.
-
-## Roadmap
-
-### Phase 1 (Current)
-- [x] Marketing website
-- [x] Portal layout and navigation
-- [x] Command Center dashboard
-- [x] Core portal pages (opportunities, projects, affiliates, etc.)
-- [x] Ask IntellEDGE UI
-
-### Phase 2 (Next)
-- [ ] Authentication with NextAuth.js
-- [ ] Database integration with Prisma
-- [ ] Go High Level CRM integration
-- [ ] FireFlies meeting intelligence
-
-### Phase 3 (Future)
-- [ ] Mattermost integration
-- [ ] Real AI-powered queries
-- [ ] Affiliate matching engine
-- [ ] Customer portal
+Deploy to Vercel (`npx vercel` or GitHub integration). Set the environment variables above in the Vercel project, including `NEXT_PUBLIC_BRANDING_MODE=lift` for the LIFT site.
 
 ## License
 
-Proprietary - Strategic Value+ Solutions
-
-## Contact
-
-- Website: [strategicvalueplus.com](https://strategicvalueplus.com)
-- Email: info@strategicvalueplus.com
+Proprietary. All rights reserved.

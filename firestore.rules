@@ -568,6 +568,28 @@ service cloud.firestore {
         resource.data.userId == request.auth.uid || isAdmin();
     }
 
+    // LIFT Form Builder and lifecycle records: client SDK access is denied.
+    // All reads and writes go through server API routes (Firebase Admin SDK),
+    // which enforce staff/owner checks, validation, and audit logging.
+    match /liftForms/{path=**} { allow read, write: if false; }
+    match /liftFormSubmissions/{path=**} { allow read, write: if false; }
+    match /liftFormDrafts/{path=**} { allow read, write: if false; }
+    match /liftFormUploads/{path=**} { allow read, write: if false; }
+    match /liftClientProfiles/{path=**} { allow read, write: if false; }
+    match /liftClients/{path=**} { allow read, write: if false; }
+    match /liftBaselines/{path=**} { allow read, write: if false; }
+    match /liftServicePlans/{path=**} { allow read, write: if false; }
+    match /liftSessions/{path=**} { allow read, write: if false; }
+    match /liftTrainingAttendance/{path=**} { allow read, write: if false; }
+    match /liftFeedback/{path=**} { allow read, write: if false; }
+    match /liftCapitalPackages/{path=**} { allow read, write: if false; }
+    match /liftCapabilityLibraries/{path=**} { allow read, write: if false; }
+    match /liftProposalResponses/{path=**} { allow read, write: if false; }
+    match /liftOutcomeClaims/{path=**} { allow read, write: if false; }
+    match /liftImpactConsents/{path=**} { allow read, write: if false; }
+    match /liftExits/{path=**} { allow read, write: if false; }
+    match /liftAudit/{path=**} { allow read, write: if false; }
+
     // Fallback: Deny all other access
     match /{document=**} {
       allow read, write: if isAdmin();

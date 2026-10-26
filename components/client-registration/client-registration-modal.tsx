@@ -13,6 +13,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { ChevronRight, ChevronLeft, User, Building2, Phone, DollarSign, Target, ClipboardList, CheckCircle, Upload, Camera } from "lucide-react";
+import { getProgramBranding } from "@/lib/branding";
+
+const branding = getProgramBranding();
 
 type Step = "ownership" | "professional" | "company" | "business" | "strategy" | "review";
 
@@ -129,7 +132,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
       case "ownership": return formData.firstName && formData.lastName && formData.prefix;
       case "professional": return formData.title && formData.companyOwnerEthnicity;
       case "company": return formData.companyName && formData.streetAddress && formData.city && formData.state && formData.zipCode;
-      case "business": return formData.mobilePhone && formData.companyEmail && formData.naicsCodes.length > 0;
+      case "business": return formData.mobilePhone && formData.companyEmail && formData.naicsCodes.length > 0 && (formData.howFoundKDMAssociates ?? "").trim();
       case "strategy": return formData.helpNeededFromKDM && formData.topCompanyNeed;
       default: return true;
     }
@@ -174,7 +177,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
       <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === "edit" ? "Edit Client Registration" : "Client Registration"}</DialogTitle>
-          <DialogDescription>{mode === "edit" ? "Update the client registration" : "Register as a client with KDM & Associates"}</DialogDescription>
+          <DialogDescription>{mode === "edit" ? "Update the client registration" : branding.registerDescription}</DialogDescription>
         </DialogHeader>
         <div className="flex items-center justify-between mb-4 px-2">
           {steps.map((step, index) => (
@@ -250,7 +253,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-3 gap-4">
                   <div><Label className="pb-1">SAM Registration</Label><Input value={formData.samRegistration} onChange={(e) => updateFormData("samRegistration", e.target.value)} /></div>
-                  <div><Label className="pb-1">DUNS Number</Label><Input value={formData.dunsNumber} onChange={(e) => updateFormData("dunsNumber", e.target.value)} /></div>
+                  <div><Label className="pb-1">{branding.dunsLabel}</Label><Input value={formData.dunsNumber} onChange={(e) => updateFormData("dunsNumber", e.target.value)} /></div>
                 </div>
                 <div>
                   <Label className="pb-1">NAICS Codes *</Label>
@@ -285,7 +288,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
                 <div><Label className="pb-1">How do you currently get business?</Label><Textarea value={formData.currentBusinessAcquisitionMethod} onChange={(e) => updateFormData("currentBusinessAcquisitionMethod", e.target.value)} rows={2} /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label className="pb-1">Referred By</Label><Input value={formData.referredBy} onChange={(e) => updateFormData("referredBy", e.target.value)} /></div>
-                  <div><Label className="pb-1">How found KDM & Associates *</Label><Input value={formData.howFoundKDMAssociates} onChange={(e) => updateFormData("howFoundKDMAssociates", e.target.value)} /></div>
+                  <div><Label className="pb-1">{branding.howFoundLabel} *</Label><Input value={formData.howFoundKDMAssociates} onChange={(e) => updateFormData("howFoundKDMAssociates", e.target.value)} /></div>
                 </div>
               </CardContent>
             </Card>
@@ -296,7 +299,7 @@ export function ClientRegistrationModal({ open, onOpenChange, onSuccess, initial
               <CardContent className="space-y-6">
                 <div className="flex items-center space-x-2"><Checkbox id="openToTeaming" checked={formData.openToTeamingArrangement} onCheckedChange={(c) => updateFormData("openToTeamingArrangement", c as boolean)} /><Label htmlFor="openToTeaming" className="text-sm font-normal">Open to teaming arrangement?</Label></div>
                 <div className="flex items-center space-x-2"><Checkbox id="hasResources" checked={formData.hasResourcesToInvest} onCheckedChange={(c) => updateFormData("hasResourcesToInvest", c as boolean)} /><Label htmlFor="hasResources" className="text-sm font-normal">Have resources to invest if recommended?</Label></div>
-                <div><Label className="pb-1">Help needed from KDM & Associates *</Label><Textarea value={formData.helpNeededFromKDM} onChange={(e) => updateFormData("helpNeededFromKDM", e.target.value)} rows={2} /></div>
+                <div><Label className="pb-1">{branding.helpNeededLabel} *</Label><Textarea value={formData.helpNeededFromKDM} onChange={(e) => updateFormData("helpNeededFromKDM", e.target.value)} rows={2} /></div>
                 <div><Label className="pb-1">Top company need *</Label><Input value={formData.topCompanyNeed} onChange={(e) => updateFormData("topCompanyNeed", e.target.value)} /></div>
                 <div><Label className="pb-1">Services Interested In</Label><div className="flex flex-wrap gap-2 mt-2">{SERVICES_OPTIONS.map((s) => (<Badge key={s} variant={formData.servicesInterestedIn.includes(s) ? "default" : "outline"} className="cursor-pointer" onClick={() => toggleArrayItem("servicesInterestedIn", s)}>{s}</Badge>))}</div></div>
                 <div><Label className="pb-1">Certifications Interested In</Label><div className="flex flex-wrap gap-2 mt-2">{CERTIFICATION_INTEREST_OPTIONS.map((c) => (<Badge key={c} variant={formData.interestedInCertifications.includes(c) ? "default" : "outline"} className="cursor-pointer" onClick={() => toggleArrayItem("interestedInCertifications", c)}>{c}</Badge>))}</div></div>

@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { CheckCircle2, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getProgramBranding } from "@/lib/branding";
 
 export interface WizardStep {
   id: string;
@@ -93,7 +94,7 @@ export function OnboardingWizard({
       });
 
       toast.success("Onboarding complete!", {
-        description: "Your profile is ready. Welcome to the KDM Consortium!",
+        description: `Your profile is ready. ${getProgramBranding().welcomeTitle}`,
       });
 
       onComplete();
