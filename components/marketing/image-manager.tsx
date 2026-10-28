@@ -137,7 +137,7 @@ export function ImageManager({
     if (!confirm(`Are you sure you want to delete "${image.name}"?`)) return;
 
     try {
-      await deleteImageFromManager(image.id, image.storagePath);
+      await deleteImageFromManager(image.id, image.fileId);
       setImages((prev) => prev.filter((img) => img.id !== image.id));
       toast.success("Image deleted");
       

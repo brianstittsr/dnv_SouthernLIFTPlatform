@@ -257,7 +257,6 @@ export type FormValues = Record<string, FieldValue>;
 export interface StoredFile {
   fieldKey: string;
   uploadId: string;
-  storagePath: string;
   fileName: string;
   contentType: string;
   sizeBytes: number;
@@ -267,7 +266,7 @@ export interface StoredFile {
 export interface StoredSignature {
   fieldKey: string;
   mode: "drawn" | "typed";
-  storagePath?: string;
+  uploadId?: string;
   typedName?: string;
   signedByName: string;
   signedAt: string;

@@ -288,6 +288,14 @@ service cloud.firestore {
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
+
+    // Subscription Leads - public write for lead capture, admin read
+    match /subscriptionLeads/{leadId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public form submission
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
     
     // Contact Form Messages - public write for form submission, admin read
     match /contactMessages/{messageId} {
@@ -568,9 +576,21 @@ service cloud.firestore {
         resource.data.userId == request.auth.uid || isAdmin();
     }
 
+    // Portal Documents: any signed-in user can read; only the uploader or an
+    // admin can delete. Records are written server-side via /api/upload-file.
+    match /documents/{documentId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin();
+      allow delete: if isAdmin() ||
+        (isAuthenticated() && resource.data.uploaderUid == request.auth.uid);
+    }
+
     // LIFT Form Builder and lifecycle records: client SDK access is denied.
     // All reads and writes go through server API routes (Firebase Admin SDK),
     // which enforce staff/owner checks, validation, and audit logging.
+    // Generic file blobs — server access only (base64-chunked file bytes)
+    match /fileBlobs/{path=**} { allow read, write: if false; }
+
     match /liftForms/{path=**} { allow read, write: if false; }
     match /liftFormSubmissions/{path=**} { allow read, write: if false; }
     match /liftFormDrafts/{path=**} { allow read, write: if false; }
@@ -589,6 +609,13 @@ service cloud.firestore {
     match /liftImpactConsents/{path=**} { allow read, write: if false; }
     match /liftExits/{path=**} { allow read, write: if false; }
     match /liftAudit/{path=**} { allow read, write: if false; }
+    match /liftKpiTargets/{path=**} { allow read, write: if false; }
+    match /liftKpiPeriods/{path=**} { allow read, write: if false; }
+    match /liftStaffAssignments/{path=**} { allow read, write: if false; }
+    match /liftPartnerAgreements/{path=**} { allow read, write: if false; }
+    match /liftInvoices/{path=**} { allow read, write: if false; }
+    match /liftTrainingContent/{path=**} { allow read, write: if false; }
+    match /liftImpactStories/{path=**} { allow read, write: if false; }
 
     // Fallback: Deny all other access
     match /{document=**} {

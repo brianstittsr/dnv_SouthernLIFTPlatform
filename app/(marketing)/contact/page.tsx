@@ -20,10 +20,9 @@ import {
 } from "@/components/ui/dialog";
 import {
   Mail,
-  Phone,
   MapPin,
+  Phone,
   Clock,
-  Calendar,
   ArrowRight,
   CheckCircle,
   Linkedin,
@@ -33,6 +32,7 @@ import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
+import { getProgramBranding } from "@/lib/branding";
 
 const services = [
   "Digital Solutions",
@@ -59,23 +59,10 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [smsConsentTransactional, setSmsConsentTransactional] = useState(false);
   const [smsConsentMarketing, setSmsConsentMarketing] = useState(false);
-  const [bookCallOpen, setBookCallOpen] = useState(false);
-  const [isBookingCall, setIsBookingCall] = useState(false);
   const [businessType, setBusinessType] = useState("");
   const [service, setService] = useState("");
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
-  const [bookCallForm, setBookCallForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-    jobTitle: "",
-    preferredDate: "",
-    preferredTime: "",
-    message: "",
-  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -142,106 +129,6 @@ export default function ContactPage() {
       });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleBookCall = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsBookingCall(true);
-
-    try {
-      if (!db) {
-        throw new Error("Database not configured");
-      }
-
-      await addDoc(collection(db, COLLECTIONS.BOOK_CALL_LEADS), {
-        firstName: bookCallForm.firstName,
-        lastName: bookCallForm.lastName,
-        email: bookCallForm.email,
-        phone: bookCallForm.phone || null,
-        company: bookCallForm.company || null,
-        jobTitle: bookCallForm.jobTitle || null,
-        preferredDate: bookCallForm.preferredDate || null,
-        preferredTime: bookCallForm.preferredTime || null,
-        message: bookCallForm.message || null,
-        source: "contact-page",
-        status: "new",
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
-
-      const now = new Date().toISOString();
-      await addDoc(collection(db, COLLECTIONS.SUBSCRIPTION_LEADS), {
-        userId: `book_call_${Date.now()}`,
-        email: bookCallForm.email,
-        companyName: bookCallForm.company || "Unknown",
-        industry: "Unknown",
-        userType: "sme",
-        roleTag: "Unknown",
-        tier: "dwy",
-        tierName: "DWY (Done With You)",
-        price: 299,
-        subscriptionStatus: "pending",
-        contactInfo: {
-          firstName: bookCallForm.firstName || null,
-          lastName: bookCallForm.lastName || null,
-          phone: bookCallForm.phone || null,
-          jobTitle: bookCallForm.jobTitle || null,
-        },
-        status: "new",
-        source: "book_call",
-        priority: "medium",
-        svpSync: {
-          syncStatus: "pending",
-        },
-        followUp: {
-          emailsSent: 0,
-          notes: [],
-        },
-        createdAt: now,
-        updatedAt: now,
-      });
-
-      fetch("/api/book-call-leads/notify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: bookCallForm.firstName,
-          lastName: bookCallForm.lastName,
-          email: bookCallForm.email,
-          phone: bookCallForm.phone || undefined,
-          company: bookCallForm.company || undefined,
-          jobTitle: bookCallForm.jobTitle || undefined,
-          preferredDate: bookCallForm.preferredDate || undefined,
-          preferredTime: bookCallForm.preferredTime || undefined,
-          message: bookCallForm.message || undefined,
-          source: "contact-page",
-        }),
-      }).catch((err) => console.error("Failed to send book-call-lead notification:", err));
-
-      toast.success("Call request submitted!", {
-        description: "We'll contact you shortly to schedule your call.",
-      });
-
-      setBookCallForm({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        company: "",
-        jobTitle: "",
-        preferredDate: "",
-        preferredTime: "",
-        message: "",
-      });
-      setBookCallOpen(false);
-    } catch (error) {
-      console.error("Error submitting book call request:", error);
-      toast.error("Failed to submit request", {
-        description: "Please try again or contact us directly.",
-      });
-    } finally {
-      setIsBookingCall(false);
     }
   };
 
@@ -460,143 +347,6 @@ export default function ContactPage() {
                       <p className="text-muted-foreground">Mon-Fri: 8am - 6pm EST</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Schedule Call */}
-              <Card className="border-primary/20 bg-primary/5">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    Schedule a Call
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    Prefer to talk directly? Book a 30-minute discovery call with one of our experts.
-                  </p>
-                  <Dialog open={bookCallOpen} onOpenChange={setBookCallOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        Book a Call
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
-                      <DialogHeader>
-                        <DialogTitle>Book a Discovery Call</DialogTitle>
-                        <DialogDescription>
-                          Fill out the form below and we&apos;ll reach out to schedule a 30-minute call.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleBookCall} className="space-y-4 mt-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="book-firstName">First Name *</Label>
-                            <Input
-                              id="book-firstName"
-                              required
-                              value={bookCallForm.firstName}
-                              onChange={(e) => setBookCallForm({ ...bookCallForm, firstName: e.target.value })}
-                              placeholder="John"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="book-lastName">Last Name *</Label>
-                            <Input
-                              id="book-lastName"
-                              required
-                              value={bookCallForm.lastName}
-                              onChange={(e) => setBookCallForm({ ...bookCallForm, lastName: e.target.value })}
-                              placeholder="Smith"
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="book-email">Email *</Label>
-                          <Input
-                            id="book-email"
-                            type="email"
-                            required
-                            value={bookCallForm.email}
-                            onChange={(e) => setBookCallForm({ ...bookCallForm, email: e.target.value })}
-                            placeholder="john@company.com"
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="book-phone">Phone</Label>
-                            <Input
-                              id="book-phone"
-                              type="tel"
-                              value={bookCallForm.phone}
-                              onChange={(e) => setBookCallForm({ ...bookCallForm, phone: e.target.value })}
-                              placeholder="(555) 123-4567"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="book-company">Company</Label>
-                            <Input
-                              id="book-company"
-                              value={bookCallForm.company}
-                              onChange={(e) => setBookCallForm({ ...bookCallForm, company: e.target.value })}
-                              placeholder="Your Company"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="book-date">Preferred Date</Label>
-                            <Input
-                              id="book-date"
-                              type="date"
-                              value={bookCallForm.preferredDate}
-                              onChange={(e) => setBookCallForm({ ...bookCallForm, preferredDate: e.target.value })}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="book-time">Preferred Time</Label>
-                            <Select
-                              value={bookCallForm.preferredTime}
-                              onValueChange={(value) => setBookCallForm({ ...bookCallForm, preferredTime: value })}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select time" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="morning">Morning (9am-12pm)</SelectItem>
-                                <SelectItem value="afternoon">Afternoon (12pm-5pm)</SelectItem>
-                                <SelectItem value="evening">Evening (5pm-7pm)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="book-message">What would you like to discuss?</Label>
-                          <Textarea
-                            id="book-message"
-                            value={bookCallForm.message}
-                            onChange={(e) => setBookCallForm({ ...bookCallForm, message: e.target.value })}
-                            placeholder="Tell us about your goals..."
-                            rows={3}
-                          />
-                        </div>
-                        <Button type="submit" className="w-full" disabled={isBookingCall}>
-                          {isBookingCall ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Submitting...
-                            </>
-                          ) : (
-                            <>
-                              Request Call
-                              <ArrowRight className="ml-2 h-4 w-4" />
-                            </>
-                          )}
-                        </Button>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
                 </CardContent>
               </Card>
 

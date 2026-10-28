@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { Timestamp } from "firebase-admin/firestore";
-import { db, storage } from "@/lib/firebase-admin";
+import { db } from "@/lib/firebase-admin";
 import { verifyAuth } from "@/lib/auth/server-auth";
 import { COLLECTIONS } from "@/lib/schema";
 
@@ -53,13 +53,6 @@ export function jsonError(message: string, status: number): NextResponse {
 export function requireDb(): FirebaseFirestore.Firestore {
   if (!db) throw new Error("Database not initialized");
   return db;
-}
-
-/** Returns the Storage bucket used for LIFT form files. */
-export function getBucket() {
-  const bucketName = process.env.FIREBASE_STORAGE_BUCKET || process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-  if (!storage || !bucketName) throw new Error("File storage is not configured");
-  return storage.bucket(bucketName);
 }
 
 /** Hashes the client IP so raw addresses are never stored. */

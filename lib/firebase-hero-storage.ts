@@ -1,19 +1,10 @@
 /**
- * Optimized Image Storage for Hero Backgrounds
- * Uses Firebase Storage for faster loading instead of Firestore base64
+ * Hero background image helpers.
+ * Image bytes are stored as base64 chunks in Firestore (fileBlobs) and
+ * served from /api/files/{id} — no Firebase Storage required.
  */
 
-import { storage } from "./firebase";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-  listAll,
-  getMetadata,
-} from "firebase/storage";
-
-const HERO_STORAGE_PATH = "hero-backgrounds";
+const HERO_CATEGORY = "hero-backgrounds";
 
 export interface OptimizedHeroImage {
   id: string;
@@ -79,41 +70,33 @@ export async function compressImageForWeb(
 }
 
 /**
- * Upload hero background image to Firebase Storage
- * Much faster than Firestore base64 for large images
+ * Upload hero background image through the server route.
+ * The server stores it as base64 chunks in Firestore and returns an
+ * /api/files/{id} URL.
  */
 export async function uploadHeroBackground(
   file: File,
   name?: string
 ): Promise<OptimizedHeroImage> {
-  if (!storage) throw new Error("Firebase Storage not initialized");
-
   // Compress image before upload
   const compressedBlob = await compressImageForWeb(file, 1920, 0.85);
-
-  // Generate unique ID and path
-  const imageId = crypto.randomUUID();
   const fileName = name || file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-  const storagePath = `${HERO_STORAGE_PATH}/${imageId}_${fileName}`;
 
-  // Upload to Firebase Storage
-  const storageRef = ref(storage, storagePath);
-  await uploadBytes(storageRef, compressedBlob, {
-    contentType: "image/jpeg",
-    customMetadata: {
-      originalName: file.name,
-      uploadedAt: new Date().toISOString(),
-    },
-  });
+  const formData = new FormData();
+  formData.append("file", new File([compressedBlob], fileName, { type: "image/jpeg" }));
+  formData.append("category", HERO_CATEGORY);
 
-  // Get download URL
-  const url = await getDownloadURL(storageRef);
+  const response = await fetch("/api/upload-image", { method: "POST", body: formData });
+  if (!response.ok) throw new Error("Hero background upload failed");
+
+  const data = (await response.json()) as { imageId?: string; imageUrl?: string };
+  if (!data.imageId || !data.imageUrl) throw new Error("Hero background upload returned no id");
 
   return {
-    id: imageId,
+    id: data.imageId,
     name: fileName,
-    url,
-    path: storagePath,
+    url: data.imageUrl,
+    path: data.imageId,
     size: compressedBlob.size,
     contentType: "image/jpeg",
     uploadedAt: new Date(),
@@ -122,63 +105,46 @@ export async function uploadHeroBackground(
 
 /**
  * Get optimized hero background image URL
- * Returns a properly sized CDN URL for fast loading
  */
 export function getOptimizedHeroUrl(
-  storageUrl: string,
+  imageUrl: string,
   width: number = 1920
 ): string {
-  // Firebase Storage URLs are already optimized via CDN
-  // We can add resize parameters if using Firebase Extensions like "Resize Images"
-  return storageUrl;
+  return imageUrl;
 }
 
 /**
- * Delete hero background from storage
+ * Delete hero background by its fileBlobs id or /api/files/{id} URL
  */
-export async function deleteHeroBackground(path: string): Promise<void> {
-  if (!storage) throw new Error("Firebase Storage not initialized");
-
-  const storageRef = ref(storage, path);
-  await deleteObject(storageRef);
+export async function deleteHeroBackground(fileIdOrUrl: string): Promise<void> {
+  const match = fileIdOrUrl.match(/\/api\/files\/([^/?#]+)/);
+  const fileId = match ? match[1] : fileIdOrUrl;
+  const response = await fetch(`/api/files/${fileId}`, { method: "DELETE" });
+  if (!response.ok && response.status !== 404) {
+    throw new Error("Failed to delete hero background");
+  }
 }
 
 /**
- * List all hero background images
+ * List all hero background images (from the hero_images metadata collection)
  */
 export async function listHeroBackgrounds(): Promise<OptimizedHeroImage[]> {
-  if (!storage) throw new Error("Firebase Storage not initialized");
+  const response = await fetch("/api/hero-backgrounds");
+  if (!response.ok) throw new Error("Failed to list hero backgrounds");
 
-  const storageRef = ref(storage, HERO_STORAGE_PATH);
-  const result = await listAll(storageRef);
+  const data = (await response.json()) as {
+    images?: { id: string; url: string; name?: string }[];
+  };
 
-  const images: OptimizedHeroImage[] = [];
-
-  for (const item of result.items) {
-    try {
-      const [url, metadata] = await Promise.all([
-        getDownloadURL(item),
-        getMetadata(item),
-      ]);
-
-      // Extract ID from filename
-      const id = item.name.split("_")[0];
-
-      images.push({
-        id,
-        name: metadata.customMetadata?.originalName || item.name,
-        url,
-        path: item.fullPath,
-        size: metadata.size,
-        contentType: metadata.contentType || "image/jpeg",
-        uploadedAt: new Date(metadata.updated || metadata.timeCreated),
-      });
-    } catch (error) {
-      console.error("Failed to get image metadata:", error);
-    }
-  }
-
-  return images.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+  return (data.images || []).map((img) => ({
+    id: img.id,
+    name: img.name || img.id,
+    url: img.url,
+    path: img.id,
+    size: 0,
+    contentType: "image/jpeg",
+    uploadedAt: new Date(0),
+  }));
 }
 
 /**

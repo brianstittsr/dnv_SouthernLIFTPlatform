@@ -111,6 +111,32 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+// "My LIFT" — the client-facing group shown first for every signed-in user
+const myLiftItems = [
+  {
+    title: "My Profile",
+    href: "/portal/profile",
+    icon: User,
+  },
+  {
+    title: "Onboarding Progress",
+    href: "/portal/onboarding-progress",
+    icon: ClipboardCheck,
+    badge: "LIFT",
+  },
+  {
+    title: "Documents",
+    href: "/portal/documents",
+    icon: FileText,
+  },
+  {
+    title: "My LIFT Forms",
+    href: "/portal/lift/forms",
+    icon: ClipboardList,
+    badge: "LIFT",
+  },
+];
+
 const mainNavItems = [
   {
     title: "Command Center",
@@ -369,11 +395,6 @@ const adminItems = [
     href: "/portal/admin/press-releases",
     icon: Radio,
     badge: "New",
-  },
-  {
-    title: "Contact Popup",
-    href: "/portal/admin/popup",
-    icon: MessageSquare,
   },
   {
     title: "Home Page Settings",
@@ -793,8 +814,10 @@ export function PortalSidebar() {
     isImpersonating,
     impersonatedUserId,
     setImpersonatedUserId,
+    networkingCompletion,
+    showAffiliateOnboarding,
+    setShowAffiliateOnboarding,
   } = useUserProfile();
-  const [bookCallLeadsCount, setBookCallLeadsCount] = useState(0);
   const [hiddenNavItems, setHiddenNavItems] = useState<string[]>([]);
   const [roleVisibility, setRoleVisibility] = useState<Record<string, string[]>>({});
   const [previewRole, setPreviewRole] = useState<string | null>(null);
@@ -820,40 +843,6 @@ export function PortalSidebar() {
     // Check SVP role sections union
     return effectiveRoles.some((role) => (SVP_ROLE_SECTIONS[role] || []).includes(sectionKey));
   };
-
-  // Subscribe to BookCallLeads count (new leads only)
-  // Only subscribe if user is admin to avoid permission errors that can corrupt Firestore state
-  useEffect(() => {
-    if (!db || !isAdmin) return;
-    
-    let unsubscribe: (() => void) | undefined;
-    
-    try {
-      const q = query(
-        collection(db, COLLECTIONS.BOOK_CALL_LEADS),
-        where("status", "==", "new")
-      );
-      
-      unsubscribe = onSnapshot(
-        q, 
-        (snapshot) => {
-          setBookCallLeadsCount(snapshot.size);
-        },
-        (error) => {
-          // Silently handle permission errors - user may not have access to this collection
-          console.warn("BookCallLeads snapshot error (may be permission-related):", error.code);
-          // Don't let this error propagate - just set count to 0
-          setBookCallLeadsCount(0);
-        }
-      );
-    } catch (error) {
-      console.warn("Failed to set up BookCallLeads listener:", error);
-    }
-    
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [isAdmin]);
 
   // Load list of users for admin impersonation switcher
   useEffect(() => {
@@ -967,6 +956,8 @@ export function PortalSidebar() {
   
   // Collapsible state for each section
   const [openSections, setOpenSections] = useState({
+    // Client-facing LIFT group - always at the top
+    myLift: true,
     // SVP Platform sections - at top, open by default
     svpSme: true,
     svpPartner: true,
@@ -989,6 +980,7 @@ export function PortalSidebar() {
     if (searchQuery.trim()) {
       setOpenSections(prev => ({
         ...prev,
+        myLift: true,
         other: true,
         navigation: true,
         company: true,
@@ -1014,15 +1006,9 @@ export function PortalSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/portal" className="flex items-center px-2 py-4">
-          <NextImage
-            src="/kdm-logo.png"
-            alt="KDM & Associates Logo"
-            width={160}
-            height={40}
-            priority
-            className="h-10 brightness-0 invert"
-            style={{ width: 'auto', height: 'auto' }}
-          />
+          <span className="text-2xl font-extrabold tracking-[0.2em] text-sidebar-foreground">
+            LIFT
+          </span>
         </Link>
       </SidebarHeader>
 
@@ -1078,11 +1064,73 @@ export function PortalSidebar() {
         ) : (
           <>
             {/* ============================================ */}
+            {/* MY LIFT - CLIENT SECTION (always first) */}
+            {/* ============================================ */}
+            {(sectionHasMatchingItems(myLiftItems) || "onboarding".includes(searchQuery.toLowerCase())) && (
+        <Collapsible open={openSections.myLift} onOpenChange={() => toggleSection("myLift")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="h-3 w-3 text-blue-500" />
+                  My LIFT
+                </span>
+                {openSections.myLift ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItemsBySearch(myLiftItems).map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                        tooltip={item.title}
+                      >
+                        <Link href={item.href}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                      {item.badge && (
+                        <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                      )}
+                    </SidebarMenuItem>
+                  ))}
+                  {/* Onboarding opens the LIFT client wizard dialog and shows its status */}
+                  {(!searchQuery.trim() || "onboarding".includes(searchQuery.toLowerCase())) && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => setShowAffiliateOnboarding(true)}
+                      isActive={showAffiliateOnboarding}
+                      tooltip="Onboarding"
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      <span>Onboarding</span>
+                    </SidebarMenuButton>
+                    <SidebarMenuBadge className={profile.affiliateOnboardingComplete ? "bg-green-600 text-white" : ""}>
+                      {profile.affiliateOnboardingComplete ? "Complete" : `${networkingCompletion}%`}
+                    </SidebarMenuBadge>
+                  </SidebarMenuItem>
+                  )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+            {/* ============================================ */}
             {/* SVP PLATFORM NAVIGATION SECTIONS - TOP PRIORITY */}
             {/* ============================================ */}
 
             {/* Vendor Section */}
-            {isSvpSectionVisible("svpSme") && (!searchQuery.trim() || sectionHasMatchingItems(svpSmeItems)) && (
+            {isSvpSectionVisible("svpSme") && (sectionHasMatchingItems(svpSmeItems)) && (
         <Collapsible open={openSections.svpSme} onOpenChange={() => toggleSection("svpSme")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1132,7 +1180,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Partner Section */}
-        {isSvpSectionVisible("svpPartner") && (!searchQuery.trim() || sectionHasMatchingItems(svpPartnerItems)) && (
+        {isSvpSectionVisible("svpPartner") && (sectionHasMatchingItems(svpPartnerItems)) && (
         <Collapsible open={openSections.svpPartner} onOpenChange={() => toggleSection("svpPartner")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1182,7 +1230,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Buyer Section */}
-        {isSvpSectionVisible("svpBuyer") && (!searchQuery.trim() || sectionHasMatchingItems(svpBuyerItems)) && (
+        {isSvpSectionVisible("svpBuyer") && (sectionHasMatchingItems(svpBuyerItems)) && (
         <Collapsible open={openSections.svpBuyer} onOpenChange={() => toggleSection("svpBuyer")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1232,7 +1280,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - QA Reviewer Section */}
-        {isSvpSectionVisible("svpQa") && (!searchQuery.trim() || sectionHasMatchingItems(svpQaItems)) && (
+        {isSvpSectionVisible("svpQa") && (sectionHasMatchingItems(svpQaItems)) && (
         <Collapsible open={openSections.svpQa} onOpenChange={() => toggleSection("svpQa")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1282,7 +1330,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - CMMC Instructor Section */}
-        {isSvpSectionVisible("svpInstructor") && (!searchQuery.trim() || sectionHasMatchingItems(svpInstructorItems)) && (
+        {isSvpSectionVisible("svpInstructor") && (sectionHasMatchingItems(svpInstructorItems)) && (
         <Collapsible open={openSections.svpInstructor} onOpenChange={() => toggleSection("svpInstructor")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1332,7 +1380,7 @@ export function PortalSidebar() {
         )}
 
         {/* SVP - Admin Section */}
-        {isSvpSectionVisible("svpAdmin") && (!searchQuery.trim() || sectionHasMatchingItems(svpAdminItems)) && (
+        {isSvpSectionVisible("svpAdmin") && (sectionHasMatchingItems(svpAdminItems)) && (
         <Collapsible open={openSections.svpAdmin} onOpenChange={() => toggleSection("svpAdmin")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1382,7 +1430,7 @@ export function PortalSidebar() {
         )}
 
         {/* Consortium Member Section */}
-        {isSvpSectionVisible("consortiumMember") && (!searchQuery.trim() || sectionHasMatchingItems(consortiumMemberItems)) && (
+        {isSvpSectionVisible("consortiumMember") && (sectionHasMatchingItems(consortiumMemberItems)) && (
         <Collapsible open={openSections.consortiumMember} onOpenChange={() => toggleSection("consortiumMember")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1435,7 +1483,7 @@ export function PortalSidebar() {
         {/* OTHER - NON-SVP SECTIONS */}
         {/* ============================================ */}
 
-        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (!searchQuery.trim() || sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(companyItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems))) && (
+        {(!effectiveRoles.includes("consortium_member") || effectiveRoles.length > 1) && (sectionHasMatchingItems(mainNavItems) || sectionHasMatchingItems(companyItems) || sectionHasMatchingItems(workItems) || sectionHasMatchingItems(aiItems) || (isAdmin && sectionHasMatchingItems(adminItems))) && (
         <Collapsible open={openSections.other} onOpenChange={() => toggleSection("other")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1451,7 +1499,7 @@ export function PortalSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 {/* Navigation */}
-                {(!searchQuery.trim() || sectionHasMatchingItems(mainNavItems)) && (
+                {(sectionHasMatchingItems(mainNavItems)) && (
                 <Collapsible open={openSections.navigation} onOpenChange={() => toggleSection("navigation")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1498,7 +1546,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Company */}
-                {companyItems.length > 0 && (!searchQuery.trim() || sectionHasMatchingItems(companyItems)) && (
+                {companyItems.length > 0 && (sectionHasMatchingItems(companyItems)) && (
                 <Collapsible open={openSections.company} onOpenChange={() => toggleSection("company")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1542,7 +1590,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Work */}
-                {(!searchQuery.trim() || sectionHasMatchingItems(workItems)) && (
+                {(sectionHasMatchingItems(workItems)) && (
                 <Collapsible open={openSections.work} onOpenChange={() => toggleSection("work")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1586,7 +1634,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Intelligence */}
-                {(!searchQuery.trim() || sectionHasMatchingItems(aiItems)) && (
+                {(sectionHasMatchingItems(aiItems)) && (
                 <Collapsible open={openSections.intelligence} onOpenChange={() => toggleSection("intelligence")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1630,7 +1678,7 @@ export function PortalSidebar() {
                 )}
 
                 {/* Admin */}
-                {isAdmin && (!searchQuery.trim() || sectionHasMatchingItems(adminItems)) && (
+                {isAdmin && (sectionHasMatchingItems(adminItems)) && (
                 <Collapsible open={openSections.admin} onOpenChange={() => toggleSection("admin")}>
                   <SidebarGroup>
                     <CollapsibleTrigger asChild>
@@ -1646,23 +1694,6 @@ export function PortalSidebar() {
                     <CollapsibleContent>
                       <SidebarGroupContent>
                         <SidebarMenu>
-                          <SidebarMenuItem>
-                            <SidebarMenuButton
-                              asChild
-                              isActive={pathname === "/portal/admin/book-call-leads"}
-                              tooltip="Book Call Leads"
-                            >
-                              <Link href="/portal/admin/book-call-leads">
-                                <Phone className="h-4 w-4" />
-                                <span>Book Call Leads</span>
-                              </Link>
-                            </SidebarMenuButton>
-                            {bookCallLeadsCount > 0 && (
-                              <SidebarMenuBadge className="bg-red-500 text-white">
-                                {bookCallLeadsCount}
-                              </SidebarMenuBadge>
-                            )}
-                          </SidebarMenuItem>
                           {filterNavItemsBySearch(adminItems).map((item) => {
                             const hidden = isItemHidden(item.href);
                             return (

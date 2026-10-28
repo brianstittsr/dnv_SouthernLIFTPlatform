@@ -1,7 +1,7 @@
 import type { Browser } from "puppeteer-core";
 import { fieldHasValue } from "../controls";
 import type { FieldValue, LiftFormDoc, LiftFormSubmissionDoc, TableRow } from "../types";
-import { getBucket } from "./context";
+import { readUploadBytes } from "./uploads";
 
 const escapeHtml = (value: string): string =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -37,9 +37,9 @@ async function buildHtml(form: LiftFormDoc, submission: LiftFormSubmissionDoc, i
 
   const signatureImages = new Map<string, string>();
   for (const signature of submission.signatures ?? []) {
-    if (!signature.storagePath) continue;
+    if (!signature.uploadId) continue;
     try {
-      const [buffer] = await getBucket().file(signature.storagePath).download();
+      const buffer = await readUploadBytes(signature.uploadId);
       signatureImages.set(signature.fieldKey, `data:image/png;base64,${buffer.toString("base64")}`);
     } catch (error) {
       console.error("Signature image could not be loaded for PDF:", error);

@@ -1,7 +1,68 @@
 import Script from "next/script";
+import { getProgramBranding } from "@/lib/branding";
 
 // Organization Schema
 export function OrganizationJsonLd() {
+  const branding = getProgramBranding();
+
+  if (branding.isLift) {
+    const liftSchema = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: branding.siteName,
+      alternateName: "Southern University MBDA LIFT Rural Business Center",
+      url: branding.siteUrl,
+      logo: `${branding.siteUrl}${branding.logoSrc}`,
+      description: branding.siteDescription,
+      parentOrganization: {
+        "@type": "CollegeOrUniversity",
+        name: "Southern University and A&M College",
+        url: "https://www.sus.edu",
+      },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Baton Rouge",
+        addressRegion: "LA",
+        addressCountry: "US",
+      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          email: branding.contactEmail,
+          telephone: branding.contactPhone,
+          contactType: "customer service",
+          availableLanguage: ["English"],
+        },
+      ],
+      areaServed: {
+        "@type": "State",
+        name: "Louisiana",
+      },
+      knowsAbout: [
+        "Small Business Technical Assistance",
+        "Rural Business Development",
+        "Capital Readiness",
+        "Procurement Readiness",
+        "Government Contracting",
+        "Advanced Manufacturing",
+        "Digital & AI Adoption",
+        "Rural Entrepreneurship",
+      ],
+      funder: {
+        "@type": "GovernmentOrganization",
+        name: "U.S. Department of Commerce, Minority Business Development Agency",
+      },
+    };
+
+    return (
+      <Script
+        id="organization-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(liftSchema) }}
+      />
+    );
+  }
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -89,6 +150,43 @@ export function OrganizationJsonLd() {
 
 // Local Business Schema (for local SEO)
 export function LocalBusinessJsonLd() {
+  const branding = getProgramBranding();
+
+  if (branding.isLift) {
+    const liftLocalSchema = {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      name: branding.siteName,
+      image: `${branding.siteUrl}${branding.logoSrc}`,
+      url: branding.siteUrl,
+      telephone: branding.contactPhone,
+      email: branding.contactEmail,
+      priceRange: "Free",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Baton Rouge",
+        addressRegion: "LA",
+        addressCountry: "US",
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "08:00",
+          closes: "17:00",
+        },
+      ],
+    };
+
+    return (
+      <Script
+        id="localbusiness-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(liftLocalSchema) }}
+      />
+    );
+  }
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -148,9 +246,10 @@ export function ServiceJsonLd({
   name,
   description,
   url,
-  provider = "KDM & Associates",
-  areaServed = "United States",
+  provider,
+  areaServed,
 }: ServiceJsonLdProps) {
+  const branding = getProgramBranding();
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -159,14 +258,16 @@ export function ServiceJsonLd({
     url,
     provider: {
       "@type": "Organization",
-      name: provider,
-      url: "https://kdm-assoc.com",
+      name: provider || branding.siteName,
+      url: branding.siteUrl,
     },
     areaServed: {
       "@type": "Country",
-      name: areaServed,
+      name: areaServed || (branding.isLift ? "Louisiana" : "United States"),
     },
-    serviceType: "Government Contracting Consulting",
+    serviceType: branding.isLift
+      ? "Small Business Technical Assistance"
+      : "Government Contracting Consulting",
   };
 
   return (
@@ -262,6 +363,7 @@ export function ArticleJsonLd({
   dateModified,
   authorName,
 }: ArticleJsonLdProps) {
+  const branding = getProgramBranding();
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -277,10 +379,10 @@ export function ArticleJsonLd({
     },
     publisher: {
       "@type": "Organization",
-      name: "KDM & Associates",
+      name: branding.siteName,
       logo: {
         "@type": "ImageObject",
-        url: "https://kdm-assoc.com/kdm-logo.png",
+        url: `${branding.siteUrl}${branding.logoSrc}`,
       },
     },
     mainEntityOfPage: {
@@ -312,19 +414,19 @@ interface BlogListJsonLdProps {
 }
 
 export function BlogListJsonLd({ posts }: BlogListJsonLdProps) {
+  const branding = getProgramBranding();
   const blogListSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
-    description:
-      "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
-    url: "https://kdm-assoc.com/blog",
+    name: branding.blogTitle,
+    description: branding.blogDescription,
+    url: `${branding.siteUrl}/blog`,
     publisher: {
       "@type": "Organization",
-      name: "KDM & Associates",
+      name: branding.siteName,
       logo: {
         "@type": "ImageObject",
-        url: "https://kdm-assoc.com/kdm-logo.png",
+        url: `${branding.siteUrl}${branding.logoSrc}`,
       },
     },
     mainEntity: {
@@ -344,7 +446,7 @@ export function BlogListJsonLd({ posts }: BlogListJsonLdProps) {
           description: post.excerpt,
           publisher: {
             "@type": "Organization",
-            name: "KDM & Associates",
+            name: branding.siteName,
           },
         },
       })),
@@ -362,17 +464,20 @@ export function BlogListJsonLd({ posts }: BlogListJsonLdProps) {
 
 // WebSite Schema with SearchAction
 export function WebsiteJsonLd() {
+  const branding = getProgramBranding();
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "KDM & Associates",
-    alternateName: "KDM Federal Procurement & Industrial Readiness Center",
-    url: "https://kdm-assoc.com",
+    name: branding.siteName,
+    alternateName: branding.isLift
+      ? "Southern University MBDA LIFT Rural Business Center"
+      : "KDM Federal Procurement & Industrial Readiness Center",
+    url: branding.siteUrl,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://kdm-assoc.com/search?q={search_term_string}",
+        urlTemplate: `${branding.siteUrl}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

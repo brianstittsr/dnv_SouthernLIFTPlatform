@@ -110,7 +110,7 @@ export async function processSubmission(options: {
   };
   const contentHash = hashCanonical(hashable);
 
-  // Signatures: store drawn images in Storage; keep only references on the submission.
+  // Signatures: store drawn images as base64 upload records; keep only references on the submission.
   const signatures: StoredSignature[] = [];
   for (const [key, value] of Object.entries(values)) {
     if (fieldsByKey.get(key)?.type !== "signature") continue;
@@ -119,7 +119,7 @@ export async function processSubmission(options: {
     signatures.push({
       fieldKey: key,
       mode: signature.mode,
-      storagePath: stored?.storagePath,
+      uploadId: stored?.uploadId,
       typedName: signature.typedName,
       signedByName: signature.typedName || signedByName,
       signedAt: new Date().toISOString(),
@@ -138,7 +138,7 @@ export async function processSubmission(options: {
     if (type === "file_upload") {
       const refs = files.filter((file) => file.fieldKey === key).map(({ uploadId, fileName, contentType, sizeBytes }) => ({ uploadId, fileName, contentType, sizeBytes }));
       storedValues[key] = refs;
-      mappedValues[key] = files.filter((file) => file.fieldKey === key).map((file) => file.storagePath);
+      mappedValues[key] = files.filter((file) => file.fieldKey === key).map((file) => file.uploadId);
     }
     if (type === "signature") {
       const signature = signatures.find((item) => item.fieldKey === key);

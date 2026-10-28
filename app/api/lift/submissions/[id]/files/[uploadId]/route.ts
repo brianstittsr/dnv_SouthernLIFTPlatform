@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COLLECTIONS } from "@/lib/schema";
-import { getBucket, getRequester, jsonError, requireDb, writeAudit } from "@/lib/form-builder/server/context";
+import { getRequester, jsonError, requireDb, writeAudit } from "@/lib/form-builder/server/context";
 import { handleRouteError } from "@/lib/form-builder/server/route-helpers";
+import { readUploadBytes } from "@/lib/form-builder/server/uploads";
 import type { LiftFormSubmissionDoc } from "@/lib/form-builder/types";
 
 export const runtime = "nodejs";
@@ -18,7 +19,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const file = submission.files?.find((item) => item.uploadId === uploadId);
     if (!file) return jsonError("File not found", 404);
 
-    const [buffer] = await getBucket().file(file.storagePath).download();
+    const buffer = await readUploadBytes(uploadId);
     await writeAudit("submission.file_downloaded", id, requester, { uploadId });
     return new NextResponse(new Uint8Array(buffer), {
       headers: {

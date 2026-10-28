@@ -15,10 +15,24 @@ if (!admin.apps.length) {
       !process.env.FIREBASE_CLIENT_EMAIL ||
       !process.env.FIREBASE_PRIVATE_KEY
     ) {
-      console.error(
-        "❌ Firebase Admin: missing required env vars (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). " +
-        "Server-side Firebase operations will be unavailable."
-      );
+      // Fall back to application-default credentials (e.g. gcloud auth
+      // application-default login) for local development when the
+      // service-account env vars are not set.
+      try {
+        admin.initializeApp({
+          credential: admin.credential.applicationDefault(),
+          projectId:
+            process.env.FIREBASE_PROJECT_ID ||
+            process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        });
+        _initialized = true;
+        console.log("✅ Firebase Admin SDK initialized with application-default credentials");
+      } catch {
+        console.error(
+          "❌ Firebase Admin: missing required env vars (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). " +
+          "Server-side Firebase operations will be unavailable."
+        );
+      }
     } else {
       console.log("Initializing Firebase Admin with project:", process.env.FIREBASE_PROJECT_ID);
 
@@ -43,6 +57,5 @@ if (!admin.apps.length) {
 
 export const auth = _initialized ? admin.auth() : null as unknown as admin.auth.Auth;
 export const db = _initialized ? admin.firestore() : null as unknown as admin.firestore.Firestore;
-export const storage = _initialized ? admin.storage() : null as unknown as admin.storage.Storage;
 
 export default admin;

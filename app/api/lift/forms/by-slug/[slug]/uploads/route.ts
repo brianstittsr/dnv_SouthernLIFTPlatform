@@ -28,7 +28,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ data: upload }, { status: 201 });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Upload failed";
-      if (message === "File storage is not configured") throw error;
       return jsonError(message, 400);
     }
   } catch (error) {

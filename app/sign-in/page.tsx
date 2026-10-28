@@ -15,8 +15,10 @@ import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { findAndLinkTeammember } from "@/lib/auth-team-member-link";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getProgramBranding } from "@/lib/branding";
 
 export default function SignInPage() {
+  const branding = getProgramBranding();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -148,8 +150,8 @@ export default function SignInPage() {
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex flex-col items-center gap-3 group">
             <Image
-              src="/kdm-logo.png"
-              alt="KDM & Associates Logo"
+              src={branding.logoSrc}
+              alt={branding.logoAlt}
               width={80}
               height={80}
               className="h-20 w-auto"
@@ -163,7 +165,7 @@ export default function SignInPage() {
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
             <CardDescription className="text-center">
-              Sign in to access your V+ Portal
+              Sign in to access your {branding.portalName}
             </CardDescription>
           </CardHeader>
           <CardContent>

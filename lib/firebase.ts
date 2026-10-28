@@ -1,7 +1,6 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
-import { getStorage, FirebaseStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -26,7 +25,6 @@ if (hasValidConfig) {
 // Firebase services - only initialize if app exists
 export const auth: Auth | null = app ? getAuth(app) : null;
 export const db: Firestore | null = app ? getFirestore(app) : null;
-export const storage: FirebaseStorage | null = app ? getStorage(app) : null;
 
 // Analytics (only in browser)
 export const initAnalytics = async () => {

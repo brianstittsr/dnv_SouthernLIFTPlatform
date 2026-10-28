@@ -229,7 +229,7 @@ export interface TractionRockDoc {
 export interface DocumentDoc extends Omit<AppDocument, "createdAt" | "uploadedBy"> {
   createdAt: Timestamp;
   uploadedById: string; // Reference to user
-  storagePath: string; // Firebase Storage path
+  fileId: string; // fileBlobs document id (file bytes stored as base64 chunks)
 }
 
 /** Service document in Firestore */
@@ -888,7 +888,8 @@ export interface MemberAttachmentDoc {
     author?: string;
     subject?: string;
   };
-  storagePath: string;
+  fileId: string; // fileBlobs document id (file bytes stored as base64 chunks)
+  fileUrl?: string; // /api/files/{fileId}
   uploadedAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -1210,6 +1211,8 @@ export interface PlatformSettingsDoc {
   uiPreferences?: {
     showAskAI?: boolean; // Show/hide Ask AI button on Command Center
   };
+  // Admin-managed dropdown option lists, keyed by list name (e.g. "documentTypes")
+  dropdownLists?: Record<string, string[]>;
   updatedAt: Timestamp;
   updatedBy?: string;
 }
@@ -2787,6 +2790,8 @@ export const COLLECTIONS = {
   TEAMING_ALERTS: "teamingAlerts",
   TEAMING_REQUESTS: "teamingRequests",
   TEAMING_INTERESTS: "teamingInterests",
+  // Generic file blobs (base64 chunks; server access only — replaces Firebase Storage)
+  FILE_BLOBS: "fileBlobs",
   // LIFT Form Builder and lifecycle records (server access only; see firestore.rules)
   LIFT_FORMS: "liftForms",
   LIFT_FORM_SUBMISSIONS: "liftFormSubmissions",
@@ -2806,6 +2811,14 @@ export const COLLECTIONS = {
   LIFT_IMPACT_CONSENTS: "liftImpactConsents",
   LIFT_EXITS: "liftExits",
   LIFT_AUDIT: "liftAudit",
+  // LIFT program modules (reporting, compliance, partners, content)
+  LIFT_KPI_TARGETS: "liftKpiTargets",
+  LIFT_KPI_PERIODS: "liftKpiPeriods",
+  LIFT_STAFF_ASSIGNMENTS: "liftStaffAssignments",
+  LIFT_PARTNER_AGREEMENTS: "liftPartnerAgreements",
+  LIFT_INVOICES: "liftInvoices",
+  LIFT_TRAINING_CONTENT: "liftTrainingContent",
+  LIFT_IMPACT_STORIES: "liftImpactStories",
 } as const;
 
 // ... existing code ...
@@ -3714,3 +3727,321 @@ export interface HomePageSettingsDoc {
 
 // Client Registration collection reference
 export const clientRegistrationsCollection = () => getCollection<ClientRegistrationDoc>(COLLECTIONS.CLIENT_REGISTRATIONS);
+
+// ============================================================================
+// LIFT RURAL BUSINESS CENTER (Southern University / MBDA)
+// Server-only collections: client SDK access is denied in firestore.rules;
+// all access goes through app/api/lift routes. Timestamps are server-written.
+// ============================================================================
+
+/** LIFT client record, keyed by generated liftClientId (liftClients/{id}). */
+export interface LiftClientRecord {
+  id: string;
+  legalName: string;
+  status: "intake_draft" | "intake_submitted" | "enrolled" | "inactive";
+  ownerUid?: string;
+  contactEmail?: string;
+  uei?: string;
+  enrollment?: {
+    consentSubmissionId: string;
+    consentSignedAt: Timestamp;
+    loeFormVersion: string;
+  };
+  eligibility?: {
+    rural: {
+      status: "pending" | "eligible" | "ineligible" | "review";
+      parish?: string;
+      submissionId?: string;
+      decidedByUid?: string;
+      decidedAt?: Timestamp;
+      decisionNotes?: string;
+    };
+  };
+  source: "public_intake" | "portal_form" | "staff";
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  [key: string]: unknown;
+}
+
+/** Point-in-time baseline from the B4 survey (liftBaselines/{submissionId}). */
+export interface LiftBaselineDoc {
+  liftClientId: string;
+  submissionId: string;
+  formSlug: string;
+  revenueLast12MonthsCents?: number;
+  employeesFullTime?: number;
+  employeesPartTime?: number;
+  annualPayrollCents?: number;
+  capitalRaisedCents?: number;
+  capitalSources?: string;
+  contractsHeld?: number;
+  contractsList?: string;
+  registeredWithSos?: boolean;
+  registrationDate?: string;
+  digitalTools?: string[];
+  readiness?: Record<string, number>;
+  createdAt: Timestamp;
+}
+
+/** Staff-built service plan from B5 (liftServicePlans/{submissionId}). */
+export interface LiftServicePlanDoc {
+  liftClientId: string;
+  submissionId: string;
+  goals: { measure: string; description: string; targetDate?: string }[];
+  services: { serviceArea: string; provider: string; status?: string }[];
+  referrals?: { partner: string; reason?: string; consentToShare?: string; fieldsShared?: string }[];
+  approvedBy?: string;
+  approvalDate?: string;
+  createdAt: Timestamp;
+}
+
+/** Advisor session log entry (liftSessions/{submissionId}). */
+export interface LiftSessionDoc {
+  liftClientId: string;
+  submissionId: string;
+  advisorId?: string;
+  partnerOrg?: string;
+  serviceArea?: string;
+  sessionType?: string;
+  sessionDate?: string;
+  durationMinutes?: number;
+  notes?: string;
+  nextSteps?: string;
+  referralsMade?: string;
+  createdAt: Timestamp;
+}
+
+/** Workshop registration or staff check-in (liftTrainingAttendance/{submissionId}). */
+export interface LiftTrainingAttendanceDoc {
+  liftClientId?: string;
+  submissionId: string;
+  eventId: string;
+  attendee: { firstName?: string; lastName?: string; email?: string; phone?: string; businessName?: string; parish?: string };
+  currentClient?: boolean;
+  consentContact?: boolean;
+  accommodation?: string;
+  attended?: boolean;
+  minutesAttended?: number;
+  createdAt: Timestamp;
+}
+
+/** Workshop/event feedback (liftFeedback/{submissionId}). */
+export interface LiftFeedbackDoc {
+  liftClientId?: string;
+  submissionId: string;
+  eventId: string;
+  nps?: number;
+  overallRating?: number;
+  contentRelevant?: number;
+  applyWithin90Days?: number;
+  doDifferently?: string;
+  nextTopics?: string;
+  followUp?: boolean;
+  createdAt: Timestamp;
+}
+
+/** Capital-readiness package (liftCapitalPackages/{submissionId}). */
+export interface LiftCapitalPackageDoc {
+  liftClientId?: string;
+  submissionId: string;
+  purpose?: string;
+  amountSoughtCents?: number;
+  capitalType?: string;
+  targetLenders?: string;
+  documents?: Record<string, string[]>;
+  notApplicable?: string;
+  lenderSubmissions?: { lender: string; dateSubmitted?: string; status?: string }[];
+  createdAt: Timestamp;
+}
+
+/** Verified company capability library per client (liftCapabilityLibraries/{liftClientId}). */
+export interface LiftCapabilityLibraryDoc {
+  liftClientId: string;
+  overview?: string;
+  coreCompetencies?: string;
+  differentiators?: string;
+  pastPerformance?: { customer: string; contractNumber?: string; value?: number; period?: string; description?: string }[];
+  certifications?: { name: string; number?: string; expiresOn?: string }[];
+  keyPersonnel?: { name: string; role: string; summary?: string }[];
+  lastSubmissionId?: string;
+  updatedAt: Timestamp;
+}
+
+/** SAM.gov opportunity response (liftProposalResponses/{submissionId}). */
+export interface LiftProposalResponseDoc {
+  liftClientId?: string;
+  submissionId: string;
+  noticeId: string;
+  noticeTitle?: string;
+  containsCui?: boolean;
+  go?: boolean;
+  noGoReason?: string;
+  responseType?: string;
+  teamingPartners?: string;
+  claimsConfirmed?: boolean;
+  advisorNotes?: string;
+  clientApproved?: boolean;
+  submitted?: boolean;
+  submittedDate?: string;
+  submissionMethod?: string;
+  outcome?: "Pending" | "Awarded" | "Not awarded";
+  awardAmountCents?: number;
+  awardDate?: string;
+  createdAt: Timestamp;
+}
+
+/** One claimed outcome awaiting staff verification (liftOutcomeClaims/{submissionId}_{n}). */
+export interface LiftOutcomeClaimDoc {
+  measure:
+    | "capital_infusion"
+    | "contracts_secured"
+    | "jobs_supported"
+    | "new_business_starts"
+    | "revenue_growth"
+    | "readiness_completions"
+    | "digital_adoption";
+  value: number;
+  unit: "usd_cents" | "jobs" | "count";
+  occurredAt: string | null;
+  detail: Record<string, unknown>;
+  liftClientId: string | null;
+  submissionId: string;
+  formSlug: string;
+  attribution?: string | null;
+  evidence: { uploadId: string; fileName: string; sha256: string }[];
+  status: "claimed" | "needs_info" | "verified" | "rejected" | "superseded";
+  verifiedByUid?: string;
+  verifiedAt?: Timestamp;
+  verificationNote?: string;
+  reportingPeriod?: string;
+  createdAt: Timestamp;
+}
+
+/** Publicity consent record (liftImpactConsents/{submissionId}). */
+export interface LiftImpactConsentDoc {
+  liftClientId?: string;
+  submissionId: string;
+  shareStory?: boolean;
+  storyText?: string;
+  consentToUse?: boolean;
+  withdrawnAt?: Timestamp;
+  createdAt: Timestamp;
+}
+
+/** Program exit record (liftExits/{submissionId}). */
+export interface LiftExitDoc {
+  liftClientId?: string;
+  submissionId: string;
+  satisfaction?: number;
+  nps?: number;
+  mostHelpfulService?: string;
+  improve?: string;
+  stayConnected?: boolean;
+  exitReason?: string;
+  createdAt: Timestamp;
+}
+
+/** Audit event for LIFT activity (liftAudit/{autoId}). */
+export interface LiftAuditDoc {
+  action: string;
+  entityId: string;
+  actorUid: string | null;
+  actorName: string | null;
+  detail: Record<string, unknown>;
+  createdAt: Timestamp;
+}
+
+/** Versioned KPI target set; target conflicts from source documents stay flagged (liftKpiTargets/{id}). */
+export interface LiftKpiTargetDoc {
+  id: string;
+  year: number;
+  /** Values as defined in the source documents; flagConflicts lists the measures where sources disagree. */
+  targets: { measure: string; baselineCents?: number; targetCents?: number; targetCount?: number; unit: "usd_cents" | "count" }[];
+  flagConflicts: { measure: string; sources: { document: string; value: number }[]; resolved: boolean; resolvedByUid?: string; resolvedAt?: Timestamp }[];
+  effectiveFrom: string;
+  effectiveTo?: string;
+  approvedByUid?: string;
+  status: "draft" | "active" | "archived";
+  createdAt: Timestamp;
+}
+
+/** Reporting period snapshot for MBDA reports (liftKpiPeriods/{period}). */
+export interface LiftKpiPeriodDoc {
+  id: string;
+  period: string;
+  periodStart: string;
+  periodEnd: string;
+  results?: { measure: string; valueCents?: number; count?: number; claimIds: string[] }[];
+  generatedByUid: string;
+  generatedAt: Timestamp;
+  locked: boolean;
+}
+
+/** Advisor assignment of a LIFT client (liftStaffAssignments/{liftClientId}_{uid}). */
+export interface LiftStaffAssignmentDoc {
+  liftClientId: string;
+  staffUid: string;
+  role: "lead_advisor" | "advisor" | "instructor";
+  assignedByUid: string;
+  assignedAt: Timestamp;
+  endedAt?: Timestamp;
+}
+
+/** Partner/MOU agreement tracking for the Q1 80%-executed milestone (liftPartnerAgreements/{id}). */
+export interface LiftPartnerAgreementDoc {
+  id: string;
+  partnerOrg: string;
+  partnerContact?: string;
+  agreementType: "mou" | "subaward" | "letter_of_commitment" | "agreement" | "other";
+  status: "requested" | "in_review" | "executed" | "expired";
+  documentStoragePath?: string;
+  documentSha256?: string;
+  effectiveDate?: string;
+  expiryDate?: string;
+  uploadedByUid: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Quarterly grant invoice/evidence record (liftInvoices/{period}). */
+export interface LiftInvoiceDoc {
+  id: string;
+  period: string;
+  dueDate: string;
+  status: "draft" | "submitted" | "paid" | "rejected";
+  amountCents?: number;
+  evidenceUploadIds: string[];
+  notes?: string;
+  submittedAt?: Timestamp;
+  submittedByUid?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** A LIFT training item in the content library (liftTrainingContent/{id}). */
+export interface LiftTrainingContentDoc {
+  id: string;
+  title: string;
+  serviceArea: string;
+  format: "video" | "article" | "course" | "template" | "checklist";
+  url?: string;
+  uploadId?: string;
+  published: boolean;
+  order?: number;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+/** Published client success story; requires a verified liftImpactConsents record (liftImpactStories/{id}). */
+export interface LiftImpactStoryDoc {
+  id: string;
+  liftClientId: string;
+  consentSubmissionId: string;
+  title: string;
+  body: string;
+  photoUploadId?: string;
+  status: "draft" | "published" | "withdrawn";
+  publishedAt?: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}

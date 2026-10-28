@@ -180,6 +180,7 @@ export const DEFAULT_PACK_HEALTH_CONFIG: PackHealthConfig = {
  */
 export async function getSystemConfig(): Promise<SystemConfig | null> {
   try {
+    if (!db) return null;
     const configDoc = await db.collection("systemConfig").doc("main").get();
     
     if (!configDoc.exists) {
@@ -231,6 +232,7 @@ export async function updateIndustries(
   updatedBy: string
 ): Promise<void> {
   try {
+    if (!db) throw new Error("Database not initialized");
     await db.collection("systemConfig").doc("main").update({
       industries,
       updatedAt: Timestamp.now(),
@@ -261,6 +263,7 @@ export async function updateRevenueConfig(
   updatedBy: string
 ): Promise<void> {
   try {
+    if (!db) throw new Error("Database not initialized");
     // Validate percentages
     if (revenueConfig.platformFeePercentage + revenueConfig.partnerSharePercentage !== 100) {
       throw new Error("Platform fee and partner share must total 100%");
@@ -302,6 +305,7 @@ export async function updatePackHealthConfig(
   updatedBy: string
 ): Promise<void> {
   try {
+    if (!db) throw new Error("Database not initialized");
     // Validate weights total 100%
     const totalWeight =
       packHealthConfig.completenessWeight +
@@ -348,6 +352,7 @@ export async function updatePartnerAssignments(
   updatedBy: string
 ): Promise<void> {
   try {
+    if (!db) throw new Error("Database not initialized");
     await db.collection("systemConfig").doc("main").update({
       partnerAssignments,
       updatedAt: Timestamp.now(),
@@ -378,6 +383,7 @@ export async function updatePlatformSettings(
   updatedBy: string
 ): Promise<void> {
   try {
+    if (!db) throw new Error("Database not initialized");
     await db.collection("systemConfig").doc("main").update({
       settings,
       updatedAt: Timestamp.now(),

@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import { ParkedWebsiteGate } from "@/components/marketing/parked-website-gate";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
-import { ContactPopup } from "@/components/marketing/contact-popup";
 import { DiscountHero } from "@/components/marketing/discount-hero";
 import { OrganizationJsonLd, WebsiteJsonLd, LocalBusinessJsonLd } from "@/components/seo/json-ld";
 import { getSystemConfig } from "@/lib/config";
 import { PARKED_WEBSITE_COOKIE } from "@/lib/parked-website";
+import { getProgramBranding } from "@/lib/branding";
 
 export const dynamic = "force-dynamic";
 
@@ -31,14 +31,14 @@ export default async function MarketingLayout({
       <WebsiteJsonLd />
       <LocalBusinessJsonLd />
 
-      <DiscountHero />
+      {/* Paid-offer banner is KDM-only; the LIFT Center has no paid promotions. */}
+      {!getProgramBranding().isLift && <DiscountHero />}
       <Navbar />
       {/* Main content landmark with skip link target - WCAG 2.4.1 */}
       <main id="main-content" className="flex-1" role="main" tabIndex={-1}>
         {children}
       </main>
       <Footer />
-      <ContactPopup />
     </div>
   );
 }

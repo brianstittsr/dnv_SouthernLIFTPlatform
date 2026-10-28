@@ -83,7 +83,7 @@ async function writeOutcomeClaims(context: PostProcessContext, claims: OutcomeCl
   if (!claims.length) return;
   const db = requireDb();
   const batch = db.batch();
-  const evidence = context.files.map((file) => ({ storagePath: file.storagePath, fileName: file.fileName, sha256: file.sha256 }));
+  const evidence = context.files.map((file) => ({ uploadId: file.uploadId, fileName: file.fileName, sha256: file.sha256 }));
   claims.forEach((claim, index) => {
     const ref = db.collection(COLLECTIONS.LIFT_OUTCOME_CLAIMS).doc(`${context.submissionId}_${index + 1}`);
     batch.set(ref, {

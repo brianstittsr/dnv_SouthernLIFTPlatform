@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storage, db } from '@/lib/firebase-admin';
+import { db } from '@/lib/firebase-admin';
 import { COLLECTIONS } from '@/lib/schema';
 import { Timestamp } from 'firebase-admin/firestore';
 import { extractPdfMarkdown, isPdf } from '@/lib/pdf-to-markdown';
+import { storeFileBuffer } from '@/lib/file-store';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,10 @@ export async function POST(request: NextRequest) {
     const userId = formData.get('userId') as string || '';
     const companyId = formData.get('companyId') as string || '';
     const attachmentType = formData.get('attachmentType') as string || 'other';
+    const target = formData.get('target') as string || '';
+    const documentType = formData.get('documentType') as string || 'Uncategorized';
+    const uploadedBy = formData.get('uploadedBy') as string || 'Unknown';
+    const uploaderUid = formData.get('uploaderUid') as string || '';
 
     if (!file) {
       return NextResponse.json(
@@ -29,34 +34,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const fileName = `${timestamp}_${safeFileName}`;
-    const storagePath = `uploads/${category}/${fileName}`;
-
     // Get file bytes
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Firebase Storage using Admin SDK (always keep original as backup)
-    const bucket = storage.bucket();
-    const fileUpload = bucket.file(storagePath);
-    
-    await fileUpload.save(buffer, {
-      metadata: {
-        contentType: file.type,
-        metadata: {
-          originalName: file.name,
-          size: file.size.toString(),
-          uploadedAt: new Date().toISOString(),
-        },
-      },
+    // Member attachments are private to their owner; everything else is
+    // public-facing content (logos, press attachments) served openly.
+    const isMemberAttachment = Boolean(userId);
+    const stored = await storeFileBuffer({
+      buffer,
+      fileName: file.name,
+      contentType: file.type || 'application/octet-stream',
+      category,
+      isPublic: !isMemberAttachment,
+      ownerUid: isMemberAttachment ? userId : null,
     });
-
-    // Make file publicly accessible and get URL
-    await fileUpload.makePublic();
-    const downloadUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
 
     // If PDF, extract text and store as markdown in Firestore
     let attachmentId: string | undefined;
@@ -83,14 +75,15 @@ export async function POST(request: NextRequest) {
             markdownContent,
             pageCount,
             metadata: pdfMetadata,
-            storagePath,
+            fileId: stored.fileId,
+            fileUrl: stored.fileUrl,
             uploadedAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
           });
           attachmentId = attachmentRef.id;
         }
       } catch (extractError) {
-        console.error('PDF text extraction failed (file still uploaded to storage):', extractError);
+        console.error('PDF text extraction failed (file still stored):', extractError);
       }
     } else if (db && userId) {
       // Non-PDF: store metadata only with null markdown content
@@ -104,20 +97,55 @@ export async function POST(request: NextRequest) {
         markdownContent: null,
         pageCount: 0,
         metadata: {},
-        storagePath,
+        fileId: stored.fileId,
+        fileUrl: stored.fileUrl,
         uploadedAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
       attachmentId = attachmentRef.id;
     }
 
+    // Portal Documents module: record the upload in the documents collection
+    let documentId: string | undefined;
+    if (db && target === 'documents') {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      const fileKind = ['pdf'].includes(ext)
+        ? 'pdf'
+        : ['xlsx', 'xls', 'csv'].includes(ext)
+          ? 'spreadsheet'
+          : ['doc', 'docx', 'txt', 'md'].includes(ext)
+            ? 'document'
+            : ['ppt', 'pptx'].includes(ext)
+              ? 'presentation'
+              : ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext)
+                ? 'image'
+                : 'other';
+      const docRef = await db.collection(COLLECTIONS.DOCUMENTS).add({
+        name: file.name,
+        type: fileKind,
+        size: stored.sizeBytes >= 1024 * 1024
+          ? `${(stored.sizeBytes / (1024 * 1024)).toFixed(1)} MB`
+          : `${Math.max(1, Math.round(stored.sizeBytes / 1024))} KB`,
+        sizeBytes: stored.sizeBytes,
+        folder: documentType,
+        uploadedBy,
+        uploaderUid: uploaderUid || null,
+        uploadedAt: Timestamp.now(),
+        shared: false,
+        fileId: stored.fileId,
+        downloadUrl: stored.fileUrl,
+      });
+      documentId = docRef.id;
+    }
+
     return NextResponse.json({
-      fileId: fileName,
-      fileUrl: downloadUrl,
+      fileId: stored.fileId,
+      fileUrl: stored.fileUrl,
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,
       attachmentId,
+      documentId,
       markdownExtracted: markdownContent !== null,
       pageCount,
     });

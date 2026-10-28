@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storage } from '@/lib/firebase-admin';
+import { storeFileBuffer } from '@/lib/file-store';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,38 +31,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const fileName = `${timestamp}_${safeFileName}`;
-    const storagePath = `images/${category}/${fileName}`;
-
     // Get file bytes
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Firebase Storage using Admin SDK
-    const bucket = storage.bucket();
-    const fileUpload = bucket.file(storagePath);
-    
-    await fileUpload.save(buffer, {
-      metadata: {
-        contentType: file.type,
-        metadata: {
-          originalName: file.name,
-          size: file.size.toString(),
-          uploadedAt: new Date().toISOString(),
-        },
-      },
+    // Store as base64 chunks in Firestore; served publicly via /api/files/{id}
+    const stored = await storeFileBuffer({
+      buffer,
+      fileName: file.name,
+      contentType: file.type,
+      category,
+      isPublic: true,
     });
 
-    // Make file publicly accessible and get URL
-    await fileUpload.makePublic();
-    const downloadUrl = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
-
     return NextResponse.json({
-      imageId: fileName,
-      imageUrl: downloadUrl,
+      imageId: stored.fileId,
+      imageUrl: stored.fileUrl,
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,

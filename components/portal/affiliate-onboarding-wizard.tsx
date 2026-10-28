@@ -86,58 +86,58 @@ function CircularProgress({ percentage, size = 100, strokeWidth = 8 }: { percent
   );
 }
 
-// Affiliate categories for expertise selection
-const affiliateCategories = [
-  { id: "manufacturing", name: "Manufacturing Operations", icon: "🏭" },
-  { id: "quality", name: "Quality & ISO", icon: "✅" },
-  { id: "technology", name: "Technology & AI", icon: "🤖" },
-  { id: "finance", name: "Finance & Accounting", icon: "💰" },
-  { id: "sales", name: "Sales & Marketing", icon: "📈" },
-  { id: "hr", name: "HR & Workforce", icon: "👥" },
-  { id: "supply-chain", name: "Supply Chain", icon: "🔗" },
-  { id: "international", name: "International Business", icon: "🌍" },
+// Assistance areas for LIFT client service selection
+const liftServiceAreas = [
+  { id: "business-planning", name: "Business Planning", icon: "📋" },
+  { id: "capital-readiness", name: "Capital & Financing", icon: "💰" },
+  { id: "gov-contracting", name: "Government Contracting", icon: "🏛️" },
+  { id: "marketing", name: "Marketing & Sales", icon: "�" },
+  { id: "operations", name: "Operations & Technology", icon: "⚙️" },
+  { id: "workforce", name: "Workforce & HR", icon: "👥" },
+  { id: "certifications", name: "Certifications (MBE, 8(a), HUBZone)", icon: "✅" },
+  { id: "growth", name: "Growth & New Markets", icon: "🌍" },
 ];
 
-// Affiliate commitment items
-const affiliateCommitments = [
+// Rural LIFT program participation expectations
+const liftProgramExpectations = [
   {
     icon: Calendar,
-    title: "Monthly Networking Meetings",
-    description: "Attend at least 2 affiliate networking meetings per month",
+    title: "Advisor Sessions",
+    description: "Meet with your assigned LIFT advisor and keep scheduled advising appointments",
   },
   {
-    icon: Users,
-    title: "One-to-One Meetings",
-    description: "Complete at least 4 One-to-One meetings with other affiliates monthly",
+    icon: FileText,
+    title: "Program Forms",
+    description: "Complete required forms, including the MBDA Client Intake & Letter of Engagement and baseline survey",
   },
   {
     icon: Target,
-    title: "Referral Generation",
-    description: "Actively identify and refer qualified leads to the SVP network",
+    title: "Outcome Reporting",
+    description: "Report business outcomes — jobs, contracts, and capital — at 6- and 12-month check-ins",
   },
   {
     icon: MessageSquare,
     title: "Communication",
-    description: "Respond to referral requests and communications within 24-48 hours",
+    description: "Respond to advisor outreach and program communications within 2 business days",
   },
   {
-    icon: DollarSign,
-    title: "Revenue Sharing",
-    description: "Participate in the SVP revenue sharing model as outlined in your agreement",
+    icon: Users,
+    title: "Rural Eligibility",
+    description: "Keep your business information current, including rural location and ownership details",
   },
   {
     icon: Award,
-    title: "Professional Standards",
-    description: "Maintain professional standards and represent SVP values in all interactions",
+    title: "Data & Consent",
+    description: "Allow de-identified outcome data to be reported to MBDA as described in your Letter of Engagement",
   },
 ];
 
 const steps = [
   { id: 1, title: "Welcome", icon: Handshake },
-  { id: 2, title: "Commitments", icon: FileText },
-  { id: 3, title: "Your Expertise", icon: Star },
-  { id: 4, title: "Networking Profile", icon: Users },
-  { id: 5, title: "Ready to Connect", icon: MessageSquare },
+  { id: 2, title: "Expectations", icon: FileText },
+  { id: 3, title: "Your Business", icon: Star },
+  { id: 4, title: "Business Profile", icon: Users },
+  { id: 5, title: "Get Started", icon: MessageSquare },
 ];
 
 export function AffiliateOnboardingWizard() {
@@ -333,10 +333,10 @@ export function AffiliateOnboardingWizard() {
             <div className="p-2 rounded-lg bg-gradient-to-br from-green-500 to-green-600">
               <Handshake className="h-5 w-5 text-white" />
             </div>
-            Affiliate Onboarding
+            LIFT Client Onboarding
           </DialogTitle>
           <DialogDescription>
-            Welcome to the SVP Affiliate Network! Let&apos;s get you set up for success.
+            Welcome to the Southern University MBDA LIFT Rural Business Center! Let&apos;s get your business set up for success.
           </DialogDescription>
         </DialogHeader>
 
@@ -377,9 +377,9 @@ export function AffiliateOnboardingWizard() {
                   <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                     <Handshake className="h-10 w-10 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Welcome to the KDM Affiliate Network!</h3>
+                  <h3 className="text-xl font-semibold mb-2">Welcome to the Rural LIFT Program!</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">
-                    Thank you for joining KDM & Associates as an affiliate partner. This onboarding process will help you understand your commitments and set up your networking profile.
+                    Thank you for enrolling with the Southern University MBDA LIFT Rural Business Center. This onboarding will help you understand how the program works and set up your business profile so our advisors can support you.
                   </p>
                 </div>
 
@@ -390,10 +390,10 @@ export function AffiliateOnboardingWizard() {
                       <div>
                         <p className="font-medium">What to expect:</p>
                         <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-                          <li>• Review your affiliate commitments</li>
-                          <li>• Set up your expertise and categories</li>
-                          <li>• Complete your networking profile for One-to-Ones</li>
-                          <li>• Get ready to connect with other affiliates</li>
+                          <li>• Review the program participation expectations</li>
+                          <li>• Tell us about your business and the assistance you need</li>
+                          <li>• Complete your business profile for advisor matching</li>
+                          <li>• Get ready to connect with your LIFT advisor team</li>
                         </ul>
                       </div>
                     </div>
@@ -412,14 +412,14 @@ export function AffiliateOnboardingWizard() {
             {currentStep === 2 && (
               <div className="space-y-4 px-2">
                 <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold">Your Affiliate Commitments</h3>
+                  <h3 className="text-lg font-semibold">Program Participation Expectations</h3>
                   <p className="text-sm text-muted-foreground">
-                    As an SVP affiliate, you&apos;ve agreed to the following commitments:
+                    As a Rural LIFT client, we ask you to commit to the following:
                   </p>
                 </div>
 
                 <div className="grid gap-3">
-                  {affiliateCommitments.map((commitment, index) => {
+                  {liftProgramExpectations.map((commitment, index) => {
                     const Icon = commitment.icon;
                     return (
                       <Card key={index} className="bg-muted/30">
@@ -444,7 +444,7 @@ export function AffiliateOnboardingWizard() {
                     onCheckedChange={(checked) => setAcknowledgedCommitments(checked as boolean)}
                   />
                   <Label htmlFor="acknowledge" className="text-sm">
-                    I understand and acknowledge my commitments as an SVP affiliate
+                    I understand and acknowledge the Rural LIFT program participation expectations
                   </Label>
                 </div>
               </div>
@@ -454,14 +454,14 @@ export function AffiliateOnboardingWizard() {
             {currentStep === 3 && (
               <div className="space-y-6 px-2">
                 <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold">Your Areas of Expertise</h3>
+                  <h3 className="text-lg font-semibold">Where Your Business Needs Support</h3>
                   <p className="text-sm text-muted-foreground">
-                    Select the categories that best describe your services
+                    Select the areas where your business needs assistance
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {affiliateCategories.map((category) => (
+                  {liftServiceAreas.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => handleCategoryToggle(category.id)}
@@ -483,15 +483,15 @@ export function AffiliateOnboardingWizard() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="expertise">Specific Expertise (comma separated) *</Label>
+                  <Label htmlFor="expertise">What does your business do? (comma separated) *</Label>
                   <Input
                     id="expertise"
                     value={expertise}
                     onChange={(e) => setExpertise(e.target.value)}
-                    placeholder="e.g., Six Sigma, ISO 9001, Lean Manufacturing, AI Implementation"
+                    placeholder="e.g., Landscaping services, specialty food products, custom metal fabrication"
                   />
                   <p className="text-xs text-muted-foreground">
-                    List your specific skills and certifications
+                    List your products, services, and any certifications
                   </p>
                 </div>
               </div>
@@ -501,64 +501,64 @@ export function AffiliateOnboardingWizard() {
             {currentStep === 4 && (
               <div className="space-y-4 px-2">
                 <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold">Your Networking Profile</h3>
+                  <h3 className="text-lg font-semibold">Your Business Profile</h3>
                   <p className="text-sm text-muted-foreground">
-                    This information helps other affiliates understand how to refer business to you
+                    This information helps your LIFT advisor team understand your business and tailor assistance
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="idealReferralPartner">Who is your ideal referral partner? *</Label>
+                    <Label htmlFor="idealReferralPartner">What types of support or partnerships would help your business grow? *</Label>
                     <Textarea
                       id="idealReferralPartner"
                       value={networkingData.idealReferralPartner}
                       onChange={(e) => handleNetworkingChange("idealReferralPartner", e.target.value)}
-                      placeholder="Describe the type of affiliate who would be a great referral partner for you..."
+                      placeholder="e.g., introductions to lenders, contract opportunities, mentors, or suppliers..."
                       rows={2}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="uniqueValueProposition">What is your unique value proposition? *</Label>
+                    <Label htmlFor="uniqueValueProposition">What does your business offer, and what makes it unique? *</Label>
                     <Textarea
                       id="uniqueValueProposition"
                       value={networkingData.uniqueValueProposition}
                       onChange={(e) => handleNetworkingChange("uniqueValueProposition", e.target.value)}
-                      placeholder="What makes you different from others in your field?"
+                      placeholder="Describe your products or services and what sets your business apart"
                       rows={2}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="problemsYouSolve">What problems do you solve for clients? *</Label>
+                    <Label htmlFor="problemsYouSolve">What challenges is your business facing right now? *</Label>
                     <Textarea
                       id="problemsYouSolve"
                       value={networkingData.problemsYouSolve}
                       onChange={(e) => handleNetworkingChange("problemsYouSolve", e.target.value)}
-                      placeholder="Describe the main challenges you help clients overcome..."
+                      placeholder="e.g., access to capital, winning contracts, finding customers, operations..."
                       rows={2}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="targetClientProfile">Describe your ideal client</Label>
+                    <Label htmlFor="targetClientProfile">Who are your customers?</Label>
                     <Textarea
                       id="targetClientProfile"
                       value={networkingData.targetClientProfile}
                       onChange={(e) => handleNetworkingChange("targetClientProfile", e.target.value)}
-                      placeholder="Industry, company size, specific needs..."
+                      placeholder="Industries, locations, contract types you serve or want to serve..."
                       rows={2}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="goalsThisQuarter">What are your goals this quarter?</Label>
+                    <Label htmlFor="goalsThisQuarter">What are your goals for the next 12 months?</Label>
                     <Textarea
                       id="goalsThisQuarter"
                       value={networkingData.goalsThisQuarter}
                       onChange={(e) => handleNetworkingChange("goalsThisQuarter", e.target.value)}
-                      placeholder="What do you hope to achieve through the affiliate network?"
+                      placeholder="e.g., win a first contract, secure financing, hire employees..."
                       rows={2}
                     />
                   </div>
@@ -575,7 +575,7 @@ export function AffiliateOnboardingWizard() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">You&apos;re All Set!</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">
-                    Your affiliate onboarding is complete. You&apos;re now ready to start networking with other affiliates.
+                    Your LIFT client onboarding is complete. Your advisor team will review your profile and reach out to schedule your first session.
                   </p>
                 </div>
 
@@ -589,19 +589,19 @@ export function AffiliateOnboardingWizard() {
                     <ul className="text-sm text-green-700 dark:text-green-300 space-y-2">
                       <li className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4" />
-                        Browse the affiliate directory
+                        Complete the MBDA Client Intake & Letter of Engagement
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4" />
-                        Schedule your first One-to-One meeting
+                        Complete your baseline survey
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4" />
-                        Attend the next affiliate networking event
+                        Meet your assigned LIFT advisor
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4" />
-                        Complete your full profile in Settings
+                        Browse upcoming workshops and training
                       </li>
                     </ul>
                   </CardContent>

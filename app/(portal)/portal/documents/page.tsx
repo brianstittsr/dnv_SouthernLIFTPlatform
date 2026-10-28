@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +27,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
   Upload,
   Search,
   FileText,
@@ -45,10 +54,19 @@ import {
   Loader2,
   FolderOpen,
 } from "lucide-react";
-import { db, storage } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy, deleteDoc, doc, addDoc, Timestamp } from "firebase/firestore";
-import { ref, deleteObject, getDownloadURL } from "firebase/storage";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, getDoc, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { COLLECTIONS } from "@/lib/schema";
+
+const DEFAULT_DOCUMENT_TYPES = [
+  "Proposal",
+  "Contract",
+  "Template",
+  "Report",
+  "Invoice",
+  "Other",
+];
 
 interface Document {
   id: string;
@@ -60,7 +78,7 @@ interface Document {
   uploadedBy: string;
   uploadedAt: string;
   shared: boolean;
-  storagePath?: string;
+  fileId?: string;
   downloadUrl?: string;
 }
 
@@ -115,7 +133,7 @@ function getFileType(fileName: string): string {
 }
 
 export default function DocumentsPage() {
-  const { getDisplayName } = useUserProfile();
+  const { getDisplayName, profile } = useUserProfile();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [folders, setFolders] = useState<FolderCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -123,6 +141,12 @@ export default function DocumentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadDocType, setUploadDocType] = useState("");
+  const [documentTypes, setDocumentTypes] = useState<string[]>(DEFAULT_DOCUMENT_TYPES);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Fetch documents from Firestore
   useEffect(() => {
@@ -149,8 +173,8 @@ export default function DocumentsPage() {
             uploadedBy: data.uploadedBy || "Unknown",
             uploadedAt: data.uploadedAt?.toDate?.()?.toISOString() || data.uploadedAt || "",
             shared: data.shared || false,
-            storagePath: data.storagePath,
-            downloadUrl: data.downloadUrl,
+            fileId: data.fileId,
+            downloadUrl: data.downloadUrl || (data.fileId ? `/api/files/${data.fileId}` : undefined),
           };
         });
 
@@ -174,7 +198,21 @@ export default function DocumentsPage() {
       }
     };
 
+    const fetchDocumentTypes = async () => {
+      if (!db) return;
+      try {
+        const settingsSnap = await getDoc(doc(db, COLLECTIONS.PLATFORM_SETTINGS, "global"));
+        const options = settingsSnap.data()?.dropdownLists?.documentTypes;
+        if (Array.isArray(options) && options.length > 0) {
+          setDocumentTypes(options.filter((t): t is string => typeof t === "string"));
+        }
+      } catch (error) {
+        console.error("Error fetching document types:", error);
+      }
+    };
+
     fetchDocuments();
+    fetchDocumentTypes();
   }, []);
 
   // Filter and sort documents
@@ -192,7 +230,7 @@ export default function DocumentsPage() {
     });
 
   // Delete document
-  const handleDelete = async (docId: string, storagePath?: string) => {
+  const handleDelete = async (docId: string, fileId?: string) => {
     if (!db) return;
     if (!confirm("Are you sure you want to delete this document?")) return;
 
@@ -200,13 +238,12 @@ export default function DocumentsPage() {
       // Delete from Firestore
       await deleteDoc(doc(db, "documents", docId));
 
-      // Delete from Storage if path exists
-      if (storage && storagePath) {
+      // Delete the stored file bytes (best-effort; legacy docs may not have one)
+      if (fileId) {
         try {
-          const storageRef = ref(storage, storagePath);
-          await deleteObject(storageRef);
-        } catch (storageError) {
-          console.error("Error deleting from storage:", storageError);
+          await fetch(`/api/files/${fileId}`, { method: "DELETE" });
+        } catch (fileError) {
+          console.error("Error deleting stored file:", fileError);
         }
       }
 
@@ -218,19 +255,77 @@ export default function DocumentsPage() {
     }
   };
 
+  // Upload document
+  const handleUpload = async () => {
+    if (!uploadFile || !uploadDocType) {
+      setUploadError("Choose a file and a document type.");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", uploadFile);
+      formData.append("target", "documents");
+      formData.append("documentType", uploadDocType);
+      formData.append("uploadedBy", getDisplayName());
+      if (profile.id) formData.append("uploaderUid", profile.id);
+
+      const response = await fetch("/api/upload-file", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Upload failed");
+      }
+
+      const newDoc: Document = {
+        id: result.documentId,
+        name: uploadFile.name,
+        type: getFileType(uploadFile.name),
+        size: formatFileSize(uploadFile.size),
+        sizeBytes: uploadFile.size,
+        folder: uploadDocType,
+        uploadedBy: getDisplayName(),
+        uploadedAt: new Date().toISOString(),
+        shared: false,
+        fileId: result.fileId,
+        downloadUrl: result.fileUrl,
+      };
+      setDocuments((prev) => [newDoc, ...prev]);
+      setFolders((prev) => {
+        const next = prev.map((f) =>
+          f.name === newDoc.folder || f.name === "All Documents"
+            ? { ...f, count: f.count + 1 }
+            : f
+        );
+        if (!next.some((f) => f.name === newDoc.folder)) {
+          next.push({ name: newDoc.folder, count: 1 });
+        }
+        return next;
+      });
+
+      setUploadDialogOpen(false);
+      setUploadFile(null);
+      setUploadDocType("");
+    } catch (error) {
+      console.error("Error uploading document:", error);
+      setUploadError(error instanceof Error ? error.message : "Failed to upload document");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   // Download document
   const handleDownload = async (doc: Document) => {
-    if (doc.downloadUrl) {
-      window.open(doc.downloadUrl, "_blank");
-    } else if (storage && doc.storagePath) {
-      try {
-        const url = await getDownloadURL(ref(storage, doc.storagePath));
-        window.open(url, "_blank");
-      } catch (error) {
-        console.error("Error getting download URL:", error);
-        alert("Failed to download document");
-      }
+    const url = doc.downloadUrl || (doc.fileId ? `/api/files/${doc.fileId}?download=1` : null);
+    if (!url) {
+      alert("No file is attached to this document");
+      return;
     }
+    window.open(url, "_blank");
   };
 
   return (
@@ -243,12 +338,66 @@ export default function DocumentsPage() {
             Manage proposals, templates, and project documents
           </p>
         </div>
-        <Button asChild>
-          <Link href="/portal/documents/upload">
-            <Upload className="mr-2 h-4 w-4" />
-            Upload
-          </Link>
-        </Button>
+        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Upload className="mr-2 h-4 w-4" />
+              Upload
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Upload Document</DialogTitle>
+              <DialogDescription>
+                Add a file to the document library and choose its type.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label htmlFor="doc-file">File</Label>
+                <Input
+                  id="doc-file"
+                  type="file"
+                  onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Document Type</Label>
+                <Select value={uploadDocType} onValueChange={setUploadDocType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {documentTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {uploadError && (
+                <p className="text-sm text-destructive">{uploadError}</p>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setUploadDialogOpen(false)}
+                disabled={isUploading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleUpload}
+                disabled={isUploading || !uploadFile || !uploadDocType}
+              >
+                {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isUploading ? "Uploading..." : "Upload"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-4">
@@ -407,7 +556,7 @@ export default function DocumentsPage() {
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive"
-                              onClick={() => handleDelete(doc.id, doc.storagePath)}
+                              onClick={() => handleDelete(doc.id, doc.fileId)}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete

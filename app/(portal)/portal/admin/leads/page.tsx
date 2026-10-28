@@ -75,7 +75,6 @@ export default function LeadsPage() {
     priority: "",
     search: "",
   });
-  const [migrating, setMigrating] = useState(false);
 
   const limit = 20;
 
@@ -126,36 +125,6 @@ export default function LeadsPage() {
     fetchLeads();
   };
 
-  const handleMigrateBookCallLeads = async () => {
-    try {
-      setMigrating(true);
-      const currentUser = auth?.currentUser;
-      if (!currentUser) {
-        router.push("/sign-in");
-        return;
-      }
-
-      const token = await currentUser.getIdToken();
-      const response = await fetch("/api/admin/migrate-book-call-leads", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to migrate leads");
-      }
-
-      toast.success(data.message || `Migrated ${data.migrated} leads`);
-      fetchLeads();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to migrate leads");
-    } finally {
-      setMigrating(false);
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -185,18 +154,6 @@ export default function LeadsPage() {
               Manage DWY and DFY subscription leads and track follow-ups
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleMigrateBookCallLeads}
-            disabled={migrating}
-          >
-            {migrating ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Upload className="h-4 w-4 mr-2" />
-            )}
-            Migrate Book Call Leads
-          </Button>
         </div>
       </div>
 

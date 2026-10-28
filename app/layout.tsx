@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { getProgramBranding } from "@/lib/branding";
 import "./globals.css";
+
+const branding = getProgramBranding();
 
 const manrope = Manrope({
   variable: "--font-sans",
@@ -15,54 +18,58 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const KDM_KEYWORDS = [
+  "government contracting",
+  "federal procurement",
+  "federal procurement center",
+  "8(a) certification",
+  "WOSB",
+  "SDVOSB",
+  "HUBZone",
+  "small business government contracts",
+  "mentor protege",
+  "SBA programs",
+  "CMMC assessment readiness",
+  "CMMC Level 1 readiness",
+  "defense contracting",
+  "defense manufacturing consulting",
+  "U.S. manufacturing reshoring",
+  "critical minerals supply chain",
+  "rare earth elements",
+  "opportunity zones",
+  "access to capital small business",
+  "government manufacturing consulting",
+  "federal manufacturing contracts",
+  "supply chain resilience",
+  "cybersecurity maturity model",
+  "defense industrial base",
+  "small business defense contracts",
+  "manufacturing compliance",
+  "KDM Consortium",
+  "supplier success workshops",
+];
+
+const KDM_DESCRIPTION =
+  "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kdm-assoc.com"),
+  metadataBase: new URL(branding.siteUrl),
   title: {
-    default: "KDM & Associates | Federal Procurement & Government Contracting",
+    default: branding.siteTitle,
     template: "%s",
   },
-  description:
-    "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
-  keywords: [
-    "government contracting",
-    "federal procurement",
-    "federal procurement center",
-    "8(a) certification",
-    "WOSB",
-    "SDVOSB",
-    "HUBZone",
-    "small business government contracts",
-    "mentor protege",
-    "SBA programs",
-    "CMMC assessment readiness",
-    "CMMC Level 1 readiness",
-    "defense contracting",
-    "defense manufacturing consulting",
-    "U.S. manufacturing reshoring",
-    "critical minerals supply chain",
-    "rare earth elements",
-    "opportunity zones",
-    "access to capital small business",
-    "government manufacturing consulting",
-    "federal manufacturing contracts",
-    "supply chain resilience",
-    "cybersecurity maturity model",
-    "defense industrial base",
-    "small business defense contracts",
-    "manufacturing compliance",
-    "KDM Consortium",
-    "supplier success workshops",
-  ],
-  authors: [{ name: "KDM & Associates", url: "https://kdm-assoc.com" }],
-  creator: "KDM & Associates",
-  publisher: "KDM & Associates",
+  description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
+  keywords: branding.isLift ? branding.siteKeywords : KDM_KEYWORDS,
+  authors: [{ name: branding.siteName, url: branding.siteUrl }],
+  creator: branding.siteName,
+  publisher: branding.siteName,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   alternates: {
-    canonical: "https://kdm-assoc.com",
+    canonical: branding.siteUrl,
   },
   robots: {
     index: true,
@@ -78,27 +85,27 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kdm-assoc.com",
-    siteName: "KDM & Associates",
-    title: "KDM & Associates | Federal Procurement & Government Contracting",
-    description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
+    url: branding.siteUrl,
+    siteName: branding.siteName,
+    title: branding.siteTitle,
+    description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KDM & Associates - Powering Growth for Competitive Businesses",
+        alt: branding.isLift
+          ? "Southern University LIFT Center - Rural Business Support"
+          : "KDM & Associates - Powering Growth for Competitive Businesses",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KDM & Associates | Federal Procurement & Government Contracting",
-    description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting.",
+    title: branding.siteTitle,
+    description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
     images: ["/og-image.png"],
-    creator: "@kdmassoc",
+    ...(branding.isLift ? {} : { creator: "@kdmassoc" }),
   },
   category: "business",
 };

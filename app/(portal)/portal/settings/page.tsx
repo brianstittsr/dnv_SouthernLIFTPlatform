@@ -59,6 +59,9 @@ import {
   Globe,
   Navigation,
   LayoutDashboard,
+  Plus,
+  X,
+  ListChecks,
 } from "lucide-react";
 import { ALL_NAV_ITEMS } from "@/components/portal/portal-sidebar";
 import { cn } from "@/lib/utils";
@@ -241,6 +244,10 @@ function SettingsPageContent() {
     },
   });
   
+  // Admin-managed dropdown option lists (e.g. portal document types)
+  const [documentTypeOptions, setDocumentTypeOptions] = useState<string[]>([]);
+  const [newDocumentType, setNewDocumentType] = useState("");
+
   // Available roles for visibility settings
   const VISIBILITY_ROLES = [
     { value: "admin", label: "Admin" },
@@ -333,6 +340,11 @@ function SettingsPageContent() {
           }
           
           // Load navigation settings
+          // Load managed dropdown lists
+          if (data.dropdownLists?.documentTypes) {
+            setDocumentTypeOptions(data.dropdownLists.documentTypes);
+          }
+
           if (data.navigationSettings) {
             setNavigationSettings({
               hiddenItems: data.navigationSettings.hiddenItems || [],
@@ -422,6 +434,7 @@ function SettingsPageContent() {
         socialLinks: socialLinks,
         navigationSettings: navigationSettings,
         uiPreferences: uiPreferences,
+        dropdownLists: { documentTypes: documentTypeOptions },
         updatedAt: Timestamp.now(),
       };
       
@@ -585,10 +598,10 @@ function SettingsPageContent() {
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
           <TabsTrigger value="llm">LLM Configuration</TabsTrigger>
           <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="social">Social Links</TabsTrigger>
           <TabsTrigger value="ui">UI Preferences</TabsTrigger>
           <TabsTrigger value="navigation">Navigation</TabsTrigger>
+          <TabsTrigger value="dropdowns">Dropdown Lists</TabsTrigger>
         </TabsList>
 
         {/* Integrations Tab */}
@@ -1241,290 +1254,6 @@ function SettingsPageContent() {
           </Card>
         </TabsContent>
 
-        {/* Notifications Tab */}
-        <TabsContent value="notifications" className="space-y-6">
-          {/* Sync with Mattermost */}
-          <Card className="border-primary/50 bg-primary/5">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary">
-                  <BellRing className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    Sync with Mattermost
-                    <Badge variant="default">Playbooks</Badge>
-                  </CardTitle>
-                  <CardDescription>
-                    Mirror Mattermost notifications in the browser when the site is open
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg bg-background">
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="h-5 w-5 text-primary" />
-                  <div>
-                    <Label>Sync Mattermost Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
-                      When enabled, webhook events sent to Mattermost will also appear as in-browser notifications
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={notificationSettings.syncWithMattermost}
-                  onCheckedChange={(checked) => {
-                    setNotificationSettings(prev => ({ ...prev, syncWithMattermost: checked }));
-                    setHasChanges(true);
-                  }}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                This allows you to see real-time notifications for Rocks, Issues, To-Dos, Meetings, and other Traction/EOS events 
-                directly in your browser, mirroring what gets sent to your Mattermost channels.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* In-App Notifications */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Monitor className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle>In-App Notifications</CardTitle>
-                  <CardDescription>
-                    Configure how notifications appear within the SVP Platform
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Bell className="h-5 w-5 text-primary" />
-                  <div>
-                    <Label>Toast Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Show popup notifications in the corner of the screen
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={notificationSettings.inAppEnabled}
-                  onCheckedChange={(checked) => {
-                    setNotificationSettings(prev => ({ ...prev, inAppEnabled: checked }));
-                    setHasChanges(true);
-                  }}
-                />
-              </div>
-
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  {notificationSettings.soundEnabled ? (
-                    <Volume2 className="h-5 w-5 text-primary" />
-                  ) : (
-                    <VolumeX className="h-5 w-5 text-muted-foreground" />
-                  )}
-                  <div>
-                    <Label>Sound Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Play a sound when notifications arrive
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={notificationSettings.soundEnabled}
-                  onCheckedChange={(checked) => {
-                    setNotificationSettings(prev => ({ ...prev, soundEnabled: checked }));
-                    setHasChanges(true);
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Browser Notifications */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <BellRing className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle>Browser Notifications</CardTitle>
-                  <CardDescription>
-                    Receive notifications even when the browser tab is in the background
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Bell className="h-5 w-5 text-primary" />
-                  <div>
-                    <Label>Browser Push Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Show system notifications from your browser
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {browserPermission === "granted" ? (
-                    <Badge variant="default" className="mr-2">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Enabled
-                    </Badge>
-                  ) : browserPermission === "denied" ? (
-                    <Badge variant="destructive" className="mr-2">
-                      <XCircle className="h-3 w-3 mr-1" />
-                      Blocked
-                    </Badge>
-                  ) : browserPermission === "unsupported" ? (
-                    <Badge variant="secondary" className="mr-2">
-                      Not Supported
-                    </Badge>
-                  ) : null}
-                  <Switch
-                    checked={notificationSettings.browserEnabled}
-                    disabled={browserPermission === "denied" || browserPermission === "unsupported"}
-                    onCheckedChange={async (checked) => {
-                      if (checked && browserPermission !== "granted") {
-                        const permission = await requestNotificationPermission();
-                        setBrowserPermission(permission);
-                        if (permission !== "granted") {
-                          return;
-                        }
-                      }
-                      setNotificationSettings(prev => ({ ...prev, browserEnabled: checked }));
-                      setHasChanges(true);
-                    }}
-                  />
-                </div>
-              </div>
-
-              {browserPermission === "denied" && (
-                <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-destructive">Browser notifications blocked</p>
-                      <p className="text-sm text-muted-foreground">
-                        You&apos;ve blocked notifications for this site. To enable them, click the lock icon in your browser&apos;s address bar and change the notification setting.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {browserPermission === "default" && (
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    When you enable browser notifications, you&apos;ll be prompted to allow notifications from this site.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Test Notification */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Test Notifications</CardTitle>
-              <CardDescription>
-                Send a test notification to verify your settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    showInAppNotification("rock_completed", {
-                      title: "Test Rock",
-                      name: "Q4 Revenue Target",
-                    });
-                  }}
-                  disabled={!notificationSettings.inAppEnabled}
-                >
-                  <Bell className="mr-2 h-4 w-4" />
-                  Test Toast
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    showInAppNotification("rock_at_risk", {
-                      title: "Test Warning",
-                      name: "Customer Onboarding Process",
-                    });
-                  }}
-                  disabled={!notificationSettings.inAppEnabled}
-                >
-                  <AlertCircle className="mr-2 h-4 w-4" />
-                  Test Warning
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    showInAppNotification("new_lead", {
-                      name: "Precision Manufacturing Co.",
-                      company: "Precision Manufacturing Co.",
-                    });
-                  }}
-                  disabled={!notificationSettings.inAppEnabled}
-                >
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Test Success
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                These test notifications demonstrate how different event types will appear in your browser.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Notification Events */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Synced Event Types</CardTitle>
-              <CardDescription>
-                These events will trigger in-browser notifications when synced with Mattermost
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-2 md:grid-cols-2">
-                {WEBHOOK_EVENTS.filter(e => e.type !== "send_to_brian_stitt").map((event) => (
-                  <div 
-                    key={event.type}
-                    className={cn(
-                      "flex items-center gap-2 p-3 border rounded-lg text-sm",
-                      webhookEvents[event.type] ? "border-green-500/30 bg-green-500/5" : "opacity-50"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-2 h-2 rounded-full",
-                      webhookEvents[event.type] ? "bg-green-500" : "bg-muted-foreground"
-                    )} />
-                    <div>
-                      <span className="font-medium">{event.label}</span>
-                      {event.category === "traction" && (
-                        <Badge variant="outline" className="ml-2 text-xs">EOS</Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-muted-foreground mt-4">
-                Enable or disable specific events in the <strong>Webhooks</strong> tab. Events that are enabled there will also trigger in-browser notifications when sync is active.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         {/* Social Links Tab */}
         <TabsContent value="social" className="space-y-6">
           <Card>
@@ -1910,6 +1639,94 @@ function SettingsPageContent() {
                   <li>Use the &quot;Preview as Role&quot; feature in the sidebar to see what each role sees</li>
                   <li>Changes take effect after saving</li>
                 </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Dropdown List Management Tab */}
+        <TabsContent value="dropdowns" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <ListChecks className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>Dropdown List Management</CardTitle>
+                  <CardDescription>
+                    Manage the option lists used across the portal
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Document Types */}
+              <div className="space-y-3">
+                <div>
+                  <Label>Document Types</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Categories available when uploading documents in the Documents module
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {documentTypeOptions.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      No document types defined yet.
+                    </p>
+                  )}
+                  {documentTypeOptions.map((type) => (
+                    <Badge key={type} variant="secondary" className="gap-1 pr-1">
+                      {type}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${type}`}
+                        className="rounded-full p-0.5 hover:bg-muted"
+                        onClick={() => {
+                          setDocumentTypeOptions((prev) =>
+                            prev.filter((t) => t !== type)
+                          );
+                          setHasChanges(true);
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="e.g. Proposal, Contract, Certificate"
+                    value={newDocumentType}
+                    onChange={(e) => setNewDocumentType(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const value = newDocumentType.trim();
+                        if (value && !documentTypeOptions.includes(value)) {
+                          setDocumentTypeOptions((prev) => [...prev, value]);
+                          setHasChanges(true);
+                        }
+                        setNewDocumentType("");
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      const value = newDocumentType.trim();
+                      if (value && !documentTypeOptions.includes(value)) {
+                        setDocumentTypeOptions((prev) => [...prev, value]);
+                        setHasChanges(true);
+                      }
+                      setNewDocumentType("");
+                    }}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

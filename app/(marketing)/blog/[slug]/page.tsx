@@ -14,7 +14,13 @@ import {
   Share2,
   BookOpen,
 } from "lucide-react";
-import { allBlogPosts, getAllBlogPosts, getBlogPostBySlug, getBlogPostsByCategory } from "@/lib/blog";
+import { allBlogPosts, getAllBlogPosts, getBlogPostBySlug } from "@/lib/blog";
+import {
+  blogCategorySlug,
+  displayBlogCategory,
+  postMatchesCategory,
+} from "@/lib/blog/lift";
+import { getProgramBranding } from "@/lib/branding";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
 interface BlogPostPageProps {
@@ -32,16 +38,18 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const post = await getBlogPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
-  const postUrl = `https://kdm-assoc.com/blog/${slug}`;
+  const branding = getProgramBranding();
+  const displayCategory = displayBlogCategory(post);
+  const postUrl = `${branding.siteUrl}/blog/${slug}`;
 
   return {
-    title: `${post.title} | KDM Blog`,
+    title: `${post.title} | ${branding.blogName}`,
     description: post.excerpt,
     keywords: [
       ...post.tags,
-      post.category,
-      "KDM Associates",
-      "government contracting",
+      displayCategory,
+      branding.siteName,
+      ...(branding.isLift ? ["rural business", "small business"] : ["government contracting"]),
     ],
     alternates: {
       canonical: postUrl,
@@ -55,7 +63,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       modifiedTime: post.date,
       authors: [post.author],
       tags: post.tags,
-      section: post.category,
+      section: displayCategory,
       images: [
         {
           url: "/og-image.png",
@@ -74,6 +82,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const branding = getProgramBranding();
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
 
@@ -82,8 +91,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const allPosts = await getAllBlogPosts();
-  const relatedPosts = (await getBlogPostsByCategory(post.category))
-    .filter((p) => p.slug !== post.slug)
+  const displayCategory = displayBlogCategory(post);
+  const categorySlug = blogCategorySlug(displayCategory);
+  const relatedPosts = allPosts
+    .filter((p) => p.slug !== post.slug && postMatchesCategory(p, displayCategory))
     .slice(0, 3);
 
   const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
@@ -96,18 +107,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <ArticleJsonLd
         title={post.title}
         description={post.excerpt}
-        url={`https://kdm-assoc.com/blog/${post.slug}`}
-        image="https://kdm-assoc.com/og-image.png"
+        url={`${branding.siteUrl}/blog/${post.slug}`}
+        image={`${branding.siteUrl}/og-image.png`}
         datePublished={post.date}
         dateModified={post.date}
         authorName={post.author}
       />
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: "https://kdm-assoc.com" },
-          { name: "Blog", url: "https://kdm-assoc.com/blog" },
-          { name: post.category, url: `https://kdm-assoc.com/blog/category/${encodeURIComponent(post.category.toLowerCase().replace(/[&\s]+/g, "-"))}` },
-          { name: post.title, url: `https://kdm-assoc.com/blog/${post.slug}` },
+          { name: "Home", url: branding.siteUrl },
+          { name: "Blog", url: `${branding.siteUrl}/blog` },
+          { name: displayCategory, url: `${branding.siteUrl}/blog/category/${encodeURIComponent(categorySlug)}` },
+          { name: post.title, url: `${branding.siteUrl}/blog/${post.slug}` },
         ]}
       />
 
@@ -134,7 +145,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
 
             <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
-              {post.category}
+              {displayCategory}
             </Badge>
 
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -224,31 +235,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   if (line.startsWith("## Ready to Take the Next Step?")) {
                     elements.push(
                       <div key={i} className="not-prose mt-12 p-8 bg-primary/5 border-2 border-primary/20 rounded-xl">
-                      <h2 className="text-2xl font-bold mb-4">Ready to Take the Next Step?</h2>
-                      <p className="text-muted-foreground mb-6">
-                        Whether you&apos;re a small manufacturer seeking defense contracts, a government buyer
-                        looking for qualified suppliers, or a business owner pursuing CMMC certification,
-                        KDM &amp; Associates and the KDM Consortium are here to help.
-                      </p>
-                      <p className="font-semibold mb-4">Join the KDM Consortium Platform today:</p>
+                      <h2 className="text-2xl font-bold mb-4">{branding.blogCtaTitle}</h2>
+                      <p className="text-muted-foreground mb-6">{branding.blogCtaBody}</p>
                       <div className="flex flex-col sm:flex-row gap-4">
                         <Button size="lg" asChild>
-                          <Link href="/register?type=sme">
-                            Register as Supplier (SME)
+                          <Link href={branding.blogCtaPrimaryHref}>
+                            {branding.blogCtaPrimaryLabel}
                             <ArrowRight className="ml-2 h-5 w-5" />
                           </Link>
                         </Button>
                         <Button size="lg" variant="outline" asChild>
-                          <Link href="/register?type=buyer">
-                            Register as Government Buyer
+                          <Link href={branding.blogCtaSecondaryHref}>
+                            {branding.blogCtaSecondaryLabel}
                             <ArrowRight className="ml-2 h-5 w-5" />
                           </Link>
                         </Button>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-4 italic">
-                        Schedule a free introductory session to learn how we can accelerate your path
-                        to government contracting success.
-                      </p>
                     </div>
                     );
                   } else if (line.startsWith("# ")) {
@@ -331,7 +333,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl font-bold tracking-tight mb-8">
-                More in {post.category}
+                More in {displayCategory}
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {relatedPosts.map((related) => (
@@ -368,11 +370,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="container text-center">
           <BookOpen className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Start Your Defense Contracting Journey
+            {branding.blogCtaTitle}
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the KDM Consortium Platform and connect with opportunities, resources, and
-            expert guidance.
+            {branding.blogCtaBody}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Button
@@ -381,8 +382,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               className="text-lg px-8 bg-white text-primary hover:bg-white/90"
               asChild
             >
-              <Link href="/register?type=sme">
-                Register as Supplier (SME)
+              <Link href={branding.blogCtaPrimaryHref}>
+                {branding.blogCtaPrimaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -392,8 +393,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               className="text-lg px-8 border-white text-white hover:bg-white/10"
               asChild
             >
-              <Link href="/register?type=buyer">
-                Register as Government Buyer
+              <Link href={branding.blogCtaSecondaryHref}>
+                {branding.blogCtaSecondaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

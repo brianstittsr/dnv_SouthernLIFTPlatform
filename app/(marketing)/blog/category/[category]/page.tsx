@@ -12,10 +12,20 @@ import {
   Clock,
   BookOpen,
 } from "lucide-react";
-import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { getAllBlogPosts, type BlogCategory } from "@/lib/blog";
+import {
+  blogCategoryFromSlug,
+  blogCategorySlug,
+  displayBlogCategory,
+  getBlogCategories,
+  postMatchesCategory,
+} from "@/lib/blog/lift";
+import { getProgramBranding } from "@/lib/branding";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
-const categoryFallbackImages: Record<BlogCategory, string> = {
+const branding = getProgramBranding();
+
+const categoryFallbackImages: Record<string, string> = {
   "U.S. Manufacturing": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
   "Critical Minerals": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
   "Defense Contracting & CMMC": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
@@ -26,54 +36,57 @@ const categoryFallbackImages: Record<BlogCategory, string> = {
   "Contract Opportunities": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
   "Supply Chain Resilience": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
   "AI & Cybersecurity": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+  "Business Formation & Entrepreneurship": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+  "Capital Readiness": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+  "Procurement Readiness": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
+  "Advanced Manufacturing (AM Lab)": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+  "Digital & AI Adoption": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+  "Agriculture & Rural Enterprise": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
+  "LIFT News & Success Stories": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
 };
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
 }
 
-function categoryFromSlug(slug: string): BlogCategory | undefined {
-  return BLOG_CATEGORIES.find(
-    (c) => c.toLowerCase().replace(/[&\s]+/g, "-") === slug
-  );
-}
-
 export async function generateStaticParams() {
-  return BLOG_CATEGORIES.map((category) => ({
-    category: category.toLowerCase().replace(/[&\s]+/g, "-"),
+  return getBlogCategories().map((category) => ({
+    category: blogCategorySlug(category),
   }));
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category: categorySlug } = await params;
-  const category = categoryFromSlug(categorySlug);
+  const category = blogCategoryFromSlug(categorySlug);
   if (!category) return { title: "Category Not Found" };
 
   return {
-    title: `${category} | KDM Blog`,
-    description: `Expert articles on ${category} for small businesses seeking government contracts and defense manufacturing opportunities.`,
+    title: `${category} | ${branding.blogName}`,
+    description: branding.isLift
+      ? `LIFT Center articles on ${category} for rural Louisiana small businesses.`
+      : `Expert articles on ${category} for small businesses seeking government contracts and defense manufacturing opportunities.`,
   };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category: categorySlug } = await params;
-  const category = categoryFromSlug(categorySlug);
+  const category = blogCategoryFromSlug(categorySlug);
 
   if (!category) {
     notFound();
   }
 
   const allPosts = await getAllBlogPosts();
-  const posts = allPosts.filter((p) => p.category === category);
+  const posts = allPosts.filter((p) => postMatchesCategory(p, category));
 
   return (
     <>
       {/* SEO: Breadcrumb Structured Data */}
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: "https://kdm-assoc.com" },
-          { name: "Blog", url: "https://kdm-assoc.com/blog" },
-          { name: category, url: `https://kdm-assoc.com/blog/category/${categorySlug}` },
+          { name: "Home", url: branding.siteUrl },
+          { name: "Blog", url: `${branding.siteUrl}/blog` },
+          { name: category, url: `${branding.siteUrl}/blog/category/${categorySlug}` },
         ]}
       />
 
@@ -112,7 +125,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <Card key={post.slug} className="group hover:shadow-lg transition-all flex flex-col overflow-hidden">
                 <div className="aspect-video bg-muted relative overflow-hidden">
                   <Image
-                    src={post.imageUrl || categoryFallbackImages[post.category]}
+                    src={post.imageUrl || categoryFallbackImages[displayBlogCategory(post)]}
                     alt={post.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -162,10 +175,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <div className="container text-center">
           <BookOpen className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Start Your Defense Contracting Journey?
+            {branding.blogCtaTitle}
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the KDM Consortium Platform to access opportunities, resources, and expert guidance.
+            {branding.blogCtaBody}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Button
@@ -174,8 +187,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               className="text-lg px-8 bg-white text-primary hover:bg-white/90"
               asChild
             >
-              <Link href="/register?type=sme">
-                Register as Supplier (SME)
+              <Link href={branding.blogCtaPrimaryHref}>
+                {branding.blogCtaPrimaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -185,8 +198,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               className="text-lg px-8 border-white text-white hover:bg-white/10"
               asChild
             >
-              <Link href="/register?type=buyer">
-                Register as Government Buyer
+              <Link href={branding.blogCtaSecondaryHref}>
+                {branding.blogCtaSecondaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

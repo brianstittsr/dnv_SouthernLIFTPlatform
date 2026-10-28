@@ -1,4 +1,4 @@
-import { db, storage } from "./firebase";
+import { db } from "./firebase";
 import {
   collection,
   doc,
@@ -11,11 +11,9 @@ import {
   Timestamp,
   writeBatch,
 } from "firebase/firestore";
-import { ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 import { HeroSlide } from "@/components/marketing/hero-carousel";
 
 const HERO_SLIDES_COLLECTION = "hero_slides";
-const HERO_IMAGES_FOLDER = "hero_images";
 
 /**
  * Get all hero slides from Firestore
@@ -96,62 +94,70 @@ export async function reorderHeroSlides(slides: HeroSlide[]): Promise<void> {
   await batch.commit();
 }
 
+/** Converts a data URL (data:<mime>;base64,<data>) into a Blob for upload. */
+async function dataUrlToBlob(dataUrl: string): Promise<{ blob: Blob; contentType: string }> {
+  const match = dataUrl.match(/^data:([^;]+);base64,([\s\S]+)$/);
+  if (!match) throw new Error("Invalid base64 image format");
+  const contentType = match[1];
+  const binary = atob(match[2]);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return { blob: new Blob([bytes], { type: contentType }), contentType };
+}
+
+/** Extracts the fileBlobs id from an /api/files/{id} URL; null for other URLs. */
+function fileIdFromUrl(url: string): string | null {
+  const match = url.match(/\/api\/files\/([^/?#]+)/);
+  return match ? match[1] : null;
+}
+
 /**
- * Upload image to Firebase Storage and return download URL
+ * Upload a base64 image and return its public URL.
+ * Files are stored as base64 chunks in Firestore (fileBlobs) and served
+ * from /api/files/{id}.
  */
 export async function uploadHeroImage(
   base64Image: string,
   fileName: string
 ): Promise<string> {
-  if (!storage) throw new Error("Firebase Storage not initialized");
+  const { blob } = await dataUrlToBlob(base64Image);
 
-  // Extract content type and base64 data
-  const match = base64Image.match(/^data:(.+);base64,(.+)$/);
-  if (!match) throw new Error("Invalid base64 image format");
-  
-  const contentType = match[1];
-  const base64Data = match[2];
+  const formData = new FormData();
+  formData.append("file", new File([blob], fileName, { type: blob.type }));
+  formData.append("category", "hero_images");
 
-  // Create a unique filename
-  const timestamp = Date.now();
-  const uniqueName = `${timestamp}_${fileName.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-  const storageRef = ref(storage, `${HERO_IMAGES_FOLDER}/${uniqueName}`);
+  const response = await fetch("/api/upload-image", { method: "POST", body: formData });
+  if (!response.ok) throw new Error("Image upload failed");
 
-  // Upload to Firebase Storage
-  await uploadString(storageRef, base64Data, 'base64', {
-    contentType,
-  });
-
-  // Get download URL
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
+  const data = (await response.json()) as { imageUrl?: string };
+  if (!data.imageUrl) throw new Error("Image upload returned no URL");
+  return data.imageUrl;
 }
 
 /**
- * Delete hero image from storage
+ * Delete a previously uploaded image. Only /api/files/{id} URLs are
+ * deletable; legacy Firebase Storage URLs are left as-is (Storage disabled).
  */
 export async function deleteHeroImage(imageUrl: string): Promise<void> {
-  if (!storage) return;
-
-  // Only delete if it's a storage URL (not a base64 data URL)
-  if (imageUrl.includes("firebasestorage.googleapis.com")) {
-    try {
-      const imageRef = ref(storage, imageUrl);
-      await deleteObject(imageRef);
-    } catch (e) {
-      console.error("Failed to delete image:", e);
-    }
+  const fileId = fileIdFromUrl(imageUrl);
+  if (!fileId) return;
+  try {
+    await fetch(`/api/files/${fileId}`, { method: "DELETE" });
+  } catch (e) {
+    console.error("Failed to delete image:", e);
   }
 }
 
 /**
- * Image Manager - stores images in Firebase Storage with metadata in Firestore
+ * Image Manager - metadata docs in Firestore; bytes live in fileBlobs
  */
 export interface StoredImage {
   id: string;
   name: string;
-  imageUrl: string; // Firebase Storage download URL
-  storagePath: string; // Firebase Storage path for deletion
+  imageUrl: string; // /api/files/{fileId} URL
+  fileId?: string; // fileBlobs document id for deletion
   contentType: string;
   size: number;
   createdAt: Timestamp;
@@ -161,42 +167,37 @@ export interface StoredImage {
 const IMAGES_COLLECTION = "hero_images";
 
 /**
- * Save image to Image Manager - uploads to Storage, stores metadata in Firestore
+ * Save image to Image Manager - stores bytes in fileBlobs, metadata in Firestore
  */
 export async function saveImageToManager(
   name: string,
   base64DataUrl: string,
   contentType: string = "image/jpeg"
 ): Promise<StoredImage> {
-  if (!db || !storage) throw new Error("Firebase not initialized");
+  if (!db) throw new Error("Firestore not initialized");
 
   // Calculate approximate size of base64 string
   const base64Length = base64DataUrl.split(",")[1]?.length || 0;
   const size = Math.ceil((base64Length * 3) / 4); // Approximate bytes
 
-  // Upload to Firebase Storage
-  const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const uniqueName = `${imageId}_${name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-  const storageRef = ref(storage, `${HERO_IMAGES_FOLDER}/${uniqueName}`);
+  // Upload bytes through the server route (writes fileBlobs chunks)
+  const { blob } = await dataUrlToBlob(base64DataUrl);
+  const formData = new FormData();
+  formData.append("file", new File([blob], name, { type: contentType }));
+  formData.append("category", "hero_images");
 
-  // Extract base64 data
-  const base64Data = base64DataUrl.split(",")[1];
-  if (!base64Data) throw new Error("Invalid base64 data");
-
-  // Upload to Storage
-  await uploadString(storageRef, base64Data, 'base64', {
-    contentType,
-  });
-
-  // Get download URL
-  const imageUrl = await getDownloadURL(storageRef);
+  const response = await fetch("/api/upload-image", { method: "POST", body: formData });
+  if (!response.ok) throw new Error("Image upload failed");
+  const uploaded = (await response.json()) as { imageId?: string; imageUrl?: string };
+  if (!uploaded.imageId || !uploaded.imageUrl) throw new Error("Image upload returned no id");
 
   // Save metadata to Firestore
+  const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const imageDocRef = doc(db, IMAGES_COLLECTION, imageId);
   const imageData: Omit<StoredImage, "id"> = {
     name,
-    imageUrl,
-    storagePath: `${HERO_IMAGES_FOLDER}/${uniqueName}`,
+    imageUrl: uploaded.imageUrl,
+    fileId: uploaded.imageId,
     contentType,
     size,
     createdAt: Timestamp.now(),
@@ -226,7 +227,7 @@ export async function getAllImages(): Promise<StoredImage[]> {
       id: doc.id,
       name: data.name,
       imageUrl: data.imageUrl,
-      storagePath: data.storagePath,
+      fileId: data.fileId,
       contentType: data.contentType,
       size: data.size,
       createdAt: data.createdAt,
@@ -236,18 +237,18 @@ export async function getAllImages(): Promise<StoredImage[]> {
 }
 
 /**
- * Delete image from Image Manager and Firebase Storage
+ * Delete image from Image Manager and the file store
  */
-export async function deleteImageFromManager(imageId: string, storagePath: string): Promise<void> {
-  if (!db || !storage) throw new Error("Firebase not initialized");
+export async function deleteImageFromManager(imageId: string, fileId?: string): Promise<void> {
+  if (!db) throw new Error("Firestore not initialized");
 
-  // Delete from Firebase Storage
-  try {
-    const storageRef = ref(storage, storagePath);
-    await deleteObject(storageRef);
-  } catch (e) {
-    console.error("Failed to delete image from storage:", e);
-    // Continue to delete from Firestore even if storage delete fails
+  // Delete the stored bytes (best-effort; legacy docs may not have a fileId)
+  if (fileId) {
+    try {
+      await fetch(`/api/files/${fileId}`, { method: "DELETE" });
+    } catch (e) {
+      console.error("Failed to delete image file:", e);
+    }
   }
 
   // Delete from Firestore

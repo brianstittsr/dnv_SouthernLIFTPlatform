@@ -19,53 +19,53 @@ import {
   FileSearch,
   Network,
   Cpu,
+  Briefcase,
+  Landmark,
+  Building2,
+  Sprout,
+  Newspaper,
 } from "lucide-react";
-import { getAllBlogPosts, BLOG_CATEGORIES, type BlogCategory } from "@/lib/blog";
+import { getAllBlogPosts, type BlogCategory } from "@/lib/blog";
+import {
+  blogCategorySlug,
+  displayBlogCategory,
+  getBlogCategories,
+  postMatchesCategory,
+} from "@/lib/blog/lift";
+import { getProgramBranding } from "@/lib/branding";
 import { BlogListJsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 
+const branding = getProgramBranding();
+
 export const metadata: Metadata = {
-  title: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
-  description:
-    "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
-  keywords: [
-    "defense manufacturing blog",
-    "CMMC certification guide",
-    "government contracting insights",
-    "critical minerals strategy",
-    "small business defense contracts",
-    "manufacturing reshoring",
-    "opportunity zones investment",
-    "small business capital access",
-    "defense industrial base",
-    "supply chain resilience",
-  ],
+  title: branding.blogTitle,
+  description: branding.blogDescription,
+  keywords: branding.blogKeywords,
   alternates: {
-    canonical: "https://kdm-assoc.com/blog",
+    canonical: `${branding.siteUrl}/blog`,
   },
   openGraph: {
-    title: "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
-    description:
-      "Expert articles on U.S. manufacturing, critical minerals, CMMC certification, defense contracting, access to capital, and opportunity zones for small businesses.",
-    url: "https://kdm-assoc.com/blog",
+    title: branding.blogTitle,
+    description: branding.blogDescription,
+    url: `${branding.siteUrl}/blog`,
     type: "website",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KDM & Associates Blog - Defense Manufacturing & Government Contracting Insights",
+        alt: `${branding.blogName} - ${branding.siteName}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KDM Blog | Defense Manufacturing & Government Contracting",
-    description:
-      "Expert articles on CMMC, defense manufacturing, critical minerals, and government contracting for small businesses.",
+    title: branding.blogTitle,
+    description: branding.blogDescription,
   },
 };
 
-const categoryIcons: Record<BlogCategory, React.ElementType> = {
+const categoryIcons: Record<string, React.ElementType> = {
   "U.S. Manufacturing": Factory,
   "Critical Minerals": Gem,
   "Defense Contracting & CMMC": Shield,
@@ -76,9 +76,16 @@ const categoryIcons: Record<BlogCategory, React.ElementType> = {
   "Contract Opportunities": FileSearch,
   "Supply Chain Resilience": Network,
   "AI & Cybersecurity": Cpu,
+  "Business Formation & Entrepreneurship": Briefcase,
+  "Capital Readiness": DollarSign,
+  "Procurement Readiness": Landmark,
+  "Advanced Manufacturing (AM Lab)": Factory,
+  "Digital & AI Adoption": Cpu,
+  "Agriculture & Rural Enterprise": Sprout,
+  "LIFT News & Success Stories": Newspaper,
 };
 
-const categoryColors: Record<BlogCategory, string> = {
+const categoryColors: Record<string, string> = {
   "U.S. Manufacturing": "bg-blue-100 text-blue-800",
   "Critical Minerals": "bg-emerald-100 text-emerald-800",
   "Defense Contracting & CMMC": "bg-purple-100 text-purple-800",
@@ -89,6 +96,13 @@ const categoryColors: Record<BlogCategory, string> = {
   "Contract Opportunities": "bg-orange-100 text-orange-800",
   "Supply Chain Resilience": "bg-teal-100 text-teal-800",
   "AI & Cybersecurity": "bg-slate-100 text-slate-800",
+  "Business Formation & Entrepreneurship": "bg-cyan-100 text-cyan-800",
+  "Capital Readiness": "bg-amber-100 text-amber-800",
+  "Procurement Readiness": "bg-purple-100 text-purple-800",
+  "Advanced Manufacturing (AM Lab)": "bg-blue-100 text-blue-800",
+  "Digital & AI Adoption": "bg-slate-100 text-slate-800",
+  "Agriculture & Rural Enterprise": "bg-emerald-100 text-emerald-800",
+  "LIFT News & Success Stories": "bg-indigo-100 text-indigo-800",
 };
 
 const categoryFallbackImages: Record<BlogCategory, string> = {
@@ -104,15 +118,37 @@ const categoryFallbackImages: Record<BlogCategory, string> = {
   "AI & Cybersecurity": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
 };
 
+// LIFT-topic fallback imagery (small business, rural, advising, workshops).
+const liftFallbackImages: Record<string, string> = {
+  "Business Formation & Entrepreneurship": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
+  "Capital Readiness": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+  "Procurement Readiness": "https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=800&q=80",
+  "Advanced Manufacturing (AM Lab)": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+  "Digital & AI Adoption": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+  "Agriculture & Rural Enterprise": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
+  "LIFT News & Success Stories": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
+};
+
+function postImage(post: { imageUrl?: string; category: BlogCategory }): string {
+  if (post.imageUrl) return post.imageUrl;
+  if (branding.isLift) {
+    const liftCat = displayBlogCategory(post as never);
+    return liftFallbackImages[liftCat] || "/og-image.png";
+  }
+  return categoryFallbackImages[post.category];
+}
+
 export default async function BlogPage() {
   const allPosts = await getAllBlogPosts();
+  const categories = getBlogCategories();
+
   return (
     <>
       {/* SEO: Blog List Structured Data */}
       <BlogListJsonLd
         posts={allPosts.map((p) => ({
           title: p.title,
-          url: `https://kdm-assoc.com/blog/${p.slug}`,
+          url: `${branding.siteUrl}/blog/${p.slug}`,
           datePublished: p.date,
           author: p.author,
           excerpt: p.excerpt,
@@ -120,8 +156,8 @@ export default async function BlogPage() {
       />
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: "https://kdm-assoc.com" },
-          { name: "Blog", url: "https://kdm-assoc.com/blog" },
+          { name: "Home", url: branding.siteUrl },
+          { name: "Blog", url: `${branding.siteUrl}/blog` },
         ]}
       />
 
@@ -130,15 +166,23 @@ export default async function BlogPage() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="outline" className="mb-6 border-primary/50 text-primary">
-              KDM Blog
+              {branding.blogName}
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Insights for{" "}
-              <span className="text-primary">Defense-Ready</span> Businesses
+              {branding.isLift ? (
+                <>
+                  Resources for{" "}
+                  <span className="text-primary">Rural Louisiana</span> Businesses
+                </>
+              ) : (
+                <>
+                  Insights for{" "}
+                  <span className="text-primary">Defense-Ready</span> Businesses
+                </>
+              )}
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Expert perspectives on manufacturing, CMMC certification, defense contracting,
-              critical minerals, and strategies for small businesses seeking government contracts.
+              {branding.blogDescription}
             </p>
           </div>
         </div>
@@ -148,12 +192,12 @@ export default async function BlogPage() {
       <section className="py-8 border-b bg-muted/30">
         <div className="container">
           <div className="flex flex-wrap gap-3 justify-center">
-            {BLOG_CATEGORIES.map((category) => {
-              const Icon = categoryIcons[category];
+            {categories.map((category) => {
+              const Icon = categoryIcons[category] || Building2;
               return (
                 <Link
                   key={category}
-                  href={`/blog/category/${encodeURIComponent(category.toLowerCase().replace(/[&\s]+/g, "-"))}`}
+                  href={`/blog/category/${encodeURIComponent(blogCategorySlug(category))}`}
                 >
                   <Badge
                     variant="outline"
@@ -170,10 +214,12 @@ export default async function BlogPage() {
       </section>
 
       {/* All Articles by Category */}
-      {BLOG_CATEGORIES.map((category) => {
-        const categoryPosts = allPosts.filter((p) => p.category === category);
+      {categories.map((category) => {
+        const categoryPosts = allPosts.filter((p) =>
+          postMatchesCategory(p, category),
+        );
         if (categoryPosts.length === 0) return null;
-        const Icon = categoryIcons[category];
+        const Icon = categoryIcons[category] || Building2;
 
         return (
           <section key={category} className="py-12 md:py-16 even:bg-muted/30">
@@ -186,7 +232,7 @@ export default async function BlogPage() {
                   <h2 className="text-2xl font-bold tracking-tight">{category}</h2>
                 </div>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/blog/category/${encodeURIComponent(category.toLowerCase().replace(/[&\s]+/g, "-"))}`}>
+                  <Link href={`/blog/category/${encodeURIComponent(blogCategorySlug(category))}`}>
                     View All
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
@@ -198,7 +244,7 @@ export default async function BlogPage() {
                   <Card key={post.slug} className="group hover:shadow-lg transition-all overflow-hidden">
                     <div className="aspect-video bg-muted relative overflow-hidden">
                       <Image
-                        src={post.imageUrl || categoryFallbackImages[post.category]}
+                        src={postImage(post)}
                         alt={post.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -207,8 +253,8 @@ export default async function BlogPage() {
                     </div>
                     <CardHeader>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                        <Badge className={categoryColors[post.category]} variant="secondary">
-                          {post.category}
+                        <Badge className={categoryColors[displayBlogCategory(post)]} variant="secondary">
+                          {displayBlogCategory(post)}
                         </Badge>
                       </div>
                       <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
@@ -255,11 +301,10 @@ export default async function BlogPage() {
         <div className="container text-center">
           <BookOpen className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Start Your Defense Contracting Journey?
+            {branding.blogCtaTitle}
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the KDM Consortium Platform to access opportunities, resources, and expert
-            guidance for winning government contracts.
+            {branding.blogCtaBody}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Button
@@ -268,8 +313,8 @@ export default async function BlogPage() {
               className="text-lg px-8 bg-white text-primary hover:bg-white/90"
               asChild
             >
-              <Link href="/register?type=sme">
-                Register as Supplier (SME)
+              <Link href={branding.blogCtaPrimaryHref}>
+                {branding.blogCtaPrimaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -279,8 +324,8 @@ export default async function BlogPage() {
               className="text-lg px-8 border-white text-white hover:bg-white/10"
               asChild
             >
-              <Link href="/register?type=buyer">
-                Register as Government Buyer
+              <Link href={branding.blogCtaSecondaryHref}>
+                {branding.blogCtaSecondaryLabel}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
