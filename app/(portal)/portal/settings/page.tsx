@@ -270,9 +270,7 @@ function SettingsPageContent() {
   const VISIBILITY_ROLES = [
     { value: "admin", label: "Admin" },
     { value: "team-member", label: "Team member" },
-    { value: "affiliate", label: "Affiliate" },
     { value: "client", label: "Client" },
-    { value: "viewer", label: "Viewer" },
   ];
 
   // Load settings from Firebase on mount
@@ -1485,7 +1483,7 @@ function SettingsPageContent() {
                   <div>
                     <Label htmlFor="show-ask-ai" className="text-base font-medium">Show Ask AI Button</Label>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Display the "Ask AI" button on the Command Center page
+                      Display the &quot;Ask AI&quot; button on the Command Center page
                     </p>
                   </div>
                 </div>

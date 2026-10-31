@@ -745,20 +745,10 @@ const aiItems = [
 
 // All available roles for the role switcher
 const AVAILABLE_ROLES = [
-  // Platform roles
   { value: "admin", label: "Admin" },
   { value: "team_member", label: "Team member" },
-  { value: "affiliate", label: "Affiliate" },
   { value: "client", label: "Client" },
-  { value: "viewer", label: "Viewer" },
-  // SVP Platform roles
-  { value: "platform_admin", label: "SVP Platform Admin" },
-  { value: "sme_user", label: "Vendor User" },
-  { value: "partner_user", label: "SVP Partner User" },
-  { value: "buyer", label: "SVP Buyer" },
-  { value: "qa_reviewer", label: "SVP QA Reviewer" },
-  { value: "cmmc_instructor", label: "SVP CMMC Instructor" },
-  { value: "consortium_member", label: "KDM Consortium Member" },
+  { value: "platform_admin", label: "Platform Admin" },
 ];
 
 // Define which sections are visible for each SVP role
