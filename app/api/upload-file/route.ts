@@ -7,6 +7,9 @@ import { storeFileBuffer } from '@/lib/file-store';
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const category = formData.get('category') as string || 'general';

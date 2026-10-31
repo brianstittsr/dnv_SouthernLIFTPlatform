@@ -7,6 +7,9 @@ import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { 
       email, 
       password, 

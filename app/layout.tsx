@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Manrope, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
@@ -18,48 +19,14 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const KDM_KEYWORDS = [
-  "government contracting",
-  "federal procurement",
-  "federal procurement center",
-  "8(a) certification",
-  "WOSB",
-  "SDVOSB",
-  "HUBZone",
-  "small business government contracts",
-  "mentor protege",
-  "SBA programs",
-  "CMMC assessment readiness",
-  "CMMC Level 1 readiness",
-  "defense contracting",
-  "defense manufacturing consulting",
-  "U.S. manufacturing reshoring",
-  "critical minerals supply chain",
-  "rare earth elements",
-  "opportunity zones",
-  "access to capital small business",
-  "government manufacturing consulting",
-  "federal manufacturing contracts",
-  "supply chain resilience",
-  "cybersecurity maturity model",
-  "defense industrial base",
-  "small business defense contracts",
-  "manufacturing compliance",
-  "KDM Consortium",
-  "supplier success workshops",
-];
-
-const KDM_DESCRIPTION =
-  "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(branding.siteUrl),
   title: {
     default: branding.siteTitle,
     template: "%s",
   },
-  description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
-  keywords: branding.isLift ? branding.siteKeywords : KDM_KEYWORDS,
+  description: branding.siteDescription,
+  keywords: branding.siteKeywords,
   authors: [{ name: branding.siteName, url: branding.siteUrl }],
   creator: branding.siteName,
   publisher: branding.siteName,
@@ -88,24 +55,21 @@ export const metadata: Metadata = {
     url: branding.siteUrl,
     siteName: branding.siteName,
     title: branding.siteTitle,
-    description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
+    description: branding.siteDescription,
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: branding.isLift
-          ? "Southern University LIFT Center - Rural Business Support"
-          : "KDM & Associates - Powering Growth for Competitive Businesses",
+        alt: "Southern University LIFT Center - Rural Business Support",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: branding.siteTitle,
-    description: branding.isLift ? branding.siteDescription : KDM_DESCRIPTION,
+    description: branding.siteDescription,
     images: ["/og-image.png"],
-    ...(branding.isLift ? {} : { creator: "@kdmassoc" }),
   },
   category: "business",
 };
@@ -132,6 +96,11 @@ export default function RootLayout({
         {children}
         <Toaster />
         <Analytics />
+        <Script
+          src="https://cdn.userway.org/widget.js"
+          data-account="Ve9uUAN8ih"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

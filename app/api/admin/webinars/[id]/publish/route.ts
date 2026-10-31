@@ -8,6 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { id } = await params;
     const docRef = db.collection(COLLECTIONS.WEBINARS).doc(id);
 

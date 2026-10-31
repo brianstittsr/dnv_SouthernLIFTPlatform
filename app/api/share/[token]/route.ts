@@ -10,6 +10,9 @@ export async function GET(
   { params }: { params: Promise<{ token: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { token: shareToken } = await params;
 
     // Find share link by token

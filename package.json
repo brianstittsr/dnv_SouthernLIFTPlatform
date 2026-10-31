@@ -60,6 +60,7 @@
     "pdf-parse": "^2.4.5",
     "puppeteer-core": "^24.34.0",
     "qrcode.react": "^4.2.0",
+    "rea-agents": "6.8.0",
     "react": "19.2.0",
     "react-day-picker": "^9.12.0",
     "react-dom": "19.2.0",

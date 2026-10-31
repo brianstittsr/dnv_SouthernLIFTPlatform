@@ -13,6 +13,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     // Await params (Next.js 15+ requirement)
     const { id: cohortId } = await params;
 

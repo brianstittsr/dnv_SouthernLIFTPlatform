@@ -4,16 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getHeroSlides } from "@/lib/firebase-hero";
-import { listHeroBackgrounds, preloadImage } from "@/lib/firebase-hero-storage";
 import { getHomePageSettings } from "@/lib/firebase-home-settings";
-import { toast } from "sonner";
-import { useCartStore } from "@/lib/stores/cart-store";
-import { PRODUCTS } from "@/lib/types/cart";
-import { useRouter } from "next/navigation";
 
 export interface HeroSlide {
   id: string;
@@ -48,71 +43,88 @@ export interface HeroSlide {
   highlightOnSecondLine?: boolean;
 }
 
-// Default slides - in production these would come from a database
-const STORAGE_KEY = "hero-slides-v2";
-
-// Default slides fallback
+// Default slides - in production these come from the hero_slides collection.
+// These LIFT defaults keep the homepage working on an empty project.
 const defaultSlides: HeroSlide[] = [
-  // FORCE REBUILD - v2
   {
-    id: "4",
-    badge: "Reshoring Initiative Partner",
-    headline: "Bring Manufacturing",
-    highlightedText: "Home",
-    subheadline: "Join the reshoring movement. We help companies navigate the complexities of bringing manufacturing back to the United States with comprehensive support.",
-    benefits: ["Supply Chain Security", "Quality Control", "Job Creation"],
-    primaryCta: { text: "Start Reshoring", href: "/services/reshoring" },
-    secondaryCta: { text: "View Case Studies", href: "/case-studies" },
-    isPublished: false,
+    id: "lift-welcome",
+    badge: "MBDA-Funded · No-Cost Program",
+    headline: "No-Cost Support for",
+    highlightedText: "Rural Louisiana Business",
+    subheadline:
+      "The Southern University MBDA LIFT Rural Business Center helps rural small businesses strengthen operations, prepare for capital, and compete for contracts — funded in part by a $1.275M U.S. Department of Commerce MBDA cooperative agreement.",
+    benefits: ["Technical Assistance", "Training & Workshops", "Contracting Readiness"],
+    primaryCta: { text: "Start the Intake Interview", href: "/forms/lift-intake" },
+    secondaryCta: { text: "About the Center", href: "/about" },
+    isPublished: true,
+    order: 1,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80",
+    backgroundOverlay: true,
+  },
+  {
+    id: "lift-contracting",
+    badge: "Government Contracting Readiness",
+    headline: "Compete for",
+    highlightedText: "Government Contracts",
+    subheadline:
+      "Get help with SAM.gov registration, capability statements, and proposal development so your rural business is ready to pursue public-sector opportunities.",
+    benefits: ["SAM.gov Guidance", "Proposal Support", "Supplier Development"],
+    primaryCta: { text: "See Opportunities", href: "/opportunities" },
+    secondaryCta: { text: "", href: "" },
+    isPublished: true,
+    order: 2,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1617581629397-a72507c3de9e?auto=format&fit=crop&w=1920&q=80",
+    backgroundOverlay: true,
+  },
+  {
+    id: "lift-capital",
+    badge: "Capital & Financing Readiness",
+    headline: "Prepare for",
+    highlightedText: "Capital & Growth",
+    subheadline:
+      "Work with an advisor on financial statements, loan packaging, and lender connections — so when capital is within reach, your business is ready for it.",
+    benefits: ["Capital Readiness Review", "Loan Packaging", "Lender Connections"],
+    primaryCta: { text: "Start the Intake Interview", href: "/forms/lift-intake" },
+    secondaryCta: { text: "", href: "" },
+    isPublished: true,
+    order: 3,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80",
+    backgroundOverlay: true,
+  },
+  {
+    id: "lift-workshops",
+    badge: "Training & Workshops",
+    headline: "Learn at",
+    highlightedText: "No-Cost Workshops",
+    subheadline:
+      "Hands-on workshops and virtual training on business planning, marketing, financing, and government contracting — built for rural business owners.",
+    benefits: ["Business Workshops", "Virtual Training", "Expert-Led Sessions"],
+    primaryCta: { text: "Browse Events", href: "/events" },
+    secondaryCta: { text: "", href: "" },
+    isPublished: true,
     order: 4,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1920&q=80",
+    backgroundOverlay: true,
   },
   {
-    id: "5",
-    badge: "📚 Expert Insights & Resources",
-    headline: "Stay Ahead with",
-    highlightedText: "KDM Insights",
-    subheadline: "Access expert analysis on government contracting, CMMC certification, and business growth strategies. Our blog delivers actionable insights from industry leaders to help you win more contracts.",
-    benefits: ["CMMC Certification Guides", "Contracting Strategy Tips", "Industry Trend Analysis"],
-    primaryCta: { text: "Read Our Blog", href: "/blog" },
+    id: "lift-manufacturing",
+    badge: "Advanced Manufacturing Initiative",
+    headline: "Advanced",
+    highlightedText: "Manufacturing Support",
+    subheadline:
+      "Through the center's metal additive manufacturing lab, rural manufacturers get hands-on support making, repairing, and testing parts for agriculture, energy, and defense supply chains.",
+    benefits: ["Metal Additive Manufacturing", "Supply Chain Integration", "Hands-On Program"],
+    primaryCta: { text: "Join the Program", href: "/forms/lift-intake" },
     secondaryCta: { text: "", href: "" },
-    isPublished: false,
+    isPublished: true,
     order: 5,
-  },
-  {
-    id: "6",
-    badge: "Join the KDM Network",
-    headline: "KDM Consortium",
-    highlightedText: "Consortium",
-    subheadline: "Connect with a powerful network of businesses, partners, and mentors. The KDM Consortium provides access to teaming opportunities, shared resources, and collaborative growth.",
-    benefits: ["Networking Events", "Teaming Opportunities", "Mentorship Programs"],
-    primaryCta: { text: "Join the Consortium", href: "/consortium" },
-    secondaryCta: { text: "", href: "" },
-    isPublished: false,
-    order: 6,
-  },
-  {
-    id: "7",
-    badge: "Upcoming Opportunities",
-    headline: "KDM Events",
-    highlightedText: "Events",
-    subheadline: "Attend workshops, webinars, and networking events designed to help you succeed in government contracting. Learn from experts and connect with potential partners.",
-    benefits: ["Workshops & Training", "Networking Sessions", "Expert Panels"],
-    primaryCta: { text: "View Events", href: "/events" },
-    secondaryCta: { text: "Register Now", href: "/events/register" },
-    isPublished: false,
-    order: 7,
-  },
-  {
-    id: "8",
-    badge: "Cybersecurity Certification",
-    headline: "Join Our CMMC Cohort",
-    highlightedText: "CMMC Cohort",
-    subheadline: "Prepare for CMMC certification with guided support. Our cohort program helps small businesses meet cybersecurity requirements for government contracts.",
-    benefits: ["CMMC Guidance", "Cohort Learning", "Compliance Support"],
-    primaryCta: { text: "Join Cohort", href: "/cmmc-cohort" },
-    secondaryCta: { text: "Learn About CMMC", href: "/services/cmmc" },
-    isPublished: false,
-    order: 8,
+    backgroundImage:
+      "https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=1920&q=80",
+    backgroundOverlay: true,
   },
 ];
 
@@ -121,31 +133,8 @@ interface HeroCarouselProps {
   autoPlayInterval?: number;
 }
 
-// Hero CTA Button Component with Cart Support
+// Hero CTA Button
 function HeroCtaButton({ slide }: { slide: HeroSlide }) {
-  const { addItem } = useCartStore();
-  const router = useRouter();
-
-  const handleClick = () => {
-    if (slide.primaryCta.action === "add-to-cart" && slide.primaryCta.productId) {
-      const product = PRODUCTS[slide.primaryCta.productId as keyof typeof PRODUCTS];
-      if (product) {
-        addItem(product, 1);
-        toast.success(`${product.name} added to cart!`);
-        router.push("/checkout-cart");
-      }
-    }
-  };
-
-  if (slide.primaryCta.action === "add-to-cart") {
-    return (
-      <Button size="lg" className="text-lg px-8" onClick={handleClick}>
-        <ShoppingCart className="mr-2 h-5 w-5" />
-        {slide.primaryCta.text}
-      </Button>
-    );
-  }
-
   return (
     <Button size="lg" className="text-lg px-8" asChild>
       <Link href={slide.primaryCta.href}>
@@ -451,27 +440,27 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
 
           {/* Trust Indicators */}
           <div className="mt-16 pt-8 border-t border-white/30">
-            <p className="text-sm text-white/80 mb-6">Our Performance - Built on a track record of &quot;What Works&quot;</p>
+            <p className="text-sm text-white/80 mb-6">A federally funded center serving rural Louisiana</p>
             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">475</span>
-                <span className="text-xs text-white/70">Clients</span>
+                <span className="text-lg font-bold text-white">$1.275M</span>
+                <span className="text-xs text-white/70">MBDA Cooperative Agreement</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">14+</span>
-                <span className="text-xs text-white/70">Shared Outcome Agreements</span>
+                <span className="text-lg font-bold text-white">1 of 3</span>
+                <span className="text-xs text-white/70">HBCU Rural Centers Nationwide</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">$50B+</span>
-                <span className="text-xs text-white/70">Transaction Experience</span>
+                <span className="text-lg font-bold text-white">No-Cost</span>
+                <span className="text-xs text-white/70">Advising &amp; Training</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">30+</span>
-                <span className="text-xs text-white/70">Resource Partners</span>
+                <span className="text-lg font-bold text-white">2026–2029</span>
+                <span className="text-xs text-white/70">Program Period</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">KDM</span>
-                <span className="text-xs text-white/70">Federal Procurement &amp; Industrial Readiness Center</span>
+                <span className="text-lg font-bold text-white">Southern</span>
+                <span className="text-xs text-white/70">University &amp; A&amp;M College</span>
               </div>
             </div>
           </div>

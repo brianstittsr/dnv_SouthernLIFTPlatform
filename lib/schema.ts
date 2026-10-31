@@ -1213,6 +1213,8 @@ export interface PlatformSettingsDoc {
   };
   // Admin-managed dropdown option lists, keyed by list name (e.g. "documentTypes")
   dropdownLists?: Record<string, string[]>;
+  // Email addresses CC'd on public contact-form submissions
+  contactEmailRecipients?: string[];
   updatedAt: Timestamp;
   updatedBy?: string;
 }

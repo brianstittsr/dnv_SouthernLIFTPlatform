@@ -4,6 +4,9 @@ import { auth } from '@/lib/firebase-admin';
 
 export async function GET(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     // Verify user authentication
     const token = req.headers.get('Authorization')?.replace('Bearer ', '');
     if (!token) {

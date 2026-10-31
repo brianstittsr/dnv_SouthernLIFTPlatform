@@ -62,8 +62,10 @@ import {
   Plus,
   X,
   ListChecks,
+  Mail,
 } from "lucide-react";
 import { ALL_NAV_ITEMS } from "@/components/portal/portal-sidebar";
+import { getProgramBranding } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { WEBHOOK_EVENTS, testWebhookConnection, sendToBrianStitt, type WebhookEventType } from "@/lib/mattermost";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
@@ -246,6 +248,22 @@ function SettingsPageContent() {
   
   // Admin-managed dropdown option lists (e.g. portal document types)
   const [documentTypeOptions, setDocumentTypeOptions] = useState<string[]>([]);
+  const [contactEmailRecipients, setContactEmailRecipients] = useState<string[]>([]);
+  const [newContactEmail, setNewContactEmail] = useState("");
+  const contactFormRecipientLabel = getProgramBranding().contactFormRecipient;
+
+  const addContactEmail = () => {
+    const value = newContactEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      alert("Enter a valid email address.");
+      return;
+    }
+    if (!contactEmailRecipients.includes(value)) {
+      setContactEmailRecipients((prev) => [...prev, value]);
+      setHasChanges(true);
+    }
+    setNewContactEmail("");
+  };
   const [newDocumentType, setNewDocumentType] = useState("");
 
   // Available roles for visibility settings
@@ -345,6 +363,11 @@ function SettingsPageContent() {
             setDocumentTypeOptions(data.dropdownLists.documentTypes);
           }
 
+          // Load contact-form email recipients
+          if (data.contactEmailRecipients) {
+            setContactEmailRecipients(data.contactEmailRecipients);
+          }
+
           if (data.navigationSettings) {
             setNavigationSettings({
               hiddenItems: data.navigationSettings.hiddenItems || [],
@@ -435,6 +458,7 @@ function SettingsPageContent() {
         navigationSettings: navigationSettings,
         uiPreferences: uiPreferences,
         dropdownLists: { documentTypes: documentTypeOptions },
+        contactEmailRecipients: contactEmailRecipients,
         updatedAt: Timestamp.now(),
       };
       
@@ -602,6 +626,7 @@ function SettingsPageContent() {
           <TabsTrigger value="ui">UI Preferences</TabsTrigger>
           <TabsTrigger value="navigation">Navigation</TabsTrigger>
           <TabsTrigger value="dropdowns">Dropdown Lists</TabsTrigger>
+          <TabsTrigger value="emails">Email Recipients</TabsTrigger>
         </TabsList>
 
         {/* Integrations Tab */}
@@ -1723,6 +1748,81 @@ function SettingsPageContent() {
                       setNewDocumentType("");
                     }}
                   >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Contact Email Recipients Tab */}
+        <TabsContent value="emails" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Mail className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle>Contact Email Recipients</CardTitle>
+                  <CardDescription>
+                    Addresses CC&apos;d on every public contact-form submission.
+                    The primary recipient is set per-brand in code
+                    ({contactFormRecipientLabel}).
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                <div>
+                  <Label>CC Recipients</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Stored in platformSettings/global and emailed on each new
+                    contact-form submission
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {contactEmailRecipients.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      No recipients defined yet.
+                    </p>
+                  )}
+                  {contactEmailRecipients.map((email) => (
+                    <Badge key={email} variant="secondary" className="gap-1 pr-1">
+                      {email}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${email}`}
+                        className="rounded-full p-0.5 hover:bg-muted"
+                        onClick={() => {
+                          setContactEmailRecipients((prev) =>
+                            prev.filter((e) => e !== email)
+                          );
+                          setHasChanges(true);
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="name@example.org"
+                    value={newContactEmail}
+                    onChange={(e) => setNewContactEmail(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addContactEmail();
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" onClick={addContactEmail}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add
                   </Button>

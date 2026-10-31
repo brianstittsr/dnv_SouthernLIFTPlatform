@@ -6,6 +6,9 @@ import { requireAdmin } from "@/lib/auth/server-auth";
 
 export async function GET(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     await requireAdmin();
   } catch (error) {
     return NextResponse.json(
@@ -37,6 +40,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const user = await requireAdmin();
     const body = await req.json();
     const testimonialsRef = db.collection(TESTIMONIALS_COLLECTION);

@@ -5,138 +5,52 @@ import { getProgramBranding } from "@/lib/branding";
 export function OrganizationJsonLd() {
   const branding = getProgramBranding();
 
-  if (branding.isLift) {
-    const liftSchema = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: branding.siteName,
-      alternateName: "Southern University MBDA LIFT Rural Business Center",
-      url: branding.siteUrl,
-      logo: `${branding.siteUrl}${branding.logoSrc}`,
-      description: branding.siteDescription,
-      parentOrganization: {
-        "@type": "CollegeOrUniversity",
-        name: "Southern University and A&M College",
-        url: "https://www.sus.edu",
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Baton Rouge",
-        addressRegion: "LA",
-        addressCountry: "US",
-      },
-      contactPoint: [
-        {
-          "@type": "ContactPoint",
-          email: branding.contactEmail,
-          telephone: branding.contactPhone,
-          contactType: "customer service",
-          availableLanguage: ["English"],
-        },
-      ],
-      areaServed: {
-        "@type": "State",
-        name: "Louisiana",
-      },
-      knowsAbout: [
-        "Small Business Technical Assistance",
-        "Rural Business Development",
-        "Capital Readiness",
-        "Procurement Readiness",
-        "Government Contracting",
-        "Advanced Manufacturing",
-        "Digital & AI Adoption",
-        "Rural Entrepreneurship",
-      ],
-      funder: {
-        "@type": "GovernmentOrganization",
-        name: "U.S. Department of Commerce, Minority Business Development Agency",
-      },
-    };
-
-    return (
-      <Script
-        id="organization-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(liftSchema) }}
-      />
-    );
-  }
-
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "KDM & Associates",
-    alternateName: "KDM Federal Procurement & Industrial Readiness Center",
-    url: "https://kdm-assoc.com",
-    logo: "https://kdm-assoc.com/kdm-logo.png",
-    description:
-      "KDM & Associates, LLC is a business development, government affairs, and public relations firm helping businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, and mentorship.",
-    foundingDate: "2020",
-    founders: [
-      {
-        "@type": "Person",
-        name: "Keith Moore",
-        jobTitle: "CEO",
-      },
-    ],
+    name: branding.siteName,
+    alternateName: "Southern University MBDA LIFT Rural Business Center",
+    url: branding.siteUrl,
+    logo: `${branding.siteUrl}${branding.logoSrc}`,
+    description: branding.siteDescription,
+    parentOrganization: {
+      "@type": "CollegeOrUniversity",
+      name: "Southern University and A&M College",
+      url: "https://www.sus.edu",
+    },
     address: {
       "@type": "PostalAddress",
-      streetAddress: "300 New Jersey Avenue Northwest",
-      addressLocality: "Washington",
-      addressRegion: "DC",
-      postalCode: "20001",
+      addressLocality: "Baton Rouge",
+      addressRegion: "LA",
       addressCountry: "US",
     },
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "+1-202-469-3423",
-        contactType: "sales",
+        email: branding.contactEmail,
+        telephone: branding.contactPhone,
+        contactType: "customer service",
         availableLanguage: ["English"],
       },
-      {
-        "@type": "ContactPoint",
-        email: "kmoore@kdm-assoc.com",
-        contactType: "customer service",
-      },
-    ],
-    sameAs: [
-      "https://www.linkedin.com/company/mbdafpcenter",
-      "https://twitter.com/mbdafpcenter",
-      "https://www.facebook.com/mbdafpcenter/",
-      "https://www.instagram.com/mbdafpcenter",
     ],
     areaServed: {
-      "@type": "Country",
-      name: "United States",
+      "@type": "State",
+      name: "Louisiana",
     },
     knowsAbout: [
+      "Small Business Technical Assistance",
+      "Rural Business Development",
+      "Capital Readiness",
+      "Procurement Readiness",
       "Government Contracting",
-      "Emerging Business Enterprise",
-      "Federal Procurement",
-      "8(a) Certification",
-      "WOSB",
-      "SDVOSB",
-      "HUBZone",
-      "SBA Programs",
-      "Mentor-Protégé Programs",
-      "CMMC Certification",
-      "Cybersecurity Maturity Model Certification",
-      "Defense Manufacturing",
-      "U.S. Manufacturing Reshoring",
-      "Critical Minerals Supply Chain",
-      "Rare Earth Elements",
-      "Defense Industrial Base",
-      "Supply Chain Resilience",
-      "Opportunity Zones",
-      "Access to Capital for Small Business",
-      "Government Manufacturing Consulting",
-      "Federal Manufacturing Contracts",
-      "Aerospace Manufacturing Compliance",
-      "Small Business Defense Contracts",
-      "Supplier Success Workshops",
+      "Advanced Manufacturing",
+      "Digital & AI Adoption",
+      "Rural Entrepreneurship",
     ],
+    funder: {
+      "@type": "GovernmentOrganization",
+      name: "U.S. Department of Commerce, Minority Business Development Agency",
+    },
   };
 
   return (
@@ -152,76 +66,29 @@ export function OrganizationJsonLd() {
 export function LocalBusinessJsonLd() {
   const branding = getProgramBranding();
 
-  if (branding.isLift) {
-    const liftLocalSchema = {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      name: branding.siteName,
-      image: `${branding.siteUrl}${branding.logoSrc}`,
-      url: branding.siteUrl,
-      telephone: branding.contactPhone,
-      email: branding.contactEmail,
-      priceRange: "Free",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Baton Rouge",
-        addressRegion: "LA",
-        addressCountry: "US",
-      },
-      openingHoursSpecification: [
-        {
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          opens: "08:00",
-          closes: "17:00",
-        },
-      ],
-    };
-
-    return (
-      <Script
-        id="localbusiness-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(liftLocalSchema) }}
-      />
-    );
-  }
-
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "KDM & Associates",
-    image: "https://kdm-assoc.com/kdm-logo.png",
-    url: "https://kdm-assoc.com",
-    telephone: "+1-202-469-3423",
-    email: "info@kdm-assoc.com",
-    priceRange: "$$$",
+    name: branding.siteName,
+    image: `${branding.siteUrl}${branding.logoSrc}`,
+    url: branding.siteUrl,
+    telephone: branding.contactPhone,
+    email: branding.contactEmail,
+    priceRange: "Free",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "300 New Jersey Avenue Northwest",
-      addressLocality: "Washington",
-      addressRegion: "DC",
-      postalCode: "20001",
+      addressLocality: "Baton Rouge",
+      addressRegion: "LA",
       addressCountry: "US",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 38.8951,
-      longitude: -77.0364,
     },
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "09:00",
+        opens: "08:00",
         closes: "17:00",
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "300",
-    },
   };
 
   return (
@@ -262,12 +129,10 @@ export function ServiceJsonLd({
       url: branding.siteUrl,
     },
     areaServed: {
-      "@type": "Country",
-      name: areaServed || (branding.isLift ? "Louisiana" : "United States"),
+      "@type": "State",
+      name: areaServed || "Louisiana",
     },
-    serviceType: branding.isLift
-      ? "Small Business Technical Assistance"
-      : "Government Contracting Consulting",
+    serviceType: "Small Business Technical Assistance",
   };
 
   return (
@@ -469,9 +334,7 @@ export function WebsiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: branding.siteName,
-    alternateName: branding.isLift
-      ? "Southern University MBDA LIFT Rural Business Center"
-      : "KDM Federal Procurement & Industrial Readiness Center",
+    alternateName: "Southern University MBDA LIFT Rural Business Center",
     url: branding.siteUrl,
     potentialAction: {
       "@type": "SearchAction",

@@ -4,6 +4,9 @@ import { Timestamp } from "firebase-admin/firestore";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const body = await req.json();
     const {
       paymentIntentId,

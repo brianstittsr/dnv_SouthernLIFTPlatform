@@ -9,6 +9,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { cohortIds } = await request.json();
 
     if (!cohortIds || !Array.isArray(cohortIds) || cohortIds.length === 0) {

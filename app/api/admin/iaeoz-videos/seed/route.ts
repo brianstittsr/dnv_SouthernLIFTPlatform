@@ -57,6 +57,9 @@ function normalizeType(type: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     // Verify admin authentication
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

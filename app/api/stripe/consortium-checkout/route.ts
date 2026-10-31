@@ -10,6 +10,9 @@ const DISCOUNT_DEADLINE = new Date("2026-04-30");
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const authHeader = req.headers.get("authorization");
     if (!authHeader) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

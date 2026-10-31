@@ -66,10 +66,11 @@ export function Testimonials() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            What Our Clients Say
+            Stories from LIFT Clients
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real results from clients who transformed their government contracting business with KDM & Associates.
+            Rural Louisiana businesses growing with support from the Southern
+            University LIFT Center.
           </p>
         </div>
 

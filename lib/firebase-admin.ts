@@ -7,8 +7,13 @@ import * as admin from "firebase-admin";
 
 let _initialized = false;
 
-// Initialize Firebase Admin SDK — never throw; callers must guard against null exports
-if (!admin.apps.length) {
+// Initialize Firebase Admin SDK — never throw; callers must guard against null exports.
+// NOTE: the firebase-admin package is shared across Next.js route bundles, but
+// this module's state is per-bundle — a bundle that loads after another has
+// already called initializeApp() must still mark itself initialized.
+if (admin.apps.length) {
+  _initialized = true;
+} else {
   try {
     if (
       !process.env.FIREBASE_PROJECT_ID ||

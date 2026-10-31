@@ -7,6 +7,9 @@ import crypto from 'crypto';
 // Demo/test mode - no actual Stripe charges
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { email, password, planId = 'demo-consortium', paymentMethodId = 'demo-payment-method' } = await req.json();
 
     // Validate required fields

@@ -1,41 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Users, DollarSign, Handshake } from "lucide-react";
+import { Building2, MapPin, DollarSign, Award } from "lucide-react";
 
 const stats = [
   {
-    label: "Clients",
-    value: 475,
-    suffix: "",
-    icon: Building2,
-    description: "Small businesses served",
-  },
-  {
-    label: "Shared Outcome Agreements",
-    value: 14,
-    suffix: "+",
-    icon: Handshake,
-    description: "Strategic partnerships established",
-  },
-  {
-    label: "Contract Transactions",
-    value: 50,
-    suffix: "B+",
+    label: "MBDA Cooperative Agreement",
+    value: 1.275,
+    suffix: "M",
     prefix: "$",
+    decimals: 3,
     icon: DollarSign,
-    description: "Experience associated with public- and private-sector transactions",
+    description: "Federal funding behind the center",
   },
   {
-    label: "Resource Partners",
-    value: 30,
-    suffix: "+",
-    icon: Users,
-    description: "Services and resource network",
+    label: "Louisiana Parishes",
+    value: 64,
+    suffix: "",
+    icon: MapPin,
+    description: "Rural service area statewide",
+  },
+  {
+    label: "Program Years",
+    value: 3,
+    suffix: "",
+    icon: Award,
+    description: "2026–2029 performance period",
+  },
+  {
+    label: "HBCU Rural Center",
+    value: 1,
+    suffix: " of 3",
+    decimals: 0,
+    icon: Building2,
+    description: "One of three funded nationwide",
   },
 ];
 
-function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: string; prefix?: string }) {
+function AnimatedCounter({ value, suffix, prefix, decimals = 0 }: { value: number; suffix: string; prefix?: string; decimals?: number }) {
   const [count, setCount] = useState(value);
 
   useEffect(() => {
@@ -57,16 +59,16 @@ function AnimatedCounter({ value, suffix, prefix }: { value: number; suffix: str
         sessionStorage.setItem('stats_animated', 'true');
         clearInterval(timer);
       } else {
-        setCount(Math.floor(current));
+        setCount(decimals > 0 ? Number(current.toFixed(decimals)) : Math.floor(current));
       }
     }, duration / steps);
 
     return () => clearInterval(timer);
-  }, [value]);
+  }, [value, decimals]);
 
   return (
     <span>
-      {prefix}{count.toLocaleString()}
+      {prefix}{decimals > 0 ? count.toFixed(decimals) : count.toLocaleString()}
       {suffix}
     </span>
   );
@@ -83,7 +85,7 @@ export function StatsSection() {
                 <stat.icon className="h-6 w-6 text-primary" />
               </div>
               <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={(stat as { prefix?: string }).prefix} />
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={(stat as { prefix?: string }).prefix} decimals={(stat as { decimals?: number }).decimals ?? 0} />
               </div>
               <div className="font-semibold mb-1">{stat.label}</div>
               <div className="text-sm text-gray-400">{stat.description}</div>

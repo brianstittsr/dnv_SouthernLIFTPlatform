@@ -1,13 +1,14 @@
 /**
- * Program branding for onboarding flows shared by the KDM site and the
- * Southern University LIFT deployment (LIFT_Onboarding_Questions.txt, Appendix 3).
+ * Program branding for the Southern University MBDA LIFT Rural Business
+ * Center deployment (LIFT_Onboarding_Questions.txt, Appendix 3).
  *
- * Set NEXT_PUBLIC_BRANDING_MODE=lift in the LIFT deployment. Default is "kdm",
- * so the KDM site is unchanged.
+ * This codebase is LIFT-only — KDM branding was removed. getProgramBranding()
+ * keeps its original signature and `isLift: true` so existing callers and
+ * ternaries resolve to the LIFT branch.
  */
 import { LIFT_SERVICE_AREAS } from "@/lib/form-builder/controls";
 
-export type BrandingMode = "kdm" | "lift";
+export type BrandingMode = "lift";
 
 export interface ProgramBranding {
   mode: BrandingMode;
@@ -30,17 +31,16 @@ export interface ProgramBranding {
   focusAreaOptions: { id: string; label: string }[];
   readinessReviewNote: string;
   dunsLabel: string;
-  /** Skip the paid-membership payment step after the consortium profile pop-up. */
+  /** Skip the paid-membership payment step — LIFT services are no-cost. */
   skipPaymentStep: boolean;
-  /** Hide the KDM affiliate onboarding wizard (out of scope for LIFT). */
+  /** Hide the affiliate onboarding wizard (out of scope for LIFT). */
   hideAffiliateWizard: boolean;
 
   // ---- Public marketing site ----
-  /** Short site name used in nav/footer, e.g. "KDM & Associates" / "LIFT Center". */
   siteName: string;
   /**
    * Public origin for canonical URLs, sitemap, and JSON-LD. Reads
-   * NEXT_PUBLIC_SITE_URL first; falls back to the per-mode default below.
+   * NEXT_PUBLIC_SITE_URL first; falls back to the default below.
    */
   siteUrl: string;
   siteTitle: string;
@@ -48,9 +48,11 @@ export interface ProgramBranding {
   siteKeywords: string[];
   logoSrc: string;
   logoAlt: string;
-  /** Label for the authenticated area, e.g. "V+ Portal" / "LIFT Client Portal". */
+  /** Label for the authenticated area, e.g. "LIFT Client Portal". */
   portalName: string;
   contactEmail: string;
+  /** Address that receives contact-form notification emails (the "to"). */
+  contactFormRecipient: string;
   contactPhone: string;
   contactAddress: string;
   copyrightName: string;
@@ -70,78 +72,6 @@ export interface ProgramBranding {
   blogCtaSecondaryLabel: string;
   blogCtaSecondaryHref: string;
 }
-
-const KDM_FOCUS_AREAS = [
-  { id: "us-manufacturing", label: "U.S. Manufacturing" },
-  { id: "critical-minerals", label: "Critical Minerals" },
-  { id: "defense-contracting", label: "Defense Contracting" },
-  { id: "access-to-capital", label: "Access to Capital" },
-  { id: "opportunity-zones", label: "Opportunity Zones" },
-];
-
-const KDM: ProgramBranding = {
-  mode: "kdm",
-  isLift: false,
-  orgName: "KDM & Associates",
-  programName: "KDM Consortium",
-  registerDescription: "Register as a client with KDM & Associates",
-  howFoundLabel: "How found KDM & Associates",
-  helpNeededLabel: "Help needed from KDM & Associates",
-  clientOnboardingIntro: "Complete your company profile to access KDM Consortium services and connect with our network of manufacturing experts.",
-  servicesOfInterestDescription: "Select the KDM services you're interested in",
-  primaryGoalsPlaceholder: "What are your main objectives for working with KDM Consortium?",
-  contactConsentText: "By submitting this form, you consent to KDM Consortium contacting you about our services.",
-  welcomeTitle: "Welcome to the KDM Consortium!",
-  focusAreasLabel: "5 Pillars Focus Areas",
-  focusAreasHelp: "Select which pillars your company serves:",
-  focusAreaOptions: KDM_FOCUS_AREAS,
-  readinessReviewNote: "Documents will be reviewed by KDM staff. You'll be notified once your readiness is validated.",
-  dunsLabel: "DUNS Number",
-  skipPaymentStep: false,
-  hideAffiliateWizard: false,
-  siteName: "KDM & Associates",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://kdm-assoc.com",
-  siteTitle: "KDM & Associates | Defense Manufacturing, CMMC & Government Contracting",
-  siteDescription:
-    "KDM & Associates connects small manufacturers with government contracting opportunities, CMMC readiness, critical minerals, and access to capital through the V+KDM Consortium platform.",
-  siteKeywords: [
-    "KDM & Associates",
-    "government contracting",
-    "CMMC",
-    "defense manufacturing",
-    "critical minerals",
-    "opportunity zones",
-  ],
-  logoSrc: "/kdm-logo.png",
-  logoAlt: "KDM & Associates Logo",
-  portalName: "V+ Portal",
-  contactEmail: "info@kdm-assoc.com",
-  contactPhone: "(202) 555-0100",
-  contactAddress: "Washington, DC",
-  copyrightName: "KDM & Associates",
-  footerTagline:
-    "Connecting small businesses with government contracting opportunities.",
-  fundingAcknowledgment: "",
-  blogName: "KDM Blog",
-  blogTitle:
-    "KDM Blog | Defense Manufacturing, CMMC, & Government Contracting Insights",
-  blogDescription:
-    "Insights on defense contracting, CMMC compliance, critical minerals, opportunity zones, and access to capital for small manufacturers.",
-  blogKeywords: [
-    "defense contracting",
-    "CMMC",
-    "government contracts",
-    "small business",
-    "manufacturing",
-  ],
-  blogCtaTitle: "Ready to Take the Next Step?",
-  blogCtaBody:
-    "Join the KDM Consortium platform to get matched with government contract opportunities and connect with defense-ready partners.",
-  blogCtaPrimaryLabel: "Register as Supplier",
-  blogCtaPrimaryHref: "/register?type=sme",
-  blogCtaSecondaryLabel: "Register as Government Buyer",
-  blogCtaSecondaryHref: "/register?type=buyer",
-};
 
 const LIFT: ProgramBranding = {
   mode: "lift",
@@ -182,10 +112,12 @@ const LIFT: ProgramBranding = {
     "Louisiana",
   ],
   // TODO: replace with the approved LIFT/MBDA/Southern logo asset when supplied.
-  logoSrc: "/kdm-logo.png",
+  // The UI uses a text wordmark; this path is only referenced in JSON-LD.
+  logoSrc: "/favicon.ico",
   logoAlt: "Southern University LIFT Center Logo",
   portalName: "LIFT Client Portal",
   contactEmail: "liftcenter@sus.edu",
+  contactFormRecipient: "patrick.mensah@sus.edu",
   contactPhone: "(225) 771-0000",
   contactAddress: "Southern University, Baton Rouge, LA",
   copyrightName: "Southern University LIFT Center",
@@ -214,7 +146,7 @@ const LIFT: ProgramBranding = {
   blogCtaSecondaryHref: "/events",
 };
 
-/** Returns the active program branding (build-time setting, safe in client and server code). */
+/** Returns the LIFT program branding (safe in client and server code). */
 export function getProgramBranding(): ProgramBranding {
-  return process.env.NEXT_PUBLIC_BRANDING_MODE === "lift" ? LIFT : KDM;
+  return LIFT;
 }

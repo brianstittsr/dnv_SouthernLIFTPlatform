@@ -1,46 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Linkedin, Twitter, Facebook, Instagram, Mail, Phone, MapPin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { getProgramBranding } from "@/lib/branding";
-
-const footerLinks = {
-  services: [
-    { title: "Digital Solutions", href: "/services#digital", hidden: true },
-    { title: "Technology Solutions", href: "/services#technology", hidden: true },
-    { title: "Grants & RFPs", href: "/services#grants", hidden: true },
-    { title: "Marketing Solutions", href: "/services#marketing", hidden: true },
-    { title: "Operations/Performance", href: "/services#operations", hidden: true },
-    { title: "Contracting Vehicles", href: "/services#contracting", hidden: true },
-  ],
-  company: [
-    { title: "About Us", href: "/about" },
-    { title: "KDM Team", href: "/team" },
-    { title: "Our Work", href: "/our-work", hidden: true },
-    { title: "Partners", href: "/partners", hidden: true },
-    { title: "Case Studies", href: "/case-studies" },
-    { title: "Capability Statement", href: "/capability-statement" },
-    { title: "Contact Us", href: "/contact" },
-  ],
-  resources: [
-    { title: "Blog", href: "/blog" },
-    { title: "FAQ", href: "/faq", hidden: true },
-    { title: "Events", href: "/events", hidden: true },
-    { title: "News", href: "/news", hidden: true },
-    { title: "Media & Video", href: "/media", hidden: true },
-    { title: "membership", href: "/membership", hidden: true },
-    { title: "Capabilities", href: "/capabilities" },
-    { title: "For Buyers", href: "/for-buyers" },
-    { title: "Defense & Rapid Acquisition", href: "/capabilities/defense-rapid-acquisition" },
-  ],
-  legal: [
-    { title: "Privacy Policy", href: "/privacy" },
-    { title: "Terms of Service", href: "/terms" },
-    { title: "Procurement Integrity", href: "/policies/procurement-integrity" },
-    { title: "OCI Policy", href: "/policies/organizational-conflicts" },
-    { title: "FAQs", href: "/faq" },
-  ],
-};
 
 const liftFooterLinks = {
   programs: [
@@ -64,7 +25,7 @@ const liftFooterLinks = {
   ],
 };
 
-function LiftFooter() {
+export function Footer() {
   const branding = getProgramBranding();
   return (
     <footer className="bg-black text-white">
@@ -149,129 +110,6 @@ function LiftFooter() {
           </p>
           <div className="flex gap-6">
             {liftFooterLinks.legal.map((link) => (
-              <Link
-                key={link.title}
-                href={link.href}
-                className="text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                {link.title}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-export function Footer() {
-  if (getProgramBranding().isLift) {
-    return <LiftFooter />;
-  }
-  return (
-    <footer className="bg-black text-white">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-          {/* Brand Column */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1 space-y-4">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-white">KDM & Associates</span>
-            </Link>
-            <p className="text-sm text-gray-400 max-w-xs">
-              Supporting federal-market readiness through strategic teaming, capability development, compliant capture support, CMMC readiness and industrial-supply-chain coordination. KDM does not guarantee contract awards or represent any government agency.
-            </p>
-            <div className="flex gap-4">
-              <Link href="https://www.linkedin.com/company/kdmassoc" className="text-gray-400 hover:text-primary transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </Link>
-              <Link href="https://www.youtube.com/@KDMConsortium" className="text-gray-400 hover:text-primary transition-colors">
-                <Youtube className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-accent">Services</h3>
-            <ul className="space-y-2">
-              {footerLinks.services.filter((link) => !link.hidden).map((link) => (
-                <li key={link.title}>
-                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-accent">Company</h3>
-            <ul className="space-y-2">
-              {footerLinks.company.filter((link) => !link.hidden).map((link) => (
-                <li key={link.title}>
-                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-accent">Resources</h3>
-            <ul className="space-y-2">
-              {footerLinks.resources.filter((link) => !link.hidden).map((link) => (
-                <li key={link.title}>
-                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-accent">Contact</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2 text-sm text-gray-400">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>300 New Jersey Avenue NW, Washington, DC 20001</span>
-              </li>
-              <li>
-                <Link href="mailto:kmoore@kdm-assoc.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
-                  <Mail className="h-4 w-4" />
-                  kmoore@kdm-assoc.com
-                </Link>
-              </li>
-              <li>
-                <Link href="tel:+1-202-469-3423" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
-                  <Phone className="h-4 w-4" />
-                  (202) 469-3423
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <Separator className="my-8 bg-gray-800" />
-
-        {/* Government-Affiliation Disclaimer */}
-        <div className="mb-6">
-          <p className="text-xs text-gray-500 max-w-4xl">
-            KDM &amp; Associates and KDM Consortium are independent private-sector organizations. Unless expressly stated in writing, KDM is not an agency or instrumentality of the United States Government and is not authorized to act on behalf of any federal agency. References to agencies, programs, certifications or contracting vehicles are provided for informational purposes and do not imply sponsorship, endorsement or guaranteed access. KDM does not guarantee eligibility, certification, funding, contract award or procurement outcome. Government contracting decisions are made solely by authorized government officials in accordance with applicable law and acquisition procedures.
-          </p>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-400">
-            © {new Date().getFullYear()} KDM and Associates. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            {footerLinks.legal.map((link) => (
               <Link
                 key={link.title}
                 href={link.href}

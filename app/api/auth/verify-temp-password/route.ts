@@ -7,6 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { email, tempPassword } = await req.json();
 
     // Find user by email

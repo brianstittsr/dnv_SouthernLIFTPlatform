@@ -198,6 +198,9 @@ function generateEventCarouselContent(eventPages: any[], images: any[]) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     // Verify authentication
     const authHeader = request.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {

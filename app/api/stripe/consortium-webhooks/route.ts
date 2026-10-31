@@ -7,6 +7,9 @@ import { COLLECTIONS } from "@/lib/schema";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const payload = await req.text();
     const signature = req.headers.get("stripe-signature");
 

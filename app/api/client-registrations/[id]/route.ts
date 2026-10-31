@@ -9,6 +9,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { id } = await params;
     const docRef = db.collection(COLLECTIONS.CLIENT_REGISTRATIONS).doc(id);
     const doc = await docRef.get();
@@ -45,6 +48,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { id } = await params;
     const body = await request.json();
 
@@ -148,6 +154,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { id } = await params;
     const docRef = db.collection(COLLECTIONS.CLIENT_REGISTRATIONS).doc(id);
     const doc = await docRef.get();

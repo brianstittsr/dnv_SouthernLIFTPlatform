@@ -1,33 +1,33 @@
-import { Search, Map, Rocket, Award } from "lucide-react";
+import { MessageSquareText, FileSignature, Map, TrendingUp } from "lucide-react";
 
 const steps = [
   {
     number: "01",
-    title: "Initial Consultation",
+    title: "Complete the Intake Interview",
     description:
-      "We assess your business capabilities, certifications, and government contracting goals to create a tailored strategy.",
-    icon: Search,
+      "Start with our AI-guided intake interview. It takes about 15 minutes and tells us about your business, your goals, and what support you need.",
+    icon: MessageSquareText,
   },
   {
     number: "02",
-    title: "Certification & Compliance",
+    title: "Enroll with the Center",
     description:
-      "Navigate 8(a), WOSB, SDVOSB, HUBZone certifications and ensure your business meets federal compliance requirements.",
-    icon: Map,
+      "Confirm your rural eligibility, sign the MBDA Letter of Engagement, and complete a short baseline survey so we can measure your progress.",
+    icon: FileSignature,
   },
   {
     number: "03",
-    title: "Strategic Teaming",
+    title: "Work Your Service Plan",
     description:
-      "Connect with prime contractors, build mentor-protégé relationships, and position your business for contract opportunities.",
-    icon: Rocket,
+      "Meet your LIFT advisor and follow a personalized plan — advising sessions, workshops, capital readiness, and contracting support at no cost.",
+    icon: Map,
   },
   {
     number: "04",
-    title: "Pursuit and Performance Support",
+    title: "Grow & Report Outcomes",
     description:
-      "Strengthen capture execution, proposal quality, teaming, readiness and post-award performance with ongoing support.",
-    icon: Award,
+      "Check in at 6 and 12 months so we can track jobs, revenue, contracts, and capital — and keep adjusting your plan as your business grows.",
+    icon: TrendingUp,
   },
 ];
 
@@ -38,11 +38,11 @@ export function HowItWorks() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-            How It Works
+            How to Join the Program
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            A proven four-step process to help your business navigate federal procurement 
-            and become more prepared, competitive, and strategically positioned for government contracting opportunities.
+            Enrollment is free and open to eligible rural Louisiana small
+            businesses. Here&apos;s what the journey looks like.
           </p>
         </div>
 

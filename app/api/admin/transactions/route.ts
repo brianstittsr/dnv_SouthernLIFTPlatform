@@ -28,6 +28,9 @@ interface TransactionResponse {
  */
 export async function GET(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { searchParams } = new URL(request.url);
     const source = searchParams.get('source') || 'both'; // 'stripe', 'firestore', or 'both'
     const limit = parseInt(searchParams.get('limit') || '50');

@@ -670,6 +670,12 @@ const svpAdminItems = [
     icon: Globe,
   },
   {
+    title: "REA Studio",
+    href: "/portal/admin/rea",
+    icon: Bot,
+    badge: "New",
+  },
+  {
     title: "System Health",
     href: "/portal/admin/system-health",
     icon: Activity,

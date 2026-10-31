@@ -18,6 +18,9 @@ interface MembershipTracker {
 
 // Initialize tracker if it doesn't exist
 async function initializeTracker(): Promise<MembershipTracker> {
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
   const trackerRef = db.collection(TRACKER_COLLECTION).doc(TRACKER_DOC_ID);
   const trackerDoc = await trackerRef.get();
 
@@ -73,6 +76,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!db) {
+      return NextResponse.json(
+        { error: "Service temporarily unavailable" },
+        { status: 503 }
+      );
+    }
     const trackerRef = db.collection(TRACKER_COLLECTION).doc(TRACKER_DOC_ID);
     const tracker = await initializeTracker();
     const now = new Date();

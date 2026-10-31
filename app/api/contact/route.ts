@@ -2,7 +2,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
 import { db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
-import { COLLECTIONS } from "@/lib/schema";
+import { COLLECTIONS, type PlatformSettingsDoc } from "@/lib/schema";
+import { getProgramBranding } from "@/lib/branding";
+
+const branding = getProgramBranding();
+
+/** Masks an email for logs: "brian@x.com" -> "b***@x.com" */
+function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!domain) return "***";
+  return `${local.slice(0, 1)}***@${domain}`;
+}
+
+/** Masks a phone for logs: "(225) 555-0100" -> "***-0100" */
+function maskPhone(phone?: string): string | undefined {
+  if (!phone) return undefined;
+  const digits = phone.replace(/\D/g, "");
+  return `***-${digits.slice(-4) || "****"}`;
+}
+
+/** Logs the submission shape without PII (names, emails, phones, free text). */
+function logSubmission(body: ContactFormData) {
+  console.log("Contact form received:", {
+    name: `${body.firstName?.slice(0, 1) ?? "?"}*** ${body.lastName?.slice(0, 1) ?? "?"}***`,
+    email: maskEmail(body.email ?? ""),
+    phone: maskPhone(body.phone),
+    company: body.company,
+    businessType: body.businessType,
+    industry: body.industry,
+    service: body.service,
+    newsletter: body.newsletter,
+    smsConsentTransactional: !!body.smsConsentTransactional,
+    smsConsentMarketing: !!body.smsConsentMarketing,
+    messageLength: body.message?.length ?? 0,
+  });
+}
 
 interface ContactFormData {
   firstName: string;
@@ -22,9 +56,15 @@ interface ContactFormData {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: "Service temporarily unavailable" },
+        { status: 503 }
+      );
+    }
     const body: ContactFormData = await request.json();
-    
-    console.log("Contact form received:", JSON.stringify(body, null, 2));
+
+    logSubmission(body);
 
     // Validate required fields
     if (!body.firstName || !body.lastName || !body.email || !body.company || !body.businessType || !body.service) {
@@ -86,17 +126,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch CC recipients from Firestore
-    let ccEmails: string[] = [];
+    // Fetch CC recipients: admin-managed list in platformSettings/global plus
+    // the legacy contactEmailRecipients collection.
+    const ccEmails = new Set<string>();
+    try {
+      const settingsSnap = await db
+        .collection(COLLECTIONS.PLATFORM_SETTINGS)
+        .doc("global")
+        .get();
+      const settings = settingsSnap.data() as PlatformSettingsDoc | undefined;
+      for (const email of settings?.contactEmailRecipients ?? []) {
+        if (email?.includes("@")) ccEmails.add(email.trim());
+      }
+    } catch (settingsError) {
+      console.error("Failed to fetch settings recipients:", settingsError);
+    }
     try {
       const recipientsSnap = await db.collection("contactEmailRecipients").get();
-      ccEmails = recipientsSnap.docs.map((d) => d.data().email as string).filter(Boolean);
+      for (const d of recipientsSnap.docs) {
+        const email = d.data().email as string;
+        if (email?.includes("@")) ccEmails.add(email.trim());
+      }
     } catch (ccError) {
       console.error("Failed to fetch CC recipients:", ccError);
     }
 
-    // Send notification email to KDM team
-    const adminEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "kmoore@kdm-assoc.com";
+    // Send notification email to the program team
+    const adminEmail =
+      process.env.NEXT_PUBLIC_SUPPORT_EMAIL || branding.contactFormRecipient;
     let emailSent = false;
     let confirmationSent = false;
     let emailError = null;
@@ -104,10 +161,12 @@ export async function POST(request: NextRequest) {
     try {
       const adminResult = await sendEmail({
         to: adminEmail,
-        ...(ccEmails.length > 0 ? { cc: ccEmails } : {}),
-        subject: `New Session Request from ${body.firstName} ${body.lastName}`,
+        ...(ccEmails.size > 0 ? { cc: [...ccEmails] } : {}),
+        subject: branding.isLift
+          ? `New LIFT Center inquiry from ${body.firstName} ${body.lastName}`
+          : `New Session Request from ${body.firstName} ${body.lastName}`,
         html: `
-          <h1>New Session Request</h1>
+          <h1>${branding.isLift ? "New LIFT Center Inquiry" : "New Session Request"}</h1>
           <p>A new contact form submission has been received:</p>
           <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
             <tr>
@@ -161,7 +220,7 @@ export async function POST(request: NextRequest) {
           </table>
           <p style="margin-top: 20px;">Please respond within 24 hours.</p>
         `,
-        text: `New Session Request from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
+        text: `${branding.isLift ? "New LIFT Center inquiry" : "New Session Request"} from ${body.firstName} ${body.lastName}\n\nEmail: ${body.email}\nPhone: ${body.phone || "Not provided"}\nCompany: ${body.company}\nBusiness Type: ${body.businessType}\nService: ${body.service}\nMessage: ${body.message || "No message"}`,
       });
       
       if (!adminResult.success) {
@@ -177,11 +236,31 @@ export async function POST(request: NextRequest) {
     }
 
     // Send confirmation email to the user
-    try {
-      await sendEmail({
-        to: body.email,
-        subject: "Thank you for contacting KDM & Associates",
-        html: `
+    const confirmation = branding.isLift
+      ? {
+          subject: "Thank you for contacting the Southern University LIFT Center",
+          html: `
+          <h1>Thank you for reaching out, ${body.firstName}!</h1>
+          <p>We've received your inquiry at the Southern University MBDA LIFT Rural Business Center. A member of our team will review your submission and follow up with you.</p>
+          <p><strong>What happens next?</strong></p>
+          <ul>
+            <li>A LIFT Center team member will review your information</li>
+            <li>You may be invited to complete the AI intake interview and program forms</li>
+            <li>An advisor will follow up about no-cost services available to your business</li>
+          </ul>
+          <p>In the meantime, feel free to contact us directly:</p>
+          <ul>
+            <li>Email: <a href="mailto:${branding.contactEmail}">${branding.contactEmail}</a></li>
+            <li>Phone: ${branding.contactPhone}</li>
+          </ul>
+          <p>Best regards,<br>The Southern University LIFT Center Team</p>
+          <p style="margin-top:16px;font-size:12px;color:#666;">Funded in part by the U.S. Department of Commerce, Minority Business Development Agency (MBDA).</p>
+        `,
+          text: `Thank you for reaching out, ${body.firstName}! The Southern University MBDA LIFT Rural Business Center received your inquiry and will follow up. Contact us at ${branding.contactEmail} or ${branding.contactPhone}.`,
+        }
+      : {
+          subject: "Thank you for contacting KDM & Associates",
+          html: `
           <h1>Thank you for reaching out, ${body.firstName}!</h1>
           <p>We've received your request for an introductory session and one of our government contracting experts will contact you within 24 hours.</p>
           <p><strong>What happens next?</strong></p>
@@ -192,12 +271,19 @@ export async function POST(request: NextRequest) {
           </ul>
           <p>In the meantime, feel free to explore our resources or contact us directly:</p>
           <ul>
-            <li>Email: <a href="mailto:kmoore@kdm-assoc.com">kmoore@kdm-assoc.com</a></li>
-            <li>Phone: (202) 469-3423</li>
+            <li>Email: <a href="mailto:${branding.contactEmail}">${branding.contactEmail}</a></li>
+            <li>Phone: ${branding.contactPhone}</li>
           </ul>
           <p>Best regards,<br>The KDM & Associates Team</p>
         `,
-        text: `Thank you for reaching out, ${body.firstName}! We've received your request and will contact you within 24 hours.`,
+          text: `Thank you for reaching out, ${body.firstName}! We've received your request and will contact you within 24 hours.`,
+        };
+    try {
+      await sendEmail({
+        to: body.email,
+        subject: confirmation.subject,
+        html: confirmation.html,
+        text: confirmation.text,
       });
       confirmationSent = true;
     } catch (emailError) {

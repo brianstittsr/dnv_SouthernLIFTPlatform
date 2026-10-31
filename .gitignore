@@ -47,3 +47,8 @@ next-env.d.ts
 .vercel
 
 .vercel
+
+# REA workspace (captures, environment bundles, temp scenarios)
+.rea-captures/
+.rea-envs/
+.rea-tmp/

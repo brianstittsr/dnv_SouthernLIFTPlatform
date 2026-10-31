@@ -6,6 +6,9 @@ import { Timestamp } from "firebase-admin/firestore";
 // GET /api/client-registrations - List all client registrations
 export async function GET(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const assignedTo = searchParams.get("assignedTo");
@@ -63,6 +66,9 @@ export async function GET(request: NextRequest) {
 // POST /api/client-registrations - Create new client registration
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     const body = await request.json();
 
     // Required field validation

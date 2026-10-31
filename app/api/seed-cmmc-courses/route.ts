@@ -100,6 +100,9 @@ const cmmcCourses = [
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+    }
     // Check for admin authorization (you should implement proper auth)
     const authHeader = request.headers.get('authorization');
     if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_SEED_TOKEN}`) {

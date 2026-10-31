@@ -591,6 +591,9 @@ service cloud.firestore {
     // Generic file blobs — server access only (base64-chunked file bytes)
     match /fileBlobs/{path=**} { allow read, write: if false; }
 
+    // REA capture metadata — server access only (admin API routes)
+    match /reaCaptures/{path=**} { allow read, write: if false; }
+
     match /liftForms/{path=**} { allow read, write: if false; }
     match /liftFormSubmissions/{path=**} { allow read, write: if false; }
     match /liftFormDrafts/{path=**} { allow read, write: if false; }
