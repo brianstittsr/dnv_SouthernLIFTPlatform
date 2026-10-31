@@ -19,7 +19,7 @@ const steps = [
     number: "03",
     title: "Work Your Service Plan",
     description:
-      "Meet your LIFT advisor and follow a personalized plan — advising sessions, workshops, capital readiness, and contracting support at no cost.",
+      "Meet your LIFT advisor and follow a personalized plan — advising sessions, workshops, capital readiness, and contracting support.",
     icon: Map,
   },
   {

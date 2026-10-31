@@ -15,7 +15,7 @@ const services = [
   {
     title: "Training & Workshops",
     description:
-      "No-cost workshops and virtual training built for rural business owners — from starting up to scaling, including our advanced manufacturing program.",
+      "Support workshops and virtual training built for rural business owners — from starting up to scaling, including our advanced manufacturing program.",
     icon: GraduationCap,
     bullets: [
       "Entrepreneurship training",
@@ -46,7 +46,7 @@ export function LiftServicesSection() {
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             The Southern University MBDA LIFT Rural Business Center delivers
-            no-cost services in three connected areas — so rural Louisiana
+            support services in three connected areas — so rural Louisiana
             businesses can start, stabilize, and grow.
           </p>
         </div>

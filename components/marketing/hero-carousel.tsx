@@ -48,8 +48,8 @@ export interface HeroSlide {
 const defaultSlides: HeroSlide[] = [
   {
     id: "lift-welcome",
-    badge: "MBDA-Funded · No-Cost Program",
-    headline: "No-Cost Support for",
+    badge: "MBDA-Funded · Support Program",
+    headline: "Help for",
     highlightedText: "Rural Louisiana Business",
     subheadline:
       "The Southern University MBDA LIFT Rural Business Center helps rural small businesses strengthen operations, prepare for capital, and compete for contracts — funded in part by a $1.275M U.S. Department of Commerce MBDA cooperative agreement.",
@@ -98,7 +98,7 @@ const defaultSlides: HeroSlide[] = [
     id: "lift-workshops",
     badge: "Training & Workshops",
     headline: "Learn at",
-    highlightedText: "No-Cost Workshops",
+    highlightedText: "Support Workshops",
     subheadline:
       "Hands-on workshops and virtual training on business planning, marketing, financing, and government contracting — built for rural business owners.",
     benefits: ["Business Workshops", "Virtual Training", "Expert-Led Sessions"],
@@ -451,7 +451,7 @@ export function HeroCarousel({ slides: propSlides, autoPlayInterval = 6000 }: He
                 <span className="text-xs text-white/70">HBCU Rural Centers Nationwide</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold text-white">No-Cost</span>
+                <span className="text-lg font-bold text-white">Support</span>
                 <span className="text-xs text-white/70">Advising &amp; Training</span>
               </div>
               <div className="flex flex-col items-center text-center">

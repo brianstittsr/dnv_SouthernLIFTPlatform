@@ -1,5 +1,6 @@
 export { OnboardingWizard } from "./wizard";
 export type { WizardStep } from "./wizard";
+export { LiftClientOnboarding } from "./lift-client-onboarding";
 export {
   BusinessInfoStep,
   GovconStep,

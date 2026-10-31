@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark, Sparkles, Rocket } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Rocket } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { findAndLinkTeammember } from "@/lib/auth-team-member-link";
@@ -24,7 +24,7 @@ export default function SignUpPage() {
   const branding = getProgramBranding();
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "consortium_member" | "lift_client" | "">("");
+  const [accountType, setAccountType] = useState<"lift_client" | "">("lift_client");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -102,13 +102,7 @@ export default function SignUpPage() {
             await setDoc(userRef, {
               email: email,
               accountType: accountType,
-              role:
-                accountType === "consortium_member"
-                  ? "consortium_member"
-                  : accountType === "lift_client"
-                    ? "sme_user"
-                    : "team_member",
-              svpRole: accountType === "consortium_member" ? "consortium_member" : undefined,
+              role: "sme_user",
               hasChangedPassword: true,
               createdAt: now,
               updatedAt: now,
@@ -171,16 +165,9 @@ export default function SignUpPage() {
         sessionStorage.setItem("svp_firebase_uid", firebaseUid);
       }
 
-      // Redirect based on account type
-      if (accountType === "buyer") {
-        router.push("/portal/buyer/dashboard");
-      } else if (accountType === "consortium_member") {
-        router.push("/portal");
-      } else if (accountType === "client") {
-        router.push("/portal");
-      } else {
-        router.push("/portal");
-      }
+      // LIFT clients already signed out and were sent to /sign-in above;
+      // this is a fallback for any future account types.
+      router.push("/portal");
     } catch (err) {
       setError("An error occurred during registration. Please try again.");
     } finally {
@@ -252,7 +239,7 @@ export default function SignUpPage() {
               <div className="space-y-4">
                 <RadioGroup
                   value={accountType}
-                  onValueChange={(value) => setAccountType(value as "buyer" | "client" | "consortium_member" | "lift_client")}
+                  onValueChange={(value) => setAccountType(value as "lift_client")}
                   className="space-y-4"
                 >
                   <div
@@ -274,93 +261,6 @@ export default function SignUpPage() {
                       <p className="text-sm text-muted-foreground mt-1">
                         Join the Southern LIFT Program to access exclusive opportunities, teaming partnerships, and government contracting resources.
                         Connect with other LIFT members and leverage collective capabilities to compete more effectively for federal contracts.
-                      </p>
-                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Access to SAM.gov opportunities with teaming features</li>
-                        <li>• Proposals and teaming collaboration tools</li>
-                        <li>• In-platform communications with partners</li>
-                        <li>• Dashboard and onboarding support</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "buyer"
-                        ? "border-primary bg-primary/5"
-                        : "border-muted hover:border-muted-foreground/50"
-                    }`}
-                    onClick={() => setAccountType("buyer")}
-                  >
-                    <RadioGroupItem value="buyer" id="buyer" className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Landmark className="h-5 w-5 text-primary" />
-                        <Label htmlFor="buyer" className="text-lg font-semibold cursor-pointer">
-                          Buyers : Government / Prime / OEM
-                        </Label>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Government agencies, prime contractors, and OEMs looking to procure products and services from qualified suppliers.
-                        Access our network of qualified suppliers, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
-                      </p>
-                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Post opportunities and RFPs for government and manufacturing contracts</li>
-                        <li>• Find qualified suppliers and subcontractors</li>
-                        <li>• Manage procurement processes</li>
-                        <li>• Access manufacturing readiness tools</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "client"
-                        ? "border-primary bg-primary/5"
-                        : "border-muted hover:border-muted-foreground/50"
-                    }`}
-                    onClick={() => setAccountType("client")}
-                  >
-                    <RadioGroupItem value="client" id="client" className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Factory className="h-5 w-5 text-primary" />
-                        <Label htmlFor="client" className="text-lg font-semibold cursor-pointer">
-                          Suppliers: Gov&apos;t SubContractors / Mfg Suppliers
-                        </Label>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Register as a government subcontractor or manufacturing supplier to access advisory and procurement services,
-                        connect with prime contractors and government buyers, and grow your business in both defense and commercial markets.
-                      </p>
-                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Access to advisory and procurement services</li>
-                        <li>• Supplier qualification and readiness programs</li>
-                        <li>• Manufacturing assessments and support</li>
-                        <li>• Connect with government buyers and prime contractors</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "consortium_member"
-                        ? "border-primary bg-primary/5"
-                        : "border-muted hover:border-muted-foreground/50"
-                    }`}
-                    onClick={() => setAccountType("consortium_member")}
-                  >
-                    <RadioGroupItem value="consortium_member" id="consortium_member" className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        <Label htmlFor="consortium_member" className="text-lg font-semibold cursor-pointer">
-                          Consortium Member
-                        </Label>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Join the consortium to access teaming partnerships and government contracting resources.
-                        Connect with other members and leverage collective capabilities to compete more effectively for federal contracts.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
                         <li>• Access to SAM.gov opportunities with teaming features</li>

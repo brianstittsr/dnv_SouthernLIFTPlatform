@@ -11,7 +11,7 @@ export function CTASection() {
             Ready to Grow Your Rural Business?
           </h2>
           <p className="mt-4 text-xl opacity-95 max-w-3xl mx-auto font-medium">
-            No-cost advising, training, capital readiness, and contracting
+            Advising, training, capital readiness, and contracting
             support for rural Louisiana small businesses.
           </p>
           <p className="mt-6 text-lg opacity-90 max-w-2xl mx-auto">
@@ -57,7 +57,7 @@ export function CTASection() {
 
           <div className="mt-12 grid grid-cols-3 gap-8 max-w-lg mx-auto text-center">
             <div>
-              <div className="text-3xl font-bold">No-Cost</div>
+              <div className="text-3xl font-bold">Support</div>
               <div className="text-sm opacity-80">All Services</div>
             </div>
             <div>

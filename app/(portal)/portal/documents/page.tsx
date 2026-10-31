@@ -422,7 +422,14 @@ export default function DocumentsPage() {
                       <Folder className="h-4 w-4" />
                       {folder.name}
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge
+                      variant="outline"
+                      className={
+                        selectedFolder === folder.name
+                          ? "text-xs text-white border-white/40"
+                          : "text-xs"
+                      }
+                    >
                       {folder.count}
                     </Badge>
                   </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -85,6 +85,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserProfile, type ReadinessDocumentRecord } from "@/contexts/user-profile-context";
+import { useRouter } from "next/navigation";
 import { resizeImage } from "@/lib/image-utils";
 import {
   READINESS_FILE_FIELDS,
@@ -96,6 +97,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import ContactsTab from "./contacts-tab";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
+import { LiftClientOnboarding } from "@/components/onboarding";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
@@ -179,6 +181,7 @@ const premiumAITools: SVPTool[] = [
 
 export default function ProfilePage() {
   const { profile: userProfile, getDisplayName, getInitials, setShowCompanyIntelligenceWizard } = useUserProfile();
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   
@@ -273,6 +276,27 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [onboardingModalOpen, setOnboardingModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("basic");
+  const isLiftClient =
+    userProfile.svpRole === "sme_user" ||
+    (userProfile.svpRoles?.includes("sme_user") ?? false);
+  const liftOnboardingDone =
+    userProfile.onboardingStatus === "completed" ||
+    userProfile.isOnboardingComplete === true;
+
+  // Sign-in sends new LIFT clients here with ?onboarding=start — open the
+  // Onboarding tab, which embeds the LIFT wizard directly on the profile.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const wantsOnboarding =
+      new URLSearchParams(window.location.search).get("onboarding") === "start";
+    const incomplete =
+      userProfile.onboardingStatus !== "completed" &&
+      userProfile.isOnboardingComplete !== true;
+    if (wantsOnboarding && incomplete && userProfile.id) {
+      setActiveTab("onboarding");
+    }
+  }, [userProfile.id, userProfile.onboardingStatus, userProfile.isOnboardingComplete]);
 
   // Sync profile state with userProfile context when it loads
   useEffect(() => {
@@ -750,7 +774,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Tabbed Content - Only show relevant tabs */}
-      <Tabs defaultValue="basic" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 w-full">
           <TabsTrigger value="basic" className="text-xs sm:text-sm">
             <User className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -1680,6 +1704,17 @@ export default function ProfilePage() {
 
         {/* Onboarding Tab */}
         <TabsContent value="onboarding" className="space-y-6">
+          {isLiftClient && !liftOnboardingDone ? (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              }
+            >
+              <LiftClientOnboarding onDismissed={() => setActiveTab("basic")} />
+            </Suspense>
+          ) : (
           <Card>
             <CardHeader>
               <CardTitle>Onboarding Status</CardTitle>
@@ -1755,6 +1790,7 @@ export default function ProfilePage() {
               )}
             </CardContent>
           </Card>
+          )}
 
           <Card>
             <CardHeader>

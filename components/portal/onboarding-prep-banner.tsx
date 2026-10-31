@@ -45,7 +45,7 @@ export function OnboardingPrepBanner() {
           <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-amber-900">
-              Ready to start your KDM onboarding?
+              Ready to start your LIFT onboarding?
             </p>
             <p className="text-xs text-amber-700 mt-0.5">
               Prepare your documents in PDF format to speed up the process.
@@ -77,7 +77,7 @@ export function OnboardingPrepBanner() {
               {showDocList ? "Hide" : "Document List"}
             </button>
             <a
-              href="/portal/consortium/onboarding"
+              href="/portal/onboarding"
               className="flex items-center gap-1 text-xs font-bold bg-amber-600 text-white px-3 py-1.5 rounded-md hover:bg-amber-700 transition-colors"
             >
               Start Onboarding

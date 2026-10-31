@@ -129,12 +129,6 @@ const myLiftItems = [
     href: "/portal/documents",
     icon: FileText,
   },
-  {
-    title: "My LIFT Forms",
-    href: "/portal/lift/forms",
-    icon: ClipboardList,
-    badge: "LIFT",
-  },
 ];
 
 const mainNavItems = [
@@ -421,12 +415,6 @@ const svpSmeItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "My LIFT Forms",
-    href: "/portal/lift/forms",
-    icon: ClipboardList,
-    badge: "LIFT",
-  },
-  {
     title: "My Proof Packs",
     href: "/portal/proof-packs",
     icon: Package,
@@ -700,12 +688,6 @@ const consortiumMemberItems = [
     icon: User,
   },
   {
-    title: "My LIFT Forms",
-    href: "/portal/lift/forms",
-    icon: ClipboardList,
-    badge: "LIFT",
-  },
-  {
     title: "Dashboard",
     href: "/portal/consortium/dashboard",
     icon: LayoutDashboard,
@@ -820,9 +802,6 @@ export function PortalSidebar() {
     isImpersonating,
     impersonatedUserId,
     setImpersonatedUserId,
-    networkingCompletion,
-    showAffiliateOnboarding,
-    setShowAffiliateOnboarding,
   } = useUserProfile();
   const [hiddenNavItems, setHiddenNavItems] = useState<string[]>([]);
   const [roleVisibility, setRoleVisibility] = useState<Record<string, string[]>>({});
@@ -1072,7 +1051,7 @@ export function PortalSidebar() {
             {/* ============================================ */}
             {/* MY LIFT - CLIENT SECTION (always first) */}
             {/* ============================================ */}
-            {(sectionHasMatchingItems(myLiftItems) || "onboarding".includes(searchQuery.toLowerCase())) && (
+            {(sectionHasMatchingItems(myLiftItems) || "opportunities".includes(searchQuery.toLowerCase())) && (
         <Collapsible open={openSections.myLift} onOpenChange={() => toggleSection("myLift")}>
           <SidebarGroup>
             <CollapsibleTrigger asChild>
@@ -1108,20 +1087,19 @@ export function PortalSidebar() {
                       )}
                     </SidebarMenuItem>
                   ))}
-                  {/* Onboarding opens the LIFT client wizard dialog and shows its status */}
-                  {(!searchQuery.trim() || "onboarding".includes(searchQuery.toLowerCase())) && (
+                  {/* Opportunities — the LIFT client wizard lives on the profile page */}
+                  {(!searchQuery.trim() || "opportunities".includes(searchQuery.toLowerCase())) && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      onClick={() => setShowAffiliateOnboarding(true)}
-                      isActive={showAffiliateOnboarding}
-                      tooltip="Onboarding"
+                      asChild
+                      isActive={pathname === "/portal/opportunities"}
+                      tooltip="Opportunities"
                     >
-                      <UserPlus className="h-4 w-4" />
-                      <span>Onboarding</span>
+                      <Link href="/portal/opportunities">
+                        <Target className="h-4 w-4" />
+                        <span>Opportunities</span>
+                      </Link>
                     </SidebarMenuButton>
-                    <SidebarMenuBadge className={profile.affiliateOnboardingComplete ? "bg-green-600 text-white" : ""}>
-                      {profile.affiliateOnboardingComplete ? "Complete" : `${networkingCompletion}%`}
-                    </SidebarMenuBadge>
                   </SidebarMenuItem>
                   )}
                 </SidebarMenu>

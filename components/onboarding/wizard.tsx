@@ -140,7 +140,7 @@ export function OnboardingWizard({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {userType === "sme" ? "LIFT" : "Buyer"} Onboarding
+            {userType === "buyer" ? "Buyer " : ""}Onboarding
           </h1>
           <p className="text-muted-foreground">
             Complete your profile to get started
