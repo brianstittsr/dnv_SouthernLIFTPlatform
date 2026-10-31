@@ -13,11 +13,7 @@ import {
 import { Camera, FolderOpen, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { ImagePicker } from "@/components/admin/image-picker";
-import {
-  uploadImage,
-  getImage,
-  base64ToDataUrl,
-} from "@/lib/firebase-images";
+import { uploadImage } from "@/lib/firebase-images";
 import { useUserProfile } from "@/contexts/user-profile-context";
 
 interface AvatarUploadProps {
@@ -123,30 +119,32 @@ export function AvatarUpload({
     setIsUploading(true);
 
     try {
-      // Upload to the image gallery (compresses to fit Firestore)
-      const imageName = file.name.replace(/\.[^/.]+$/, "");
-      const imageId = await uploadImage(file, {
-        name: imageName,
-        category: "team",
-        createdBy: profile?.id,
+      // Apply the photo immediately from the local file so it always works —
+      // the avatar is saved on the user's own profile doc, not the gallery.
+      const rawDataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
-
-      if (!imageId) {
-        throw new Error("Image upload did not return an id");
-      }
-
-      const fullImage = await getImage(imageId);
-      if (!fullImage) {
-        throw new Error("Uploaded image could not be loaded");
-      }
-
-      const dataUrl = await compressDataUrl(
-        base64ToDataUrl(fullImage.base64Data, fullImage.mimeType)
-      );
+      const dataUrl = await compressDataUrl(rawDataUrl);
       setPreviewUrl(dataUrl);
       await onUpload(dataUrl);
-      toast.success("Image added to gallery and set as your photo");
+      toast.success("Profile image updated successfully");
       setOptionsOpen(false);
+
+      // Best-effort copy into the shared image gallery. Non-fatal: if the
+      // write is denied the photo is still set on the profile.
+      try {
+        const { auth } = await import("@/lib/firebase");
+        await uploadImage(file, {
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          category: "team",
+          createdBy: auth?.currentUser?.uid ?? profile?.id,
+        });
+      } catch (galleryError) {
+        console.warn("Profile photo was set, but adding it to the image gallery failed:", galleryError);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload image. Please try again.");

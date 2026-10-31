@@ -349,10 +349,13 @@ service cloud.firestore {
       allow create, update, delete: if isAuthenticated();
     }
     
-    // Images - public read for display, admin write
+    // Images - public read for display. Admins manage all images; any signed-in
+    // user may add an image they own (e.g. their profile photo).
     match /images/{imageId} {
       allow read: if true; // Public read for images
-      allow create, update, delete: if isAdmin();
+      allow create: if isAdmin() ||
+        (isAuthenticated() && request.resource.data.createdBy == request.auth.uid);
+      allow update, delete: if isAdmin();
     }
     
     // ==================== SVP PLATFORM COLLECTIONS ====================

@@ -77,7 +77,7 @@ import { resizeImage } from "@/lib/image-utils";
 import { toast } from "sonner";
 import { COLLECTIONS, type TeamMemberDoc, type TeamMemberTag, type OneToOneQueueItemDoc } from "@/lib/schema";
 import { logTeammemberAdded, logActivity } from "@/lib/activity-logger";
-import { KdmTeamSync } from "@/components/admin/kdm-team-sync";
+import { LiftTeamSync } from "@/components/admin/lift-team-sync";
 import { InviteUserDialog } from "@/components/admin/invite-user-dialog";
 import { TeamMemberReportDialog } from "@/components/admin/team-member-report-dialog";
 import { ReadinessReportDialog } from "@/components/admin/readiness-report-dialog";
@@ -85,52 +85,17 @@ import { ReadinessScanDialog } from "@/components/admin/readiness-scan-dialog";
 import { SendOnboardingLinkDialog } from "@/components/admin/send-onboarding-link-dialog";
 import Link from "next/link";
 
-// Seed data for Team members
-const seedTeamMembers: Omit<TeamMemberDoc, "id" | "createdAt" | "updatedAt">[] = [
-  { firstName: "Al", lastName: "Lenac", emailPrimary: "al@manufacftureresults.com", emailSecondary: "albertlenac@gmail.com", mobile: "(973) 723-7448", expertise: "R&D Tax Credits", role: "affiliate", status: "active" },
-  { firstName: "Alex", lastName: "West", emailPrimary: "alex@itscnow.com", mobile: "(518) 801-7315", expertise: "Cybersecurity Consulting", role: "affiliate", status: "active" },
-  { firstName: "Alysha", lastName: "Campbell", emailPrimary: "alysha@cultureshifthr.com", expertise: "Human Resources", role: "affiliate", status: "active" },
-  { firstName: "Brett", lastName: "Heyns", emailPrimary: "brett@getcompoundeffect.com", expertise: "Advanced Marketing/Bus Dev", role: "affiliate", status: "active" },
-  { firstName: "Brian", lastName: "Stitt", emailPrimary: "bstitt@kdm-assoc.com", emailSecondary: "brianstittsr@gmail.com", mobile: "(919) 608-3415", expertise: "Advanced Technology/Robotics", role: "sme_user", status: "active" },
-  { firstName: "Brian", lastName: "McCollough", emailPrimary: "bmccollough@nextstagefl.net", mobile: "(801) 719-0076", expertise: "Operations", role: "affiliate", status: "active" },
-  { firstName: "Cass", lastName: "Gibson", emailPrimary: "cassgibson@coststudy.us", emailSecondary: "cass@tapeismoney.com", mobile: "(717) 858-3150", expertise: "Cost Segregation", role: "affiliate", status: "active" },
-  { firstName: "Christine", lastName: "Nolan", emailPrimary: "christine.nolan@pines-optimization.com", emailSecondary: "canolan912@gmail.com", mobile: "(215) 808-0035", expertise: "Inventory/Supply Chain", role: "affiliate", status: "active" },
-  { firstName: "Daniel", lastName: "Sternklar", emailPrimary: "linkedin@view3d.tv", mobile: "(301) 576-6176", expertise: "Learning Platforms/Metaverses", role: "affiliate", status: "active" },
-  { firstName: "Dave", lastName: "McFarland", emailPrimary: "dmcfarland@kdm-assoc.com", emailSecondary: "dave@focusopex.com", mobile: "(217) 377-2234", expertise: "Operations/Finance", role: "team", status: "active" },
-  { firstName: "Dave", lastName: "Myers", emailPrimary: "dave@dmdigi.io", expertise: "Marketing/Branding", role: "affiliate", status: "active" },
-  { firstName: "David", lastName: "McFeeters-Krone", emailPrimary: "dmk@intelassets.com", expertise: "Intellectual Property", role: "affiliate", status: "active" },
-  { firstName: "David", lastName: "Ziton", emailPrimary: "dziton@victory-as.com", expertise: "IT/CPA", role: "affiliate", status: "active" },
-  { firstName: "Ed", lastName: "Porter", emailPrimary: "edport21@gmail.com", expertise: "Chief Revenue Officer", role: "affiliate", status: "active" },
-  { firstName: "Elizabeth", lastName: "Wu", emailPrimary: "elizabeth@edd-i.com", mobile: "(404) 706-4854", expertise: "Cybergovernance for Executives", role: "affiliate", status: "active" },
-  { firstName: "Gina", lastName: "Tabasso", emailPrimary: "gina@barracudab2b.com", emailSecondary: "gina.tabasso@gmail.com", mobile: "(330) 421-9185", expertise: "Project Management/Ops/Six Sigma", role: "affiliate", status: "active" },
-  { firstName: "Icy", lastName: "Williams", emailPrimary: "info@legacy83business.com", mobile: "(513) 335-1978", expertise: "Executive Consulting", role: "affiliate", status: "active" },
-  { firstName: "Jeremy", lastName: "Schumacher", emailPrimary: "jeremyrks@gmail.com", expertise: "CIO/Privacy", role: "affiliate", status: "active" },
-  { firstName: "John", lastName: "Kloian", emailPrimary: "john@specdyn.com", emailSecondary: "john.kloian@gmail.com", expertise: "Chief Revenue Officer/Gap Assessments", role: "affiliate", status: "active" },
-  { firstName: "Jose Luis", lastName: "Ferandez", emailPrimary: "joseluisfernandez88@gmail.com", emailSecondary: "josefernandez@salesfyconsulting.com", expertise: "Executive AI Training/Coaching", role: "affiliate", status: "active" },
-  { firstName: "Justice", lastName: "Darko", emailPrimary: "jdarko@kdm-assoc.com", expertise: "Project Management/Ops/Six Sigma", role: "team", status: "active" },
-  { firstName: "Karena", lastName: "Bell", emailPrimary: "karena@profitlinz.com", mobile: "843-804-7151", expertise: "Financial Trouble-Shooter/Strategist/Problem Solver", role: "affiliate", status: "active" },
-  { firstName: "Kham", lastName: "Inthirath", emailPrimary: "kham@getcompoundeffect.com", mobile: "(617) 275-8908", expertise: "Marketing/Change Management/AI", role: "affiliate", status: "active" },
-  { firstName: "L. Joe", lastName: "Minor", emailPrimary: "joeandlorie84@live.com", expertise: "Shop Operations", role: "affiliate", status: "active" },
-  { firstName: "Leonard", lastName: "Fom", emailPrimary: "leonard@finops-squad.com", emailSecondary: "leonard_fom@hotmail.com", mobile: "7789223555", expertise: "CFO/Financial Strategies/Access to Capital", role: "affiliate", status: "active" },
-  { firstName: "Maria", lastName: "Perez", emailPrimary: "maria@causemarketingconsultant.com", mobile: "(702) 245-7220", expertise: "Cause Marketing", role: "affiliate", status: "active" },
-  { firstName: "Mark", lastName: "Osborne", emailPrimary: "mark@ModernRevenueStrategies.com", mobile: "(404) 808-7625", expertise: "Advanced Marketing/Bus Dev", role: "affiliate", status: "active" },
-  { firstName: "Marney", lastName: "Lumpkin", emailPrimary: "marney@vasml.com", expertise: "Back Office Support", role: "affiliate", status: "active" },
-  { firstName: "Mike", lastName: "Liu", emailPrimary: "mike@freefuse.com", mobile: "(818)-324-0538", expertise: "Multimedia User-Defined Learning Platforms", role: "affiliate", status: "active" },
-  { firstName: "Nate", lastName: "Hallums", emailPrimary: "nhallums@kdm-assoc.com", emailSecondary: "nate@backyardfishingagency.co", mobile: "(523) 273-7789", expertise: "Net-No-Cost Wellness Plans that Generate Cash Flow", role: "team", status: "active" },
-  { firstName: "Nathan", lastName: "Tyler", emailPrimary: "nathan@nsquared.io", expertise: "Executive Dash Boards", role: "affiliate", status: "active" },
-  { firstName: "Nelinia", lastName: "Varenas", emailPrimary: "nelinia@kdm-assoc.com", emailSecondary: "neliniav@gmail.com", mobile: "(310) 650-0725", expertise: "CEO", role: "admin", status: "active" },
-  { firstName: "Nicholas", lastName: "Chiselett", emailPrimary: "nicholas@2bytes.com.au", mobile: "61414247540", expertise: "Construction On-line Stores", role: "affiliate", status: "active" },
-  { firstName: "Philip", lastName: "Wolfstein", emailPrimary: "phil@philwolfstein.com", expertise: "Certified Business Broker", role: "affiliate", status: "active" },
-  { firstName: "RC", lastName: "Caldwell", emailPrimary: "rc@CaldwellLeanSixSigma.com", mobile: "(937) 367-6743", expertise: "Black Belt Six Sigma/TOC Expert", role: "affiliate", status: "active" },
-  { firstName: "Rick", lastName: "McPartlin", emailPrimary: "rick.mcpartlin@therevenuegame.com", mobile: "(800) 757-8377", expertise: "CRO", role: "affiliate", status: "active" },
-  { firstName: "Rosemary", lastName: "Coates", emailPrimary: "rcoates@bluesilkconsulting.com", mobile: "(408) 605-8867", expertise: "Supply Chain/Re- and Nearshoring", role: "affiliate", status: "active" },
-  { firstName: "Roy", lastName: "Dickan", emailPrimary: "rdickan@kdm-assoc.com", emailSecondary: "roy@clearchoicemarketinggroup.com", mobile: "(919) 589-3580", expertise: "CRO", role: "team", status: "active" },
-  { firstName: "Ruoyu", lastName: "Loughry", emailPrimary: "rloughry@kdm-assoc.com", emailSecondary: "ruoyu.loughry@gmail.com", mobile: "(408)390-6514", expertise: "CPA, Tax", role: "team", status: "active" },
-  { firstName: "Russell", lastName: "Lookadoo", emailPrimary: "answers@TheHRGuy.biz", mobile: "(801) 808-3681", expertise: "Fractional CHRO", role: "affiliate", status: "active" },
-  { firstName: "Tamara", lastName: "Litrich", emailPrimary: "tamara@tlitrichsolutions.com", emailSecondary: "tmlitrich76@gmail.com", mobile: "(415) 438-0666", expertise: "Human Resources, Multi-lingual", role: "affiliate", status: "active" },
-  { firstName: "Tod", lastName: "Gotori", emailPrimary: "tgotori@fivebirdsconsulting.com", emailSecondary: "tgotori@gmail.com", mobile: "(949) 954-0679", expertise: "Cybersecurity Consulting", role: "affiliate", status: "active" },
-  { firstName: "Vishnu", lastName: "Rajan", emailPrimary: "vrthenorth@gmail.com", expertise: "AI App Builder", role: "affiliate", status: "active" },
-];
+// Display labels for the stored team-member tags. The underlying tag values
+// are shared identifiers used by billing, the public pages, and existing
+// Firestore docs, so only their labels are rebranded here.
+const TAG_LABELS: Record<string, string> = {
+  "kdm-consortium": "LIFT Network",
+  "kdm-founder": "LIFT Founder",
+  "kdm-leadership": "LIFT Leadership",
+  "kdm-staff": "LIFT Staff",
+};
+
+const tagLabel = (tag: string) => TAG_LABELS[tag] ?? tag;
 
 export default function TeammembersPage() {
   const [members, setMembers] = useState<TeamMemberDoc[]>([]);
@@ -138,7 +103,6 @@ export default function TeammembersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMemberDoc | null>(null);
-  const [seeding, setSeeding] = useState(false);
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [tagFilter, setTagFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"card" | "list">("list");
@@ -151,7 +115,7 @@ export default function TeammembersPage() {
   const [loadingQueue, setLoadingQueue] = useState(false);
   // Avatar upload / Image Manager state
   const [avatarUrl, setAvatarUrl] = useState("");
-  // Company logo upload state (distinct from personal avatar), shown on /kdm-consortium
+  // Company logo upload state (distinct from personal avatar), shown on the LIFT Network page
   const [companyLogoUrl, setCompanyLogoUrl] = useState("");
   const [companyLogoUploading, setCompanyLogoUploading] = useState(false);
   const companyLogoInputRef = useRef<HTMLInputElement | null>(null);
@@ -174,7 +138,7 @@ export default function TeammembersPage() {
     bio: "",
     linkedIn: "",
     website: "",
-    role: "affiliate" as TeamMemberDoc["role"],
+    role: "consultant" as TeamMemberDoc["role"],
     status: "active" as "active" | "inactive" | "pending",
     // Leadership flags
     isCEO: false,
@@ -257,7 +221,7 @@ export default function TeammembersPage() {
   };
 
   // Upload and resize a company logo (separate from the personal avatar),
-  // displayed on the public /kdm-consortium page.
+  // displayed on the public LIFT Network page.
   const handleCompanyLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -313,44 +277,6 @@ export default function TeammembersPage() {
     } finally {
       setUploadingImage(false);
       if (e.target) e.target.value = "";
-    }
-  };
-
-  // Seed initial data
-  const handleSeedData = async () => {
-    if (!db) {
-      alert("Firebase not initialized. Check your environment variables.");
-      return;
-    }
-    if (!confirm(`This will import ${seedTeamMembers.length} team members. Continue?`)) return;
-    
-    setSeeding(true);
-    try {
-      const batch = writeBatch(db);
-      const collectionRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
-      
-      for (const member of seedTeamMembers) {
-        const tags: TeamMemberTag[] = [];
-        if (member.role === "affiliate") tags.push("kdm-consortium");
-        if (member.role === "team" || member.role === "admin") tags.push("kdm-staff");
-
-        const docRef = doc(collectionRef);
-        batch.set(docRef, {
-          ...member,
-          tags,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        });
-      }
-      
-      await batch.commit();
-      await fetchMembers();
-      alert(`Successfully imported ${seedTeamMembers.length} team members!`);
-    } catch (error) {
-      console.error("Error seeding data:", error);
-      alert("Error importing data. Check console for details.");
-    } finally {
-      setSeeding(false);
     }
   };
 
@@ -583,7 +509,7 @@ export default function TeammembersPage() {
       bio: "",
       linkedIn: "",
       website: "",
-      role: "affiliate",
+      role: "consultant",
       status: "active",
       isCEO: false,
       isCOO: false,
@@ -692,10 +618,6 @@ export default function TeammembersPage() {
     switch (role) {
       case "admin":
         return <Badge className="bg-red-100 text-red-800">Admin</Badge>;
-      case "team":
-        return <Badge className="bg-blue-100 text-blue-800">Team</Badge>;
-      case "affiliate":
-        return <Badge className="bg-green-100 text-green-800">Affiliate</Badge>;
       case "consultant":
         return <Badge className="bg-purple-100 text-purple-800">Consultant</Badge>;
       case "sme_user":
@@ -784,7 +706,7 @@ export default function TeammembersPage() {
         <div className="flex flex-wrap gap-1">
           {member.tags?.map((tag) => (
             <Badge key={tag} variant="outline" className="text-xs">
-              {tag}
+              {tagLabel(tag)}
             </Badge>
           ))}
         </div>
@@ -811,7 +733,7 @@ export default function TeammembersPage() {
           type="checkbox"
           checked={member.showOnTeamPage !== false}
           onChange={(e) => handleToggleShowOnTeamPage(member, e.target.checked)}
-          title="Display on public Team page (kdm-assoc.com/team)"
+          title="Display on public Team page"
           className="h-4 w-4 rounded border-gray-300 cursor-pointer"
         />
       </TableCell>
@@ -881,7 +803,7 @@ export default function TeammembersPage() {
                   <TableHead>Role</TableHead>
                   <TableHead className="hidden lg:table-cell">Tags</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-center" title="Display on public Team page (kdm-assoc.com/team)">Team Page</TableHead>
+                  <TableHead className="text-center" title="Display on public Team page">Team Page</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -909,7 +831,7 @@ export default function TeammembersPage() {
           </div>
           <h1 className="text-3xl font-bold">Team members</h1>
           <p className="text-muted-foreground">
-            Manage SVP team members, affiliates, and consultants
+            Manage LIFT Center staff, advisors, and consultants
           </p>
         </div>
         <div className="flex gap-2">
@@ -955,16 +877,6 @@ export default function TeammembersPage() {
               Invite User
             </Button>
           </InviteUserDialog>
-          {members.length === 0 && (
-            <Button variant="outline" onClick={handleSeedData} disabled={seeding}>
-              {seeding ? (
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Upload className="mr-2 h-4 w-4" />
-              )}
-              Import {seedTeamMembers.length} members
-            </Button>
-          )}
           <Dialog open={dialogOpen} onOpenChange={(open) => {
             setDialogOpen(open);
             if (!open) resetForm();
@@ -1191,8 +1103,6 @@ export default function TeammembersPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="team">Team</SelectItem>
-                        <SelectItem value="affiliate">Affiliate</SelectItem>
                         <SelectItem value="consultant">Consultant</SelectItem>
                         <SelectItem value="sme_user">SME User</SelectItem>
                       </SelectContent>
@@ -1235,14 +1145,14 @@ export default function TeammembersPage() {
                       <SelectValue placeholder="Add a tag..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
-                      <SelectItem value="kdm-founder">Founder</SelectItem>
-                      <SelectItem value="kdm-leadership">KDM Leadership</SelectItem>
-                      <SelectItem value="kdm-staff">KDM Staff</SelectItem>
+                      <SelectItem value="kdm-consortium">LIFT Network</SelectItem>
+                      <SelectItem value="kdm-founder">LIFT Founder</SelectItem>
+                      <SelectItem value="kdm-leadership">LIFT Leadership</SelectItem>
+                      <SelectItem value="kdm-staff">LIFT Staff</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    Add tags to control where this member appears: Team Page (KDM Leadership / KDM Staff) or KDM Consortium Members page (Founder / KDM Consortium).
+                    Add tags to control where this member appears: Team Page (LIFT Leadership / LIFT Staff) or the LIFT Network page (Founder / LIFT Network).
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -1322,7 +1232,7 @@ export default function TeammembersPage() {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Shown on the public KDM Consortium page alongside this member. Recommended: 400x400px.
+                    Shown on the public LIFT Network page alongside this member. Recommended: 400x400px.
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -1393,7 +1303,7 @@ export default function TeammembersPage() {
                     className="h-4 w-4 rounded border-gray-300"
                   />
                   <Label htmlFor="showOnTeamPage" className="text-sm font-normal cursor-pointer">
-                    Display this profile on the public Team page (kdm-assoc.com/team)
+                    Display this profile on the public Team page
                   </Label>
                 </div>
                 
@@ -1469,7 +1379,7 @@ export default function TeammembersPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Total members</CardTitle>
@@ -1492,28 +1402,6 @@ export default function TeammembersPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Team</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {members.filter((m) => m.role === "team").length}
-            </div>
-            <p className="text-xs text-muted-foreground">Core team members</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Affiliates</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {members.filter((m) => m.role === "affiliate").length}
-            </div>
-            <p className="text-xs text-muted-foreground">Network affiliates</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Active</CardTitle>
           </CardHeader>
           <CardContent>
@@ -1525,8 +1413,8 @@ export default function TeammembersPage() {
         </Card>
       </div>
 
-      {/* KDM Team Sync */}
-      <KdmTeamSync />
+      {/* LIFT Team Sync */}
+      <LiftTeamSync />
 
       {/* Filters and View Toggle */}
       <Card>
@@ -1548,8 +1436,6 @@ export default function TeammembersPage() {
               <SelectContent>
                 <SelectItem value="all">All Roles</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="team">Team</SelectItem>
-                <SelectItem value="affiliate">Affiliate</SelectItem>
                 <SelectItem value="consultant">Consultant</SelectItem>
                 <SelectItem value="sme_user">SME User</SelectItem>
               </SelectContent>
@@ -1560,10 +1446,10 @@ export default function TeammembersPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Tags</SelectItem>
-                <SelectItem value="kdm-consortium">KDM Consortium</SelectItem>
-                <SelectItem value="kdm-founder">Founder</SelectItem>
-                <SelectItem value="kdm-leadership">KDM Leadership</SelectItem>
-                <SelectItem value="kdm-staff">KDM Staff</SelectItem>
+                <SelectItem value="kdm-consortium">LIFT Network</SelectItem>
+                <SelectItem value="kdm-founder">LIFT Founder</SelectItem>
+                <SelectItem value="kdm-leadership">LIFT Leadership</SelectItem>
+                <SelectItem value="kdm-staff">LIFT Staff</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex items-center gap-1 border rounded-md p-1">
@@ -1606,29 +1492,19 @@ export default function TeammembersPage() {
               <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium">No team members found</h3>
               <p className="text-muted-foreground mb-4">
-                {members.length === 0 
-                  ? "Get started by importing the initial team member data."
+                {members.length === 0
+                  ? "Get started by adding your first LIFT team member."
                   : "Try adjusting your search or filter."}
               </p>
-              {members.length === 0 && (
-                <Button onClick={handleSeedData} disabled={seeding}>
-                  {seeding ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Upload className="mr-2 h-4 w-4" />
-                  )}
-                  Import {seedTeamMembers.length} members
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>
       ) : viewMode === "list" ? (
         /* Grouped List View */
         <div className="space-y-8">
-          <MemberTable title="KDM Founder" members={activeFounders} />
-          <MemberTable title="KDM Staff" members={activeStaff} />
-          <MemberTable title="KDM Consortium" members={activeConsortiumOnly} />
+          <MemberTable title="LIFT Founder" members={activeFounders} />
+          <MemberTable title="LIFT Staff" members={activeStaff} />
+          <MemberTable title="LIFT Network" members={activeConsortiumOnly} />
           {activeOthers.length > 0 && (
             <MemberTable title="Active - Other" members={activeOthers} />
           )}
@@ -1663,7 +1539,7 @@ export default function TeammembersPage() {
                   <div className="flex flex-wrap gap-1 mt-2">
                     {member.tags.map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
+                        {tagLabel(tag)}
                       </Badge>
                     ))}
                   </div>
@@ -1705,7 +1581,7 @@ export default function TeammembersPage() {
                         Inactive
                       </Badge>
                     )}
-                    <label className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer" title="Display on public Team page (kdm-assoc.com/team)">
+                    <label className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer" title="Display on public Team page">
                       <input
                         type="checkbox"
                         checked={member.showOnTeamPage !== false}

@@ -672,7 +672,7 @@ export interface TeamMemberDoc {
   bio?: string;
   avatar?: string;
   // Company logo, distinct from the personal profile photo (`avatar`).
-  // Displayed on the public /kdm-consortium page alongside the member's card.
+  // Displayed on the public LIFT Network page alongside the member's card.
   companyLogo?: string;
   linkedIn?: string;
   website?: string;

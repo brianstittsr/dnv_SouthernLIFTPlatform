@@ -25,6 +25,34 @@ const CATEGORIES = [
   ...PRESS_RELEASE_CATEGORIES.map(cat => ({ value: cat, label: cat }))
 ];
 
+// The LIFT Center founding announcement always appears on this page, even
+// before Firestore press releases are seeded. Its detail view is a static
+// page at /press-releases/southern-university-lift-center-mbda-award.
+const liftReleaseDate = { toDate: () => new Date('2026-10-05') } as PressRelease['releaseDate'];
+const LIFT_AWARD_RELEASE: PressRelease = {
+  id: 'lift-center-mbda-award',
+  title: 'Southern University awarded $1.275 million to launch rural business center',
+  subtitle: 'MBDA cooperative agreement establishes the Louisiana Innovation for Thriving Rural Business (LIFT) Center',
+  location: 'BATON ROUGE, La.',
+  releaseDate: liftReleaseDate,
+  content: 'Southern University and A&M College has received a $1.275 million, three-year cooperative agreement from the Minority Business Development Agency (MBDA) to establish the Louisiana Innovation for Thriving Rural Business (LIFT) Center, an initiative designed to strengthen rural businesses, expand access to financing and government contracting opportunities, and increase advanced manufacturing capabilities across Louisiana.',
+  contactInfo: {
+    name: 'LIFT Center Communications',
+    title: 'Southern University College of Business',
+    email: 'liftcenter@sus.edu',
+  },
+  logos: [],
+  attachments: [],
+  tags: ['LIFT Center', 'MBDA', 'Rural Business', 'Federal Funding', 'Louisiana'],
+  category: 'Award',
+  status: 'published',
+  slug: 'southern-university-lift-center-mbda-award',
+  createdBy: 'site',
+  createdAt: liftReleaseDate,
+  updatedAt: liftReleaseDate,
+  featured: true,
+};
+
 export default function PressReleasesPage() {
   const [pressReleases, setPressReleases] = useState<PressRelease[]>([]);
   const [filteredReleases, setFilteredReleases] = useState<PressRelease[]>([]);
@@ -104,7 +132,10 @@ export default function PressReleasesPage() {
       }) as PressRelease[];
 
       console.log('[Press Releases List] Total releases loaded:', releases.length);
-      setPressReleases(releases);
+      setPressReleases([
+        LIFT_AWARD_RELEASE,
+        ...releases.filter((release) => release.slug !== LIFT_AWARD_RELEASE.slug),
+      ]);
     } catch (error) {
       console.error('[Press Releases List] Error fetching press releases:', error);
       console.error('[Press Releases List] Error details:', JSON.stringify(error, null, 2));
@@ -178,7 +209,7 @@ export default function PressReleasesPage() {
             Press Releases
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl">
-            Stay informed with the latest news and announcements from KDM & Associates.
+            Stay informed with the latest news and announcements from the Southern University LIFT Center.
           </p>
         </div>
       </section>
@@ -740,7 +771,7 @@ function MarkdownGuideContent() {
               <code className="text-sm bg-muted px-2 py-1 rounded block">
                 ```<br />
                 {`{`}<br />
-                &nbsp;&nbsp;"key": "value"<br />
+                &nbsp;&nbsp;{`"key": "value"`}<br />
                 {`}`}<br />
                 ```
               </code>
