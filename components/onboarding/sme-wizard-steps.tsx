@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, X, Upload, FileText, CheckCircle2 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Plus,
+  X,
+  Upload,
+  FileText,
+  CheckCircle2,
+  Loader2,
+  ChevronsUpDown,
+  Sparkles,
+} from "lucide-react";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { LIFT_SERVICE_AREAS } from "@/lib/form-builder/controls";
+import type { UploadRef } from "@/lib/form-builder/types";
 
 const certificationTypes = [
   { id: "8a", label: "8(a) Certified" },
@@ -22,10 +49,35 @@ const certificationTypes = [
   { id: "edwosb", label: "EDWOSB" },
   { id: "sdvosb", label: "SDVOSB" },
   { id: "hubzone", label: "HUBZone" },
+  { id: "mbe", label: "MBE (Minority Business Enterprise)" },
+  { id: "dbe", label: "DBE (Disadvantaged Business Enterprise)" },
   { id: "other", label: "Other" },
 ];
 
 const naicsCodes = [
+  // Manufacturing subsectors (NAICS 31-33) — enables the Proof Pack step
+  "311 - Food Manufacturing",
+  "312 - Beverage and Tobacco Product Manufacturing",
+  "313 - Textile Mills",
+  "314 - Textile Product Mills",
+  "315 - Apparel Manufacturing",
+  "316 - Leather and Allied Product Manufacturing",
+  "321 - Wood Product Manufacturing",
+  "322 - Paper Manufacturing",
+  "323 - Printing and Related Support Activities",
+  "324 - Petroleum and Coal Products Manufacturing",
+  "325 - Chemical Manufacturing",
+  "326 - Plastics and Rubber Products Manufacturing",
+  "327 - Nonmetallic Mineral Product Manufacturing",
+  "331 - Primary Metal Manufacturing",
+  "332 - Fabricated Metal Product Manufacturing",
+  "333 - Machinery Manufacturing",
+  "334 - Computer and Electronic Product Manufacturing",
+  "335 - Electrical Equipment, Appliance, and Component Manufacturing",
+  "336 - Transportation Equipment Manufacturing",
+  "337 - Furniture and Related Product Manufacturing",
+  "339 - Miscellaneous Manufacturing",
+  // Services
   "541511 - Custom Computer Programming Services",
   "541512 - Computer Systems Design Services",
   "541513 - Computer Facilities Management Services",
@@ -43,8 +95,94 @@ const naicsCodes = [
   "561499 - All Other Business Support Services",
 ];
 
+const businessStages = [
+  "Idea",
+  "Startup (under 2 years)",
+  "Operating business",
+  "Growing / expanding",
+];
+
+const digitalToolOptions = [
+  "Website",
+  "E-commerce / online sales",
+  "Accounting software",
+  "CRM",
+  "Social media",
+  "AI tools",
+  "None",
+];
+
+const preferredServiceOptions = [
+  "One-on-one counseling",
+  "Workshops and training",
+  "Capital readiness",
+  "Government contracting",
+  "Advanced Manufacturing program",
+  "Digital and AI adoption",
+];
+
+const referralSourceOptions = [
+  "Southern University",
+  "Small Business Development Center (SBDC)",
+  "Partner organization",
+  "Event or workshop",
+  "Social media",
+  "Radio",
+  "Referral from another business",
+  "Web search",
+  "Other",
+];
+
+const employeeRanges = [
+  "0 - just the owner(s)",
+  "1-4",
+  "5-9",
+  "10-19",
+  "20-49",
+  "50-99",
+  "100 or more",
+];
+
+const entityTypes = [
+  "Sole proprietorship",
+  "LLC",
+  "Corporation",
+  "S corporation",
+  "Partnership",
+  "Nonprofit",
+  "Not registered yet",
+  "Other",
+];
+
+const ownerEthnicityOptions = [
+  "Black or African American",
+  "Hispanic or Latino",
+  "Asian",
+  "Native American or Alaska Native",
+  "Native Hawaiian or Pacific Islander",
+  "Multi-ethnic",
+  "White",
+  "Other",
+];
+
+const acquisitionMethodOptions = [
+  "Word of mouth",
+  "Referrals",
+  "Website / online",
+  "Social media",
+  "Bids and solicitations",
+  "Networking events",
+  "Other",
+];
+
+/** Intake service areas plus the catalog's "Not sure" option (B1.0.2). */
+const serviceAreaOptions = [...LIFT_SERVICE_AREAS, "Not sure yet"];
+
 interface SMEFormData {
   companyName: string;
+  businessNotRegistered: boolean;
+  dba: string;
+  applyingAs: string;
   dunsUei: string;
   cageCode: string;
   address: string;
@@ -54,15 +192,49 @@ interface SMEFormData {
   website: string;
   yearEstablished: string;
   employeeCount: string;
+  stage: string;
+  revenueLast12: string;
   certifications: string[];
+  certificationsPlanned: string[];
+  interestedInGovcon: string; // "yes" | "no" | ""
+  samRegistered: string; // "registered" | "in-progress" | "not-registered" | "unsure" | ""
+  soldToGovernment: string; // "yes" | "no" | ""
   primaryNaics: string[];
   secondaryNaics: string[];
+  productsServices: string[];
   coreCapabilities: string;
   pastPerformance: string;
   keyDifferentiators: string;
+  digitalTools: string[];
+  capabilityStatementFileId: string;
+  capabilityStatementAttachmentId: string;
+  capabilityStatementFileName: string;
+  wantsCapabilityStatementHelp: boolean;
+  seekingCapital: string; // "yes" | "no" | ""
+  capitalPurpose: string;
+  capitalAmount: string;
+  topNeed: string;
+  barriers: string;
+  goals12Months: string;
+  preferredServices: string[];
+  serviceArea: string[];
+  referralSource: string;
+  acquisitionMethod: string;
+  openToTeaming: string; // "yes" | "no" | ""
+  outOfState: string; // "yes" | "no" | ""
+  inHouseBD: string; // "yes" | "no" | ""
+  resourcesToInvest: string; // "yes" | "no" | ""
+  aiDisclosure: boolean;
+  privacyAck: boolean;
+  emailOptIn: boolean;
+  attachmentFiles: UploadRef[];
   contactName: string;
+  contactTitle: string;
   contactEmail: string;
   contactPhone: string;
+  mobilePhone: string;
+  linkedin: string;
+  ownerEthnicity: string;
   secondaryContactName: string;
   secondaryContactEmail: string;
   preferredContactMethod: string;
@@ -78,34 +250,84 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
     <div className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="companyName">Company Name *</Label>
+          <Label htmlFor="companyName">
+            Company Name {formData.businessNotRegistered ? "" : "*"}
+          </Label>
           <Input
             id="companyName"
             value={formData.companyName}
+            disabled={formData.businessNotRegistered}
             onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-            placeholder="Your Company, LLC"
+            placeholder={formData.businessNotRegistered ? "Not registered yet" : "Your Company, LLC"}
           />
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="businessNotRegistered"
+              checked={formData.businessNotRegistered}
+              onCheckedChange={(checked) =>
+                setFormData({
+                  ...formData,
+                  businessNotRegistered: checked === true,
+                  companyName: checked === true ? "" : formData.companyName,
+                  applyingAs: checked === true ? "Not registered yet" : formData.applyingAs,
+                })
+              }
+            />
+            <Label htmlFor="businessNotRegistered" className="cursor-pointer text-sm font-normal">
+              My business is not registered yet
+            </Label>
+          </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="dunsUei">DUNS/UEI number *</Label>
+          <Label htmlFor="dba">Trade Name (DBA)</Label>
           <Input
-            id="dunsUei"
-            value={formData.dunsUei}
-            onChange={(e) => setFormData({ ...formData, dunsUei: e.target.value })}
-            placeholder="123456789"
+            id="dba"
+            value={formData.dba}
+            onChange={(e) => setFormData({ ...formData, dba: e.target.value })}
+            placeholder="If different from legal name"
           />
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="cageCode">CAGE Code</Label>
-          <Input
-            id="cageCode"
-            value={formData.cageCode}
-            onChange={(e) => setFormData({ ...formData, cageCode: e.target.value })}
-            placeholder="1ABC2"
-          />
+          <Label htmlFor="applyingAs">Business Entity Type *</Label>
+          <Select
+            value={formData.applyingAs}
+            onValueChange={(value) => setFormData({ ...formData, applyingAs: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select entity type" />
+            </SelectTrigger>
+            <SelectContent>
+              {entityTypes.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="stage">Business Stage *</Label>
+          <Select
+            value={formData.stage}
+            onValueChange={(value) => setFormData({ ...formData, stage: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select stage" />
+            </SelectTrigger>
+            <SelectContent>
+              {businessStages.map((stage) => (
+                <SelectItem key={stage} value={stage}>
+                  {stage}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="space-y-2">
           <Label htmlFor="website">Website</Label>
@@ -169,7 +391,7 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="employeeCount">number of Employees</Label>
+          <Label htmlFor="employeeCount">Full-Time Employees (incl. owners) *</Label>
           <Select
             value={formData.employeeCount}
             onValueChange={(value) => setFormData({ ...formData, employeeCount: value })}
@@ -178,21 +400,33 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
               <SelectValue placeholder="Select range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1-10">1-10</SelectItem>
-              <SelectItem value="11-50">11-50</SelectItem>
-              <SelectItem value="51-100">51-100</SelectItem>
-              <SelectItem value="101-250">101-250</SelectItem>
-              <SelectItem value="251-500">251-500</SelectItem>
-              <SelectItem value="500+">500+</SelectItem>
+              {employeeRanges.map((range) => (
+                <SelectItem key={range} value={range}>
+                  {range}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="revenueLast12">Revenue — Last 12 Months ($)</Label>
+        <Input
+          id="revenueLast12"
+          type="number"
+          inputMode="decimal"
+          min={0}
+          value={formData.revenueLast12}
+          onChange={(e) => setFormData({ ...formData, revenueLast12: e.target.value })}
+          placeholder="Approximate is fine — e.g. 250000"
+        />
       </div>
     </div>
   );
 }
 
-export function CertificationsStep({ formData, setFormData }: StepProps) {
+export function GovconStep({ formData, setFormData }: StepProps) {
   const toggleCertification = (certId: string) => {
     const current = formData.certifications;
     if (current.includes(certId)) {
@@ -208,70 +442,271 @@ export function CertificationsStep({ formData, setFormData }: StepProps) {
     }
   };
 
+  const interested = formData.interestedInGovcon === "yes";
+
   return (
     <div className="space-y-6">
-      <div>
-        <Label className="text-base">Select Your Certifications</Label>
-        <p className="text-sm text-muted-foreground mb-4">
-          Choose all certifications that apply to your business
+      <div className="border rounded-lg p-4 bg-muted/30">
+        <Label className="text-base">
+          Is your business interested in government contracting? *
+        </Label>
+        <p className="text-sm text-muted-foreground mt-1 mb-4">
+          Federal, state, and local agencies buy goods and services from small
+          businesses. Your LIFT advisor can help you get registered and ready —
+          answer &quot;No&quot; if contracting isn&apos;t a goal right now.
         </p>
-        <div className="grid md:grid-cols-2 gap-3">
-          {certificationTypes.map((cert) => (
-            <div
-              key={cert.id}
-              className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
-                formData.certifications.includes(cert.id)
-                  ? "border-primary bg-primary/5"
+        <div className="flex gap-3">
+          {[
+            { value: "yes", label: "Yes, I'm interested" },
+            { value: "no", label: "Not right now" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() =>
+                setFormData({ ...formData, interestedInGovcon: opt.value })
+              }
+              className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                formData.interestedInGovcon === opt.value
+                  ? "border-primary bg-primary/10 font-medium"
                   : "hover:bg-muted"
               }`}
-              onClick={() => toggleCertification(cert.id)}
             >
-              <Checkbox
-                checked={formData.certifications.includes(cert.id)}
-                onCheckedChange={() => toggleCertification(cert.id)}
-              />
-              <Label className="cursor-pointer">{cert.label}</Label>
-            </div>
+              {opt.label}
+            </button>
           ))}
         </div>
       </div>
 
-      {formData.certifications.length > 0 && (
-        <div className="p-4 bg-green-50 rounded-lg">
-          <div className="flex items-center gap-2 text-green-800 mb-2">
-            <CheckCircle2 className="h-5 w-5" />
-            <span className="font-medium">Selected Certifications</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {formData.certifications.map((certId) => {
-              const cert = certificationTypes.find((c) => c.id === certId);
-              return (
-                <Badge key={certId} variant="secondary">
-                  {cert?.label}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
+      {formData.interestedInGovcon === "no" && (
+        <p className="text-sm text-muted-foreground">
+          No problem — you can update this later from your profile. Your advisor
+          will focus on your other growth goals instead.
+        </p>
       )}
 
-      <p className="text-sm text-muted-foreground">
-        You'll be able to upload certification documents in a later step.
-      </p>
+      {interested && (
+        <>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="dunsUei">UEI (Unique Entity ID)</Label>
+              <Input
+                id="dunsUei"
+                value={formData.dunsUei}
+                onChange={(e) => setFormData({ ...formData, dunsUei: e.target.value })}
+                placeholder="Found in your SAM.gov registration"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cageCode">CAGE Code</Label>
+              <Input
+                id="cageCode"
+                value={formData.cageCode}
+                onChange={(e) => setFormData({ ...formData, cageCode: e.target.value })}
+                placeholder="1ABC2"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="samRegistered">SAM.gov Registration Status *</Label>
+            <Select
+              value={formData.samRegistered}
+              onValueChange={(value) => setFormData({ ...formData, samRegistered: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="registered">Registered and active</SelectItem>
+                <SelectItem value="in-progress">Registration in progress</SelectItem>
+                <SelectItem value="not-registered">Not registered yet</SelectItem>
+                <SelectItem value="unsure">Not sure</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              SAM.gov registration is free and required for federal contracts.
+              Your LIFT advisor can walk you through it.
+            </p>
+          </div>
+
+          <CapabilityStatementUpload formData={formData} setFormData={setFormData} />
+
+          <div>
+            <Label className="text-base">Socioeconomic Certifications</Label>
+            <p className="text-sm text-muted-foreground mb-4">
+              Select any certifications your business holds or is pursuing
+            </p>
+            <div className="grid md:grid-cols-2 gap-3">
+              {certificationTypes.map((cert) => (
+                <div
+                  key={cert.id}
+                  className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                    formData.certifications.includes(cert.id)
+                      ? "border-primary bg-primary/5"
+                      : "hover:bg-muted"
+                  }`}
+                  onClick={() => toggleCertification(cert.id)}
+                >
+                  <Checkbox
+                    checked={formData.certifications.includes(cert.id)}
+                    onCheckedChange={() => toggleCertification(cert.id)}
+                  />
+                  <Label className="cursor-pointer">{cert.label}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {formData.certifications.length > 0 && (
+            <div className="p-4 bg-green-50 rounded-lg">
+              <div className="flex items-center gap-2 text-green-800 mb-2">
+                <CheckCircle2 className="h-5 w-5" />
+                <span className="font-medium">Selected Certifications</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {formData.certifications.map((certId) => {
+                  const cert = certificationTypes.find((c) => c.id === certId);
+                  return (
+                    <Badge key={certId} variant="secondary">
+                      {cert?.label}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div>
+            <Label className="text-base">Certifications You Plan to Pursue</Label>
+            <p className="text-sm text-muted-foreground mb-4">
+              Your advisor can help you apply — select any you&apos;re interested in
+            </p>
+            <div className="grid md:grid-cols-2 gap-3">
+              {certificationTypes.map((cert) => (
+                <div
+                  key={`planned-${cert.id}`}
+                  className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                    formData.certificationsPlanned.includes(cert.id)
+                      ? "border-primary bg-primary/5"
+                      : "hover:bg-muted"
+                  }`}
+                  onClick={() => {
+                    const current = formData.certificationsPlanned;
+                    setFormData({
+                      ...formData,
+                      certificationsPlanned: current.includes(cert.id)
+                        ? current.filter((c) => c !== cert.id)
+                        : [...current, cert.id],
+                    });
+                  }}
+                >
+                  <Checkbox
+                    checked={formData.certificationsPlanned.includes(cert.id)}
+                    onCheckedChange={() => {
+                      const current = formData.certificationsPlanned;
+                      setFormData({
+                        ...formData,
+                        certificationsPlanned: current.includes(cert.id)
+                          ? current.filter((c) => c !== cert.id)
+                          : [...current, cert.id],
+                      });
+                    }}
+                  />
+                  <Label className="cursor-pointer">{cert.label}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-base">
+              Have you sold to government agencies, prime contractors, or large companies before?
+            </Label>
+            <div className="flex gap-3">
+              {[
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, soldToGovernment: opt.value })}
+                  className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                    formData.soldToGovernment === opt.value
+                      ? "border-primary bg-primary/10 font-medium"
+                      : "hover:bg-muted"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="pastPerformance">Contract & Past Performance Experience</Label>
+            <Textarea
+              id="pastPerformance"
+              value={formData.pastPerformance}
+              onChange={(e) => setFormData({ ...formData, pastPerformance: e.target.value })}
+              placeholder="Summarize any government or commercial contract experience — or write 'None yet' if you're just getting started..."
+              rows={4}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
 export function CapabilitiesStep({ formData, setFormData }: StepProps) {
-  const [selectedNaics, setSelectedNaics] = useState("");
+  const [naicsOpen, setNaicsOpen] = useState(false);
+  const [enhancing, setEnhancing] = useState<
+    "coreCapabilities" | "keyDifferentiators" | null
+  >(null);
 
-  const addPrimaryNaics = () => {
-    if (selectedNaics && !formData.primaryNaics.includes(selectedNaics) && formData.primaryNaics.length < 5) {
+  const addPrimaryNaics = (code: string) => {
+    if (!formData.primaryNaics.includes(code) && formData.primaryNaics.length < 5) {
       setFormData({
         ...formData,
-        primaryNaics: [...formData.primaryNaics, selectedNaics],
+        primaryNaics: [...formData.primaryNaics, code],
       });
-      setSelectedNaics("");
+    }
+    setNaicsOpen(false);
+  };
+
+  const enhanceField = async (
+    field: "coreCapabilities" | "keyDifferentiators",
+    prompt: string
+  ) => {
+    const text = formData[field].trim();
+    if (!text) {
+      toast.error("Add a few bullet points first, then click Enhance with AI.");
+      return;
+    }
+    setEnhancing(field);
+    try {
+      const res = await fetch("/api/ai/enhance-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          context: { type: "business_capability" },
+          prompt,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.enhancedText) {
+        throw new Error(data.error || "Enhancement failed");
+      }
+      setFormData({ ...formData, [field]: data.enhancedText });
+      toast.success("Enhanced with AI — review and edit as needed.");
+    } catch (error) {
+      console.error("AI enhance error:", error);
+      toast.error("AI enhancement failed. Your text was left unchanged.");
+    } finally {
+      setEnhancing(null);
     }
   };
 
@@ -294,29 +729,56 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground">
-          Select up to 5 primary NAICS codes that best describe your services
+          Search by NAICS code or keyword (e.g. &quot;332&quot; or
+          &quot;metal&quot;), then click a result to add it. Add up to 5 codes
+          that best describe your services.
         </p>
-        <div className="flex gap-2">
-          <Select value={selectedNaics} onValueChange={setSelectedNaics} disabled={maxCodesReached}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Select NAICS code" />
-            </SelectTrigger>
-            <SelectContent>
-              {naicsCodes.map((code) => (
-                <SelectItem key={code} value={code}>
-                  {code}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            type="button"
-            onClick={addPrimaryNaics}
-            disabled={!selectedNaics || maxCodesReached}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+        <Popover open={naicsOpen} onOpenChange={setNaicsOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={naicsOpen}
+              disabled={maxCodesReached}
+              className="w-full justify-between font-normal"
+            >
+              {maxCodesReached
+                ? "Maximum of 5 codes reached"
+                : "Search and select NAICS codes..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+            <Command>
+              <CommandInput placeholder="Type a code or keyword..." />
+              <CommandList>
+                <CommandEmpty>No NAICS code found.</CommandEmpty>
+                <CommandGroup>
+                  {naicsCodes.map((code) => {
+                    const alreadyAdded = formData.primaryNaics.includes(code);
+                    return (
+                      <CommandItem
+                        key={code}
+                        value={code}
+                        disabled={alreadyAdded}
+                        onSelect={() => addPrimaryNaics(code)}
+                      >
+                        <CheckCircle2
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            alreadyAdded ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {code}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
         {maxCodesReached && (
           <p className="text-xs text-muted-foreground mt-2">
             Maximum of 5 NAICS codes reached. Remove a code to add another.
@@ -337,36 +799,130 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="coreCapabilities">Core Capabilities *</Label>
+        <Label>Products & Services *</Label>
+        <StringListInput
+          value={formData.productsServices}
+          onChange={(items) => setFormData({ ...formData, productsServices: items })}
+          placeholder="Type a product or service, then click +"
+        />
+        <p className="text-xs text-muted-foreground">
+          Add each product or service on its own line.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="coreCapabilities">Core Capabilities *</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              enhanceField(
+                "coreCapabilities",
+                "Convert these bullet points into 2-4 polished, professional sentences describing the company's core capabilities and services, suitable for a business capability statement. Write in third person, stay factual, and do not invent capabilities that are not listed."
+              )
+            }
+            disabled={enhancing !== null}
+          >
+            {enhancing === "coreCapabilities" ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            Enhance with AI
+          </Button>
+        </div>
         <Textarea
           id="coreCapabilities"
           value={formData.coreCapabilities}
           onChange={(e) => setFormData({ ...formData, coreCapabilities: e.target.value })}
-          placeholder="Describe your company's core capabilities and services..."
+          placeholder="- Custom metal fabrication&#10;- CNC machining and welding&#10;- Prototype and short-run production"
           rows={4}
         />
+        <p className="text-xs text-muted-foreground">
+          Tip: list your capabilities as bullet points (one per line), then
+          click &quot;Enhance with AI&quot; to turn them into polished sentences.
+          You can edit the result and enhance it again.
+        </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="pastPerformance">Past Performance Summary</Label>
-        <Textarea
-          id="pastPerformance"
-          value={formData.pastPerformance}
-          onChange={(e) => setFormData({ ...formData, pastPerformance: e.target.value })}
-          placeholder="Summarize your relevant past performance and contract experience..."
-          rows={4}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="keyDifferentiators">Key Differentiators</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="keyDifferentiators">Key Differentiators</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              enhanceField(
+                "keyDifferentiators",
+                "Convert these bullet points into 2-3 polished, professional sentences explaining what makes this company unique and sets it apart from competitors, suitable for a business capability statement. Write in third person, stay factual, and do not invent claims that are not listed."
+              )
+            }
+            disabled={enhancing !== null}
+          >
+            {enhancing === "keyDifferentiators" ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            Enhance with AI
+          </Button>
+        </div>
         <Textarea
           id="keyDifferentiators"
           value={formData.keyDifferentiators}
           onChange={(e) => setFormData({ ...formData, keyDifferentiators: e.target.value })}
-          placeholder="What makes your company unique? What sets you apart from competitors?"
+          placeholder="- 20 years serving rural parishes&#10;- Only certified shop in the region&#10;- Same-week turnaround"
           rows={3}
         />
+        <p className="text-xs text-muted-foreground">
+          Tip: list what sets you apart as bullet points, then click
+          &quot;Enhance with AI&quot; to turn them into sentences you can edit.
+        </p>
+      </div>
+
+      <div>
+        <Label className="text-base">Digital Tools You Use Today</Label>
+        <p className="text-sm text-muted-foreground mb-4">
+          Select all that apply — helps your advisor plan digital and AI support
+        </p>
+        <div className="grid md:grid-cols-2 gap-3">
+          {digitalToolOptions.map((tool) => (
+            <div
+              key={tool}
+              className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                formData.digitalTools.includes(tool)
+                  ? "border-primary bg-primary/5"
+                  : "hover:bg-muted"
+              }`}
+              onClick={() => {
+                const current = formData.digitalTools;
+                setFormData({
+                  ...formData,
+                  digitalTools: current.includes(tool)
+                    ? current.filter((t) => t !== tool)
+                    : [...current, tool],
+                });
+              }}
+            >
+              <Checkbox
+                checked={formData.digitalTools.includes(tool)}
+                onCheckedChange={() => {
+                  const current = formData.digitalTools;
+                  setFormData({
+                    ...formData,
+                    digitalTools: current.includes(tool)
+                      ? current.filter((t) => t !== tool)
+                      : [...current, tool],
+                  });
+                }}
+              />
+              <Label className="cursor-pointer">{tool}</Label>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -385,6 +941,15 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               value={formData.contactName}
               onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
               placeholder="John Smith"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="contactTitle">Title / Role</Label>
+            <Input
+              id="contactTitle"
+              value={formData.contactTitle}
+              onChange={(e) => setFormData({ ...formData, contactTitle: e.target.value })}
+              placeholder="e.g., Owner, CEO"
             />
           </div>
           <div className="space-y-2">
@@ -425,6 +990,49 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="mobilePhone">Mobile Phone (if different)</Label>
+            <Input
+              id="mobilePhone"
+              type="tel"
+              value={formData.mobilePhone}
+              onChange={(e) => setFormData({ ...formData, mobilePhone: e.target.value })}
+              placeholder="(202) 555-1234"
+            />
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
+          <div className="space-y-2">
+            <Label htmlFor="linkedin">LinkedIn Profile</Label>
+            <Input
+              id="linkedin"
+              type="url"
+              value={formData.linkedin}
+              onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+              placeholder="https://www.linkedin.com/in/your-profile"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="ownerEthnicity">Owner Ethnicity</Label>
+            <Select
+              value={formData.ownerEthnicity}
+              onValueChange={(value) => setFormData({ ...formData, ownerEthnicity: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select one" />
+              </SelectTrigger>
+              <SelectContent>
+                {ownerEthnicityOptions.map((ethnicity) => (
+                  <SelectItem key={ethnicity} value={ethnicity}>
+                    {ethnicity}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Used to prefill the MBDA enrollment form — you can confirm or change it there.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -456,60 +1064,636 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
   );
 }
 
-export function ProofPackStep() {
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+function CapabilityStatementUpload({ formData, setFormData }: StepProps) {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleUpload = async (file: File) => {
+    const uid = auth?.currentUser?.uid;
+    if (!uid) {
+      toast.error("Please sign in again before uploading files");
+      return;
+    }
+    setIsUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      body.append("userId", uid);
+      body.append("category", "onboarding");
+      body.append("attachmentType", "capability_statement");
+
+      const response = await fetch("/api/upload-file", { method: "POST", body });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Upload failed");
+      }
+      const data = await response.json();
+      setFormData({
+        ...formData,
+        capabilityStatementFileId: data.fileId,
+        capabilityStatementAttachmentId: data.attachmentId ?? "",
+        capabilityStatementFileName: data.fileName,
+        wantsCapabilityStatementHelp: false,
+      });
+      toast.success("Capability statement uploaded");
+    } catch (error) {
+      console.error("Capability statement upload failed:", error);
+      toast.error("Upload failed — you can try again or add it later");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeFile = () => {
+    setFormData({
+      ...formData,
+      capabilityStatementFileId: "",
+      capabilityStatementAttachmentId: "",
+      capabilityStatementFileName: "",
+    });
+  };
+
+  return (
+    <div className="space-y-3">
+      <Label className="text-base">Capability Statement (optional)</Label>
+      <p className="text-sm text-muted-foreground">
+        A capability statement is a one-page overview of your business — what
+        you do, your differentiators, and your codes/certifications — that
+        buyers and primes ask for. PDF is best: we extract the text so your
+        advisor and our AI tools can work with it.
+      </p>
+
+      {formData.capabilityStatementFileName ? (
+        <div className="flex items-center justify-between p-3 border rounded-lg bg-green-50">
+          <div className="flex items-center gap-3">
+            <FileText className="h-5 w-5 text-green-700" />
+            <span className="text-sm font-medium">
+              {formData.capabilityStatementFileName}
+            </span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={removeFile} type="button">
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <label
+          className={`flex items-center justify-center gap-2 border-2 border-dashed rounded-lg p-4 text-sm cursor-pointer transition-colors ${
+            isUploading ? "opacity-60 cursor-wait" : "hover:bg-muted"
+          }`}
+        >
+          {isUploading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="h-4 w-4" />
+          )}
+          {isUploading ? "Uploading..." : "Upload your capability statement"}
+          <input
+            type="file"
+            className="hidden"
+            accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg"
+            disabled={isUploading}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleUpload(file);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      )}
+
+      <div className="flex items-center space-x-3">
+        <Checkbox
+          id="wantsCapabilityStatementHelp"
+          checked={formData.wantsCapabilityStatementHelp}
+          disabled={Boolean(formData.capabilityStatementFileName)}
+          onCheckedChange={(checked) =>
+            setFormData({
+              ...formData,
+              wantsCapabilityStatementHelp: checked === true,
+            })
+          }
+        />
+        <Label htmlFor="wantsCapabilityStatementHelp" className="cursor-pointer text-sm font-normal">
+          I don&apos;t have a capability statement — I&apos;d like help creating one
+        </Label>
+      </div>
+    </div>
+  );
+}
+
+/** Free-text list input: type an item, press Enter or "+", items appear as removable rows. */
+function StringListInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string[];
+  onChange: (items: string[]) => void;
+  placeholder?: string;
+}) {
+  const [draft, setDraft] = useState("");
+  const add = () => {
+    const item = draft.trim();
+    if (!item) return;
+    if (!value.includes(item)) onChange([...value, item]);
+    setDraft("");
+  };
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <Input
+          value={draft}
+          placeholder={placeholder ?? "Type an item, then click +"}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              add();
+            }
+          }}
+        />
+        <Button type="button" onClick={add} disabled={!draft.trim()} aria-label="Add item">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      {value.length > 0 && (
+        <ul className="space-y-1" aria-label="Added items">
+          {value.map((item) => (
+            <li key={item} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+              <span className="min-w-0 truncate">{item}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={`Remove ${item}`}
+                onClick={() => onChange(value.filter((entry) => entry !== item))}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+const LIFT_UPLOAD_TYPES = ".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg,.webp";
+
+/** Uploads supporting documents to the LIFT intake pipeline (base64 + AI analysis). */
+function AttachmentsUpload({ formData, setFormData }: StepProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files?.length) return;
+    const remaining = Math.max(0, 5 - formData.attachmentFiles.length);
+    setIsUploading(true);
+    const uploaded: UploadRef[] = [];
+    for (const file of Array.from(files).slice(0, remaining)) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`${file.name}: files must be smaller than 10 MB`);
+        continue;
+      }
+      try {
+        const body = new FormData();
+        body.append("file", file);
+        const response = await fetch("/api/lift/forms/by-slug/lift-intake/uploads", { method: "POST", body });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Upload failed");
+        uploaded.push(data.data as UploadRef);
+      } catch (error) {
+        toast.error(`${file.name}: ${error instanceof Error ? error.message : "upload failed"}`);
+      }
+    }
+    setIsUploading(false);
+    if (uploaded.length) {
+      setFormData({ ...formData, attachmentFiles: [...formData.attachmentFiles, ...uploaded] });
+    }
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const remaining = Math.max(0, 5 - formData.attachmentFiles.length);
+
+  return (
+    <div className="space-y-3">
+      <Label className="text-base">Supporting Documents (optional)</Label>
+      <p className="text-sm text-muted-foreground">
+        For example, a business plan, financial statement, or capability
+        statement. Our AI reads each file and summarizes it for your advisor.
+        Do not upload Social Security numbers or controlled (CUI) documents.
+      </p>
+      <input
+        ref={inputRef}
+        type="file"
+        className="sr-only"
+        multiple
+        accept={LIFT_UPLOAD_TYPES}
+        disabled={isUploading || remaining === 0}
+        onChange={(e) => void handleFiles(e.target.files)}
+      />
+      <Button
+        type="button"
+        variant="outline"
+        disabled={isUploading || remaining === 0}
+        onClick={() => inputRef.current?.click()}
+      >
+        {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+        {isUploading ? "Uploading..." : remaining === 0 ? "File limit reached" : "Choose file"}
+      </Button>
+      <p className="text-xs text-muted-foreground">Up to 5 files, 10 MB each. PDF, Word, Excel, CSV, or image.</p>
+      {formData.attachmentFiles.length > 0 && (
+        <ul className="space-y-1" aria-label="Uploaded files">
+          {formData.attachmentFiles.map((file) => (
+            <li key={file.uploadId} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+              <span className="flex min-w-0 items-center gap-2">
+                <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className="truncate">{file.fileName}</span>
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={`Remove ${file.fileName}`}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    attachmentFiles: formData.attachmentFiles.filter((item) => item.uploadId !== file.uploadId),
+                  })
+                }
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
+  const [enhancing, setEnhancing] = useState(false);
+  const seeking = formData.seekingCapital === "yes";
+
+  const enhanceCapitalPurpose = async () => {
+    const text = formData.capitalPurpose.trim();
+    if (!text) {
+      toast.error("Add a few notes first, then click Enhance with AI.");
+      return;
+    }
+    setEnhancing(true);
+    try {
+      const res = await fetch("/api/ai/enhance-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          context: { type: "business_capability" },
+          prompt:
+            "Convert these notes into polished, professional sentences describing what the financing will be used for, suitable for a small business intake form. Stay factual and do not invent details.",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.enhancedText) throw new Error(data.error || "Enhancement failed");
+      setFormData({ ...formData, capitalPurpose: data.enhancedText });
+      toast.success("Enhanced with AI — review and edit as needed.");
+    } catch (error) {
+      console.error("AI enhance error:", error);
+      toast.error("AI enhancement failed. Your text was left unchanged.");
+    } finally {
+      setEnhancing(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      <div className="border border-amber-300 bg-amber-50 rounded-lg p-4 text-sm text-amber-900">
-        <strong>Data Security Notice:</strong> Do NOT upload classified information, Controlled Unclassified Information (CUI), export-controlled technical data, source-selection information, or procurement-sensitive information. This platform is not authorized to store or process such data. Only upload publicly releasable or commercially cleared documents.
-      </div>
-      <div className="border-2 border-dashed rounded-lg p-8 text-center">
-        <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-        <h3 className="font-medium mb-2">Upload Your Documents</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Drag and drop files here, or click to browse
-        </p>
-        <Button variant="outline">
-          <Upload className="mr-2 h-4 w-4" />
-          Choose Files
-        </Button>
+      <div className="border rounded-lg p-4 bg-muted/30 space-y-3">
+        <Label className="text-base">Are you seeking financing or investment? *</Label>
+        <div className="flex gap-3">
+          {[
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setFormData({ ...formData, seekingCapital: opt.value })}
+              className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                formData.seekingCapital === opt.value
+                  ? "border-primary bg-primary/10 font-medium"
+                  : "hover:bg-muted"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="space-y-3">
-        <h4 className="font-medium">Recommended Documents:</h4>
-        <div className="space-y-2">
-          {[
-            { name: "Capability Statement", required: true },
-            { name: "W-9 Form", required: false },
-            { name: "Certificate of Insurance", required: false },
-            { name: "Past Performance References", required: false },
-            { name: "Certification Documents", required: false },
-          ].map((doc) => (
-            <div
-              key={doc.name}
-              className="flex items-center justify-between p-3 border rounded-lg"
-            >
-              <div className="flex items-center gap-3">
-                <FileText className="h-5 w-5 text-muted-foreground" />
-                <span>{doc.name}</span>
-                {doc.required && (
-                  <Badge variant="outline" className="text-xs">
-                    Required
-                  </Badge>
-                )}
-              </div>
-              <Button variant="ghost" size="sm">
-                Upload
+      {seeking && (
+        <>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="capitalPurpose">What would the financing be used for?</Label>
+              <Button type="button" variant="outline" size="sm" onClick={enhanceCapitalPurpose} disabled={enhancing}>
+                {enhancing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                Enhance with AI
               </Button>
+            </div>
+            <Textarea
+              id="capitalPurpose"
+              value={formData.capitalPurpose}
+              onChange={(e) => setFormData({ ...formData, capitalPurpose: e.target.value })}
+              placeholder="- Raw materials&#10;- Payroll&#10;- New equipment"
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground">
+              Tip: jot bullet points, then enhance them into sentences you can edit.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="capitalAmount">About how much financing are you seeking? ($)</Label>
+            <Input
+              id="capitalAmount"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={formData.capitalAmount}
+              onChange={(e) => setFormData({ ...formData, capitalAmount: e.target.value })}
+              placeholder="e.g. 50000"
+            />
+          </div>
+        </>
+      )}
+
+      <div className="space-y-2">
+        <Label htmlFor="topNeed">What is the single most important thing your business needs right now? *</Label>
+        <Textarea
+          id="topNeed"
+          value={formData.topNeed}
+          onChange={(e) => setFormData({ ...formData, topNeed: e.target.value })}
+          placeholder="Be specific — this drives your advisor's first recommendations"
+          rows={3}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="barriers">What is holding your business back? *</Label>
+        <Textarea
+          id="barriers"
+          value={formData.barriers}
+          onChange={(e) => setFormData({ ...formData, barriers: e.target.value })}
+          placeholder="Challenges, constraints, or gaps you're facing"
+          rows={3}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="goals12Months">What do you want to achieve in the next 12 months? *</Label>
+        <Textarea
+          id="goals12Months"
+          value={formData.goals12Months}
+          onChange={(e) => setFormData({ ...formData, goals12Months: e.target.value })}
+          placeholder="Revenue, contracts, hiring, certifications — whatever success looks like"
+          rows={3}
+        />
+      </div>
+
+      <div>
+        <Label className="text-base">Which kinds of help interest you? *</Label>
+        <p className="text-sm text-muted-foreground mb-4">Select all that apply</p>
+        <div className="grid md:grid-cols-2 gap-3">
+          {preferredServiceOptions.map((service) => (
+            <div
+              key={service}
+              className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                formData.preferredServices.includes(service)
+                  ? "border-primary bg-primary/5"
+                  : "hover:bg-muted"
+              }`}
+              onClick={() => {
+                const current = formData.preferredServices;
+                setFormData({
+                  ...formData,
+                  preferredServices: current.includes(service)
+                    ? current.filter((s) => s !== service)
+                    : [...current, service],
+                });
+              }}
+            >
+              <Checkbox
+                checked={formData.preferredServices.includes(service)}
+                onCheckedChange={() => {
+                  const current = formData.preferredServices;
+                  setFormData({
+                    ...formData,
+                    preferredServices: current.includes(service)
+                      ? current.filter((s) => s !== service)
+                      : [...current, service],
+                  });
+                }}
+              />
+              <Label className="cursor-pointer">{service}</Label>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Yes/No button row used by several intake questions. */
+function YesNoField({
+  label,
+  value,
+  onChange,
+  required,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-base">
+        {label} {required ? "*" : ""}
+      </Label>
+      <div className="flex gap-3">
+        {[
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" },
+        ].map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+              value === opt.value ? "border-primary bg-primary/10 font-medium" : "hover:bg-muted"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function OperationsStep({ formData, setFormData }: StepProps) {
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">
+        A few operational questions the MBDA enrollment form asks — answering
+        them once here means you won&apos;t have to repeat them there.
+      </p>
+
+      <div className="space-y-2">
+        <Label htmlFor="acquisitionMethod">How do you currently get business? *</Label>
+        <Select
+          value={formData.acquisitionMethod}
+          onValueChange={(value) => setFormData({ ...formData, acquisitionMethod: value })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select one" />
+          </SelectTrigger>
+          <SelectContent>
+            {acquisitionMethodOptions.map((method) => (
+              <SelectItem key={method} value={method}>
+                {method}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <YesNoField
+        label="Is your company open to a teaming arrangement if suggested?"
+        required
+        value={formData.openToTeaming}
+        onChange={(value) => setFormData({ ...formData, openToTeaming: value })}
+      />
+      <YesNoField
+        label="Is your company able to perform work outside your current state?"
+        required
+        value={formData.outOfState}
+        onChange={(value) => setFormData({ ...formData, outOfState: value })}
+      />
+      <YesNoField
+        label="Does your company have an in-house business development team?"
+        required
+        value={formData.inHouseBD}
+        onChange={(value) => setFormData({ ...formData, inHouseBD: value })}
+      />
+      <YesNoField
+        label="Does your company have resources to invest if recommended?"
+        required
+        value={formData.resourcesToInvest}
+        onChange={(value) => setFormData({ ...formData, resourcesToInvest: value })}
+      />
+    </div>
+  );
+}
+
+export function ProgramStep({ formData, setFormData }: StepProps) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <Label className="text-base">Which LIFT service(s) best match what you need? *</Label>
+        <p className="text-sm text-muted-foreground mb-4">Select all that apply</p>
+        <div className="grid gap-3">
+          {serviceAreaOptions.map((area) => (
+            <div
+              key={area}
+              className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                formData.serviceArea.includes(area)
+                  ? "border-primary bg-primary/5"
+                  : "hover:bg-muted"
+              }`}
+              onClick={() => {
+                const current = formData.serviceArea;
+                setFormData({
+                  ...formData,
+                  serviceArea: current.includes(area)
+                    ? current.filter((a) => a !== area)
+                    : [...current, area],
+                });
+              }}
+            >
+              <Checkbox
+                checked={formData.serviceArea.includes(area)}
+                onCheckedChange={() => {
+                  const current = formData.serviceArea;
+                  setFormData({
+                    ...formData,
+                    serviceArea: current.includes(area)
+                      ? current.filter((a) => a !== area)
+                      : [...current, area],
+                  });
+                }}
+              />
+              <Label className="cursor-pointer">{area}</Label>
             </div>
           ))}
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        You can always add more documents later from your profile.
-      </p>
+      <div className="space-y-2">
+        <Label htmlFor="referralSource">How did you hear about the LIFT Center? *</Label>
+        <Select
+          value={formData.referralSource}
+          onValueChange={(value) => setFormData({ ...formData, referralSource: value })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select one" />
+          </SelectTrigger>
+          <SelectContent>
+            {referralSourceOptions.map((source) => (
+              <SelectItem key={source} value={source}>
+                {source}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <AttachmentsUpload formData={formData} setFormData={setFormData} />
+
+      <div className="space-y-3 border-t pt-4">
+        <div className="flex items-start space-x-3 p-3 border rounded-lg">
+          <Checkbox
+            id="privacyAck"
+            checked={formData.privacyAck}
+            onCheckedChange={(checked) => setFormData({ ...formData, privacyAck: checked === true })}
+          />
+          <Label htmlFor="privacyAck" className="cursor-pointer text-sm font-normal leading-relaxed">
+            I acknowledge the LIFT Center&apos;s privacy notice and consent to
+            be contacted about its services. *
+          </Label>
+        </div>
+        <div className="flex items-start space-x-3 p-3 border rounded-lg">
+          <Checkbox
+            id="aiDisclosure"
+            checked={formData.aiDisclosure}
+            onCheckedChange={(checked) => setFormData({ ...formData, aiDisclosure: checked === true })}
+          />
+          <Label htmlFor="aiDisclosure" className="cursor-pointer text-sm font-normal leading-relaxed">
+            I understand an AI assistant will summarize my answers and LIFT staff
+            will review them before any decision is made. *
+          </Label>
+        </div>
+        <div className="flex items-start space-x-3 p-3 border rounded-lg">
+          <Checkbox
+            id="emailOptIn"
+            checked={formData.emailOptIn}
+            onCheckedChange={(checked) => setFormData({ ...formData, emailOptIn: checked === true })}
+          />
+          <Label htmlFor="emailOptIn" className="cursor-pointer text-sm font-normal leading-relaxed">
+            I agree to receive emails from the Southern LIFT program in the
+            future.
+          </Label>
+        </div>
+      </div>
     </div>
   );
 }
@@ -545,6 +1729,30 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
         </div>
 
         <div className="border rounded-lg p-4">
+          <h4 className="font-medium mb-2">Government Contracting</h4>
+          {formData.interestedInGovcon === "yes" ? (
+            <dl className="grid grid-cols-2 gap-2 text-sm">
+              <dt className="text-muted-foreground">UEI</dt>
+              <dd>{formData.dunsUei || "Not provided"}</dd>
+              <dt className="text-muted-foreground">CAGE Code</dt>
+              <dd>{formData.cageCode || "Not provided"}</dd>
+              <dt className="text-muted-foreground">SAM.gov Status</dt>
+              <dd>
+                {formData.samRegistered === "registered" && "Registered and active"}
+                {formData.samRegistered === "in-progress" && "Registration in progress"}
+                {formData.samRegistered === "not-registered" && "Not registered yet"}
+                {formData.samRegistered === "unsure" && "Not sure"}
+                {!formData.samRegistered && "Not provided"}
+              </dd>
+            </dl>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Not pursuing government contracting right now
+            </p>
+          )}
+        </div>
+
+        <div className="border rounded-lg p-4">
           <h4 className="font-medium mb-2">Certifications</h4>
           {formData.certifications.length > 0 ? (
             <div className="flex flex-wrap gap-2">
@@ -563,14 +1771,58 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
         </div>
 
         <div className="border rounded-lg p-4">
+          <h4 className="font-medium mb-2">Needs & Goals</h4>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Seeking financing</dt>
+            <dd>{formData.seekingCapital === "yes" ? "Yes" : formData.seekingCapital === "no" ? "No" : "Not provided"}</dd>
+            <dt className="text-muted-foreground">Top need</dt>
+            <dd>{formData.topNeed || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Help wanted</dt>
+            <dd>{formData.preferredServices.length > 0 ? formData.preferredServices.join(", ") : "Not provided"}</dd>
+          </dl>
+        </div>
+
+        <div className="border rounded-lg p-4">
+          <h4 className="font-medium mb-2">LIFT Program</h4>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Service areas</dt>
+            <dd>{formData.serviceArea.length > 0 ? formData.serviceArea.join(", ") : "Not provided"}</dd>
+            <dt className="text-muted-foreground">Heard about us</dt>
+            <dd>{formData.referralSource || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Documents</dt>
+            <dd>{formData.attachmentFiles.length > 0 ? formData.attachmentFiles.map((f) => f.fileName).join(", ") : "None"}</dd>
+          </dl>
+        </div>
+
+        <div className="border rounded-lg p-4">
+          <h4 className="font-medium mb-2">Operations</h4>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Gets business via</dt>
+            <dd>{formData.acquisitionMethod || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Open to teaming</dt>
+            <dd>{formData.openToTeaming === "yes" ? "Yes" : formData.openToTeaming === "no" ? "No" : "Not provided"}</dd>
+            <dt className="text-muted-foreground">Works out of state</dt>
+            <dd>{formData.outOfState === "yes" ? "Yes" : formData.outOfState === "no" ? "No" : "Not provided"}</dd>
+            <dt className="text-muted-foreground">In-house BD team</dt>
+            <dd>{formData.inHouseBD === "yes" ? "Yes" : formData.inHouseBD === "no" ? "No" : "Not provided"}</dd>
+          </dl>
+        </div>
+
+        <div className="border rounded-lg p-4">
           <h4 className="font-medium mb-2">Primary Contact</h4>
           <dl className="grid grid-cols-2 gap-2 text-sm">
             <dt className="text-muted-foreground">Name</dt>
             <dd>{formData.contactName || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Title</dt>
+            <dd>{formData.contactTitle || "Not provided"}</dd>
             <dt className="text-muted-foreground">Email</dt>
             <dd>{formData.contactEmail || "Not provided"}</dd>
             <dt className="text-muted-foreground">Phone</dt>
             <dd>{formData.contactPhone || "Not provided"}</dd>
+            <dt className="text-muted-foreground">LinkedIn</dt>
+            <dd>{formData.linkedin || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Owner ethnicity</dt>
+            <dd>{formData.ownerEthnicity || "Not provided"}</dd>
           </dl>
         </div>
       </div>
@@ -578,8 +1830,16 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
   );
 }
 
+/** Returns true when any selected NAICS code is in the manufacturing sector (31-33). */
+export function isManufacturingBusiness(primaryNaics: string[]): boolean {
+  return primaryNaics.some((code) => /^(31|32|33)/.test(code.trim()));
+}
+
 export const initialSMEFormData: SMEFormData = {
   companyName: "",
+  businessNotRegistered: false,
+  dba: "",
+  applyingAs: "",
   dunsUei: "",
   cageCode: "",
   address: "",
@@ -589,15 +1849,49 @@ export const initialSMEFormData: SMEFormData = {
   website: "",
   yearEstablished: "",
   employeeCount: "",
+  stage: "",
+  revenueLast12: "",
   certifications: [],
+  certificationsPlanned: [],
+  interestedInGovcon: "",
+  samRegistered: "",
+  soldToGovernment: "",
   primaryNaics: [],
   secondaryNaics: [],
+  productsServices: [],
   coreCapabilities: "",
   pastPerformance: "",
   keyDifferentiators: "",
+  digitalTools: [],
+  capabilityStatementFileId: "",
+  capabilityStatementAttachmentId: "",
+  capabilityStatementFileName: "",
+  wantsCapabilityStatementHelp: false,
+  seekingCapital: "",
+  capitalPurpose: "",
+  capitalAmount: "",
+  topNeed: "",
+  barriers: "",
+  goals12Months: "",
+  preferredServices: [],
+  serviceArea: [],
+  referralSource: "",
+  acquisitionMethod: "",
+  openToTeaming: "",
+  outOfState: "",
+  inHouseBD: "",
+  resourcesToInvest: "",
+  aiDisclosure: false,
+  privacyAck: false,
+  emailOptIn: false,
+  attachmentFiles: [],
   contactName: "",
+  contactTitle: "",
   contactEmail: "",
   contactPhone: "",
+  mobilePhone: "",
+  linkedin: "",
+  ownerEthnicity: "",
   secondaryContactName: "",
   secondaryContactEmail: "",
   preferredContactMethod: "",

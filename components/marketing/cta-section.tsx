@@ -26,7 +26,7 @@ export function CTASection() {
               className="text-lg px-8 bg-white text-primary hover:bg-white/90"
               asChild
             >
-              <Link href="/forms/lift-intake">
+              <Link href="/sign-up">
                 Start the Intake Interview
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

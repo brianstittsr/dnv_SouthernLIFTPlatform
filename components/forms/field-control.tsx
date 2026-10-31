@@ -1,8 +1,13 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, ChevronsUpDown, Loader2, Plus, Sparkles, Star, X } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { computeFormula } from "@/lib/form-builder/logic";
 import type { FieldValue, FormField, FormValues, SignatureValue, TableRow, UploadRef } from "@/lib/form-builder/types";
@@ -188,7 +193,17 @@ export function FieldControl({ field, value, values, error, slug, onChange, emph
   let control: React.ReactNode;
   switch (field.type) {
     case "long_text":
-      control = <Textarea {...textProps} rows={emphasis ? 5 : 4} value={asString(value)} onChange={(event) => onChange(event.target.value)} />;
+      control = field.aiEnhance ? (
+        <EnhanceableTextarea
+          {...textProps}
+          rows={emphasis ? 5 : 4}
+          value={asString(value)}
+          onChange={onChange}
+          fieldLabel={field.label}
+        />
+      ) : (
+        <Textarea {...textProps} rows={emphasis ? 5 : 4} value={asString(value)} onChange={(event) => onChange(event.target.value)} />
+      );
       break;
     case "number":
     case "currency":
@@ -257,6 +272,30 @@ export function FieldControl({ field, value, values, error, slug, onChange, emph
         />
       );
       break;
+    case "option_picker":
+      control = (
+        <OptionPickerControl
+          id={id}
+          options={field.options ?? []}
+          value={Array.isArray(value) ? (value as string[]) : []}
+          onChange={onChange}
+          invalid={Boolean(error)}
+          describedBy={describedBy}
+        />
+      );
+      break;
+    case "text_list":
+      control = (
+        <TextListControl
+          id={id}
+          value={Array.isArray(value) ? (value as string[]) : []}
+          onChange={onChange}
+          invalid={Boolean(error)}
+          describedBy={describedBy}
+          placeholder={field.placeholder}
+        />
+      );
+      break;
     case "signature":
       control = (
         <SignaturePad id={id} value={(value as SignatureValue | null) ?? null} onChange={(signature) => onChange(signature)} invalid={Boolean(error)} describedBy={describedBy} />
@@ -294,6 +333,203 @@ export function FieldControl({ field, value, values, error, slug, onChange, emph
       {help}
       {control}
       {errorMessage}
+    </div>
+  );
+}
+
+interface TextListControlProps {
+  id: string;
+  value: string[];
+  onChange: (value: FieldValue) => void;
+  invalid: boolean;
+  describedBy?: string;
+  placeholder?: string;
+}
+
+/** Free-text list: type an item, press Enter or "+", items appear as removable rows. */
+function TextListControl({ id, value, onChange, invalid, describedBy, placeholder }: TextListControlProps) {
+  const [draft, setDraft] = useState("");
+  const add = () => {
+    const item = draft.trim();
+    if (!item) return;
+    if (!value.includes(item)) onChange([...value, item]);
+    setDraft("");
+  };
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <Input
+          id={id}
+          value={draft}
+          placeholder={placeholder ?? "Type an item, then click +"}
+          aria-invalid={invalid}
+          aria-describedby={describedBy}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              add();
+            }
+          }}
+        />
+        <Button type="button" onClick={add} disabled={!draft.trim()} aria-label="Add item">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      {value.length > 0 && (
+        <ul className="space-y-1" aria-label="Added items">
+          {value.map((item) => (
+            <li key={item} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+              <span className="min-w-0 truncate">{item}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={`Remove ${item}`}
+                onClick={() => onChange(value.filter((entry) => entry !== item))}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+interface OptionPickerControlProps {
+  id: string;
+  options: string[];
+  value: string[];
+  onChange: (value: FieldValue) => void;
+  invalid: boolean;
+  describedBy?: string;
+}
+
+/** Searchable multi-select: filter options by keyword, add each with the "+" button. */
+function OptionPickerControl({ id, options, value, onChange, invalid, describedBy }: OptionPickerControlProps) {
+  const [open, setOpen] = useState(false);
+  const add = (option: string) => {
+    if (!value.includes(option)) onChange([...value, option]);
+  };
+  return (
+    <div className="space-y-2">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            aria-invalid={invalid}
+            aria-describedby={describedBy}
+            className="w-full justify-between font-normal"
+          >
+            Search and add…
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+          <Command>
+            <CommandInput placeholder="Type a code or keyword..." />
+            <CommandList>
+              <CommandEmpty>No matching option.</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => {
+                  const added = value.includes(option);
+                  return (
+                    <CommandItem
+                      key={option}
+                      value={option}
+                      onSelect={() => add(option)}
+                      className="flex items-center justify-between"
+                    >
+                      <span className={cn("min-w-0 truncate", added && "text-muted-foreground")}>{option}</span>
+                      {added ? (
+                        <CheckCircle2 className="ml-2 h-4 w-4 shrink-0 text-primary" />
+                      ) : (
+                        <Plus className="ml-2 h-4 w-4 shrink-0" aria-label={`Add ${option}`} />
+                      )}
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {value.length > 0 && (
+        <ul className="space-y-1" aria-label="Selected options">
+          {value.map((item) => (
+            <li key={item} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+              <span className="min-w-0 truncate">{item}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={`Remove ${item}`}
+                onClick={() => onChange(value.filter((entry) => entry !== item))}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+interface EnhanceableTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+  onChange: (value: FieldValue) => void;
+  fieldLabel: string;
+}
+
+/** Textarea with an "Enhance with AI" button that rewrites bullet points into prose. */
+function EnhanceableTextarea({ onChange, fieldLabel, ...props }: EnhanceableTextareaProps) {
+  const [enhancing, setEnhancing] = useState(false);
+  const enhance = async () => {
+    const text = String(props.value ?? "").trim();
+    if (!text) {
+      toast.error("Add a few notes or bullet points first, then click Enhance with AI.");
+      return;
+    }
+    setEnhancing(true);
+    try {
+      const res = await fetch("/api/ai/enhance-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          context: { type: "business_capability" },
+          prompt: `Convert these notes or bullet points into polished, professional sentences answering the question "${fieldLabel}" for a business intake form. Write in first person or neutral business voice, stay factual, and do not invent details that are not listed.`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.enhancedText) throw new Error(data.error || "Enhancement failed");
+      onChange(data.enhancedText);
+      toast.success("Enhanced with AI — review and edit as needed.");
+    } catch (error) {
+      console.error("AI enhance error:", error);
+      toast.error("AI enhancement failed. Your text was left unchanged.");
+    } finally {
+      setEnhancing(false);
+    }
+  };
+  return (
+    <div className="space-y-2">
+      <Textarea {...props} onChange={(event) => onChange(event.target.value)} />
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">
+          Tip: jot bullet points, then enhance them into sentences. You can edit the result and enhance again.
+        </p>
+        <Button type="button" variant="outline" size="sm" onClick={enhance} disabled={enhancing}>
+          {enhancing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+          Enhance with AI
+        </Button>
+      </div>
     </div>
   );
 }

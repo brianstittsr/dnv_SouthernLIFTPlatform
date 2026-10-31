@@ -141,7 +141,7 @@ const LIFT: ProgramBranding = {
   blogCtaBody:
     "The LIFT Center offers no-cost advising, training, and contracting-readiness support to rural Louisiana small businesses. Start with a short intake interview.",
   blogCtaPrimaryLabel: "Start the LIFT Intake",
-  blogCtaPrimaryHref: "/forms/lift-intake",
+  blogCtaPrimaryHref: "/sign-up",
   blogCtaSecondaryLabel: "Browse Workshops & Events",
   blogCtaSecondaryHref: "/events",
 };

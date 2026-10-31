@@ -2,12 +2,15 @@ export { OnboardingWizard } from "./wizard";
 export type { WizardStep } from "./wizard";
 export {
   BusinessInfoStep,
-  CertificationsStep,
+  GovconStep,
   CapabilitiesStep,
+  NeedsGoalsStep,
+  OperationsStep,
   ContactInfoStep,
-  ProofPackStep,
+  ProgramStep,
   ReviewStep,
   initialSMEFormData,
+  isManufacturingBusiness,
 } from "./sme-wizard-steps";
 export {
   AgencyInfoStep,

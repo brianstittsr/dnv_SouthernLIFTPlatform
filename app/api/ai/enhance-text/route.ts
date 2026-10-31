@@ -71,6 +71,15 @@ Please provide enhanced notes that:
 3. Highlight key considerations and risks
 4. Use bullet points for readability
 5. Maintain a professional tone`;
+    } else if (context?.type === "business_capability") {
+      systemPrompt = `You are a professional business writer who drafts capability statements for small businesses working with advisors.
+You turn rough bullet points into clear, credible prose suitable for capability statements, lender packages, and government-contracting profiles.
+You never invent capabilities, certifications, or experience that are not in the source text. Output only the polished prose — no headings, bullet lists, or commentary.`;
+
+      userPrompt = `${prompt || "Convert these bullet points into polished professional sentences suitable for a business capability statement."}
+
+Source text:
+${text}`;
     }
 
     // Try to get LLM config from environment

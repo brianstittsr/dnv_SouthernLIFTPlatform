@@ -91,6 +91,17 @@ export function coercePrefillValue(field: FormField, value: FieldValue): FieldVa
       const filtered = options.length ? items.filter((item) => options.includes(item)) : items;
       return filtered.length ? filtered : undefined;
     }
+    case "option_picker": {
+      const items = Array.isArray(value) ? (value as unknown[]).map(String) : typeof value === "string" ? value.split(",").map((item) => item.trim()) : [];
+      const matched = items
+        .map((item) => options.find((option) => option === item || option.split(" - ")[0] === item))
+        .filter((option): option is string => option !== undefined);
+      return options.length ? matched.length ? matched : undefined : items.length ? items : undefined;
+    }
+    case "text_list": {
+      const items = Array.isArray(value) ? (value as unknown[]).map(String) : typeof value === "string" ? value.split("\n").map((item) => item.trim()).filter(Boolean) : [];
+      return items.length ? items : undefined;
+    }
     case "dropdown":
     case "radio": {
       const single = Array.isArray(value) ? String(value[0] ?? "") : String(value ?? "");

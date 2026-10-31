@@ -1,12 +1,8 @@
-"use client";
-
-import { useState } from "react";
+import { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ClientRegistrationModal } from "@/components/client-registration";
 import {
   Building2,
   ClipboardCheck,
@@ -16,103 +12,134 @@ import {
   ArrowRight,
   CheckCircle,
   FileText,
-  Briefcase,
   Handshake,
   Target,
-  Award,
-  TrendingUp,
-  Shield,
-  DollarSign,
+  GraduationCap,
+  Bot,
+  MapPin,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Resources & Services | Southern University MBDA LIFT Rural Business Center",
+  description:
+    "No-cost resources for rural Louisiana small businesses: advising, workshops, capital readiness, government contracting support, and advanced manufacturing assistance.",
+  alternates: { canonical: "https://lift.southern.edu/resources" },
+};
 
 const benefits = [
   {
-    icon: Building2,
-    title: "Government Contracting Expertise",
+    icon: Users,
+    title: "One-on-One Advising",
     description:
-      "Navigate federal, state, and local procurement with guidance from seasoned professionals who understand the complexities of government contracting.",
+      "A dedicated LIFT advisor works with you on business planning, operations, marketing, and growth — at no cost.",
   },
   {
-    icon: Factory,
-    title: "Manufacturing OEM Access",
+    icon: GraduationCap,
+    title: "Workshops & Training",
     description:
-      "Connect with major manufacturing OEMs and prime contractors seeking qualified minority business partners for their supply chains.",
+      "Practical workshops and virtual sessions on starting, financing, and growing your rural business.",
   },
   {
     icon: Landmark,
-    title: "Certification Assistance",
+    title: "Capital Readiness",
     description:
-      "Get support obtaining 8(a), HUBZone, WOSB, SDVOSB, MBE, DBE, SBE, and other certifications that open doors to set-aside contracts.",
+      "Financial readiness reviews, loan packaging support, and connections to CDFIs and other capital sources.",
   },
   {
     icon: ClipboardCheck,
-    title: "Proposal Development",
+    title: "Contracting Readiness",
     description:
-      "Access professional proposal writing support, capability statement development, and bid preparation services.",
+      "SAM.gov registration guidance, capability statements, and proposal support so you can pursue public-sector work.",
   },
   {
-    icon: Users,
-    title: "Strategic Teaming",
+    icon: Factory,
+    title: "Advanced Manufacturing",
     description:
-      "Partner with established contractors through our teaming arrangement network, increasing your competitive advantage.",
+      "Hands-on support through the center's metal additive manufacturing lab for rural manufacturers.",
   },
   {
-    icon: Shield,
-    title: "Compliance & Security",
+    icon: Bot,
+    title: "Digital & AI Adoption",
     description:
-      "Navigate CMMC, ITAR, and other security requirements with expert guidance on cybersecurity and compliance standards.",
-  },
-  {
-    icon: DollarSign,
-    title: "Financing & Loans",
-    description:
-      "Access financing options and loan programs to support your business growth and contract fulfillment needs.",
-  },
-  {
-    icon: Target,
-    title: "Target Agency Matching",
-    description:
-      "Get matched with government agencies and opportunities that align with your capabilities and business goals.",
+      "Practical help adopting digital tools and realistic AI uses that save time without big budgets.",
   },
 ];
 
 const stats = [
-  { value: "$2B+", label: "Contract Opportunities Accessed" },
-  { value: "500+", label: "Registered Businesses" },
-  { value: "85%", label: "Certification Success Rate" },
-  { value: "35+", label: "Years Combined Experience" },
+  { value: "$1.275M", label: "MBDA Cooperative Agreement" },
+  { value: "64", label: "Louisiana Parishes Served" },
+  { value: "3", label: "Program Years (2026–2029)" },
+  { value: "1 of 3", label: "HBCU Rural Centers Nationwide" },
 ];
 
 const processSteps = [
   {
     number: "01",
-    title: "Complete Registration",
+    title: "Intake Interview",
     description:
-      "Fill out our comprehensive client registration form with your business details, capabilities, and goals.",
+      "Start with our AI-guided intake interview — about 15 minutes. It tells us about your business, goals, and needs.",
   },
   {
     number: "02",
-    title: "Assessment & Planning",
+    title: "Enrollment",
     description:
-      "Our team reviews your information and schedules a consultation to understand your specific needs and opportunities.",
+      "Confirm rural eligibility, sign the MBDA Letter of Engagement, and complete a short baseline survey.",
   },
   {
     number: "03",
-    title: "Capability Building",
+    title: "Service Plan",
     description:
-      "We help you obtain certifications, develop proposals, and prepare for government and OEM contracting opportunities.",
+      "Meet your LIFT advisor and work a personalized plan — advising, workshops, capital, and contracting support.",
   },
   {
     number: "04",
-    title: "Contract Acquisition",
+    title: "Outcome Check-Ins",
     description:
-      "Get matched with relevant opportunities and receive ongoing support throughout the proposal and award process.",
+      "Check in at 6 and 12 months to track jobs, revenue, capital, and contracts — and adjust your plan as you grow.",
   },
 ];
 
-export default function ClientRegistrationResourcesPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const eligibility = [
+  "Your business is located in a rural Louisiana parish",
+  "You own or are starting a small business",
+  "You're willing to complete the intake and enrollment forms",
+  "You can commit to periodic advisor check-ins",
+];
 
+const faqs = [
+  {
+    question: "Does the program really cost nothing?",
+    answer:
+      "Yes. LIFT services are funded by an MBDA cooperative agreement — advising, workshops, readiness reviews, and the intake process are all free to eligible rural businesses.",
+  },
+  {
+    question: "How do I know if my business counts as rural?",
+    answer:
+      "Rural eligibility is confirmed during enrollment. Most businesses outside Louisiana's major metro cores qualify — if you're unsure, start the intake interview and we'll verify for you.",
+  },
+  {
+    question: "What do I need to get started?",
+    answer:
+      "Just complete the online intake interview — about 15 minutes. After that, enrollment involves a short eligibility confirmation, the MBDA Letter of Engagement, and a baseline survey.",
+  },
+  {
+    question: "Do I have to want a government contract to join?",
+    answer:
+      "No. Government contracting is one readiness area among many. Your service plan is built around your goals — whether that's financing, marketing, operations, or contracting.",
+  },
+  {
+    question: "What is the advanced manufacturing program?",
+    answer:
+      "Rural manufacturers get hands-on access to the center's metal additive manufacturing lab — making, repairing, and testing parts for agriculture, energy, and defense supply chains.",
+  },
+  {
+    question: "Will my information stay private?",
+    answer:
+      "Your information is used to deliver program services and required MBDA outcome reporting. It is never sold. Outcome reporting to MBDA is aggregated and follows federal data requirements.",
+  },
+];
+
+export default function ResourcesPage() {
   return (
     <>
       {/* Hero Section */}
@@ -123,24 +150,26 @@ export default function ClientRegistrationResourcesPage() {
               variant="outline"
               className="mb-6 border-primary/50 text-primary"
             >
-              Resources / Client Registration
+              Resources &amp; Services
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Start Your Journey with{" "}
-              <span className="text-primary">KDM & Associates</span>
+              Free Resources for{" "}
+              <span className="text-primary">Rural Business Growth</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Filling out our client registration form is the first step toward
-              securing government contracts and manufacturing OEM partnerships.
-              Let us help you navigate the path to success.
+              Everything the Southern University LIFT Center offers rural
+              Louisiana small businesses — advising, training, capital
+              readiness, and contracting support at no cost.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => setIsModalOpen(true)}>
-                Register Now
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" asChild>
+                <Link href="/sign-up">
+                  Start the Intake Interview
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/contact">Schedule a Call</Link>
+                <Link href="/contact">Contact the Center</Link>
               </Button>
             </div>
           </div>
@@ -151,8 +180,8 @@ export default function ClientRegistrationResourcesPage() {
       <section className="py-12 border-b">
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-primary">
                   {stat.value}
                 </div>
@@ -165,22 +194,21 @@ export default function ClientRegistrationResourcesPage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Services Section */}
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl font-bold mb-4">
-              Why Work with KDM & Associates?
+              What the Center Offers
             </h2>
             <p className="text-muted-foreground text-lg">
-              We provide comprehensive support to help minority-owned and
-              small businesses succeed in government contracting and
-              manufacturing supply chains.
+              Six connected service areas, all delivered at no cost to
+              eligible rural Louisiana businesses.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="h-full">
+            {benefits.map((benefit) => (
+              <Card key={benefit.title} className="h-full">
                 <CardHeader>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <benefit.icon className="h-6 w-6 text-primary" />
@@ -203,19 +231,19 @@ export default function ClientRegistrationResourcesPage() {
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge variant="outline" className="mb-4">
-              Our Process
+              How It Works
             </Badge>
             <h2 className="text-3xl font-bold mb-4">
-              Your Path to Contracting Success
+              Your Path Through the Program
             </h2>
             <p className="text-muted-foreground text-lg">
-              We guide you through every step of becoming a successful
-              government contractor and manufacturing partner.
+              From first contact to measurable outcomes — here&apos;s the
+              journey every LIFT client takes.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {processSteps.map((step, index) => (
-              <Card key={index} className="relative h-full">
+              <Card key={step.number} className="relative h-full">
                 <CardHeader>
                   <div className="text-4xl font-bold text-primary/20 mb-4">
                     {step.number}
@@ -244,28 +272,19 @@ export default function ClientRegistrationResourcesPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <Badge variant="outline" className="mb-4">
-                Who Can Register
+                Who Can Join
               </Badge>
               <h2 className="text-3xl font-bold mb-6">
-                Are You Eligible to Work with Us?
+                Is Your Business Eligible?
               </h2>
               <p className="text-muted-foreground mb-6">
-                KDM & Associates works with a diverse range of businesses
-                seeking to enter or expand in government contracting and
-                manufacturing supply chains.
+                The LIFT Center serves rural Louisiana small businesses — from
+                main-street shops to manufacturers. You&apos;re likely eligible
+                if:
               </p>
               <ul className="space-y-4">
-                {[
-                  "Minority-owned businesses (MBE)",
-                  "Women-owned businesses (WBE/WOSB)",
-                  "Veteran-owned businesses (VOSB/SDVOSB)",
-                  "8(a) certified or eligible firms",
-                  "HUBZone qualified businesses",
-                  "Small disadvantaged businesses",
-                  "Emerging small businesses",
-                  "Manufacturing and technology companies",
-                ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
+                {eligibility.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
@@ -275,127 +294,35 @@ export default function ClientRegistrationResourcesPage() {
             <Card className="bg-primary/5 border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-primary" />
-                  Industries We Serve
+                  <MapPin className="h-5 w-5 text-primary" />
+                  Where We Work
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Based at Southern University in Baton Rouge, the center
+                  serves rural small businesses across all 64 Louisiana
+                  parishes — with services delivered on campus, in communities,
+                  and virtually.
+                </p>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    "Manufacturing",
-                    "Technology",
-                    "Construction",
-                    "Professional Services",
-                    "Logistics",
-                    "Healthcare",
-                    "Engineering",
-                    "Defense",
-                  ].map((industry, index) => (
+                    "Advising statewide",
+                    "Baton Rouge workshops",
+                    "Virtual training",
+                    "Manufacturing lab",
+                  ].map((item) => (
                     <div
-                      key={index}
+                      key={item}
                       className="flex items-center gap-2 text-sm"
                     >
                       <div className="h-2 w-2 rounded-full bg-primary" />
-                      {industry}
+                      {item}
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-black text-white">
-        <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Take the First Step?
-            </h2>
-            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              Complete our client registration form to get started. This is your
-              gateway to government contracts, manufacturing OEM partnerships,
-              and the support you need to grow your business.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={() => setIsModalOpen(true)}>
-                <ClipboardCheck className="mr-2 h-5 w-5" />
-                Complete Registration Form
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                asChild
-              >
-                <Link href="/contact">
-                  <Briefcase className="mr-2 h-5 w-5" />
-                  Talk to an Expert First
-                </Link>
-              </Button>
-            </div>
-            <p className="text-sm text-gray-400 mt-6">
-              The registration form takes approximately 5-10 minutes to
-              complete. All information is kept confidential.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge variant="outline" className="mb-4">
-              Success Stories
-            </Badge>
-            <h2 className="text-3xl font-bold mb-4">
-              Businesses Like Yours Are Succeeding
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                quote:
-                  "KDM & Associates helped us navigate the complex 8(a) certification process and secure our first federal contract within 6 months.",
-                author: "Operations Director",
-                company: "Mid-Sized Manufacturing Firm",
-              },
-              {
-                quote:
-                  "Their teaming arrangement program connected us with a prime contractor that has resulted in over $5M in subcontracts.",
-                author: "CEO",
-                company: "Technology Solutions Provider",
-              },
-              {
-                quote:
-                  "From SAM registration to proposal writing, KDM guided us every step of the way to winning our first government contract.",
-                author: "President",
-                company: "Minority-Owned Construction Company",
-              },
-            ].map((testimonial, index) => (
-              <Card key={index} className="h-full">
-                <CardContent className="pt-6">
-                  <div className="flex gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Award
-                        key={star}
-                        className="h-4 w-4 text-primary fill-primary"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground mb-6 italic">
-                    "{testimonial.quote}"
-                  </p>
-                  <div className="mt-auto">
-                    <p className="font-medium text-sm">{testimonial.author}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {testimonial.company}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
@@ -409,49 +336,8 @@ export default function ClientRegistrationResourcesPage() {
             </h2>
           </div>
           <div className="max-w-3xl mx-auto space-y-4">
-            {[
-              {
-                question: "What information do I need to provide?",
-                answer:
-                  "The registration form collects your ownership details, professional background, company information, business identifiers (NAICS codes, CAGE codes, SAM registration), and your specific needs and interests. This helps us understand your business and match you with the right opportunities.",
-              },
-              {
-                question: "Do I need to have NAICS codes and certifications?",
-                answer:
-                  "You'll need at least one NAICS code to register. If you don't have certifications yet, that's okay—we can help you determine which certifications (8(a), HUBZone, WOSB, SDVOSB, MBE, DBE, SBE) would benefit your business and guide you through the process.",
-              },
-              {
-                question: "How long does the registration process take?",
-                answer:
-                  "The registration form takes approximately 5-10 minutes to complete. After submission, our team typically reviews and responds within 2-3 business days.",
-              },
-              {
-                question: "What happens after I register?",
-                answer:
-                  "Once registered, you'll be contacted by a KDM representative to schedule an initial consultation. We'll assess your current capabilities, discuss your goals, and create a customized action plan based on your needs.",
-              },
-              {
-                question: "Can I specify which government agencies I want to work with?",
-                answer:
-                  "Yes. During registration, you can select target government agencies you're interested in working with, including DoD, VA, DHS, HHS, DOE, DOT, and others. This helps us match you with relevant opportunities.",
-              },
-              {
-                question: "Do you help with financing and loans?",
-                answer:
-                  "Yes. We can connect you with financing options and loan programs to support your business growth and contract fulfillment needs. This is one of the services you can indicate interest in during registration.",
-              },
-              {
-                question: "Can I connect with manufacturing OEMs?",
-                answer:
-                  "Yes. During registration, you can specify OEM manufacturers you're interested in working with. We help connect qualified minority businesses with major OEMs and prime contractors seeking supply chain partners.",
-              },
-              {
-                question: "Is there a cost to register?",
-                answer:
-                  "No, client registration is free. We evaluate your business needs and provide recommendations at no cost. Some services may have fees, which are always discussed transparently before any engagement.",
-              },
-            ].map((faq, index) => (
-              <Card key={index}>
+            {faqs.map((faq) => (
+              <Card key={faq.question}>
                 <CardHeader>
                   <CardTitle className="text-lg">{faq.question}</CardTitle>
                 </CardHeader>
@@ -474,35 +360,32 @@ export default function ClientRegistrationResourcesPage() {
               <div className="max-w-2xl mx-auto">
                 <Handshake className="h-12 w-12 mx-auto mb-6 opacity-80" />
                 <h2 className="text-3xl font-bold mb-4">
-                  Your Government Contracting Journey Starts Here
+                  Your Growth Plan Starts Here
                 </h2>
                 <p className="text-lg opacity-90 mb-8">
-                  Don't miss out on billions in contract opportunities. Register
-                  today and take the first step toward growing your business
-                  through government and manufacturing partnerships.
+                  The intake interview takes about 15 minutes — and it&apos;s
+                  the only thing standing between you and a free, personalized
+                  service plan.
                 </p>
                 <Button
                   size="lg"
                   variant="secondary"
-                  onClick={() => setIsModalOpen(true)}
+                  asChild
                 >
-                  <FileText className="mr-2 h-5 w-5" />
-                  Start Your Registration
+                  <Link href="/sign-up">
+                    <FileText className="mr-2 h-5 w-5" />
+                    Start the Intake Interview
+                  </Link>
                 </Button>
+                <p className="text-sm opacity-70 mt-6">
+                  Funded in part by the U.S. Department of Commerce, Minority
+                  Business Development Agency (MBDA).
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
       </section>
-
-      {/* Registration Modal */}
-      <ClientRegistrationModal
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        onSuccess={() => {
-          // Show success message or redirect
-        }}
-      />
     </>
   );
 }

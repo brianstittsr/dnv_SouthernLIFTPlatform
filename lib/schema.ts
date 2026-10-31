@@ -47,6 +47,65 @@ export interface UserDoc extends Omit<User, "createdAt" | "lastActive" | "capabi
   createdAt: Timestamp;
   lastActive: Timestamp;
   capabilities?: string[]; // Reference IDs to capabilities subcollection
+
+  // LIFT onboarding — GOVCON readiness (written by /portal/onboarding)
+  interestedInGovcon?: boolean;
+  samRegistered?: "registered" | "in-progress" | "not-registered" | "unsure" | "";
+  isManufacturer?: boolean; // any selected NAICS in sector 31-33
+  dunsUei?: string;
+  cageCode?: string;
+
+  // Capability statement — file bytes live in fileBlobs (base64 chunks,
+  // printable via /api/files/{fileId}); extracted text lives in
+  // member_attachments.markdownContent for search and AI context.
+  hasCapabilityStatement?: boolean;
+  capabilityStatementFileId?: string | null; // fileBlobs doc id
+  capabilityStatementAttachmentId?: string | null; // member_attachments doc id
+  capabilityStatementFileName?: string | null;
+  wantsCapabilityStatementHelp?: boolean; // service-offer flag for advisors
+
+  // Shared company record — set by POST /api/companies/link so multiple
+  // people at the same company reference one `companies` doc instead of
+  // duplicating company fields per user.
+  companyId?: string | null;
+  companyName?: string;
+
+  // LIFT merged intake (written by /portal/onboarding; the same answers are
+  // submitted through the lift-intake form pipeline into liftClients).
+  liftClientId?: string | null;
+  liftIntakeSubmissionId?: string | null;
+  dba?: string;
+  businessNotRegistered?: boolean;
+  applyingAs?: string;
+  stage?: string;
+  revenueLast12?: number | null;
+  certificationsPlanned?: string[];
+  soldToGovernment?: boolean;
+  productsServices?: string[];
+  digitalTools?: string[];
+  seekingCapital?: boolean;
+  capitalPurpose?: string;
+  capitalAmount?: number | null;
+  topNeed?: string;
+  barriers?: string;
+  goals12Months?: string;
+  preferredServices?: string[];
+  serviceArea?: string[];
+  referralSource?: string;
+  // B2 operational fields — collected once in onboarding, prefilled into the
+  // MBDA Letter of Engagement via the liftClientProfiles crosswalk.
+  acquisitionMethod?: string;
+  openToTeaming?: boolean;
+  outOfState?: boolean;
+  inHouseBD?: boolean;
+  resourcesToInvest?: boolean;
+  aiDisclosureAcknowledged?: boolean;
+  privacyAcknowledged?: boolean;
+  emailOptIn?: boolean;
+  mobilePhone?: string;
+  jobTitle?: string;
+  linkedin?: string;
+  ownerEthnicity?: string;
 }
 
 /** Organization document in Firestore */
@@ -3742,6 +3801,8 @@ export interface LiftClientRecord {
   legalName: string;
   status: "intake_draft" | "intake_submitted" | "enrolled" | "inactive";
   ownerUid?: string;
+  /** Shared `companies` doc this client belongs to — set by POST /api/companies/link. */
+  companyId?: string;
   contactEmail?: string;
   uei?: string;
   enrollment?: {

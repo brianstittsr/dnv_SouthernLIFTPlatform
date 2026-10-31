@@ -126,6 +126,9 @@ export default function SignInPage() {
       if (userData && !userData.hasChangedPassword) {
         // Redirect to change password page
         router.push("/change-password");
+      } else if ((userData?.accountType === "lift_client" || userData?.role === "sme_user") && userData?.isOnboardingComplete !== true) {
+        // LIFT clients land on the LIFT onboarding wizard until their profile is complete
+        router.push("/portal/onboarding");
       } else if (userData?.svpRole === "consortium_member") {
         // Consortium members land on the consortium onboarding page
         router.push("/portal/consortium/onboarding");

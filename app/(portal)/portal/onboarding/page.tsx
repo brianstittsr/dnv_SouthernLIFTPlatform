@@ -4,17 +4,20 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db, auth } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
+import { doc, Timestamp, setDoc } from "firebase/firestore";
 import {
   OnboardingWizard,
   WizardStep,
   BusinessInfoStep,
-  CertificationsStep,
+  GovconStep,
   CapabilitiesStep,
+  NeedsGoalsStep,
+  OperationsStep,
   ContactInfoStep,
-  ProofPackStep,
+  ProgramStep,
   ReviewStep,
   initialSMEFormData,
+  isManufacturingBusiness,
   AgencyInfoStep,
   RoleStep,
   ProcurementInterestsStep,
@@ -25,6 +28,91 @@ import {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getProgramBranding } from "@/lib/branding";
+import { liftApi } from "@/components/forms/lift-api";
+import type { FormValues } from "@/lib/form-builder/types";
+
+/** Maps wizard certification ids to the intake form's option labels. */
+const CERT_ID_TO_OPTION: Record<string, string> = {
+  "8a": "8(a)",
+  wosb: "WOSB",
+  edwosb: "EDWOSB",
+  sdvosb: "SDVOSB",
+  hubzone: "HUBZone",
+  mbe: "MBE",
+  dbe: "DBE",
+  other: "Other",
+};
+
+/**
+ * Maps the merged onboarding wizard data onto the LIFT intake form's field
+ * keys, so the wizard submits through the same pipeline as any intake
+ * (validation, liftClients mappings, AI summary, parish inference, and
+ * attachment analysis all apply).
+ */
+/** Priority for deriving B2's single minority-certification answer from the multi-select. */
+const MINORITY_CERT_PRIORITY: [string, string][] = [
+  ["mbe", "MBE"],
+  ["dbe", "DBE"],
+  ["wosb", "WBE / WOSB"],
+  ["edwosb", "WBE / WOSB"],
+  ["8a", "8(a)"],
+  ["hubzone", "HUBZone"],
+  ["sdvosb", "SDVOSB"],
+];
+
+function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
+  const certOptions = (ids: string[]) => ids.map((id) => CERT_ID_TO_OPTION[id] ?? "Other");
+  const minorityCert = MINORITY_CERT_PRIORITY.find(([id]) => d.certifications.includes(id))?.[1];
+  const values: FormValues = {
+    fullName: d.contactName,
+    contactTitle: d.contactTitle,
+    email: d.contactEmail,
+    phone: d.contactPhone,
+    mobilePhone: d.mobilePhone,
+    linkedin: d.linkedin,
+    ownerEthnicity: d.ownerEthnicity,
+    serviceArea: d.serviceArea,
+    aiDisclosure: d.aiDisclosure,
+    privacyAck: d.privacyAck,
+    emailOptIn: d.emailOptIn,
+    businessName: d.businessNotRegistered ? "Not registered yet" : d.companyName,
+    dba: d.dba,
+    applyingAs: d.applyingAs,
+    address: d.address,
+    city: d.city,
+    zip: d.zip,
+    productsServices: d.productsServices,
+    naics: d.primaryNaics,
+    stage: d.stage,
+    employeesFullTime: d.employeeCount,
+    samRegistered:
+      d.interestedInGovcon === "yes" && (d.samRegistered === "registered" || d.samRegistered === "in-progress")
+        ? "yes"
+        : "no",
+    uei: d.dunsUei,
+    soldToGovernment: d.soldToGovernment === "yes" ? "yes" : "no",
+    certifications: certOptions(d.certifications),
+    certificationsPlanned: certOptions(d.certificationsPlanned),
+    minorityCertification: minorityCert ?? "None",
+    digitalTools: d.digitalTools,
+    acquisitionMethod: d.acquisitionMethod,
+    openToTeaming: d.openToTeaming === "yes" ? "yes" : "no",
+    outOfState: d.outOfState === "yes" ? "yes" : "no",
+    inHouseBD: d.inHouseBD === "yes" ? "yes" : "no",
+    resourcesToInvest: d.resourcesToInvest === "yes" ? "yes" : "no",
+    seekingCapital: d.seekingCapital === "yes" ? "yes" : "no",
+    capitalPurpose: d.capitalPurpose,
+    topNeed: d.topNeed,
+    barriers: d.barriers,
+    goals12Months: d.goals12Months,
+    preferredServices: d.preferredServices,
+    referralSource: d.referralSource,
+    attachments: d.attachmentFiles,
+  };
+  if (d.revenueLast12) values.revenueLast12 = Number(d.revenueLast12);
+  if (d.seekingCapital === "yes" && d.capitalAmount) values.capitalAmount = Number(d.capitalAmount);
+  return values;
+}
 
 function OnboardingContent() {
   const router = useRouter();
@@ -59,12 +147,69 @@ function OnboardingContent() {
     if (!db || !profile.id) return;
 
     try {
-      const updateData = userType === "sme" 
+      // For LIFT clients, submit the merged data through the intake pipeline
+      // first — it validates, creates/links the liftClients record, runs the AI
+      // summary, infers the parish, and analyzes attachments. The wizard only
+      // completes when both records are written.
+      let intakeResult: { submissionId: string; liftClientId?: string } | null = null;
+      if (userType === "sme") {
+        try {
+          intakeResult = await liftApi.submit("lift-intake", { values: buildIntakeValues(smeFormData) });
+        } catch (error) {
+          console.error("LIFT intake submission failed:", error);
+          toast.error(error instanceof Error ? error.message : "Could not record your intake. Please try again.");
+          return;
+        }
+      }
+
+      // Link the user (and their LIFT client record) to a shared `companies`
+      // doc — matched by UEI or normalized name so colleagues land on one
+      // company record. Failure doesn't block onboarding.
+      let companyId: string | null = null;
+      if (userType === "sme" && smeFormData.companyName.trim()) {
+        try {
+          const idToken = await auth?.currentUser?.getIdToken();
+          if (!idToken) throw new Error("Not signed in");
+          const linkResponse = await fetch("/api/companies/link", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${idToken}` },
+            body: JSON.stringify({
+              legalCompanyName: smeFormData.companyName,
+              dba: smeFormData.dba,
+              website: smeFormData.website,
+              uei: smeFormData.dunsUei,
+              cageCode: smeFormData.cageCode,
+              address: { street: smeFormData.address, city: smeFormData.city, state: smeFormData.state, zip: smeFormData.zip },
+              yearEstablished: smeFormData.yearEstablished,
+              employeeCountRange: smeFormData.employeeCount,
+              annualRevenueCents: smeFormData.revenueLast12 ? Math.round(Number(smeFormData.revenueLast12) * 100) : undefined,
+              naicsCodes: smeFormData.primaryNaics,
+              certifications: smeFormData.certifications,
+              productsServices: smeFormData.productsServices,
+              coreCapabilities: smeFormData.coreCapabilities,
+              keyDifferentiators: smeFormData.keyDifferentiators,
+              digitalTools: smeFormData.digitalTools,
+              liftClientId: intakeResult?.liftClientId,
+            }),
+          });
+          const linkBody = (await linkResponse.json()) as { data?: { companyId: string }; error?: string };
+          if (!linkResponse.ok) throw new Error(linkBody.error || "Link failed");
+          companyId = linkBody.data?.companyId ?? null;
+        } catch (error) {
+          console.error("Company link failed:", error);
+          toast.warning("Profile saved, but your company record could not be linked. Staff can link it for you.");
+        }
+      }
+
+      const updateData = userType === "sme"
         ? {
             email: profile.email,
             firstName: smeFormData.contactName?.split(" ")[0] || "",
             lastName: smeFormData.contactName?.split(" ").slice(1).join(" ") || "",
-            company: smeFormData.companyName,
+            company: smeFormData.businessNotRegistered ? "Not registered yet" : smeFormData.companyName,
+            businessNotRegistered: smeFormData.businessNotRegistered,
+            dba: smeFormData.dba,
+            applyingAs: smeFormData.applyingAs,
             dunsUei: smeFormData.dunsUei,
             cageCode: smeFormData.cageCode,
             address: smeFormData.address,
@@ -74,13 +219,51 @@ function OnboardingContent() {
             website: smeFormData.website,
             yearEstablished: smeFormData.yearEstablished,
             employeeCount: smeFormData.employeeCount,
+            stage: smeFormData.stage,
+            revenueLast12: smeFormData.revenueLast12 ? Number(smeFormData.revenueLast12) : null,
             certifications: smeFormData.certifications,
+            certificationsPlanned: smeFormData.certificationsPlanned,
+            interestedInGovcon: smeFormData.interestedInGovcon === "yes",
+            samRegistered: smeFormData.samRegistered,
+            soldToGovernment: smeFormData.soldToGovernment === "yes",
+            isManufacturer: isManufacturingBusiness(smeFormData.primaryNaics),
             primaryNaics: smeFormData.primaryNaics,
+            productsServices: smeFormData.productsServices,
             coreCapabilities: smeFormData.coreCapabilities,
             pastPerformance: smeFormData.pastPerformance,
             keyDifferentiators: smeFormData.keyDifferentiators,
+            digitalTools: smeFormData.digitalTools,
+            hasCapabilityStatement: Boolean(smeFormData.capabilityStatementFileId),
+            capabilityStatementFileId: smeFormData.capabilityStatementFileId || null,
+            capabilityStatementAttachmentId: smeFormData.capabilityStatementAttachmentId || null,
+            capabilityStatementFileName: smeFormData.capabilityStatementFileName || null,
+            wantsCapabilityStatementHelp: smeFormData.wantsCapabilityStatementHelp,
+            seekingCapital: smeFormData.seekingCapital === "yes",
+            capitalPurpose: smeFormData.capitalPurpose,
+            capitalAmount: smeFormData.capitalAmount ? Number(smeFormData.capitalAmount) : null,
+            topNeed: smeFormData.topNeed,
+            barriers: smeFormData.barriers,
+            goals12Months: smeFormData.goals12Months,
+            preferredServices: smeFormData.preferredServices,
+            serviceArea: smeFormData.serviceArea,
+            referralSource: smeFormData.referralSource,
+            acquisitionMethod: smeFormData.acquisitionMethod,
+            openToTeaming: smeFormData.openToTeaming === "yes",
+            outOfState: smeFormData.outOfState === "yes",
+            inHouseBD: smeFormData.inHouseBD === "yes",
+            resourcesToInvest: smeFormData.resourcesToInvest === "yes",
+            aiDisclosureAcknowledged: smeFormData.aiDisclosure,
+            privacyAcknowledged: smeFormData.privacyAck,
+            emailOptIn: smeFormData.emailOptIn,
             phone: smeFormData.contactPhone,
+            mobilePhone: smeFormData.mobilePhone,
+            jobTitle: smeFormData.contactTitle,
+            linkedin: smeFormData.linkedin,
+            ownerEthnicity: smeFormData.ownerEthnicity,
             preferredContactMethod: smeFormData.preferredContactMethod,
+            liftClientId: intakeResult?.liftClientId ?? null,
+            liftIntakeSubmissionId: intakeResult?.submissionId ?? null,
+            companyId: companyId ?? null,
             isOnboardingComplete: true,
             onboardingCompletedAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -149,28 +332,80 @@ function OnboardingContent() {
       description: "Tell us about your company",
       component: <BusinessInfoStep formData={smeFormData} setFormData={setSmeFormData} />,
       validate: () => {
-        if (!smeFormData.companyName || !smeFormData.dunsUei || !smeFormData.address || !smeFormData.city || !smeFormData.state || !smeFormData.zip) {
+        if ((!smeFormData.businessNotRegistered && !smeFormData.companyName) || !smeFormData.address || !smeFormData.city || !smeFormData.state || !smeFormData.zip) {
           toast.error("Please fill in all required fields");
+          return false;
+        }
+        if (!smeFormData.applyingAs || !smeFormData.stage || !smeFormData.employeeCount) {
+          toast.error("Please select your entity type, business stage, and employee range");
           return false;
         }
         return true;
       },
     },
     {
-      id: "certifications",
-      title: "Certifications",
-      description: "Select your business certifications",
-      component: <CertificationsStep formData={smeFormData} setFormData={setSmeFormData} />,
-      isOptional: true,
-    },
-    {
       id: "capabilities",
       title: "Capabilities",
-      description: "Describe your core capabilities and NAICS codes",
+      description: "Describe your products, services, and NAICS codes",
       component: <CapabilitiesStep formData={smeFormData} setFormData={setSmeFormData} />,
       validate: () => {
-        if (smeFormData.primaryNaics.length === 0 || !smeFormData.coreCapabilities) {
-          toast.error("Please add at least one NAICS code and describe your capabilities");
+        if (smeFormData.productsServices.length === 0 || smeFormData.primaryNaics.length === 0 || !smeFormData.coreCapabilities) {
+          toast.error("Please add at least one product/service, one NAICS code, and describe your capabilities");
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      id: "govcon",
+      title: "Government Contracting",
+      description: "Your GOVCON readiness — SAM.gov, UEI, and certifications",
+      component: <GovconStep formData={smeFormData} setFormData={setSmeFormData} />,
+      validate: () => {
+        if (!smeFormData.interestedInGovcon) {
+          toast.error("Please tell us whether you're interested in government contracting");
+          return false;
+        }
+        if (smeFormData.interestedInGovcon === "yes" && !smeFormData.samRegistered) {
+          toast.error("Please select your SAM.gov registration status");
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      id: "needs-goals",
+      title: "Needs & Goals",
+      description: "What your business needs most and where you're headed",
+      component: <NeedsGoalsStep formData={smeFormData} setFormData={setSmeFormData} />,
+      validate: () => {
+        if (!smeFormData.seekingCapital) {
+          toast.error("Please tell us whether you're seeking financing or investment");
+          return false;
+        }
+        if (!smeFormData.topNeed || !smeFormData.barriers || !smeFormData.goals12Months) {
+          toast.error("Please fill in your top need, barriers, and 12-month goals");
+          return false;
+        }
+        if (smeFormData.preferredServices.length === 0) {
+          toast.error("Please select at least one kind of help you're interested in");
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      id: "operations",
+      title: "Operations",
+      description: "How your business wins and delivers work",
+      component: <OperationsStep formData={smeFormData} setFormData={setSmeFormData} />,
+      validate: () => {
+        if (!smeFormData.acquisitionMethod) {
+          toast.error("Please tell us how you currently get business");
+          return false;
+        }
+        if (!smeFormData.openToTeaming || !smeFormData.outOfState || !smeFormData.inHouseBD || !smeFormData.resourcesToInvest) {
+          toast.error("Please answer all four yes/no questions");
           return false;
         }
         return true;
@@ -179,7 +414,7 @@ function OnboardingContent() {
     {
       id: "contact",
       title: "Contact Information",
-      description: "How can buyers reach you?",
+      description: "How can your LIFT advisor reach you?",
       component: <ContactInfoStep formData={smeFormData} setFormData={setSmeFormData} />,
       validate: () => {
         if (!smeFormData.contactName || !smeFormData.contactEmail || !smeFormData.contactPhone) {
@@ -190,11 +425,29 @@ function OnboardingContent() {
       },
     },
     {
-      id: "proof-pack",
-      title: "Proof Pack",
-      description: "Upload your capability documents",
-      component: <ProofPackStep />,
-      isOptional: true,
+      id: "program",
+      title: "LIFT Program",
+      description: "Service areas, supporting documents, and consents",
+      component: <ProgramStep formData={smeFormData} setFormData={setSmeFormData} />,
+      validate: () => {
+        if (smeFormData.serviceArea.length === 0) {
+          toast.error("Please select at least one LIFT service area");
+          return false;
+        }
+        if (!smeFormData.referralSource) {
+          toast.error("Please tell us how you heard about the LIFT Center");
+          return false;
+        }
+        if (!smeFormData.aiDisclosure) {
+          toast.error("Please acknowledge the AI disclosure to continue");
+          return false;
+        }
+        if (!smeFormData.privacyAck) {
+          toast.error("Please acknowledge the privacy notice to continue");
+          return false;
+        }
+        return true;
+      },
     },
     {
       id: "review",

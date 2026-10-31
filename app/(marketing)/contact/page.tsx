@@ -25,33 +25,29 @@ import {
   Clock,
   ArrowRight,
   CheckCircle,
-  Linkedin,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { db } from "@/lib/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { COLLECTIONS } from "@/lib/schema";
 import { getProgramBranding } from "@/lib/branding";
 
 const services = [
-  "Digital Solutions",
-  "Technology Solutions",
-  "Grants & RFPs",
-  "Marketing Solutions",
-  "Operations/Performance",
-  "Contracting Vehicles & Certifications",
-  "Strategic Teaming",
+  "One-on-One Business Advising",
+  "Workshops & Training",
+  "Capital & Financing Readiness",
+  "Government Contracting Readiness",
+  "Advanced Manufacturing Program",
+  "Digital & AI Adoption",
+  "Partnership Inquiry",
   "Other",
 ];
 
 const businessTypes = [
-  "8(a) Certified",
-  "WOSB/EDWOSB",
-  "SDVOSB",
-  "HUBZone",
-  "Emerging Small Business",
-  "Small Business",
+  "Rural Small Business",
+  "Start-Up / Pre-Venture",
+  "Manufacturer",
+  "Minority-Owned Business",
+  "Women-Owned Business",
+  "Veteran-Owned Business",
   "Other",
 ];
 
@@ -142,12 +138,13 @@ export default function ContactPage() {
               Get in Touch
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Let's Start Your{" "}
-              <span className="text-primary">Journey</span>
+              Talk to the{" "}
+              <span className="text-primary">LIFT Center</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Ready to compete more effectively? Schedule an introductory session 
-              or reach out to discuss how KDM & Associates can help your business grow.
+              Questions about eligibility, services, or partnerships? Reach
+              out — or jump straight to the intake interview and an advisor
+              will follow up with you.
             </p>
           </div>
         </div>
@@ -161,9 +158,10 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-2xl">Schedule a Session</CardTitle>
+                  <CardTitle className="text-2xl">Send Us a Message</CardTitle>
                   <CardDescription>
-                    Fill out the form below and one of our government contracting experts will contact you within 24 hours.
+                    Fill out the form below and a member of the LIFT Center
+                    team will get back to you within two business days.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -266,7 +264,7 @@ export default function ContactPage() {
                             onCheckedChange={(checked) => setSmsConsentTransactional(checked === true)}
                           />
                           <Label htmlFor="sms-consent-transactional" className="text-sm font-normal">
-                            I consent to receive non-marketing text messages from KDM &amp; Associates about appointment reminders and service inquiries. Message frequency may vary, message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                            I consent to receive non-marketing text messages from the Southern University LIFT Center about appointment reminders and service inquiries. Message frequency may vary, message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
                           </Label>
                         </div>
 
@@ -277,7 +275,7 @@ export default function ContactPage() {
                             onCheckedChange={(checked) => setSmsConsentMarketing(checked === true)}
                           />
                           <Label htmlFor="sms-consent-marketing" className="text-sm font-normal">
-                            I consent to receive marketing text messages, about special offers, discounts, and service updates, from KDM &amp; Associates at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
+                            I consent to receive marketing text messages about LIFT Center workshops, events, and program updates at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. I am 18 or older. Text HELP for assistance, reply STOP to opt out.
                           </Label>
                         </div>
                       </div>
@@ -293,7 +291,7 @@ export default function ContactPage() {
                         "Submitting..."
                       ) : (
                         <>
-                          Schedule Introductory Session
+                          Send Message
                           <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}
@@ -315,9 +313,8 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <Link href="mailto:kmoore@kdm-assoc.com" className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-                        <Mail className="h-5 w-5" />
-                        kmoore@kdm-assoc.com
+                      <Link href={`mailto:${getProgramBranding().contactEmail}`} className="text-gray-600 hover:text-primary transition-colors">
+                        {getProgramBranding().contactEmail}
                       </Link>
                     </div>
                   </div>
@@ -326,10 +323,10 @@ export default function ContactPage() {
                     <div>
                       <p className="font-medium">Phone</p>
                       <Link
-                        href="tel:+1-202-469-3423"
+                        href={`tel:${getProgramBranding().contactPhone.replace(/[^0-9+]/g, "")}`}
                         className="text-muted-foreground hover:text-primary"
                       >
-                        (202) 469-3423
+                        {getProgramBranding().contactPhone}
                       </Link>
                     </div>
                   </div>
@@ -337,32 +334,35 @@ export default function ContactPage() {
                     <MapPin className="h-5 w-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Location</p>
-                      <p className="text-muted-foreground">300 New Jersey Ave NW<br />Washington, DC 20001</p>
+                      <p className="text-muted-foreground">Southern University and A&amp;M College<br />Baton Rouge, LA</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Clock className="h-5 w-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Business Hours</p>
-                      <p className="text-muted-foreground">Mon-Fri: 8am - 6pm EST</p>
+                      <p className="text-muted-foreground">Mon-Fri: 8am - 5pm CST</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Connect */}
-              <Card>
+              {/* Start Intake */}
+              <Card className="border-primary/30 bg-primary/5">
                 <CardHeader>
-                  <CardTitle>Connect With Us</CardTitle>
+                  <CardTitle>Ready to Enroll?</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex gap-3">
-                    <Button variant="outline" size="icon" asChild>
-                      <Link href="https://www.linkedin.com/company/kdmassoc">
-                        <Linkedin className="h-5 w-5" />
-                      </Link>
-                    </Button>
-                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    The fastest way to get help is the online intake interview
+                    — about 15 minutes, and an advisor follows up with you.
+                  </p>
+                  <Button className="w-full" asChild>
+                    <Link href="/sign-up">
+                      Start the Intake Interview
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
 
@@ -374,19 +374,19 @@ export default function ContactPage() {
                 <CardContent className="space-y-3">
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-sm">Response within 24 hours</p>
+                    <p className="text-sm">Response within two business days</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-sm">Free initial assessment</p>
+                    <p className="text-sm">All services at no cost</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-sm">Customized recommendations</p>
+                    <p className="text-sm">A dedicated LIFT advisor</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-sm">No obligation to proceed</p>
+                    <p className="text-sm">Serving all 64 Louisiana parishes</p>
                   </div>
                 </CardContent>
               </Card>
@@ -401,7 +401,7 @@ export default function ContactPage() {
           <DialogHeader>
             <DialogTitle>Confirm Submission</DialogTitle>
             <DialogDescription>
-              Please verify your information before submitting. We'll send a confirmation to your email address.
+              Please verify your information before submitting. We&apos;ll send a confirmation to your email address.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

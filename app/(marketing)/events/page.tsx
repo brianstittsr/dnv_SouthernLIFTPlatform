@@ -79,10 +79,12 @@ export default function EventsPage() {
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            KDM Consortium Events
+            LIFT Workshops &amp; Events
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl">
-            Connect with government buyers, learn from industry experts, and grow your contracting business through our exclusive events.
+            Free training for rural Louisiana small businesses — business
+            planning, capital readiness, government contracting, and more.
+            Every LIFT event is open to eligible businesses at no cost.
           </p>
         </div>
       </section>
@@ -208,14 +210,15 @@ export default function EventsPage() {
       <section className="bg-blue-900 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Want to Host an Event with KDM?
+            Ready to Get Started?
           </h2>
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            Partner with us to reach qualified government contractors and showcase your capabilities to decision-makers.
+            Workshops are just the beginning. Complete the LIFT intake interview
+            and get matched with an advisor who works with you one-on-one — at no cost.
           </p>
-          <Link href="/contact">
+          <Link href="/sign-up">
             <Button size="lg" variant="secondary">
-              Contact Us About Sponsorship
+              Start the Intake Interview
             </Button>
           </Link>
         </div>

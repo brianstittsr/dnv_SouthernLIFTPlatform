@@ -23,6 +23,8 @@ export const CONTROL_CATALOG: readonly ControlDefinition[] = [
   { type: "dropdown", label: "Dropdown", group: "Choice", description: "Pick one from a list", hasValue: true },
   { type: "radio", label: "Radio buttons", group: "Choice", description: "Pick one, all options visible", hasValue: true },
   { type: "multi_select", label: "Multi-select", group: "Choice", description: "Pick any number", hasValue: true },
+  { type: "option_picker", label: "Searchable multi-select", group: "Choice", description: "Search options and add each with a button", hasValue: true },
+  { type: "text_list", label: "Item list", group: "Basic", description: "Free-text items added one per line", hasValue: true },
   { type: "yes_no", label: "Yes / No", group: "Choice", description: "Yes or no answer", hasValue: true },
   { type: "checkbox", label: "Checkbox / consent", group: "Choice", description: "Single agreement checkbox", hasValue: true },
   { type: "platform_lookup", label: "Platform lookup", group: "Choice", description: "Pick from live platform data", hasValue: true },
@@ -74,6 +76,84 @@ export const LOUISIANA_PARISHES = [
   "St. Helena", "St. James", "St. John the Baptist", "St. Landry", "St. Martin", "St. Mary",
   "St. Tammany", "Tangipahoa", "Tensas", "Terrebonne", "Union", "Vermilion", "Vernon", "Washington",
   "Webster", "West Baton Rouge", "West Carroll", "West Feliciana", "Winn",
+] as const;
+
+/**
+ * NAICS options for `option_picker` fields — "code - label" strings.
+ * Covers the sectors most common among LIFT rural-business clients.
+ */
+export const NAICS_OPTIONS = [
+  // Agriculture, forestry, fishing (11)
+  "111 - Crop Production",
+  "112 - Animal Production and Aquaculture",
+  "113 - Forestry and Logging",
+  "115 - Support Activities for Agriculture and Forestry",
+  // Construction (23)
+  "236 - Construction of Buildings",
+  "237 - Heavy and Civil Engineering Construction",
+  "238 - Specialty Trade Contractors",
+  // Manufacturing (31-33)
+  "311 - Food Manufacturing",
+  "312 - Beverage and Tobacco Product Manufacturing",
+  "313 - Textile Mills",
+  "314 - Textile Product Mills",
+  "315 - Apparel Manufacturing",
+  "316 - Leather and Allied Product Manufacturing",
+  "321 - Wood Product Manufacturing",
+  "322 - Paper Manufacturing",
+  "323 - Printing and Related Support Activities",
+  "324 - Petroleum and Coal Products Manufacturing",
+  "325 - Chemical Manufacturing",
+  "326 - Plastics and Rubber Products Manufacturing",
+  "327 - Nonmetallic Mineral Product Manufacturing",
+  "331 - Primary Metal Manufacturing",
+  "332 - Fabricated Metal Product Manufacturing",
+  "333 - Machinery Manufacturing",
+  "334 - Computer and Electronic Product Manufacturing",
+  "335 - Electrical Equipment, Appliance, and Component Manufacturing",
+  "336 - Transportation Equipment Manufacturing",
+  "337 - Furniture and Related Product Manufacturing",
+  "339 - Miscellaneous Manufacturing",
+  // Wholesale & retail (42, 44-45)
+  "423 - Merchant Wholesalers, Durable Goods",
+  "424 - Merchant Wholesalers, Nondurable Goods",
+  "441 - Motor Vehicle and Parts Dealers",
+  "444 - Building Material and Garden Equipment Dealers",
+  "445 - Food and Beverage Stores",
+  "452 - General Merchandise Stores",
+  "454 - Nonstore Retailers (online sales)",
+  // Transportation & warehousing (48-49)
+  "484 - Truck Transportation",
+  "493 - Warehousing and Storage",
+  // Information & professional services (51, 54)
+  "511 - Publishing Industries",
+  "541511 - Custom Computer Programming Services",
+  "541512 - Computer Systems Design Services",
+  "541513 - Computer Facilities Management Services",
+  "541519 - Other Computer Related Services",
+  "541611 - Administrative Management Consulting",
+  "541612 - Human Resources Consulting",
+  "541613 - Marketing Consulting",
+  "541614 - Process, Physical Distribution, and Logistics Consulting",
+  "541618 - Other Management Consulting",
+  "541690 - Other Scientific and Technical Consulting",
+  "541990 - All Other Professional, Scientific, and Technical Services",
+  // Administrative services (56)
+  "561110 - Office Administrative Services",
+  "561210 - Facilities Support Services",
+  "561320 - Temporary Help Services",
+  "561499 - All Other Business Support Services",
+  "5617 - Services to Buildings and Dwellings (janitorial, landscaping)",
+  // Education & health (61, 62)
+  "611 - Educational Services",
+  "621 - Ambulatory Health Care Services",
+  "624 - Social Assistance (child care, community services)",
+  // Hospitality & other services (71, 72, 81)
+  "711 - Performing Arts, Spectator Sports, and Related Industries",
+  "721 - Accommodation (hotels, B&Bs)",
+  "722 - Food Services and Drinking Places",
+  "811 - Repair and Maintenance",
+  "812 - Personal and Laundry Services",
 ] as const;
 
 /** Allowed upload types and size limit for form attachments. */

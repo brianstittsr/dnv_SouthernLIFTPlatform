@@ -23,6 +23,7 @@ import { Separator } from '@/components/ui/separator';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, Timestamp } from 'firebase/firestore';
 import { COLLECTIONS } from '@/lib/schema';
+import { getEventBySlug } from '@/lib/events-data';
 
 interface Event {
   id: string;
@@ -82,6 +83,36 @@ export default function EventDetailPage({ params }: PageProps) {
           id: eventSnap.id,
           ...eventSnap.data()
         } as Event);
+      } else {
+        // Fall back to the static LIFT event catalog (linked by slug)
+        const staticEvent = getEventBySlug(id);
+        if (staticEvent) {
+          const [startTime, endTime] = staticEvent.time.split(' - ');
+          setEvent({
+            id: staticEvent.id,
+            title: staticEvent.title,
+            description: staticEvent.fullDescription,
+            shortDescription: staticEvent.description,
+            startDate: Timestamp.fromDate(staticEvent.eventDate),
+            startTime: startTime ?? staticEvent.time,
+            endDate: Timestamp.fromDate(staticEvent.endDate ?? staticEvent.eventDate),
+            endTime: endTime ?? '',
+            locationType: staticEvent.location.venue.toLowerCase().includes('virtual')
+              ? 'virtual'
+              : 'in-person',
+            location: `${staticEvent.location.venue}, ${staticEvent.location.city}, ${staticEvent.location.state}`,
+            registrationUrl: staticEvent.registrationUrl,
+            maxAttendees: staticEvent.capacity,
+            currentAttendees: staticEvent.registered ?? 0,
+            imageUrl: staticEvent.featuredImage,
+            category: staticEvent.category.toLowerCase(),
+            tags: staticEvent.tags,
+            status: 'published',
+            isFeatured: false,
+            isTicketed: false,
+            sponsorIds: [],
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching event:', error);
@@ -97,8 +128,12 @@ export default function EventDetailPage({ params }: PageProps) {
       // Redirect to ticket purchase flow
       router.push(`/events/${id}/register?ticket=${encodeURIComponent(ticketType)}`);
     } else if (event.registrationUrl) {
-      // External registration
-      window.open(event.registrationUrl, '_blank');
+      if (event.registrationUrl.startsWith('/')) {
+        router.push(event.registrationUrl);
+      } else {
+        // External registration
+        window.open(event.registrationUrl, '_blank');
+      }
     } else {
       // Internal registration
       router.push(`/events/${id}/register`);
@@ -168,7 +203,7 @@ export default function EventDetailPage({ params }: PageProps) {
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-4">Event Not Found</h1>
         <p className="text-muted-foreground mb-8">
-          The event you're looking for doesn't exist or has been removed.
+          The event you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Link href="/events">
           <Button>

@@ -56,6 +56,10 @@ function schemaForField(field: FormField): z.ZodType<FieldValue> {
       return z.string().trim().max(500).refine(optionCheck, "Choose one of the listed options");
     case "multi_select":
       return z.array(z.string().max(500)).max(100).refine((list) => list.every(optionCheck), "Choose from the listed options");
+    case "option_picker":
+      return z.array(z.string().max(500)).min(1, "Add at least one item").max(50).refine((list) => list.every(optionCheck), "Choose from the listed options");
+    case "text_list":
+      return z.array(z.string().trim().min(1).max(500)).max(50);
     case "yes_no":
       return z.enum(["yes", "no"]);
     case "checkbox":

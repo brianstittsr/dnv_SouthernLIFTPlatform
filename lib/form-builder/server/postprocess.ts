@@ -1,8 +1,9 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "@/lib/schema";
-import type { IntakeAiSummary, LiftFormDoc, StoredFile, TableRow } from "../types";
+import type { FormValues, IntakeAiSummary, LiftFormDoc, StoredFile, TableRow } from "../types";
 import { requireDb } from "./context";
-import { generateIntakeSummary } from "./ai-summary";
+import { generateIntakeSummary, inferParish } from "./ai-summary";
+import { analyzeAttachments } from "./attachment-analysis";
 
 export interface PostProcessContext {
   form: LiftFormDoc;
@@ -144,11 +145,49 @@ export async function runPostProcess(context: PostProcessContext): Promise<{ aiS
         ]);
       }
       if (hook === "intake_ai_summary") {
-        result.aiSummary = await generateIntakeSummary(context.form.fields, context.values as never);
-        await db.collection(COLLECTIONS.LIFT_FORM_SUBMISSIONS).doc(context.submissionId).update({ aiSummary: result.aiSummary });
+        const values = context.values as FormValues;
+        result.aiSummary = await generateIntakeSummary(context.form.fields, values as never);
+        const updates: Record<string, unknown> = { aiSummary: result.aiSummary };
+
+        // Derive the parish from the street address so staff don't have to ask.
+        const parish = await inferParish(values);
+        if (parish) {
+          updates.derivedParish = parish;
+          if (clientRef) {
+            await clientRef.set(
+              {
+                address: { parish },
+                eligibility: { rural: { status: "pending", parish, submissionId: context.submissionId } },
+                updatedAt: Timestamp.now(),
+              },
+              { merge: true }
+            );
+          }
+        }
+
+        await db.collection(COLLECTIONS.LIFT_FORM_SUBMISSIONS).doc(context.submissionId).update(updates);
       }
     } catch (error) {
       console.error(`LIFT post-process hook "${hook}" failed:`, error);
+    }
+  }
+
+  // Every uploaded attachment (any form): bytes are already stored as base64
+  // chunks at upload time; here we extract searchable markdown (PDF/CSV) and
+  // AI insights so advisors can triage files without opening them. Runs for
+  // intake attachments, baseline financials, capability statements, capital
+  // documents, award notices, and outcome evidence alike.
+  if (context.files.length) {
+    try {
+      const insights = await analyzeAttachments(context.files);
+      if (insights.length) {
+        await db
+          .collection(COLLECTIONS.LIFT_FORM_SUBMISSIONS)
+          .doc(context.submissionId)
+          .set({ attachmentInsights: insights }, { merge: true });
+      }
+    } catch (error) {
+      console.error("LIFT attachment analysis failed:", error);
     }
   }
   return result;

@@ -11,17 +11,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark, Sparkles } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle, CheckCircle, Factory, Landmark, Sparkles, Rocket } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { findAndLinkTeammember } from "@/lib/auth-team-member-link";
 import { db } from "@/lib/firebase";
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { collection, doc, setDoc, Timestamp } from "firebase/firestore";
+import { COLLECTIONS } from "@/lib/schema";
+import { getProgramBranding } from "@/lib/branding";
 
 export default function SignUpPage() {
+  const branding = getProgramBranding();
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "consortium_member" | "">("");
+  const [accountType, setAccountType] = useState<"buyer" | "supplier" | "client" | "consortium_member" | "lift_client" | "">("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -99,13 +102,43 @@ export default function SignUpPage() {
             await setDoc(userRef, {
               email: email,
               accountType: accountType,
-              role: accountType === "consortium_member" ? "consortium_member" : "team_member",
+              role:
+                accountType === "consortium_member"
+                  ? "consortium_member"
+                  : accountType === "lift_client"
+                    ? "sme_user"
+                    : "team_member",
               svpRole: accountType === "consortium_member" ? "consortium_member" : undefined,
+              hasChangedPassword: true,
               createdAt: now,
               updatedAt: now,
               profileComplete: false,
             });
             console.log("User document created in Firestore:", firebaseUid);
+          }
+
+          // New LIFT clients get a teamMembers record under the client (sme_user)
+          // role, then sign in to start the LIFT onboarding wizard.
+          if (db && firebaseUid && accountType === "lift_client") {
+            const memberRef = doc(collection(db, COLLECTIONS.TEAM_MEMBERS));
+            await setDoc(memberRef, {
+              firebaseUid,
+              firstName: "",
+              lastName: "",
+              emailPrimary: email.toLowerCase().trim(),
+              expertise: "",
+              role: "sme_user",
+              status: "active",
+              isClient: true,
+              clientSince: Timestamp.now(),
+              tags: ["lift-client"],
+              createdAt: Timestamp.now(),
+              updatedAt: Timestamp.now(),
+            });
+            // Sign out so the flow lands on the sign-in page as designed.
+            if (auth) await signOut(auth);
+            router.push("/sign-in");
+            return;
           }
 
           // Check if this email matches an existing Team member and link them
@@ -165,10 +198,10 @@ export default function SignUpPage() {
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex flex-col items-center gap-3 group">
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-[#C8A951] to-[#a08840] rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
+              <div className="absolute -inset-2 bg-primary/20 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
               <Image
-                src="/kdm-logo.png"
-                alt="KDM & Associates Logo"
+                src={branding.logoSrc}
+                alt={branding.logoAlt}
                 width={80}
                 height={80}
                 className="relative h-20 w-auto"
@@ -176,8 +209,8 @@ export default function SignUpPage() {
               />
             </div>
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-foreground">KDM & Associates</h1>
-              <p className="text-sm text-muted-foreground">Powering Growth for Competitive Businesses</p>
+              <h1 className="text-2xl font-bold text-foreground">{branding.programName}</h1>
+              <p className="text-sm text-muted-foreground">An MBDA Rural Business Center</p>
             </div>
           </Link>
         </div>
@@ -185,11 +218,11 @@ export default function SignUpPage() {
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-6">
           <div className="flex items-center gap-2">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 1 ? "bg-[#C8A951] text-white" : "bg-muted text-muted-foreground"}`}>
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 1 ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
               {step > 1 ? <CheckCircle className="h-5 w-5" /> : "1"}
             </div>
-            <div className={`w-16 h-1 ${step > 1 ? "bg-[#C8A951]" : "bg-muted"}`} />
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 2 ? "bg-[#C8A951] text-white" : "bg-muted text-muted-foreground"}`}>
+            <div className={`w-16 h-1 ${step > 1 ? "bg-primary" : "bg-muted"}`} />
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 2 ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
               2
             </div>
           </div>
@@ -202,8 +235,8 @@ export default function SignUpPage() {
               {step === 1 ? "Choose Account Type" : "Create Your Account"}
             </CardTitle>
             <CardDescription className="text-center">
-              {step === 1 
-                ? "Select how you'd like to join the KDM Consortium" 
+              {step === 1
+                ? "Select how you'd like to join the Southern LIFT Program"
                 : "Fill in your details to get started"}
             </CardDescription>
           </CardHeader>
@@ -219,13 +252,42 @@ export default function SignUpPage() {
               <div className="space-y-4">
                 <RadioGroup
                   value={accountType}
-                  onValueChange={(value) => setAccountType(value as "buyer" | "client" | "consortium_member")}
+                  onValueChange={(value) => setAccountType(value as "buyer" | "client" | "consortium_member" | "lift_client")}
                   className="space-y-4"
                 >
-                  <div 
+                  <div
                     className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "buyer" 
-                        ? "border-[#C8A951] bg-[#C8A951]/5" 
+                      accountType === "lift_client"
+                        ? "border-primary bg-primary/5"
+                        : "border-muted hover:border-muted-foreground/50"
+                    }`}
+                    onClick={() => setAccountType("lift_client")}
+                  >
+                    <RadioGroupItem value="lift_client" id="lift_client" className="mt-1" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Rocket className="h-5 w-5 text-primary" />
+                        <Label htmlFor="lift_client" className="text-lg font-semibold cursor-pointer">
+                          New LIFT Client
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Join the Southern LIFT Program to access exclusive opportunities, teaming partnerships, and government contracting resources.
+                        Connect with other LIFT members and leverage collective capabilities to compete more effectively for federal contracts.
+                      </p>
+                      <ul className="text-xs text-muted-foreground mt-2 space-y-1">
+                        <li>• Access to SAM.gov opportunities with teaming features</li>
+                        <li>• Proposals and teaming collaboration tools</li>
+                        <li>• In-platform communications with partners</li>
+                        <li>• Dashboard and onboarding support</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      accountType === "buyer"
+                        ? "border-primary bg-primary/5"
                         : "border-muted hover:border-muted-foreground/50"
                     }`}
                     onClick={() => setAccountType("buyer")}
@@ -233,28 +295,28 @@ export default function SignUpPage() {
                     <RadioGroupItem value="buyer" id="buyer" className="mt-1" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Landmark className="h-5 w-5 text-[#C8A951]" />
+                        <Landmark className="h-5 w-5 text-primary" />
                         <Label htmlFor="buyer" className="text-lg font-semibold cursor-pointer">
                           Buyers : Government / Prime / OEM
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Government agencies, prime contractors, and OEMs looking to procure products and services from qualified suppliers. 
-                        Access our network of CMMC-ready suppliers, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
+                        Government agencies, prime contractors, and OEMs looking to procure products and services from qualified suppliers.
+                        Access our network of qualified suppliers, manufacturing partners, and manage your procurement processes across defense and commercial sectors.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
                         <li>• Post opportunities and RFPs for government and manufacturing contracts</li>
                         <li>• Find qualified suppliers and subcontractors</li>
                         <li>• Manage procurement processes</li>
-                        <li>• Access CMMC compliance and manufacturing readiness tools</li>
+                        <li>• Access manufacturing readiness tools</li>
                       </ul>
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "client" 
-                        ? "border-[#C8A951] bg-[#C8A951]/5" 
+                      accountType === "client"
+                        ? "border-primary bg-primary/5"
                         : "border-muted hover:border-muted-foreground/50"
                     }`}
                     onClick={() => setAccountType("client")}
@@ -262,28 +324,28 @@ export default function SignUpPage() {
                     <RadioGroupItem value="client" id="client" className="mt-1" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Factory className="h-5 w-5 text-[#C8A951]" />
+                        <Factory className="h-5 w-5 text-primary" />
                         <Label htmlFor="client" className="text-lg font-semibold cursor-pointer">
-                          Suppliers: Gov't SubContractors / Mfg Suppliers
+                          Suppliers: Gov&apos;t SubContractors / Mfg Suppliers
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Register as a government subcontractor or manufacturing supplier to access KDM consulting and procurement services, 
+                        Register as a government subcontractor or manufacturing supplier to access advisory and procurement services,
                         connect with prime contractors and government buyers, and grow your business in both defense and commercial markets.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <li>• Access to KDM consulting and procurement services</li>
-                        <li>• Supplier qualification and CMMC readiness programs</li>
-                        <li>• Manufacturing assessments and Industry 4.0 support</li>
+                        <li>• Access to advisory and procurement services</li>
+                        <li>• Supplier qualification and readiness programs</li>
+                        <li>• Manufacturing assessments and support</li>
                         <li>• Connect with government buyers and prime contractors</li>
                       </ul>
                     </div>
                   </div>
 
-                  <div 
+                  <div
                     className={`flex items-start space-x-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      accountType === "consortium_member" 
-                        ? "border-[#C8A951] bg-[#C8A951]/5" 
+                      accountType === "consortium_member"
+                        ? "border-primary bg-primary/5"
                         : "border-muted hover:border-muted-foreground/50"
                     }`}
                     onClick={() => setAccountType("consortium_member")}
@@ -291,14 +353,14 @@ export default function SignUpPage() {
                     <RadioGroupItem value="consortium_member" id="consortium_member" className="mt-1" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-[#C8A951]" />
+                        <Sparkles className="h-5 w-5 text-primary" />
                         <Label htmlFor="consortium_member" className="text-lg font-semibold cursor-pointer">
-                          KDM Consortium Member
+                          Consortium Member
                         </Label>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Join the KDM Consortium to access exclusive opportunities, teaming partnerships, and government contracting resources. 
-                        Connect with other consortium members and leverage collective capabilities to compete more effectively for federal contracts.
+                        Join the consortium to access teaming partnerships and government contracting resources.
+                        Connect with other members and leverage collective capabilities to compete more effectively for federal contracts.
                       </p>
                       <ul className="text-xs text-muted-foreground mt-2 space-y-1">
                         <li>• Access to SAM.gov opportunities with teaming features</li>
@@ -310,10 +372,10 @@ export default function SignUpPage() {
                   </div>
                 </RadioGroup>
 
-                <Button 
+                <Button
                   type="button"
                   onClick={handleNextStep}
-                  className="w-full h-11 bg-gradient-to-r from-[#C8A951] to-[#a08840] hover:from-[#b89841] hover:to-[#907830] text-white font-semibold"
+                  className="w-full h-11 font-semibold"
                 >
                   Continue
                 </Button>
@@ -416,9 +478,9 @@ export default function SignUpPage() {
                   >
                     Back
                   </Button>
-                  <Button 
-                    type="submit" 
-                    className="flex-1 h-11 bg-gradient-to-r from-[#C8A951] to-[#a08840] hover:from-[#b89841] hover:to-[#907830] text-white font-semibold"
+                  <Button
+                    type="submit"
+                    className="flex-1 h-11 font-semibold"
                     disabled={isLoading}
                   >
                     {isLoading ? (

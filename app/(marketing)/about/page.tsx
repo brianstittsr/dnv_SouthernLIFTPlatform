@@ -13,61 +13,80 @@ import {
   ArrowRight,
   Factory,
   Handshake,
-  TrendingUp,
-  Globe,
+  GraduationCap,
+  Landmark,
+  ClipboardList,
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About KDM & Associates | Federal Procurement & Industrial Readiness Center",
+  title: "About the Center | Southern University MBDA LIFT Rural Business Center",
   description:
-    "KDM & Associates is a business development firm and Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting through strategic teaming, capacity building, CMMC readiness, and mentorship.",
+    "The Southern University MBDA LIFT Rural Business Center provides no-cost technical assistance, training, capital readiness, and government contracting support to rural Louisiana small businesses — funded in part by the U.S. Department of Commerce MBDA.",
   keywords: [
-    "about KDM Associates",
-    "Federal Procurement and Industrial Readiness Center",
-    "small business development",
-    "small business government contracting",
-    "government contracting consulting firm",
-    "Keith Moore KDM Associates",
-    "Washington DC government contracting",
+    "Southern University LIFT Center",
+    "MBDA LIFT Rural Business Center",
+    "rural Louisiana small business",
+    "small business technical assistance Louisiana",
+    "Baton Rouge small business help",
+    "HBCU Rural Business Center",
   ],
-  alternates: { canonical: "https://kdm-assoc.com/about" },
+  alternates: { canonical: "https://lift.southern.edu/about" },
   openGraph: {
-    title: "About KDM & Associates | Federal Procurement & Industrial Readiness Center",
-    description: "Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting through teaming, CMMC readiness, and mentorship.",
-    url: "https://kdm-assoc.com/about",
+    title: "About the Southern University LIFT Center",
+    description:
+      "No-cost advising, training, and contracting readiness for rural Louisiana small businesses — an MBDA Rural Business Center at Southern University.",
+    url: "https://lift.southern.edu/about",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About KDM & Associates" }],
   },
-  twitter: { card: "summary_large_image", title: "About KDM & Associates", description: "Federal Procurement & Industrial Readiness Center helping small businesses become more prepared and competitive for government contracting." },
 };
 
 const values = [
   {
-    icon: Target,
-    title: "Results-Driven",
-    description:
-      "We measure success by your success. Every engagement is focused on delivering measurable outcomes and competitive positioning.",
-  },
-  {
-    icon: Users,
-    title: "Strategic Teaming",
-    description:
-      "We leverage our partner network to bring the right expertise and teaming opportunities to every client.",
-  },
-  {
     icon: Heart,
-    title: "Partnership Mindset",
+    title: "No-Cost Access",
     description:
-      "We're not just consultants—we're partners invested in your long-term success and sustainable growth.",
+      "Every LIFT service — advising, workshops, readiness reviews — is free to eligible rural businesses, thanks to federal funding.",
+  },
+  {
+    icon: Target,
+    title: "Rural First",
+    description:
+      "The center exists for rural Louisiana. Our services are designed for businesses far from big-city resources.",
   },
   {
     icon: Award,
-    title: "Excellence in Execution",
+    title: "Measurable Outcomes",
     description:
-      "We combine deep government contracting expertise with hands-on support to ensure every client succeeds.",
+      "We track what matters — jobs, revenue, capital accessed, and contracts pursued — at 6- and 12-month check-ins.",
+  },
+  {
+    icon: Users,
+    title: "Partner Powered",
+    description:
+      "Lenders, agencies, universities, and industry partners extend what a small rural center can deliver.",
   },
 ];
 
+const serviceAreas = [
+  {
+    icon: ClipboardList,
+    title: "Business Advising & Technical Assistance",
+    description:
+      "One-on-one advising, business planning, operations, marketing, and a personalized service plan built around your goals.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Training & Workshops",
+    description:
+      "No-cost workshops and virtual training on starting, financing, and growing a business — plus our advanced manufacturing program.",
+  },
+  {
+    icon: Landmark,
+    title: "Capital & Contracting Readiness",
+    description:
+      "Financial readiness, loan packaging, SAM.gov guidance, capability statements, and proposal development support.",
+  },
+];
 
 export default function AboutPage() {
   return (
@@ -77,15 +96,16 @@ export default function AboutPage() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="outline" className="mb-6 border-primary/50 text-primary">
-              About KDM & Associates
+              About the Center
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Fueling What Works Through{" "}
-              <span className="text-primary">Aggregated Resources</span>
+              Lifting Rural Louisiana{" "}
+              <span className="text-primary">Businesses</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Propelling the next generation of government contractors through 
-              capacity building, mentorship, and strategic teaming partnerships.
+              The Southern University MBDA LIFT Rural Business Center delivers
+              no-cost advising, training, and readiness support to small
+              businesses across rural Louisiana.
             </p>
           </div>
         </div>
@@ -102,10 +122,10 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
                 <p className="text-muted-foreground">
-                  To help small businesses 
-                  compete more effectively for government contracts by providing accessible, results-driven 
-                  support services that bridge the gap between current capabilities 
-                  and federal procurement requirements.
+                  To help rural Louisiana small businesses start, stabilize, and
+                  grow — through hands-on technical assistance, practical
+                  training, capital readiness, and government contracting
+                  support delivered at no cost.
                 </p>
               </CardContent>
             </Card>
@@ -117,7 +137,9 @@ export default function AboutPage() {
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
                 <p className="text-muted-foreground">
-                  A thriving digital ecosystem where every capable small business has a clear pathway to grow into a mid-sized enterprise and ultimately become a valued partner to large primes and a successful government contractor, creating jobs, strengthening supply chains, and driving economic growth across the nation.
+                  Thriving rural communities where small businesses create jobs,
+                  keep wealth local, and plug into supply chains in agriculture,
+                  energy, defense, and advanced manufacturing.
                 </p>
               </CardContent>
             </Card>
@@ -125,142 +147,123 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Story */}
+      {/* About the Program */}
       <section className="py-20 md:py-28 bg-muted/30">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Story</h2>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                A Federal Investment in Rural Louisiana
+              </h2>
             </div>
             <div className="prose prose-lg max-w-none">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                On April 30, 2025, KDM & Associates, LLC took a bold step - expanding its mission as a Federal Procurement & Industrial Readiness Center to deliver expanded, value-added support directly to the large Prime Government Contractor community.
+                The LIFT Rural Business Center is funded in part by a $1.275
+                million cooperative agreement from the U.S. Department of
+                Commerce, Minority Business Development Agency (MBDA) — one of
+                only three HBCU Rural Business Center awards nationwide.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                With a broader and more focused mandate, KDM directed its primary attention to the U.S. manufacturing, critical minerals, defense, and Opportunity Zone sectors — building on its foundation as the nation&apos;s most recently awarded Federal Procurement Center (FPC) since July 2021. This evolution reflects a deepened commitment to capacity building for the nation&apos;s most eligible and procurement-ready small businesses.
+                Housed at Southern University and A&amp;M College in Baton Rouge,
+                the center serves rural small businesses across Louisiana
+                through the 2026–2029 program period. Southern&apos;s role as an
+                HBCU with deep community roots makes it a natural home for a
+                program built on trust, access, and follow-through.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                This privatization marks a strategic realignment — bringing new leadership, fresh initiatives, and stronger partnerships to more effectively meet the escalating demand for supply chain-ready small businesses that can address the nation&apos;s most critical procurement needs. Historical data confirms that small businesses have consistently faced significant barriers to entry in the federal acquisition sector. KDM exists to change that.
-              </p>
-              <p className="text-muted-foreground text-lg leading-relaxed mt-6">
-                KDM & Associates, LLC is a business development, government affairs, and public relations firm dedicated to helping clients successfully navigate the government procurement process and become more competitive. Beyond the contract, we help our clients deliver more effective and efficient solutions — creating lasting value for both their customers and our federal partners.
+                Beyond general business support, the center operates an
+                advanced manufacturing initiative anchored by a metal additive
+                manufacturing lab — helping rural manufacturers make, repair,
+                and test parts for agriculture, energy, and defense supply
+                chains.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* KDM Consortium Resource Partner Network */}
+      {/* What We Do */}
       <section className="py-20 md:py-28">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
-                Strategic Partnership
+                What We Do
               </Badge>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                KDM Consortium Resource Partner Network
+                Three Connected Service Areas
               </h2>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-                Uniting manufacturing excellence with government contracting expertise
+                Every LIFT client gets a personalized service plan drawing on
+                all three areas — not a menu of disconnected offerings.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <Card className="border-2 border-primary/20">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                    <Handshake className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">A Powerful Alliance</h3>
-                  <p className="text-muted-foreground">
-                    KDM & Associates has built a network of participating resource partners, including industry leaders 
-                    in operational excellence and manufacturing consulting. This strategic alliance 
-                    combines deep manufacturing expertise with KDM&apos;s proven government 
-                    contracting capabilities to deliver comprehensive solutions for businesses 
-                    seeking to enter or expand in federal manufacturing contracts.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 border-secondary/20">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
-                    <Factory className="h-6 w-6 text-secondary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">Manufacturing + Gov Con = America First</h3>
-                  <p className="text-muted-foreground">
-                    The KDM Consortium was purpose-built for the intersection where manufacturing excellence meets federal procurement — a space where most firms struggle and few succeed. Together with our resource partners, we dramatically expand the number of manufacturing firms equipped to navigate complex federal requirements, optimize production capabilities, and consistently meet the stringent standards and deliverables that government contracts demand.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
             <div className="grid md:grid-cols-3 gap-6">
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp className="h-7 w-7 text-primary" />
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">Enhanced Capabilities</h4>
-                  <p className="text-muted-foreground text-sm">
-                    Access to proven methodologies for operational excellence, lean manufacturing, 
-                    and supply chain optimization combined with KDM&apos;s government contracting expertise.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Globe className="h-7 w-7 text-primary" />
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">Supply Chain Solutions</h4>
-                  <p className="text-muted-foreground text-sm">
-                    Comprehensive support for government manufacturing contractors including 
-                    blockchain-enabled supply chain management, quality assurance, and compliance.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center">
-                <CardContent className="p-6">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-7 w-7 text-primary" />
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">Joint Success</h4>
-                  <p className="text-muted-foreground text-sm">
-                    Together, we provide end-to-end support from manufacturing readiness to 
-                    contract award and execution, ensuring clients succeed at every stage.
-                  </p>
-                </CardContent>
-              </Card>
+              {serviceAreas.map((area) => (
+                <Card key={area.title} className="text-center">
+                  <CardContent className="p-6">
+                    <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <area.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{area.title}</h3>
+                    <p className="text-muted-foreground text-sm">
+                      {area.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Equal Opportunity Statement */}
+      {/* Advanced Manufacturing Callout */}
       <section className="py-16 md:py-20 bg-muted/30">
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
+            <Factory className="h-12 w-12 mx-auto mb-6 text-primary" />
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-6">
-              Equal Opportunity &amp; Merit-Based Participation
+              Advanced Manufacturing Initiative
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              KDM Consortium supports fair, lawful, and merit-based participation in its programs and activities. KDM evaluates organizations and professionals based on relevant capabilities, qualifications, experience, readiness, performance, and opportunity requirements. KDM does not discriminate on the basis of race, color, national origin, sex, religion, age, disability, veteran status, or any other protected class. All participants are held to the same standards of professional conduct and procurement integrity.
+              Rural manufacturers get hands-on support through the center&apos;s
+              metal additive manufacturing lab — producing, repairing, and
+              testing parts while connecting to agriculture, energy, and
+              defense supply chains. It&apos;s workforce development and supply
+              chain readiness in one program.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Equal Opportunity Statement */}
+      <section className="py-16 md:py-20">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl mb-6">
+              Open to All Eligible Rural Businesses
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              The LIFT Center serves eligible rural Louisiana small businesses
+              without discrimination on the basis of race, color, national
+              origin, sex, religion, age, disability, veteran status, or any
+              other protected class. Program participation does not guarantee
+              funding, certification, or contract awards.
             </p>
           </div>
         </div>
       </section>
 
       {/* Values */}
-      <section className="py-20 md:py-28">
+      <section className="py-20 md:py-28 bg-muted/30">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Values</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              How We Work
+            </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              The principles that guide everything we do.
+              The commitments behind every client relationship.
             </p>
           </div>
 
@@ -285,11 +288,11 @@ export default function AboutPage() {
         <div className="container text-center">
           <Building2 className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Compete More Effectively?
+            Ready to Work with the Center?
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Join the growing community of emerging small businesses who&apos;ve partnered with 
-            KDM & Associates to achieve their goals.
+            Start with a short intake interview. A LIFT advisor will review
+            your goals and help you build a plan — at no cost.
           </p>
           <Button
             size="lg"
@@ -297,8 +300,8 @@ export default function AboutPage() {
             className="mt-8 text-lg px-8 bg-white text-primary hover:bg-white/90"
             asChild
           >
-            <Link href="/contact">
-              Schedule Introductory Session
+            <Link href="/sign-up">
+              Start the Intake Interview
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

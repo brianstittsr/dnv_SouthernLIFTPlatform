@@ -590,6 +590,7 @@ service cloud.firestore {
     // which enforce staff/owner checks, validation, and audit logging.
     // Generic file blobs — server access only (base64-chunked file bytes)
     match /fileBlobs/{path=**} { allow read, write: if false; }
+    match /member_attachments/{path=**} { allow read, write: if false; }
 
     // REA capture metadata — server access only (admin API routes)
     match /reaCaptures/{path=**} { allow read, write: if false; }

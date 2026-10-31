@@ -136,102 +136,100 @@ export function OnboardingWizard({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container max-w-3xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">
-              {userType === "sme" ? "SME" : "Buyer"} Onboarding
-            </h1>
-            <p className="text-muted-foreground">
-              Complete your profile to get started
-            </p>
-          </div>
-          {onDismiss && (
-            <Button variant="ghost" size="icon" onClick={handleDismiss}>
-              <X className="h-5 w-5" />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {userType === "sme" ? "LIFT" : "Buyer"} Onboarding
+          </h1>
+          <p className="text-muted-foreground">
+            Complete your profile to get started
+          </p>
+        </div>
+        {onDismiss && (
+          <Button variant="ghost" size="icon" onClick={handleDismiss}>
+            <X className="h-5 w-5" />
+          </Button>
+        )}
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between text-sm mb-2">
+          <span className="text-muted-foreground">
+            Step {currentStep + 1} of {steps.length}
+          </span>
+          <span className="font-medium">{Math.round(progress)}% complete</span>
+        </div>
+        <Progress value={progress} className="h-2" />
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {steps.map((step, index) => (
+          <button
+            key={step.id}
+            onClick={() => index < currentStep && setCurrentStep(index)}
+            disabled={index > currentStep}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors",
+              index === currentStep
+                ? "bg-primary text-primary-foreground"
+                : index < currentStep
+                ? "bg-green-100 text-green-800 hover:bg-green-200"
+                : "bg-gray-100 text-gray-400"
+            )}
+          >
+            {completedSteps.has(index) ? (
+              <CheckCircle2 className="h-4 w-4" />
+            ) : (
+              <span className="w-5 h-5 rounded-full bg-current/20 flex items-center justify-center text-xs">
+                {index + 1}
+              </span>
+            )}
+            {step.title}
+          </button>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{steps[currentStep].title}</CardTitle>
+          <CardDescription>{steps[currentStep].description}</CardDescription>
+        </CardHeader>
+        <CardContent>{steps[currentStep].component}</CardContent>
+      </Card>
+
+      <div className="flex items-center justify-between">
+        <Button
+          variant="outline"
+          onClick={handlePrevious}
+          disabled={isFirstStep}
+        >
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Previous
+        </Button>
+
+        <div className="flex items-center gap-2">
+          {steps[currentStep].isOptional && !isLastStep && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCurrentStep((prev) => prev + 1);
+                saveProgress(currentStep + 1);
+              }}
+            >
+              Skip
             </Button>
           )}
-        </div>
-
-        <div className="mb-8">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-muted-foreground">
-              Step {currentStep + 1} of {steps.length}
-            </span>
-            <span className="font-medium">{Math.round(progress)}% complete</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {steps.map((step, index) => (
-            <button
-              key={step.id}
-              onClick={() => index < currentStep && setCurrentStep(index)}
-              disabled={index > currentStep}
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors",
-                index === currentStep
-                  ? "bg-primary text-primary-foreground"
-                  : index < currentStep
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-gray-100 text-gray-400"
-              )}
-            >
-              {completedSteps.has(index) ? (
-                <CheckCircle2 className="h-4 w-4" />
-              ) : (
-                <span className="w-5 h-5 rounded-full bg-current/20 flex items-center justify-center text-xs">
-                  {index + 1}
-                </span>
-              )}
-              {step.title}
-            </button>
-          ))}
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{steps[currentStep].title}</CardTitle>
-            <CardDescription>{steps[currentStep].description}</CardDescription>
-          </CardHeader>
-          <CardContent>{steps[currentStep].component}</CardContent>
-        </Card>
-
-        <div className="flex items-center justify-between mt-6">
           <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={isFirstStep}
+            onClick={handleNext}
+            disabled={isValidating || isSaving}
           >
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Previous
-          </Button>
-
-          <div className="flex items-center gap-2">
-            {steps[currentStep].isOptional && !isLastStep && (
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setCurrentStep((prev) => prev + 1);
-                  saveProgress(currentStep + 1);
-                }}
-              >
-                Skip
-              </Button>
+            {(isValidating || isSaving) && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            <Button
-              onClick={handleNext}
-              disabled={isValidating || isSaving}
-            >
-              {(isValidating || isSaving) && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {isLastStep ? "Complete" : "Next"}
-              {!isLastStep && <ChevronRight className="ml-2 h-4 w-4" />}
-            </Button>
-          </div>
+            {isLastStep ? "Complete" : "Next"}
+            {!isLastStep && <ChevronRight className="ml-2 h-4 w-4" />}
+          </Button>
         </div>
       </div>
     </div>

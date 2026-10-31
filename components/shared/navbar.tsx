@@ -50,7 +50,7 @@ export function Navbar() {
             <Link href="/sign-in">Sign In</Link>
           </Button>
           <Button asChild>
-            <Link href="/forms/lift-intake">Apply Now</Link>
+            <Link href="/sign-up">Apply Now</Link>
           </Button>
         </div>
 
@@ -79,7 +79,7 @@ export function Navbar() {
                   </Link>
                 </Button>
                 <Button className="w-full" asChild>
-                  <Link href="/forms/lift-intake" onClick={() => setMobileOpen(false)}>
+                  <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
                     Apply Now
                   </Link>
                 </Button>

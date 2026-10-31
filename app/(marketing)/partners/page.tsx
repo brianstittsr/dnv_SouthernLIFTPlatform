@@ -6,92 +6,76 @@ import { Badge } from "@/components/ui/badge";
 import {
   Handshake,
   Users,
-  Building2,
   ArrowRight,
   CheckCircle,
-  Target,
-  Globe,
-  Award,
+  MapPin,
+  Landmark,
+  Factory,
+  GraduationCap,
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Strategic Partners | KDM & Associates",
+  title: "Partners | Southern University MBDA LIFT Rural Business Center",
   description:
-    "KDM & Associates partners with SBA and leading solution providers to connect diverse small businesses with federal contracting opportunities, capital access, and compliance resources.",
-  keywords: [
-    "KDM Associates partners",
-    "Federal Procurement and Industrial Readiness Center partners",
-    "SBA partner network",
-    "government contracting partners",
-    "small business partner program",
-    "supplier diversity partners",
-  ],
-  alternates: { canonical: "https://kdm-assoc.com/partners" },
-  openGraph: {
-    title: "Strategic Partners | KDM & Associates",
-    description: "Our partner ecosystem connects diverse businesses with the resources, capital, and relationships needed to compete effectively for federal contracts.",
-    url: "https://kdm-assoc.com/partners",
-    type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KDM & Associates Partners" }],
-  },
-  twitter: { card: "summary_large_image", title: "Strategic Partners | KDM & Associates", description: "SBA and solutions partners powering diverse business success in federal markets." },
+    "Partner with the Southern University LIFT Center — lenders, resource organizations, procurement partners, and industry allies serving rural Louisiana small businesses.",
+  alternates: { canonical: "https://lift.southern.edu/partners" },
 };
 
 const partnerBenefits = [
   {
+    icon: MapPin,
+    title: "Reach Rural Louisiana",
+    description: "Connect with small businesses across all 64 parishes — an audience most organizations struggle to reach."
+  },
+  {
     icon: Users,
-    title: "Access to Small Business Network",
-    description: "Connect with our extensive network of small businesses seeking solutions and services."
+    title: "Warm Referrals",
+    description: "Advisors refer LIFT clients to the right partner at the right moment in their service plan."
   },
   {
-    icon: Target,
-    title: "Targeted Opportunities",
-    description: "Get matched with emerging small businesses whose needs align with your expertise and service offerings."
+    icon: GraduationCap,
+    title: "Shared Programming",
+    description: "Co-host workshops and training that put your expertise in front of rural business owners."
   },
   {
-    icon: Globe,
-    title: "Expanded Reach",
-    description: "Extend your market presence through our digital ecosystem and community portals."
-  },
-  {
-    icon: Award,
-    title: "Credibility & Trust",
-    description: "Benefit from association with the Federal Procurement & Industrial Readiness Center network."
+    icon: Handshake,
+    title: "Mission Alignment",
+    description: "Join an MBDA-funded initiative creating measurable economic outcomes in rural communities."
   }
 ];
 
 const partnerTypes = [
   {
-    title: "Solution Providers",
-    description: "Technology vendors, consultants, and service providers who can support emerging small business growth.",
+    icon: Landmark,
+    title: "Capital & Lending Partners",
+    description: "CDFIs, banks, credit unions, and loan programs that can fund capital-ready LIFT clients.",
     features: [
-      "Technology and software solutions",
-      "Business consulting services",
-      "Financial and accounting services",
-      "Legal and compliance support",
-      "Marketing and branding agencies"
+      "Client referrals for loan-ready businesses",
+      "Participation in capital readiness workshops",
+      "Visibility into client financial preparation",
+      "Community Reinvestment Act alignment"
     ]
   },
   {
-    title: "Prime Contractors",
-    description: "Large contractors seeking qualified small business subcontractors and teaming partners.",
+    icon: Factory,
+    title: "Industry & Supply Chain Partners",
+    description: "OEMs, prime contractors, and manufacturers seeking suppliers or offering expertise.",
     features: [
-      "Access to KDM-reviewed small business firms",
-      "Streamlined teaming arrangements",
-      "Mentor-protégé opportunities",
-      "Joint venture facilitation",
-      "Subcontracting support"
+      "Access to rural manufacturers in the advanced manufacturing program",
+      "Supply chain connections in agriculture, energy, and defense",
+      "Speaking and mentoring opportunities",
+      "Site visits and lab collaboration"
     ]
   },
   {
-    title: "Resource Partners",
-    description: "Organizations providing resources, training, and support to small businesses.",
+    icon: Users,
+    title: "Resource & Ecosystem Partners",
+    description: "Organizations that serve small businesses — chambers, SBDCs, universities, extension programs, and nonprofits.",
     features: [
-      "Training and education providers",
-      "Certification assistance organizations",
-      "Capital and financing sources",
-      "Industry associations",
-      "Government agencies"
+      "Two-way referrals for client needs we can't meet",
+      "Co-hosted workshops and community events",
+      "Shared outreach to rural parishes",
+      "Complementary, non-duplicative services"
     ]
   }
 ];
@@ -104,19 +88,20 @@ export default function PartnersPage() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="outline" className="mb-6 border-primary/50 text-primary">
-              Partner Network
+              Partner With LIFT
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Become a KDM &{" "}
-              <span className="text-primary">Associates Partner</span>
+              Help Rural Louisiana{" "}
+              <span className="text-primary">Businesses Grow</span>
             </h1>
             <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-              Join our exclusive digital community where business solution providers 
-              contribute to and support emerging small businesses on their journey to sustainability and success.
+              The LIFT Center works with lenders, industry, and resource
+              organizations to bring rural small businesses the expertise and
+              connections they can&apos;t find on their own.
             </p>
             <Button size="lg" className="mt-8" asChild>
               <Link href="/contact">
-                Become a Partner
+                Start a Partnership Conversation
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -129,11 +114,11 @@ export default function PartnersPage() {
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Why Partner With Us?
+              Why Partner With the Center?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join a network dedicated to empowering small businesses and 
-              creating mutual success in government contracting.
+              LIFT is an MBDA-funded program with a built-in pipeline of rural
+              businesses that need exactly what partners offer.
             </p>
           </div>
 
@@ -161,8 +146,7 @@ export default function PartnersPage() {
               Partner Categories
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              We work with a diverse range of partners to provide comprehensive 
-              support for emerging small businesses.
+              Three ways organizations plug into the LIFT program.
             </p>
           </div>
 
@@ -170,6 +154,9 @@ export default function PartnersPage() {
             {partnerTypes.map((type) => (
               <Card key={type.title} className="h-full">
                 <CardHeader>
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <type.icon className="h-6 w-6 text-primary" />
+                  </div>
                   <CardTitle className="text-xl">{type.title}</CardTitle>
                   <CardDescription>{type.description}</CardDescription>
                 </CardHeader>
@@ -204,27 +191,27 @@ export default function PartnersPage() {
                 <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   1
                 </div>
-                <h3 className="font-semibold mb-2">Apply</h3>
+                <h3 className="font-semibold mb-2">Connect</h3>
                 <p className="text-sm text-muted-foreground">
-                  Submit your partnership application with details about your organization and offerings.
+                  Reach out through our contact page and tell us how your organization serves small businesses.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   2
                 </div>
-                <h3 className="font-semibold mb-2">Onboard</h3>
+                <h3 className="font-semibold mb-2">Align</h3>
                 <p className="text-sm text-muted-foreground">
-                  Complete our partner onboarding process and get listed in our partner directory.
+                  Meet the LIFT team to map where your services fit client service plans, workshops, or referrals.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   3
                 </div>
-                <h3 className="font-semibold mb-2">Connect</h3>
+                <h3 className="font-semibold mb-2">Serve</h3>
                 <p className="text-sm text-muted-foreground">
-                  Start connecting with emerging small businesses and contributing to their success in government contracting.
+                  Start working with rural businesses through referrals, co-hosted events, or direct engagement.
                 </p>
               </div>
             </div>
@@ -237,11 +224,11 @@ export default function PartnersPage() {
         <div className="container text-center">
           <Handshake className="h-16 w-16 mx-auto mb-6 opacity-80" />
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to Join Our Network?
+            Let&apos;s Work Together
           </h2>
           <p className="mt-4 text-lg opacity-90 max-w-2xl mx-auto">
-            Partner with KDM & Associates and help drive success for small emerging 
-            businesses in government contracting.
+            Partner with the Southern University LIFT Center and help rural
+            Louisiana businesses access the resources they need to grow.
           </p>
           <Button
             size="lg"
@@ -250,7 +237,7 @@ export default function PartnersPage() {
             asChild
           >
             <Link href="/contact">
-              Apply to Become a Partner
+              Contact the Center
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

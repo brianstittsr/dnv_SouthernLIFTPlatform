@@ -1,6 +1,6 @@
 /**
  * Events Data
- * Structure for managing upcoming and past events
+ * LIFT Center workshops, training, and community events.
  */
 
 export interface Event {
@@ -50,426 +50,278 @@ export interface Event {
   }[];
 }
 
+const LIFT_ORGANIZER = 'Southern University MBDA LIFT Rural Business Center';
+const LIFT_EMAIL = 'liftcenter@sus.edu';
+const LIFT_PHONE = '(225) 771-0000';
+
 export const events: Event[] = [
   {
-    id: '1',
-    slug: 'iaeoz-summit-2025-puerto-rico',
-    title: 'Innovation in Agriculture and Energy Opportunity Zone Summit 2025',
-    description: 'Join us for the premier summit focusing on innovation, agriculture, and energy opportunities in Puerto Rico and opportunity zones.',
-    fullDescription: `The Innovation in Agriculture and Energy Opportunity Zone (IAEOZ) Summit 2025 brings together industry leaders, government officials, investors, and entrepreneurs to explore cutting-edge opportunities in agriculture and energy sectors within designated opportunity zones.
+    id: 'lift-orientation',
+    slug: 'lift-orientation-intake-session',
+    title: 'LIFT Program Orientation & Intake Session',
+    description: 'Learn what the LIFT Center offers, confirm your rural eligibility, and get help completing the intake interview in one sitting.',
+    fullDescription: `New to the LIFT Rural Business Center? This orientation walks you through everything the program offers — at no cost to you.
 
-This year's summit focuses on Puerto Rico's strategic position as a hub for sustainable agriculture and renewable energy innovation. Attendees will gain insights into federal funding opportunities, technological innovations, and strategic partnerships that are reshaping these critical sectors.
+## What We'll Cover
 
-## What to Expect
-
-- **Keynote Presentations** from industry leaders and government officials
-- **Panel Discussions** on agriculture technology, renewable energy, and economic development
-- **Networking Opportunities** with investors, contractors, and business leaders
-- **Exhibition Hall** featuring the latest innovations in agtech and clean energy
-- **One-on-One Consultations** with federal contracting experts
+- Overview of LIFT services: one-on-one advising, workshops, capital readiness, and contracting support
+- Who qualifies: rural Louisiana small business eligibility explained
+- Hands-on help completing the LIFT intake interview on the spot
+- How advising, service plans, and outcome check-ins work
+- Q&A with the LIFT Center team
 
 ## Who Should Attend
 
-- Diverse/WBE/SDVOSB business owners
-- Agriculture and energy sector professionals
-- Federal contractors and subcontractors
-- Investors and venture capitalists
-- Economic development professionals
-- Government procurement officials`,
-    eventDate: new Date('2025-11-15'),
-    endDate: new Date('2025-11-17'),
-    time: '8:00 AM - 6:00 PM',
+- Rural Louisiana small business owners
+- Aspiring entrepreneurs in rural parishes
+- Anyone curious whether the program is a fit
+
+Bring a laptop or use ours — you can finish your intake interview during the session.`,
+    eventDate: new Date('2026-04-09'),
+    time: '10:00 AM - 12:00 PM CST',
     location: {
-      venue: 'Puerto Rico Convention Center',
-      address: '100 Convention Boulevard',
-      city: 'San Juan',
-      state: 'PR',
-      zipCode: '00907',
-      country: 'Puerto Rico',
-      coordinates: {
-        lat: 18.4655,
-        lng: -66.1057
-      }
+      venue: 'Southern University College of Business',
+      address: 'Southern University',
+      city: 'Baton Rouge',
+      state: 'LA',
+      country: 'United States',
     },
-    category: 'Summit',
-    registrationUrl: 'https://iaeozsummit.com',
-    registrationDeadline: new Date('2025-11-01'),
-    capacity: 500,
-    registered: 287,
-    isFree: false,
-    price: 299,
-    featuredImage: '/images/events/iaeoz-summit-2025.jpg',
-    organizer: 'KDM & Associates',
-    contactEmail: "kmoore@kdm-assoc.com",
-    contactPhone: '(202) 555-0100',
-    tags: ['Agriculture', 'Energy', 'Opportunity Zones', 'Puerto Rico', 'Innovation', 'Federal Contracting'],
-    agenda: [
-      {
-        time: '8:00 AM - 9:00 AM',
-        title: 'Registration & Continental Breakfast',
-        description: 'Check-in and networking breakfast'
-      },
-      {
-        time: '9:00 AM - 9:30 AM',
-        title: 'Opening Keynote',
-        description: 'The Future of Agriculture and Energy in Opportunity Zones',
-        speaker: 'Keith Moore, CEO, KDM & Associates'
-      },
-      {
-        time: '9:30 AM - 11:00 AM',
-        title: 'Panel: Agricultural Innovation in Puerto Rico',
-        description: 'Exploring sustainable farming practices and technology adoption'
-      },
-      {
-        time: '11:00 AM - 11:15 AM',
-        title: 'Networking Break'
-      },
-      {
-        time: '11:15 AM - 12:45 PM',
-        title: 'Panel: Renewable Energy Opportunities',
-        description: 'Federal funding, tax incentives, and project development'
-      },
-      {
-        time: '12:45 PM - 2:00 PM',
-        title: 'Lunch & Exhibition Hall',
-        description: 'Networking lunch with exhibitor showcase'
-      },
-      {
-        time: '2:00 PM - 3:30 PM',
-        title: 'Federal Contracting Workshop',
-        description: 'Navigating opportunities in agriculture and energy sectors'
-      },
-      {
-        time: '3:30 PM - 5:00 PM',
-        title: 'Investor Roundtable',
-        description: 'Connecting entrepreneurs with capital sources'
-      },
-      {
-        time: '5:00 PM - 6:00 PM',
-        title: 'Reception & Networking',
-        description: 'Evening reception with hors d\'oeuvres'
-      }
-    ],
-    speakers: [
-      {
-        name: 'Keith Moore',
-        title: 'CEO, KDM & Associates',
-        bio: 'Leading KDM & Associates with a vision to empower diverse businesses in government contracting.'
-      },
-      {
-        name: 'Josué Rivera Castro',
-        title: 'Secretary, Puerto Rico Department of Agriculture'
-      },
-      {
-        name: 'Charles Sills',
-        title: 'COO, KDM & Associates',
-        bio: 'Recognized authority on U.S. Government Contracting and advocate for Small Business access to Federal opportunities.'
-      }
-    ]
+    category: 'Workshop',
+    registrationUrl: '/sign-up',
+    capacity: 40,
+    isFree: true,
+    featuredImage: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    contactPhone: LIFT_PHONE,
+    tags: ['Orientation', 'Intake', 'No-Cost', 'Baton Rouge', 'Rural Business'],
   },
   {
-    id: '2',
-    slug: 'federal-contracting-101-webinar',
-    title: 'Federal Contracting 101: Getting Started with Government Opportunities',
-    description: 'Free webinar for small businesses new to federal contracting. Learn the basics of SAM registration, certifications, and finding opportunities.',
-    fullDescription: `Join us for this comprehensive introductory webinar designed specifically for small businesses looking to enter the federal contracting marketplace. Our experts will guide you through the essential steps to get started and position your business for success.
+    id: 'govcon-101',
+    slug: 'government-contracting-101-rural-business',
+    title: 'Government Contracting 101 for Rural Businesses',
+    description: 'A plain-language introduction to selling to the government — SAM.gov, certifications, and where rural businesses fit in public procurement.',
+    fullDescription: `Government agencies buy everything from catering to construction — and rural small businesses can compete for that work. This beginner-friendly webinar explains how.
 
 ## Topics Covered
 
-- Understanding the federal procurement process
-- SAM.gov registration and maintenance
-- Small business certifications (8(a), HUBZone, WOSB, SDVOSB)
-- Finding contract opportunities
-- Understanding solicitations and RFPs
-- Building capability statements
-- Teaming and subcontracting strategies
+- How public procurement works (federal, state, and local)
+- SAM.gov registration — what it is, why it's free, and how to get it right
+- Small business certifications: 8(a), HUBZone, WOSB, SDVOSB, MBE, DBE
+- Finding opportunities that fit your business
+- What a capability statement is and why buyers ask for one
+- Common first-timer mistakes
 
-## What You'll Learn
+## What You'll Leave With
 
-By the end of this webinar, you'll understand:
-- The fundamental steps to become a federal contractor
-- Which certifications are right for your business
-- How to search for relevant opportunities
-- Best practices for responding to solicitations
-- Common mistakes to avoid
-
-This is a live, interactive session with Q&A time built in. Bring your questions!`,
-    eventDate: new Date('2025-10-15'),
-    time: '2:00 PM - 3:30 PM EST',
+A concrete checklist of next steps and a clear picture of whether contracting makes sense for your business. Live Q&A included.`,
+    eventDate: new Date('2026-04-16'),
+    time: '2:00 PM - 3:30 PM CST',
     location: {
       venue: 'Virtual Event',
       address: 'Online',
       city: 'Virtual',
       state: 'N/A',
-      country: 'United States'
+      country: 'United States',
     },
     category: 'Webinar',
-    registrationUrl: 'https://kdm-assoc.com/events/register/federal-contracting-101',
-    registrationDeadline: new Date('2025-10-14'),
-    capacity: 1000,
-    registered: 542,
+    registrationUrl: '/sign-up',
+    capacity: 200,
     isFree: true,
-    featuredImage: '/images/events/federal-contracting-webinar.jpg',
-    organizer: 'KDM & Associates',
-    contactEmail: 'training@kdm-assoc.com',
-    tags: ['Federal Contracting', 'Training', 'Small Business', 'Webinar', 'Education'],
-    speakers: [
-      {
-        name: 'Oscar Frazier',
-        title: 'Consultant, KDM & Associates',
-        bio: 'International consultant with over two decades of leadership and team-building experience.'
-      }
-    ]
+    featuredImage: 'https://images.unsplash.com/photo-1617581629397-a72507c3de9e?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    tags: ['Government Contracting', 'SAM.gov', 'Webinar', 'No-Cost', 'Certifications'],
   },
   {
-    id: '3',
-    slug: 'diverse-business-networking-mixer-dc',
-    title: 'Diverse Business Networking Mixer - Washington DC',
-    description: 'Connect with fellow diverse business owners, prime contractors, and federal procurement officials at our quarterly networking event.',
-    fullDescription: `Our quarterly Diverse Business Networking Mixer brings together diverse business enterprises, prime contractors, federal procurement officials, and industry partners for an evening of meaningful connections and business development opportunities.
-
-## Event Highlights
-
-- **Speed Networking Sessions**: Structured 5-minute meetings with potential partners
-- **Prime Contractor Showcase**: Meet major federal contractors actively seeking diverse business partners
-- **Federal Agency Representatives**: Connect with procurement officials from key agencies
-- **Success Stories**: Hear from businesses who have successfully grown their federal contracting business
-- **Open Networking**: Casual networking with appetizers and refreshments
-
-## Who Attends
-
-- Diverse/WBE/SDVOSB business owners
-- Prime contractors seeking subcontractors
-- Federal procurement officials
-- Economic development professionals
-- Industry association representatives
-
-## Dress Code
-
-Business casual
-
-## Registration
-
-Space is limited to ensure quality networking opportunities. Register early to secure your spot!`,
-    eventDate: new Date('2025-10-28'),
-    time: '5:30 PM - 8:00 PM',
-    location: {
-      venue: 'The Hamilton',
-      address: '600 14th Street NW',
-      city: 'Washington',
-      state: 'DC',
-      zipCode: '20005',
-      country: 'United States',
-      coordinates: {
-        lat: 38.8977,
-        lng: -77.0319
-      }
-    },
-    category: 'Networking',
-    registrationUrl: 'https://kdm-assoc.com/events/register/diverse-business-mixer-dc',
-    registrationDeadline: new Date('2025-10-25'),
-    capacity: 150,
-    registered: 98,
-    isFree: false,
-    price: 50,
-    featuredImage: '/images/events/networking-mixer.jpg',
-    organizer: 'KDM & Associates',
-    contactEmail: 'events@kdm-assoc.com',
-    contactPhone: '(202) 555-0100',
-    tags: ['Networking', 'Diverse Business', 'Federal Contracting', 'Washington DC', 'Business Development']
-  },
-  {
-    id: '4',
-    slug: 'innovation-in-agriculture-energy-summit-2024',
-    title: 'Innovation in Agriculture and Energy Opportunity Zone Summit 2024',
-    description: 'Premier summit focusing on innovation, agriculture, and energy opportunities in Puerto Rico and opportunity zones.',
-    fullDescription: `The 2024 Innovation in Agriculture and Energy Opportunity Zone (IAEOZ) Summit brought together over 400 industry leaders, government officials, investors, and entrepreneurs to explore cutting-edge opportunities in agriculture and energy sectors within designated opportunity zones.
-
-## Event Summary
-
-This year's summit focused on Puerto Rico's strategic position as a hub for sustainable agriculture and renewable energy innovation. Attendees gained insights into federal funding opportunities, technological innovations, and strategic partnerships that are reshaping these critical sectors.
-
-## Highlights
-
-- **Keynote Presentations** from industry leaders and government officials
-- **Panel Discussions** on agriculture technology, renewable energy, and economic development
-- **Networking Opportunities** with investors, contractors, and business leaders
-- **Exhibition Hall** featuring the latest innovations in agtech and clean energy
-- **One-on-One Consultations** with federal contracting experts
-
-## Key Takeaways
-
-Attendees learned about:
-- Federal funding mechanisms for agriculture and energy projects
-- Tax incentives and opportunity zone benefits
-- Emerging technologies in sustainable farming and renewable energy
-- Strategic partnerships and joint venture opportunities
-- Government contracting pathways for diverse businesses
-
-## Attendee Feedback
-
-"This summit exceeded my expectations. The networking opportunities alone were worth the trip to Puerto Rico. I've already connected with three potential partners." - Maria Rodriguez, AgTech Solutions
-
-"The federal contracting workshop was incredibly valuable. We now have a clear roadmap for pursuing government contracts." - James Chen, Renewable Energy Innovations`,
-    eventDate: new Date('2024-11-12'),
-    endDate: new Date('2024-11-14'),
-    time: '8:00 AM - 6:00 PM',
-    location: {
-      venue: 'Puerto Rico Convention Center',
-      address: '100 Convention Boulevard',
-      city: 'San Juan',
-      state: 'PR',
-      zipCode: '00907',
-      country: 'Puerto Rico',
-      coordinates: {
-        lat: 18.4655,
-        lng: -66.1057
-      }
-    },
-    category: 'Summit',
-    capacity: 500,
-    registered: 437,
-    isFree: false,
-    price: 299,
-    featuredImage: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
-    organizer: 'KDM & Associates',
-    contactEmail: "kmoore@kdm-assoc.com",
-    contactPhone: '(202) 555-0100',
-    tags: ['Agriculture', 'Energy', 'Opportunity Zones', 'Puerto Rico', 'Innovation', 'Federal Contracting'],
-    speakers: [
-      {
-        name: 'Keith Moore',
-        title: 'CEO, KDM & Associates',
-        bio: 'Leading KDM & Associates with a vision to empower diverse businesses in government contracting.'
-      },
-      {
-        name: 'Josué Rivera Castro',
-        title: 'Secretary, Puerto Rico Department of Agriculture'
-      }
-    ]
-  },
-  {
-    id: '5',
-    slug: 'federal-contracting-101-webinar-march-2024',
-    title: 'Federal Contracting 101: Getting Started with Government Opportunities',
-    description: 'Comprehensive webinar for small businesses new to federal contracting covering SAM registration, certifications, and finding opportunities.',
-    fullDescription: `This popular webinar brought together over 800 small business owners looking to enter the federal contracting marketplace. Our experts guided participants through the essential steps to get started and position their businesses for success.
+    id: 'capital-readiness',
+    slug: 'capital-readiness-loan-ready-workshop',
+    title: 'Capital Readiness Workshop: Getting Loan-Ready',
+    description: 'What lenders actually look for — financial statements, loan packaging, and how to prepare before you apply for business financing.',
+    fullDescription: `Most loan denials happen before the application is even read — because the package wasn't ready. This hands-on workshop shows you what lenders want to see and how to prepare it.
 
 ## Topics Covered
 
-- Understanding the federal procurement process
-- SAM.gov registration and maintenance
-- Small business certifications (8(a), HUBZone, WOSB, SDVOSB)
-- Finding contract opportunities
-- Understanding solicitations and RFPs
-- Building capability statements
-- Teaming and subcontracting strategies
+- The documents lenders always ask for (and why)
+- Reading your own financial statements like a lender does
+- Loan packaging basics: telling your business story on paper
+- CDFIs, SBA-backed loans, and other capital sources for rural businesses
+- Common mistakes that stall or sink applications
+- How LIFT advisors support your capital readiness one-on-one
 
-## What Participants Learned
+## Who Should Attend
 
-By the end of this webinar, participants understood:
-- The fundamental steps to become a federal contractor
-- Which certifications are right for their business
-- How to search for relevant opportunities
-- Best practices for responding to solicitations
-- Common mistakes to avoid
+- Business owners planning to seek financing in the next 12 months
+- Owners who've been denied and want to understand why
+- Anyone unsure where to start with business credit`,
+    eventDate: new Date('2026-04-23'),
+    time: '9:00 AM - 12:00 PM CST',
+    location: {
+      venue: 'Southern University College of Business',
+      address: 'Southern University',
+      city: 'Baton Rouge',
+      state: 'LA',
+      country: 'United States',
+    },
+    category: 'Workshop',
+    registrationUrl: '/sign-up',
+    capacity: 35,
+    isFree: true,
+    featuredImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    contactPhone: LIFT_PHONE,
+    tags: ['Capital Readiness', 'Financing', 'Workshop', 'No-Cost', 'Loans'],
+  },
+  {
+    id: 'capability-statement',
+    slug: 'capability-statement-writing-workshop',
+    title: 'Write Your Capability Statement',
+    description: 'A working session — leave with a first draft of your one-page capability statement, reviewed by a LIFT advisor.',
+    fullDescription: `Buyers and prime contractors ask for capability statements before they'll talk contracts. In this working session, you'll build yours.
 
-## Event Impact
+## What You'll Do
 
-- **800+ Attendees** from across the United States
-- **92% Satisfaction Rating** from participant surveys
-- **500+ Follow-up Inquiries** for one-on-one consulting
-- **150+ New SAM.gov Registrations** within 30 days
+- Learn the anatomy of an effective one-page capability statement
+- Draft your core competencies, differentiators, and past performance sections
+- Get real-time feedback from LIFT advisors
+- Leave with a working draft and a plan to finish it
 
-## Participant Testimonials
+## What to Bring
 
-"This webinar was exactly what I needed to get started. The instructors were knowledgeable and answered all my questions." - Sarah Johnson, Tech Services LLC
+- Your business basics: NAICS codes, certifications, UEI (if you have one)
+- A few sentences about what makes your business different
+- A laptop if you have one (lab computers available)
 
-"I've already found three RFPs that match my business capabilities. This is a game-changer!" - Michael Torres, Construction Solutions Inc.`,
-    eventDate: new Date('2024-03-20'),
-    time: '2:00 PM - 3:30 PM EST',
+Already uploaded a capability statement during onboarding? Bring it and we'll help you sharpen it.`,
+    eventDate: new Date('2026-05-07'),
+    time: '1:00 PM - 4:00 PM CST',
+    location: {
+      venue: 'Southern University College of Business',
+      address: 'Southern University',
+      city: 'Baton Rouge',
+      state: 'LA',
+      country: 'United States',
+    },
+    category: 'Workshop',
+    registrationUrl: '/sign-up',
+    capacity: 25,
+    isFree: true,
+    featuredImage: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    tags: ['Capability Statement', 'Proposal Ready', 'Workshop', 'No-Cost'],
+  },
+  {
+    id: 'mfg-lab-open-house',
+    slug: 'advanced-manufacturing-lab-open-house',
+    title: 'Advanced Manufacturing Lab Open House',
+    description: 'Tour the LIFT metal additive manufacturing lab and learn how the hands-on program supports rural manufacturers.',
+    fullDescription: `The LIFT Center's advanced manufacturing initiative gives rural manufacturers hands-on access to metal additive manufacturing — making, repairing, and testing parts for agriculture, energy, and defense supply chains.
+
+## What You'll See
+
+- Tour of the metal additive manufacturing lab
+- Live demonstration of part production and repair
+- How manufacturers join the program and what participation involves
+- Which supply chains the program targets (agriculture, energy, defense)
+- Meet the lab team and LIFT advisors
+
+## Who Should Attend
+
+- Rural manufacturers and machine shops
+- Businesses exploring additive manufacturing
+- Suppliers to agriculture, energy, or defense primes
+- Students and workforce partners interested in advanced manufacturing`,
+    eventDate: new Date('2026-05-14'),
+    time: '10:00 AM - 1:00 PM CST',
+    location: {
+      venue: 'Southern University',
+      address: 'Southern University',
+      city: 'Baton Rouge',
+      state: 'LA',
+      country: 'United States',
+    },
+    category: 'Other',
+    registrationUrl: '/sign-up',
+    capacity: 50,
+    isFree: true,
+    featuredImage: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    contactPhone: LIFT_PHONE,
+    tags: ['Advanced Manufacturing', 'Open House', 'Additive Manufacturing', 'No-Cost'],
+  },
+  {
+    id: 'digital-ai',
+    slug: 'digital-tools-ai-small-business',
+    title: 'Digital Tools & AI for the Busy Business Owner',
+    description: 'Practical, low-cost digital tools — and where AI actually helps a small business — without the hype.',
+    fullDescription: `You don't need a big budget to work smarter. This webinar covers practical digital tools and realistic AI uses for rural small businesses.
+
+## Topics Covered
+
+- Free and low-cost tools for invoicing, scheduling, and customer follow-up
+- Where AI genuinely saves time (drafting, summarizing, organizing) — and where it doesn't
+- Online presence basics: being findable when customers search
+- Cybersecurity hygiene every small business needs
+- How LIFT advisors can help you adopt tools one at a time
+
+## Who Should Attend
+
+- Business owners who feel behind on technology
+- Anyone tired of software hype who wants practical answers
+- LIFT clients working on their service plan technology goals`,
+    eventDate: new Date('2026-05-21'),
+    time: '12:00 PM - 1:30 PM CST',
     location: {
       venue: 'Virtual Event',
       address: 'Online',
       city: 'Virtual',
       state: 'N/A',
-      country: 'United States'
+      country: 'United States',
     },
     category: 'Webinar',
-    capacity: 1000,
-    registered: 847,
+    registrationUrl: '/sign-up',
+    capacity: 150,
     isFree: true,
-    featuredImage: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
-    organizer: 'KDM & Associates',
-    contactEmail: 'training@kdm-assoc.com',
-    tags: ['Federal Contracting', 'Training', 'Small Business', 'Webinar', 'Education'],
-    speakers: [
-      {
-        name: 'Oscar Frazier',
-        title: 'Consultant, KDM & Associates',
-        bio: 'International consultant with over two decades of leadership and team-building experience.'
-      }
-    ]
+    featuredImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    tags: ['Digital Tools', 'AI', 'Webinar', 'No-Cost', 'Technology'],
   },
   {
-    id: '6',
-    slug: 'diverse-business-networking-mixer-dc-september-2024',
-    title: 'Diverse Business Networking Mixer - Washington DC',
-    description: 'Quarterly networking event connecting diverse business owners, prime contractors, and federal procurement officials.',
-    fullDescription: `Our September 2024 Diverse Business Networking Mixer brought together 140 diverse business enterprises, prime contractors, federal procurement officials, and industry partners for an evening of meaningful connections and business development opportunities.
+    id: 'lift-kickoff',
+    slug: 'lift-center-kickoff-baton-rouge',
+    title: 'LIFT Center Kickoff & Community Meet-and-Greet',
+    description: 'The Southern University MBDA LIFT Rural Business Center opened its doors to rural Louisiana small businesses at this community launch event.',
+    fullDescription: `The Southern University MBDA LIFT Rural Business Center marked the start of its 2026–2029 program period with a community kickoff event in Baton Rouge.
 
 ## Event Highlights
 
-- **Speed Networking Sessions**: Structured 5-minute meetings with potential partners
-- **Prime Contractor Showcase**: Major federal contractors actively seeking diverse business partners
-- **Federal Agency Representatives**: Procurement officials from GSA, DoD, and other key agencies
-- **Success Stories**: Businesses who have successfully grown their federal contracting business
-- **Open Networking**: Casual networking with appetizers and refreshments
+- Introduction of the LIFT Center team and advisory model
+- Overview of the three service areas: technical assistance, training, and capital & contracting readiness
+- First look at the advanced manufacturing lab initiative
+- Networking with rural business owners, lenders, and resource partners
+- On-site intake interviews for the first program cohort
 
-## Attendee Breakdown
-
-- 45% Diverse Business Owners
-- 35% Prime Contractors & Subcontractors
-- 15% Federal Procurement Officials
-- 5% Economic Development Professionals
-
-## Networking Results
-
-- **280+ Meaningful Connections** made during the event
-- **45 Follow-up Meetings** scheduled
-- **12 Potential Partnerships** identified
-- **8 RFQ Opportunities** shared
-
-## Attendee Feedback
-
-"This event was well-organized and provided excellent opportunities to meet potential partners. I've already had three follow-up meetings." - Jennifer Lee, Consulting Group
-
-"The prime contractor showcase was invaluable. We found three companies actively seeking our services." - David Martinez, IT Solutions`,
-    eventDate: new Date('2024-09-24'),
-    time: '5:30 PM - 8:00 PM',
+Funded in part by a $1.275M cooperative agreement with the U.S. Department of Commerce, Minority Business Development Agency — one of three HBCU Rural Business Center awards nationwide.`,
+    eventDate: new Date('2026-02-12'),
+    time: '9:00 AM - 12:00 PM CST',
     location: {
-      venue: 'The Hamilton',
-      address: '600 14th Street NW',
-      city: 'Washington',
-      state: 'DC',
-      zipCode: '20005',
+      venue: 'Southern University',
+      address: 'Southern University',
+      city: 'Baton Rouge',
+      state: 'LA',
       country: 'United States',
-      coordinates: {
-        lat: 38.8977,
-        lng: -77.0319
-      }
     },
     category: 'Networking',
-    capacity: 150,
-    registered: 140,
-    isFree: false,
-    price: 50,
-    featuredImage: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop',
-    organizer: 'KDM & Associates',
-    contactEmail: 'events@kdm-assoc.com',
-    contactPhone: '(202) 555-0100',
-    tags: ['Networking', 'Diverse Business', 'Federal Contracting', 'Washington DC', 'Business Development']
-  }
+    isFree: true,
+    featuredImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80',
+    organizer: LIFT_ORGANIZER,
+    contactEmail: LIFT_EMAIL,
+    tags: ['Kickoff', 'Community', 'Baton Rouge', 'LIFT'],
+  },
 ];
 
 export function getEventBySlug(slug: string): Event | undefined {

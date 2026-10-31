@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import type { FormValues } from "../types";
 import { requireDb, type Requester } from "./context";
@@ -50,25 +50,37 @@ export async function resolveClient(options: {
   const uei = firstText(values, UEI_KEYS)?.toUpperCase();
   const email = (firstText(values, EMAIL_KEYS) ?? requester?.email ?? undefined)?.toLowerCase();
 
-  const candidates = [
-    uei ? await clients.where("uei", "==", uei).limit(1).get() : null,
-    email ? await clients.where("contactEmail", "==", email).limit(1).get() : null,
-  ];
-  for (const candidate of candidates) {
-    const match = candidate?.docs[0];
-    if (!match) continue;
-    const data = match.data();
+  // A signed-in user whose UEI matches an existing client is a colleague at
+  // the same company — link them to that business record regardless of who
+  // owns it, and record them as an additional member.
+  if (requester && uei) {
+    const byUei = await clients.where("uei", "==", uei).limit(1).get();
+    const match = byUei.docs[0];
+    if (match) {
+      await match.ref.update({
+        memberUids: FieldValue.arrayUnion(requester.uid),
+        updatedAt: Timestamp.now(),
+      });
+      return { liftClientId: match.id, created: false };
+    }
+  }
+
+  const emailMatch = email
+    ? (await clients.where("contactEmail", "==", email).limit(1).get()).docs[0]
+    : undefined;
+  if (emailMatch) {
+    const data = emailMatch.data();
     // Public (signed-out) submissions only attach to unclaimed draft records, never to an owned client.
     if (!requester) {
-      if (!data.ownerUid && data.status === "intake_draft") return { liftClientId: match.id, created: false };
-      continue;
-    }
-    if (data.ownerUid === requester.uid) return { liftClientId: match.id, created: false };
-    // A signed-in user may claim an unowned record only when it matches their verified login email.
-    const loginEmail = requester.email?.toLowerCase();
-    if (!data.ownerUid && loginEmail && data.contactEmail === loginEmail) {
-      await match.ref.update({ ownerUid: requester.uid, updatedAt: Timestamp.now() });
-      return { liftClientId: match.id, created: false };
+      if (!data.ownerUid && data.status === "intake_draft") return { liftClientId: emailMatch.id, created: false };
+    } else {
+      if (data.ownerUid === requester.uid) return { liftClientId: emailMatch.id, created: false };
+      // A signed-in user may claim an unowned record only when it matches their verified login email.
+      const loginEmail = requester.email?.toLowerCase();
+      if (!data.ownerUid && loginEmail && data.contactEmail === loginEmail) {
+        await emailMatch.ref.update({ ownerUid: requester.uid, updatedAt: Timestamp.now() });
+        return { liftClientId: emailMatch.id, created: false };
+      }
     }
   }
 

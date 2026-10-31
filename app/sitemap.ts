@@ -10,7 +10,7 @@ const PAGES: MetadataRoute.Sitemap = [
   { url: "", lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
   { url: "/about", lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
   { url: "/events", lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-  { url: "/forms/lift-intake", lastModified: new Date(), changeFrequency: "monthly", priority: 0.95 },
+  { url: "/sign-up", lastModified: new Date(), changeFrequency: "monthly", priority: 0.95 },
   { url: "/contact", lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
   { url: "/register", lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: "/faq", lastModified: new Date(), changeFrequency: "monthly", priority: 0.75 },

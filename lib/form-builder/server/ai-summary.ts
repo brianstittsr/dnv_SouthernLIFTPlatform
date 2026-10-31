@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { createOpenAIClient } from "@/lib/openai-config";
-import { LIFT_SERVICE_AREAS } from "../controls";
+import { LIFT_SERVICE_AREAS, LOUISIANA_PARISHES } from "../controls";
 import type { FormField, FormValues, IntakeAiSummary } from "../types";
 
 /** Fields never sent to the AI provider. */
-const REDACTED_KEYS = new Set(["email", "phone", "fullName", "address", "uei", "attachments", "aiDisclosure"]);
+const REDACTED_KEYS = new Set(["email", "phone", "fullName", "address", "uei", "linkedin", "emailOptIn", "attachments", "aiDisclosure"]);
 
 const aiResultSchema = z.object({
   needsAssessment: z.string().min(1).max(3000),
@@ -38,7 +38,9 @@ function describeAnswers(fields: FormField[], values: FormValues): string {
 export function buildFallbackSummary(values: FormValues): IntakeAiSummary {
   const interests = Array.isArray(values.preferredServices) ? (values.preferredServices as string[]) : [];
   const areas = new Set<string>();
-  if (typeof values.serviceArea === "string") areas.add(values.serviceArea);
+  for (const area of Array.isArray(values.serviceArea) ? values.serviceArea : typeof values.serviceArea === "string" ? [values.serviceArea] : []) {
+    areas.add(String(area));
+  }
   for (const interest of interests) if (SERVICE_FOR_INTEREST[interest]) areas.add(SERVICE_FOR_INTEREST[interest]);
   if (values.seekingCapital === "yes") areas.add("Capital Readiness");
   if (values.samRegistered === "no" || values.soldToGovernment === "yes") areas.add("Procurement Readiness (CMMC / HUBZone / Opportunity Zones / Mentor-Protege)");
@@ -67,6 +69,48 @@ export function buildFallbackSummary(values: FormValues): IntakeAiSummary {
     eligibilityFlags: flags,
     generatedAt: new Date().toISOString(),
   };
+}
+
+const parishResultSchema = z.object({ parish: z.string().nullable() });
+
+/**
+ * Determines the Louisiana parish from an intake address using the AI provider.
+ * Returns null when no provider is configured or the parish cannot be determined.
+ */
+export async function inferParish(values: FormValues): Promise<string | null> {
+  const street = typeof values.address === "string" ? values.address.trim() : "";
+  const city = typeof values.city === "string" ? values.city.trim() : "";
+  const zip = typeof values.zip === "string" ? values.zip.trim() : "";
+  if (!city && !zip) return null;
+  const client = await createOpenAIClient();
+  if (!client) return null;
+  try {
+    const completion = await client.chat.completions.create({
+      model: process.env.LIFT_AI_MODEL || "gpt-4o-mini",
+      temperature: 0,
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: [
+            "You identify the Louisiana parish for a US street address.",
+            'Return JSON: {"parish": "<parish name or null>"}.',
+            `The parish must be one of: ${LOUISIANA_PARISHES.join("; ")}.`,
+            "Use the parish name exactly as listed (e.g., East Baton Rouge, St. Tammany).",
+            "If the address is not in Louisiana or you are not confident, return null.",
+          ].join(" "),
+        },
+        { role: "user", content: `Address: ${[street, city, "Louisiana", zip].filter(Boolean).join(", ")}` },
+      ],
+    });
+    const parsed = parishResultSchema.safeParse(JSON.parse(completion.choices[0]?.message?.content ?? "{}"));
+    if (!parsed.success || !parsed.data.parish) return null;
+    const normalized = parsed.data.parish.trim().toLowerCase();
+    return LOUISIANA_PARISHES.find((parish) => parish.toLowerCase() === normalized) ?? null;
+  } catch (error) {
+    console.error("LIFT parish inference failed:", error);
+    return null;
+  }
 }
 
 /**

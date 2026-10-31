@@ -20,6 +20,8 @@ export type FormFieldType =
   | "dropdown"
   | "platform_lookup"
   | "multi_select"
+  | "option_picker"
+  | "text_list"
   | "radio"
   | "yes_no"
   | "checkbox"
@@ -111,6 +113,7 @@ export type CrosswalkKey =
   | "business.employeesFullTime"
   | "business.employeesPartTime"
   | "business.applyingAs"
+  | "business.minorityCertification"
   | "contact.email"
   | "contact.phone"
   | "contact.mobile"
@@ -159,6 +162,8 @@ export interface FormField {
   /** Allowed file MIME types for `file_upload`. */
   accept?: string[];
   maxFiles?: number;
+  /** For `long_text` fields: shows an "Enhance with AI" button that turns bullet points into prose. */
+  aiEnhance?: boolean;
   reportingCategory?: "dimension" | "metric" | "identifier" | "open_text" | "compliance_artifact";
   recommendedChartType?: "bar" | "pie" | "line" | "kpi" | "none";
 }
@@ -276,6 +281,18 @@ export interface StoredSignature {
   ipHash?: string;
 }
 
+/** AI-generated characterization of one uploaded attachment. */
+export interface AttachmentInsight {
+  uploadId: string;
+  fileName: string;
+  /** What the document appears to be, e.g. "capability statement". */
+  documentType: string;
+  /** One or two sentences on what the document contains. */
+  summary: string;
+  /** Key facts an advisor should know without opening the file. */
+  keyFacts: string[];
+}
+
 export interface IntakeAiSummary {
   status: "pending_staff_review" | "confirmed" | "rejected";
   source: "ai" | "fallback";
@@ -307,6 +324,10 @@ export interface LiftFormSubmissionDoc {
   mappingStatus: "applied" | "skipped" | "failed";
   mappingErrors?: string[];
   aiSummary?: IntakeAiSummary;
+  /** AI characterization of uploaded attachments (what each file is and key facts). */
+  attachmentInsights?: AttachmentInsight[];
+  /** Parish inferred by AI from the street address (B1 no longer asks for it). */
+  derivedParish?: string;
   completionSeconds?: number;
   createdAt: string;
 }

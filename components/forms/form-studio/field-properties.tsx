@@ -55,7 +55,7 @@ const textToColumns = (text: string): TableColumn[] =>
 /** Property editor for the selected field in the Form Studio. */
 export function FieldProperties({ field, fields, sections, onChange, onDelete }: FieldPropertiesProps) {
   const update = (patch: Partial<FormField>) => onChange({ ...field, ...patch });
-  const hasOptions = ["dropdown", "radio", "multi_select"].includes(field.type);
+  const hasOptions = ["dropdown", "radio", "multi_select", "option_picker"].includes(field.type);
   const isScale = field.type === "likert_scale";
   const mappings = field.mappings ?? [];
 

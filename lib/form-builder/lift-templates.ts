@@ -3,7 +3,7 @@
  * docs/SOUTHERN Requirenments/analysis/LIFT_Onboarding_Questions.txt).
  * Seeded through POST /api/lift/forms/seed (admin). Forms stay editable in the Form Studio.
  */
-import { LIFT_SERVICE_AREAS } from "./controls";
+import { LIFT_SERVICE_AREAS, NAICS_OPTIONS } from "./controls";
 import type { FormDefinitionInput } from "./form-schema";
 import type { CrosswalkKey, FieldMapping, FormField, FormFieldType, LiftTarget, MappingTransform } from "./types";
 
@@ -26,7 +26,7 @@ const to = (target: LiftTarget, path: string, transform?: MappingTransform): Fie
 const prefill = (key: CrosswalkKey) => ({ prefillKey: key });
 
 const SERVICE_AREAS = [...LIFT_SERVICE_AREAS];
-const CERTIFICATIONS = ["8(a)", "HUBZone", "WOSB", "EDWOSB", "SDVOSB", "MBE", "DBE", "CMMC", "ISO 9001", "AS9100", "None"];
+const CERTIFICATIONS = ["8(a)", "HUBZone", "WOSB", "EDWOSB", "SDVOSB", "MBE", "DBE", "CMMC", "ISO 9001", "AS9100", "Other", "None"];
 const DIGITAL_TOOLS = ["Website", "E-commerce / online sales", "Accounting software", "CRM", "Social media", "AI tools", "None"];
 const REFERRAL_SOURCES = [
   "Southern University", "Small Business Development Center (SBDC)", "Partner organization", "Event or workshop",
@@ -59,7 +59,9 @@ const intake: FormDefinitionInput = {
   category: "Intake",
   lifecycleRef: "B1",
   presentationMode: "conversational",
-  audience: "public",
+  // Client-only: intake data must always be linked to a signed-in person or
+  // company. The /portal/onboarding wizard submits through this definition.
+  audience: "client",
   postProcess: ["intake_ai_summary"],
   nextFormSlug: "mbda-intake-loe",
   submitLabel: "Submit intake",
@@ -68,36 +70,74 @@ const intake: FormDefinitionInput = {
   sections: [
     { id: "start", title: "Getting started" },
     { id: "business", title: "Your business" },
+    { id: "operations", title: "How you operate" },
     { id: "needs", title: "Needs and goals" },
   ],
   fields: [
     field("start", "fullName", "What is your full name?", "short_text", { required: true, ...prefill("owner.name"), mappings: to("liftClients", "ownerName") }),
+    field("start", "contactTitle", "What is your title or role in the business?", "short_text", { ...prefill("owner.title"), mappings: to("liftClients", "representative.title") }),
     field("start", "email", "What is your email address?", "email", { required: true, ...prefill("contact.email"), mappings: to("liftClients", "contact.email") }),
     field("start", "phone", "What is the best phone number to reach you?", "phone", { ...prefill("contact.phone"), mappings: to("liftClients", "contact.phone") }),
-    field("start", "serviceArea", "Which LIFT service area best matches what you need?", "dropdown", { required: true, options: SERVICE_AREAS, ...prefill("serviceArea.primary"), mappings: to("liftClients", "primaryServiceArea") }),
+    field("start", "mobilePhone", "Mobile phone (if different)", "phone", { ...prefill("contact.mobile"), mappings: to("liftClients", "contact.mobile") }),
+    field("start", "linkedin", "What is your LinkedIn profile address?", "url", { placeholder: "https://www.linkedin.com/in/your-profile", ...prefill("social.linkedin"), mappings: to("liftClients", "contact.linkedin") }),
+    field("start", "ownerEthnicity", "Company owner ethnicity", "dropdown", { options: OWNER_ETHNICITY, ...prefill("owner.ethnicity"), mappings: to("liftClients", "identity.ownerEthnicity") }),
+    field("start", "serviceArea", "Which LIFT service(s) best match what you need?", "multi_select", { required: true, options: [...SERVICE_AREAS, "Not sure yet"], ...prefill("serviceArea.primary"), mappings: to("liftClients", "primaryServiceAreas") }),
     field("start", "aiDisclosure", "I understand an AI assistant will summarize my answers and LIFT staff will review them before any decision is made.", "checkbox", { required: true }),
+    field("start", "privacyAck", "I acknowledge the LIFT Center's privacy notice and consent to be contacted about its services.", "checkbox", { required: true, mappings: to("liftClients", "consents.privacyAcknowledged", "boolean") }),
+    field("start", "emailOptIn", "I agree to receive emails from the Southern LIFT program in the future.", "checkbox", { mappings: to("liftClients", "contact.emailOptIn", "boolean") }),
     field("business", "businessName", "What is your business's legal name?", "short_text", { required: true, ...prefill("business.name"), mappings: to("liftClients", "legalName") }),
     field("business", "dba", "Do you use a different trade name (DBA)? If so, what is it?", "short_text"),
-    field("business", "ownership", "Who owns the business, and what percentage does each owner hold?", "long_text", { required: true }),
-    field("business", "majorityOwned", "Is the business majority-owned and controlled by the person(s) completing this intake?", "yes_no", { required: true }),
+    field("business", "applyingAs", "What type of business entity is it?", "dropdown", {
+      required: true,
+      options: ["Sole proprietorship", "LLC", "Corporation", "S corporation", "Partnership", "Nonprofit", "Not registered yet", "Other"],
+      ...prefill("business.applyingAs"),
+      mappings: to("liftClients", "business.entityType"),
+    }),
     field("business", "address", "What is the business's physical street address?", "short_text", { required: true, ...prefill("business.address"), mappings: to("liftClients", "address.street") }),
     field("business", "city", "City", "short_text", { required: true, ...prefill("business.city"), mappings: to("liftClients", "address.city") }),
-    field("business", "parish", "In which parish is the business located?", "platform_lookup", { required: true, lookupSource: "parishes", ...prefill("business.parish"), mappings: to("liftClients", "address.parish") }),
     field("business", "zip", "ZIP code", "short_text", { required: true, ...prefill("business.zip"), mappings: to("liftClients", "address.zip") }),
-    field("business", "productsServices", "What products or services do you provide?", "long_text", { required: true, mappings: to("liftClients", "business.description") }),
-    field("business", "naics", "Do you know your NAICS code(s)? List them separated by commas.", "short_text", { ...prefill("business.naics"), mappings: to("liftClients", "business.naics", "split_csv") }),
+    field("business", "productsServices", "What products or services do you provide?", "text_list", {
+      required: true,
+      placeholder: "Type a product or service, then click +",
+      helpText: "Add each product or service on its own line.",
+      mappings: to("liftClients", "business.productsServices"),
+    }),
+    field("business", "naics", "Add your NAICS code(s). Search by code or keyword, then click + to add each one.", "option_picker", {
+      options: [...NAICS_OPTIONS],
+      helpText: "Not sure of your code? Leave this blank — your advisor will help you find it.",
+      ...prefill("business.naics"),
+      mappings: to("liftClients", "business.naics"),
+    }),
     field("business", "stage", "What stage is your business in?", "radio", { required: true, options: ["Idea", "Startup (under 2 years)", "Operating business", "Growing / expanding"], mappings: to("liftClients", "business.stage") }),
     field("business", "revenueLast12", "About how much revenue did the business earn in the last 12 months?", "currency", { ...prefill("business.annualRevenue"), mappings: to("liftClients", "business.annualRevenueCents", "currency_to_cents") }),
-    field("business", "employeesFullTime", "How many full-time employees do you have, including owners?", "number", { required: true, ...prefill("business.employeesFullTime"), mappings: to("liftClients", "business.employeesFullTime", "number") }),
-    field("business", "employeesPartTime", "How many part-time employees do you have?", "number", { ...prefill("business.employeesPartTime"), mappings: to("liftClients", "business.employeesPartTime", "number") }),
+    field("business", "employeesFullTime", "How many full-time employees do you have, including owners?", "dropdown", {
+      required: true,
+      options: ["0 - just the owner(s)", "1-4", "5-9", "10-19", "20-49", "50-99", "100 or more"],
+      mappings: to("liftClients", "business.employeesFullTimeRange"),
+    }),
     field("business", "samRegistered", "Is your business registered in SAM.gov?", "yes_no", { required: true }),
     field("business", "uei", "What is your Unique Entity ID (UEI)?", "short_text", { showIf: { fieldKey: "samRegistered", operator: "is_true" }, ...prefill("ids.uei"), mappings: to("liftClients", "uei") }),
     field("business", "soldToGovernment", "Have you sold to government agencies, prime contractors, or large companies before?", "yes_no", { required: true }),
     field("business", "certifications", "Which certifications does your business hold?", "multi_select", { options: CERTIFICATIONS, ...prefill("certifications.current"), mappings: to("liftClients", "business.certifications") }),
     field("business", "certificationsPlanned", "Which certifications do you plan to pursue?", "multi_select", { options: CERTIFICATIONS.filter((item) => item !== "None") }),
+    field("business", "minorityCertification", "Which minority business certification do you hold, if any?", "dropdown", {
+      options: ["8(a)", "MBE", "DBE", "WBE / WOSB", "HUBZone", "SDVOSB", "None", "In process"],
+      ...prefill("business.minorityCertification"),
+      mappings: to("liftClients", "business.minorityCertification"),
+    }),
     field("business", "digitalTools", "Which digital tools do you use today?", "multi_select", { options: DIGITAL_TOOLS }),
+    field("operations", "acquisitionMethod", "How do you currently get business?", "dropdown", {
+      required: true,
+      options: ["Word of mouth", "Referrals", "Website / online", "Social media", "Bids and solicitations", "Networking events", "Other"],
+      ...prefill("business.acquisitionMethod"),
+      mappings: to("liftClients", "business.acquisitionMethod"),
+    }),
+    field("operations", "openToTeaming", "Is your company open to a teaming arrangement if suggested?", "yes_no", { required: true, ...prefill("teaming.open"), mappings: to("liftClients", "preferences.openToTeaming", "boolean") }),
+    field("operations", "outOfState", "Is your company able to perform work outside your current state?", "yes_no", { required: true, ...prefill("operations.outOfState"), mappings: to("liftClients", "operations.outOfState", "boolean") }),
+    field("operations", "inHouseBD", "Does your company have an in-house business development team?", "yes_no", { required: true, ...prefill("operations.inHouseBD"), mappings: to("liftClients", "operations.inHouseBD", "boolean") }),
+    field("operations", "resourcesToInvest", "Does your company have resources to invest if recommended?", "yes_no", { required: true, ...prefill("resources.toInvest"), mappings: to("liftClients", "resources.toInvest", "boolean") }),
     field("needs", "seekingCapital", "Are you seeking financing or investment?", "yes_no", { required: true }),
-    field("needs", "capitalPurpose", "What would the financing be used for?", "long_text", { showIf: { fieldKey: "seekingCapital", operator: "is_true" } }),
+    field("needs", "capitalPurpose", "What would the financing be used for?", "long_text", { aiEnhance: true, showIf: { fieldKey: "seekingCapital", operator: "is_true" } }),
     field("needs", "capitalAmount", "About how much financing are you seeking?", "currency", { showIf: { fieldKey: "seekingCapital", operator: "is_true" } }),
     field("needs", "topNeed", "What is the single most important thing your business needs right now?", "long_text", { required: true, ...prefill("needs.top"), mappings: to("liftClients", "needs.top") }),
     field("needs", "barriers", "What is holding your business back?", "long_text", { required: true }),
@@ -108,7 +148,7 @@ const intake: FormDefinitionInput = {
     }),
     field("needs", "referralSource", "How did you hear about the LIFT Center?", "dropdown", { required: true, options: REFERRAL_SOURCES, ...prefill("referral.source"), mappings: to("liftClients", "referralSource") }),
     field("needs", "attachments", "Upload any documents that help us understand your business (optional)", "file_upload", {
-      helpText: "For example, a capability statement, financial statement, or business plan. Do not upload Social Security numbers or controlled (CUI) documents.",
+      helpText: "For example, a capability statement, financial statement, or business plan. Do not upload Social Security numbers or controlled (CUI) documents. An AI assistant reads each file and summarizes it for your advisor.",
       maxFiles: 5,
     }),
   ],
@@ -163,6 +203,7 @@ const mbdaIntake: FormDefinitionInput = {
     }),
     field("application", "minorityCertification", "Minority business certification", "dropdown", {
       options: ["8(a)", "MBE", "DBE", "WBE / WOSB", "HUBZone", "SDVOSB", "None", "In process"],
+      ...prefill("business.minorityCertification"),
       mappings: to("liftClients", "business.minorityCertification"),
     }),
     field("application", "uei", "Unique Entity ID (UEI) - formerly DUNS No.", "short_text", { ...prefill("ids.uei"), mappings: to("liftClients", "uei") }),
@@ -276,7 +317,11 @@ const baseline: FormDefinitionInput = {
     readiness("readinessMarketing", "Marketing and sales"),
     readiness("readinessTechnology", "Technology and cybersecurity"),
     readiness("readinessOperations", "Operations and production"),
-    field("readiness", "financialsUpload", "Upload supporting financials (optional)", "file_upload", { maxFiles: 3 }),
+    field("readiness", "financialsUpload", "Upload supporting financials (optional)", "file_upload", {
+      maxFiles: 3,
+      helpText: "For example, a profit-and-loss statement or balance sheet. An AI assistant reads each file and summarizes it for your advisor. Do not upload Social Security numbers or account numbers.",
+      mappings: to("liftBaselines", "financialsUpload"),
+    }),
   ],
 };
 

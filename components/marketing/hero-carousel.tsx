@@ -54,7 +54,7 @@ const defaultSlides: HeroSlide[] = [
     subheadline:
       "The Southern University MBDA LIFT Rural Business Center helps rural small businesses strengthen operations, prepare for capital, and compete for contracts — funded in part by a $1.275M U.S. Department of Commerce MBDA cooperative agreement.",
     benefits: ["Technical Assistance", "Training & Workshops", "Contracting Readiness"],
-    primaryCta: { text: "Start the Intake Interview", href: "/forms/lift-intake" },
+    primaryCta: { text: "Start the Intake Interview", href: "/sign-up" },
     secondaryCta: { text: "About the Center", href: "/about" },
     isPublished: true,
     order: 1,
@@ -86,7 +86,7 @@ const defaultSlides: HeroSlide[] = [
     subheadline:
       "Work with an advisor on financial statements, loan packaging, and lender connections — so when capital is within reach, your business is ready for it.",
     benefits: ["Capital Readiness Review", "Loan Packaging", "Lender Connections"],
-    primaryCta: { text: "Start the Intake Interview", href: "/forms/lift-intake" },
+    primaryCta: { text: "Start the Intake Interview", href: "/sign-up" },
     secondaryCta: { text: "", href: "" },
     isPublished: true,
     order: 3,
@@ -118,7 +118,7 @@ const defaultSlides: HeroSlide[] = [
     subheadline:
       "Through the center's metal additive manufacturing lab, rural manufacturers get hands-on support making, repairing, and testing parts for agriculture, energy, and defense supply chains.",
     benefits: ["Metal Additive Manufacturing", "Supply Chain Integration", "Hands-On Program"],
-    primaryCta: { text: "Join the Program", href: "/forms/lift-intake" },
+    primaryCta: { text: "Join the Program", href: "/sign-up" },
     secondaryCta: { text: "", href: "" },
     isPublished: true,
     order: 5,

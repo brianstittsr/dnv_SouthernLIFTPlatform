@@ -5,7 +5,7 @@ const key = z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/, "Keys use letters, 
 
 const fieldTypes = [
   "short_text", "long_text", "email", "phone", "url", "number", "currency", "date", "datetime",
-  "dropdown", "platform_lookup", "multi_select", "radio", "yes_no", "checkbox", "likert_scale", "nps",
+  "dropdown", "platform_lookup", "multi_select", "option_picker", "text_list", "radio", "yes_no", "checkbox", "likert_scale", "nps",
   "rating_stars", "file_upload", "signature", "repeating_table", "calculated", "section_header", "statement",
 ] as const;
 
@@ -19,7 +19,7 @@ const crosswalkKeys = [
   "owner.name", "owner.title", "owner.ethnicity", "business.name", "business.address", "business.city",
   "business.state", "business.zip", "business.parish", "business.website", "business.naics",
   "business.revenueBand", "business.annualRevenue", "business.employeesFullTime", "business.employeesPartTime",
-  "business.applyingAs", "contact.email", "contact.phone", "contact.mobile", "ids.uei", "ids.cage",
+  "business.applyingAs", "business.minorityCertification", "contact.email", "contact.phone", "contact.mobile", "ids.uei", "ids.cage",
   "certifications.current", "capabilities.summary", "needs.top", "needs.helpWanted", "business.acquisitionMethod",
   "teaming.open", "resources.toInvest", "operations.outOfState", "operations.inHouseBD", "agencies.target",
   "referral.source", "referral.by", "serviceArea.primary", "social.linkedin",
@@ -74,6 +74,7 @@ export const formFieldSchema = z.object({
     .optional(),
   accept: z.array(z.string().max(160)).max(20).optional(),
   maxFiles: z.number().int().min(1).max(10).optional(),
+  aiEnhance: z.boolean().optional(),
   reportingCategory: z.enum(["dimension", "metric", "identifier", "open_text", "compliance_artifact"]).optional(),
   recommendedChartType: z.enum(["bar", "pie", "line", "kpi", "none"]).optional(),
 });
