@@ -16,6 +16,7 @@
 import JSZip from "jszip";
 import { NAICS_OPTIONS } from "@/lib/form-builder/controls";
 import { WORKSHEET_SECTIONS, type WorksheetField } from "./worksheet";
+import { PSC_CODES } from "./psc-codes";
 
 const esc = (v: string): string =>
   v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -138,7 +139,7 @@ const COVER = [
   para([run("•  Click a shaded answer cell to type, choose from a dropdown, or tick checkboxes. The Products and services field lists every federal PSC code — pick codes from its dropdown or type your own.")], { after: 80 }),
   para([run("•  Anything you don't know can be left blank — required fields are marked.")], { after: 80 }),
   para([run("•  For checklists, tick every option that applies (for example, several NAICS codes or certifications).")], { after: 80 }),
-  para([run("•  A NAICS reference table is included at the end of this document.")], { after: 300 }),
+  para([run("•  NAICS and PSC reference tables are included at the end of this document.")], { after: 300 }),
   table(
     [
       row(cell(para([run("Prepared by", { b: true })], { after: 0 }), 3700, "F4F7FB"), cell(para([textCtl("preparedBy")], { after: 0 }), 6524)),
@@ -163,6 +164,18 @@ const appendixPage = (): string => {
   ].join("");
 };
 
+const pscAppendixPage = (): string => {
+  const rows = PSC_CODES.map((psc) =>
+    row(cell(para([run(psc.code, { b: true, sz: 18 })], { after: 0 }), 1400, "F4F7FB"), cell(para([run(psc.name, { sz: 18 })], { after: 0 }), 8824)),
+  );
+  return [
+    para([run("Appendix — PSC code reference", { b: true, color: "FFFFFF", sz: 28 })], { shd: "134074", pageBreak: true, before: 160, after: 200 }),
+    para([run("Product and Service Codes (PSC) are the codes federal agencies use to buy. Find the codes that match what you sell, then pick them from the “Products and services” dropdown or type them (comma-separated) — e.g. R425, D302.", { color: "3D4752" })]),
+    table(rows, [1400, 8824]),
+    para([run(" ", { sz: 8 })], { after: 0 }),
+  ].join("");
+};
+
 const sectionPage = (index: number, title: string, fields: WorksheetField[]): string =>
   [
     para([run(`Step ${index + 1} — ${title}`, { b: true, color: "FFFFFF", sz: 28 })], {
@@ -181,6 +194,7 @@ const buildDocumentXml = (): string => {
     ...WORKSHEET_SECTIONS.map((section, i) => sectionPage(i, section.title, section.fields)),
     para([run("END OF WORKSHEET", { b: true, color: "9AA5B1", sz: 16 })], { before: 300 }),
     appendixPage(),
+    pscAppendixPage(),
   ].join("");
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
