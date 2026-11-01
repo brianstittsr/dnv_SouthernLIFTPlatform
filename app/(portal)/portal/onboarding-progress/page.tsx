@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { liftFetch } from "@/components/forms/lift-api";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { WorksheetDialog } from "@/components/onboarding/worksheet-dialog";
 
 interface MyForm {
   slug: string;
@@ -23,8 +24,9 @@ interface ChecklistItem {
   label: string;
   description: string;
   done: boolean;
-  href: string;
+  href?: string;
   action: string;
+  onClick?: () => void;
 }
 
 /** Shows the client's onboarding checklist plus the status of each LIFT lifecycle form. */
@@ -32,6 +34,7 @@ export default function OnboardingProgressPage() {
   const { profile, profileCompletion } = useUserProfile();
   const [forms, setForms] = useState<MyForm[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [worksheetOpen, setWorksheetOpen] = useState(false);
 
   useEffect(() => {
     liftFetch<MyForm[]>("/api/lift/my-forms")
@@ -54,8 +57,8 @@ export default function OnboardingProgressPage() {
       label: "Finish LIFT Client Onboarding",
       description: "Program expectations and business profile wizard",
       done: profile.affiliateOnboardingComplete,
-      href: "/portal/onboarding",
       action: "Open onboarding",
+      onClick: () => setWorksheetOpen(true),
     },
     {
       label: "Submit the MBDA Client Intake & Letter of Engagement",
@@ -126,11 +129,16 @@ export default function OnboardingProgressPage() {
                   <p className="text-sm text-muted-foreground">{item.description}</p>
                 </div>
               </div>
-              {!item.done && (
-                <Button asChild size="sm" variant="outline">
-                  <Link href={item.href}>{item.action}</Link>
-                </Button>
-              )}
+              {!item.done &&
+                (item.onClick ? (
+                  <Button size="sm" variant="outline" onClick={item.onClick}>
+                    {item.action}
+                  </Button>
+                ) : (
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={item.href ?? "#"}>{item.action}</Link>
+                  </Button>
+                ))}
             </div>
           ))}
         </CardContent>
@@ -193,6 +201,8 @@ export default function OnboardingProgressPage() {
         <User className="h-4 w-4" aria-hidden="true" />
         Questions? Contact your LIFT advisor.
       </div>
+
+      <WorksheetDialog open={worksheetOpen} onOpenChange={setWorksheetOpen} />
     </div>
   );
 }
