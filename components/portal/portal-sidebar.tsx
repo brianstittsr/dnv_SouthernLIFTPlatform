@@ -122,7 +122,6 @@ const myLiftItems = [
     title: "Onboarding Progress",
     href: "/portal/onboarding-progress",
     icon: ClipboardCheck,
-    badge: "LIFT",
   },
   {
     title: "Documents",

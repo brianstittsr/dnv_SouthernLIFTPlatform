@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db, auth } from "@/lib/firebase";
-import { doc, Timestamp, setDoc } from "firebase/firestore";
+import { doc, Timestamp, setDoc, getDoc } from "firebase/firestore";
 import {
   OnboardingWizard,
   WizardStep,
@@ -69,7 +69,12 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
     email: d.contactEmail,
     phone: d.contactPhone,
     mobilePhone: d.mobilePhone,
-    linkedin: d.linkedin,
+    preferredContactMethod:
+      ({ email: "Email", phone: "Phone", either: "Either" } as Record<string, string>)[
+        d.preferredContactMethod
+      ] ?? "",
+    noLinkedin: d.noLinkedin,
+    linkedin: d.noLinkedin ? "" : d.linkedin,
     ownerEthnicity: d.ownerEthnicity,
     serviceArea: d.serviceArea,
     aiDisclosure: d.aiDisclosure,
@@ -114,6 +119,14 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
   return values;
 }
 
+/** In-progress wizard answers, saved so a refresh or navigation doesn't lose work. */
+interface OnboardingDraft {
+  userType?: "sme" | "buyer";
+  step?: number;
+  sme?: Partial<typeof initialSMEFormData>;
+  buyer?: Partial<typeof initialBuyerFormData>;
+}
+
 interface LiftClientOnboardingProps {
   /**
    * Called after onboarding completes and the profile is saved. Defaults to
@@ -138,11 +151,24 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
   const [userType, setUserType] = useState<"sme" | "buyer">("sme");
   const [smeFormData, setSmeFormData] = useState(initialSMEFormData);
   const [buyerFormData, setBuyerFormData] = useState(initialBuyerFormData);
+  const [initialStep, setInitialStep] = useState(0);
+  const [draftStep, setDraftStep] = useState(0);
+  const uidRef = useRef("");
+  const draftKeyRef = useRef("");
 
   useEffect(() => {
-    if (profile.id) {
-      const type = searchParams.get("type") as "sme" | "buyer" | null;
-      setUserType(type === "sme" || type === "buyer" ? type : "sme");
+    if (!profile.id) return;
+    let cancelled = false;
+
+    const init = async () => {
+      const type = searchParams.get("type") === "buyer" ? "buyer" : "sme";
+      setUserType(type);
+
+      // `profile.id` may be a teamMembers doc id — the draft key and users doc
+      // are keyed by the Firebase Auth uid.
+      const uid = auth?.currentUser?.uid || profile.authUid || profile.id;
+      uidRef.current = uid;
+      draftKeyRef.current = `lift-onboarding-draft:${uid}:${type}`;
 
       // Check if onboarding is complete using optional chaining
       const profileData = profile as { isOnboardingComplete?: boolean };
@@ -151,42 +177,115 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         return;
       }
 
-      // Prefill the wizard from the existing user profile so fields already
-      // on the user's profile don't have to be re-entered.
-      setSmeFormData((prev) => ({
-        ...prev,
-        contactName:
-          prev.contactName ||
-          [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim(),
-        contactEmail: prev.contactEmail || profile.email || "",
-        contactPhone: prev.contactPhone || profile.phone || "",
-        contactTitle: prev.contactTitle || profile.jobTitle || "",
-        companyName:
-          prev.companyName ||
-          profile.legalCompanyName ||
-          profile.companyName ||
-          profile.company ||
-          "",
-        website: prev.website || profile.website || "",
-        address: prev.address || profile.address || "",
-        city: prev.city || profile.city || "",
-        state: prev.state || profile.state || "",
-        zip: prev.zip || profile.zip || "",
-        dunsUei: prev.dunsUei || profile.uei || profile.dunsNumber || "",
-        cageCode: prev.cageCode || profile.cageCode || "",
-        primaryNaics:
-          prev.primaryNaics.length > 0
-            ? prev.primaryNaics
-            : profile.primaryNaics ?? profile.naicsCodes ?? [],
-        certifications:
-          prev.certifications.length > 0
-            ? prev.certifications
-            : profile.certifications ?? [],
-      }));
+      // Restore an in-progress draft — localStorage first (this device),
+      // then the onboardingDraft field on the users doc (other devices).
+      let restored = false;
+      try {
+        const raw = localStorage.getItem(draftKeyRef.current);
+        const draft = raw ? (JSON.parse(raw) as OnboardingDraft) : null;
+        if (draft && !cancelled) {
+          if (draft.sme) setSmeFormData({ ...initialSMEFormData, ...draft.sme });
+          if (draft.buyer) setBuyerFormData({ ...initialBuyerFormData, ...draft.buyer });
+          setInitialStep(draft.step ?? 0);
+          setDraftStep(draft.step ?? 0);
+          restored = true;
+        }
+      } catch {
+        // Malformed draft — fall through to profile prefill.
+      }
+      if (!restored && db && uid) {
+        try {
+          const snap = await getDoc(doc(db, "users", uid));
+          const draft = snap.data()?.onboardingDraft as OnboardingDraft | undefined;
+          if (draft && (draft.sme || draft.buyer) && !cancelled) {
+            if (draft.sme) setSmeFormData({ ...initialSMEFormData, ...draft.sme });
+            if (draft.buyer) setBuyerFormData({ ...initialBuyerFormData, ...draft.buyer });
+            setInitialStep(draft.step ?? 0);
+            setDraftStep(draft.step ?? 0);
+            restored = true;
+          }
+        } catch (error) {
+          console.error("Could not load onboarding draft:", error);
+        }
+      }
+      if (cancelled) return;
+
+      if (!restored) {
+        // Prefill the wizard from the existing user profile so fields already
+        // on the user's profile don't have to be re-entered.
+        setSmeFormData((prev) => ({
+          ...prev,
+          contactName:
+            prev.contactName ||
+            [profile.firstName, profile.lastName].filter(Boolean).join(" ").trim(),
+          contactEmail: prev.contactEmail || profile.email || "",
+          contactPhone: prev.contactPhone || profile.phone || "",
+          contactTitle: prev.contactTitle || profile.jobTitle || "",
+          companyName:
+            prev.companyName ||
+            profile.legalCompanyName ||
+            profile.companyName ||
+            profile.company ||
+            "",
+          website: prev.website || profile.website || "",
+          address: prev.address || profile.address || "",
+          city: prev.city || profile.city || "",
+          state: prev.state || profile.state || "",
+          zip: prev.zip || profile.zip || "",
+          dunsUei: prev.dunsUei || profile.uei || profile.dunsNumber || "",
+          cageCode: prev.cageCode || profile.cageCode || "",
+          primaryNaics:
+            prev.primaryNaics.length > 0
+              ? prev.primaryNaics
+              : profile.primaryNaics ?? profile.naicsCodes ?? [],
+          certifications:
+            prev.certifications.length > 0
+              ? prev.certifications
+              : profile.certifications ?? [],
+        }));
+      }
 
       setLoading(false);
-    }
+    };
+
+    void init();
+    return () => {
+      cancelled = true;
+    };
   }, [profile, searchParams, router, onCompleted]);
+
+  // Persist the draft on every change — localStorage immediately, and the
+  // users doc debounced so it survives a different device or cleared storage.
+  useEffect(() => {
+    if (loading || !draftKeyRef.current) return;
+    const draft: OnboardingDraft = {
+      userType,
+      step: draftStep,
+      sme: smeFormData,
+      buyer: buyerFormData,
+    };
+    localStorage.setItem(draftKeyRef.current, JSON.stringify(draft));
+    const timeout = setTimeout(() => {
+      if (!db || !uidRef.current) return;
+      setDoc(
+        doc(db, "users", uidRef.current),
+        { onboardingDraft: { ...draft, updatedAt: Timestamp.now() } },
+        { merge: true },
+      ).catch((error) => console.error("Could not save onboarding draft:", error));
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [smeFormData, buyerFormData, draftStep, userType, loading]);
+
+  const clearDraft = () => {
+    if (draftKeyRef.current) localStorage.removeItem(draftKeyRef.current);
+    if (db && uidRef.current) {
+      setDoc(
+        doc(db, "users", uidRef.current),
+        { onboardingDraft: null },
+        { merge: true },
+      ).catch((error) => console.error("Could not clear onboarding draft:", error));
+    }
+  };
 
   const handleComplete = async () => {
     if (!db || !profile.id) return;
@@ -203,7 +302,7 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         } catch (error) {
           console.error("LIFT intake submission failed:", error);
           toast.error(error instanceof Error ? error.message : "Could not record your intake. Please try again.");
-          return;
+          return false;
         }
       }
 
@@ -243,6 +342,33 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         } catch (error) {
           console.error("Company link failed:", error);
           toast.warning("Profile saved, but your company record could not be linked. Staff can link it for you.");
+        }
+      }
+
+      // Email each additional contact a sign-up link so they can create
+      // their own account. Best-effort — never blocks onboarding.
+      const contactsToInvite = smeFormData.secondaryContacts.filter(
+        (c) => c.name.trim() && c.email.trim(),
+      );
+      if (userType === "sme" && contactsToInvite.length > 0) {
+        try {
+          const idToken = await auth?.currentUser?.getIdToken();
+          if (!idToken) throw new Error("Not signed in");
+          const inviteResponse = await fetch("/api/contacts/invite", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${idToken}` },
+            body: JSON.stringify({
+              contacts: contactsToInvite.map((c) => ({ name: c.name.trim(), email: c.email.trim() })),
+              companyName: smeFormData.companyName,
+            }),
+          });
+          if (!inviteResponse.ok) {
+            const inviteBody = (await inviteResponse.json().catch(() => ({}))) as { error?: string };
+            throw new Error(inviteBody.error || "Invite failed");
+          }
+        } catch (error) {
+          console.error("Contact invites failed:", error);
+          toast.warning("Profile saved, but invite emails could not be sent. Your advisor can resend them.");
         }
       }
 
@@ -303,9 +429,13 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             phone: smeFormData.contactPhone,
             mobilePhone: smeFormData.mobilePhone,
             jobTitle: smeFormData.contactTitle,
-            linkedin: smeFormData.linkedin,
+            linkedin: smeFormData.noLinkedin ? "" : smeFormData.linkedin,
+            noLinkedin: smeFormData.noLinkedin,
             ownerEthnicity: smeFormData.ownerEthnicity,
             preferredContactMethod: smeFormData.preferredContactMethod,
+            secondaryContacts: smeFormData.secondaryContacts.filter(
+              (c) => c.name.trim() && c.email.trim(),
+            ),
             liftClientId: intakeResult?.liftClientId ?? null,
             liftIntakeSubmissionId: intakeResult?.submissionId ?? null,
             companyId: companyId ?? null,
@@ -346,6 +476,7 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
 
       // Use setDoc with merge: true to create or update the document
       await setDoc(userRef, updateData, { merge: true });
+      clearDraft();
 
       toast.success(getProgramBranding().welcomeTitle, {
         description: "Your profile is ready. Let's get started!",
@@ -359,10 +490,13 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
     } catch (error) {
       console.error("Error saving onboarding data:", error);
       toast.error("Failed to save profile");
+      return false;
     }
   };
 
   const handleDismiss = () => {
+    // Keep the draft — dismissing means "finish later", and the wizard
+    // restores where they left off on return.
     onDismissed ? onDismissed() : router.push("/portal");
   };
 
@@ -470,6 +604,25 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
           toast.error("Please fill in all required contact fields");
           return false;
         }
+        if (!smeFormData.preferredContactMethod) {
+          toast.error("Please select your preferred contact method");
+          return false;
+        }
+        if (!smeFormData.noLinkedin && !smeFormData.linkedin.trim()) {
+          toast.error("Please add your LinkedIn profile, or check the box if you don't have one");
+          return false;
+        }
+        if (!smeFormData.ownerEthnicity) {
+          toast.error("Please select the owner ethnicity");
+          return false;
+        }
+        const incomplete = smeFormData.secondaryContacts.some(
+          (c) => (c.name.trim() && !c.email.trim()) || (!c.name.trim() && c.email.trim()),
+        );
+        if (incomplete) {
+          toast.error("Each additional contact needs both a name and an email — or remove the row");
+          return false;
+        }
         return true;
       },
     },
@@ -561,6 +714,8 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       userType={userType}
       onComplete={handleComplete}
       onDismiss={handleDismiss}
+      initialStep={initialStep}
+      onStepChange={setDraftStep}
     />
   );
 }

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,8 +25,15 @@ export interface WizardStep {
 interface OnboardingWizardProps {
   steps: WizardStep[];
   userType: "sme" | "buyer";
-  onComplete: () => void;
+  /** Called on the final step before the user doc is marked complete.
+   * Return `false` to abort completion (e.g. a submit the caller handles
+   * failed) — the wizard shows no extra toast and stays on the step. */
+  onComplete: () => void | boolean | Promise<void | boolean>;
   onDismiss?: () => void;
+  /** Step to resume on (e.g. a saved draft). */
+  initialStep?: number;
+  /** Called whenever the visible step changes, for draft persistence. */
+  onStepChange?: (stepIndex: number) => void;
 }
 
 export function OnboardingWizard({
@@ -34,10 +41,14 @@ export function OnboardingWizard({
   userType,
   onComplete,
   onDismiss,
+  initialStep,
+  onStepChange,
 }: OnboardingWizardProps) {
   const router = useRouter();
   const { profile } = useUserProfile();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(() =>
+    Math.min(Math.max(initialStep ?? 0, 0), steps.length - 1),
+  );
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isValidating, setIsValidating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -72,6 +83,7 @@ export function OnboardingWizard({
       await handleComplete();
     } else {
       setCurrentStep((prev) => prev + 1);
+      onStepChange?.(currentStep + 1);
       await saveProgress(currentStep + 1);
     }
   };
@@ -79,25 +91,37 @@ export function OnboardingWizard({
   const handlePrevious = () => {
     if (!isFirstStep) {
       setCurrentStep((prev) => prev - 1);
+      onStepChange?.(currentStep - 1);
     }
   };
 
+  // `profile.id` may be a linked teamMembers doc id; users/{id} writes must
+  // use the Firebase Auth uid or Firestore rules deny them.
+  const userDocId = auth?.currentUser?.uid || profile.authUid || profile.id;
+
   const handleComplete = async () => {
-    if (!db || !profile.id) return;
+    if (!db || !userDocId) return;
 
     setIsSaving(true);
     try {
-      await updateDoc(doc(db, "users", profile.id), {
-        isOnboardingComplete: true,
-        onboardingCompletedAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
+      // Run the caller's completion work first (e.g. the LIFT intake
+      // submit) — only mark onboarding complete after it succeeds.
+      const completed = await onComplete();
+      if (completed === false) return;
+
+      await setDoc(
+        doc(db, "users", userDocId),
+        {
+          isOnboardingComplete: true,
+          onboardingCompletedAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        },
+        { merge: true },
+      );
 
       toast.success("Onboarding complete!", {
         description: `Your profile is ready. ${getProgramBranding().welcomeTitle}`,
       });
-
-      onComplete();
     } catch (error) {
       console.error("Error completing onboarding:", error);
       toast.error("Failed to complete onboarding");
@@ -107,26 +131,34 @@ export function OnboardingWizard({
   };
 
   const saveProgress = async (stepIndex: number) => {
-    if (!db || !profile.id) return;
+    if (!db || !userDocId) return;
 
     try {
-      await updateDoc(doc(db, "users", profile.id), {
-        lastOnboardingStep: stepIndex,
-        updatedAt: Timestamp.now(),
-      });
+      await setDoc(
+        doc(db, "users", userDocId),
+        {
+          lastOnboardingStep: stepIndex,
+          updatedAt: Timestamp.now(),
+        },
+        { merge: true },
+      );
     } catch (error) {
       console.error("Error saving progress:", error);
     }
   };
 
   const handleDismiss = async () => {
-    if (!db || !profile.id) return;
+    if (!db || !userDocId) return;
 
     try {
-      await updateDoc(doc(db, "users", profile.id), {
-        onboardingDismissedAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
+      await setDoc(
+        doc(db, "users", userDocId),
+        {
+          onboardingDismissedAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        },
+        { merge: true },
+      );
 
       toast.info("You can complete your profile later from your dashboard");
       onDismiss?.();
@@ -140,7 +172,7 @@ export function OnboardingWizard({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {userType === "buyer" ? "Buyer " : ""}Onboarding
+            {userType === "buyer" ? "Buyer " : "LIFT "}Onboarding
           </h1>
           <p className="text-muted-foreground">
             Complete your profile to get started
@@ -167,7 +199,12 @@ export function OnboardingWizard({
         {steps.map((step, index) => (
           <button
             key={step.id}
-            onClick={() => index < currentStep && setCurrentStep(index)}
+            onClick={() => {
+              if (index < currentStep) {
+                setCurrentStep(index);
+                onStepChange?.(index);
+              }
+            }}
             disabled={index > currentStep}
             className={cn(
               "flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors",
@@ -214,6 +251,7 @@ export function OnboardingWizard({
               variant="ghost"
               onClick={() => {
                 setCurrentStep((prev) => prev + 1);
+                onStepChange?.(currentStep + 1);
                 saveProgress(currentStep + 1);
               }}
             >

@@ -38,6 +38,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { auth } from "@/lib/firebase";
+import { FieldHint } from "@/components/ui/field-hint";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { LIFT_SERVICE_AREAS } from "@/lib/form-builder/controls";
@@ -178,6 +179,11 @@ const acquisitionMethodOptions = [
 /** Intake service areas plus the catalog's "Not sure" option (B1.0.2). */
 const serviceAreaOptions = [...LIFT_SERVICE_AREAS, "Not sure yet"];
 
+interface SecondaryContact {
+  name: string;
+  email: string;
+}
+
 interface SMEFormData {
   companyName: string;
   businessNotRegistered: boolean;
@@ -234,9 +240,11 @@ interface SMEFormData {
   contactPhone: string;
   mobilePhone: string;
   linkedin: string;
+  /** True when the user/company has no LinkedIn profile — satisfies the LinkedIn requirement. */
+  noLinkedin: boolean;
   ownerEthnicity: string;
-  secondaryContactName: string;
-  secondaryContactEmail: string;
+  /** Additional teammates invited to create accounts on the platform. */
+  secondaryContacts: SecondaryContact[];
   preferredContactMethod: string;
 }
 
@@ -260,6 +268,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
             placeholder={formData.businessNotRegistered ? "Not registered yet" : "Your Company, LLC"}
           />
+          <FieldHint>
+            Your registered legal name — used to link teammates from the same
+            company and match public records.
+          </FieldHint>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="businessNotRegistered"
@@ -286,6 +298,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, dba: e.target.value })}
             placeholder="If different from legal name"
           />
+          <FieldHint>
+            The name customers know you by — helps matching connect listings
+            and opportunities to the right business.
+          </FieldHint>
         </div>
       </div>
 
@@ -307,6 +323,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
               ))}
             </SelectContent>
           </Select>
+          <FieldHint>
+            Your legal structure affects eligibility for certain programs and
+            contracting set-asides.
+          </FieldHint>
         </div>
       </div>
 
@@ -328,6 +348,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
               ))}
             </SelectContent>
           </Select>
+          <FieldHint>
+            Tells your advisor and the matcher where you are so
+            recommendations fit your stage.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="website">Website</Label>
@@ -337,6 +361,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, website: e.target.value })}
             placeholder="https://yourcompany.com"
           />
+          <FieldHint>
+            Lets our tools better understand your offerings when scoring
+            opportunity fit.
+          </FieldHint>
         </div>
       </div>
 
@@ -348,6 +376,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           placeholder="123 Main Street"
         />
+        <FieldHint>
+          Your physical location determines rural eligibility, your parish,
+          and which set-asides (like HUBZone) apply.
+        </FieldHint>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -389,6 +421,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, yearEstablished: e.target.value })}
             placeholder="2015"
           />
+          <FieldHint>
+            Some contracting programs and financing options require a minimum
+            operating history.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="employeeCount">Full-Time Employees (incl. owners) *</Label>
@@ -407,6 +443,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
               ))}
             </SelectContent>
           </Select>
+          <FieldHint>
+            SBA size standards use headcount to decide small-business
+            eligibility for set-aside contracts.
+          </FieldHint>
         </div>
       </div>
 
@@ -421,6 +461,10 @@ export function BusinessInfoStep({ formData, setFormData }: StepProps) {
           onChange={(e) => setFormData({ ...formData, revenueLast12: e.target.value })}
           placeholder="Approximate is fine — e.g. 250000"
         />
+        <FieldHint>
+          A rough figure is fine — the matcher uses it to flag which
+          opportunity sizes you realistically qualify for.
+        </FieldHint>
       </div>
     </div>
   );
@@ -496,6 +540,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
                 onChange={(e) => setFormData({ ...formData, dunsUei: e.target.value })}
                 placeholder="Found in your SAM.gov registration"
               />
+              <FieldHint>
+                Required for federal awards — also links teammates from the
+                same company to one shared record.
+              </FieldHint>
             </div>
             <div className="space-y-2">
               <Label htmlFor="cageCode">CAGE Code</Label>
@@ -505,6 +553,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
                 onChange={(e) => setFormData({ ...formData, cageCode: e.target.value })}
                 placeholder="1ABC2"
               />
+              <FieldHint>
+                Assigned automatically when you register in SAM.gov — leave
+                blank if you don&apos;t have one yet.
+              </FieldHint>
             </div>
           </div>
 
@@ -534,9 +586,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
 
           <div>
             <Label className="text-base">Socioeconomic Certifications</Label>
-            <p className="text-sm text-muted-foreground mb-4">
-              Select any certifications your business holds or is pursuing
-            </p>
+            <FieldHint className="mb-4">
+              Certifications unlock set-aside opportunities — the matcher
+              prioritizes contracts that require the ones you hold.
+            </FieldHint>
             <div className="grid md:grid-cols-2 gap-3">
               {certificationTypes.map((cert) => (
                 <div
@@ -579,9 +632,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
 
           <div>
             <Label className="text-base">Certifications You Plan to Pursue</Label>
-            <p className="text-sm text-muted-foreground mb-4">
-              Your advisor can help you apply — select any you&apos;re interested in
-            </p>
+            <FieldHint className="mb-4">
+              Your advisor can help you apply — planned certifications shape
+              which future opportunities we prepare you for.
+            </FieldHint>
             <div className="grid md:grid-cols-2 gap-3">
               {certificationTypes.map((cert) => (
                 <div
@@ -623,6 +677,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
             <Label className="text-base">
               Have you sold to government agencies, prime contractors, or large companies before?
             </Label>
+            <FieldHint>
+              Past contract wins significantly improve fit scoring for similar
+              opportunities.
+            </FieldHint>
             <div className="flex gap-3">
               {[
                 { value: "yes", label: "Yes" },
@@ -653,6 +711,10 @@ export function GovconStep({ formData, setFormData }: StepProps) {
               placeholder="Summarize any government or commercial contract experience — or write 'None yet' if you're just getting started..."
               rows={4}
             />
+            <FieldHint>
+              A sentence or two is enough — feeds your service plan and
+              past-performance matching. &quot;None yet&quot; is fine.
+            </FieldHint>
           </div>
         </>
       )}
@@ -733,6 +795,11 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
           &quot;metal&quot;), then click a result to add it. Add up to 5 codes
           that best describe your services.
         </p>
+        <FieldHint>
+          NAICS codes are the #1 key the AI matcher uses to score SAM.gov
+          opportunities against your business — pick the ones buyers use for
+          your work.
+        </FieldHint>
         <Popover open={naicsOpen} onOpenChange={setNaicsOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -808,6 +875,10 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
         <p className="text-xs text-muted-foreground">
           Add each product or service on its own line.
         </p>
+        <FieldHint>
+          Be specific — the matcher reads these to score how well each
+          opportunity fits what you actually sell.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -845,6 +916,10 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
           click &quot;Enhance with AI&quot; to turn them into polished sentences.
           You can edit the result and enhance it again.
         </p>
+        <FieldHint>
+          This becomes the core of your capability statement and the text the
+          matcher compares to opportunity descriptions.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -881,13 +956,18 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
           Tip: list what sets you apart as bullet points, then click
           &quot;Enhance with AI&quot; to turn them into sentences you can edit.
         </p>
+        <FieldHint>
+          Differentiators strengthen AI-drafted capability statements and
+          proposals — buyers see why you over competitors.
+        </FieldHint>
       </div>
 
       <div>
         <Label className="text-base">Digital Tools You Use Today</Label>
-        <p className="text-sm text-muted-foreground mb-4">
-          Select all that apply — helps your advisor plan digital and AI support
-        </p>
+        <FieldHint className="mb-4">
+          Select all that apply — helps your advisor plan digital and AI
+          adoption support; it doesn&apos;t affect opportunity matching.
+        </FieldHint>
         <div className="grid md:grid-cols-2 gap-3">
           {digitalToolOptions.map((tool) => (
             <div
@@ -942,6 +1022,9 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
               placeholder="John Smith"
             />
+            <FieldHint>
+              The person match alerts and advisor messages go to.
+            </FieldHint>
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactTitle">Title / Role</Label>
@@ -951,6 +1034,9 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, contactTitle: e.target.value })}
               placeholder="e.g., Owner, CEO"
             />
+            <FieldHint>
+              Helps advisors and partners know who they&apos;re working with.
+            </FieldHint>
           </div>
           <div className="space-y-2">
             <Label htmlFor="contactEmail">Email *</Label>
@@ -961,6 +1047,9 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
               placeholder="john@company.com"
             />
+            <FieldHint>
+              Where opportunity matches and program updates are sent.
+            </FieldHint>
           </div>
         </div>
         <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -973,9 +1062,12 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
               placeholder="(202) 555-1234"
             />
+            <FieldHint>
+              For advisor follow-ups and time-sensitive opportunity alerts.
+            </FieldHint>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="preferredContactMethod">Preferred Contact Method</Label>
+            <Label htmlFor="preferredContactMethod">Preferred Contact Method *</Label>
             <Select
               value={formData.preferredContactMethod}
               onValueChange={(value) => setFormData({ ...formData, preferredContactMethod: value })}
@@ -989,6 +1081,9 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
                 <SelectItem value="either">Either</SelectItem>
               </SelectContent>
             </Select>
+            <FieldHint>
+              How you&apos;d like us to reach you with matches and updates.
+            </FieldHint>
           </div>
           <div className="space-y-2">
             <Label htmlFor="mobilePhone">Mobile Phone (if different)</Label>
@@ -999,21 +1094,41 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, mobilePhone: e.target.value })}
               placeholder="(202) 555-1234"
             />
+            <FieldHint>
+              Optional backup number for urgent contract deadlines.
+            </FieldHint>
           </div>
         </div>
         <div className="grid md:grid-cols-2 gap-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="linkedin">LinkedIn Profile</Label>
+            <Label htmlFor="linkedin">LinkedIn Profile *</Label>
             <Input
               id="linkedin"
               type="url"
               value={formData.linkedin}
               onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
               placeholder="https://www.linkedin.com/in/your-profile"
+              disabled={formData.noLinkedin}
             />
+            <div className="flex items-center space-x-2 pt-1">
+              <Checkbox
+                id="noLinkedin"
+                checked={formData.noLinkedin}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, noLinkedin: checked === true })
+                }
+              />
+              <Label htmlFor="noLinkedin" className="text-sm font-normal cursor-pointer">
+                No LinkedIn profile (personal or company)
+              </Label>
+            </div>
+            <FieldHint>
+              Enriches your business record for advisor and partner matching —
+              check the box if you don&apos;t have one.
+            </FieldHint>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="ownerEthnicity">Owner Ethnicity</Label>
+            <Label htmlFor="ownerEthnicity">Owner Ethnicity *</Label>
             <Select
               value={formData.ownerEthnicity}
               onValueChange={(value) => setFormData({ ...formData, ownerEthnicity: value })}
@@ -1032,33 +1147,92 @@ export function ContactInfoStep({ formData, setFormData }: StepProps) {
             <p className="text-xs text-muted-foreground">
               Used to prefill the MBDA enrollment form — you can confirm or change it there.
             </p>
+            <FieldHint>
+              Optional — identifies minority-business certifications and
+              set-asides you may qualify for.
+            </FieldHint>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="font-medium mb-4">Secondary Contact (Optional)</h3>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="secondaryContactName">Full Name</Label>
-            <Input
-              id="secondaryContactName"
-              value={formData.secondaryContactName}
-              onChange={(e) => setFormData({ ...formData, secondaryContactName: e.target.value })}
-              placeholder="Jane Doe"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="secondaryContactEmail">Email</Label>
-            <Input
-              id="secondaryContactEmail"
-              type="email"
-              value={formData.secondaryContactEmail}
-              onChange={(e) => setFormData({ ...formData, secondaryContactEmail: e.target.value })}
-              placeholder="jane@company.com"
-            />
-          </div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-medium">Additional Contacts (Optional)</h3>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setFormData({
+                ...formData,
+                secondaryContacts: [...formData.secondaryContacts, { name: "", email: "" }],
+              })
+            }
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            Add contact
+          </Button>
         </div>
+        {formData.secondaryContacts.length === 0 ? (
+          <FieldHint>
+            Add teammates or partners — we&apos;ll email each one a link to
+            create their own account on the platform.
+          </FieldHint>
+        ) : (
+          <div className="space-y-3">
+            {formData.secondaryContacts.map((contact, index) => (
+              <div key={index} className="flex items-start gap-2">
+                <div className="grid md:grid-cols-2 gap-4 flex-1">
+                  <Input
+                    value={contact.name}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        secondaryContacts: formData.secondaryContacts.map((item, i) =>
+                          i === index ? { ...item, name: e.target.value } : item,
+                        ),
+                      })
+                    }
+                    placeholder="Full name"
+                    aria-label={`Contact ${index + 1} name`}
+                  />
+                  <Input
+                    type="email"
+                    value={contact.email}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        secondaryContacts: formData.secondaryContacts.map((item, i) =>
+                          i === index ? { ...item, email: e.target.value } : item,
+                        ),
+                      })
+                    }
+                    placeholder="jane@company.com"
+                    aria-label={`Contact ${index + 1} email`}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      secondaryContacts: formData.secondaryContacts.filter((_, i) => i !== index),
+                    })
+                  }
+                  aria-label={`Remove contact ${index + 1}`}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <FieldHint>
+              Each contact is emailed a link to create their own account on
+              the platform when you finish onboarding.
+            </FieldHint>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1369,6 +1543,9 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
     <div className="space-y-6">
       <div className="border rounded-lg p-4 bg-muted/30 space-y-3">
         <Label className="text-base">Are you seeking financing or investment? *</Label>
+        <FieldHint>
+          Routes you to capital-readiness support alongside contracting help.
+        </FieldHint>
         <div className="flex gap-3">
           {[
             { value: "yes", label: "Yes" },
@@ -1410,6 +1587,10 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
             <p className="text-xs text-muted-foreground">
               Tip: jot bullet points, then enhance them into sentences you can edit.
             </p>
+            <FieldHint>
+              Lenders and advisors use this to match you with the right
+              financing programs.
+            </FieldHint>
           </div>
           <div className="space-y-2">
             <Label htmlFor="capitalAmount">About how much financing are you seeking? ($)</Label>
@@ -1422,6 +1603,9 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
               onChange={(e) => setFormData({ ...formData, capitalAmount: e.target.value })}
               placeholder="e.g. 50000"
             />
+            <FieldHint>
+              A rough figure is fine — guides which loan and grant programs fit.
+            </FieldHint>
           </div>
         </>
       )}
@@ -1435,6 +1619,10 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
           placeholder="Be specific — this drives your advisor's first recommendations"
           rows={3}
         />
+        <FieldHint>
+          The single biggest driver of your service plan and the
+          recommendations you see first.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -1446,6 +1634,10 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
           placeholder="Challenges, constraints, or gaps you're facing"
           rows={3}
         />
+        <FieldHint>
+          We flag resources, training, and programs that specifically address
+          the barriers you list.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -1457,11 +1649,18 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
           placeholder="Revenue, contracts, hiring, certifications — whatever success looks like"
           rows={3}
         />
+        <FieldHint>
+          Your goals become the measurable outcomes your advisor works toward
+          with you.
+        </FieldHint>
       </div>
 
       <div>
         <Label className="text-base">Which kinds of help interest you? *</Label>
-        <p className="text-sm text-muted-foreground mb-4">Select all that apply</p>
+        <FieldHint className="mb-4">
+          Select all that apply — shapes your advisor assignment and the
+          workshops and tools we surface first.
+        </FieldHint>
         <div className="grid md:grid-cols-2 gap-3">
           {preferredServiceOptions.map((service) => (
             <div
@@ -1505,11 +1704,13 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
 /** Yes/No button row used by several intake questions. */
 function YesNoField({
   label,
+  hint,
   value,
   onChange,
   required,
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
@@ -1519,6 +1720,7 @@ function YesNoField({
       <Label className="text-base">
         {label} {required ? "*" : ""}
       </Label>
+      {hint && <FieldHint>{hint}</FieldHint>}
       <div className="flex gap-3">
         {[
           { value: "yes", label: "Yes" },
@@ -1565,28 +1767,36 @@ export function OperationsStep({ formData, setFormData }: StepProps) {
             ))}
           </SelectContent>
         </Select>
+        <FieldHint>
+          Shows whether you&apos;re already bid-driven or need help finding
+          and pursuing opportunities.
+        </FieldHint>
       </div>
 
       <YesNoField
         label="Is your company open to a teaming arrangement if suggested?"
+        hint="Teaming is how small businesses win larger contracts — the matcher can suggest partners from the network."
         required
         value={formData.openToTeaming}
         onChange={(value) => setFormData({ ...formData, openToTeaming: value })}
       />
       <YesNoField
         label="Is your company able to perform work outside your current state?"
+        hint="Controls whether match suggestions extend beyond Louisiana."
         required
         value={formData.outOfState}
         onChange={(value) => setFormData({ ...formData, outOfState: value })}
       />
       <YesNoField
         label="Does your company have an in-house business development team?"
+        hint="Helps gauge how much hands-on capture and proposal support you'll need."
         required
         value={formData.inHouseBD}
         onChange={(value) => setFormData({ ...formData, inHouseBD: value })}
       />
       <YesNoField
         label="Does your company have resources to invest if recommended?"
+        hint="Helps advisors recommend realistic next steps — tools, registrations, travel."
         required
         value={formData.resourcesToInvest}
         onChange={(value) => setFormData({ ...formData, resourcesToInvest: value })}
@@ -1600,7 +1810,10 @@ export function ProgramStep({ formData, setFormData }: StepProps) {
     <div className="space-y-6">
       <div>
         <Label className="text-base">Which LIFT service(s) best match what you need? *</Label>
-        <p className="text-sm text-muted-foreground mb-4">Select all that apply</p>
+        <FieldHint className="mb-4">
+          Select all that apply — choosing &quot;Government contracting&quot;
+          enables AI opportunity matching for your business.
+        </FieldHint>
         <div className="grid gap-3">
           {serviceAreaOptions.map((area) => (
             <div
@@ -1655,6 +1868,10 @@ export function ProgramStep({ formData, setFormData }: StepProps) {
             ))}
           </SelectContent>
         </Select>
+        <FieldHint>
+          Helps LIFT measure outreach — doesn&apos;t affect your matches or
+          service plan.
+        </FieldHint>
       </div>
 
       <AttachmentsUpload formData={formData} setFormData={setFormData} />
@@ -1708,6 +1925,8 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
         </div>
         <p className="text-sm text-green-700 mt-1">
           Review your information below and click Complete to finish setup.
+          This profile powers your AI opportunity matching — the more
+          complete it is, the better your matches.
         </p>
       </div>
 
@@ -1820,9 +2039,17 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
             <dt className="text-muted-foreground">Phone</dt>
             <dd>{formData.contactPhone || "Not provided"}</dd>
             <dt className="text-muted-foreground">LinkedIn</dt>
-            <dd>{formData.linkedin || "Not provided"}</dd>
+            <dd>{formData.noLinkedin ? "None" : formData.linkedin || "Not provided"}</dd>
             <dt className="text-muted-foreground">Owner ethnicity</dt>
             <dd>{formData.ownerEthnicity || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Additional contacts</dt>
+            <dd>
+              {formData.secondaryContacts.length > 0
+                ? formData.secondaryContacts
+                    .map((c) => (c.name ? `${c.name} (${c.email})` : c.email))
+                    .join(", ")
+                : "None"}
+            </dd>
           </dl>
         </div>
       </div>
@@ -1891,8 +2118,8 @@ export const initialSMEFormData: SMEFormData = {
   contactPhone: "",
   mobilePhone: "",
   linkedin: "",
+  noLinkedin: false,
   ownerEthnicity: "",
-  secondaryContactName: "",
-  secondaryContactEmail: "",
+  secondaryContacts: [],
   preferredContactMethod: "",
 };

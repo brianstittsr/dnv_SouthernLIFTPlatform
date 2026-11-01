@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CheckCircle2 } from "lucide-react";
+import { FieldHint } from "@/components/ui/field-hint";
 
 const agencyTypes = [
   { id: "federal", label: "Federal Government" },
@@ -85,6 +86,10 @@ export function AgencyInfoStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, agencyName: e.target.value })}
             placeholder="Department of Defense"
           />
+          <FieldHint>
+            The agency or prime you buy for — small businesses use this to
+            identify relevant contracting partners.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="agencyType">Agency Type *</Label>
@@ -103,6 +108,10 @@ export function AgencyInfoStep({ formData, setFormData }: StepProps) {
               ))}
             </SelectContent>
           </Select>
+          <FieldHint>
+            Determines which suppliers and small-business programs are
+            matched to you.
+          </FieldHint>
         </div>
       </div>
 
@@ -114,6 +123,9 @@ export function AgencyInfoStep({ formData, setFormData }: StepProps) {
           onChange={(e) => setFormData({ ...formData, officeDivision: e.target.value })}
           placeholder="Office of Small Business Programs"
         />
+        <FieldHint>
+          Routes introductions to the right buyers inside your organization.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -124,6 +136,9 @@ export function AgencyInfoStep({ formData, setFormData }: StepProps) {
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           placeholder="1400 Defense Pentagon"
         />
+        <FieldHint>
+          Used for geographic matching with nearby small businesses.
+        </FieldHint>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
@@ -171,6 +186,9 @@ export function RoleStep({ formData, setFormData }: StepProps) {
             onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
             placeholder="Contracting Officer"
           />
+          <FieldHint>
+            Shown to businesses so they know who they&apos;re connecting with.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="roleType">Role Type *</Label>
@@ -189,6 +207,9 @@ export function RoleStep({ formData, setFormData }: StepProps) {
               ))}
             </SelectContent>
           </Select>
+          <FieldHint>
+            Tells the matcher what kind of supplier relationships to suggest.
+          </FieldHint>
         </div>
       </div>
 
@@ -211,6 +232,10 @@ export function RoleStep({ formData, setFormData }: StepProps) {
               <SelectItem value="none">No direct authority</SelectItem>
             </SelectContent>
           </Select>
+          <FieldHint>
+            Sets expectations for the contract sizes suppliers pursue with
+            you.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="annualBudget">Annual Procurement Budget Range</Label>
@@ -230,6 +255,10 @@ export function RoleStep({ formData, setFormData }: StepProps) {
               <SelectItem value="unknown">Unknown/Varies</SelectItem>
             </SelectContent>
           </Select>
+          <FieldHint>
+            Helps the matcher prioritize suppliers ready for your typical
+            award sizes.
+          </FieldHint>
         </div>
       </div>
     </div>
@@ -271,9 +300,10 @@ export function ProcurementInterestsStep({ formData, setFormData }: StepProps) {
     <div className="space-y-6">
       <div>
         <Label className="text-base">Certification Preferences</Label>
-        <p className="text-sm text-muted-foreground mb-4">
-          What types of certified businesses are you looking for?
-        </p>
+        <FieldHint className="mb-4">
+          What types of certified businesses are you looking for? The matcher
+          filters supplier suggestions to these set-asides.
+        </FieldHint>
         <div className="grid md:grid-cols-2 gap-3">
           {certificationPreferences.map((cert) => (
             <div
@@ -297,9 +327,10 @@ export function ProcurementInterestsStep({ formData, setFormData }: StepProps) {
 
       <div>
         <Label className="text-base">Contract Types</Label>
-        <p className="text-sm text-muted-foreground mb-4">
-          What contract vehicles do you typically use?
-        </p>
+        <FieldHint className="mb-4">
+          What contract vehicles do you typically use? Matches you with
+          businesses experienced on those vehicles.
+        </FieldHint>
         <div className="grid md:grid-cols-3 gap-3">
           {contractTypes.map((type) => (
             <div
@@ -329,6 +360,9 @@ export function ProcurementInterestsStep({ formData, setFormData }: StepProps) {
           onChange={(e) => setFormData({ ...formData, geographicPreferences: e.target.value })}
           placeholder="e.g., DMV area, Nationwide, Specific states..."
         />
+        <FieldHint>
+          Limits supplier matches to the regions you operate in.
+        </FieldHint>
       </div>
     </div>
   );
@@ -353,6 +387,9 @@ export function ContactPreferencesStep({ formData, setFormData }: StepProps) {
               <SelectItem value="either">Either</SelectItem>
             </SelectContent>
           </Select>
+          <FieldHint>
+            How suppliers should reach you about opportunities.
+          </FieldHint>
         </div>
         <div className="space-y-2">
           <Label htmlFor="availabilityForIntros">Availability for Introductions</Label>
@@ -370,6 +407,9 @@ export function ContactPreferencesStep({ formData, setFormData }: StepProps) {
               <SelectItem value="asneeded">As needed</SelectItem>
             </SelectContent>
           </Select>
+          <FieldHint>
+            How quickly you want supplier introductions scheduled.
+          </FieldHint>
         </div>
       </div>
 
@@ -389,6 +429,9 @@ export function ContactPreferencesStep({ formData, setFormData }: StepProps) {
             <SelectItem value="any">Any Format</SelectItem>
           </SelectContent>
         </Select>
+        <FieldHint>
+          How you prefer first meetings with matched suppliers.
+        </FieldHint>
       </div>
 
       <div className="space-y-2">
@@ -400,6 +443,10 @@ export function ContactPreferencesStep({ formData, setFormData }: StepProps) {
           placeholder="Any additional information about your procurement needs or preferences..."
           rows={4}
         />
+        <FieldHint>
+          Anything else that improves match quality — niches, timelines,
+          upcoming requirements.
+        </FieldHint>
       </div>
     </div>
   );

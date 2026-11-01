@@ -98,6 +98,7 @@ import ContactsTab from "./contacts-tab";
 import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { ConsortiumOnboardingModal } from "@/components/modals/ConsortiumOnboardingModal";
 import { LiftClientOnboarding } from "@/components/onboarding";
+import { FieldHint } from "@/components/ui/field-hint";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { COLLECTIONS } from "@/lib/schema";
@@ -840,6 +841,10 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
+              <FieldHint>
+                The name on your client record — advisors and matched
+                partners see it.
+              </FieldHint>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
@@ -854,6 +859,9 @@ export default function ProfilePage() {
                       className="pl-10"
                     />
                   </div>
+                  <FieldHint>
+                    Where opportunity matches and program updates are sent.
+                  </FieldHint>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone</Label>
@@ -866,6 +874,9 @@ export default function ProfilePage() {
                       className="pl-10"
                     />
                   </div>
+                  <FieldHint>
+                    For advisor follow-ups and time-sensitive contract alerts.
+                  </FieldHint>
                 </div>
               </div>
 
@@ -881,6 +892,10 @@ export default function ProfilePage() {
                       className="pl-10"
                     />
                   </div>
+                  <FieldHint>
+                    Links your profile to your company record — keep it
+                    matching your legal name for accurate matching.
+                  </FieldHint>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="location">Location</Label>
@@ -893,6 +908,10 @@ export default function ProfilePage() {
                       className="pl-10"
                     />
                   </div>
+                  <FieldHint>
+                    Drives regional opportunity matching and rural-eligibility
+                    checks.
+                  </FieldHint>
                 </div>
               </div>
 
@@ -905,6 +924,10 @@ export default function ProfilePage() {
                   rows={4}
                   placeholder="Tell others about yourself and your background..."
                 />
+                <FieldHint>
+                  Advisors and the matcher read this to understand your
+                  background and goals — a few sentences is plenty.
+                </FieldHint>
               </div>
             </CardContent>
           </Card>
@@ -1839,6 +1862,10 @@ export default function ProfilePage() {
                   onChange={(e) => updateProfile("title", e.target.value)}
                   placeholder="e.g., Manufacturing Consultant, ISO Specialist"
                 />
+                <FieldHint>
+                  Shown to advisors and partners — helps them understand your
+                  role and expertise at a glance.
+                </FieldHint>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="website">Website</Label>
@@ -1852,6 +1879,10 @@ export default function ProfilePage() {
                     placeholder="https://yourwebsite.com"
                   />
                 </div>
+                <FieldHint>
+                  Lets our tools learn about your offerings and improves
+                  opportunity match quality.
+                </FieldHint>
               </div>
             </CardContent>
           </Card>
@@ -1861,7 +1892,11 @@ export default function ProfilePage() {
               <CardTitle>Categories</CardTitle>
               <CardDescription>Select the categories that best describe your expertise</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
+              <FieldHint>
+                Categories tag what you do — they improve advisor and
+                partner matching and which programs surface for you.
+              </FieldHint>
               <div className="flex flex-wrap gap-2">
                 {affiliateCategories.map((cat) => (
                   <Badge
@@ -1882,7 +1917,11 @@ export default function ProfilePage() {
               <CardTitle>Industries</CardTitle>
               <CardDescription>Select the industries you have experience in</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
+              <FieldHint>
+                Industry experience feeds supplier and opportunity matching —
+                select everywhere you&apos;ve delivered work.
+              </FieldHint>
               <div className="flex flex-wrap gap-2">
                 {industries.map((industry) => (
                   <Badge
@@ -1904,6 +1943,11 @@ export default function ProfilePage() {
               <CardDescription>Add your specific skills and areas of expertise</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <FieldHint>
+                Specific skills sharpen matching — think what a buyer would
+                search for (&quot;CNC machining&quot;, &quot;proposal
+                writing&quot;).
+              </FieldHint>
               <div className="flex flex-wrap gap-2">
                 {profile.expertise.map((skill) => (
                   <Badge key={skill} variant="secondary" className="pr-1">

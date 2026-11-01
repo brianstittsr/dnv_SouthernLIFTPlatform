@@ -44,7 +44,7 @@ import {
   Target,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, getDocs, deleteDoc, doc, Timestamp } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { COLLECTIONS, type OpportunityDoc } from "@/lib/schema";
 import { logActivity } from "@/lib/activity-logger";
 
@@ -100,42 +100,47 @@ export default function OpportunitiesPage() {
   const [stageFilter, setStageFilter] = useState("All Stages");
 
   useEffect(() => {
-    fetchOpportunities();
-  }, []);
-
-  async function fetchOpportunities() {
     if (!db) {
       setIsLoading(false);
       return;
     }
 
-    try {
-      const oppsRef = collection(db, COLLECTIONS.OPPORTUNITIES);
-      const oppsQuery = query(oppsRef, orderBy("updatedAt", "desc"));
-      const snapshot = await getDocs(oppsQuery);
+    // Real-time listener: Firestore serves the first snapshot from its local
+    // cache on repeat visits, so navigating back is instant while staying live.
+    const oppsQuery = query(
+      collection(db, COLLECTIONS.OPPORTUNITIES),
+      orderBy("updatedAt", "desc"),
+      limit(100)
+    );
 
-      const oppsData: OpportunityDisplay[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as OpportunityDoc;
-        const expectedClose = data.expectedCloseDate?.toDate() || new Date();
-        oppsData.push({
-          id: doc.id,
-          name: data.name || "Unnamed Opportunity",
-          company: (data as any).organizationName || "",
-          stage: data.stage || "lead",
-          value: data.value || 0,
-          probability: data.probability || 0,
-          expectedClose: formatDate(expectedClose),
-          owner: { name: "Owner", initials: "OW" },
+    const unsubscribe = onSnapshot(
+      oppsQuery,
+      (snapshot) => {
+        const oppsData: OpportunityDisplay[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data() as OpportunityDoc;
+          const expectedClose = data.expectedCloseDate?.toDate() || new Date();
+          return {
+            id: docSnap.id,
+            name: data.name || "Unnamed Opportunity",
+            company: (data as { organizationName?: string }).organizationName || "",
+            stage: data.stage || "lead",
+            value: data.value || 0,
+            probability: data.probability || 0,
+            expectedClose: formatDate(expectedClose),
+            owner: { name: "Owner", initials: "OW" },
+          };
         });
-      });
-      setOpportunities(oppsData);
-    } catch (error) {
-      console.error("Error fetching opportunities:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+        setOpportunities(oppsData);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching opportunities:", error);
+        setIsLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   async function handleDelete(id: string, name: string) {
     if (!db) return;
@@ -150,7 +155,6 @@ export default function OpportunitiesPage() {
         entityName: name,
         description: `Opportunity deleted: ${name}`,
       });
-      await fetchOpportunities();
     } catch (error) {
       console.error("Error deleting opportunity:", error);
     }
