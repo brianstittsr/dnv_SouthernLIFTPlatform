@@ -134,9 +134,8 @@ async function launchBrowser(): Promise<Browser> {
   }
 }
 
-/** Renders a submission to a PDF buffer. */
-export async function renderSubmissionPdf(form: LiftFormDoc, submission: LiftFormSubmissionDoc, includeStaff: boolean): Promise<Buffer> {
-  const html = await buildHtml(form, submission, includeStaff);
+/** Renders arbitrary branded HTML to a PDF buffer (shared by submission exports and reports). */
+export async function renderHtmlToPdf(html: string): Promise<Buffer> {
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
@@ -153,4 +152,10 @@ export async function renderSubmissionPdf(form: LiftFormDoc, submission: LiftFor
   } finally {
     await browser.close();
   }
+}
+
+/** Renders a submission to a PDF buffer. */
+export async function renderSubmissionPdf(form: LiftFormDoc, submission: LiftFormSubmissionDoc, includeStaff: boolean): Promise<Buffer> {
+  const html = await buildHtml(form, submission, includeStaff);
+  return renderHtmlToPdf(html);
 }

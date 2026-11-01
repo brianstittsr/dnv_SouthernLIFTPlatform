@@ -176,6 +176,14 @@ async function sendWithMicrosoftGraph(params: EmailParams): Promise<EmailRespons
     if (params.replyTo) {
       emailPayload.message.replyTo = [{ emailAddress: { address: params.replyTo } }];
     }
+    if (params.attachments?.length) {
+      emailPayload.message.attachments = params.attachments.map((att) => ({
+        "@odata.type": "#microsoft.graph.fileAttachment",
+        name: att.filename,
+        contentType: att.contentType ?? "application/octet-stream",
+        contentBytes: typeof att.content === "string" ? att.content : att.content.toString("base64"),
+      }));
+    }
 
     // Send via Microsoft Graph API
     const endpoint = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderEmail)}/sendMail`;
@@ -336,6 +344,7 @@ async function sendWithAzureSMTP(params: EmailParams): Promise<EmailResponse> {
         filename: att.filename,
         content: att.content,
         contentType: att.contentType,
+        encoding: typeof att.content === "string" ? "base64" : undefined,
       })),
     });
 
@@ -391,6 +400,11 @@ async function sendWithResend(params: EmailParams): Promise<EmailResponse> {
         html: params.html,
         text: params.text,
         reply_to: params.replyTo,
+        attachments: params.attachments?.map((att) => ({
+          filename: att.filename,
+          content: typeof att.content === "string" ? att.content : att.content.toString("base64"),
+          content_type: att.contentType,
+        })),
       }),
     });
 
@@ -433,7 +447,12 @@ async function sendWithSendGrid(params: EmailParams): Promise<EmailResponse> {
       replyTo: params.replyTo,
       cc: params.cc,
       bcc: params.bcc,
-      attachments: params.attachments,
+      attachments: params.attachments?.map((att) => ({
+        filename: att.filename,
+        content: typeof att.content === "string" ? att.content : att.content.toString("base64"),
+        type: att.contentType ?? "application/octet-stream",
+        disposition: "attachment",
+      })),
     };
 
     const response = await sgMail.send(msg);

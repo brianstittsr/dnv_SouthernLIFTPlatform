@@ -56,7 +56,7 @@ export default function OnboardingProgressPage() {
     {
       label: "Finish LIFT Client Onboarding",
       description: "Program expectations and business profile wizard",
-      done: profile.affiliateOnboardingComplete,
+      done: profile.isOnboardingComplete === true || profile.affiliateOnboardingComplete,
       action: "Open onboarding",
       onClick: () => setWorksheetOpen(true),
     },

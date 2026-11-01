@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import JSZip from "jszip";
 import { auth, db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
-import { parseWorksheetText, WORKSHEET_SECTIONS } from "@/lib/onboarding/worksheet";
+import { z } from "zod";
+import { buildWorksheetDocx } from "@/lib/onboarding/worksheet-docx";
+import { parseWorksheetText } from "@/lib/onboarding/worksheet";
 
 export const runtime = "nodejs";
 
@@ -11,74 +12,11 @@ const FILE_NAME = "LIFT-Client-Onboarding-Worksheet.docx";
 
 /**
  * GET /api/onboarding/worksheet
- * Generates a Word worksheet mirroring the LIFT client onboarding fields so
- * clients can gather answers offline and paste them into the wizard.
+ * Generates the branded .docx worksheet — content controls, per-step pages,
+ * NAICS appendix — mirroring the LIFT client onboarding fields.
  */
 export async function GET() {
-  const children: Paragraph[] = [
-    new Paragraph({
-      heading: HeadingLevel.TITLE,
-      children: [new TextRun({ text: "LIFT Client Onboarding Worksheet", bold: true })],
-    }),
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "Southern University MBDA LIFT Rural Business Center — gather your answers here, then either copy and paste them into the onboarding wizard or upload this completed document and we'll fill the fields for you.",
-          italics: true,
-          color: "555555",
-        }),
-      ],
-    }),
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "Type each answer on the same line after the colon. Leave anything you don't know blank.",
-          color: "555555",
-        }),
-      ],
-    }),
-  ];
-
-  WORKSHEET_SECTIONS.forEach((section, index) => {
-    children.push(
-      new Paragraph({
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 360 },
-        children: [new TextRun({ text: `${index + 1}. ${section.title}`, bold: true })],
-      }),
-    );
-    for (const field of section.fields) {
-      children.push(
-        new Paragraph({
-          spacing: { after: 120 },
-          children: [
-            new TextRun({ text: `${field.label}: `, bold: true }),
-            new TextRun({
-              text: field.hint ? `(${field.hint}) ________________________________` : "________________________________",
-              color: "777777",
-            }),
-          ],
-        }),
-      );
-    }
-  });
-
-  children.push(
-    new Paragraph({
-      spacing: { before: 360 },
-      children: [
-        new TextRun({ text: "END OF WORKSHEET", bold: true, color: "999999" }),
-      ],
-    }),
-  );
-
-  const doc = new Document({
-    creator: "Southern University LIFT Center",
-    title: "LIFT Client Onboarding Worksheet",
-    sections: [{ children }],
-  });
-  const buffer = await Packer.toBuffer(doc);
-
+  const buffer = await buildWorksheetDocx();
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -88,12 +26,28 @@ export async function GET() {
   });
 }
 
-/** Extracts text runs from a .docx (word/document.xml), one paragraph per line. */
+/**
+ * Extracts text from a .docx (word/document.xml), one paragraph per line.
+ * Content controls are resolved first: checkbox controls become "[x]"/"[ ]"
+ * markers (their state lives in attributes, not text); dropdown and
+ * plain-text controls yield their selected/entered text.
+ */
 async function docxToText(bytes: ArrayBuffer): Promise<string> {
   const zip = await JSZip.loadAsync(bytes);
   const xml = await zip.file("word/document.xml")?.async("string");
   if (!xml) throw new Error("Not a Word document");
-  return xml
+
+  const resolved = xml.replace(/<w:sdt\b[^>]*>[\s\S]*?<\/w:sdt>/g, (block) => {
+    const isCheckbox = /<w14:checkbox|<w:checkBox/.test(block);
+    if (isCheckbox) {
+      const checked = /<w14:checked w14:val="1"|<w:checked w:val="(?:1|true|on)"/.test(block);
+      return checked ? "[x] " : "[ ] ";
+    }
+    const content = block.match(/<w:sdtContent>[\s\S]*?<\/w:sdtContent>/)?.[0] ?? "";
+    return content.replace(/<[^>]+>/g, "");
+  });
+
+  return resolved
     .split(/<\/w:p>/)
     .map((para) => para.replace(/<[^>]+>/g, ""))
     .map((para) =>
@@ -108,10 +62,21 @@ async function docxToText(bytes: ArrayBuffer): Promise<string> {
     .join("\n");
 }
 
+const saveSchema = z.object({
+  answers: z.record(z.string(), z.unknown()),
+  /** Wizard step to resume at (clamped by the wizard to the last step). */
+  step: z.number().int().min(0).max(50).optional(),
+});
+
 /**
  * POST /api/onboarding/worksheet
- * Parses an uploaded completed worksheet and stores the answers as the
- * signed-in user's onboardingDraft — the wizard restores it on next visit.
+ *
+ * Two modes:
+ * - multipart "file": parses an uploaded completed worksheet and returns
+ *   the extracted answers (nothing is saved yet — the client runs a
+ *   field-by-field QC pass first).
+ * - JSON { answers, step? }: writes the verified answers into the signed-in
+ *   user's onboardingDraft — the wizard restores them on next visit.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -124,7 +89,34 @@ export async function POST(req: NextRequest) {
     }
     const decodedToken = await auth.verifyIdToken(authHeader.split("Bearer ")[1]);
     const uid = decodedToken.uid;
+    const userRef = db.collection("users").doc(uid);
 
+    const contentType = req.headers.get("content-type") ?? "";
+
+    // Mode 2: save verified answers into the onboarding draft.
+    if (contentType.includes("application/json")) {
+      const parsed = saveSchema.safeParse(await req.json().catch(() => ({})));
+      if (!parsed.success) {
+        return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+      }
+      const { answers, step = 0 } = parsed.data;
+      const snap = await userRef.get();
+      const existing = (snap.data()?.onboardingDraft?.sme ?? {}) as Record<string, unknown>;
+      await userRef.set(
+        {
+          onboardingDraft: {
+            userType: "sme",
+            step,
+            sme: { ...existing, ...answers },
+            updatedAt: Timestamp.now(),
+          },
+        },
+        { merge: true },
+      );
+      return NextResponse.json({ data: { saved: true, fields: Object.keys(answers).length } });
+    }
+
+    // Mode 1: parse the uploaded document, return answers for QC.
     const formData = await req.formData();
     const file = formData.get("file");
     if (!(file instanceof File)) {
@@ -155,25 +147,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Merge over any existing draft so unanswered fields keep prior values.
-    const userRef = db.collection("users").doc(uid);
-    const snap = await userRef.get();
-    const existing = (snap.data()?.onboardingDraft?.sme ?? {}) as Record<string, unknown>;
-    await userRef.set(
-      {
-        onboardingDraft: {
-          userType: "sme",
-          step: 0,
-          sme: { ...existing, ...answers },
-          updatedAt: Timestamp.now(),
-        },
-      },
-      { merge: true },
-    );
-
-    return NextResponse.json({ data: { fieldsFilled: filled.length, keys: filled } });
+    return NextResponse.json({ data: { answers, fieldsFilled: filled.length } });
   } catch (error) {
-    console.error("Error parsing onboarding worksheet:", error);
-    return NextResponse.json({ error: "Failed to read the worksheet" }, { status: 500 });
+    console.error("Error handling onboarding worksheet:", error);
+    return NextResponse.json({ error: "Failed to process the worksheet" }, { status: 500 });
   }
 }

@@ -478,6 +478,21 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       await setDoc(userRef, updateData, { merge: true });
       clearDraft();
 
+      // Emails a PDF profile + service-gap report to LIFT staff.
+      // Fire-and-forget — a failure here must never block completion.
+      if (userType === "sme") {
+        void auth?.currentUser?.getIdToken()
+          .then((idToken) => {
+            if (!idToken) return;
+            return fetch("/api/onboarding/completion-report", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${idToken}` },
+              body: JSON.stringify({ sme: smeFormData }),
+            });
+          })
+          .catch((reportError) => console.error("Onboarding completion report failed:", reportError));
+      }
+
       toast.success(getProgramBranding().welcomeTitle, {
         description: "Your profile is ready. Let's get started!",
       });

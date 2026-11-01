@@ -114,12 +114,12 @@ export const WORKSHEET_SECTIONS: WorksheetSection[] = [
     title: "Government contracting",
     fields: [
       { key: "interestedInGovcon", label: "Interested in government contracting (yes/no)", kind: "yesno" },
-      { key: "samRegistered", label: "SAM.gov status", kind: "choice", hint: "Registered / In progress / Not registered / Unsure" },
+      { key: "samRegistered", label: "SAM.gov status", kind: "choice", options: ["Registered", "In progress", "Not registered", "Unsure"] },
       { key: "dunsUei", label: "UEI (Unique Entity ID)", kind: "text" },
       { key: "cageCode", label: "CAGE code", kind: "text" },
       { key: "soldToGovernment", label: "Sold to government or large primes before (yes/no)", kind: "yesno" },
-      { key: "certifications", label: "Certifications held", kind: "list", hint: "e.g. 8(a), WOSB, HUBZone, MBE, DBE" },
-      { key: "certificationsPlanned", label: "Certifications you plan to pursue", kind: "list", hint: "comma-separated" },
+      { key: "certifications", label: "Certifications held", kind: "list", options: ["8(a)", "HUBZone", "WOSB", "EDWOSB", "SDVOSB", "MBE", "DBE", "Other"] },
+      { key: "certificationsPlanned", label: "Certifications you plan to pursue", kind: "list", options: ["8(a)", "HUBZone", "WOSB", "EDWOSB", "SDVOSB", "MBE", "DBE", "Other"] },
     ],
   },
   {
@@ -162,7 +162,7 @@ export const WORKSHEET_SECTIONS: WorksheetSection[] = [
       { key: "contactEmail", label: "Email", kind: "text" },
       { key: "contactPhone", label: "Phone", kind: "text" },
       { key: "mobilePhone", label: "Mobile phone (if different)", kind: "text" },
-      { key: "preferredContactMethod", label: "Preferred contact method", kind: "choice", hint: "Email / Phone / Either" },
+      { key: "preferredContactMethod", label: "Preferred contact method", kind: "choice", options: ["Email", "Phone", "Either"] },
       { key: "noLinkedin", label: "No LinkedIn profile, personal or company (yes/no)", kind: "bool" },
       { key: "linkedin", label: "LinkedIn profile URL", kind: "text" },
       { key: "ownerEthnicity", label: "Company owner ethnicity", kind: "choice", options: ETHNICITY_OPTIONS },
@@ -186,7 +186,8 @@ const cleanValue = (v: string): string =>
   v
     .replace(/^_+|_+$/g, "")
     // Leading "(hint)" printed after the colon in the generated document.
-    .replace(/^\([^)]*\)\s*/, "")
+    // Greedy: hints themselves contain parens (e.g. "(e.g. 8(a), WOSB)").
+    .replace(/^\(.*\)\s*/, "")
     .replace(/^_+|_+$/g, "")
     .trim();
 
@@ -230,7 +231,7 @@ function coerceChoice(field: WorksheetField, value: string): string | undefined 
     return undefined;
   }
   if (field.key === "employeeCount") {
-    const n = Number.parseInt(value.replace(/[^\d]/g, ""), 10);
+    const n = Number.parseInt(value.match(/\d+/)?.[0] ?? "", 10);
     if (Number.isFinite(n)) {
       return EMPLOYEE_BUCKETS.find(([lo, hi]) => n >= lo && n <= hi)?.[2];
     }
@@ -239,10 +240,21 @@ function coerceChoice(field: WorksheetField, value: string): string | undefined 
 }
 
 function coerceList(field: WorksheetField, raw: string): string[] | undefined {
-  const items = raw
-    .split(/[,\n;•]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const lines = raw.split("\n").map((s) => s.trim()).filter(Boolean);
+  // Checkbox-control lists: keep only checked options; plain text falls back
+  // to comma/semicolon splitting.
+  let items: string[];
+  if (lines.some((line) => CHECKBOX_RE.test(line))) {
+    items = lines
+      .map((line) => line.match(CHECKBOX_RE))
+      .filter((m): m is RegExpMatchArray => m !== null && CHECKED_RE.test(m[1]))
+      .map((m) => m[2].trim());
+  } else {
+    items = raw
+      .split(/[,\n;•]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
   if (items.length === 0) return undefined;
 
   if (field.key === "certifications" || field.key === "certificationsPlanned") {
@@ -282,12 +294,48 @@ function coerceContacts(lines: string[]): SecondaryContactValue[] {
 
 const HEADING_RE = /^(\d+\.\s+|[A-Z][A-Z &/\-]{5,}$)/;
 const END_MARKER = /end of worksheet/i;
+/** Content-control placeholder text — means the field was never filled in. */
+const PLACEHOLDER_RE = /^(choose an item\.?|click or tap here.*|type your answer.*|one per line.*)$/i;
+/** Checkbox lines emitted by the .docx parser: "[x] Option" / "[ ] Option". */
+const CHECKBOX_RE = /^\s*\[([xX✓✔☑☒ ])\]\s*(.+)$/;
+const CHECKED_RE = /^[xX✓✔☑☒]$/;
 
 /**
- * Parses text extracted from a completed worksheet (.docx or plain text)
- * into smeFormData-shaped values. Best-effort: unrecognized or blank
- * answers are simply omitted.
+ * Coerces raw worksheet line(s) for one field into its smeFormData value.
+ * Returns undefined when nothing valid can be produced. Shared by the
+ * document parser and the field-correction wizard.
  */
+export function coerceField(field: WorksheetField, lines: string[]): unknown {
+  const raw = lines
+    .filter((line) => !PLACEHOLDER_RE.test(line.trim()))
+    .join(field.kind === "contacts" || field.kind === "list" ? "\n" : " ")
+    .trim();
+  if (!raw || PLACEHOLDER_RE.test(raw)) return undefined;
+  switch (field.kind) {
+    case "yesno":
+      return isYes(raw) ? "yes" : isNo(raw) ? "no" : undefined;
+    case "bool":
+      return isYes(raw) ? true : isNo(raw) ? false : undefined;
+    case "number": {
+      const cleaned = raw.replace(/[$,\s]/g, "");
+      return /^\d+(\.\d+)?$/.test(cleaned) ? cleaned : undefined;
+    }
+    case "choice":
+      return coerceChoice(field, raw);
+    case "list":
+      return coerceList(field, raw);
+    case "contacts":
+      return coerceContacts(lines);
+    default:
+      return raw;
+  }
+}
+
+/** Looks up a worksheet field spec by its smeFormData key. */
+export function findWorksheetField(key: string): WorksheetField | undefined {
+  return WORKSHEET_SECTIONS.flatMap((s) => s.fields).find((f) => f.key === key);
+}
+
 export function parseWorksheetText(text: string): WorksheetAnswers {
   const fields = WORKSHEET_SECTIONS.flatMap((s) => s.fields);
   const byLabel = new Map(
@@ -324,33 +372,7 @@ export function parseWorksheetText(text: string): WorksheetAnswers {
 
   const answers: WorksheetAnswers = {};
   for (const { field, lines } of collected) {
-    const raw = lines.join(field.kind === "contacts" ? "\n" : " ").trim();
-    if (!raw) continue;
-    let value: unknown;
-    switch (field.kind) {
-      case "yesno":
-        value = isYes(raw) ? "yes" : isNo(raw) ? "no" : undefined;
-        break;
-      case "bool":
-        value = isYes(raw) ? true : isNo(raw) ? false : undefined;
-        break;
-      case "number": {
-        const cleaned = raw.replace(/[$,\s]/g, "");
-        value = /^\d+(\.\d+)?$/.test(cleaned) ? cleaned : undefined;
-        break;
-      }
-      case "choice":
-        value = coerceChoice(field, raw);
-        break;
-      case "list":
-        value = coerceList(field, raw);
-        break;
-      case "contacts":
-        value = coerceContacts(lines);
-        break;
-      default:
-        value = raw;
-    }
+    const value = coerceField(field, lines);
     if (value !== undefined && !(Array.isArray(value) && value.length === 0)) {
       answers[field.key] = value;
     }
