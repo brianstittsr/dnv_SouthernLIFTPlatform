@@ -77,6 +77,12 @@ const dropCtl = (tag: string, options: readonly string[]): string =>
     .map((o) => `<w:listItem w:displayText="${esc(o)}" w:value="${esc(o)}"/>`)
     .join("")}</w:dropDownList></w:sdtPr><w:sdtContent>${run(PLACEHOLDER, { color: "9AA5B1" })}</w:sdtContent></w:sdt>`;
 
+/** Combo box content control — dropdown items, but the user can also type. */
+const comboCtl = (tag: string, options: readonly string[]): string =>
+  `<w:sdt><w:sdtPr><w:alias w:val="${esc(tag)}"/><w:tag w:val="${esc(tag)}"/><w:id w:val="${sdtId()}"/><w:showingPlcHdr/><w:comboBox><w:listItem w:displayText="${PLACEHOLDER}" w:value="${PLACEHOLDER}"/>${options
+    .map((o) => `<w:listItem w:displayText="${esc(o)}" w:value="${esc(o)}"/>`)
+    .join("")}</w:comboBox></w:sdtPr><w:sdtContent>${run(PLACEHOLDER, { color: "9AA5B1" })}</w:sdtContent></w:sdt>`;
+
 /** Clickable checkbox content control (Word 2010+). */
 const checkCtl = (): string =>
   `<w:sdt><w:sdtPr><w:id w:val="${sdtId()}"/><w14:checkbox><w14:checked w14:val="0"/><w14:checkedState w14:val="2612" w14:font="MS Gothic"/><w14:uncheckedState w14:val="2610" w14:font="MS Gothic"/></w14:checkbox></w:sdtPr><w:sdtContent><w:r><w:rPr><w:rFonts w:ascii="MS Gothic" w:eastAsia="MS Gothic" w:hAnsi="MS Gothic" w:hint="eastAsia"/></w:rPr><w:t>☐</w:t></w:r></w:sdtContent></w:sdt>`;
@@ -95,6 +101,8 @@ const controlFor = (field: WorksheetField): string => {
       return para([textCtl(field.key, "Click or tap here to enter a dollar amount.")], { after: 0 });
     case "contacts":
       return para([textCtl(field.key, "One per line: Name, email")], { after: 0 });
+    case "combo":
+      return para([comboCtl(field.key, field.options ?? [])], { after: 0 });
     case "list":
       if (field.options) {
         return field.options
@@ -127,7 +135,7 @@ const COVER = [
   para([run("Complete this worksheet in Microsoft Word — dropdowns, checkboxes, and text fields are built in. When you're finished, upload this document from the onboarding checklist and the platform will fill the online form for you — or copy and paste your answers manually.", { sz: 22, color: "3D4752" })], { after: 300 }),
   para([run("How to use this worksheet", { b: true, sz: 26, color: "134074" })], { keepNext: true }),
   para([run("•  Fields are organized into the same steps as the online wizard — one page per step.")], { after: 80 }),
-  para([run("•  Click a shaded answer cell to type, choose from a dropdown, or tick checkboxes.")], { after: 80 }),
+  para([run("•  Click a shaded answer cell to type, choose from a dropdown, or tick checkboxes. The Products and services field lists every federal PSC code — pick codes from its dropdown or type your own.")], { after: 80 }),
   para([run("•  Anything you don't know can be left blank — required fields are marked.")], { after: 80 }),
   para([run("•  For checklists, tick every option that applies (for example, several NAICS codes or certifications).")], { after: 80 }),
   para([run("•  A NAICS reference table is included at the end of this document.")], { after: 300 }),

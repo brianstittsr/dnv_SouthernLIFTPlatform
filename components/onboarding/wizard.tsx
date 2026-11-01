@@ -32,6 +32,8 @@ interface OnboardingWizardProps {
   onDismiss?: () => void;
   /** Step to resume on (e.g. a saved draft). */
   initialStep?: number;
+  /** Externally controlled step — when it changes, the wizard navigates to it. */
+  step?: number;
   /** Called whenever the visible step changes, for draft persistence. */
   onStepChange?: (stepIndex: number) => void;
 }
@@ -42,6 +44,7 @@ export function OnboardingWizard({
   onComplete,
   onDismiss,
   initialStep,
+  step,
   onStepChange,
 }: OnboardingWizardProps) {
   const router = useRouter();
@@ -49,6 +52,14 @@ export function OnboardingWizard({
   const [currentStep, setCurrentStep] = useState(() =>
     Math.min(Math.max(initialStep ?? 0, 0), steps.length - 1),
   );
+
+  // Honor external navigation requests (e.g. QC sending the user to the step
+  // containing an invalid field).
+  useEffect(() => {
+    if (step === undefined) return;
+    const target = Math.min(Math.max(step, 0), steps.length - 1);
+    setCurrentStep((prev) => (prev === target ? prev : target));
+  }, [step, steps.length]);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isValidating, setIsValidating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -175,7 +186,8 @@ export function OnboardingWizard({
             {userType === "buyer" ? "Buyer " : "LIFT "}Onboarding
           </h1>
           <p className="text-muted-foreground">
-            Complete your profile to get started
+            Complete your profile to get started — your answers save
+            automatically, so you can leave and finish later.
           </p>
         </div>
         {onDismiss && (

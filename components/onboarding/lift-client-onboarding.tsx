@@ -30,6 +30,28 @@ import { toast } from "sonner";
 import { getProgramBranding } from "@/lib/branding";
 import { liftApi } from "@/components/forms/lift-api";
 import type { FormValues } from "@/lib/form-builder/types";
+import { checkWorksheet } from "@/lib/onboarding/worksheet-qc";
+
+/** smeFormData key → the SME wizard step index containing that field. */
+const SME_FIELD_STEP: Record<string, number> = {
+  businessNotRegistered: 0, companyName: 0, dba: 0, applyingAs: 0, address: 0,
+  city: 0, state: 0, zip: 0, website: 0, yearEstablished: 0, employeeCount: 0,
+  stage: 0, revenueLast12: 0,
+  primaryNaics: 1, secondaryNaics: 1, productsServices: 1, coreCapabilities: 1,
+  pastPerformance: 1, keyDifferentiators: 1, digitalTools: 1,
+  capabilityStatementFileName: 1, wantsCapabilityStatementHelp: 1,
+  interestedInGovcon: 2, samRegistered: 2, dunsUei: 2, cageCode: 2,
+  soldToGovernment: 2, certifications: 2, certificationsPlanned: 2,
+  seekingCapital: 3, capitalPurpose: 3, capitalAmount: 3, topNeed: 3,
+  barriers: 3, goals12Months: 3, preferredServices: 3,
+  acquisitionMethod: 4, openToTeaming: 4, outOfState: 4, inHouseBD: 4,
+  resourcesToInvest: 4,
+  contactName: 5, contactTitle: 5, contactEmail: 5, contactPhone: 5,
+  mobilePhone: 5, preferredContactMethod: 5, noLinkedin: 5, linkedin: 5,
+  ownerEthnicity: 5, secondaryContacts: 5,
+  serviceArea: 6, referralSource: 6, aiDisclosure: 6, privacyAck: 6,
+  emailOptIn: 6, attachmentFiles: 6,
+};
 
 /** Maps wizard certification ids to the intake form's option labels. */
 const CERT_ID_TO_OPTION: Record<string, string> = {
@@ -291,6 +313,22 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
     if (!db || !profile.id) return;
 
     try {
+      // For LIFT clients, run the same field-by-field quality check used on
+      // uploaded worksheets before anything is submitted. Invalid or missing
+      // data sends the user to the step containing the problem.
+      if (userType === "sme") {
+        const qcIssues = checkWorksheet(smeFormData as unknown as Record<string, unknown>);
+        if (qcIssues.length > 0) {
+          const first = qcIssues.find((i) => i.required) ?? qcIssues[0];
+          setDraftStep(SME_FIELD_STEP[first.key] ?? 0);
+          toast.error(
+            `${qcIssues.length} field${qcIssues.length === 1 ? "" : "s"} need${qcIssues.length === 1 ? "s" : ""} a quick fix before submitting`,
+            { description: first.message },
+          );
+          return false;
+        }
+      }
+
       // For LIFT clients, submit the merged data through the intake pipeline
       // first — it validates, creates/links the liftClients record, runs the AI
       // summary, infers the parish, and analyzes attachments. The wizard only
@@ -439,6 +477,9 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             liftClientId: intakeResult?.liftClientId ?? null,
             liftIntakeSubmissionId: intakeResult?.submissionId ?? null,
             companyId: companyId ?? null,
+            signatureName: smeFormData.signatureName.trim(),
+            attestationConfirmed: true,
+            attestationSignedAt: Timestamp.now(),
             isOnboardingComplete: true,
             onboardingCompletedAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -670,7 +711,18 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       id: "review",
       title: "Review",
       description: "Review your profile before completing",
-      component: <ReviewStep formData={smeFormData} />,
+      component: <ReviewStep formData={smeFormData} setFormData={setSmeFormData} />,
+      validate: () => {
+        if (!smeFormData.attestationConfirmed) {
+          toast.error("Please certify that your information is accurate");
+          return false;
+        }
+        if (!smeFormData.signatureName.trim()) {
+          toast.error("Please type your full legal name as your digital signature");
+          return false;
+        }
+        return true;
+      },
     },
   ];
 
@@ -730,6 +782,7 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       onComplete={handleComplete}
       onDismiss={handleDismiss}
       initialStep={initialStep}
+      step={draftStep}
       onStepChange={setDraftStep}
     />
   );

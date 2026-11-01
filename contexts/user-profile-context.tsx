@@ -504,9 +504,6 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     return () => { isCancelled = true; };
   }, [impersonatedUserId, actualProfile]);
 
-  // Check if profiles are synced (User Profile matches Team member)
-  const profilesSynced = areProfilesSynced(profile, linkedTeammember);
-
   // Check if wizards should be shown after profile is loaded
   useEffect(() => {
     // Don't show wizard while loading or if not authenticated
@@ -521,16 +518,39 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Consortium members who are not affiliates use the consortium onboarding flow
-    if (profile.svpRole === "consortium_member") {
+    // Consortium members who are not affiliates use the consortium onboarding
+    // flow, and platform admins never need the profile-completion prompt.
+    if (
+      profile.svpRole === "consortium_member" ||
+      profile.svpRole === "platform_admin" ||
+      profile.role === "admin"
+    ) {
       return;
     }
 
-    // Only show profile wizard if profiles are not synced (incomplete or mismatched)
-    if (!profilesSynced) {
+    // Only prompt when profile fields are actually missing. A completed
+    // profile, an explicit completion marker, or a finished onboarding flow
+    // suppresses the modal — a stale or mismatched team member record must not
+    // keep re-opening it for users whose fields are already set.
+    const profileDone =
+      isComplete ||
+      !!profile.profileCompletedAt ||
+      profile.isOnboardingComplete === true ||
+      profile.onboardingStatus === "completed";
+    if (!profileDone) {
       setShowProfileWizard(true);
     }
-  }, [isLoading, isAuthenticated, profilesSynced, needsOnboarding, linkedTeammember, profile.svpRole]);
+  }, [
+    isLoading,
+    isAuthenticated,
+    isComplete,
+    needsOnboarding,
+    profile.svpRole,
+    profile.role,
+    profile.profileCompletedAt,
+    profile.isOnboardingComplete,
+    profile.onboardingStatus,
+  ]);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setProfile((prev) => ({

@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { FieldHint } from "@/components/ui/field-hint";
+import { PscListInput } from "@/components/onboarding/psc-list-input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { LIFT_SERVICE_AREAS } from "@/lib/form-builder/controls";
@@ -246,6 +247,10 @@ interface SMEFormData {
   /** Additional teammates invited to create accounts on the platform. */
   secondaryContacts: SecondaryContact[];
   preferredContactMethod: string;
+  /** Typed digital signature (full legal name) attesting the answers are accurate. */
+  signatureName: string;
+  /** Checked box confirming the accuracy attestation. */
+  attestationConfirmed: boolean;
 }
 
 interface StepProps {
@@ -867,13 +872,13 @@ export function CapabilitiesStep({ formData, setFormData }: StepProps) {
 
       <div className="space-y-2">
         <Label>Products & Services *</Label>
-        <StringListInput
+        <PscListInput
           value={formData.productsServices}
           onChange={(items) => setFormData({ ...formData, productsServices: items })}
-          placeholder="Type a product or service, then click +"
         />
         <p className="text-xs text-muted-foreground">
-          Add each product or service on its own line.
+          Search the federal PSC catalog by code or description, or type your
+          own entry and click +.
         </p>
         <FieldHint>
           Be specific — the matcher reads these to score how well each
@@ -1355,62 +1360,6 @@ function CapabilityStatementUpload({ formData, setFormData }: StepProps) {
 }
 
 /** Free-text list input: type an item, press Enter or "+", items appear as removable rows. */
-function StringListInput({
-  value,
-  onChange,
-  placeholder,
-}: {
-  value: string[];
-  onChange: (items: string[]) => void;
-  placeholder?: string;
-}) {
-  const [draft, setDraft] = useState("");
-  const add = () => {
-    const item = draft.trim();
-    if (!item) return;
-    if (!value.includes(item)) onChange([...value, item]);
-    setDraft("");
-  };
-  return (
-    <div className="space-y-2">
-      <div className="flex gap-2">
-        <Input
-          value={draft}
-          placeholder={placeholder ?? "Type an item, then click +"}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              add();
-            }
-          }}
-        />
-        <Button type="button" onClick={add} disabled={!draft.trim()} aria-label="Add item">
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
-      {value.length > 0 && (
-        <ul className="space-y-1" aria-label="Added items">
-          {value.map((item) => (
-            <li key={item} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
-              <span className="min-w-0 truncate">{item}</span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={`Remove ${item}`}
-                onClick={() => onChange(value.filter((entry) => entry !== item))}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 const LIFT_UPLOAD_TYPES = ".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg,.webp";
 
 /** Uploads supporting documents to the LIFT intake pipeline (base64 + AI analysis). */
@@ -1915,7 +1864,7 @@ export function ProgramStep({ formData, setFormData }: StepProps) {
   );
 }
 
-export function ReviewStep({ formData }: { formData: SMEFormData }) {
+export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; setFormData: React.Dispatch<React.SetStateAction<SMEFormData>> }) {
   return (
     <div className="space-y-6">
       <div className="p-4 bg-green-50 rounded-lg">
@@ -2053,6 +2002,47 @@ export function ReviewStep({ formData }: { formData: SMEFormData }) {
           </dl>
         </div>
       </div>
+
+      <div className="border rounded-lg p-4 space-y-4 bg-muted/30">
+        <div>
+          <h4 className="font-medium">Signature &amp; attestation <span className="text-red-500">*</span></h4>
+          <p className="text-sm text-muted-foreground mt-1">
+            By signing below, I certify that the information provided in this
+            onboarding is true, accurate, and complete to the best of my
+            knowledge, and I understand it will be used to determine my
+            business&apos;s needs and LIFT program services.
+          </p>
+        </div>
+        <label className="flex items-start gap-2 text-sm">
+          <Checkbox
+            checked={formData.attestationConfirmed}
+            onCheckedChange={(checked) =>
+              setFormData({ ...formData, attestationConfirmed: checked === true })
+            }
+            className="mt-0.5"
+          />
+          I certify that all information provided is accurate and complete.
+        </label>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="signatureName">Digital signature — type your full legal name</Label>
+            <Input
+              id="signatureName"
+              value={formData.signatureName}
+              onChange={(e) => setFormData({ ...formData, signatureName: e.target.value })}
+              placeholder={formData.contactName || "Full legal name"}
+              className="italic"
+            />
+            <FieldHint>
+              Typing your name acts as your electronic signature, recorded with today&apos;s date.
+            </FieldHint>
+          </div>
+          <div className="space-y-2">
+            <Label>Date</Label>
+            <Input value={new Date().toLocaleDateString("en-US")} disabled readOnly />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -2122,4 +2112,6 @@ export const initialSMEFormData: SMEFormData = {
   ownerEthnicity: "",
   secondaryContacts: [],
   preferredContactMethod: "",
+  signatureName: "",
+  attestationConfirmed: false,
 };

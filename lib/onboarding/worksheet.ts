@@ -7,6 +7,7 @@
  * written into the generated .docx and matched when parsing an upload.
  */
 import { LIFT_SERVICE_AREAS, NAICS_OPTIONS } from "@/lib/form-builder/controls";
+import { PSC_CODES } from "./psc-codes";
 
 export type WorksheetKind =
   | "text"
@@ -15,6 +16,8 @@ export type WorksheetKind =
   | "number"
   | "choice"
   | "list"
+  /** Dropdown that also accepts typed entries (Word combo box). */
+  | "combo"
   | "contacts";
 
 export interface WorksheetField {
@@ -67,6 +70,8 @@ const DIGITAL_TOOL_OPTIONS = [
   "CRM", "Social media", "AI tools", "None",
 ];
 const SERVICE_AREA_OPTIONS = [...LIFT_SERVICE_AREAS, "Not sure yet"];
+/** Every federal PSC code as a "CODE — description" combo-box entry. */
+const PSC_OPTIONS = PSC_CODES.map((p) => `${p.code} — ${p.name}`);
 
 /** certification keyword → smeFormData id */
 const CERT_IDS: [RegExp, string][] = [
@@ -102,8 +107,8 @@ export const WORKSHEET_SECTIONS: WorksheetSection[] = [
   {
     title: "What you sell",
     fields: [
-      { key: "primaryNaics", label: "NAICS code(s)", kind: "list", options: NAICS_OPTIONS, hint: "comma-separated, e.g. 331110, 541511" },
-      { key: "productsServices", label: "Products and services", kind: "list", hint: "comma-separated" },
+      { key: "primaryNaics", label: "NAICS code(s)", kind: "combo", options: NAICS_OPTIONS, hint: "dropdown lists every code — or type a code/keyword, comma-separated" },
+      { key: "productsServices", label: "Products and services", kind: "combo", options: PSC_OPTIONS, hint: "pick PSC codes from the dropdown or type your own, comma-separated" },
       { key: "coreCapabilities", label: "Core capabilities", kind: "text", hint: "what your business does best" },
       { key: "pastPerformance", label: "Past performance", kind: "text", hint: "relevant contracts or clients" },
       { key: "keyDifferentiators", label: "What makes you different", kind: "text" },
@@ -273,6 +278,15 @@ function coerceList(field: WorksheetField, raw: string): string[] | undefined {
     });
     return [...new Set(codes)];
   }
+  if (field.key === "productsServices") {
+    // Normalize "R425 — description" / "R425 - description" combo-box picks to
+    // the "CODE - name" format the online wizard stores; free-typed entries
+    // pass through unchanged (no fuzzy matching onto PSC names).
+    const normalized = items.map((item) =>
+      item.replace(/^([A-Za-z0-9]{4})\s*[—–-]\s+/, (_m, c: string) => `${c.toUpperCase()} - `),
+    );
+    return [...new Set(normalized)];
+  }
   if (field.options) {
     const matched = items.map((item) => matchOption(item, field.options!) ?? item);
     return [...new Set(matched)];
@@ -308,7 +322,7 @@ const CHECKED_RE = /^[xX✓✔☑☒]$/;
 export function coerceField(field: WorksheetField, lines: string[]): unknown {
   const raw = lines
     .filter((line) => !PLACEHOLDER_RE.test(line.trim()))
-    .join(field.kind === "contacts" || field.kind === "list" ? "\n" : " ")
+    .join(field.kind === "contacts" || field.kind === "list" || field.kind === "combo" ? "\n" : " ")
     .trim();
   if (!raw || PLACEHOLDER_RE.test(raw)) return undefined;
   switch (field.kind) {
@@ -323,6 +337,7 @@ export function coerceField(field: WorksheetField, lines: string[]): unknown {
     case "choice":
       return coerceChoice(field, raw);
     case "list":
+    case "combo":
       return coerceList(field, raw);
     case "contacts":
       return coerceContacts(lines);

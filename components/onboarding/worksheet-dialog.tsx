@@ -255,7 +255,7 @@ export function WorksheetDialog({ open, onOpenChange }: WorksheetDialogProps) {
     return (
       <Input
         type={inputType}
-        placeholder={issue.kind === "list" ? "Separate multiple with commas" : "Type your answer"}
+        placeholder={issue.kind === "list" || issue.kind === "combo" ? "Separate multiple with commas" : "Type your answer"}
         value={entry}
         onChange={(e) => setEntry(e.target.value)}
       />
@@ -279,6 +279,7 @@ export function WorksheetDialog({ open, onOpenChange }: WorksheetDialogProps) {
                 The wizard asks about your business, certifications, and goals.
                 You can gather everything first with our Word worksheet — or
                 upload it once completed and we&apos;ll fill the fields for you.
+                Prefer to skip the worksheet? Complete the form online instead.
               </DialogDescription>
             </DialogHeader>
 
@@ -325,8 +326,12 @@ export function WorksheetDialog({ open, onOpenChange }: WorksheetDialogProps) {
 
               <Button className="w-full" onClick={startWizard}>
                 <Play className="mr-2 h-4 w-4" />
-                Start the onboarding wizard
+                Complete the form online instead
               </Button>
+              <p className="text-center text-xs text-muted-foreground">
+                Every answer is saved automatically as you go — you can leave
+                anytime and pick up right where you left off.
+              </p>
             </div>
           </>
         )}
