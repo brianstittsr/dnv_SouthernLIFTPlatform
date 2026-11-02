@@ -27,17 +27,17 @@ export async function POST(req: NextRequest) {
     const pricingMap = {
       'standard': {
         amount: 250000, // $2,500.00 in cents
-        name: 'Standard CMMC Cohort Training',
-        description: '8-week virtual cohort training with instruction materials and certification preparation'
+        name: 'Standard CMMC Course Training',
+        description: '8-week virtual course training with instruction materials and certification preparation'
       },
       'premium': {
         amount: 450000, // $4,500.00 in cents
-        name: 'Premium CMMC Cohort Training',
-        description: '12-week virtual cohort training with one-on-one mentoring and certification preparation'
+        name: 'Premium CMMC Course Training',
+        description: '12-week virtual course training with one-on-one mentoring and certification preparation'
       },
       'enterprise': {
         amount: 1500000, // $15,000.00 in cents
-        name: 'Enterprise CMMC Cohort Training',
+        name: 'Enterprise CMMC Course Training',
         description: '16-week onsite and virtual training with team training and custom implementation guidance'
       }
     };
@@ -137,10 +137,10 @@ export async function GET(req: NextRequest) {
   const trainingOptions = [
     {
       id: 'standard',
-      name: 'Standard CMMC Cohort Training',
+      name: 'Standard CMMC Course Training',
       price: 250000, // $2,500.00 in cents
       duration: '8 weeks',
-      format: 'Virtual Cohort',
+      format: 'Virtual Course',
       includes: [
         'Expert instruction',
         'Training materials',
@@ -150,10 +150,10 @@ export async function GET(req: NextRequest) {
     },
     {
       id: 'premium',
-      name: 'Premium CMMC Cohort Training',
+      name: 'Premium CMMC Course Training',
       price: 450000, // $4,500.00 in cents
       duration: '12 weeks',
-      format: 'Virtual Cohort + Mentoring',
+      format: 'Virtual Course + Mentoring',
       includes: [
         'Expert instruction',
         'Training materials',
@@ -164,7 +164,7 @@ export async function GET(req: NextRequest) {
     },
     {
       id: 'enterprise',
-      name: 'Enterprise CMMC Cohort Training',
+      name: 'Enterprise CMMC Course Training',
       price: 1500000, // $15,000.00 in cents
       duration: '16 weeks',
       format: 'Onsite + Virtual',

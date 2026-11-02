@@ -106,11 +106,11 @@ import { toast } from "sonner";
 
 // SVP Role descriptions for display
 const svpRoleDescriptions: Record<string, string> = {
-  sme_user: "SME User (Supplier) - Access to proof packs, introductions, and cohort enrollment",
+  sme_user: "SME User (Supplier) - Access to proof packs, introductions, and course enrollment",
   buyer: "Buyer / Government - Access to view proof packs and request introductions",
   consortium_partner: "Consortium Partner - Partner-level access to leads and introductions",
   qa_reviewer: "QA Reviewer - Review and approve proof packs",
-  cmmc_instructor: "CMMC Instructor - Manage cohorts and curriculum",
+  cmmc_instructor: "CMMC Instructor - Manage courses and curriculum",
   marketing_staff: "Marketing Staff - Content creation and event management",
   platform_admin: "Platform Administrator - Full system access",
 };

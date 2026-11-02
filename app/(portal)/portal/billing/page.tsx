@@ -300,7 +300,7 @@ export default function BillingPage() {
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="subscription">Subscription</SelectItem>
                   <SelectItem value="event">Event</SelectItem>
-                  <SelectItem value="cohort">Cohort</SelectItem>
+                  <SelectItem value="course">Course</SelectItem>
                 </SelectContent>
               </Select>
               <Popover>

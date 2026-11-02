@@ -43,7 +43,7 @@ export type LookupSource =
   | "partners"
   | "lift_clients"
   | "events"
-  | "cohorts"
+  | "courses"
   | "manual_list";
 
 /** Who may open and submit a form. */

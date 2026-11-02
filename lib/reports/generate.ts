@@ -124,7 +124,7 @@ const TYPE_GUIDANCE: Record<LiftReportType, string> = {
   quarterly_milestone:
     "Report against the quarterly milestone matrix (onboarding, partner agreements executed, clients enrolled, workshops, capital packages, completions). Note which milestones have verification artifacts and which do not.",
   semi_annual_mbda:
-    "Format as an MBDA semi-annual assessment: core measures (Clients Served, New Business Starts, Capital Infusion, Jobs Supported, Businesses Realizing Revenue Growth) plus project measures (training, capital packages, contracts, digital adoption, AM cohort, CMMC/HUBZone/OZ readiness). Score against straight-line-interpolated annual targets; only verified claims count.",
+    "Format as an MBDA semi-annual assessment: core measures (Clients Served, New Business Starts, Capital Infusion, Jobs Supported, Businesses Realizing Revenue Growth) plus project measures (training, capital packages, contracts, digital adoption, AM course, CMMC/HUBZone/OZ readiness). Score against straight-line-interpolated annual targets; only verified claims count.",
   annual_performance:
     "Format as the annual performance report: full-year results vs targets, verification status, lessons learned, and recommendations for the next year.",
   freeform:

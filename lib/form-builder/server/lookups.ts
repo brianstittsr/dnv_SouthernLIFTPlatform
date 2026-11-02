@@ -27,9 +27,9 @@ export async function getLookupOptions(source: LookupSource, requester: Requeste
     const snapshot = await db.collection(COLLECTIONS.EVENTS).limit(200).get();
     return snapshot.docs.map((doc) => ({ value: doc.id, label: String(doc.data().title ?? "Untitled event") })).sort(byLabel);
   }
-  if (source === "cohorts") {
-    const snapshot = await db.collection(COLLECTIONS.COHORTS).limit(200).get();
-    return snapshot.docs.map((doc) => ({ value: doc.id, label: String(doc.data().title ?? "Untitled cohort") })).sort(byLabel);
+  if (source === "courses") {
+    const snapshot = await db.collection(COLLECTIONS.COURSES).limit(200).get();
+    return snapshot.docs.map((doc) => ({ value: doc.id, label: String(doc.data().title ?? "Untitled course") })).sort(byLabel);
   }
   if (source === "partners") {
     const snapshot = await db.collection(COLLECTIONS.STRATEGIC_PARTNERS).limit(300).get();

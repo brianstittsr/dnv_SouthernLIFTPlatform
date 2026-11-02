@@ -36,43 +36,43 @@ export default function SeedCurriculumPage() {
     setProgress(0);
 
     try {
-      // Find all CMMC cohorts
+      // Find all CMMC courses
       setCurrentStep("Finding CMMC courses...");
-      const cohortsQuery = query(
-        collection(db, "cohorts"),
+      const coursesQuery = query(
+        collection(db, "courses"),
         where("slug", "in", ["cmmc-level-1-foundations", "cmmc-level-2-advanced", "cmmc-level-3-expert"])
       );
       
-      const cohortsSnapshot = await getDocs(cohortsQuery);
+      const coursesSnapshot = await getDocs(coursesQuery);
       
-      if (cohortsSnapshot.empty) {
+      if (coursesSnapshot.empty) {
         throw new Error("No CMMC courses found. Please seed courses first.");
       }
 
-      const cohorts = cohortsSnapshot.docs.map(doc => ({
+      const courses = coursesSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
 
-      const totalSteps = cohorts.length;
+      const totalSteps = courses.length;
       let completedSteps = 0;
 
       const courseResults = [];
 
-      for (const cohort of cohorts) {
-        const cohortData: any = cohort;
+      for (const course of courses) {
+        const courseData: any = course;
         let modulesData: any[] = [];
         
         // Determine which curriculum to use
-        if (cohortData.slug === "cmmc-level-1-foundations") {
+        if (courseData.slug === "cmmc-level-1-foundations") {
           modulesData = cmmcLevel1Modules;
-        } else if (cohortData.slug === "cmmc-level-2-advanced") {
+        } else if (courseData.slug === "cmmc-level-2-advanced") {
           modulesData = cmmcLevel2Modules;
-        } else if (cohortData.slug === "cmmc-level-3-expert") {
+        } else if (courseData.slug === "cmmc-level-3-expert") {
           modulesData = cmmcLevel3Modules;
         }
 
-        setCurrentStep(`Building curriculum for ${cohortData.title}...`);
+        setCurrentStep(`Building curriculum for ${courseData.title}...`);
         
         let moduleCount = 0;
         let sessionCount = 0;
@@ -81,9 +81,9 @@ export default function SeedCurriculumPage() {
           const { sessions, ...module } = moduleData;
           
           // Create module
-          const moduleRef = await addDoc(collection(db, "cohort_modules"), {
+          const moduleRef = await addDoc(collection(db, "course_modules"), {
             ...module,
-            cohortId: cohort.id,
+            courseId: course.id,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
           });
@@ -93,10 +93,10 @@ export default function SeedCurriculumPage() {
           // Create sessions for this module
           if (sessions) {
             for (const session of sessions) {
-              await addDoc(collection(db, "cohort_sessions"), {
+              await addDoc(collection(db, "course_sessions"), {
                 ...session,
                 moduleId: moduleRef.id,
-                cohortId: cohort.id,
+                courseId: course.id,
                 scheduledDate: null,
                 createdAt: Timestamp.now(),
                 updatedAt: Timestamp.now(),
@@ -107,7 +107,7 @@ export default function SeedCurriculumPage() {
         }
 
         courseResults.push({
-          title: cohortData.title,
+          title: courseData.title,
           modules: moduleCount,
           sessions: sessionCount,
         });
@@ -221,8 +221,8 @@ export default function SeedCurriculumPage() {
                   </div>
                 ))}
                 <p className="text-sm mt-3">
-                  <a href="/portal/instructor/cohorts" className="text-primary hover:underline">
-                    View cohorts →
+                  <a href="/portal/instructor/courses" className="text-primary hover:underline">
+                    View courses →
                   </a>
                 </p>
               </div>
@@ -257,9 +257,9 @@ export default function SeedCurriculumPage() {
           {results.length > 0 && (
             <Button
               variant="outline"
-              onClick={() => window.location.href = "/portal/instructor/cohorts"}
+              onClick={() => window.location.href = "/portal/instructor/courses"}
             >
-              View Cohorts
+              View Courses
             </Button>
           )}
         </div>

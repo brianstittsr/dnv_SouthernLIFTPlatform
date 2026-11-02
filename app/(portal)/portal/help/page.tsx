@@ -80,7 +80,7 @@ const quickStartGuides = [
     bgColor: "bg-orange-100",
     steps: [
       "Complete your expertise profile",
-      "Browse available cohorts",
+      "Browse available courses",
       "Enroll in relevant programs",
       "Track certification progress",
       "Update your availability",
@@ -94,7 +94,7 @@ const quickStartGuides = [
     bgColor: "bg-indigo-100",
     steps: [
       "Set up your instructor profile",
-      "Create your first cohort",
+      "Create your first course",
       "Design curriculum content",
       "Create assessments",
       "Manage student enrollments",
@@ -154,12 +154,12 @@ const featureCategories = [
   {
     title: "Learning & Development",
     icon: GraduationCap,
-    description: "Cohorts, certifications, and training",
+    description: "Courses, certifications, and training",
     features: [
-      { name: "Browse Cohorts", path: "/portal/sme/cohorts/browse" },
-      { name: "Enroll in Programs", path: "/portal/sme/cohorts" },
+      { name: "Browse Courses", path: "/portal/sme/courses/browse" },
+      { name: "Enroll in Programs", path: "/portal/sme/courses" },
       { name: "Track Certifications", path: "/portal/sme/certificates" },
-      { name: "Create Cohorts", path: "/portal/instructor/cohorts/new" },
+      { name: "Create Courses", path: "/portal/instructor/courses/new" },
     ],
   },
   {
@@ -362,7 +362,7 @@ export default function HelpPage() {
                     Key Features
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    CRM, project management, proof packs, learning cohorts, certifications,
+                    CRM, project management, proof packs, learning courses, certifications,
                     networking directory, calendar, analytics, and integrations.
                   </p>
                 </div>
@@ -475,7 +475,7 @@ export default function HelpPage() {
                     <li>• Profile setup and optimization</li>
                     <li>• Opportunity management workflows</li>
                     <li>• Proof pack creation and management</li>
-                    <li>• Cohort enrollment and participation</li>
+                    <li>• Course enrollment and participation</li>
                   </ul>
                 </div>
                 <Button variant="outline" className="mt-4" asChild>

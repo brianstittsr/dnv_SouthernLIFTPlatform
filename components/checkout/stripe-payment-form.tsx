@@ -161,7 +161,7 @@ function CheckoutForm({
           }
         }
       } else {
-        // PaymentIntent for one-time payments (e.g., CMMC cohort)
+        // PaymentIntent for one-time payments (e.g., CMMC course)
         console.log("Using confirmPayment for PaymentIntent:", subscriptionId?.substring(0, 25));
         const { error, paymentIntent } = await stripe.confirmPayment({
           elements,
@@ -358,7 +358,7 @@ function CheckoutForm({
 
           <div className="bg-green-50 border border-green-200 rounded-lg p-3">
             <p className="text-sm text-green-900">
-              ✓ You will be tagged as a <strong>KDM {productName.includes("CMMC") ? "CMMC Cohort Member" : "Consortium Member"}</strong> upon successful payment
+              ✓ You will be tagged as a <strong>KDM {productName.includes("CMMC") ? "CMMC Course Member" : "Consortium Member"}</strong> upon successful payment
             </p>
           </div>
         </CardContent>

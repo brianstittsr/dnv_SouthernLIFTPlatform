@@ -361,10 +361,10 @@ const MARKETING_PAGES: PageRegistryEntry[] = [
     path: "/cmmc-training",
     name: "CMMC Training",
     category: "marketing",
-    description: "CMMC certification training cohorts for DoD contractors",
+    description: "CMMC certification training courses for DoD contractors",
     sections: [
       { id: "hero", name: "Hero Section", type: "hero", order: 1, isEditable: true },
-      { id: "program-overview", name: "CMMC Cohort Program", type: "content", order: 2, isEditable: true },
+      { id: "program-overview", name: "CMMC Course Program", type: "content", order: 2, isEditable: true },
       { id: "timeline", name: "Critical Compliance Timeline", type: "timeline", order: 3, isEditable: true },
       { id: "process", name: "Turnkey Compliance Process", type: "features", order: 4, isEditable: true },
       { id: "faq", name: "FAQ Section", type: "faq", order: 5, isEditable: true },

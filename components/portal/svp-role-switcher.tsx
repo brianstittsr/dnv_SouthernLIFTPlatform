@@ -43,7 +43,7 @@ const SVP_ROLES = [
     label: "SME User",
     icon: Package,
     color: "text-blue-500",
-    description: "Manage Proof Packs, subscriptions, and cohort enrollments",
+    description: "Manage Proof Packs, subscriptions, and course enrollments",
     sections: ["SVP - SME"],
   },
   {
@@ -75,7 +75,7 @@ const SVP_ROLES = [
     label: "CMMC Instructor",
     icon: GraduationCap,
     color: "text-indigo-500",
-    description: "Create and manage CMMC training cohorts",
+    description: "Create and manage CMMC training courses",
     sections: ["SVP - Instructor", "SVP - SME"],
   },
 ];

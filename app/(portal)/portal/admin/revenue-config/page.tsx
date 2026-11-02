@@ -1919,7 +1919,7 @@ export default function RevenueConfigPage() {
             <CardHeader>
               <CardTitle>CMMC Training Management</CardTitle>
               <CardDescription>
-                Manage CMMC (Cybersecurity Maturity Model Certification) cohort training programs and participants
+                Manage CMMC (Cybersecurity Maturity Model Certification) course training programs and participants
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1975,7 +1975,7 @@ export default function RevenueConfigPage() {
                     <Card className="border-blue-200">
                       <CardHeader>
                         <CardTitle className="text-blue-700">Standard CMMC Training</CardTitle>
-                        <CardDescription>8-week virtual cohort</CardDescription>
+                        <CardDescription>8-week virtual course</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">

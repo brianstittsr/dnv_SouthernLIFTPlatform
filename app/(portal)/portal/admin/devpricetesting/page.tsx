@@ -49,9 +49,9 @@ const DEV_PRICING_TIERS = [
     iconColor: "text-amber-600",
   },
   {
-    product: PRODUCTS["cmmc-cohort"],
+    product: PRODUCTS["cmmc-course"],
     icon: GraduationCap,
-    cta: "Register for Cohort",
+    cta: "Register for Course",
     badgeLabel: "Training",
     badgeClass: "bg-blue-500 text-white",
     cardClass: "border border-border",
@@ -180,7 +180,7 @@ export default function DevPriceTestingPage() {
                           ? "bg-red-600 hover:bg-red-700 text-white"
                           : product.type === "founders"
                           ? "bg-amber-600 hover:bg-amber-700"
-                          : product.type === "cmmc-cohort"
+                          : product.type === "cmmc-course"
                           ? "bg-blue-600 hover:bg-blue-700 text-white"
                           : ""
                       }`}

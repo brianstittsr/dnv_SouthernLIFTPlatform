@@ -59,12 +59,12 @@ export type Permission =
   | "introduction:read"
   | "introduction:respond"
   | "introduction:view_all"
-  // Cohort permissions
-  | "cohort:create"
-  | "cohort:read"
-  | "cohort:update"
-  | "cohort:enroll"
-  | "cohort:manage"
+  // Course permissions
+  | "course:create"
+  | "course:read"
+  | "course:update"
+  | "course:enroll"
+  | "course:manage"
   // Content permissions
   | "content:create"
   | "content:read"
@@ -110,8 +110,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "introduction:request",
     "introduction:read",
     "introduction:respond",
-    "cohort:read",
-    "cohort:enroll",
+    "course:read",
+    "course:enroll",
     "content:read",
     "revenue:view_own",
     "event:read",
@@ -120,8 +120,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "proof_pack:read",
     "introduction:request",
     "introduction:read",
-    "cohort:read",
-    "cohort:enroll",
+    "course:read",
+    "course:enroll",
     "content:read",
     "revenue:view_own",
     "event:read",
@@ -133,7 +133,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "lead:assign",
     "introduction:read",
     "introduction:view_all",
-    "cohort:read",
+    "course:read",
     "content:read",
     "revenue:view_own",
     "revenue:dispute",
@@ -150,15 +150,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "proof_pack:read",
     "introduction:request",
     "introduction:read",
-    "cohort:read",
+    "course:read",
     "content:read",
     "event:read",
   ],
   cmmc_instructor: [
-    "cohort:create",
-    "cohort:read",
-    "cohort:update",
-    "cohort:manage",
+    "course:create",
+    "course:read",
+    "course:update",
+    "course:manage",
     "content:create",
     "content:read",
     "content:update",
@@ -193,11 +193,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "introduction:read",
     "introduction:respond",
     "introduction:view_all",
-    "cohort:create",
-    "cohort:read",
-    "cohort:update",
-    "cohort:enroll",
-    "cohort:manage",
+    "course:create",
+    "course:read",
+    "course:update",
+    "course:enroll",
+    "course:manage",
     "content:create",
     "content:read",
     "content:update",
@@ -229,11 +229,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "introduction:read",
     "introduction:respond",
     "introduction:view_all",
-    "cohort:create",
-    "cohort:read",
-    "cohort:update",
-    "cohort:enroll",
-    "cohort:manage",
+    "course:create",
+    "course:read",
+    "course:update",
+    "course:enroll",
+    "course:manage",
     "content:create",
     "content:read",
     "content:update",

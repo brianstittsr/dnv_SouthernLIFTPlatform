@@ -286,12 +286,12 @@ export const PUBLIC_PAGES: PublicPage[] = [
     id: "cmmc-training",
     path: "/cmmc-training",
     name: "CMMC Training",
-    description: "12-week CMMC certification cohorts",
+    description: "12-week CMMC certification courses",
     sections: [
       { id: "hero", name: "Training Hero", type: "hero", order: 1, isEditable: true },
       { id: "curriculum", name: "Curriculum Overview", type: "timeline", order: 2, isEditable: true },
       { id: "instructors", name: "Our Instructors", type: "team", order: 3, isEditable: true },
-      { id: "pricing", name: "Cohort Pricing", type: "pricing", order: 4, isEditable: true },
+      { id: "pricing", name: "Course Pricing", type: "pricing", order: 4, isEditable: true },
       { id: "faq", name: "Training FAQ", type: "faq", order: 5, isEditable: true },
       { id: "cta", name: "Enroll Now", type: "cta", order: 6, isEditable: true },
     ],
@@ -330,7 +330,7 @@ export const AUDIENCE_OPTIONS = [
   { id: "sme-owners", label: "SME Owners", description: "Small business owners needing CMMC compliance" },
   { id: "partners", label: "Consortium Partners", description: "Service providers joining the network" },
   { id: "buyers", label: "Government Buyers", description: "Procurement officers seeking verified SMEs" },
-  { id: "instructors", label: "CMMC Instructors", description: "Certified trainers offering cohorts" },
+  { id: "instructors", label: "CMMC Instructors", description: "Certified trainers offering courses" },
   { id: "qa-reviewers", label: "QA Reviewers", description: "Quality assurance professionals" },
   { id: "platform-admins", label: "Platform Admins", description: "System administrators" },
 ];

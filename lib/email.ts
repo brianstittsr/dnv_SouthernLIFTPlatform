@@ -566,7 +566,7 @@ export const emailTemplates = {
       <ul>
         <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
         <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
-        <li><strong>CMMC Cohort Training:</strong> Access CMMC certification programs</li>
+        <li><strong>CMMC Course Training:</strong> Access CMMC certification programs</li>
         <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
         <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
         <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
@@ -1033,7 +1033,7 @@ export const emailTemplates = {
       <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3>Enrollment Details</h3>
         <ul>
-          <li><strong>Training Level:</strong> ${params.trainingLevel} CMMC Cohort Training</li>
+          <li><strong>Training Level:</strong> ${params.trainingLevel} CMMC Course Training</li>
           <li><strong>Amount Paid:</strong> $${params.amount.toFixed(2)}</li>
           <li><strong>Payment Date:</strong> ${params.paymentDate}</li>
           <li><strong>Company:</strong> ${params.companyInfo}</li>

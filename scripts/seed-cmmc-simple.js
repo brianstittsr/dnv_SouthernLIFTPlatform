@@ -70,9 +70,9 @@ const req = https.request(options, (res) => {
         console.log('✅ Success! CMMC courses seeded.\n');
         console.log('📚 Created courses:');
         result.courses.forEach(course => {
-          console.log(`   - ${course.title} (ID: ${course.cohortId})`);
+          console.log(`   - ${course.title} (ID: ${course.courseId})`);
         });
-        console.log('\n🎉 You can now view them at: http://localhost:' + port + '/cohorts');
+        console.log('\n🎉 You can now view them at: http://localhost:' + port + '/courses');
       } else {
         console.error('❌ Error:', result.error);
       }

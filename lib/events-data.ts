@@ -303,7 +303,7 @@ Already uploaded a capability statement during onboarding? Bring it and we'll he
 - Overview of the three service areas: technical assistance, training, and capital & contracting readiness
 - First look at the advanced manufacturing lab initiative
 - Networking with rural business owners, lenders, and resource partners
-- On-site intake interviews for the first program cohort
+- On-site intake interviews for the first program course
 
 Funded in part by a $1.275M cooperative agreement with the U.S. Department of Commerce, Minority Business Development Agency — one of three HBCU Rural Business Center awards nationwide.`,
     eventDate: new Date('2026-02-12'),

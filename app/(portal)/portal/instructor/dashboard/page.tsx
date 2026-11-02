@@ -25,14 +25,14 @@ import {
 import { toast } from "sonner";
 import { DataToggle } from "@/components/ui/data-toggle";
 import { 
-  mockInstructorCohorts,
+  mockInstructorCourses,
   mockInstructorStats,
   mockInstructorReviews,
   mockUpcomingSessions
 } from "@/lib/mock-data/instructor-mock-data";
 import Link from "next/link";
 
-interface Cohort {
+interface Course {
   id: string;
   title: string;
   description: string;
@@ -60,7 +60,7 @@ interface Cohort {
 export default function InstructorDashboardPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
-  const [cohorts, setCohorts] = useState<Cohort[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [upcomingSessions, setUpcomingSessions] = useState<any[]>([]);
@@ -68,7 +68,7 @@ export default function InstructorDashboardPage() {
 
   useEffect(() => {
     if (useMockData) {
-      setCohorts(mockInstructorCohorts as Cohort[]);
+      setCourses(mockInstructorCourses as Course[]);
       setStats(mockInstructorStats);
       setReviews(mockInstructorReviews);
       setUpcomingSessions(mockUpcomingSessions);
@@ -84,23 +84,23 @@ export default function InstructorDashboardPage() {
     try {
       setLoading(true);
       
-      // Load cohorts
-      const cohortsQuery = query(
-        collection(db, "cmmcCohorts"),
+      // Load courses
+      const coursesQuery = query(
+        collection(db, "cmmcCourses"),
         where("instructorId", "==", profile.id)
       );
-      const cohortsSnapshot = await getDocs(cohortsQuery);
-      const cohortsData = cohortsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Cohort[];
-      setCohorts(cohortsData);
+      const coursesSnapshot = await getDocs(coursesQuery);
+      const coursesData = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Course[];
+      setCourses(coursesData);
 
       // Calculate stats
-      const totalCohorts = cohortsData.length;
-      const activeCohorts = cohortsData.filter(c => c.status === "active").length;
-      const totalStudents = cohortsData.reduce((sum, c) => sum + c.currentEnrollment, 0);
+      const totalCourses = coursesData.length;
+      const activeCourses = coursesData.filter(c => c.status === "active").length;
+      const totalStudents = coursesData.reduce((sum, c) => sum + c.currentEnrollment, 0);
       
       setStats({
-        totalCohorts,
-        activeCohorts,
+        totalCourses,
+        activeCourses,
         totalStudents,
         completionRate: 0,
         averageRating: 0,
@@ -168,7 +168,7 @@ export default function InstructorDashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold">Instructor Dashboard</h1>
-            <p className="text-muted-foreground">Manage your cohorts and track student progress</p>
+            <p className="text-muted-foreground">Manage your courses and track student progress</p>
           </div>
           <DataToggle onToggle={setUseMockData} defaultValue={false} />
         </div>
@@ -181,8 +181,8 @@ export default function InstructorDashboardPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Cohorts</p>
-                  <p className="text-2xl font-bold">{stats.totalCohorts}</p>
+                  <p className="text-sm text-muted-foreground">Total Courses</p>
+                  <p className="text-2xl font-bold">{stats.totalCourses}</p>
                 </div>
                 <BookOpen className="h-8 w-8 text-blue-600" />
               </div>
@@ -227,87 +227,87 @@ export default function InstructorDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Active Cohorts */}
+          {/* Active Courses */}
           <Card>
             <CardHeader>
-              <CardTitle>My Cohorts</CardTitle>
-              <CardDescription>Manage your teaching cohorts</CardDescription>
+              <CardTitle>My Courses</CardTitle>
+              <CardDescription>Manage your teaching courses</CardDescription>
             </CardHeader>
             <CardContent>
-              {cohorts.length === 0 ? (
+              {courses.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <BookOpen className="mx-auto h-12 w-12 mb-2 opacity-50" />
-                  <p>No cohorts found</p>
+                  <p>No courses found</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {cohorts.map((cohort) => (
-                    <div key={cohort.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  {courses.map((course) => (
+                    <div key={course.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold">{cohort.title}</h4>
-                            {getStatusBadge(cohort.status)}
+                            <h4 className="font-semibold">{course.title}</h4>
+                            {getStatusBadge(course.status)}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{cohort.description}</p>
+                          <p className="text-sm text-muted-foreground mb-2">{course.description}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-3">
                         <div>
                           <p className="text-xs text-muted-foreground">Enrollment</p>
-                          <p className="text-sm font-medium">{cohort.currentEnrollment}/{cohort.maxParticipants} students</p>
+                          <p className="text-sm font-medium">{course.currentEnrollment}/{course.maxParticipants} students</p>
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">Duration</p>
-                          <p className="text-sm font-medium">{cohort.duration} weeks</p>
+                          <p className="text-sm font-medium">{course.duration} weeks</p>
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">Start Date</p>
-                          <p className="text-sm font-medium">{formatDate(cohort.startDate)}</p>
+                          <p className="text-sm font-medium">{formatDate(course.startDate)}</p>
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground">End Date</p>
-                          <p className="text-sm font-medium">{formatDate(cohort.endDate)}</p>
+                          <p className="text-sm font-medium">{formatDate(course.endDate)}</p>
                         </div>
                       </div>
 
-                      {cohort.status === "active" && (
+                      {course.status === "active" && (
                         <>
                           <Separator className="my-3" />
                           <div>
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm font-medium">Session Progress</span>
                               <span className="text-sm text-muted-foreground">
-                                {cohort.completedSessions}/{cohort.totalSessions} sessions
+                                {course.completedSessions}/{course.totalSessions} sessions
                               </span>
                             </div>
-                            <Progress value={getProgressPercentage(cohort.completedSessions, cohort.totalSessions)} className="h-2" />
+                            <Progress value={getProgressPercentage(course.completedSessions, course.totalSessions)} className="h-2" />
                           </div>
 
-                          {cohort.averageAttendance !== undefined && (
+                          {course.averageAttendance !== undefined && (
                             <div className="grid grid-cols-2 gap-4 mt-3">
                               <div>
                                 <p className="text-xs text-muted-foreground">Avg Attendance</p>
-                                <p className="text-sm font-semibold text-blue-600">{cohort.averageAttendance}%</p>
+                                <p className="text-sm font-semibold text-blue-600">{course.averageAttendance}%</p>
                               </div>
-                              {cohort.averageScore !== undefined && (
+                              {course.averageScore !== undefined && (
                                 <div>
                                   <p className="text-xs text-muted-foreground">Avg Score</p>
-                                  <p className="text-sm font-semibold text-green-600">{cohort.averageScore}</p>
+                                  <p className="text-sm font-semibold text-green-600">{course.averageScore}</p>
                                 </div>
                               )}
                             </div>
                           )}
 
-                          {cohort.upcomingSession && (
+                          {course.upcomingSession && (
                             <>
                               <Separator className="my-3" />
                               <div className="flex items-center gap-2 text-sm">
                                 <Calendar className="h-4 w-4 text-muted-foreground" />
                                 <span className="font-medium">Next Session:</span>
                                 <span className="text-muted-foreground">
-                                  {cohort.upcomingSession.topic} - {formatDate(cohort.upcomingSession.date)}
+                                  {course.upcomingSession.topic} - {formatDate(course.upcomingSession.date)}
                                 </span>
                               </div>
                             </>
@@ -315,14 +315,14 @@ export default function InstructorDashboardPage() {
                         </>
                       )}
 
-                      {cohort.status === "completed" && cohort.averageScore !== undefined && (
+                      {course.status === "completed" && course.averageScore !== undefined && (
                         <>
                           <Separator className="my-3" />
                           <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
                             <CheckCircle2 className="h-5 w-5 text-green-600" />
                             <div>
-                              <p className="text-sm font-medium text-green-900">Cohort Completed</p>
-                              <p className="text-xs text-green-700">Final Average Score: {cohort.averageScore}</p>
+                              <p className="text-sm font-medium text-green-900">Course Completed</p>
+                              <p className="text-xs text-green-700">Final Average Score: {course.averageScore}</p>
                             </div>
                           </div>
                         </>
@@ -362,7 +362,7 @@ export default function InstructorDashboardPage() {
                               ))}
                             </div>
                           </div>
-                          <p className="text-xs text-muted-foreground mb-2">{review.cohortTitle}</p>
+                          <p className="text-xs text-muted-foreground mb-2">{review.courseTitle}</p>
                         </div>
                         <span className="text-xs text-muted-foreground">{formatDate(review.createdAt)}</span>
                       </div>
@@ -397,7 +397,7 @@ export default function InstructorDashboardPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium mb-1">{session.topic}</p>
-                          <p className="text-xs text-muted-foreground mb-2">{session.cohortTitle}</p>
+                          <p className="text-xs text-muted-foreground mb-2">{session.courseTitle}</p>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Clock className="h-3 w-3" />
                             <span>{formatDate(session.date)} at {session.startTime}</span>
@@ -443,8 +443,8 @@ export default function InstructorDashboardPage() {
                 <Separator />
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-muted-foreground">Active Cohorts</span>
-                    <span className="text-sm font-semibold">{stats.activeCohorts}</span>
+                    <span className="text-sm text-muted-foreground">Active Courses</span>
+                    <span className="text-sm font-semibold">{stats.activeCourses}</span>
                   </div>
                 </div>
                 <Separator />

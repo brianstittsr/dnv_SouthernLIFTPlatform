@@ -1,8 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 
-export const mockInstructorCohorts = [
+export const mockInstructorCourses = [
   {
-    id: "cohort-1",
+    id: "course-1",
     title: "CMMC Level 1 Certification - Spring 2026",
     description: "Comprehensive 12-week program covering all CMMC Level 1 requirements",
     instructorId: "instructor-1",
@@ -26,9 +26,9 @@ export const mockInstructorCohorts = [
     updatedAt: Timestamp.now(),
   },
   {
-    id: "cohort-2",
+    id: "course-2",
     title: "CMMC Level 2 Advanced Training",
-    description: "Advanced 12-week cohort for organizations pursuing CMMC Level 2 certification",
+    description: "Advanced 12-week course for organizations pursuing CMMC Level 2 certification",
     instructorId: "instructor-1",
     startDate: Timestamp.fromDate(new Date("2026-04-01")),
     endDate: Timestamp.fromDate(new Date("2026-06-24")),
@@ -50,7 +50,7 @@ export const mockInstructorCohorts = [
     updatedAt: Timestamp.now(),
   },
   {
-    id: "cohort-3",
+    id: "course-3",
     title: "CMMC Fundamentals - Fast Track",
     description: "Accelerated 8-week program for small businesses new to CMMC compliance",
     instructorId: "instructor-1",
@@ -69,9 +69,9 @@ export const mockInstructorCohorts = [
     updatedAt: Timestamp.fromDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
   },
   {
-    id: "cohort-4",
+    id: "course-4",
     title: "CMMC Policy Development Workshop",
-    description: "Specialized 12-week cohort focused on developing compliant security policies",
+    description: "Specialized 12-week course focused on developing compliant security policies",
     instructorId: "instructor-1",
     startDate: Timestamp.fromDate(new Date("2026-05-01")),
     endDate: Timestamp.fromDate(new Date("2026-07-24")),
@@ -88,8 +88,8 @@ export const mockInstructorCohorts = [
 ];
 
 export const mockInstructorStats = {
-  totalCohorts: 4,
-  activeCohorts: 2,
+  totalCourses: 4,
+  activeCourses: 2,
   totalStudents: 49,
   completionRate: 94,
   averageRating: 4.7,
@@ -101,8 +101,8 @@ export const mockInstructorStats = {
 export const mockInstructorReviews = [
   {
     id: "review-1",
-    cohortId: "cohort-3",
-    cohortTitle: "CMMC Fundamentals - Fast Track",
+    courseId: "course-3",
+    courseTitle: "CMMC Fundamentals - Fast Track",
     studentName: "John Anderson",
     studentEmail: "j.anderson@techcorp.com",
     rating: 5,
@@ -112,8 +112,8 @@ export const mockInstructorReviews = [
   },
   {
     id: "review-2",
-    cohortId: "cohort-1",
-    cohortTitle: "CMMC Level 1 Certification - Spring 2026",
+    courseId: "course-1",
+    courseTitle: "CMMC Level 1 Certification - Spring 2026",
     studentName: "Sarah Martinez",
     studentEmail: "s.martinez@defensetech.com",
     rating: 5,
@@ -123,8 +123,8 @@ export const mockInstructorReviews = [
   },
   {
     id: "review-3",
-    cohortId: "cohort-2",
-    cohortTitle: "CMMC Level 2 Advanced Training",
+    courseId: "course-2",
+    courseTitle: "CMMC Level 2 Advanced Training",
     studentName: "Michael Chen",
     studentEmail: "m.chen@aerospace.com",
     rating: 4,
@@ -134,8 +134,8 @@ export const mockInstructorReviews = [
   },
   {
     id: "review-4",
-    cohortId: "cohort-3",
-    cohortTitle: "CMMC Fundamentals - Fast Track",
+    courseId: "course-3",
+    courseTitle: "CMMC Fundamentals - Fast Track",
     studentName: "Emily Rodriguez",
     studentEmail: "e.rodriguez@manufacturing.com",
     rating: 5,
@@ -148,8 +148,8 @@ export const mockInstructorReviews = [
 export const mockUpcomingSessions = [
   {
     id: "session-1",
-    cohortId: "cohort-1",
-    cohortTitle: "CMMC Level 1 Certification - Spring 2026",
+    courseId: "course-1",
+    courseTitle: "CMMC Level 1 Certification - Spring 2026",
     topic: "System and Communications Protection",
     date: Timestamp.fromDate(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)),
     startTime: "14:00",
@@ -159,8 +159,8 @@ export const mockUpcomingSessions = [
   },
   {
     id: "session-2",
-    cohortId: "cohort-2",
-    cohortTitle: "CMMC Level 2 Advanced Training",
+    courseId: "course-2",
+    courseTitle: "CMMC Level 2 Advanced Training",
     topic: "Configuration Management",
     date: Timestamp.fromDate(new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)),
     startTime: "13:00",
@@ -170,8 +170,8 @@ export const mockUpcomingSessions = [
   },
   {
     id: "session-3",
-    cohortId: "cohort-1",
-    cohortTitle: "CMMC Level 1 Certification - Spring 2026",
+    courseId: "course-1",
+    courseTitle: "CMMC Level 1 Certification - Spring 2026",
     topic: "Incident Response Planning",
     date: Timestamp.fromDate(new Date(Date.now() + 9 * 24 * 60 * 60 * 1000)),
     startTime: "14:00",

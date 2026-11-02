@@ -151,7 +151,7 @@ export default function AerospaceDefensePage() {
                   <p className="text-muted-foreground mb-4">
                     Navigate the CMMC certification process with expert guidance. We provide gap assessments, 
                     remediation planning, implementation support, and preparation for third-party assessment. 
-                    Our CMMC Training Cohort ensures your team understands requirements and maintains compliance.
+                    Our CMMC Training Course ensures your team understands requirements and maintains compliance.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary">Gap Assessment</Badge>
@@ -228,7 +228,7 @@ export default function AerospaceDefensePage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4">
-                    Build a cybersecurity-aware workforce through our CMMC Training Cohort and ongoing education programs. 
+                    Build a cybersecurity-aware workforce through our CMMC Training Course and ongoing education programs. 
                     We provide training for all personnel levels, from executives to technical staff, ensuring everyone 
                     understands their role in maintaining compliance.
                   </p>
@@ -273,7 +273,7 @@ export default function AerospaceDefensePage() {
                 <div className="flex items-start gap-4">
                   <Shield className="h-12 w-12 text-green-600 flex-shrink-0" />
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-3">Join Our CMMC Training Cohort</h3>
+                    <h3 className="text-2xl font-bold mb-3">Join Our CMMC Training Course</h3>
                     <p className="text-muted-foreground mb-6">
                       Get expert guidance through every step of the CMMC certification process. Our comprehensive 
                       training program covers all CMMC levels, domains, and practices with hands-on support from 

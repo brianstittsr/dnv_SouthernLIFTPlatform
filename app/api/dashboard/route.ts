@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     // Fetch upcoming events count
     const eventsSnapshot = await db
-      .collection("cohorts")
+      .collection("courses")
       .where("participants", "array-contains", decodedToken.uid)
       .where("startDate", ">=", new Date())
       .get();

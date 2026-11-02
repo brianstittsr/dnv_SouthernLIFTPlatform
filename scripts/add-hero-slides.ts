@@ -1,5 +1,5 @@
  /**
- * Script to add CMMC Training Cohort slide and update KDM Consortium slide
+ * Script to add CMMC Training Course slide and update KDM Consortium slide
  * Run this with: npx tsx scripts/add-hero-slides.ts
  */
 
@@ -15,12 +15,12 @@ async function addHeroSlides() {
   }
 
   try {
-    // CMMC Training Cohort Slide
+    // CMMC Training Course Slide
     const cmmcSlide = {
-      id: "cmmc-training-cohort",
+      id: "cmmc-training-course",
       badge: "CMMC Certification Training",
       headline: "Achieve CMMC Compliance",
-      highlightedText: "12-Week Intensive Cohort",
+      highlightedText: "12-Week Intensive Course",
       subheadline: "Join our expert-led program to prepare your organization for CMMC Level 2 certification. Get the training, tools, and support you need to protect sensitive defense information.",
       benefits: [
         "Expert-Led Training Sessions",
@@ -29,8 +29,8 @@ async function addHeroSlides() {
         "C3PAO Referral Network"
       ],
       primaryCta: {
-        text: "Enroll in CMMC Cohort - $7,500",
-        href: "/cmmc-cohort"
+        text: "Enroll in CMMC Course - $7,500",
+        href: "/cmmc-course"
       },
       secondaryCta: {
         text: "Learn More About CMMC",
@@ -90,9 +90,9 @@ async function addHeroSlides() {
     };
 
     // Add CMMC slide
-    console.log("Adding CMMC Training Cohort slide...");
+    console.log("Adding CMMC Training Course slide...");
     await db.collection(HERO_SLIDES_COLLECTION).doc(cmmcSlide.id).set(cmmcSlide);
-    console.log("✓ CMMC Training Cohort slide added");
+    console.log("✓ CMMC Training Course slide added");
 
     // Add/Update Consortium slide
     console.log("Adding/Updating KDM Consortium slide...");
@@ -101,7 +101,7 @@ async function addHeroSlides() {
 
     console.log("\n✅ Hero slides successfully added/updated!");
     console.log("\nSlides added:");
-    console.log("1. CMMC Training Cohort (order: 4)");
+    console.log("1. CMMC Training Course (order: 4)");
     console.log("2. KDM Consortium (order: 3)");
     
   } catch (error) {

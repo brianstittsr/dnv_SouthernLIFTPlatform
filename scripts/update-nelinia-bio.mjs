@@ -32,7 +32,7 @@ const BIO = `Nelinia "Nel" Varenas, MBA, is the Co-founder and CEO of Strategic 
 
 Nel is a driving force behind the Consortium's go-to-market strategy, communications infrastructure, and member coordination. She architected the organization's CRM and marketing automation framework using GoHighLevel, enabling seamless collaboration and client engagement across Consortium partners.
 
-With deep expertise in CMMC compliance strategy, government contracting outreach, and public-private partnership development, Nel serves as a connector of people, programs, and purpose. She coordinates closely with KDM's leadership team on webinar programming, press strategy, cohort launches, and federal outreach campaigns.
+With deep expertise in CMMC compliance strategy, government contracting outreach, and public-private partnership development, Nel serves as a connector of people, programs, and purpose. She coordinates closely with KDM's leadership team on webinar programming, press strategy, course launches, and federal outreach campaigns.
 
 A sought-after voice on manufacturing and minority business empowerment, Nel holds an MBA and brings years of experience in business development, digital marketing, and strategic operations. She is passionate about creating tangible economic opportunities for underserved communities through manufacturing, technology, and government contracting.`;
 

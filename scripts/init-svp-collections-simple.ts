@@ -124,23 +124,23 @@ async function initializeCollections() {
     });
     console.log('✅ qaReviews collection created\n');
 
-    // 11. CMMC Cohorts
-    console.log('📝 Creating cmmcCohorts collection...');
-    await setDoc(doc(db, 'cmmcCohorts', '_placeholder'), {
+    // 11. CMMC Courses
+    console.log('📝 Creating cmmcCourses collection...');
+    await setDoc(doc(db, 'cmmcCourses', '_placeholder'), {
       _placeholder: true,
       createdAt: now,
-      note: 'Placeholder for CMMC Cohorts collection',
+      note: 'Placeholder for CMMC Courses collection',
     });
-    console.log('✅ cmmcCohorts collection created\n');
+    console.log('✅ cmmcCourses collection created\n');
 
-    // 12. Cohort Enrollments
-    console.log('📝 Creating cohortEnrollments collection...');
-    await setDoc(doc(db, 'cohortEnrollments', '_placeholder'), {
+    // 12. Course Enrollments
+    console.log('📝 Creating courseEnrollments collection...');
+    await setDoc(doc(db, 'courseEnrollments', '_placeholder'), {
       _placeholder: true,
       createdAt: now,
-      note: 'Placeholder for Cohort Enrollments collection',
+      note: 'Placeholder for Course Enrollments collection',
     });
-    console.log('✅ cohortEnrollments collection created\n');
+    console.log('✅ courseEnrollments collection created\n');
 
     // 13. Curriculum Materials
     console.log('📝 Creating curriculumMaterials collection...');
@@ -213,8 +213,8 @@ async function initializeCollections() {
     console.log('   ✅ partnerRevenue');
     console.log('   ✅ buyerRequests');
     console.log('   ✅ qaReviews');
-    console.log('   ✅ cmmcCohorts');
-    console.log('   ✅ cohortEnrollments');
+    console.log('   ✅ cmmcCourses');
+    console.log('   ✅ courseEnrollments');
     console.log('   ✅ curriculumMaterials');
     console.log('   ✅ page_designs');
     console.log('   ✅ page_design_history');

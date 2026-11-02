@@ -83,8 +83,8 @@ const PRICING_TIERS = [
     cta: "Claim Founders Spot",
   },
   {
-    id: "cmmc-cohort",
-    name: "CMMC Cohort Training",
+    id: "cmmc-course",
+    name: "CMMC Course Training",
     description: "Intensive 12-week program for CMMC 2.0 Level 2 assessment readiness",
     price: 7500,
     isOneTime: true,
@@ -104,8 +104,8 @@ const PRICING_TIERS = [
       "C3PAO referral network",
     ],
     icon: GraduationCap,
-    cta: "Register for Cohort",
-    href: "/portal/admin/cohorts",
+    cta: "Register for Course",
+    href: "/portal/admin/courses",
   },
 ];
 
@@ -202,7 +202,7 @@ interface SpecialOffer {
   description?: string;
   specialTag?: string;
   features?: string[];
-  productType?: 'founders' | 'consortium' | 'cmmc-cohort';
+  productType?: 'founders' | 'consortium' | 'cmmc-course';
   cta?: string;
   validUntil?: string;
 }
@@ -284,7 +284,7 @@ export default function PricingPage() {
   const handleSelectPlan = async (tierId: string) => {
     const tier = PRICING_TIERS.find((t) => t.id === tierId);
     
-    if (tierId === "cmmc-cohort" && tier?.href) {
+    if (tierId === "cmmc-course" && tier?.href) {
       router.push(tier.href);
       return;
     }
@@ -323,7 +323,7 @@ export default function PricingPage() {
           </h1>
           <p className="text-xl text-primary-foreground/80 max-w-3xl mx-auto mb-8">
             Join the KDM Consortium to access exclusive government contracting opportunities, 
-            or accelerate your CMMC assessment readiness with our intensive cohort program.
+            or accelerate your CMMC assessment readiness with our intensive course program.
           </p>
         </div>
       </section>
@@ -450,9 +450,9 @@ export default function PricingPage() {
                       >
                         {displayCta} <ArrowRight className="ml-2 h-4 w-4" />
                       </AddToCartButton>
-                    ) : tier.id === "cmmc-cohort" ? (
+                    ) : tier.id === "cmmc-course" ? (
                       <AddToCartButton
-                        product={{ ...PRODUCTS["cmmc-cohort"], price: displayPrice ?? PRODUCTS["cmmc-cohort"].price }}
+                        product={{ ...PRODUCTS["cmmc-course"], price: displayPrice ?? PRODUCTS["cmmc-course"].price }}
                         variant={tier.popular ? "default" : "outline"}
                         size="lg"
                         className="w-full"
@@ -603,7 +603,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CMMC Cohort Benefits */}
+      {/* CMMC Course Benefits */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -614,7 +614,7 @@ export default function PricingPage() {
               Accelerate Your CMMC Journey
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our intensive 12-week CMMC Cohort program prepares you for certification 
+              Our intensive 12-week CMMC Course program prepares you for certification 
               with expert guidance, proven methodologies, and ongoing support.
             </p>
           </div>
@@ -672,7 +672,7 @@ export default function PricingPage() {
 
             <div className="bg-background p-6 rounded-lg shadow-sm">
               <h3 className="font-semibold mb-2">
-                What is the CMMC Cohort program?
+                What is the CMMC Course program?
               </h3>
               <p className="text-muted-foreground">
                 A 12-week intensive program designed to prepare your organization for 
@@ -683,17 +683,17 @@ export default function PricingPage() {
 
             <div className="bg-background p-6 rounded-lg shadow-sm">
               <h3 className="font-semibold mb-2">
-                Do I need to be a Consortium member to join the CMMC Cohort?
+                Do I need to be a Consortium member to join the CMMC Course?
               </h3>
               <p className="text-muted-foreground">
-                No, the CMMC Cohort is available to all businesses. However, Consortium 
-                members receive a 20% discount on the Cohort fee.
+                No, the CMMC Course is available to all businesses. However, Consortium 
+                members receive a 20% discount on the Course fee.
               </p>
             </div>
 
             <div className="bg-background p-6 rounded-lg shadow-sm">
               <h3 className="font-semibold mb-2">
-                What happens after I complete the CMMC Cohort?
+                What happens after I complete the CMMC Course?
               </h3>
               <p className="text-muted-foreground">
                 Upon completion, you will receive a Certificate of Completion and be 
@@ -732,12 +732,12 @@ export default function PricingPage() {
               Claim Founders Spot
             </AddToCartButton>
             <AddToCartButton
-              product={PRODUCTS["cmmc-cohort"]}
+              product={PRODUCTS["cmmc-course"]}
               variant="default"
               size="lg"
               className="bg-white text-primary hover:bg-white/90"
             >
-              Register for Cohort
+              Register for Course
             </AddToCartButton>
           </div>
         </div>

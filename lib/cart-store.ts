@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export interface CartItem {
-  cohortId: string;
+  courseId: string;
   title: string;
   slug: string;
   priceInCents: number;
@@ -15,11 +15,11 @@ export interface CartItem {
 interface CartStore {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (cohortId: string) => void;
+  removeItem: (courseId: string) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalSavings: () => number;
-  isInCart: (cohortId: string) => boolean;
+  isInCart: (courseId: string) => boolean;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -29,13 +29,13 @@ export const useCartStore = create<CartStore>()(
       
       addItem: (item) => {
         const { items } = get();
-        if (!items.find(i => i.cohortId === item.cohortId)) {
+        if (!items.find(i => i.courseId === item.courseId)) {
           set({ items: [...items, item] });
         }
       },
       
-      removeItem: (cohortId) => {
-        set({ items: get().items.filter(i => i.cohortId !== cohortId) });
+      removeItem: (courseId) => {
+        set({ items: get().items.filter(i => i.courseId !== courseId) });
       },
       
       clearCart: () => {
@@ -55,12 +55,12 @@ export const useCartStore = create<CartStore>()(
         }, 0);
       },
       
-      isInCart: (cohortId) => {
-        return get().items.some(i => i.cohortId === cohortId);
+      isInCart: (courseId) => {
+        return get().items.some(i => i.courseId === courseId);
       },
     }),
     {
-      name: 'cohort-cart-storage-v2',
+      name: 'course-cart-storage-v2',
       version: 2,
     }
   )

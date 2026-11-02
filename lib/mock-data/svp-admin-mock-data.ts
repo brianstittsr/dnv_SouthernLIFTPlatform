@@ -5,7 +5,7 @@ export const mockDashboardStats = {
   activeProofPacks: 89,
   pendingQAReviews: 23,
   revenueThisMonth: 45678,
-  activeCohorts: 12,
+  activeCourses: 12,
   systemHealth: 98.5,
 };
 
@@ -226,9 +226,9 @@ export const mockSettlements = [
   },
 ];
 
-export const mockCohorts = [
+export const mockCourses = [
   {
-    id: "cohort-001",
+    id: "course-001",
     title: "CMMC Level 1 Foundations",
     facilitator: "CMMC Expert Team",
     facilitatorId: "instructor-001",
@@ -240,7 +240,7 @@ export const mockCohorts = [
     price: 1499,
   },
   {
-    id: "cohort-002",
+    id: "course-002",
     title: "CMMC Level 2 Advanced",
     facilitator: "CMMC Expert Team",
     facilitatorId: "instructor-001",
@@ -252,7 +252,7 @@ export const mockCohorts = [
     price: 3499,
   },
   {
-    id: "cohort-003",
+    id: "course-003",
     title: "CMMC Level 3 Expert",
     facilitator: "CMMC Expert Team",
     facilitatorId: "instructor-001",

@@ -34,7 +34,7 @@ export const formFieldSchema = z.object({
   helpText: z.string().max(4000).optional(),
   placeholder: z.string().max(300).optional(),
   options: z.array(z.string().min(1).max(300)).max(200).optional(),
-  lookupSource: z.enum(["parishes", "service_areas", "advisors", "partners", "lift_clients", "events", "cohorts", "manual_list"]).optional(),
+  lookupSource: z.enum(["parishes", "service_areas", "advisors", "partners", "lift_clients", "events", "courses", "manual_list"]).optional(),
   scaleMin: z.number().int().min(0).max(10).optional(),
   scaleMax: z.number().int().min(1).max(10).optional(),
   scaleMinLabel: z.string().max(80).optional(),

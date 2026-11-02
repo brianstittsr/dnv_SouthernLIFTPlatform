@@ -26,12 +26,12 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CMMC Level 1 Cohort Training | KDM & Associates",
+  title: "CMMC Level 1 Course Training | KDM & Associates",
   description:
-    "Join KDM & Associates' CMMC Level 1 cohort training program. A team-based 90-180 day approach to DoD cybersecurity readiness for defense contractors. Achieve CMMC assessment readiness and become more competitive for federal contracts.",
+    "Join KDM & Associates' CMMC Level 1 course training program. A team-based 90-180 day approach to DoD cybersecurity readiness for defense contractors. Achieve CMMC assessment readiness and become more competitive for federal contracts.",
   keywords: [
     "CMMC Level 1 training",
-    "CMMC cohort program",
+    "CMMC course program",
     "CMMC Level 1 certification",
     "DoD cybersecurity training",
     "NIST 800-171 training",
@@ -41,13 +41,13 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "https://kdm-assoc.com/cmmc-training" },
   openGraph: {
-    title: "CMMC Level 1 Cohort Training | KDM & Associates",
-    description: "Team-based CMMC Level 1 certification in 90-180 days. KDM & Associates cohort training for defense contractors.",
+    title: "CMMC Level 1 Course Training | KDM & Associates",
+    description: "Team-based CMMC Level 1 certification in 90-180 days. KDM & Associates course training for defense contractors.",
     url: "https://kdm-assoc.com/cmmc-training",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CMMC Cohort Training - KDM & Associates" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CMMC Course Training - KDM & Associates" }],
   },
-  twitter: { card: "summary_large_image", title: "CMMC Training | KDM & Associates", description: "Achieve CMMC Level 1 in 90-180 days with KDM's cohort program." },
+  twitter: { card: "summary_large_image", title: "CMMC Training | KDM & Associates", description: "Achieve CMMC Level 1 in 90-180 days with KDM's course program." },
 };
 
 export default function CMMCTrainingPage() {
@@ -97,13 +97,13 @@ export default function CMMCTrainingPage() {
             </Badge>
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               Register for the Next
-              <span className="block text-yellow-400 mt-2">CMMC Level 1 CyberSecurity Compliance Training Cohort</span>
+              <span className="block text-yellow-400 mt-2">CMMC Level 1 CyberSecurity Compliance Training Course</span>
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Don't lose your DoD contracts. Join the KDM Consortium Cohort Program and achieve CMMC Level 1 certification in 90-180 days.
+              Don't lose your DoD contracts. Join the KDM Consortium Course Program and achieve CMMC Level 1 certification in 90-180 days.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/checkout/cmmc-cohort">
+              <Link href="/checkout/cmmc-course">
                 <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-8 py-6">
                   <Award className="h-5 w-5 mr-2" />
                   SECURE YOUR SEAT
@@ -165,13 +165,13 @@ export default function CMMCTrainingPage() {
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">
                 <Users className="h-4 w-4 mr-2 inline" />
-                CMMC Cohort Program
+                CMMC Course Program
               </Badge>
               <h2 className="text-4xl font-bold mb-4">
                 Team-Based Approach to CMMC Level 1 Compliance
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                The KDM Consortium brings a team-based approach to CMMC Level 1 cybersecurity readiness through the CMMC Cohorts. We help you prepare for your third-party C3PAO assessment.
+                The KDM Consortium brings a team-based approach to CMMC Level 1 cybersecurity readiness through the CMMC Courses. We help you prepare for your third-party C3PAO assessment.
               </p>
             </div>
 
@@ -183,7 +183,7 @@ export default function CMMCTrainingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Achieve compliance in 90-180 days with our structured cohort approach.
+                    Achieve compliance in 90-180 days with our structured course approach.
                   </p>
                 </CardContent>
               </Card>
@@ -247,7 +247,7 @@ export default function CMMCTrainingPage() {
                     <p className="text-gray-700 leading-relaxed">
                       Without current SPRS scores, validated readiness documentation, and auditable evidence, organizations face <strong>immediate ineligibility for contract awards</strong> and increased risk to existing business relationships.
                     </p>
-                    <Link href="/checkout/cmmc-cohort">
+                    <Link href="/checkout/cmmc-course">
                       <Button className="w-full mt-6 bg-red-600 hover:bg-red-700">
                         <Zap className="h-4 w-4 mr-2" />
                         SECURE YOUR SEAT
@@ -369,7 +369,7 @@ export default function CMMCTrainingPage() {
             </Card>
 
             <div className="text-center mt-8">
-              <Link href="/checkout/cmmc-cohort">
+              <Link href="/checkout/cmmc-course">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-12 py-6">
                   <Zap className="h-5 w-5 mr-2" />
                   SECURE YOUR SEAT
@@ -396,7 +396,7 @@ export default function CMMCTrainingPage() {
               </Badge>
               <h2 className="text-4xl font-bold mb-4">Turnkey CMMC Level 1 Compliance for Defense Contractors</h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                KDM & Associates leverages the power of the <strong>CMMC Accelerator</strong> to deliver the Cohort Program — a turnkey solution purpose-built for small and mid-sized contractors seeking CMMC Level 1 assessment readiness.
+                KDM & Associates leverages the power of the <strong>CMMC Accelerator</strong> to deliver the Course Program — a turnkey solution purpose-built for small and mid-sized contractors seeking CMMC Level 1 assessment readiness.
               </p>
             </div>
 
@@ -525,13 +525,13 @@ export default function CMMCTrainingPage() {
                     Join us for a clear, practical roadmap to CMMC Level 1 readiness and certification.
                   </p>
                 </div>
-                <Link href="/checkout/cmmc-cohort">
+                <Link href="/checkout/cmmc-course">
                   <Button size="lg" className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-lg px-12 py-6">
                     <Award className="h-5 w-5 mr-2" />
                     SECURE YOUR SEAT
                   </Button>
                 </Link>
-                <p className="text-sm text-blue-200 mt-4">Limited spots available per cohort. Secure your place today.</p>
+                <p className="text-sm text-blue-200 mt-4">Limited spots available per course. Secure your place today.</p>
               </CardContent>
             </Card>
           </div>
@@ -574,10 +574,10 @@ export default function CMMCTrainingPage() {
                 </AccordionTrigger>
                 <AccordionContent className="text-base text-gray-700 pt-4">
                   <p className="mb-4">
-                    <strong>Typically 90-180 days</strong> with a structured approach like the KDM CMMC Cohort Program. The timeline depends on your current security posture, size of your organization, and resources dedicated to the effort.
+                    <strong>Typically 90-180 days</strong> with a structured approach like the KDM CMMC Course Program. The timeline depends on your current security posture, size of your organization, and resources dedicated to the effort.
                   </p>
                   <p className="mb-4">
-                    Organizations that try to do it alone often take 12-18 months or longer. Our cohort-based approach accelerates the process through:
+                    Organizations that try to do it alone often take 12-18 months or longer. Our course-based approach accelerates the process through:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Expert guidance at every step</li>
@@ -600,7 +600,7 @@ export default function CMMCTrainingPage() {
                     The <strong>formal CMMC assessment</strong> is conducted by an independent, accredited C3PAO (Certified Third-Party Assessment Organization). This is the official assessment that results in your CMMC certification if you pass.
                   </p>
                   <p>
-                    <strong>Think of it like this:</strong> The readiness assessment is your practice test. The formal audit is the real exam. Our cohort program ensures you're fully prepared before scheduling the formal audit, <strong>saving you time and money by avoiding failed audits.</strong>
+                    <strong>Think of it like this:</strong> The readiness assessment is your practice test. The formal audit is the real exam. Our course program ensures you're fully prepared before scheduling the formal audit, <strong>saving you time and money by avoiding failed audits.</strong>
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -621,7 +621,7 @@ export default function CMMCTrainingPage() {
                     <li>Recertify every 3 years</li>
                   </ul>
                   <p>
-                    The KDM Cohort Program doesn't just get you certified—we teach you how to <strong>maintain compliance cost-effectively</strong> so recertification is straightforward. Many of our clients find the second certification much easier than the first.
+                    The KDM Course Program doesn't just get you certified—we teach you how to <strong>maintain compliance cost-effectively</strong> so recertification is straightforward. Many of our clients find the second certification much easier than the first.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -695,7 +695,7 @@ export default function CMMCTrainingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-700 italic mb-4">
-                    "The Cohort Program brings organizations together in a collaborative environment, allowing them to share best practices, learn from each other's experiences, and achieve compliance faster as a group."
+                    "The Course Program brings organizations together in a collaborative environment, allowing them to share best practices, learn from each other's experiences, and achieve compliance faster as a group."
                   </p>
                   <Button variant="link" className="p-0">Read more →</Button>
                 </CardContent>
@@ -761,7 +761,7 @@ export default function CMMCTrainingPage() {
               <Link href="/portal/payment">
                 <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold text-xl px-12 py-7">
                   <Award className="h-6 w-6 mr-2" />
-                  Register for the Next CMMC Cohort
+                  Register for the Next CMMC Course
                 </Button>
               </Link>
             </div>

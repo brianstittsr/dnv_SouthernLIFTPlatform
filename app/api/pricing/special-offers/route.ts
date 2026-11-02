@@ -9,7 +9,7 @@ interface SpecialOfferResponse {
   description?: string;
   specialTag?: string;
   features?: string[];
-  productType?: 'founders' | 'consortium' | 'cmmc-cohort';
+  productType?: 'founders' | 'consortium' | 'cmmc-course';
   cta?: string;
   validUntil?: string;
 }
@@ -24,7 +24,7 @@ export interface CoreTierOverride {
   active: boolean;
 }
 
-const CORE_TIER_IDS = ["kdm-consortium", "founders", "cmmc-cohort"] as const;
+const CORE_TIER_IDS = ["kdm-consortium", "founders", "cmmc-course"] as const;
 
 /**
  * GET /api/pricing/special-offers

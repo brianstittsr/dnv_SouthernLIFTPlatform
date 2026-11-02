@@ -91,8 +91,8 @@ const buyerFeatures = [
 const instructorFeatures = [
   {
     icon: BookOpen,
-    title: "Cohort Management",
-    description: "Lead training cohorts with built-in curriculum and progress tracking",
+    title: "Course Management",
+    description: "Lead training courses with built-in curriculum and progress tracking",
   },
   {
     icon: ClipboardCheck,
@@ -107,7 +107,7 @@ const instructorFeatures = [
   {
     icon: DollarSign,
     title: "Revenue Sharing",
-    description: "Earn commissions on cohort enrollments and certifications",
+    description: "Earn commissions on course enrollments and certifications",
   },
 ];
 

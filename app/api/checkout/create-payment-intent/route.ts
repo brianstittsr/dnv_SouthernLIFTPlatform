@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     // Build metadata
     const metadata: Record<string, string> = {
-      productName: productName || "CMMC Cohort",
+      productName: productName || "CMMC Course",
       customerName: customerInfo ? `${customerInfo.firstName} ${customerInfo.lastName}` : "",
       customerEmail: customerInfo?.email || "",
       customerCompany: customerInfo?.company || "",
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         enabled: true,
       },
       metadata,
-      description: productName || "CMMC Cohort Registration",
+      description: productName || "CMMC Course Registration",
       receipt_email: customerInfo?.email,
     };
 

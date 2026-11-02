@@ -45,7 +45,7 @@ const audiences = [
     icon: GraduationCap,
     badge: "For Instructors",
     title: "CMMC, Compliance & Business Development Instructors",
-    description: "Share your expertise and help small businesses succeed in government contracting. Lead cohorts, issue certifications, and earn revenue.",
+    description: "Share your expertise and help small businesses succeed in government contracting. Lead courses, issue certifications, and earn revenue.",
     idealFor: [
       "CMMC Registered Practitioners",
       "Government Contracting Consultants",

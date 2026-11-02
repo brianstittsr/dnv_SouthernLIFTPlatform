@@ -34,7 +34,7 @@ service cloud.firestore {
     }
     
     // LIFT program staff and operational roles — read access to shared
-    // business data (opportunities, companies, cohorts) without admin writes.
+    // business data (opportunities, companies, courses) without admin writes.
     // Mirrors STAFF_ROLES in lib/form-builder/server/context.ts.
     function isStaff() {
       return isAuthenticated() && 
@@ -64,39 +64,39 @@ service cloud.firestore {
       ]);
     }
     
-    // ==================== COHORTS ====================
-    match /cohorts/{cohortId} {
-      // Anyone authenticated can read published cohorts; staff can read all
+    // ==================== COURSES ====================
+    match /courses/{courseId} {
+      // Anyone authenticated can read published courses; staff can read all
       allow read: if isAuthenticated() && 
         (resource.data.isPublished == true || isAdmin() || isInstructor() || isStaff());
       
-      // Only admins and instructors can create cohorts
+      // Only admins and instructors can create courses
       allow create: if isInstructor();
       
-      // Only admins and the cohort's instructor can update
+      // Only admins and the course's instructor can update
       allow update: if isAdmin() || 
         (isInstructor() && resource.data.facilitatorId == request.auth.uid);
       
-      // Only admins can delete cohorts
+      // Only admins can delete courses
       allow delete: if isAdmin();
     }
     
-    // ==================== COHORT MODULES ====================
-    match /cohort_modules/{moduleId} {
+    // ==================== COURSE MODULES ====================
+    match /course_modules/{moduleId} {
       allow read: if isAuthenticated();
       allow create, update: if isInstructor();
       allow delete: if isAdmin();
     }
     
-    // ==================== COHORT SESSIONS ====================
-    match /cohort_sessions/{sessionId} {
+    // ==================== COURSE SESSIONS ====================
+    match /course_sessions/{sessionId} {
       allow read: if isAuthenticated();
       allow create, update: if isInstructor();
       allow delete: if isAdmin();
     }
     
-    // ==================== COHORT MEMBERSHIPS ====================
-    match /cohort_memberships/{membershipId} {
+    // ==================== COURSE MEMBERSHIPS ====================
+    match /course_memberships/{membershipId} {
       // Users can read their own memberships, admins/instructors can read all
       allow read: if isAuthenticated() && 
         (resource.data.userId == request.auth.uid || isInstructor());
@@ -112,7 +112,7 @@ service cloud.firestore {
     }
     
     // ==================== SESSION PROGRESS ====================
-    match /cohort_session_progress/{progressId} {
+    match /course_session_progress/{progressId} {
       // Users can read/write their own progress
       allow read: if isAuthenticated() && 
         (resource.data.userId == request.auth.uid || isInstructor());
@@ -127,7 +127,7 @@ service cloud.firestore {
     }
     
     // ==================== CERTIFICATES ====================
-    match /cohort_certificates/{certificateId} {
+    match /course_certificates/{certificateId} {
       // Users can read their own certificates, public verification allowed
       allow read: if isAuthenticated();
       
@@ -138,7 +138,7 @@ service cloud.firestore {
     }
     
     // ==================== DISCUSSIONS ====================
-    match /cohort_discussions/{discussionId} {
+    match /course_discussions/{discussionId} {
       allow read: if isAuthenticated();
       
       // Enrolled users can create discussions
@@ -153,7 +153,7 @@ service cloud.firestore {
     }
     
     // ==================== DISCUSSION REPLIES ====================
-    match /cohort_discussion_replies/{replyId} {
+    match /course_discussion_replies/{replyId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
       
@@ -165,14 +165,14 @@ service cloud.firestore {
     }
     
     // ==================== LIVE TRAININGS ====================
-    match /cohort_live_trainings/{trainingId} {
+    match /course_live_trainings/{trainingId} {
       allow read: if isAuthenticated();
       allow create, update: if isInstructor();
       allow delete: if isAdmin();
     }
     
     // ==================== TRAINING REGISTRATIONS ====================
-    match /cohort_training_registrations/{registrationId} {
+    match /course_training_registrations/{registrationId} {
       allow read: if isAuthenticated() && 
         (resource.data.userId == request.auth.uid || isInstructor());
       
@@ -183,7 +183,7 @@ service cloud.firestore {
     }
     
     // ==================== WAITLIST ====================
-    match /cohort_waitlist/{waitlistId} {
+    match /course_waitlist/{waitlistId} {
       allow read: if isAuthenticated() && 
         (resource.data.userId == request.auth.uid || isAdmin());
       
@@ -194,7 +194,7 @@ service cloud.firestore {
     }
     
     // ==================== NOTIFICATIONS ====================
-    match /cohort_notifications/{notificationId} {
+    match /course_notifications/{notificationId} {
       allow read: if isAuthenticated() && 
         (resource.data.userId == request.auth.uid || resource.data.userId == null || isAdmin());
       
@@ -204,25 +204,25 @@ service cloud.firestore {
     }
     
     // ==================== STATE TRANSITIONS (Audit Log) ====================
-    match /cohort_state_transitions/{transitionId} {
+    match /course_state_transitions/{transitionId} {
       allow read: if isAdmin();
       allow create: if isInstructor();
       allow update, delete: if false; // Immutable audit log
     }
     
-    // ==================== COHORT TEMPLATES ====================
-    match /cohort_templates/{templateId} {
+    // ==================== COURSE TEMPLATES ====================
+    match /course_templates/{templateId} {
       allow read: if isInstructor();
       allow create, update: if isAdmin();
       allow delete: if isAdmin();
     }
     
-    match /cohort_template_modules/{moduleId} {
+    match /course_template_modules/{moduleId} {
       allow read: if isInstructor();
       allow create, update, delete: if isAdmin();
     }
     
-    match /cohort_template_sessions/{sessionId} {
+    match /course_template_sessions/{sessionId} {
       allow read: if isInstructor();
       allow create, update, delete: if isAdmin();
     }

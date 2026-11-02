@@ -149,7 +149,7 @@ export interface PartnerAttributionDoc {
   clientEmail: string;
   
   // Transaction Details
-  transactionType: 'membership' | 'event_ticket' | 'sponsorship' | 'pursuit_pack' | 'cohort' | 'service' | 'other';
+  transactionType: 'membership' | 'event_ticket' | 'sponsorship' | 'pursuit_pack' | 'course' | 'service' | 'other';
   totalAmount: number;
   currency: string;
   

@@ -345,7 +345,7 @@ export default function AuditLogsPage() {
                   <SelectItem value="proof_pack">Proof Pack</SelectItem>
                   <SelectItem value="lead">Lead</SelectItem>
                   <SelectItem value="introduction">Introduction</SelectItem>
-                  <SelectItem value="cohort">Cohort</SelectItem>
+                  <SelectItem value="course">Course</SelectItem>
                   <SelectItem value="content">Content</SelectItem>
                   <SelectItem value="revenue">Revenue</SelectItem>
                   <SelectItem value="event">Event</SelectItem>

@@ -54,7 +54,7 @@ export default function SVPAdminDashboard() {
       trend: "up"
     },
     {
-      title: "Active Cohorts",
+      title: "Active Courses",
       value: "12",
       change: "+3",
       icon: GraduationCap,
@@ -109,8 +109,8 @@ export default function SVPAdminDashboard() {
         trend: "up"
       },
       {
-        title: "Active Cohorts",
-        value: mockDashboardStats.activeCohorts.toString(),
+        title: "Active Courses",
+        value: mockDashboardStats.activeCourses.toString(),
         change: "+3",
         icon: GraduationCap,
         trend: "up"
@@ -138,13 +138,13 @@ export default function SVPAdminDashboard() {
       // Fetch real data from Firebase
       const usersSnapshot = await getDocs(collection(db, "users"));
       const proofPacksSnapshot = await getDocs(collection(db, "proof_packs"));
-      const cohortsSnapshot = await getDocs(collection(db, "cohorts"));
+      const coursesSnapshot = await getDocs(collection(db, "courses"));
 
       const totalUsers = usersSnapshot.size;
       const activeProofPacks = proofPacksSnapshot.docs.filter(doc => 
         doc.data().status === "active" || doc.data().status === "pending"
       ).length;
-      const activeCohorts = cohortsSnapshot.docs.filter(doc => 
+      const activeCourses = coursesSnapshot.docs.filter(doc => 
         doc.data().status === "active" || doc.data().status === "enrolling"
       ).length;
 
@@ -178,8 +178,8 @@ export default function SVPAdminDashboard() {
           trend: "up"
         },
         {
-          title: "Active Cohorts",
-          value: activeCohorts.toString(),
+          title: "Active Courses",
+          value: activeCourses.toString(),
           change: "+3",
           icon: GraduationCap,
           trend: "up"

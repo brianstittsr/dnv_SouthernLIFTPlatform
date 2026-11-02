@@ -2,7 +2,7 @@
  * Cart and Product Type Definitions
  */
 
-export type ProductType = 'consortium' | 'cmmc-cohort' | 'founders' | 'test-product';
+export type ProductType = 'consortium' | 'cmmc-course' | 'founders' | 'test-product';
 
 export interface Product {
   id: string;
@@ -61,10 +61,10 @@ export const PRODUCTS: Record<ProductType, Product> = {
       'CMMC readiness assessment'
     ]
   },
-  'cmmc-cohort': {
-    id: 'cmmc-cohort-training',
-    type: 'cmmc-cohort',
-    name: 'CMMC Cohort Training',
+  'cmmc-course': {
+    id: 'cmmc-course-training',
+    type: 'cmmc-course',
+    name: 'CMMC Course Training',
     description: 'Intensive 12-week program to achieve CMMC certification readiness',
     price: 7500,
     billingPeriod: 'one-time',

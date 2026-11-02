@@ -166,7 +166,7 @@ export default function BoeingPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4">
-                    Navigate CMMC requirements for Boeing defense contracts. Our comprehensive CMMC Training Cohort and 
+                    Navigate CMMC requirements for Boeing defense contracts. Our comprehensive CMMC Training Course and 
                     compliance support help you achieve certification, implement cybersecurity controls, and maintain 
                     ongoing compliance with DoD requirements that Boeing must flow down to suppliers.
                   </p>
@@ -178,7 +178,7 @@ export default function BoeingPage() {
                   </div>
                   <Button asChild>
                     <Link href="/training">
-                      Join CMMC Training Cohort
+                      Join CMMC Training Course
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
@@ -285,7 +285,7 @@ export default function BoeingPage() {
                 <div>
                   <h3 className="font-semibold text-lg mb-2">CMMC Expertise</h3>
                   <p className="text-muted-foreground">
-                    Access expert guidance through our CMMC Training Cohort and ongoing compliance support to meet 
+                    Access expert guidance through our CMMC Training Course and ongoing compliance support to meet 
                     Boeing's cybersecurity requirements.
                   </p>
                 </div>
@@ -335,13 +335,13 @@ export default function BoeingPage() {
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold mb-3">CMMC Compliance for Boeing Defense Contracts</h3>
                     <p className="text-muted-foreground mb-6">
-                      Boeing defense contracts require CMMC certification. Join our comprehensive CMMC Training Cohort 
+                      Boeing defense contracts require CMMC certification. Join our comprehensive CMMC Training Course 
                       to achieve compliance and maintain your position in Boeing's defense supply chain.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button asChild>
                         <Link href="/training">
-                          Join CMMC Training Cohort
+                          Join CMMC Training Course
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>

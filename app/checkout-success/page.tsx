@@ -41,7 +41,7 @@ function CheckoutSuccessContent() {
     );
   }
 
-  const isCMMCCohort = product === 'cmmc-cohort';
+  const isCMMCCourse = product === 'cmmc-course';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -63,8 +63,8 @@ function CheckoutSuccessContent() {
             </div>
             <h1 className="text-4xl font-bold mb-2">Payment Successful!</h1>
             <p className="text-xl text-muted-foreground">
-              {isCMMCCohort 
-                ? "Thank you for joining the KDM CMMC Cohort 2026" 
+              {isCMMCCourse 
+                ? "Thank you for joining the KDM CMMC Course 2026" 
                 : "Thank you for your purchase"}
             </p>
           </div>
@@ -73,7 +73,7 @@ function CheckoutSuccessContent() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5 text-blue-600" />
-                {isCMMCCohort ? "Your Registration Details" : "Order Confirmation"}
+                {isCMMCCourse ? "Your Registration Details" : "Order Confirmation"}
               </CardTitle>
               <CardDescription>A confirmation email has been sent to your inbox</CardDescription>
             </CardHeader>
@@ -83,17 +83,17 @@ function CheckoutSuccessContent() {
                 <div>
                   <p className="font-semibold text-sm">Confirmation Email Sent</p>
                   <p className="text-sm text-muted-foreground">
-                    Check your inbox for {isCMMCCohort ? "registration details and next steps" : "your receipt and order details"}.
+                    Check your inbox for {isCMMCCourse ? "registration details and next steps" : "your receipt and order details"}.
                   </p>
                 </div>
               </div>
               
-              {isCMMCCohort && (
+              {isCMMCCourse && (
                 <>
                   <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg">
                     <Calendar className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold text-sm">Cohort Start Date</p>
+                      <p className="font-semibold text-sm">Course Start Date</p>
                       <p className="text-sm text-muted-foreground">
                         You will receive a calendar invite within 24-48 hours with the program schedule.
                       </p>
@@ -104,7 +104,7 @@ function CheckoutSuccessContent() {
                     <div>
                       <p className="font-semibold text-sm">Welcome Package</p>
                       <p className="text-sm text-muted-foreground">
-                        Access to the cohort portal and materials will be provided before the start date.
+                        Access to the course portal and materials will be provided before the start date.
                       </p>
                     </div>
                   </div>
@@ -121,7 +121,7 @@ function CheckoutSuccessContent() {
             </CardContent>
           </Card>
 
-          {isCMMCCohort && (
+          {isCMMCCourse && (
             <Card className="mb-6 border-2 border-blue-200 bg-blue-50">
               <CardHeader>
                 <CardTitle className="text-lg">What Happens Next?</CardTitle>
@@ -145,7 +145,7 @@ function CheckoutSuccessContent() {
                   <div>
                     <p className="font-semibold text-sm">Portal Access (Within 24-48 hours)</p>
                     <p className="text-sm text-muted-foreground">
-                      Access credentials to the cohort learning portal and pre-program materials.
+                      Access credentials to the course learning portal and pre-program materials.
                     </p>
                   </div>
                 </div>
@@ -156,7 +156,7 @@ function CheckoutSuccessContent() {
                   <div>
                     <p className="font-semibold text-sm">Kickoff Meeting (Before program start)</p>
                     <p className="text-sm text-muted-foreground">
-                      Calendar invite for the cohort orientation and program kickoff session.
+                      Calendar invite for the course orientation and program kickoff session.
                     </p>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ function CheckoutSuccessContent() {
             <Link href="/">
               <Button variant="outline" size="lg">Return to Home</Button>
             </Link>
-            {isCMMCCohort && (
+            {isCMMCCourse && (
               <Link href="/cmmc-training">
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                   Learn More About CMMC

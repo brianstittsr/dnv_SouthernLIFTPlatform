@@ -29,8 +29,8 @@ const courses = [
     estimatedDurationWeeks: 8,
     difficultyLevel: "beginner",
     maxParticipants: 50,
-    cohortStartDate: new Date('2026-02-01'),
-    cohortEndDate: new Date('2026-04-30'),
+    courseStartDate: new Date('2026-02-01'),
+    courseEndDate: new Date('2026-04-30'),
     tags: ["CMMC", "Level 1", "Cybersecurity", "Compliance", "FCI"],
     learningOutcomes: [
       "Understand CMMC Level 1 requirements and scope",
@@ -58,8 +58,8 @@ const courses = [
     estimatedDurationWeeks: 12,
     difficultyLevel: "intermediate",
     maxParticipants: 40,
-    cohortStartDate: new Date('2026-03-01'),
-    cohortEndDate: new Date('2026-06-30'),
+    courseStartDate: new Date('2026-03-01'),
+    courseEndDate: new Date('2026-06-30'),
     tags: ["CMMC", "Level 2", "CUI", "NIST 800-171", "Advanced Security"],
     learningOutcomes: [
       "Master all 110 CMMC Level 2 security requirements",
@@ -88,8 +88,8 @@ const courses = [
     estimatedDurationWeeks: 16,
     difficultyLevel: "advanced",
     maxParticipants: 25,
-    cohortStartDate: new Date('2026-04-01'),
-    cohortEndDate: new Date('2026-08-31'),
+    courseStartDate: new Date('2026-04-01'),
+    courseEndDate: new Date('2026-08-31'),
     tags: ["CMMC", "Level 3", "Advanced Security", "APT Protection", "Expert"],
     learningOutcomes: [
       "Master all CMMC Level 3 requirements (130+ practices)",
@@ -118,15 +118,15 @@ async function seedCourses() {
     for (const course of courses) {
       console.log(`Creating: ${course.title}...`);
       
-      const cohortData = {
+      const courseData = {
         title: course.title,
         slug: course.slug,
         description: course.description,
         facilitatorId: INSTRUCTOR_ID,
         facilitatorName: INSTRUCTOR_NAME,
         facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-        cohortStartDate: Timestamp.fromDate(course.cohortStartDate),
-        cohortEndDate: Timestamp.fromDate(course.cohortEndDate),
+        courseStartDate: Timestamp.fromDate(course.courseStartDate),
+        courseEndDate: Timestamp.fromDate(course.courseEndDate),
         maxParticipants: course.maxParticipants,
         currentParticipants: 0,
         estimatedDurationWeeks: course.estimatedDurationWeeks,
@@ -143,12 +143,12 @@ async function seedCourses() {
         updatedAt: Timestamp.now(),
       };
 
-      const docRef = await addDoc(collection(db, 'cohorts'), cohortData);
+      const docRef = await addDoc(collection(db, 'courses'), courseData);
       console.log(`✅ Created: ${course.title} (ID: ${docRef.id})`);
     }
 
     console.log('\n🎉 Success! All CMMC courses have been seeded.');
-    console.log('\n📍 View them at: http://localhost:3000/cohorts');
+    console.log('\n📍 View them at: http://localhost:3000/courses');
     process.exit(0);
 
   } catch (error) {

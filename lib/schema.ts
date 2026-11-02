@@ -2813,7 +2813,7 @@ export const COLLECTIONS = {
   REPS_CERTS: "repsCerts", // Representations and Certifications for Government Contractors
   LEADS: "leads",
   INTRODUCTIONS: "introductions",
-  COHORTS: "cohorts",
+  COURSES: "courses",
   CONTENT: "content",
   REVENUE_ATTRIBUTION: "revenueAttribution",
   ROUTING_RULES: "routingRules",
@@ -2894,7 +2894,7 @@ export const paymentPlansCollection = () => getCollection<PaymentPlanDoc>(COLLEC
 export const proofPacksCollection = () => getCollection<ProofPackDoc>(COLLECTIONS.PROOF_PACKS);
 export const leadsCollection = () => getCollection<LeadDoc>(COLLECTIONS.LEADS);
 export const introductionsCollection = () => getCollection<IntroductionDoc>(COLLECTIONS.INTRODUCTIONS);
-export const cohortsCollection = () => getCollection<CohortDoc>(COLLECTIONS.COHORTS);
+export const coursesCollection = () => getCollection<CourseDoc>(COLLECTIONS.COURSES);
 export const contentCollection = () => getCollection<ContentDoc>(COLLECTIONS.CONTENT);
 export const revenueAttributionCollection = () => getCollection<RevenueAttributionDoc>(COLLECTIONS.REVENUE_ATTRIBUTION);
 export const routingRulesCollection = () => getCollection<RoutingRuleDoc>(COLLECTIONS.ROUTING_RULES);
@@ -3436,14 +3436,14 @@ export interface IntroductionDoc extends BaseDocument {
   updatedAt: Timestamp;
 }
 
-/** CMMC Cohort document for training programs */
-export interface CohortDoc extends BaseDocument {
+/** CMMC Course document for training programs */
+export interface CourseDoc extends BaseDocument {
   // Multi-tenant isolation
   tenantId: string;
   partnerId?: string;
   instructorId: string;
   
-  // Cohort details
+  // Course details
   title: string;
   description: string;
   

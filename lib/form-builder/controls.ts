@@ -48,7 +48,7 @@ export const LOOKUP_SOURCES: readonly { value: LookupSource; label: string; staf
   { value: "parishes", label: "Louisiana parishes", staffOnly: false },
   { value: "service_areas", label: "LIFT service areas", staffOnly: false },
   { value: "events", label: "Events & workshops", staffOnly: false },
-  { value: "cohorts", label: "Cohorts", staffOnly: false },
+  { value: "courses", label: "Courses", staffOnly: false },
   { value: "partners", label: "Partner organizations", staffOnly: false },
   { value: "advisors", label: "Advisors (staff)", staffOnly: true },
   { value: "lift_clients", label: "LIFT clients (staff)", staffOnly: true },

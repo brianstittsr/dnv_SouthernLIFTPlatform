@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   keywords: [
     "KDM Consortium membership price",
     "government contracting membership",
-    "CMMC cohort training cost",
+    "CMMC course training cost",
     "federal contracting program pricing",
     "small business government contracting subscription",
     "HUBZone membership",

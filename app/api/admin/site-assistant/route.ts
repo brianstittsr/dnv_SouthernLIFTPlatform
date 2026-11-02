@@ -38,7 +38,7 @@ Platform context:
 - Next.js 14+ App Router with Firebase Firestore backend
 - Admin portal at /portal/admin/*
 - Marketing pages at /(marketing)/*
-- Key Firestore collections: users, leads, opportunities, events, consortium_members, proof_packs, cohorts, press_releases, testimonials, pricing_tiers, platform_settings
+- Key Firestore collections: users, leads, opportunities, events, consortium_members, proof_packs, courses, press_releases, testimonials, pricing_tiers, platform_settings
 - Key admin tools: hero management, page designer, home-settings, header-footer, events, press-releases, team-members, pricing, images
 
 Behavior rules:

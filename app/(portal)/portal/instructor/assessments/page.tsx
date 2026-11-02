@@ -33,8 +33,8 @@ interface Assessment {
   title: string;
   description: string;
   type: "quiz" | "exam" | "assignment";
-  cohortId: string;
-  cohortTitle: string;
+  courseId: string;
+  courseTitle: string;
   instructorId: string;
   status: "draft" | "published" | "completed";
   totalQuestions: number;
@@ -203,7 +203,7 @@ export default function AssessmentsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Your Assessments</CardTitle>
-          <CardDescription>Manage quizzes, exams, and assignments for your cohorts</CardDescription>
+          <CardDescription>Manage quizzes, exams, and assignments for your courses</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -249,7 +249,7 @@ export default function AssessmentsPage() {
                           <p className="text-sm text-muted-foreground mb-3">{assessment.description}</p>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <FileText className="h-4 w-4" />
-                            <span>{assessment.cohortTitle}</span>
+                            <span>{assessment.courseTitle}</span>
                           </div>
                         </div>
                       </div>

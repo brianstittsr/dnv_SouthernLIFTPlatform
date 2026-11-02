@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const PRODUCT_TYPE_TO_CORE_TIER_ID: Record<string, string> = {
   consortium: "kdm-consortium",
   founders: "founders",
-  "cmmc-cohort": "cmmc-cohort",
+  "cmmc-course": "cmmc-course",
 };
 
 /**
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     let cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-cart`;
     let source = 'checkout-cart';
 
-    // Handle direct product purchase (e.g., CMMC Cohort)
+    // Handle direct product purchase (e.g., CMMC Course)
     if (productName && amount) {
       const unitAmount = Math.round(amount * 100);
       const itemQuantity = quantity || 1;
@@ -79,9 +79,9 @@ export async function POST(req: NextRequest) {
         price: amount,
       });
 
-      successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-success?session_id={CHECKOUT_SESSION_ID}&product=cmmc-cohort`;
-      cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cmmc-cohort`;
-      source = 'cmmc-cohort';
+      successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout-success?session_id={CHECKOUT_SESSION_ID}&product=cmmc-course`;
+      cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cmmc-course`;
+      source = 'cmmc-course';
     } 
     // Handle cart-based checkout
     else if (items && Array.isArray(items) && items.length > 0) {

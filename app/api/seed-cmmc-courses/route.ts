@@ -16,8 +16,8 @@ const cmmcCourses = [
     compareAtPriceInCents: 199900,
     estimatedDurationWeeks: 8,
     difficultyLevel: "beginner",
-    cohortStartDate: new Date('2026-02-01'),
-    cohortEndDate: new Date('2026-04-30'),
+    courseStartDate: new Date('2026-02-01'),
+    courseEndDate: new Date('2026-04-30'),
     tags: ["CMMC", "Level 1", "Cybersecurity", "Compliance", "FCI"],
     learningOutcomes: [
       "Understand CMMC Level 1 requirements and scope",
@@ -45,8 +45,8 @@ const cmmcCourses = [
     compareAtPriceInCents: 449900,
     estimatedDurationWeeks: 12,
     difficultyLevel: "intermediate",
-    cohortStartDate: new Date('2026-03-01'),
-    cohortEndDate: new Date('2026-06-30'),
+    courseStartDate: new Date('2026-03-01'),
+    courseEndDate: new Date('2026-06-30'),
     tags: ["CMMC", "Level 2", "CUI", "NIST 800-171", "Advanced Security"],
     learningOutcomes: [
       "Master all 110 CMMC Level 2 security requirements",
@@ -75,8 +75,8 @@ const cmmcCourses = [
     compareAtPriceInCents: 799900,
     estimatedDurationWeeks: 16,
     difficultyLevel: "advanced",
-    cohortStartDate: new Date('2026-04-01'),
-    cohortEndDate: new Date('2026-08-31'),
+    courseStartDate: new Date('2026-04-01'),
+    courseEndDate: new Date('2026-08-31'),
     tags: ["CMMC", "Level 3", "Advanced Security", "APT Protection", "Expert"],
     learningOutcomes: [
       "Master all CMMC Level 3 requirements (130+ practices)",
@@ -115,16 +115,16 @@ export async function POST(request: NextRequest) {
     const results = [];
 
     for (const course of cmmcCourses) {
-      // Create cohort
-      const cohortData = {
+      // Create course
+      const courseData = {
         title: course.title,
         slug: course.slug,
         description: course.description,
         facilitatorId: INSTRUCTOR_ID,
         facilitatorName: INSTRUCTOR_NAME,
         facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-        cohortStartDate: Timestamp.fromDate(course.cohortStartDate),
-        cohortEndDate: Timestamp.fromDate(course.cohortEndDate),
+        courseStartDate: Timestamp.fromDate(course.courseStartDate),
+        courseEndDate: Timestamp.fromDate(course.courseEndDate),
         maxParticipants: course.level === 1 ? 50 : course.level === 2 ? 40 : 25,
         currentParticipants: 0,
         estimatedDurationWeeks: course.estimatedDurationWeeks,
@@ -141,11 +141,11 @@ export async function POST(request: NextRequest) {
         updatedAt: Timestamp.now(),
       };
 
-      const cohortRef = await db.collection('cohorts').add(cohortData);
+      const courseRef = await db.collection('courses').add(courseData);
       
       results.push({
         level: course.level,
-        cohortId: cohortRef.id,
+        courseId: courseRef.id,
         title: course.title,
       });
     }

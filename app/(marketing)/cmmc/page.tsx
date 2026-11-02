@@ -24,7 +24,7 @@ import {
 export const metadata: Metadata = {
   title: "CMMC Certification & Compliance Consulting | KDM & Associates",
   description:
-    "KDM & Associates provides CMMC 2.0 compliance consulting and cohort training for defense contractors. Achieve DoD cybersecurity certification, NIST 800-171 readiness, and win more federal defense contracts.",
+    "KDM & Associates provides CMMC 2.0 compliance consulting and course training for defense contractors. Achieve DoD cybersecurity certification, NIST 800-171 readiness, and win more federal defense contracts.",
   keywords: [
     "CMMC certification",
     "CMMC 2.0 compliance",
@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     "CMMC training program",
     "minority business CMMC certification",
     "federal defense contracts cybersecurity",
-    "CMMC cohort",
+    "CMMC course",
     "KDM CMMC consulting",
   ],
   alternates: { canonical: "https://kdm-assoc.com/cmmc" },
   openGraph: {
     title: "CMMC Certification & Compliance Consulting | KDM & Associates",
-    description: "Expert CMMC 2.0 compliance consulting and cohort training. Win DoD contracts with confidence.",
+    description: "Expert CMMC 2.0 compliance consulting and course training. Win DoD contracts with confidence.",
     url: "https://kdm-assoc.com/cmmc",
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CMMC Compliance Consulting - KDM & Associates" }],
@@ -53,7 +53,7 @@ export default function CMMCPage() {
     <div className="min-h-screen">
       <ServiceJsonLd
         name="CMMC Certification & Compliance Consulting"
-        description="KDM & Associates provides CMMC 2.0 compliance consulting and cohort training for defense contractors navigating DoD cybersecurity requirements."
+        description="KDM & Associates provides CMMC 2.0 compliance consulting and course training for defense contractors navigating DoD cybersecurity requirements."
         url="https://kdm-assoc.com/cmmc"
       />
       <BreadcrumbJsonLd items={[
@@ -92,7 +92,7 @@ export default function CMMCPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
                 <Link href="https://www.kdm-assoc.com/cmmc-training">
-                  Join CMMC Training Cohort
+                  Join CMMC Training Course
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -651,7 +651,7 @@ export default function CMMCPage() {
               Ready to Achieve CMMC Certification?
             </h2>
             <p className="text-xl mb-8 text-white/90">
-              Join our CMMC Training Cohort and get expert guidance through every step of the certification process
+              Join our CMMC Training Course and get expert guidance through every step of the certification process
             </p>
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
@@ -679,7 +679,7 @@ export default function CMMCPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>
                 <Link href="https://www.kdm-assoc.com/cmmc-training">
-                  Join CMMC Training Cohort
+                  Join CMMC Training Course
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>

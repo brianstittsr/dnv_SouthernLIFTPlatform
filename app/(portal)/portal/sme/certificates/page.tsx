@@ -29,10 +29,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Plus, Award, Download, Trash2, ExternalLink, GraduationCap, FileText } from "lucide-react";
 import { toast } from "sonner";
 
-interface CohortCertificate {
+interface CourseCertificate {
   id: string;
-  cohortId: string;
-  cohortTitle: string;
+  courseId: string;
+  courseTitle: string;
   certificateUrl: string | null;
   completedAt: any;
   overallCompletion: number;
@@ -55,7 +55,7 @@ interface ProfessionalCertification {
 export default function CertificatesPage() {
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
-  const [cohortCertificates, setCohortCertificates] = useState<CohortCertificate[]>([]);
+  const [courseCertificates, setCourseCertificates] = useState<CourseCertificate[]>([]);
   const [professionalCerts, setProfessionalCerts] = useState<ProfessionalCertification[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,33 +81,33 @@ export default function CertificatesPage() {
     if (!db || !profile?.id) return;
     
     try {
-      // Load cohort certificates
+      // Load course certificates
       const enrollmentsQuery = query(
-        collection(db, "cohortEnrollments"),
+        collection(db, "courseEnrollments"),
         where("userId", "==", profile.id),
         where("status", "==", "completed")
       );
       const enrollmentsSnapshot = await getDocs(enrollmentsQuery);
       
-      const cohortCerts: CohortCertificate[] = [];
+      const courseCerts: CourseCertificate[] = [];
       for (const enrollDoc of enrollmentsSnapshot.docs) {
         const enrollment = enrollDoc.data();
         if (enrollment.certificateGenerated) {
-          // Get cohort details
-          const cohortDoc = await getDocs(query(collection(db, "cohorts"), where("__name__", "==", enrollment.cohortId)));
-          const cohortData = cohortDoc.docs[0]?.data();
+          // Get course details
+          const courseDoc = await getDocs(query(collection(db, "courses"), where("__name__", "==", enrollment.courseId)));
+          const courseData = courseDoc.docs[0]?.data();
           
-          cohortCerts.push({
+          courseCerts.push({
             id: enrollDoc.id,
-            cohortId: enrollment.cohortId,
-            cohortTitle: cohortData?.title || "CMMC Training Cohort",
+            courseId: enrollment.courseId,
+            courseTitle: courseData?.title || "CMMC Training Course",
             certificateUrl: enrollment.certificateUrl,
             completedAt: enrollment.updatedAt,
             overallCompletion: enrollment.progress?.overallCompletion || 100,
           });
         }
       }
-      setCohortCertificates(cohortCerts);
+      setCourseCertificates(courseCerts);
 
       // Load professional certifications
       const certsQuery = query(
@@ -198,11 +198,11 @@ export default function CertificatesPage() {
         </Button>
       </div>
 
-      <Tabs defaultValue="cohort" className="space-y-4">
+      <Tabs defaultValue="course" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="cohort">
+          <TabsTrigger value="course">
             <GraduationCap className="h-4 w-4 mr-2" />
-            Training Certificates ({cohortCertificates.length})
+            Training Certificates ({courseCertificates.length})
           </TabsTrigger>
           <TabsTrigger value="professional">
             <FileText className="h-4 w-4 mr-2" />
@@ -210,29 +210,29 @@ export default function CertificatesPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="cohort" className="space-y-4">
+        <TabsContent value="course" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>CMMC Training Certificates</CardTitle>
-              <CardDescription>Certificates earned from completed training cohorts</CardDescription>
+              <CardDescription>Certificates earned from completed training courses</CardDescription>
             </CardHeader>
             <CardContent>
-              {cohortCertificates.length === 0 ? (
+              {courseCertificates.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No training certificates yet.</p>
-                  <p className="text-sm mt-2">Complete a CMMC training cohort to earn your certificate.</p>
+                  <p className="text-sm mt-2">Complete a CMMC training course to earn your certificate.</p>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
-                  {cohortCertificates.map((cert) => (
+                  {courseCertificates.map((cert) => (
                     <Card key={cert.id} className="overflow-hidden">
                       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <CardTitle className="text-lg flex items-center gap-2">
                               <Award className="h-5 w-5 text-blue-600" />
-                              {cert.cohortTitle}
+                              {cert.courseTitle}
                             </CardTitle>
                             <CardDescription className="mt-1">
                               Completed {cert.completedAt?.toDate?.()?.toLocaleDateString() || "Recently"}

@@ -25,8 +25,8 @@ const cmmcLevel1 = {
   facilitatorId: INSTRUCTOR_ID,
   facilitatorName: INSTRUCTOR_NAME,
   facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-  cohortStartDate: Timestamp.fromDate(new Date('2026-02-01')),
-  cohortEndDate: Timestamp.fromDate(new Date('2026-04-30')),
+  courseStartDate: Timestamp.fromDate(new Date('2026-02-01')),
+  courseEndDate: Timestamp.fromDate(new Date('2026-04-30')),
   maxParticipants: 50,
   currentParticipants: 0,
   estimatedDurationWeeks: 8,
@@ -309,8 +309,8 @@ const cmmcLevel2 = {
   facilitatorId: INSTRUCTOR_ID,
   facilitatorName: INSTRUCTOR_NAME,
   facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-  cohortStartDate: Timestamp.fromDate(new Date('2026-03-01')),
-  cohortEndDate: Timestamp.fromDate(new Date('2026-06-30')),
+  courseStartDate: Timestamp.fromDate(new Date('2026-03-01')),
+  courseEndDate: Timestamp.fromDate(new Date('2026-06-30')),
   maxParticipants: 40,
   currentParticipants: 0,
   estimatedDurationWeeks: 12,
@@ -705,8 +705,8 @@ const cmmcLevel3 = {
   facilitatorId: INSTRUCTOR_ID,
   facilitatorName: INSTRUCTOR_NAME,
   facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-  cohortStartDate: Timestamp.fromDate(new Date('2026-04-01')),
-  cohortEndDate: Timestamp.fromDate(new Date('2026-08-31')),
+  courseStartDate: Timestamp.fromDate(new Date('2026-04-01')),
+  courseEndDate: Timestamp.fromDate(new Date('2026-08-31')),
   maxParticipants: 25,
   currentParticipants: 0,
   estimatedDurationWeeks: 16,
@@ -1235,19 +1235,19 @@ async function seedCMMCCourses() {
   try {
     // Create CMMC Level 1
     console.log('\n📚 Creating CMMC Level 1 course...');
-    const level1Ref = await db.collection('cohorts').add({
+    const level1Ref = await db.collection('courses').add({
       ...cmmcLevel1,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });
-    console.log(`✅ Created Level 1 cohort: ${level1Ref.id}`);
+    console.log(`✅ Created Level 1 course: ${level1Ref.id}`);
     
     // Add Level 1 modules and sessions
     for (const moduleData of cmmcLevel1Modules) {
       const { sessions, ...module} = moduleData;
-      const moduleRef = await db.collection('cohort_modules').add({
+      const moduleRef = await db.collection('course_modules').add({
         ...module,
-        cohortId: level1Ref.id,
+        courseId: level1Ref.id,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -1256,10 +1256,10 @@ async function seedCMMCCourses() {
       // Add sessions for this module
       if (sessions) {
         for (const session of sessions) {
-          await db.collection('cohort_sessions').add({
+          await db.collection('course_sessions').add({
             ...session,
             moduleId: moduleRef.id,
-            cohortId: level1Ref.id,
+            courseId: level1Ref.id,
             scheduledDate: null,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -1271,19 +1271,19 @@ async function seedCMMCCourses() {
     
     // Create CMMC Level 2
     console.log('\n📚 Creating CMMC Level 2 course...');
-    const level2Ref = await db.collection('cohorts').add({
+    const level2Ref = await db.collection('courses').add({
       ...cmmcLevel2,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });
-    console.log(`✅ Created Level 2 cohort: ${level2Ref.id}`);
+    console.log(`✅ Created Level 2 course: ${level2Ref.id}`);
     
     // Add Level 2 modules and sessions
     for (const moduleData of cmmcLevel2Modules) {
       const { sessions, ...module } = moduleData;
-      const moduleRef = await db.collection('cohort_modules').add({
+      const moduleRef = await db.collection('course_modules').add({
         ...module,
-        cohortId: level2Ref.id,
+        courseId: level2Ref.id,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -1291,10 +1291,10 @@ async function seedCMMCCourses() {
       
       if (sessions) {
         for (const session of sessions) {
-          await db.collection('cohort_sessions').add({
+          await db.collection('course_sessions').add({
             ...session,
             moduleId: moduleRef.id,
-            cohortId: level2Ref.id,
+            courseId: level2Ref.id,
             scheduledDate: null,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -1306,19 +1306,19 @@ async function seedCMMCCourses() {
     
     // Create CMMC Level 3
     console.log('\n📚 Creating CMMC Level 3 course...');
-    const level3Ref = await db.collection('cohorts').add({
+    const level3Ref = await db.collection('courses').add({
       ...cmmcLevel3,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });
-    console.log(`✅ Created Level 3 cohort: ${level3Ref.id}`);
+    console.log(`✅ Created Level 3 course: ${level3Ref.id}`);
     
     // Add Level 3 modules and sessions
     for (const moduleData of cmmcLevel3Modules) {
       const { sessions, ...module } = moduleData;
-      const moduleRef = await db.collection('cohort_modules').add({
+      const moduleRef = await db.collection('course_modules').add({
         ...module,
-        cohortId: level3Ref.id,
+        courseId: level3Ref.id,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
@@ -1326,10 +1326,10 @@ async function seedCMMCCourses() {
       
       if (sessions) {
         for (const session of sessions) {
-          await db.collection('cohort_sessions').add({
+          await db.collection('course_sessions').add({
             ...session,
             moduleId: moduleRef.id,
-            cohortId: level3Ref.id,
+            courseId: level3Ref.id,
             scheduledDate: null,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),

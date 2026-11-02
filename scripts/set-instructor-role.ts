@@ -67,7 +67,7 @@ async function setInstructorRole(email: string) {
       permissions: [
         'instructor:read',
         'instructor:write',
-        'cohorts:manage',
+        'courses:manage',
         'assessments:manage',
         'certificates:issue',
       ],

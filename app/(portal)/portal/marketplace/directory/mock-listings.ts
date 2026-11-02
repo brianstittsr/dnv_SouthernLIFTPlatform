@@ -743,7 +743,7 @@ Week 11-12: Growth & Capture
       "Compliance checklists",
       "SAM registration guide",
       "CMMC preparation toolkit",
-      "Networking with cohort",
+      "Networking with course",
       "Certificate of completion",
       "Alumni network access"
     ],

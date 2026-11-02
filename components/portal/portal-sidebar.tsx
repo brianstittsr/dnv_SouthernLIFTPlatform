@@ -441,8 +441,8 @@ const svpSmeItems = [
     icon: Handshake,
   },
   {
-    title: "My Cohorts",
-    href: "/portal/sme/cohorts",
+    title: "My Courses",
+    href: "/portal/sme/courses",
     icon: GraduationCap,
   },
   {
@@ -555,14 +555,14 @@ const svpInstructorItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "My Cohorts",
-    href: "/portal/instructor/cohorts",
+    title: "My Courses",
+    href: "/portal/instructor/courses",
     icon: GraduationCap,
     badge: "CMMC",
   },
   {
-    title: "Create Cohort",
-    href: "/portal/instructor/cohorts/new",
+    title: "Create Course",
+    href: "/portal/instructor/courses/new",
     icon: UserPlus,
   },
   {
@@ -643,8 +643,8 @@ const svpAdminItems = [
     icon: CreditCard,
   },
   {
-    title: "All Cohorts",
-    href: "/portal/admin/cohorts",
+    title: "All Courses",
+    href: "/portal/admin/courses",
     icon: GraduationCap,
   },
   {

@@ -9,7 +9,7 @@ const svpPages = [
   { path: 'sme/dashboard', title: 'SME Dashboard', collection: 'smeProfiles' },
   { path: 'sme/subscription', title: 'Subscription', collection: 'smeSubscriptions' },
   { path: 'sme/introductions', title: 'My Introductions', collection: 'introductions' },
-  { path: 'sme/cohorts', title: 'My Cohorts', collection: 'cohortEnrollments' },
+  { path: 'sme/courses', title: 'My Courses', collection: 'courseEnrollments' },
   { path: 'sme/certificates', title: 'Certificates', collection: 'certificates' },
   
   // Partner Pages
@@ -36,8 +36,8 @@ const svpPages = [
   
   // Instructor Pages
   { path: 'instructor/dashboard', title: 'Instructor Dashboard', collection: 'instructorProfiles' },
-  { path: 'instructor/cohorts', title: 'My Cohorts', collection: 'cmmcCohorts' },
-  { path: 'instructor/cohorts/new', title: 'Create Cohort', collection: 'cmmcCohorts' },
+  { path: 'instructor/courses', title: 'My Courses', collection: 'cmmcCourses' },
+  { path: 'instructor/courses/new', title: 'Create Course', collection: 'cmmcCourses' },
   { path: 'instructor/assessments', title: 'Assessments', collection: 'assessments' },
   { path: 'instructor/certificates', title: 'Certificates', collection: 'certificates' },
   

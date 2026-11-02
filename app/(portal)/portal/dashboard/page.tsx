@@ -243,7 +243,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.upcomingEventsCount}</div>
             <p className="text-xs text-muted-foreground">
-              Cohorts and training
+              Courses and training
             </p>
             <Button
               variant="link"

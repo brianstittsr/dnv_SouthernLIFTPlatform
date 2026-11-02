@@ -22,8 +22,8 @@ const courses = [
     estimatedDurationWeeks: 8,
     difficultyLevel: "beginner",
     maxParticipants: 50,
-    cohortStartDate: new Date('2026-02-01'),
-    cohortEndDate: new Date('2026-04-30'),
+    courseStartDate: new Date('2026-02-01'),
+    courseEndDate: new Date('2026-04-30'),
     tags: ["CMMC", "Level 1", "Cybersecurity", "Compliance", "FCI"],
     learningOutcomes: [
       "Understand CMMC Level 1 requirements and scope",
@@ -51,8 +51,8 @@ const courses = [
     estimatedDurationWeeks: 12,
     difficultyLevel: "intermediate",
     maxParticipants: 40,
-    cohortStartDate: new Date('2026-03-01'),
-    cohortEndDate: new Date('2026-06-30'),
+    courseStartDate: new Date('2026-03-01'),
+    courseEndDate: new Date('2026-06-30'),
     tags: ["CMMC", "Level 2", "CUI", "NIST 800-171", "Advanced Security"],
     learningOutcomes: [
       "Master all 110 CMMC Level 2 security requirements",
@@ -81,8 +81,8 @@ const courses = [
     estimatedDurationWeeks: 16,
     difficultyLevel: "advanced",
     maxParticipants: 25,
-    cohortStartDate: new Date('2026-04-01'),
-    cohortEndDate: new Date('2026-08-31'),
+    courseStartDate: new Date('2026-04-01'),
+    courseEndDate: new Date('2026-08-31'),
     tags: ["CMMC", "Level 3", "Advanced Security", "APT Protection", "Expert"],
     learningOutcomes: [
       "Master all CMMC Level 3 requirements (130+ practices)",
@@ -129,15 +129,15 @@ export default function SeedCoursesPage() {
       for (const course of courses) {
         console.log(`Creating: ${course.title}...`);
 
-        const cohortData = {
+        const courseData = {
           title: course.title,
           slug: course.slug,
           description: course.description,
           facilitatorId: INSTRUCTOR_ID,
           facilitatorName: INSTRUCTOR_NAME,
           facilitatorBio: "Certified CMMC professionals with extensive experience in defense contractor compliance",
-          cohortStartDate: course.cohortStartDate,
-          cohortEndDate: course.cohortEndDate,
+          courseStartDate: course.courseStartDate,
+          courseEndDate: course.courseEndDate,
           maxParticipants: course.maxParticipants,
           currentParticipants: 0,
           estimatedDurationWeeks: course.estimatedDurationWeeks,
@@ -154,7 +154,7 @@ export default function SeedCoursesPage() {
           updatedAt: new Date(),
         };
 
-        const docRef = await addDoc(collection(db, 'cohorts'), cohortData);
+        const docRef = await addDoc(collection(db, 'courses'), courseData);
         
         createdCourses.push({
           title: course.title,
@@ -227,7 +227,7 @@ export default function SeedCoursesPage() {
                 {results.map((result, idx) => (
                   <div key={idx} className="text-sm">
                     <a 
-                      href={`/cohorts/${result.slug}`}
+                      href={`/courses/${result.slug}`}
                       target="_blank"
                       className="text-primary hover:underline"
                     >
@@ -237,7 +237,7 @@ export default function SeedCoursesPage() {
                   </div>
                 ))}
                 <p className="text-sm mt-3">
-                  <a href="/cohorts" target="_blank" className="text-primary hover:underline">
+                  <a href="/courses" target="_blank" className="text-primary hover:underline">
                     View all courses →
                   </a>
                 </p>
@@ -270,7 +270,7 @@ export default function SeedCoursesPage() {
           {results.length > 0 && (
             <Button
               variant="outline"
-              onClick={() => window.location.href = "/cohorts"}
+              onClick={() => window.location.href = "/courses"}
             >
               View Courses
             </Button>

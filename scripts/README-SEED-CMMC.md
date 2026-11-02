@@ -86,6 +86,6 @@ The seed script creates 3 CMMC courses:
 ## After Seeding
 
 Once seeded, you can:
-1. View courses at: `http://localhost:3000/cohorts`
-2. View individual course: `http://localhost:3000/cohorts/cmmc-level-1-foundations`
-3. Manage courses in instructor dashboard: `http://localhost:3000/portal/instructor/cohorts`
+1. View courses at: `http://localhost:3000/courses`
+2. View individual course: `http://localhost:3000/courses/cmmc-level-1-foundations`
+3. Manage courses in instructor dashboard: `http://localhost:3000/portal/instructor/courses`

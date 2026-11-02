@@ -7,15 +7,15 @@ export async function POST(req: NextRequest) {
   try {
     const stripe = getStripe();
     
-    // Create CMMC Cohort Training product in Stripe
+    // Create CMMC Course Training product in Stripe
     const product = await stripe.products.create({
-      name: 'CMMC Cohort Training',
-      description: 'Comprehensive CMMC (Cybersecurity Maturity Model Certification) cohort training program for government contractors and small businesses. Includes expert instruction, practical implementation guidance, and certification preparation.',
+      name: 'CMMC Course Training',
+      description: 'Comprehensive CMMC (Cybersecurity Maturity Model Certification) course training program for government contractors and small businesses. Includes expert instruction, practical implementation guidance, and certification preparation.',
       images: [], // Add product images if available
       metadata: {
         type: 'training',
         category: 'cmmc',
-        cohort_based: 'true',
+        course_based: 'true',
         target_audience: 'government_contractors',
       },
     });
@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
       product: product.id,
       currency: 'usd',
       unit_amount: 250000, // $2,500.00 in cents
-      nickname: 'Standard CMMC Cohort Training',
+      nickname: 'Standard CMMC Course Training',
       metadata: {
         duration: '8_weeks',
-        format: 'virtual_cohort',
+        format: 'virtual_course',
         includes: 'instruction_materials_certification_prep',
         level: 'standard',
       },
@@ -38,10 +38,10 @@ export async function POST(req: NextRequest) {
       product: product.id,
       currency: 'usd',
       unit_amount: 450000, // $4,500.00 in cents
-      nickname: 'Premium CMMC Cohort Training',
+      nickname: 'Premium CMMC Course Training',
       metadata: {
         duration: '12_weeks',
-        format: 'virtual_cohort_plus_mentoring',
+        format: 'virtual_course_plus_mentoring',
         includes: 'instruction_materials_certification_prep_one_on_one_mentoring',
         level: 'premium',
       },
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       product: product.id,
       currency: 'usd',
       unit_amount: 1500000, // $15,000.00 in cents
-      nickname: 'Enterprise CMMC Cohort Training',
+      nickname: 'Enterprise CMMC Course Training',
       metadata: {
         duration: '16_weeks',
         format: 'onsite_plus_virtual',
@@ -64,28 +64,28 @@ export async function POST(req: NextRequest) {
     if (db) {
       await addDoc(collection(db, 'cmmc_training_products'), {
         stripeProductId: product.id,
-        name: 'CMMC Cohort Training',
-        description: 'Comprehensive CMMC cohort training program',
+        name: 'CMMC Course Training',
+        description: 'Comprehensive CMMC course training program',
         prices: [
           {
             id: standardPrice.id,
             amount: 250000,
             currency: 'usd',
-            nickname: 'Standard CMMC Cohort Training',
+            nickname: 'Standard CMMC Course Training',
             metadata: standardPrice.metadata,
           },
           {
             id: premiumPrice.id,
             amount: 450000,
             currency: 'usd',
-            nickname: 'Premium CMMC Cohort Training',
+            nickname: 'Premium CMMC Course Training',
             metadata: premiumPrice.metadata,
           },
           {
             id: enterprisePrice.id,
             amount: 1500000,
             currency: 'usd',
-            nickname: 'Enterprise CMMC Cohort Training',
+            nickname: 'Enterprise CMMC Course Training',
             metadata: enterprisePrice.metadata,
           },
         ],
@@ -108,22 +108,22 @@ export async function POST(req: NextRequest) {
           id: standardPrice.id,
           amount: 250000,
           currency: 'usd',
-          nickname: 'Standard CMMC Cohort Training',
+          nickname: 'Standard CMMC Course Training',
         },
         {
           id: premiumPrice.id,
           amount: 450000,
           currency: 'usd',
-          nickname: 'Premium CMMC Cohort Training',
+          nickname: 'Premium CMMC Course Training',
         },
         {
           id: enterprisePrice.id,
           amount: 1500000,
           currency: 'usd',
-          nickname: 'Enterprise CMMC Cohort Training',
+          nickname: 'Enterprise CMMC Course Training',
         },
       ],
-      message: 'CMMC Cohort Training product created successfully',
+      message: 'CMMC Course Training product created successfully',
     });
 
   } catch (error) {

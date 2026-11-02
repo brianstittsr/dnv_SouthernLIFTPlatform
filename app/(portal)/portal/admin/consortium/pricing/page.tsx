@@ -44,16 +44,16 @@ interface MembershipPrice {
   /** Features shown on the public pricing card */
   features?: string[];
   /** Maps this offer to the checkout product type */
-  productType?: 'founders' | 'consortium' | 'cmmc-cohort';
+  productType?: 'founders' | 'consortium' | 'cmmc-course';
   /** Call-to-action label */
   cta?: string;
   /** When set, this doc overrides one of the 3 core cards on the public /pricing page */
-  coreTierId?: 'kdm-consortium' | 'founders' | 'cmmc-cohort';
+  coreTierId?: 'kdm-consortium' | 'founders' | 'cmmc-course';
   /** Annual price override (dollars) for the consortium monthly tier */
   annualPrice?: number;
 }
 
-type CoreTierId = 'kdm-consortium' | 'founders' | 'cmmc-cohort';
+type CoreTierId = 'kdm-consortium' | 'founders' | 'cmmc-course';
 
 const CORE_TIER_DEFAULTS: Record<CoreTierId, {
   name: string;
@@ -62,7 +62,7 @@ const CORE_TIER_DEFAULTS: Record<CoreTierId, {
   annualPrice?: number;
   description: string;
   features: string[];
-  productType: 'founders' | 'consortium' | 'cmmc-cohort';
+  productType: 'founders' | 'consortium' | 'cmmc-course';
   cta: string;
 }> = {
   'kdm-consortium': {
@@ -110,8 +110,8 @@ const CORE_TIER_DEFAULTS: Record<CoreTierId, {
     productType: 'founders',
     cta: 'Claim Founders Spot',
   },
-  'cmmc-cohort': {
-    name: 'CMMC Cohort Training',
+  'cmmc-course': {
+    name: 'CMMC Course Training',
     priceType: 'one-time',
     price: 7500,
     description: 'Intensive 12-week program for CMMC 2.0 Level 2 assessment readiness',
@@ -129,8 +129,8 @@ const CORE_TIER_DEFAULTS: Record<CoreTierId, {
       'Policy & procedure creation',
       'C3PAO referral network',
     ],
-    productType: 'cmmc-cohort',
-    cta: 'Register for Cohort',
+    productType: 'cmmc-course',
+    cta: 'Register for Course',
   },
 };
 
@@ -153,7 +153,7 @@ export default function ConsortiumPricingAdminPage() {
   const [description, setDescription] = useState<string>("");
   const [specialTag, setSpecialTag] = useState<string>("");
   const [features, setFeatures] = useState<string>("");
-  const [productType, setProductType] = useState<'founders' | 'consortium' | 'cmmc-cohort'>('founders');
+  const [productType, setProductType] = useState<'founders' | 'consortium' | 'cmmc-course'>('founders');
   const [cta, setCta] = useState<string>("");
   const [active, setActive] = useState(true);
   const [coreTierId, setCoreTierId] = useState<CoreTierId | undefined>(undefined);
@@ -670,14 +670,14 @@ export default function ConsortiumPricingAdminPage() {
 
             <div className="space-y-2">
               <Label htmlFor="productType">Checkout Product Mapping</Label>
-              <Select value={productType} onValueChange={(value: 'founders' | 'consortium' | 'cmmc-cohort') => setProductType(value)}>
+              <Select value={productType} onValueChange={(value: 'founders' | 'consortium' | 'cmmc-course') => setProductType(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select checkout product" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="founders">Founders Membership (one-time)</SelectItem>
                   <SelectItem value="consortium">Consortium Membership (subscription)</SelectItem>
-                  <SelectItem value="cmmc-cohort">CMMC Cohort Training (one-time)</SelectItem>
+                  <SelectItem value="cmmc-course">CMMC Course Training (one-time)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

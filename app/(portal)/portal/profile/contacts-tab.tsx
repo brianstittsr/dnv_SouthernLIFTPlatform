@@ -86,7 +86,7 @@ const INVITATION_TEMPLATE = {
     <ul>
       <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
       <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
-      <li><strong>CMMC Cohort Training:</strong> Access CMMC certification programs</li>
+      <li><strong>CMMC Course Training:</strong> Access CMMC certification programs</li>
       <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
       <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
       <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
@@ -872,7 +872,7 @@ export default function ContactsTab() {
                 <ul className="text-xs text-muted-foreground space-y-1">
                   <li>• Access to Proof Packs for compliance</li>
                   <li>• Buyer connection opportunities</li>
-                  <li>• CMMC cohort training programs</li>
+                  <li>• CMMC course training programs</li>
                   <li>• AI-powered SVP Tools</li>
                   <li>• Network with other suppliers</li>
                 </ul>

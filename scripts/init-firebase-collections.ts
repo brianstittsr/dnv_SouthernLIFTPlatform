@@ -112,7 +112,7 @@ async function initializeCollections() {
     console.log('   - SMEs create Proof Packs (proofPacks collection)');
     console.log('   - Partners capture leads (leads collection)');
     console.log('   - Buyers request introductions (introductions collection)');
-    console.log('   - Instructors create cohorts (cohorts collection)');
+    console.log('   - Instructors create courses (courses collection)');
     console.log('   - etc.\n');
 
   } catch (error) {

@@ -212,7 +212,7 @@ async function getServiceDeliveryPartners(
 
   try {
     switch (transactionType) {
-      case 'cohort':
+      case 'course':
       case 'cmmc_training':
         // CMMC training is delivered by V+
         partners.push({
