@@ -59,6 +59,25 @@ LIFT_AI_MODEL=gpt-4o-mini
 TURNSTILE_SECRET_KEY=
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=
 
+# Email (Resend preferred; SendGrid / Microsoft Graph / Azure SMTP also supported)
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+RESEND_FROM_NAME=
+
+# Cron auth - required for scheduled jobs (Vercel sends it as a bearer token)
+CRON_SECRET=
+
+# Zoom Server-to-Server OAuth (optional - can also be set in Settings -> Zoom Integration)
+ZOOM_CLIENT_ID=
+ZOOM_CLIENT_SECRET=
+ZOOM_ACCOUNT_ID=
+
+# Automated LMS training report recipients (optional - defaults to all staff/admin emails)
+TRAINING_REPORT_RECIPIENTS=
+
+# UserWay accessibility widget (optional)
+NEXT_PUBLIC_USERWAY_ACCOUNT_ID=
+
 # PDF export outside Vercel (optional - otherwise bundled or installed Chrome/Edge)
 CHROME_PATH=
 ```
@@ -124,6 +143,46 @@ app/(portal)/portal/admin/lift  # Form Studio and submissions
 scripts/verify-form-builder.ts  # logic checks
 ```
 
+## Learning Management System (LMS)
+
+The former cohorts module is now a full LMS under `course_*` collections, `lib/lms/*`, and `/api/lms/**`.
+
+### Where to find it
+
+| Area | Route | Who |
+| --- | --- | --- |
+| LMS dashboard (metrics + certificate registry) | `/portal/admin/lms` | Staff / admins |
+| All courses | `/portal/admin/courses` | Admins |
+| My courses / browse catalog | `/portal/sme/courses`, `/portal/sme/courses/browse` | Clients |
+| My certificates (PDF, LinkedIn share) | `/portal/sme/certificates` | Clients |
+| Instructor course + curriculum builder | `/portal/instructor/courses` | Instructors |
+| Public certificate verification | `/verify/certificate/[number]` | Anyone |
+
+### Capabilities
+
+- **Curriculum:** courses -> modules -> sessions, enrollment, per-session progress tracking, SCORM package import, discussions, live trainings.
+- **Certificates:** numbered certificates are issued on course completion (`course_certificates`). Each has a branded PDF (`GET /api/lms/certificates/[id]/pdf`) and a public verification page/API — no sign-in required.
+- **Zoom:** instructors create Server-to-Server OAuth meetings directly on sessions; a sync route (`GET|POST /api/lms/zoom/sync`) rolls attendee counts and minutes onto the session. Runs every 6 hours via cron, or "Sync attendance" on the curriculum page. Setup: `docs/lms-integrations-setup.md`.
+- **LinkedIn:** publishing a course auto-drafts a `linkedin_drafts` announcement (staff review and publish manually). Certificates offer LinkedIn Add-to-Profile and share-as-post links using LinkedIn's public URL schemes.
+- **Automated reporting:** the `lms_training` report type aggregates enrollments, completions, attendance, Zoom minutes, and certificates. A weekly cron (`/api/cron/lms-training-report`, Mondays 07:00 UTC) generates the AI narrative, saves the report under LIFT Reports, and emails the PDF to staff — no human steps. Recipients come from staff/admin user emails or `TRAINING_REPORT_RECIPIENTS`.
+
+### Scheduled jobs
+
+Defined in `vercel.json` and secured with `CRON_SECRET` (staff/admin session also accepted):
+
+| Path | Schedule | Purpose |
+| --- | --- | --- |
+| `/api/cron/lms-training-report` | Mon 07:00 UTC | Weekly LMS training report + staff email |
+| `/api/lms/zoom/sync` | every 6 h | Zoom attendance sync for live sessions |
+| `/api/cron/samgov-sync` | daily 06:00 UTC | SAM.gov opportunity sync |
+| `/api/cron/stripe-sync` | daily 02:00 UTC | Payment sync |
+| `/api/admin/analytics/report` | daily 09:00 UTC | Platform analytics |
+| `/api/eos2/scheduled-checks`, `/api/eos2/weekly-digest` | daily/weekly | EOS operational checks |
+
+## Documents
+
+Portal documents (`/portal/documents`) support per-file role visibility — each upload chooses "Everyone" or a checkbox set of roles; LIFT staff and admins always see everything. Visibility is enforced in `firestore.rules`, in member list queries, and on file download (`/api/files/[id]`); new uploads are stored private. Document types are configurable (MOU, Partner Agreements, and Other with a custom label included by default) and staff can group the list by company.
+
 ## Branding mode
 
 `lib/branding.ts` controls wording in the shared onboarding flows. Setting `NEXT_PUBLIC_BRANDING_MODE=lift`:
@@ -161,6 +220,10 @@ See `AGENTS.md` for detailed agent and contributor notes.
 - `LIFT_System_Design.md` / `.pdf` - system design for the LIFT modules
 - `LIFT_Onboarding_Questions.txt` - every question from onboarding to program exit, plus implementation status
 - `LIFT_Implementation_Pitch_Deck.pptx` - implementation pitch deck
+
+Other setup guides:
+
+- `docs/lms-integrations-setup.md` - Zoom Server-to-Server OAuth app setup, LinkedIn announcement/certificate behavior, and automated LMS report configuration
 
 ## Deployment
 

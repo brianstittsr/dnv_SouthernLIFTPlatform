@@ -27,65 +27,39 @@ import {
   Zap,
   Globe,
   ArrowRight,
-  ExternalLink,
+  ClipboardList,
+  BarChart3,
+  Building2,
 } from "lucide-react";
 
 const quickStartGuides = [
   {
-    role: "Admin",
-    icon: Shield,
-    color: "text-purple-600",
-    bgColor: "bg-purple-100",
-    steps: [
-      "Complete your profile setup",
-      "Configure integrations in Settings",
-      "Add team members and assign roles",
-      "Set up platform preferences",
-      "Review audit logs and monitoring",
-    ],
-    dashboard: "/portal/command-center",
-  },
-  {
-    role: "Buyer",
-    icon: Target,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100",
-    steps: [
-      "Complete your buyer profile",
-      "Browse the supplier directory",
-      "Save your favorite suppliers",
-      "Request introductions",
-      "Review proof packs and credentials",
-    ],
-    dashboard: "/portal/buyer/dashboard",
-  },
-  {
-    role: "Partner/Affiliate",
-    icon: TrendingUp,
-    color: "text-green-600",
-    bgColor: "bg-green-100",
-    steps: [
-      "Set up your networking profile",
-      "Create your proof pack",
-      "Start tracking leads",
-      "Analyze partner overlaps",
-      "Monitor your revenue dashboard",
-    ],
-    dashboard: "/portal/partner/dashboard",
-  },
-  {
-    role: "SME",
+    role: "LIFT Client",
     icon: GraduationCap,
     color: "text-orange-600",
     bgColor: "bg-orange-100",
     steps: [
-      "Complete your expertise profile",
-      "Browse available courses",
-      "Enroll in relevant programs",
-      "Track certification progress",
-      "Update your availability",
+      "Complete your LIFT client profile",
+      "Finish the onboarding steps on My LIFT",
+      "Fill out your assigned LIFT forms",
+      "Browse and enroll in courses",
+      "Track your certificates and progress",
     ],
-    dashboard: "/portal/sme/dashboard",
+    dashboard: "/portal/dashboard",
+  },
+  {
+    role: "LIFT Staff",
+    icon: Briefcase,
+    color: "text-teal-600",
+    bgColor: "bg-teal-100",
+    steps: [
+      "Complete your profile",
+      "Review new client submissions",
+      "Check the LMS dashboard for training metrics",
+      "Manage documents and opportunities",
+      "Use the role switcher to preview other views",
+    ],
+    dashboard: "/portal/dashboard",
   },
   {
     role: "Instructor",
@@ -94,134 +68,134 @@ const quickStartGuides = [
     bgColor: "bg-indigo-100",
     steps: [
       "Set up your instructor profile",
-      "Create your first course",
-      "Design curriculum content",
-      "Create assessments",
-      "Manage student enrollments",
+      "Create a course and build the curriculum",
+      "Schedule sessions and create Zoom meetings",
+      "Track learner progress and attendance",
+      "Issue and review certificates",
     ],
-    dashboard: "/portal/instructor/dashboard",
+    dashboard: "/portal/instructor/courses",
   },
   {
-    role: "Team member",
-    icon: Briefcase,
-    color: "text-teal-600",
-    bgColor: "bg-teal-100",
+    role: "Platform Admin",
+    icon: Shield,
+    color: "text-purple-600",
+    bgColor: "bg-purple-100",
     steps: [
-      "Complete your profile",
-      "Create your first opportunity",
-      "Set up your calendar",
-      "Join active projects",
-      "Complete assigned action items",
+      "Configure integrations in Settings",
+      "Invite team members and assign roles",
+      "Review the LMS dashboard and LIFT reports",
+      "Manage forms in the Form Studio",
+      "Monitor audit logs and platform health",
     ],
-    dashboard: "/portal/dashboard",
+    dashboard: "/portal/command-center",
   },
 ];
 
 const featureCategories = [
   {
-    title: "Opportunity Management",
-    icon: Target,
-    description: "Track deals through your sales pipeline",
+    title: "My LIFT & Onboarding",
+    icon: ClipboardList,
+    description: "Client onboarding steps, intake forms, and program progress",
     features: [
-      { name: "Create Opportunities", path: "/portal/opportunities/new" },
-      { name: "Pipeline View", path: "/portal/opportunities" },
-      { name: "Stage Management", path: "/portal/opportunities" },
-      { name: "Value Tracking", path: "/portal/opportunities" },
+      { name: "Onboarding Steps", path: "/portal/onboarding-progress" },
+      { name: "My LIFT Forms", path: "/portal/lift/forms" },
+      { name: "My Profile", path: "/portal/profile" },
+      { name: "Company Profile", path: "/portal/company" },
     ],
   },
   {
-    title: "Project Management",
-    icon: Briefcase,
-    description: "Organize and track project progress",
-    features: [
-      { name: "Create Projects", path: "/portal/projects/new" },
-      { name: "Project Dashboard", path: "/portal/projects" },
-      { name: "Task Management", path: "/portal/projects" },
-      { name: "Team Collaboration", path: "/portal/projects" },
-    ],
-  },
-  {
-    title: "Proof Packs",
-    icon: FileText,
-    description: "Manage compliance documents and credentials",
-    features: [
-      { name: "Create Proof Pack", path: "/portal/proof-packs/create" },
-      { name: "Upload Documents", path: "/portal/proof-packs" },
-      { name: "Health Scoring", path: "/portal/proof-packs" },
-      { name: "Share with Buyers", path: "/portal/proof-packs" },
-    ],
-  },
-  {
-    title: "Learning & Development",
+    title: "Courses & Learning (LMS)",
     icon: GraduationCap,
-    description: "Courses, certifications, and training",
+    description: "Enroll in training, complete sessions, earn certificates",
     features: [
       { name: "Browse Courses", path: "/portal/sme/courses/browse" },
-      { name: "Enroll in Programs", path: "/portal/sme/courses" },
-      { name: "Track Certifications", path: "/portal/sme/certificates" },
-      { name: "Create Courses", path: "/portal/instructor/courses/new" },
+      { name: "My Courses", path: "/portal/sme/courses" },
+      { name: "My Certificates", path: "/portal/sme/certificates" },
+      { name: "Create a Course", path: "/portal/instructor/courses/new" },
     ],
   },
   {
-    title: "Networking",
+    title: "Documents",
+    icon: FileText,
+    description: "Upload and manage files with role-based visibility",
+    features: [
+      { name: "All Documents", path: "/portal/documents" },
+      { name: "Upload a Document", path: "/portal/documents" },
+      { name: "Group by Company", path: "/portal/documents" },
+      { name: "Agreements & MOUs", path: "/portal/agreements" },
+    ],
+  },
+  {
+    title: "Opportunities",
+    icon: Target,
+    description: "Track contracting and business opportunities",
+    features: [
+      { name: "All Opportunities", path: "/portal/opportunities" },
+      { name: "Create Opportunity", path: "/portal/opportunities/new" },
+      { name: "Pipeline View", path: "/portal/opportunities" },
+      { name: "Group by Company", path: "/portal/opportunities" },
+    ],
+  },
+  {
+    title: "Reports & Analytics",
+    icon: BarChart3,
+    description: "LMS training metrics and program reporting",
+    features: [
+      { name: "LMS Dashboard", path: "/portal/admin/lms" },
+      { name: "LIFT Reports", path: "/portal/admin/lift/reports" },
+      { name: "Certificate Registry", path: "/portal/admin/lms" },
+      { name: "Command Center", path: "/portal/command-center" },
+    ],
+  },
+  {
+    title: "Team & Directory",
     icon: Users,
-    description: "Connect with buyers, partners, and experts",
+    description: "Manage staff, members, and partner organizations",
     features: [
-      { name: "Browse Directory", path: "/portal/buyer/directory" },
-      { name: "Request Introductions", path: "/portal/buyer/introductions" },
-      { name: "Manage Connections", path: "/portal/networking" },
-      { name: "Profile Setup", path: "/portal/profile" },
-    ],
-  },
-  {
-    title: "Calendar & Meetings",
-    icon: Calendar,
-    description: "Schedule and manage meetings",
-    features: [
-      { name: "View Calendar", path: "/portal/calendar" },
-      { name: "Schedule Meetings", path: "/portal/calendar" },
-      { name: "Meeting History", path: "/portal/meetings" },
-      { name: "Availability Settings", path: "/portal/availability" },
+      { name: "Team Members", path: "/portal/admin/team-members" },
+      { name: "Invite Someone", path: "/portal/admin/team-members" },
+      { name: "Directory", path: "/portal/buyer/directory" },
+      { name: "Companies", path: "/portal/company" },
     ],
   },
 ];
 
 const commonTasks = [
   {
-    task: "Update My Profile",
-    description: "Edit personal information, expertise, and networking details",
+    task: "Complete My Profile",
+    description: "Fill in your business details — used for AI-powered matching",
     path: "/portal/profile",
     icon: Users,
   },
   {
-    task: "Create an Opportunity",
-    description: "Add a new deal to your pipeline",
-    path: "/portal/opportunities/new",
-    icon: Target,
-  },
-  {
-    task: "Upload Documents",
-    description: "Add certifications and compliance documents to your proof pack",
-    path: "/portal/proof-packs",
+    task: "Upload a Document",
+    description: "Add files and choose which roles can see them",
+    path: "/portal/documents",
     icon: FileText,
   },
   {
-    task: "Browse Directory",
-    description: "Find suppliers, partners, or service providers",
-    path: "/portal/buyer/directory",
-    icon: Search,
+    task: "Enroll in a Course",
+    description: "Browse the course catalog and join a training program",
+    path: "/portal/sme/courses/browse",
+    icon: GraduationCap,
+  },
+  {
+    task: "Download a Certificate",
+    description: "Get a PDF of your certificate or share it on LinkedIn",
+    path: "/portal/sme/certificates",
+    icon: Award,
+  },
+  {
+    task: "Create a Zoom Meeting",
+    description: "Instructors: add a Zoom meeting to a course session",
+    path: "/portal/instructor/courses",
+    icon: Video,
   },
   {
     task: "Configure Settings",
-    description: "Manage integrations, notifications, and preferences",
+    description: "Set up Zoom, email, and other integrations",
     path: "/portal/settings",
     icon: Settings,
-  },
-  {
-    task: "View Analytics",
-    description: "Access reports and performance metrics",
-    path: "/portal/command-center",
-    icon: TrendingUp,
   },
 ];
 
@@ -245,13 +219,13 @@ export default function HelpPage() {
         <div>
           <h1 className="text-3xl font-bold">Help & Documentation</h1>
           <p className="text-muted-foreground">
-            Learn how to use the SVP Platform features and capabilities
+            Learn how to use the LIFT Rural Business Center platform
           </p>
         </div>
         <Button variant="outline" asChild>
-          <Link href="/docs/USER-ROLES-DASHBOARDS.md" target="_blank">
-            <FileText className="mr-2 h-4 w-4" />
-            View Full Documentation
+          <Link href="/portal/resources">
+            <BookOpen className="mr-2 h-4 w-4" />
+            Resource Library
           </Link>
         </Button>
       </div>
@@ -289,7 +263,7 @@ export default function HelpPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {filteredGuides.map((guide) => {
                   const Icon = guide.icon;
                   return (
@@ -331,39 +305,44 @@ export default function HelpPage() {
           <Card>
             <CardHeader>
               <CardTitle>Platform Overview</CardTitle>
-              <CardDescription>Understanding the SVP Platform ecosystem</CardDescription>
+              <CardDescription>
+                Understanding the LIFT Rural Business Center platform
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <h4 className="font-medium flex items-center gap-2">
                     <Target className="h-4 w-4 text-primary" />
-                    What is SVP Platform?
+                    What is the LIFT platform?
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    A comprehensive business management platform connecting buyers, suppliers,
-                    partners, and experts. Manage opportunities, projects, compliance, learning,
-                    and networking all in one place.
+                    The digital home of the Southern University MBDA LIFT Rural
+                    Business Center. It manages the full client lifecycle —
+                    intake, eligibility, advising, training, capital readiness,
+                    and contracting support — for rural Louisiana businesses.
                   </p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-medium flex items-center gap-2">
                     <Users className="h-4 w-4 text-primary" />
-                    Who Uses SVP Platform?
+                    Who uses it?
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Administrators, buyers, partners/affiliates, SMEs, instructors, QA reviewers,
-                    and team members. Each role has specialized tools and dashboards.
+                    LIFT clients (rural business owners), LIFT staff and
+                    advisors, course instructors, and platform administrators.
+                    Each role sees the tools and data relevant to them.
                   </p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-medium flex items-center gap-2">
                     <Zap className="h-4 w-4 text-primary" />
-                    Key Features
+                    Key features
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    CRM, project management, proof packs, learning courses, certifications,
-                    networking directory, calendar, analytics, and integrations.
+                    Client onboarding, LIFT forms with AI prefill, document
+                    management with role permissions, opportunities, an LMS
+                    with certificates, and automated training reports.
                   </p>
                 </div>
                 <div className="space-y-2">
@@ -372,8 +351,10 @@ export default function HelpPage() {
                     Integrations
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Connect with Mattermost, Apollo, GoHighLevel, Zoom, LinkedIn, and more.
-                    Configure integrations in Settings.
+                    Zoom meetings on course sessions with automatic attendance
+                    tracking, LinkedIn certificate sharing and course
+                    announcements, plus AI-powered reporting — configured in
+                    Settings.
                   </p>
                 </div>
               </div>
@@ -417,6 +398,50 @@ export default function HelpPage() {
               );
             })}
           </div>
+
+          {/* LMS deep-dive */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5" />
+                How the LMS works
+              </CardTitle>
+              <CardDescription>
+                Courses, sessions, certificates, and automatic tracking
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <h4 className="font-medium">For learners</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-4">
+                    <li>Browse the catalog and enroll in a course</li>
+                    <li>Work through modules and sessions in order</li>
+                    <li>Join live sessions over Zoom</li>
+                    <li>Earn a certificate on completion — download the PDF or share it on LinkedIn</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium">For instructors</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-4">
+                    <li>Build a curriculum of modules and sessions</li>
+                    <li>Create Zoom meetings directly on sessions</li>
+                    <li>Sync attendance automatically after each meeting</li>
+                    <li>Track learner progress and issue certificates</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-medium">For staff</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-4">
+                    <li>LMS dashboard: enrollments, completions, attendance, certificates</li>
+                    <li>Weekly automated training report emailed to staff</li>
+                    <li>Certificate registry with public verification links</li>
+                    <li>Course announcements drafted for LinkedIn on publish</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Common Tasks Tab */}
@@ -453,37 +478,28 @@ export default function HelpPage() {
             </CardContent>
           </Card>
 
-          {/* Video Tutorials */}
+          {/* Certificates */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Video className="h-5 w-5" />
-                Video Tutorials
+                <Award className="h-5 w-5" />
+                Certificates &amp; verification
               </CardTitle>
-              <CardDescription>Watch step-by-step guides and video tutorials</CardDescription>
+              <CardDescription>Share and verify training completion</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Video className="h-12 w-12 text-primary mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">
-                  Our video tutorial library is currently being developed with comprehensive guides for all platform features.
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Every completed course issues a numbered certificate. From
+                  <strong> My LIFT → Certificates</strong> you can download the
+                  PDF, copy the public verification link, add it to your
+                  LinkedIn profile, or share it as a LinkedIn post.
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Upcoming tutorials include:</p>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Platform overview and navigation</li>
-                    <li>• Profile setup and optimization</li>
-                    <li>• Opportunity management workflows</li>
-                    <li>• Proof pack creation and management</li>
-                    <li>• Course enrollment and participation</li>
-                  </ul>
-                </div>
-                <Button variant="outline" className="mt-4" asChild>
-                  <Link href="/docs/USER-ROLES-DASHBOARDS.md" target="_blank">
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Documentation
-                  </Link>
-                </Button>
+                <p>
+                  Anyone can confirm a certificate is genuine at
+                  <strong> /verify/certificate/&lt;certificate-number&gt;</strong> —
+                  no sign-in required.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -492,60 +508,71 @@ export default function HelpPage() {
         {/* Resources Tab */}
         <TabsContent value="resources" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Documentation */}
+            {/* Guides */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookOpen className="h-5 w-5" />
-                  Documentation
+                  Guides
                 </CardTitle>
-                <CardDescription>Detailed guides and references</CardDescription>
+                <CardDescription>Platform walkthroughs and references</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Link
-                  href="/docs/USER-ROLES-DASHBOARDS.md"
-                  target="_blank"
+                  href="/portal/resources"
                   className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors group"
                 >
                   <div>
                     <p className="font-medium group-hover:text-primary transition-colors">
-                      User Roles & Dashboards
+                      Resource Library
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Complete role definitions and capabilities
+                      Templates, guides, and program materials
                     </p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <Link
-                  href="/docs/CREATE-USER-PROFILE.md"
-                  target="_blank"
+                  href="/portal/onboarding-progress"
                   className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors group"
                 >
                   <div>
                     <p className="font-medium group-hover:text-primary transition-colors">
-                      Profile Setup Guide
+                      Onboarding Checklist
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      How to create and manage your profile
+                      Track your LIFT client onboarding steps
                     </p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <Link
-                  href="/docs/member-STORAGE-SYSTEM.md"
-                  target="_blank"
+                  href="/portal/lift/forms"
                   className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors group"
                 >
                   <div>
                     <p className="font-medium group-hover:text-primary transition-colors">
-                      member Storage System
+                      LIFT Forms
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Understanding data structure
+                      Intake, eligibility, baseline, and program forms
                     </p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
+                <Link
+                  href="/portal/settings"
+                  className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors group"
+                >
+                  <div>
+                    <p className="font-medium group-hover:text-primary transition-colors">
+                      Integration Setup
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Zoom credentials and platform integrations
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
               </CardContent>
             </Card>
@@ -573,21 +600,21 @@ export default function HelpPage() {
                   </Button>
                 </div>
                 <div className="p-3 rounded-lg border">
-                  <p className="font-medium mb-1">Contact Administrator</p>
+                  <p className="font-medium mb-1">Contact the LIFT Center</p>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Reach out to your platform admin for assistance
+                    Reach out to the program team for assistance
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/portal/admin/user-management">
-                      <Users className="mr-2 h-4 w-4" />
-                      View Admins
+                    <Link href="/contact">
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Contact Us
                     </Link>
                   </Button>
                 </div>
                 <div className="p-3 rounded-lg border">
-                  <p className="font-medium mb-1">Feature Requests</p>
+                  <p className="font-medium mb-1">Report an Issue</p>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Submit ideas and suggestions for improvements
+                    Submit bugs, ideas, and suggestions
                   </p>
                   <Button variant="outline" size="sm" asChild>
                     <Link href="/portal/bug-tracker">
@@ -611,19 +638,19 @@ export default function HelpPage() {
                     <Link href="/portal/profile">My Profile</Link>
                   </Button>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/portal/settings">Settings</Link>
+                    <Link href="/portal/documents">Documents</Link>
                   </Button>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/portal/calendar">Calendar</Link>
+                    <Link href="/portal/sme/courses">My Courses</Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/portal/sme/certificates">Certificates</Link>
                   </Button>
                   <Button variant="outline" size="sm" asChild>
                     <Link href="/portal/opportunities">Opportunities</Link>
                   </Button>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/portal/projects">Projects</Link>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href="/portal/command-center">Command Center</Link>
+                    <Link href="/portal/admin/lms">LMS Dashboard</Link>
                   </Button>
                 </div>
               </CardContent>
