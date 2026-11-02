@@ -623,6 +623,7 @@ service cloud.firestore {
     match /liftInvoices/{path=**} { allow read, write: if false; }
     match /liftTrainingContent/{path=**} { allow read, write: if false; }
     match /liftImpactStories/{path=**} { allow read, write: if false; }
+    match /liftReports/{path=**} { allow read, write: if false; }
 
     // Fallback: Deny all other access
     match /{document=**} {

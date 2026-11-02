@@ -598,6 +598,12 @@ const svpAdminItems = [
     badge: "LIFT",
   },
   {
+    title: "LIFT Reports",
+    href: "/portal/admin/lift/reports",
+    icon: BarChart3,
+    badge: "LIFT",
+  },
+  {
     title: "Webinar Creator",
     href: "/portal/admin/webinar-creator",
     icon: Video,

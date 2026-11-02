@@ -2880,6 +2880,8 @@ export const COLLECTIONS = {
   LIFT_INVOICES: "liftInvoices",
   LIFT_TRAINING_CONTENT: "liftTrainingContent",
   LIFT_IMPACT_STORIES: "liftImpactStories",
+  // Admin-only AI reporting module (data packs + generated narrative reports)
+  LIFT_REPORTS: "liftReports",
 } as const;
 
 // ... existing code ...
@@ -4107,4 +4109,35 @@ export interface LiftImpactStoryDoc {
   publishedAt?: Timestamp;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+}
+
+/** Saved AI report (liftReports/{id}). Admin-only; the dataPack snapshot makes every report reproducible. */
+export interface LiftReportDoc {
+  id: string;
+  type: "monthly_internal" | "quarterly_milestone" | "semi_annual_mbda" | "annual_performance" | "freeform" | "client_deepdive";
+  title: string;
+  periodStart?: string;
+  periodEnd?: string;
+  periodLabel?: string;
+  liftClientId?: string;
+  clientName?: string;
+  prompt?: string;
+  /** Headline metric rows derived from the data pack (deterministic, not AI-written). */
+  metrics: { label: string; value: string; note?: string }[];
+  narrative: {
+    executiveSummary: string;
+    trendAnalysis: string;
+    gapsAndRisks: string[];
+    recommendations: string[];
+    evidenceNotes: string;
+  };
+  /** Aggregated, PII-redacted data the narrative was generated from. */
+  dataPack: Record<string, unknown>;
+  source: "ai" | "fallback";
+  model?: string;
+  tokensUsed?: number;
+  createdByUid: string;
+  createdByName: string;
+  createdAt: Timestamp;
+  emailedTo?: { to: string[]; sentAt: Timestamp; messageId?: string }[];
 }

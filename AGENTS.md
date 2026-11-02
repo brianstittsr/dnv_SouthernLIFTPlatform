@@ -26,6 +26,13 @@ Built from `docs/svp-kdm-features/formbuilder/Adams form builder.md`, hardened f
   - Optional `TURNSTILE_SECRET_KEY` + `NEXT_PUBLIC_TURNSTILE_SITE_KEY` require a CAPTCHA on signed-out submissions.
   - PDF export uses `@sparticuz/chromium` on Vercel, `CHROME_PATH` if set, otherwise the bundled `puppeteer` browser.
 
+## LIFT AI Reports (admin-only)
+
+- `/portal/admin/lift/reports` — generate fixed (monthly/quarterly/semi-annual/annual), free-form, and client deep-dive reports; view saved reports, export PDF, email delivery.
+- `lib/reports/` — `data-collector.ts` aggregates a PII-redacted data pack (counts/distributions only; `member_attachments.markdownContent` excerpts are capped and treated as untrusted data in prompts). `generate.ts` writes the narrative via `createOpenAIClient()` + `LIFT_AI_MODEL`, Zod-validated, deterministic fallback without a key. `report-html.ts` renders the branded PDF layout. `types.ts` is the only file client components may import.
+- APIs: `app/api/lift/reports/**` — all behind `requireAdminRequester()` (staff cannot access). Reports are saved to `liftReports` with their data pack for reproducibility; `report.*` events go to `liftAudit`.
+- Smoke test without writes: `npx tsx --env-file=.env.local scripts/test-reports.ts`.
+
 ## Branding mode
 
 - `NEXT_PUBLIC_BRANDING_MODE=lift` switches the shared onboarding flows to LIFT wording (`lib/branding.ts`), replaces the KDM 5 Pillars with LIFT service areas, skips the paid-membership redirect, and hides the affiliate wizard. The default (unset or `kdm`) keeps the KDM site unchanged.
