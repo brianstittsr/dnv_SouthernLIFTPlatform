@@ -3,7 +3,7 @@
  * Provides authentication checks for API routes and server components
  */
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { auth as adminAuth, db as adminDb } from "@/lib/firebase-admin";
 import type { DecodedIdToken } from "firebase-admin/auth";
 
@@ -23,6 +23,29 @@ export async function verifyAuth(): Promise<AuthUser | null> {
     if (!adminAuth) {
       console.error("Firebase Admin Auth not initialized");
       return null;
+    }
+
+    // Accept Authorization: Bearer <idToken> too — the session cookie can be
+    // absent/expired while the client's Firebase auth is still valid, and API
+    // callers that send the ID token shouldn't be rejected for that.
+    const headerStore = await headers();
+    const bearer = headerStore.get("authorization");
+    if (bearer?.startsWith("Bearer ")) {
+      const idToken = bearer.slice("Bearer ".length).trim();
+      if (idToken) {
+        try {
+          const decodedIdToken = await adminAuth.verifyIdToken(idToken);
+          return {
+            uid: decodedIdToken.uid,
+            email: decodedIdToken.email || null,
+            role: decodedIdToken.role as string | undefined,
+            svpRole: decodedIdToken.svpRole as string | undefined,
+            emailVerified: decodedIdToken.email_verified || false,
+          };
+        } catch {
+          // bad/expired token — fall through to the session cookie
+        }
+      }
     }
 
     const cookieStore = await cookies();

@@ -23,6 +23,29 @@ function parseAllowedRoles(raw: FormDataEntryValue | null): string[] {
   }
 }
 
+/** Parses the tags form field — deduped, trimmed, capped at 12 tags of 40 chars. */
+function parseTags(raw: FormDataEntryValue | null): string[] {
+  if (typeof raw !== 'string' || !raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const seen = new Set<string>();
+    const tags: string[] = [];
+    for (const value of parsed) {
+      if (typeof value !== 'string') continue;
+      const tag = value.trim().slice(0, 40);
+      const key = tag.toLowerCase();
+      if (!tag || seen.has(key)) continue;
+      seen.add(key);
+      tags.push(tag);
+      if (tags.length >= 12) break;
+    }
+    return tags;
+  } catch {
+    return [];
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!db) {
@@ -151,6 +174,7 @@ export async function POST(request: NextRequest) {
         uploaderUid: uploaderUid || null,
         companyId: companyId || null,
         allowedRoles,
+        tags: parseTags(formData.get('tags')),
         uploadedAt: Timestamp.now(),
         shared: false,
         fileId: stored.fileId,

@@ -464,6 +464,28 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true);
         console.log("User authenticated:", firebaseUser.uid, firebaseUser.email);
 
+        // Keep the server session cookie alive — API routes that use
+        // getRequester() (files, LIFT APIs) return 401 without it. The cookie
+        // lasts 5 days from creation and is never refreshed otherwise, so it
+        // silently dies while client auth stays valid. Throttled per browser
+        // session to avoid a cookie write on every mount.
+        try {
+          const refreshedAt = sessionStorage.getItem("liftSessionRefreshedAt");
+          if (!refreshedAt || Date.now() - Number(refreshedAt) > 4 * 60 * 60 * 1000) {
+            const idToken = await firebaseUser.getIdToken();
+            const res = await fetch("/api/auth/session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idToken }),
+            });
+            if (res.ok) {
+              sessionStorage.setItem("liftSessionRefreshedAt", String(Date.now()));
+            }
+          }
+        } catch {
+          // best-effort — the portal still works on client auth alone
+        }
+
         const loadedProfile = await loadProfileForUser(firebaseUser.uid);
         setActualProfile(loadedProfile);
         setLinkedTeammember(await getTeammemberByAuthUid(firebaseUser.uid));

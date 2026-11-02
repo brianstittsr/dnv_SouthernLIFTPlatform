@@ -57,12 +57,15 @@ import {
   FolderOpen,
   Building2,
   Lock,
+  Tag,
+  X,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, getDoc, query, orderBy, where, deleteDoc, doc } from "firebase/firestore";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { COLLECTIONS } from "@/lib/schema";
 import { USER_ROLES } from "@/lib/rbac-types";
+import { toast } from "sonner";
 
 const DEFAULT_DOCUMENT_TYPES = [
   "Proposal",
@@ -73,6 +76,26 @@ const DEFAULT_DOCUMENT_TYPES = [
   "Report",
   "Invoice",
   "Other",
+];
+
+/** Preset tags for the upload dialog — common business document categories. */
+const DOCUMENT_TAGS = [
+  "Agreements",
+  "Contracts",
+  "Proposals",
+  "Invoices",
+  "Reports",
+  "Deliverables",
+  "Capability Statements",
+  "Certifications",
+  "Financials",
+  "Compliance",
+  "Legal",
+  "Meeting Notes",
+  "Training Materials",
+  "Templates",
+  "Presentations",
+  "Marketing",
 ];
 
 interface Document {
@@ -89,6 +112,7 @@ interface Document {
   downloadUrl?: string;
   companyId?: string | null;
   allowedRoles: string[];
+  tags: string[];
 }
 
 interface FolderCount {
@@ -156,6 +180,10 @@ export default function DocumentsPage() {
   const [uploadCustomType, setUploadCustomType] = useState("");
   const [uploadVisibility, setUploadVisibility] = useState<"all" | "roles">("all");
   const [uploadRoles, setUploadRoles] = useState<string[]>([]);
+  const [uploadTags, setUploadTags] = useState<string[]>([]);
+  const [customTag, setCustomTag] = useState("");
+  // Filter bar — documents matching ANY selected tag pass.
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [documentTypes, setDocumentTypes] = useState<string[]>(DEFAULT_DOCUMENT_TYPES);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -219,6 +247,11 @@ export default function DocumentsPage() {
                   (value: unknown): value is string => typeof value === "string"
                 )
               : ["all"],
+            tags: Array.isArray(data.tags)
+              ? data.tags.filter(
+                  (value: unknown): value is string => typeof value === "string"
+                )
+              : [],
           };
         });
 
@@ -283,7 +316,15 @@ export default function DocumentsPage() {
     .filter((doc) => {
       if (selectedFolder !== "All Documents" && doc.folder !== selectedFolder) return false;
       if (typeFilter !== "all" && doc.type !== typeFilter) return false;
-      if (searchQuery && !doc.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (selectedTags.length > 0 && !doc.tags.some((tag) => selectedTags.includes(tag))) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const inName = doc.name.toLowerCase().includes(q);
+        const inUploader = doc.uploadedBy.toLowerCase().includes(q);
+        const inFolder = doc.folder.toLowerCase().includes(q);
+        const inTags = doc.tags.some((tag) => tag.toLowerCase().includes(q));
+        if (!inName && !inUploader && !inFolder && !inTags) return false;
+      }
       return true;
     })
     .sort((a, b) => {
@@ -346,6 +387,7 @@ export default function DocumentsPage() {
       formData.append("documentType", effectiveType);
       formData.append("uploadedBy", getDisplayName());
       formData.append("allowedRoles", JSON.stringify(allowedRoles));
+      formData.append("tags", JSON.stringify(uploadTags));
       if (profile.id) formData.append("uploaderUid", profile.id);
       if (profile.companyId) formData.append("companyId", profile.companyId);
 
@@ -372,6 +414,7 @@ export default function DocumentsPage() {
         downloadUrl: result.fileUrl,
         companyId: profile.companyId || null,
         allowedRoles,
+        tags: uploadTags,
       };
       setDocuments((prev) => [newDoc, ...prev]);
       setFolders((prev) => {
@@ -392,6 +435,8 @@ export default function DocumentsPage() {
       setUploadCustomType("");
       setUploadVisibility("all");
       setUploadRoles([]);
+      setUploadTags([]);
+      setCustomTag("");
     } catch (error) {
       console.error("Error uploading document:", error);
       setUploadError(error instanceof Error ? error.message : "Failed to upload document");
@@ -429,6 +474,29 @@ export default function DocumentsPage() {
       })
     : [];
 
+  // Tag helpers — toggles for the upload dialog and the filter bar
+  const toggleUploadTag = (tag: string) =>
+    setUploadTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  const addCustomTag = () => {
+    const tag = customTag.trim();
+    if (!tag) return;
+    setUploadTags((prev) =>
+      prev.some((t) => t.toLowerCase() === tag.toLowerCase()) ? prev : [...prev, tag]
+    );
+    setCustomTag("");
+  };
+  const toggleFilterTag = (tag: string) =>
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+
+  // Every tag present on loaded documents — drives the filter chip row.
+  const availableTags = [
+    ...new Set(documents.flatMap((doc) => doc.tags)),
+  ].sort((a, b) => a.localeCompare(b));
+
   // Download document
   const handleDownload = async (doc: Document) => {
     const url = doc.downloadUrl || (doc.fileId ? `/api/files/${doc.fileId}?download=1` : null);
@@ -437,6 +505,26 @@ export default function DocumentsPage() {
       return;
     }
     window.open(url, "_blank");
+  };
+
+  // Share — copy the file link. Restricted docs still require a matching
+  // role to open, so the toast says who the link works for.
+  const handleShare = async (doc: Document) => {
+    const url = doc.downloadUrl || (doc.fileId ? `/api/files/${doc.fileId}` : null);
+    if (!url) {
+      toast.error("No file is attached to this document");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(new URL(url, window.location.origin).toString());
+      toast.success(
+        doc.allowedRoles.includes("all")
+          ? "Link copied — any signed-in user can open it"
+          : "Link copied — only users with the selected roles can open it"
+      );
+    } catch {
+      toast.error("Could not copy the link");
+    }
   };
 
   const renderDocRow = (doc: Document) => (
@@ -460,7 +548,7 @@ export default function DocumentsPage() {
         </div>
       </TableCell>
       <TableCell>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-wrap">
           <Badge variant="secondary">{doc.folder}</Badge>
           {!doc.allowedRoles.includes("all") && (
             <Badge
@@ -474,6 +562,12 @@ export default function DocumentsPage() {
               Restricted
             </Badge>
           )}
+          {doc.tags.map((tag) => (
+            <Badge key={tag} variant="outline" className="text-xs">
+              <Tag className="h-3 w-3 mr-1" />
+              {tag}
+            </Badge>
+          ))}
         </div>
       </TableCell>
       <TableCell className="text-muted-foreground">{doc.size}</TableCell>
@@ -499,7 +593,7 @@ export default function DocumentsPage() {
               <Download className="mr-2 h-4 w-4" />
               Download
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleShare(doc)}>
               <Share2 className="mr-2 h-4 w-4" />
               Share
             </DropdownMenuItem>
@@ -637,6 +731,70 @@ export default function DocumentsPage() {
                   LIFT Staff and Platform Admins can always see every document.
                 </p>
               </div>
+              <div className="space-y-2">
+                <Label>Tags (optional)</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {DOCUMENT_TAGS.map((tag) => {
+                    const active = uploadTags.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleUploadTag(tag)}
+                        className={
+                          active
+                            ? "rounded-full border border-primary bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+                            : "rounded-full border px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary"
+                        }
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={customTag}
+                    onChange={(e) => setCustomTag(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addCustomTag();
+                      }
+                    }}
+                    placeholder="Add a custom tag"
+                    className="h-8 text-sm"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addCustomTag}
+                    disabled={!customTag.trim()}
+                  >
+                    Add
+                  </Button>
+                </div>
+                {uploadTags.some((tag) => !DOCUMENT_TAGS.includes(tag)) && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {uploadTags
+                      .filter((tag) => !DOCUMENT_TAGS.includes(tag))
+                      .map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => toggleUploadTag(tag)}
+                            className="ml-1 hover:text-destructive"
+                            aria-label={`Remove ${tag}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                  </div>
+                )}
+              </div>
               {uploadError && (
                 <p className="text-sm text-destructive">{uploadError}</p>
               )}
@@ -715,7 +873,7 @@ export default function DocumentsPage() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input 
-                    placeholder="Search documents..." 
+                    placeholder="Search name, uploader, folder, or tag..." 
                     className="pl-9" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -753,6 +911,40 @@ export default function DocumentsPage() {
                   {showGrouped ? "Grouped by company" : "Group by company"}
                 </Button>
               </div>
+              {availableTags.length > 0 && (
+                <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t pt-4">
+                  <span className="text-xs font-medium text-muted-foreground mr-1">
+                    <Tag className="mr-1 inline h-3 w-3" />
+                    Filter by tag:
+                  </span>
+                  {availableTags.map((tag) => {
+                    const active = selectedTags.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => toggleFilterTag(tag)}
+                        className={
+                          active
+                            ? "rounded-full border border-primary bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+                            : "rounded-full border px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary"
+                        }
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                  {selectedTags.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTags([])}
+                      className="ml-1 text-xs text-muted-foreground underline hover:text-primary"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
