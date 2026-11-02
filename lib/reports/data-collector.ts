@@ -99,6 +99,7 @@ export async function collectPlatformDataPack(period: ReportPeriod): Promise<Rec
     clients, submissions, sessions, training, feedback, outcomes, capital,
     proposals, plans, baselines, partners, invoices, kpiTargets, consents,
     stories, exits, users, events, attachments,
+    lmsCourses, lmsMemberships, lmsSessions, lmsCertificates,
   ] = await Promise.all([
     fetchAll(COLLECTIONS.LIFT_CLIENTS),
     fetchAll(COLLECTIONS.LIFT_FORM_SUBMISSIONS),
@@ -119,6 +120,11 @@ export async function collectPlatformDataPack(period: ReportPeriod): Promise<Rec
     fetchAll(COLLECTIONS.USERS),
     fetchAll(COLLECTIONS.EVENTS),
     fetchAll(COLLECTIONS.MEMBER_ATTACHMENTS),
+    // LMS collections
+    fetchAll("courses"),
+    fetchAll("course_memberships"),
+    fetchAll("course_sessions"),
+    fetchAll("course_certificates"),
   ]);
 
   // --- Clients ---
@@ -297,6 +303,40 @@ export async function collectPlatformDataPack(period: ReportPeriod): Promise<Rec
     if (str(data.markdownContent)) attachmentsWithMarkdown += 1;
   }
 
+  // --- LMS: courses, enrollments, sessions, certificates ---
+  const lmsCoursesByStatus: Record<string, number> = {};
+  const lmsCourseTitles = new Map<string, string>();
+  for (const { id, data } of lmsCourses) {
+    bucket(lmsCoursesByStatus, str(data.status) || "draft");
+    lmsCourseTitles.set(id, str(data.title));
+  }
+  let lmsEnrollmentsInPeriod = 0;
+  let lmsCompletions = 0;
+  const enrollmentsByCourse: Record<string, number> = {};
+  for (const { data } of lmsMemberships) {
+    const status = str(data.status).toLowerCase();
+    if (status === "completed" || data.completedAt) lmsCompletions += 1;
+    if (inPeriod(data.createdAt ?? data.enrolledAt, period)) lmsEnrollmentsInPeriod += 1;
+    const courseId = str(data.courseId);
+    if (courseId) enrollmentsByCourse[courseId] = (enrollmentsByCourse[courseId] ?? 0) + 1;
+  }
+  let lmsSessionsInPeriod = 0;
+  let lmsZoomMinutesInPeriod = 0;
+  for (const { data } of lmsSessions) {
+    const start = data.scheduledDate ?? data.startTime ?? data.createdAt;
+    if (!inPeriod(start, period)) continue;
+    lmsSessionsInPeriod += 1;
+    lmsZoomMinutesInPeriod += centsOf(data, "zoomTotalMinutes");
+  }
+  let lmsCertificatesInPeriod = 0;
+  for (const { data } of lmsCertificates) {
+    if (inPeriod(data.issuedAt ?? data.createdAt, period)) lmsCertificatesInPeriod += 1;
+  }
+  const topCourses = Object.entries(enrollmentsByCourse)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([courseId, count]) => ({ title: lmsCourseTitles.get(courseId) || courseId, enrollments: count }));
+
   return {
     generatedAt: new Date().toISOString(),
     period: {
@@ -370,6 +410,20 @@ export async function collectPlatformDataPack(period: ReportPeriod): Promise<Rec
       eventsInPeriod,
       attachmentsByType,
       attachmentsWithMarkdown,
+    },
+    lms: {
+      coursesTotal: lmsCourses.length,
+      coursesPublished: lmsCoursesByStatus.published ?? 0,
+      coursesByStatus: lmsCoursesByStatus,
+      enrollmentsTotal: lmsMemberships.length,
+      enrollmentsInPeriod: lmsEnrollmentsInPeriod,
+      completionsTotal: lmsCompletions,
+      completionRate: lmsMemberships.length ? Math.round((lmsCompletions / lmsMemberships.length) * 100) : null,
+      sessionsHeldInPeriod: lmsSessionsInPeriod,
+      zoomMinutesInPeriod: lmsZoomMinutesInPeriod,
+      certificatesTotal: lmsCertificates.length,
+      certificatesInPeriod: lmsCertificatesInPeriod,
+      topCoursesByEnrollment: topCourses,
     },
   };
 }

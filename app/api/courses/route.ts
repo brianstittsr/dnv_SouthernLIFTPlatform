@@ -223,6 +223,17 @@ export async function PUT(req: NextRequest) {
 
     await courseRef.update(updates);
 
+    // Auto-draft a LinkedIn announcement on publish (best-effort — the
+    // draft is reviewed and posted from the LinkedIn drafts UI).
+    if (action === "publish") {
+      try {
+        const { createCourseAnnouncementDraft } = await import("@/lib/lms/announce");
+        await createCourseAnnouncementDraft(courseId, courseDoc.data() ?? {}, decodedToken.uid);
+      } catch (announceError) {
+        console.error("LinkedIn announcement draft failed (publish succeeded):", announceError);
+      }
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Error updating course:", error);

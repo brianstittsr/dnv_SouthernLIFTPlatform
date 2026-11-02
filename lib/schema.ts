@@ -4114,7 +4114,7 @@ export interface LiftImpactStoryDoc {
 /** Saved AI report (liftReports/{id}). Admin-only; the dataPack snapshot makes every report reproducible. */
 export interface LiftReportDoc {
   id: string;
-  type: "monthly_internal" | "quarterly_milestone" | "semi_annual_mbda" | "annual_performance" | "freeform" | "client_deepdive";
+  type: "monthly_internal" | "quarterly_milestone" | "semi_annual_mbda" | "annual_performance" | "freeform" | "client_deepdive" | "lms_training";
   title: string;
   periodStart?: string;
   periodEnd?: string;

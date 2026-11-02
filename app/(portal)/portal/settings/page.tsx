@@ -130,11 +130,11 @@ const apiConfigs: ApiKeyConfig[] = [
   {
     id: "zoom",
     name: "Zoom",
-    description: "Video conferencing and meetings",
+    description: "LMS meeting management & attendance — Server-to-Server OAuth app credentials",
     icon: Video,
-    keyField: "API Key",
+    keyField: "Client ID",
     additionalFields: [
-      { name: "apiSecret", label: "API Secret", placeholder: "your-api-secret" },
+      { name: "apiSecret", label: "Client Secret", placeholder: "your-client-secret" },
       { name: "accountId", label: "Account ID", placeholder: "account-id" },
     ],
     status: "disconnected",

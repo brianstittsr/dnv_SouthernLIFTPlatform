@@ -56,6 +56,15 @@ export function resolvePeriod(input: {
     }
     case "annual_performance":
       return { start: new Date(Date.UTC(year, 0, 1)), end: monthEnd(year, 12), label: `${year}` };
+    case "lms_training": {
+      // Default window: trailing 7 days (used by the weekly cron report).
+      const end = input.end ? new Date(`${input.end}T23:59:59Z`) : now;
+      const start = input.start
+        ? new Date(`${input.start}T00:00:00Z`)
+        : new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const label = `${start.toISOString().slice(0, 10)} to ${end.toISOString().slice(0, 10)}`;
+      return { start, end, label };
+    }
     case "freeform":
     case "client_deepdive": {
       const start = input.start ? new Date(`${input.start}T00:00:00Z`) : undefined;
@@ -98,6 +107,15 @@ export function headlineMetrics(type: LiftReportType, pack: Record<string, unkno
       { label: "Uploaded documents", value: String(attachments) },
     ];
   }
+  if (type === "lms_training") {
+    return [
+      { label: "Courses", value: String(num(pack, ["lms", "coursesTotal"])), note: `${num(pack, ["lms", "coursesPublished"])} published` },
+      { label: "Enrollments", value: String(num(pack, ["lms", "enrollmentsTotal"])), note: `${num(pack, ["lms", "enrollmentsInPeriod"])} new in period` },
+      { label: "Completions", value: String(num(pack, ["lms", "completionsTotal"])), note: `${num(pack, ["lms", "completionRate"])}% completion rate` },
+      { label: "Live sessions held", value: String(num(pack, ["lms", "sessionsHeldInPeriod"])), note: `${num(pack, ["lms", "zoomMinutesInPeriod"])} attendance minutes` },
+      { label: "Certificates issued", value: String(num(pack, ["lms", "certificatesInPeriod"])), note: `${num(pack, ["lms", "certificatesTotal"])} cumulative` },
+    ];
+  }
   const metrics: ReportMetric[] = [
     { label: "Clients served (cumulative)", value: String(num(pack, ["clients", "total"])), note: `${num(pack, ["clients", "newInPeriod"])} new in period` },
     { label: "Form submissions in period", value: String(num(pack, ["submissions", "inPeriod"])), note: `${num(pack, ["submissions", "total"])} cumulative` },
@@ -127,6 +145,8 @@ const TYPE_GUIDANCE: Record<LiftReportType, string> = {
     "Format as an MBDA semi-annual assessment: core measures (Clients Served, New Business Starts, Capital Infusion, Jobs Supported, Businesses Realizing Revenue Growth) plus project measures (training, capital packages, contracts, digital adoption, AM course, CMMC/HUBZone/OZ readiness). Score against straight-line-interpolated annual targets; only verified claims count.",
   annual_performance:
     "Format as the annual performance report: full-year results vs targets, verification status, lessons learned, and recommendations for the next year.",
+  lms_training:
+    "Format as the weekly LMS training report for program staff: course activity, enrollments and completions, live-session attendance (including Zoom attendance minutes), certificates issued, drop-off risks, and recommended follow-ups. The data pack's lms section is the source of truth.",
   freeform:
     "Answer the administrator's stated question using only the data pack. If the pack cannot answer part of it, say so explicitly.",
   client_deepdive:

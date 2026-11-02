@@ -76,6 +76,10 @@ interface Session {
   scheduledDate?: any;
   sortOrder: number;
   isPreview: boolean;
+  zoomMeetingId?: string;
+  zoomJoinUrl?: string;
+  zoomStartUrl?: string;
+  zoomAttendeeCount?: number;
 }
 
 export default function CurriculumPage({ params }: { params: Promise<{ id: string }> }) {
@@ -230,7 +234,7 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
       });
     } else {
       setEditingSession(null);
-      const module = modules.find(m => m.id === moduleId);
+      const mod = modules.find(m => m.id === moduleId);
       setSessionForm({
         title: "",
         description: "",
@@ -256,8 +260,8 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
         await updateSession(editingSession.id, sessionData);
         toast.success("Session updated successfully");
       } else {
-        const module = modules.find(m => m.id === currentModuleId);
-        const sessionCount = module?.sessions?.length || 0;
+        const mod = modules.find(m => m.id === currentModuleId);
+        const sessionCount = mod?.sessions?.length || 0;
         
         await createSession({
           moduleId: currentModuleId,
@@ -286,6 +290,53 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
     } catch (error: any) {
       console.error("Error deleting session:", error);
       toast.error("Failed to delete session");
+    }
+  };
+
+  const [zoomBusy, setZoomBusy] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+
+  const handleCreateZoomMeeting = async (session: Session) => {
+    setZoomBusy(session.id);
+    try {
+      const response = await fetch(`/api/lms/sessions/${session.id}/zoom`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed to create meeting");
+      toast.success("Zoom meeting created");
+      setModules((prev) =>
+        prev.map((m) => ({
+          ...m,
+          sessions: m.sessions?.map((s) =>
+            s.id === session.id
+              ? { ...s, zoomMeetingId: result.meetingId, zoomJoinUrl: result.joinUrl, zoomStartUrl: result.startUrl }
+              : s
+          ),
+        }))
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create Zoom meeting");
+    } finally {
+      setZoomBusy(null);
+    }
+  };
+
+  const handleSyncZoomAttendance = async () => {
+    setSyncing(true);
+    try {
+      const response = await fetch("/api/lms/zoom/sync?force=1", { method: "POST" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Sync failed");
+      const synced = Array.isArray(result.synced) ? result.synced.length : 0;
+      const errors = Array.isArray(result.errors) ? result.errors.length : 0;
+      toast.success(`Attendance synced for ${synced} session${synced === 1 ? "" : "s"}${errors ? ` (${errors} failed)` : ""}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to sync attendance");
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -320,6 +371,12 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
           <p className="text-muted-foreground">Manage modules and training sessions</p>
         </div>
         <div className="flex gap-2">
+          {modules.some((m) => m.sessions?.some((s) => s.zoomMeetingId)) && (
+            <Button variant="outline" onClick={handleSyncZoomAttendance} disabled={syncing}>
+              {syncing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Video className="mr-2 h-4 w-4" />}
+              Sync attendance
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setScormDialogOpen(true)}>
             <Upload className="mr-2 h-4 w-4" />
             Import SCORM
@@ -434,6 +491,34 @@ export default function CurriculumPage({ params }: { params: Promise<{ id: strin
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
+                          {session.zoomMeetingId ? (
+                            <>
+                              {typeof session.zoomAttendeeCount === "number" && (
+                                <Badge variant="outline" className="text-xs">
+                                  {session.zoomAttendeeCount} attended
+                                </Badge>
+                              )}
+                              <Button variant="ghost" size="sm" asChild title="Open Zoom meeting">
+                                <a href={session.zoomJoinUrl} target="_blank" rel="noopener noreferrer">
+                                  <Video className="h-4 w-4 text-blue-600" />
+                                </a>
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              title="Create Zoom meeting"
+                              disabled={zoomBusy === session.id}
+                              onClick={() => handleCreateZoomMeeting(session)}
+                            >
+                              {zoomBusy === session.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Video className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"

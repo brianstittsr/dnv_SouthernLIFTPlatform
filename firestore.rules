@@ -68,14 +68,14 @@ service cloud.firestore {
     match /courses/{courseId} {
       // Anyone authenticated can read published courses; staff can read all
       allow read: if isAuthenticated() && 
-        (resource.data.isPublished == true || isAdmin() || isInstructor() || isStaff());
+        (resource.data.status == "published" || resource.data.isPublished == true || isAdmin() || isInstructor() || isStaff());
       
       // Only admins and instructors can create courses
       allow create: if isInstructor();
       
       // Only admins and the course's instructor can update
       allow update: if isAdmin() || 
-        (isInstructor() && resource.data.facilitatorId == request.auth.uid);
+        (isInstructor() && (resource.data.instructorId == request.auth.uid || resource.data.facilitatorId == request.auth.uid));
       
       // Only admins can delete courses
       allow delete: if isAdmin();
@@ -97,9 +97,9 @@ service cloud.firestore {
     
     // ==================== COURSE MEMBERSHIPS ====================
     match /course_memberships/{membershipId} {
-      // Users can read their own memberships, admins/instructors can read all
+      // Users can read their own memberships; staff/admins/instructors read all
       allow read: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isInstructor());
+        (resource.data.userId == request.auth.uid || isInstructor() || isStaff());
       
       // Memberships created via enrollment API (server-side)
       allow create: if isAuthenticated();
@@ -113,9 +113,9 @@ service cloud.firestore {
     
     // ==================== SESSION PROGRESS ====================
     match /course_session_progress/{progressId} {
-      // Users can read/write their own progress
+      // Users can read/write their own progress; staff read all
       allow read: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isInstructor());
+        (resource.data.userId == request.auth.uid || isInstructor() || isStaff());
       
       allow create: if isAuthenticated() && 
         request.resource.data.userId == request.auth.uid;

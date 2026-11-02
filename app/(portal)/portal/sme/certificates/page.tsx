@@ -26,16 +26,17 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, Award, Download, Trash2, ExternalLink, GraduationCap, FileText } from "lucide-react";
+import { Loader2, Plus, Award, Download, Trash2, ExternalLink, GraduationCap, FileText, Linkedin, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface CourseCertificate {
   id: string;
-  courseId: string;
-  courseTitle: string;
-  certificateUrl: string | null;
-  completedAt: any;
-  overallCompletion: number;
+  courseId?: string;
+  courseTitle?: string;
+  certificateNumber?: string;
+  userName?: string;
+  completionDate?: any;
+  status?: string;
 }
 
 interface ProfessionalCertification {
@@ -79,43 +80,32 @@ export default function CertificatesPage() {
 
   const loadData = async () => {
     if (!db || !profile?.id) return;
-    
-    try {
-      // Load course certificates
-      const enrollmentsQuery = query(
-        collection(db, "courseEnrollments"),
-        where("userId", "==", profile.id),
-        where("status", "==", "completed")
-      );
-      const enrollmentsSnapshot = await getDocs(enrollmentsQuery);
-      
-      const courseCerts: CourseCertificate[] = [];
-      for (const enrollDoc of enrollmentsSnapshot.docs) {
-        const enrollment = enrollDoc.data();
-        if (enrollment.certificateGenerated) {
-          // Get course details
-          const courseDoc = await getDocs(query(collection(db, "courses"), where("__name__", "==", enrollment.courseId)));
-          const courseData = courseDoc.docs[0]?.data();
-          
-          courseCerts.push({
-            id: enrollDoc.id,
-            courseId: enrollment.courseId,
-            courseTitle: courseData?.title || "CMMC Training Course",
-            certificateUrl: enrollment.certificateUrl,
-            completedAt: enrollment.updatedAt,
-            overallCompletion: enrollment.progress?.overallCompletion || 100,
-          });
-        }
-      }
-      setCourseCertificates(courseCerts);
 
-      // Load professional certifications
+    try {
+      // Load issued course completion certificates
       const certsQuery = query(
-        collection(db, "professionalCertifications"),
+        collection(db, "course_certificates"),
         where("userId", "==", profile.id)
       );
       const certsSnapshot = await getDocs(certsQuery);
-      const certs = certsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ProfessionalCertification));
+      const courseCerts = certsSnapshot.docs.map((certDoc) => ({
+        id: certDoc.id,
+        ...(certDoc.data() as Omit<CourseCertificate, "id">),
+      }));
+      courseCerts.sort((a, b) => {
+        const aTime = a.completionDate?.toDate?.()?.getTime?.() || 0;
+        const bTime = b.completionDate?.toDate?.()?.getTime?.() || 0;
+        return bTime - aTime;
+      });
+      setCourseCertificates(courseCerts);
+
+      // Load professional certifications
+      const proCertsQuery = query(
+        collection(db, "professionalCertifications"),
+        where("userId", "==", profile.id)
+      );
+      const proCertsSnapshot = await getDocs(proCertsQuery);
+      const certs = proCertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ProfessionalCertification));
       setProfessionalCerts(certs);
     } catch (error) {
       console.error("Error loading certificates:", error);
@@ -123,6 +113,32 @@ export default function CertificatesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const verifyUrlFor = (cert: CourseCertificate) =>
+    `${window.location.origin}/verify/certificate/${cert.certificateNumber || cert.id}`;
+
+  const openLinkedInProfileAdd = (cert: CourseCertificate) => {
+    const completion = cert.completionDate?.toDate?.() as Date | undefined;
+    const params = new URLSearchParams({
+      startTask: "CERTIFICATION_NAME",
+      name: cert.courseTitle || "Course Completion",
+      organizationName: "Southern University LIFT Rural Business Center",
+      certUrl: verifyUrlFor(cert),
+      certId: cert.certificateNumber || "",
+    });
+    if (completion) {
+      params.set("issueYear", String(completion.getFullYear()));
+      params.set("issueMonth", String(completion.getMonth() + 1));
+    }
+    window.open(`https://www.linkedin.com/profile/add?${params.toString()}`, "_blank");
+  };
+
+  const openLinkedInShare = (cert: CourseCertificate) => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrlFor(cert))}`,
+      "_blank"
+    );
   };
 
   const handleAddCertification = async () => {
@@ -213,15 +229,15 @@ export default function CertificatesPage() {
         <TabsContent value="course" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>CMMC Training Certificates</CardTitle>
-              <CardDescription>Certificates earned from completed training courses</CardDescription>
+              <CardTitle>Training Certificates</CardTitle>
+              <CardDescription>Certificates earned from completed LIFT training courses</CardDescription>
             </CardHeader>
             <CardContent>
               {courseCertificates.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No training certificates yet.</p>
-                  <p className="text-sm mt-2">Complete a CMMC training course to earn your certificate.</p>
+                  <p className="text-sm mt-2">Complete a LIFT training course to earn your certificate.</p>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
@@ -232,30 +248,50 @@ export default function CertificatesPage() {
                           <div className="flex-1">
                             <CardTitle className="text-lg flex items-center gap-2">
                               <Award className="h-5 w-5 text-blue-600" />
-                              {cert.courseTitle}
+                              {cert.courseTitle || "Course Completion"}
                             </CardTitle>
                             <CardDescription className="mt-1">
-                              Completed {cert.completedAt?.toDate?.()?.toLocaleDateString() || "Recently"}
+                              Completed {cert.completionDate?.toDate?.()?.toLocaleDateString() || "Recently"}
                             </CardDescription>
                           </div>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                            {cert.overallCompletion}% Complete
-                          </Badge>
+                          {cert.certificateNumber && (
+                            <Badge variant="secondary" className="font-mono text-xs">
+                              {cert.certificateNumber}
+                            </Badge>
+                          )}
                         </div>
                       </CardHeader>
-                      <CardContent className="pt-4">
-                        {cert.certificateUrl ? (
-                          <Button variant="outline" className="w-full" asChild>
-                            <a href={cert.certificateUrl} target="_blank" rel="noopener noreferrer">
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Certificate
-                            </a>
+                      <CardContent className="pt-4 space-y-2">
+                        <Button variant="outline" className="w-full" asChild>
+                          <a
+                            href={`/api/lms/certificates/${cert.id}/pdf`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Download Certificate
+                          </a>
+                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => openLinkedInProfileAdd(cert)}
+                          >
+                            <Linkedin className="h-4 w-4 mr-2" />
+                            Add to LinkedIn profile
                           </Button>
-                        ) : (
-                          <p className="text-sm text-muted-foreground text-center py-2">
-                            Certificate will be available soon
-                          </p>
-                        )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => openLinkedInShare(cert)}
+                          >
+                            <Share2 className="h-4 w-4 mr-2" />
+                            Share
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -276,7 +312,7 @@ export default function CertificatesPage() {
                 <div className="text-center py-12 text-muted-foreground">
                   <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No professional certifications added yet.</p>
-                  <p className="text-sm mt-2">Click "Add New" to add your certifications.</p>
+                  <p className="text-sm mt-2">Click &quot;Add New&quot; to add your certifications.</p>
                 </div>
               ) : (
                 <div className="space-y-4">

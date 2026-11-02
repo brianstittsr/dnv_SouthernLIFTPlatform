@@ -5,6 +5,7 @@ export const REPORT_TYPES = [
   "quarterly_milestone",
   "semi_annual_mbda",
   "annual_performance",
+  "lms_training",
   "freeform",
   "client_deepdive",
 ] as const;
@@ -16,6 +17,7 @@ export const REPORT_TYPE_LABELS: Record<LiftReportType, string> = {
   quarterly_milestone: "Quarterly milestone report",
   semi_annual_mbda: "Semi-annual MBDA report pack",
   annual_performance: "Annual performance report",
+  lms_training: "LMS training report",
   freeform: "Custom analysis",
   client_deepdive: "Client deep dive",
 };

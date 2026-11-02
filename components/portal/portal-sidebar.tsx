@@ -643,6 +643,11 @@ const svpAdminItems = [
     icon: CreditCard,
   },
   {
+    title: "LMS Dashboard",
+    href: "/portal/admin/lms",
+    icon: BarChart3,
+  },
+  {
     title: "All Courses",
     href: "/portal/admin/courses",
     icon: GraduationCap,
