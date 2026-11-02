@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Manrope, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { getProgramBranding } from "@/lib/branding";
@@ -8,15 +8,18 @@ import "./globals.css";
 
 const branding = getProgramBranding();
 
-const manrope = Manrope({
+const manrope = localFont({
+  src: "./fonts/Manrope-Variable.ttf",
   variable: "--font-sans",
-  subsets: ["latin"],
+  weight: "200 800",
+  display: "swap",
 });
 
-const dmSans = DM_Sans({
+const dmSans = localFont({
+  src: "./fonts/DMSans-Variable.ttf",
   variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: "100 1000",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

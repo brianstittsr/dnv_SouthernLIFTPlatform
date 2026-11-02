@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase-admin';
 import { COLLECTIONS } from '@/lib/schema';
 import { Timestamp } from 'firebase-admin/firestore';
-import { extractPdfMarkdown, isPdf } from '@/lib/pdf-to-markdown';
+import { extractDocxMarkdown, extractPdfMarkdown, isDocx, isPdf, isPlainText } from '@/lib/pdf-to-markdown';
 import { storeFileBuffer } from '@/lib/file-store';
 
 export async function POST(request: NextRequest) {
@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
       ownerUid: isMemberAttachment ? userId : null,
     });
 
-    // If PDF, extract text and store as markdown in Firestore
+    // Extract text as markdown for AI use (PDF, .docx, .txt/.md), then record
+    // the attachment in Firestore member_attachments.
     let attachmentId: string | undefined;
     let markdownContent: string | null = null;
     let pageCount = 0;
@@ -65,31 +66,24 @@ export async function POST(request: NextRequest) {
         markdownContent = extraction.markdown;
         pageCount = extraction.pageCount;
         pdfMetadata = extraction.metadata;
-
-        // Store markdown content in Firestore member_attachments collection
-        if (db && userId) {
-          const attachmentRef = await db.collection(COLLECTIONS.MEMBER_ATTACHMENTS).add({
-            userId,
-            companyId: companyId || null,
-            type: attachmentType,
-            originalFileName: file.name,
-            originalFileType: file.type,
-            originalFileSize: file.size,
-            markdownContent,
-            pageCount,
-            metadata: pdfMetadata,
-            fileId: stored.fileId,
-            fileUrl: stored.fileUrl,
-            uploadedAt: Timestamp.now(),
-            updatedAt: Timestamp.now(),
-          });
-          attachmentId = attachmentRef.id;
-        }
       } catch (extractError) {
         console.error('PDF text extraction failed (file still stored):', extractError);
       }
-    } else if (db && userId) {
-      // Non-PDF: store metadata only with null markdown content
+    } else if (isDocx(file.type, file.name)) {
+      try {
+        markdownContent = await extractDocxMarkdown(buffer);
+      } catch (extractError) {
+        console.error('DOCX text extraction failed (file still stored):', extractError);
+      }
+    } else if (isPlainText(file.type, file.name)) {
+      try {
+        markdownContent = buffer.toString('utf8');
+      } catch (extractError) {
+        console.error('Text extraction failed (file still stored):', extractError);
+      }
+    }
+
+    if (db && userId) {
       const attachmentRef = await db.collection(COLLECTIONS.MEMBER_ATTACHMENTS).add({
         userId,
         companyId: companyId || null,
@@ -97,9 +91,9 @@ export async function POST(request: NextRequest) {
         originalFileName: file.name,
         originalFileType: file.type,
         originalFileSize: file.size,
-        markdownContent: null,
-        pageCount: 0,
-        metadata: {},
+        markdownContent,
+        pageCount,
+        metadata: pdfMetadata,
         fileId: stored.fileId,
         fileUrl: stored.fileUrl,
         uploadedAt: Timestamp.now(),

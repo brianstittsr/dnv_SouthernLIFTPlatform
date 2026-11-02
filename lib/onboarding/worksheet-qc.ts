@@ -100,6 +100,8 @@ export function checkWorksheet(answers: WorksheetAnswers): WorksheetIssue[] {
   if (answers.privacyAck !== true) {
     issues.push(issue("privacyAck", true, "You must acknowledge the privacy notice to continue."));
   }
+  requireValue("serviceArea", "Select at least one LIFT service area.");
+  requireValue("referralSource", "Tell us how you heard about the LIFT Center.");
 
   // --- Format checks on optional fields that WERE answered ---
   const website = str(answers.website);

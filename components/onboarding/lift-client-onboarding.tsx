@@ -136,8 +136,14 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
     referralSource: d.referralSource,
     attachments: d.attachmentFiles,
   };
-  if (d.revenueLast12) values.revenueLast12 = Number(d.revenueLast12);
-  if (d.seekingCapital === "yes" && d.capitalAmount) values.capitalAmount = Number(d.capitalAmount);
+  const money = (v: string) => {
+    const n = Number(v.replace(/[$,\s]/g, ""));
+    return Number.isFinite(n) ? n : undefined;
+  };
+  const revenue = money(d.revenueLast12);
+  if (revenue !== undefined) values.revenueLast12 = revenue;
+  const capital = d.seekingCapital === "yes" ? money(d.capitalAmount) : undefined;
+  if (capital !== undefined) values.capitalAmount = capital;
   return values;
 }
 
@@ -314,18 +320,34 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
 
     try {
       // For LIFT clients, run the same field-by-field quality check used on
-      // uploaded worksheets before anything is submitted. Invalid or missing
-      // data sends the user to the step containing the problem.
+      // uploaded worksheets before anything is submitted. Required issues
+      // block and jump to the step containing the problem; optional-format
+      // issues warn but don't block (the worksheet flow lets users skip them).
       if (userType === "sme") {
-        const qcIssues = checkWorksheet(smeFormData as unknown as Record<string, unknown>);
-        if (qcIssues.length > 0) {
-          const first = qcIssues.find((i) => i.required) ?? qcIssues[0];
+        const qcInput = {
+          ...(smeFormData as unknown as Record<string, unknown>),
+          // Normalize formats people naturally type so QC judges the value,
+          // not the punctuation ("$50,000", "est. 2010").
+          revenueLast12: smeFormData.revenueLast12.replace(/[$,\s]/g, ""),
+          capitalAmount: smeFormData.capitalAmount.replace(/[$,\s]/g, ""),
+          yearEstablished: smeFormData.yearEstablished.match(/(19|20)\d{2}/)?.[0] ?? smeFormData.yearEstablished,
+        };
+        const qcIssues = checkWorksheet(qcInput);
+        const blocking = qcIssues.filter((i) => i.required);
+        if (blocking.length > 0) {
+          const first = blocking[0];
           setDraftStep(SME_FIELD_STEP[first.key] ?? 0);
           toast.error(
-            `${qcIssues.length} field${qcIssues.length === 1 ? "" : "s"} need${qcIssues.length === 1 ? "s" : ""} a quick fix before submitting`,
+            `${blocking.length} field${blocking.length === 1 ? "" : "s"} need${blocking.length === 1 ? "s" : ""} a quick fix before submitting`,
             { description: first.message },
           );
           return false;
+        }
+        if (qcIssues.length > 0) {
+          toast.warning(
+            `${qcIssues.length} optional field${qcIssues.length === 1 ? " looks" : "s look"} unusual — worth a second look when you can`,
+            { description: qcIssues[0].message },
+          );
         }
       }
 

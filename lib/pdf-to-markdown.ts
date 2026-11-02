@@ -138,3 +138,60 @@ export function isPdf(fileType: string, fileName: string): boolean {
     fileName.toLowerCase().endsWith(".pdf")
   );
 }
+
+/** .docx (Office Open XML) — text lives in word/document.xml inside the zip. */
+export function isDocx(fileType: string, fileName: string): boolean {
+  return (
+    fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+    fileName.toLowerCase().endsWith(".docx")
+  );
+}
+
+/** Plain-text formats whose contents can be stored as markdown directly. */
+export function isPlainText(fileType: string, fileName: string): boolean {
+  return (
+    fileType === "text/plain" ||
+    fileType === "text/markdown" ||
+    /\.(txt|md)$/i.test(fileName)
+  );
+}
+
+/**
+ * Extract text from a .docx buffer (one paragraph per line) and convert it to
+ * markdown for AI use. Content controls resolve to their entered values.
+ */
+export async function extractDocxMarkdown(buffer: Buffer): Promise<string> {
+  const JSZip = (await import("jszip")).default;
+  const zip = await JSZip.loadAsync(buffer);
+  const xml = await zip.file("word/document.xml")?.async("string");
+  if (!xml) throw new Error("Not a Word document");
+
+  const resolved = xml.replace(/<w:sdt\b[^>]*>[\s\S]*?<\/w:sdt>/g, (block) => {
+    if (/<w14:checkbox|<w:checkBox/.test(block)) {
+      return /<w14:checked w14:val="1"|<w:checked w:val="(?:1|true|on)"/.test(block) ? "[x] " : "[ ] ";
+    }
+    const content = block.match(/<w:sdtContent>[\s\S]*?<\/w:sdtContent>/)?.[0] ?? "";
+    return content.replace(/<[^>]+>/g, "");
+  });
+
+  const rawText = resolved
+    .split(/<\/w:p>/)
+    .map((para) =>
+      para
+        .replace(/<w:tab[^>]*\/>/g, " ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(Number(code)))
+        .trim(),
+    )
+    .join("\n");
+
+  if (!rawText.trim()) {
+    return "[No extractable text found in this document.]";
+  }
+  return convertTextToMarkdown(rawText, 0);
+}
