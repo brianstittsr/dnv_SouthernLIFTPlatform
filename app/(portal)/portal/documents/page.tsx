@@ -59,6 +59,8 @@ import {
   Lock,
   Tag,
   X,
+  Copy,
+  Link as LinkIcon,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, getDoc, query, orderBy, where, deleteDoc, doc } from "firebase/firestore";
@@ -184,6 +186,8 @@ export default function DocumentsPage() {
   const [customTag, setCustomTag] = useState("");
   // Filter bar — documents matching ANY selected tag pass.
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  // Share modal — shows the link and copies on demand.
+  const [shareDoc, setShareDoc] = useState<Document | null>(null);
   const [documentTypes, setDocumentTypes] = useState<string[]>(DEFAULT_DOCUMENT_TYPES);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -507,21 +511,29 @@ export default function DocumentsPage() {
     window.open(url, "_blank");
   };
 
-  // Share — copy the file link. Restricted docs still require a matching
-  // role to open, so the toast says who the link works for.
-  const handleShare = async (doc: Document) => {
+  // Share — opens a modal showing the link. Restricted docs still require
+  // a matching role to open, which the modal states up front.
+  const shareUrlFor = (doc: Document): string | null => {
     const url = doc.downloadUrl || (doc.fileId ? `/api/files/${doc.fileId}` : null);
-    if (!url) {
+    if (!url) return null;
+    return new URL(url, window.location.origin).toString();
+  };
+
+  const handleShare = (doc: Document) => {
+    if (!shareUrlFor(doc)) {
       toast.error("No file is attached to this document");
       return;
     }
+    setShareDoc(doc);
+  };
+
+  const copyShareLink = async () => {
+    if (!shareDoc) return;
+    const url = shareUrlFor(shareDoc);
+    if (!url) return;
     try {
-      await navigator.clipboard.writeText(new URL(url, window.location.origin).toString());
-      toast.success(
-        doc.allowedRoles.includes("all")
-          ? "Link copied — any signed-in user can open it"
-          : "Link copied — only users with the selected roles can open it"
-      );
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard");
     } catch {
       toast.error("Could not copy the link");
     }
@@ -1002,6 +1014,45 @@ export default function DocumentsPage() {
           )}
         </div>
       </div>
+
+      {/* Share dialog */}
+      <Dialog open={shareDoc !== null} onOpenChange={(open) => !open && setShareDoc(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share document</DialogTitle>
+            <DialogDescription>
+              {shareDoc?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <LinkIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  readOnly
+                  value={shareDoc ? shareUrlFor(shareDoc) ?? "" : ""}
+                  className="pl-9 pr-2 font-mono text-xs"
+                  onFocus={(e) => e.target.select()}
+                />
+              </div>
+              <Button onClick={copyShareLink}>
+                <Copy className="mr-2 h-4 w-4" />
+                Copy
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {shareDoc?.allowedRoles.includes("all")
+                ? "Any signed-in user can open this link."
+                : "Only signed-in users with the selected roles can open this link."}
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShareDoc(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
