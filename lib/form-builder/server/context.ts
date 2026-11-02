@@ -12,6 +12,8 @@ export interface Requester {
   name: string;
   isStaff: boolean;
   isAdmin: boolean;
+  /** All role keys on the requester (role + svpRole + svpRoles). */
+  roles: string[];
 }
 
 const ADMIN_ROLES = new Set(["admin", "platform_admin"]);
@@ -23,6 +25,7 @@ export async function getRequester(): Promise<Requester | null> {
   if (!user) return null;
   let role = user.role;
   let svpRole = user.svpRole;
+  let svpRoles: string[] = [];
   let name = user.email ?? "User";
   if (db) {
     const snapshot = await db.collection(COLLECTIONS.USERS).doc(user.uid).get();
@@ -30,17 +33,21 @@ export async function getRequester(): Promise<Requester | null> {
     if (data) {
       role = role ?? (data.role as string | undefined);
       svpRole = svpRole ?? (data.svpRole as string | undefined);
+      if (Array.isArray(data.svpRoles)) {
+        svpRoles = data.svpRoles.filter((value): value is string => typeof value === "string");
+      }
       const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
       name = (data.displayName as string | undefined) || fullName || name;
     }
   }
-  const roles = [role, svpRole].filter((value): value is string => Boolean(value));
+  const roles = [role, svpRole, ...svpRoles].filter((value): value is string => Boolean(value));
   return {
     uid: user.uid,
     email: user.email,
     name,
     isAdmin: roles.some((value) => ADMIN_ROLES.has(value)),
     isStaff: roles.some((value) => STAFF_ROLES.has(value)),
+    roles,
   };
 }
 

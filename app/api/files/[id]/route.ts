@@ -1,6 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteFileBlob, getFileBlobMeta, readFileBlob } from "@/lib/file-store";
 import { getRequester } from "@/lib/form-builder/server/context";
+import { db } from "@/lib/firebase-admin";
+import { COLLECTIONS } from "@/lib/schema";
+
+/**
+ * Portal Documents files are private; visibility lives on the documents
+ * record's allowedRoles ('all' or USER_ROLES keys). Staff/admins and the
+ * uploader are handled by the caller — this covers role-based sharing.
+ */
+async function canReadLinkedDocument(
+  fileId: string,
+  roles: string[]
+): Promise<boolean> {
+  if (!db) return false;
+  const snapshot = await db
+    .collection(COLLECTIONS.DOCUMENTS)
+    .where("fileId", "==", fileId)
+    .limit(1)
+    .get();
+  if (snapshot.empty) return false;
+  const allowed = snapshot.docs[0].data().allowedRoles;
+  const allowedRoles: string[] = Array.isArray(allowed)
+    ? allowed.filter((value): value is string => typeof value === "string")
+    : ["all"];
+  return allowedRoles.includes("all") || roles.some((role) => allowedRoles.includes(role));
+}
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -26,7 +51,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     if (!meta.isPublic) {
       const requester = await getRequester();
-      const allowed = requester && (requester.isStaff || requester.isAdmin || requester.uid === meta.ownerUid);
+      const allowed =
+        requester &&
+        (requester.isStaff ||
+          requester.isAdmin ||
+          requester.uid === meta.ownerUid ||
+          (await canReadLinkedDocument(id, requester.roles)));
       if (!allowed) {
         return NextResponse.json({ error: "Forbidden" }, { status: requester ? 403 : 401 });
       }

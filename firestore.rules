@@ -51,6 +51,19 @@ service cloud.firestore {
         get(/databases/$(database)/documents/teamMembers/$(memberId)).data.firebaseUid == request.auth.uid;
     }
     
+    // All role keys on the requester (role + svpRole + svpRoles), plus the
+    // 'all' sentinel so docs visible to everyone match. Used by the
+    // documents per-record visibility rule — pair client queries with
+    // where('allowedRoles', 'array-contains-any', viewerRoles()).
+    function viewerRoles() {
+      let data = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return data.get('svpRoles', []).concat([
+        data.get('role', ''),
+        data.get('svpRole', ''),
+        'all'
+      ]);
+    }
+    
     // ==================== COHORTS ====================
     match /cohorts/{cohortId} {
       // Anyone authenticated can read published cohorts; staff can read all
@@ -588,10 +601,16 @@ service cloud.firestore {
         resource.data.userId == request.auth.uid || isAdmin();
     }
 
-    // Portal Documents: any signed-in user can read; only the uploader or an
-    // admin can delete. Records are written server-side via /api/upload-file.
+    // Portal Documents: per-record visibility via allowedRoles ('all' or
+    // USER_ROLES keys; missing field defaults to 'all'). Staff and admins
+    // see every record. Non-staff list queries must filter with
+    // where('allowedRoles', 'array-contains-any', <their roles + 'all'>).
+    // Records are written server-side via /api/upload-file; file bytes are
+    // role-checked in /api/files/[id].
     match /documents/{documentId} {
-      allow read: if isAuthenticated();
+      allow read: if isAdmin() || isStaff() ||
+        (isAuthenticated() &&
+          resource.data.get('allowedRoles', ['all']).hasAny(viewerRoles()));
       allow create, update: if isAdmin();
       allow delete: if isAdmin() ||
         (isAuthenticated() && resource.data.uploaderUid == request.auth.uid);

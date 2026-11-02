@@ -4,6 +4,24 @@ import { COLLECTIONS } from '@/lib/schema';
 import { Timestamp } from 'firebase-admin/firestore';
 import { extractDocxMarkdown, extractPdfMarkdown, isDocx, isPdf, isPlainText } from '@/lib/pdf-to-markdown';
 import { storeFileBuffer } from '@/lib/file-store';
+import { USER_ROLES } from '@/lib/rbac-types';
+
+const VALID_ROLE_KEYS = new Set<string>(['all', ...Object.keys(USER_ROLES)]);
+
+/** Parses the allowedRoles form field — 'all' or USER_ROLES keys only. */
+function parseAllowedRoles(raw: FormDataEntryValue | null): string[] {
+  if (typeof raw !== 'string' || !raw) return ['all'];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return ['all'];
+    const roles = parsed.filter(
+      (value): value is string => typeof value === 'string' && VALID_ROLE_KEYS.has(value)
+    );
+    return roles.length > 0 ? [...new Set(roles)] : ['all'];
+  } catch {
+    return ['all'];
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,6 +38,7 @@ export async function POST(request: NextRequest) {
     const documentType = formData.get('documentType') as string || 'Uncategorized';
     const uploadedBy = formData.get('uploadedBy') as string || 'Unknown';
     const uploaderUid = formData.get('uploaderUid') as string || '';
+    const allowedRoles = parseAllowedRoles(formData.get('allowedRoles'));
 
     if (!file) {
       return NextResponse.json(
@@ -41,16 +60,19 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Member attachments are private to their owner; everything else is
-    // public-facing content (logos, press attachments) served openly.
+    // Member attachments and portal Documents files are private — document
+    // visibility is checked per-role in the files route against the linked
+    // documents record. Everything else (logos, press attachments) is served
+    // openly.
     const isMemberAttachment = Boolean(userId);
+    const isDocumentsUpload = target === 'documents';
     const stored = await storeFileBuffer({
       buffer,
       fileName: file.name,
       contentType: file.type || 'application/octet-stream',
       category,
-      isPublic: !isMemberAttachment,
-      ownerUid: isMemberAttachment ? userId : null,
+      isPublic: !(isMemberAttachment || isDocumentsUpload),
+      ownerUid: isMemberAttachment ? userId : (uploaderUid || null),
     });
 
     // Extract text as markdown for AI use (PDF, .docx, .txt/.md), then record
@@ -128,6 +150,7 @@ export async function POST(request: NextRequest) {
         uploadedBy,
         uploaderUid: uploaderUid || null,
         companyId: companyId || null,
+        allowedRoles,
         uploadedAt: Timestamp.now(),
         shared: false,
         fileId: stored.fileId,

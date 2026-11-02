@@ -36,6 +36,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Upload,
   Search,
@@ -54,15 +56,19 @@ import {
   Loader2,
   FolderOpen,
   Building2,
+  Lock,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, getDoc, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, getDoc, query, orderBy, where, deleteDoc, doc } from "firebase/firestore";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { COLLECTIONS } from "@/lib/schema";
+import { USER_ROLES } from "@/lib/rbac-types";
 
 const DEFAULT_DOCUMENT_TYPES = [
   "Proposal",
   "Contract",
+  "MOU",
+  "Partner Agreements",
   "Template",
   "Report",
   "Invoice",
@@ -82,6 +88,7 @@ interface Document {
   fileId?: string;
   downloadUrl?: string;
   companyId?: string | null;
+  allowedRoles: string[];
 }
 
 interface FolderCount {
@@ -135,7 +142,7 @@ function getFileType(fileName: string): string {
 }
 
 export default function DocumentsPage() {
-  const { getDisplayName, profile } = useUserProfile();
+  const { getDisplayName, profile, isLoading: profileLoading } = useUserProfile();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [folders, setFolders] = useState<FolderCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -146,6 +153,9 @@ export default function DocumentsPage() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadDocType, setUploadDocType] = useState("");
+  const [uploadCustomType, setUploadCustomType] = useState("");
+  const [uploadVisibility, setUploadVisibility] = useState<"all" | "roles">("all");
+  const [uploadRoles, setUploadRoles] = useState<string[]>([]);
   const [documentTypes, setDocumentTypes] = useState<string[]>(DEFAULT_DOCUMENT_TYPES);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -153,8 +163,26 @@ export default function DocumentsPage() {
   const [groupByCompany, setGroupByCompany] = useState<boolean | null>(null);
   const [companyNames, setCompanyNames] = useState<Record<string, string>>({});
 
-  // Fetch documents from Firestore
+  // Fetch documents from Firestore — staff/admins read everything; members
+  // query by allowedRoles so the Firestore rules can prove every returned
+  // record is visible to them ('all' covers unrestricted docs).
   useEffect(() => {
+    if (profileLoading) return;
+    const staffViewer =
+      profile.role === "admin" ||
+      profile.role === "staff" ||
+      profile.svpRole === "platform_admin" ||
+      profile.svpRole === "staff" ||
+      (profile.svpRoles?.includes("staff") ?? false) ||
+      (profile.svpRoles?.includes("platform_admin") ?? false);
+    const viewerRoleKeys = [
+      ...new Set(
+        [profile.role, profile.svpRole, ...(profile.svpRoles ?? []), "all"].filter(
+          (value): value is string => Boolean(value)
+        )
+      ),
+    ];
+
     const fetchDocuments = async () => {
       if (!db) {
         setIsLoading(false);
@@ -163,9 +191,14 @@ export default function DocumentsPage() {
 
       try {
         const docsRef = collection(db, "documents");
-        const q = query(docsRef, orderBy("uploadedAt", "desc"));
+        const q = staffViewer
+          ? query(docsRef, orderBy("uploadedAt", "desc"))
+          : query(
+              docsRef,
+              where("allowedRoles", "array-contains-any", viewerRoleKeys)
+            );
         const snapshot = await getDocs(q);
-        
+
         const docs: Document[] = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -181,6 +214,11 @@ export default function DocumentsPage() {
             fileId: data.fileId,
             downloadUrl: data.downloadUrl || (data.fileId ? `/api/files/${data.fileId}` : undefined),
             companyId: data.companyId || null,
+            allowedRoles: Array.isArray(data.allowedRoles)
+              ? data.allowedRoles.filter(
+                  (value: unknown): value is string => typeof value === "string"
+                )
+              : ["all"],
           };
         });
 
@@ -238,7 +276,7 @@ export default function DocumentsPage() {
     fetchDocuments();
     fetchDocumentTypes();
     fetchCompanyNames();
-  }, []);
+  }, [profileLoading, profile.role, profile.svpRole, profile.svpRoles]);
 
   // Filter and sort documents
   const filteredDocuments = documents
@@ -282,10 +320,22 @@ export default function DocumentsPage() {
 
   // Upload document
   const handleUpload = async () => {
-    if (!uploadFile || !uploadDocType) {
-      setUploadError("Choose a file and a document type.");
+    const effectiveType =
+      uploadDocType === "Other" ? uploadCustomType.trim() : uploadDocType;
+    if (!uploadFile || !effectiveType) {
+      setUploadError(
+        uploadDocType === "Other"
+          ? "Specify the document type."
+          : "Choose a file and a document type."
+      );
       return;
     }
+    if (uploadVisibility === "roles" && uploadRoles.length === 0) {
+      setUploadError("Select at least one role, or choose Everyone.");
+      return;
+    }
+    const allowedRoles =
+      uploadVisibility === "all" ? ["all"] : uploadRoles;
 
     setIsUploading(true);
     setUploadError(null);
@@ -293,8 +343,9 @@ export default function DocumentsPage() {
       const formData = new FormData();
       formData.append("file", uploadFile);
       formData.append("target", "documents");
-      formData.append("documentType", uploadDocType);
+      formData.append("documentType", effectiveType);
       formData.append("uploadedBy", getDisplayName());
+      formData.append("allowedRoles", JSON.stringify(allowedRoles));
       if (profile.id) formData.append("uploaderUid", profile.id);
       if (profile.companyId) formData.append("companyId", profile.companyId);
 
@@ -313,13 +364,14 @@ export default function DocumentsPage() {
         type: getFileType(uploadFile.name),
         size: formatFileSize(uploadFile.size),
         sizeBytes: uploadFile.size,
-        folder: uploadDocType,
+        folder: effectiveType,
         uploadedBy: getDisplayName(),
         uploadedAt: new Date().toISOString(),
         shared: false,
         fileId: result.fileId,
         downloadUrl: result.fileUrl,
         companyId: profile.companyId || null,
+        allowedRoles,
       };
       setDocuments((prev) => [newDoc, ...prev]);
       setFolders((prev) => {
@@ -337,6 +389,9 @@ export default function DocumentsPage() {
       setUploadDialogOpen(false);
       setUploadFile(null);
       setUploadDocType("");
+      setUploadCustomType("");
+      setUploadVisibility("all");
+      setUploadRoles([]);
     } catch (error) {
       console.error("Error uploading document:", error);
       setUploadError(error instanceof Error ? error.message : "Failed to upload document");
@@ -405,7 +460,21 @@ export default function DocumentsPage() {
         </div>
       </TableCell>
       <TableCell>
-        <Badge variant="secondary">{doc.folder}</Badge>
+        <div className="flex items-center gap-1">
+          <Badge variant="secondary">{doc.folder}</Badge>
+          {!doc.allowedRoles.includes("all") && (
+            <Badge
+              variant="outline"
+              className="text-xs"
+              title={`Visible to: ${doc.allowedRoles
+                .map((role) => USER_ROLES[role as keyof typeof USER_ROLES] || role)
+                .join(", ")}`}
+            >
+              <Lock className="h-3 w-3 mr-1" />
+              Restricted
+            </Badge>
+          )}
+        </div>
       </TableCell>
       <TableCell className="text-muted-foreground">{doc.size}</TableCell>
       <TableCell>
@@ -507,6 +576,67 @@ export default function DocumentsPage() {
                   </SelectContent>
                 </Select>
               </div>
+              {uploadDocType === "Other" && (
+                <div className="space-y-2">
+                  <Label htmlFor="doc-custom-type">Specify document type</Label>
+                  <Input
+                    id="doc-custom-type"
+                    value={uploadCustomType}
+                    onChange={(e) => setUploadCustomType(e.target.value)}
+                    placeholder="e.g., NDA, Board Resolution"
+                  />
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label>Who can see this document</Label>
+                <RadioGroup
+                  value={uploadVisibility}
+                  onValueChange={(value) =>
+                    setUploadVisibility(value === "roles" ? "roles" : "all")
+                  }
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="all" id="vis-all" />
+                    <Label htmlFor="vis-all" className="font-normal">
+                      Everyone — all signed-in users
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="roles" id="vis-roles" />
+                    <Label htmlFor="vis-roles" className="font-normal">
+                      Specific roles only
+                    </Label>
+                  </div>
+                </RadioGroup>
+                {uploadVisibility === "roles" && (
+                  <div className="grid grid-cols-2 gap-2 rounded-md border p-3">
+                    {Object.entries(USER_ROLES).map(([key, label]) => (
+                      <div key={key} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`role-${key}`}
+                          checked={uploadRoles.includes(key)}
+                          onCheckedChange={(checked) =>
+                            setUploadRoles((prev) =>
+                              checked
+                                ? [...prev, key]
+                                : prev.filter((role) => role !== key)
+                            )
+                          }
+                        />
+                        <Label
+                          htmlFor={`role-${key}`}
+                          className="font-normal text-sm"
+                        >
+                          {label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  LIFT Staff and Platform Admins can always see every document.
+                </p>
+              </div>
               {uploadError && (
                 <p className="text-sm text-destructive">{uploadError}</p>
               )}
@@ -521,7 +651,13 @@ export default function DocumentsPage() {
               </Button>
               <Button
                 onClick={handleUpload}
-                disabled={isUploading || !uploadFile || !uploadDocType}
+                disabled={
+                  isUploading ||
+                  !uploadFile ||
+                  !uploadDocType ||
+                  (uploadDocType === "Other" && !uploadCustomType.trim()) ||
+                  (uploadVisibility === "roles" && uploadRoles.length === 0)
+                }
               >
                 {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isUploading ? "Uploading..." : "Upload"}
