@@ -15,7 +15,7 @@ export interface Requester {
 }
 
 const ADMIN_ROLES = new Set(["admin", "platform_admin"]);
-const STAFF_ROLES = new Set(["admin", "platform_admin", "team", "team_member", "consultant", "partner_user", "cmmc_instructor", "qa_reviewer"]);
+const STAFF_ROLES = new Set(["admin", "platform_admin", "staff", "team", "team_member", "consultant", "partner_user", "cmmc_instructor", "qa_reviewer"]);
 
 /** Resolves the current user from the session cookie and their users document. */
 export async function getRequester(): Promise<Requester | null> {

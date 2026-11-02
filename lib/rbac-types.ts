@@ -19,6 +19,7 @@ export type UserRole =
   | "buyer"
   | "cmmc_instructor"
   | "marketing_staff"
+  | "staff"
   | "platform_admin";
 
 export const USER_ROLES: Record<UserRole, string> = {
@@ -29,6 +30,7 @@ export const USER_ROLES: Record<UserRole, string> = {
   buyer: "Buyer",
   cmmc_instructor: "CMMC Instructor",
   marketing_staff: "Marketing Staff",
+  staff: "LIFT Staff",
   platform_admin: "Platform Admin",
 };
 
@@ -173,6 +175,40 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "event:read",
     "event:update",
     "event:manage",
+  ],
+  // LIFT program staff — broad read/support access across member data,
+  // without user deletion or platform/system configuration powers.
+  staff: [
+    "proof_pack:create",
+    "proof_pack:read",
+    "proof_pack:update",
+    "proof_pack:review",
+    "proof_pack:share",
+    "lead:create",
+    "lead:read",
+    "lead:update",
+    "lead:assign",
+    "lead:view_all",
+    "introduction:request",
+    "introduction:read",
+    "introduction:respond",
+    "introduction:view_all",
+    "cohort:create",
+    "cohort:read",
+    "cohort:update",
+    "cohort:enroll",
+    "cohort:manage",
+    "content:create",
+    "content:read",
+    "content:update",
+    "revenue:view_own",
+    "revenue:view_all",
+    "event:create",
+    "event:read",
+    "event:update",
+    "event:manage",
+    "user:read",
+    "user:update",
   ],
   platform_admin: [
     // All permissions

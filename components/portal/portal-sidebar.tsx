@@ -751,9 +751,20 @@ const aiItems = [
 // All available roles for the role switcher
 const AVAILABLE_ROLES = [
   { value: "admin", label: "Admin" },
+  { value: "staff", label: "Staff" },
   { value: "team_member", label: "Team member" },
   { value: "client", label: "Client" },
   { value: "platform_admin", label: "Platform Admin" },
+];
+
+// Modules surfaced to LIFT staff — Team Members plus the member-facing SVP
+// sections. Rendered as its own "Staff" group for non-admin staff users.
+const staffItems = [
+  {
+    title: "Team members",
+    href: "/portal/admin/team-members",
+    icon: UserCog,
+  },
 ];
 
 // Define which sections are visible for each SVP role
@@ -762,6 +773,8 @@ const SVP_ROLE_SECTIONS: Record<string, string[]> = {
   admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin", "consortiumMember"],
   // SVP Platform Admin sees all sections
   platform_admin: ["svpSme", "svpPartner", "svpBuyer", "svpQa", "svpInstructor", "svpAdmin", "consortiumMember"],
+  // LIFT staff see the member-facing SVP sections
+  staff: ["svpPartner", "svpInstructor", "consortiumMember"],
   sme_user: ["svpSme"],
   partner_user: ["svpPartner"],
   buyer: ["svpBuyer"],
@@ -805,6 +818,15 @@ export function PortalSidebar() {
   const [usersList, setUsersList] = useState<Array<{ id: string; email: string; displayName: string }>>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const isAdmin = actualProfile?.role === "admin" || actualProfile?.svpRole === "platform_admin";
+  // LIFT staff get the same role/people switchers as admins, plus the
+  // member-facing module sections, but not the admin-only tooling.
+  const isStaff =
+    actualProfile?.role === "staff" ||
+    actualProfile?.svpRole === "staff" ||
+    (actualProfile?.svpRoles?.includes("staff") ?? false);
+  const canSwitch = isAdmin || isStaff;
+  // Switcher reset option — the viewer's own role key in AVAILABLE_ROLES
+  const ownRoleKey = isAdmin ? "admin" : "staff";
   
   // Check if user profile is complete - if not, show only Profile navigation
   const profileComplete = isProfileComplete(profile);
@@ -824,9 +846,9 @@ export function PortalSidebar() {
     return effectiveRoles.some((role) => (SVP_ROLE_SECTIONS[role] || []).includes(sectionKey));
   };
 
-  // Load list of users for admin impersonation switcher
+  // Load list of users for the impersonation switcher (admins and staff)
   useEffect(() => {
-    if (!db || !isAdmin) {
+    if (!db || !canSwitch) {
       setUsersList([]);
       return;
     }
@@ -863,7 +885,7 @@ export function PortalSidebar() {
     };
 
     loadUsers();
-  }, [isAdmin, actualProfile?.id]);
+  }, [canSwitch, actualProfile?.id]);
 
   // Load navigation settings from Firebase
   useEffect(() => {
@@ -938,6 +960,8 @@ export function PortalSidebar() {
   const [openSections, setOpenSections] = useState({
     // Client-facing LIFT group - always at the top
     myLift: true,
+    // LIFT program staff group
+    staff: true,
     // SVP Platform sections - at top, open by default
     svpSme: true,
     svpPartner: true,
@@ -961,6 +985,7 @@ export function PortalSidebar() {
       setOpenSections(prev => ({
         ...prev,
         myLift: true,
+        staff: true,
         other: true,
         navigation: true,
         company: true,
@@ -1097,6 +1122,49 @@ export function PortalSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+        )}
+
+            {/* ============================================ */}
+            {/* STAFF SECTION - LIFT program staff modules */}
+            {/* ============================================ */}
+            {isStaff && !isAdmin && (sectionHasMatchingItems(staffItems)) && (
+        <Collapsible open={openSections.staff} onOpenChange={() => toggleSection("staff")}>
+          <SidebarGroup>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="cursor-pointer hover:bg-sidebar-accent/50 rounded-md flex items-center justify-between pr-2">
+                <span className="flex items-center gap-2">
+                  <UserCog className="h-3 w-3 text-blue-500" />
+                  Staff
+                </span>
+                {openSections.staff ? (
+                  <ChevronDown className="h-4 w-4 text-sidebar-foreground/60" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-sidebar-foreground/60" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {filterNavItemsBySearch(staffItems).map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
+                        tooltip={item.title}
+                      >
+                        <Link href={item.href}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </CollapsibleContent>
@@ -1710,16 +1778,16 @@ export function PortalSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
-        {/* Admin Role Switcher */}
-        {isAdmin && (
+        {/* Admin/Staff Role Switcher */}
+        {canSwitch && (
           <div className="px-3 py-2 border-b border-sidebar-border">
             <div className="flex items-center gap-2 mb-2">
               <UserCheck className="h-4 w-4 text-sidebar-foreground/60" />
               <span className="text-xs font-medium text-sidebar-foreground/60">Preview as Role</span>
             </div>
             <Select
-              value={previewRole || "admin"}
-              onValueChange={(value) => setPreviewRole(value === "admin" ? null : value)}
+              value={previewRole || ownRoleKey}
+              onValueChange={(value) => setPreviewRole(value === ownRoleKey ? null : value)}
             >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue placeholder="Select role to preview" />
@@ -1729,7 +1797,7 @@ export function PortalSidebar() {
                   <SelectItem key={role.value} value={role.value} className="text-xs">
                     <div className="flex items-center gap-2">
                       {role.label}
-                      {role.value === "admin" && (
+                      {role.value === ownRoleKey && (
                         <Badge variant="outline" className="text-[10px] h-4">Your Role</Badge>
                       )}
                     </div>
@@ -1746,8 +1814,8 @@ export function PortalSidebar() {
           </div>
         )}
 
-        {/* Admin User Impersonation Switcher */}
-        {isAdmin && (
+        {/* Admin/Staff User Impersonation Switcher */}
+        {canSwitch && (
           <div className="px-3 py-2 border-b border-sidebar-border">
             <div className="flex items-center gap-2 mb-2">
               <Users className="h-4 w-4 text-sidebar-foreground/60" />

@@ -116,10 +116,34 @@ export async function POST(req: NextRequest) {
         hasChangedPassword: false,
         isTempPassword: true,
         ...(companyId ? { companyId } : {}),
-        ...(companyName ? { companyName } : {}),
+        ...(companyName ? { companyName, company: companyName } : {}),
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       });
+
+    // LIFT staff invites also get a teamMembers record tagged "kdm-staff" so
+    // they appear in the LIFT Staff group on the Team Members page. The doc id
+    // matches the auth UID so the member can update their own record.
+    if (role === "staff") {
+      await db
+        .collection("teamMembers")
+        .doc(userRecord.uid)
+        .set({
+          id: userRecord.uid,
+          firebaseUid: userRecord.uid,
+          firstName,
+          lastName,
+          emailPrimary: email,
+          expertise: "LIFT Staff",
+          ...(companyName ? { company: companyName } : {}),
+          role: "team",
+          status: "active",
+          tags: ["kdm-staff"],
+          showOnTeamPage: false,
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        });
+    }
 
     // Log the invite in the audit trail
     await db.collection("auditLogs").add({

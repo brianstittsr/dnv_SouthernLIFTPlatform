@@ -47,6 +47,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { COLLECTIONS, type OpportunityDoc } from "@/lib/schema";
 import { logActivity } from "@/lib/activity-logger";
+import { useUserProfile } from "@/contexts/user-profile-context";
 
 interface OpportunityDisplay {
   id: string;
@@ -94,10 +95,13 @@ function formatDate(date: Date) {
 }
 
 export default function OpportunitiesPage() {
+  const { profile } = useUserProfile();
   const [opportunities, setOpportunities] = useState<OpportunityDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState("All Stages");
+  // Staff/admin default to the company-grouped view; other members can toggle it.
+  const [groupByCompany, setGroupByCompany] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!db) {
@@ -169,6 +173,31 @@ export default function OpportunitiesPage() {
     return matchesSearch && matchesStage;
   });
 
+  // Company grouping — staff and admins see every company's opportunities.
+  const isStaffViewer =
+    profile.role === "admin" ||
+    profile.role === "staff" ||
+    profile.svpRole === "platform_admin" ||
+    profile.svpRole === "staff" ||
+    (profile.svpRoles?.includes("staff") ?? false);
+  const showGrouped = groupByCompany ?? isStaffViewer;
+
+  const groupedByCompany = showGrouped
+    ? filteredOpportunities.reduce<Record<string, OpportunityDisplay[]>>((acc, opp) => {
+        const key = opp.company || "No organization";
+        (acc[key] ||= []).push(opp);
+        return acc;
+      }, {})
+    : null;
+
+  const groupedCompanyNames = groupedByCompany
+    ? Object.keys(groupedByCompany).sort((a, b) => {
+        if (a === "No organization") return 1;
+        if (b === "No organization") return -1;
+        return a.localeCompare(b);
+      })
+    : [];
+
   // Calculate stats
   const totalValue = filteredOpportunities.reduce((sum, opp) => sum + opp.value, 0);
   const weightedValue = filteredOpportunities.reduce(
@@ -188,6 +217,88 @@ export default function OpportunitiesPage() {
   const closedWon = opportunities.filter((opp) => opp.stage === "closed-won").length;
   const closedLost = opportunities.filter((opp) => opp.stage === "closed-lost").length;
   const winRate = closedWon + closedLost > 0 ? Math.round((closedWon / (closedWon + closedLost)) * 100) : 0;
+
+  const renderOppRow = (opp: OpportunityDisplay) => (
+    <TableRow key={opp.id}>
+      <TableCell>
+        <div>
+          <Link
+            href={`/portal/opportunities/${opp.id}`}
+            className="font-medium hover:underline"
+          >
+            {opp.name}
+          </Link>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Building className="h-3 w-3" />
+            {opp.company || "No organization"}
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge className={getStageColor(opp.stage)}>{formatStage(opp.stage)}</Badge>
+      </TableCell>
+      <TableCell className="font-medium">{formatCurrency(opp.value)}</TableCell>
+      <TableCell>{opp.probability}%</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1 text-sm">
+          <Calendar className="h-3 w-3 text-muted-foreground" />
+          {opp.expectedClose}
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Avatar className="h-6 w-6">
+            <AvatarFallback className="text-xs">{opp.owner.initials}</AvatarFallback>
+          </Avatar>
+          <span className="text-sm">{opp.owner.name}</span>
+        </div>
+      </TableCell>
+      <TableCell>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/portal/opportunities/${opp.id}`}>
+                <Eye className="mr-2 h-4 w-4" />
+                View
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/portal/opportunities/${opp.id}/edit`}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => handleDelete(opp.id, opp.name)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
+  );
+
+  const oppTableHead = (
+    <TableHeader>
+      <TableRow>
+        <TableHead>Opportunity</TableHead>
+        <TableHead>Stage</TableHead>
+        <TableHead>Value</TableHead>
+        <TableHead>Probability</TableHead>
+        <TableHead>Expected Close</TableHead>
+        <TableHead>Owner</TableHead>
+        <TableHead className="w-[50px]"></TableHead>
+      </TableRow>
+    </TableHeader>
+  );
 
   // Loading state
   if (isLoading) {
@@ -310,94 +421,27 @@ export default function OpportunitiesPage() {
                 <SelectItem value="mike">Mike Roberts</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              type="button"
+              variant={showGrouped ? "secondary" : "outline"}
+              onClick={() => setGroupByCompany(!showGrouped)}
+            >
+              <Building className="mr-2 h-4 w-4" />
+              {showGrouped ? "Grouped by company" : "Group by company"}
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Table */}
+      {/* Table — flat list, or grouped by company */}
+      {filteredOpportunities.length === 0 || !showGrouped || !groupedByCompany ? (
       <Card>
         <CardContent className="p-0">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Opportunity</TableHead>
-                <TableHead>Stage</TableHead>
-                <TableHead>Value</TableHead>
-                <TableHead>Probability</TableHead>
-                <TableHead>Expected Close</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
-              </TableRow>
-            </TableHeader>
+            {oppTableHead}
             <TableBody>
               {filteredOpportunities.length > 0 ? (
-                filteredOpportunities.map((opp) => (
-                  <TableRow key={opp.id}>
-                    <TableCell>
-                      <div>
-                        <Link
-                          href={`/portal/opportunities/${opp.id}`}
-                          className="font-medium hover:underline"
-                        >
-                          {opp.name}
-                        </Link>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Building className="h-3 w-3" />
-                          {opp.company || "No organization"}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStageColor(opp.stage)}>{formatStage(opp.stage)}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{formatCurrency(opp.value)}</TableCell>
-                    <TableCell>{opp.probability}%</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3 text-muted-foreground" />
-                        {opp.expectedClose}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-6 w-6">
-                          <AvatarFallback className="text-xs">{opp.owner.initials}</AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{opp.owner.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/portal/opportunities/${opp.id}`}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/portal/opportunities/${opp.id}/edit`}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onClick={() => handleDelete(opp.id, opp.name)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
+                filteredOpportunities.map(renderOppRow)
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="h-48">
@@ -422,6 +466,29 @@ export default function OpportunitiesPage() {
           </Table>
         </CardContent>
       </Card>
+      ) : (
+        groupedCompanyNames.map((company) => (
+          <Card key={company}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Building className="h-4 w-4 text-muted-foreground" />
+                  {company}
+                </span>
+                <Badge variant="outline">{groupedByCompany[company].length}</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                {oppTableHead}
+                <TableBody>
+                  {groupedByCompany[company].map(renderOppRow)}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        ))
+      )}
     </div>
   );
 }

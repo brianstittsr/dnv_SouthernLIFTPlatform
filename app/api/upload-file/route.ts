@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
         folder: documentType,
         uploadedBy,
         uploaderUid: uploaderUid || null,
+        companyId: companyId || null,
         uploadedAt: Timestamp.now(),
         shared: false,
         fileId: stored.fileId,

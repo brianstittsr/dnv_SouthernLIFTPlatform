@@ -53,6 +53,7 @@ import {
   User,
   Loader2,
   FolderOpen,
+  Building2,
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, getDoc, query, orderBy, deleteDoc, doc } from "firebase/firestore";
@@ -80,6 +81,7 @@ interface Document {
   shared: boolean;
   fileId?: string;
   downloadUrl?: string;
+  companyId?: string | null;
 }
 
 interface FolderCount {
@@ -147,6 +149,9 @@ export default function DocumentsPage() {
   const [documentTypes, setDocumentTypes] = useState<string[]>(DEFAULT_DOCUMENT_TYPES);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  // Staff/admin default to the company-grouped view; other members can toggle it.
+  const [groupByCompany, setGroupByCompany] = useState<boolean | null>(null);
+  const [companyNames, setCompanyNames] = useState<Record<string, string>>({});
 
   // Fetch documents from Firestore
   useEffect(() => {
@@ -175,6 +180,7 @@ export default function DocumentsPage() {
             shared: data.shared || false,
             fileId: data.fileId,
             downloadUrl: data.downloadUrl || (data.fileId ? `/api/files/${data.fileId}` : undefined),
+            companyId: data.companyId || null,
           };
         });
 
@@ -211,8 +217,27 @@ export default function DocumentsPage() {
       }
     };
 
+    // Company names for the grouped view — staff/admin can read companies
+    // per the Firestore rules; other members get an empty map and their docs
+    // just bucket under "Unassigned".
+    const fetchCompanyNames = async () => {
+      if (!db) return;
+      try {
+        const snap = await getDocs(collection(db, COLLECTIONS.COMPANIES));
+        const names: Record<string, string> = {};
+        snap.docs.forEach((d) => {
+          const data = d.data();
+          names[d.id] = data.legalCompanyName || data.displayName || "Unnamed company";
+        });
+        setCompanyNames(names);
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
     fetchDocuments();
     fetchDocumentTypes();
+    fetchCompanyNames();
   }, []);
 
   // Filter and sort documents
@@ -271,6 +296,7 @@ export default function DocumentsPage() {
       formData.append("documentType", uploadDocType);
       formData.append("uploadedBy", getDisplayName());
       if (profile.id) formData.append("uploaderUid", profile.id);
+      if (profile.companyId) formData.append("companyId", profile.companyId);
 
       const response = await fetch("/api/upload-file", {
         method: "POST",
@@ -293,6 +319,7 @@ export default function DocumentsPage() {
         shared: false,
         fileId: result.fileId,
         downloadUrl: result.fileUrl,
+        companyId: profile.companyId || null,
       };
       setDocuments((prev) => [newDoc, ...prev]);
       setFolders((prev) => {
@@ -318,6 +345,35 @@ export default function DocumentsPage() {
     }
   };
 
+  // Company grouping — staff and admins see every company's documents;
+  // members can opt into the same grouped view.
+  const isStaffViewer =
+    profile.role === "admin" ||
+    profile.role === "staff" ||
+    profile.svpRole === "platform_admin" ||
+    profile.svpRole === "staff" ||
+    (profile.svpRoles?.includes("staff") ?? false);
+  const showGrouped = groupByCompany ?? isStaffViewer;
+
+  const companyNameFor = (doc: Document) =>
+    (doc.companyId && companyNames[doc.companyId]) || "Unassigned";
+
+  const groupedByCompany = showGrouped
+    ? filteredDocuments.reduce<Record<string, Document[]>>((acc, d) => {
+        const key = companyNameFor(d);
+        (acc[key] ||= []).push(d);
+        return acc;
+      }, {})
+    : null;
+
+  const groupedCompanyNames = groupedByCompany
+    ? Object.keys(groupedByCompany).sort((a, b) => {
+        if (a === "Unassigned") return 1;
+        if (b === "Unassigned") return -1;
+        return a.localeCompare(b);
+      })
+    : [];
+
   // Download document
   const handleDownload = async (doc: Document) => {
     const url = doc.downloadUrl || (doc.fileId ? `/api/files/${doc.fileId}?download=1` : null);
@@ -327,6 +383,81 @@ export default function DocumentsPage() {
     }
     window.open(url, "_blank");
   };
+
+  const renderDocRow = (doc: Document) => (
+    <TableRow key={doc.id}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          {getFileIcon(doc.type)}
+          <div>
+            <p className="font-medium">{doc.name}</p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <User className="h-3 w-3" />
+              {doc.uploadedBy}
+              {doc.shared && (
+                <Badge variant="outline" className="text-xs">
+                  <Share2 className="h-3 w-3 mr-1" />
+                  Shared
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge variant="secondary">{doc.folder}</Badge>
+      </TableCell>
+      <TableCell className="text-muted-foreground">{doc.size}</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          <Clock className="h-3 w-3" />
+          {formatDate(doc.uploadedAt)}
+        </div>
+      </TableCell>
+      <TableCell>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => doc.downloadUrl && window.open(doc.downloadUrl, "_blank")}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDownload(doc)}>
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Share2 className="mr-2 h-4 w-4" />
+              Share
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => handleDelete(doc.id, doc.fileId)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
+  );
+
+  const docTableHead = (
+    <TableHeader>
+      <TableRow>
+        <TableHead>Name</TableHead>
+        <TableHead>Folder</TableHead>
+        <TableHead>Size</TableHead>
+        <TableHead>Uploaded</TableHead>
+        <TableHead className="w-[50px]"></TableHead>
+      </TableRow>
+    </TableHeader>
+  );
 
   return (
     <div className="space-y-6">
@@ -477,23 +608,24 @@ export default function DocumentsPage() {
                     <SelectItem value="size">Size</SelectItem>
                   </SelectContent>
                 </Select>
+                <Button
+                  type="button"
+                  variant={showGrouped ? "secondary" : "outline"}
+                  onClick={() => setGroupByCompany(!showGrouped)}
+                >
+                  <Building2 className="mr-2 h-4 w-4" />
+                  {showGrouped ? "Grouped by company" : "Group by company"}
+                </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Documents Table */}
+          {/* Documents Table — flat list, or grouped by company */}
+          {isLoading || filteredDocuments.length === 0 || !showGrouped || !groupedByCompany ? (
           <Card>
             <CardContent className="p-0">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Folder</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Uploaded</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
+                {docTableHead}
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
@@ -511,73 +643,35 @@ export default function DocumentsPage() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredDocuments.map((doc) => (
-                    <TableRow key={doc.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          {getFileIcon(doc.type)}
-                          <div>
-                            <p className="font-medium">{doc.name}</p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <User className="h-3 w-3" />
-                              {doc.uploadedBy}
-                              {doc.shared && (
-                                <Badge variant="outline" className="text-xs">
-                                  <Share2 className="h-3 w-3 mr-1" />
-                                  Shared
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{doc.folder}</Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{doc.size}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          {formatDate(doc.uploadedAt)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => doc.downloadUrl && window.open(doc.downloadUrl, "_blank")}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDownload(doc)}>
-                              <Download className="mr-2 h-4 w-4" />
-                              Download
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Share2 className="mr-2 h-4 w-4" />
-                              Share
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="text-destructive"
-                              onClick={() => handleDelete(doc.id, doc.fileId)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                    filteredDocuments.map(renderDocRow)
                   )}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
+          ) : (
+            groupedCompanyNames.map((company) => (
+              <Card key={company}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                      {company}
+                    </span>
+                    <Badge variant="outline">{groupedByCompany[company].length}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table>
+                    {docTableHead}
+                    <TableBody>
+                      {groupedByCompany[company].map(renderDocRow)}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     </div>

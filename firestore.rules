@@ -33,6 +33,15 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'sme_user';
     }
     
+    // LIFT program staff and operational roles — read access to shared
+    // business data (opportunities, companies, cohorts) without admin writes.
+    // Mirrors STAFF_ROLES in lib/form-builder/server/context.ts.
+    function isStaff() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'staff', 'team', 'team_member', 'consultant', 'partner_user', 'cmmc_instructor', 'qa_reviewer', 'marketing_staff'] ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.svpRole in ['platform_admin', 'staff']);
+    }
+    
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
@@ -44,9 +53,9 @@ service cloud.firestore {
     
     // ==================== COHORTS ====================
     match /cohorts/{cohortId} {
-      // Anyone authenticated can read published cohorts
+      // Anyone authenticated can read published cohorts; staff can read all
       allow read: if isAuthenticated() && 
-        (resource.data.isPublished == true || isAdmin() || isInstructor());
+        (resource.data.isPublished == true || isAdmin() || isInstructor() || isStaff());
       
       // Only admins and instructors can create cohorts
       allow create: if isInstructor();
@@ -586,6 +595,27 @@ service cloud.firestore {
       allow create, update: if isAdmin();
       allow delete: if isAdmin() ||
         (isAuthenticated() && resource.data.uploaderUid == request.auth.uid);
+    }
+
+    // Sales pipeline opportunities — staff and admins can read all; writes
+    // remain admin-only (same as the previous fallback behavior).
+    match /opportunities/{opportunityId} {
+      allow read: if isAdmin() || isStaff();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Companies — staff and admins can read all for the grouped Documents and
+    // Opportunities views; writes remain admin-only.
+    match /companies/{companyId} {
+      allow read: if isAdmin() || isStaff();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 1:1 scheduling queue — staff and admins read (Team Members page);
+    // writes remain admin-only.
+    match /oneToOneQueue/{queueId} {
+      allow read: if isAdmin() || isStaff();
+      allow create, update, delete: if isAdmin();
     }
 
     // LIFT Form Builder and lifecycle records: client SDK access is denied.

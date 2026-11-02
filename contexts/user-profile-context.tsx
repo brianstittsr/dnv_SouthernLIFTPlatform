@@ -22,11 +22,11 @@ export interface UserProfile {
   location: string;
   bio: string;
   avatarUrl: string;
-  role: "admin" | "affiliate" | "customer" | "team_member" | "consortium_member";
+  role: "admin" | "affiliate" | "customer" | "team_member" | "consortium_member" | "staff";
   
   // SVP Platform role(s)
-  svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member";
-  svpRoles?: ("platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member")[];
+  svpRole?: "platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member" | "staff";
+  svpRoles?: ("platform_admin" | "sme_user" | "partner_user" | "buyer" | "qa_reviewer" | "cmmc_instructor" | "consortium_member" | "staff")[];
   
   // Onboarding fields
   isOnboardingComplete?: boolean;
