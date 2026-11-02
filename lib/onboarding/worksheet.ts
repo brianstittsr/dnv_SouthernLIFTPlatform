@@ -56,6 +56,9 @@ const REFERRAL_OPTIONS = [
   "Partner organization", "Event or workshop", "Social media", "Radio",
   "Referral from another business", "Web search", "Other",
 ];
+const REFERRED_BY_OPTIONS = [
+  "KDM and Associates", "PMO", "AM Laboratory", "SBDC", "Other",
+];
 const ETHNICITY_OPTIONS = [
   "Black or African American", "Hispanic or Latino", "Asian",
   "Native American or Alaska Native", "Native Hawaiian or Pacific Islander",
@@ -154,6 +157,8 @@ export const WORKSHEET_SECTIONS: WorksheetSection[] = [
     fields: [
       { key: "serviceArea", label: "LIFT services you need", kind: "list", options: SERVICE_AREA_OPTIONS, hint: "comma-separated" },
       { key: "referralSource", label: "How you heard about the LIFT Center", kind: "choice", options: REFERRAL_OPTIONS },
+      { key: "referredBy", label: "Which organization referred you to the LIFT program", kind: "choice", options: REFERRED_BY_OPTIONS },
+      { key: "referredByOther", label: "Referring organization name (if Other)", kind: "text", hint: "only if you chose Other" },
       { key: "aiDisclosure", label: "I understand an AI assistant summarizes my answers and staff review them (yes/no)", kind: "bool" },
       { key: "privacyAck", label: "I acknowledge the privacy notice and consent to be contacted (yes/no)", kind: "bool" },
       { key: "emailOptIn", label: "I agree to receive LIFT program emails (yes/no)", kind: "bool" },

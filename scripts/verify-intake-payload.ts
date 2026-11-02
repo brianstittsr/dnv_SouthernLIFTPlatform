@@ -51,6 +51,8 @@ const wizardValues = {
   goals12Months: "One contract",
   preferredServices: ["Government contracting"],
   referralSource: "Web search",
+  referredBy: "PMO",
+  referredByOther: "",
   attachments: [],
   revenueLast12: 50000,
 };

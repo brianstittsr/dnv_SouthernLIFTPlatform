@@ -102,6 +102,11 @@ export function checkWorksheet(answers: WorksheetAnswers): WorksheetIssue[] {
   }
   requireValue("serviceArea", "Select at least one LIFT service area.");
   requireValue("referralSource", "Tell us how you heard about the LIFT Center.");
+  if (requireValue("referredBy", "Tell us which organization referred you to the LIFT program.")) {
+    if (str(answers.referredBy) === "Other" && !str(answers.referredByOther)) {
+      issues.push(issue("referredByOther", true, "Name the organization or person who referred you."));
+    }
+  }
 
   // --- Format checks on optional fields that WERE answered ---
   const website = str(answers.website);
@@ -135,7 +140,7 @@ export function checkWorksheet(answers: WorksheetAnswers): WorksheetIssue[] {
     issues.push(issue("samRegistered", false, "Choose your SAM.gov status.", SAM_OPTIONS));
   }
 
-  for (const key of ["applyingAs", "stage", "employeeCount", "acquisitionMethod", "referralSource", "ownerEthnicity"] as const) {
+  for (const key of ["applyingAs", "stage", "employeeCount", "acquisitionMethod", "referralSource", "referredBy", "ownerEthnicity"] as const) {
     const v = str(answers[key]);
     const spec = field(key);
     if (v && spec.options && !spec.options.includes(v)) {

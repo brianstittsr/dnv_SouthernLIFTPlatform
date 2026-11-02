@@ -34,6 +34,8 @@ const smeFormData: Record<string, unknown> = {
   ownerEthnicity: "Black or African American",
   serviceArea: ["Government contracting"],
   referralSource: "Southern University",
+  referredBy: "KDM and Associates",
+  referredByOther: "",
   aiDisclosure: true, privacyAck: true, emailOptIn: true,
   signatureName: "Jane Doe", attestationConfirmed: true,
 };
@@ -56,6 +58,6 @@ const messyIssues = checkWorksheet(messyNorm);
 console.log("Messy optional fields — blocking:", messyIssues.filter(i=>i.required).length, "| warnings:", messyIssues.filter(i=>!i.required).map(i=>i.key));
 
 // Missing required
-const missing = { ...qcInput, contactEmail: "bad", serviceArea: [], referralSource: "" };
+const missing = { ...qcInput, contactEmail: "bad", serviceArea: [], referralSource: "", referredBy: "" };
 const missIssues = checkWorksheet(missing);
 console.log("Missing required — blocking:", missIssues.filter(i=>i.required).map(i=>i.key));

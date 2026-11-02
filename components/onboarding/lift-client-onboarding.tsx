@@ -49,7 +49,7 @@ const SME_FIELD_STEP: Record<string, number> = {
   contactName: 5, contactTitle: 5, contactEmail: 5, contactPhone: 5,
   mobilePhone: 5, preferredContactMethod: 5, noLinkedin: 5, linkedin: 5,
   ownerEthnicity: 5, secondaryContacts: 5,
-  serviceArea: 6, referralSource: 6, aiDisclosure: 6, privacyAck: 6,
+  serviceArea: 6, referralSource: 6, referredBy: 6, referredByOther: 6, aiDisclosure: 6, privacyAck: 6,
   emailOptIn: 6, attachmentFiles: 6,
 };
 
@@ -134,6 +134,8 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
     goals12Months: d.goals12Months,
     preferredServices: d.preferredServices,
     referralSource: d.referralSource,
+    referredBy: d.referredBy,
+    referredByOther: d.referredBy === "Other" ? d.referredByOther : "",
     attachments: d.attachmentFiles,
   };
   const money = (v: string) => {
@@ -478,6 +480,8 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             preferredServices: smeFormData.preferredServices,
             serviceArea: smeFormData.serviceArea,
             referralSource: smeFormData.referralSource,
+            referredBy: smeFormData.referredBy,
+            referredByOther: smeFormData.referredBy === "Other" ? smeFormData.referredByOther : "",
             acquisitionMethod: smeFormData.acquisitionMethod,
             openToTeaming: smeFormData.openToTeaming === "yes",
             outOfState: smeFormData.outOfState === "yes",
@@ -716,6 +720,14 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         }
         if (!smeFormData.referralSource) {
           toast.error("Please tell us how you heard about the LIFT Center");
+          return false;
+        }
+        if (!smeFormData.referredBy) {
+          toast.error("Please tell us which organization referred you");
+          return false;
+        }
+        if (smeFormData.referredBy === "Other" && !smeFormData.referredByOther.trim()) {
+          toast.error("Please name the organization that referred you");
           return false;
         }
         if (!smeFormData.aiDisclosure) {

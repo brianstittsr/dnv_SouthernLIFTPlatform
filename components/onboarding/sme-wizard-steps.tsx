@@ -135,6 +135,14 @@ const referralSourceOptions = [
   "Other",
 ];
 
+const referredByOptions = [
+  "KDM and Associates",
+  "PMO",
+  "AM Laboratory",
+  "SBDC",
+  "Other",
+];
+
 const employeeRanges = [
   "0 - just the owner(s)",
   "1-4",
@@ -226,6 +234,8 @@ interface SMEFormData {
   preferredServices: string[];
   serviceArea: string[];
   referralSource: string;
+  referredBy: string;
+  referredByOther: string;
   acquisitionMethod: string;
   openToTeaming: string; // "yes" | "no" | ""
   outOfState: string; // "yes" | "no" | ""
@@ -1823,6 +1833,36 @@ export function ProgramStep({ formData, setFormData }: StepProps) {
         </FieldHint>
       </div>
 
+      <div className="space-y-2">
+        <Label htmlFor="referredBy">Which organization referred you to the Southern LIFT program? *</Label>
+        <Select
+          value={formData.referredBy}
+          onValueChange={(value) => setFormData({ ...formData, referredBy: value, referredByOther: value === "Other" ? formData.referredByOther : "" })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select the referring organization" />
+          </SelectTrigger>
+          <SelectContent>
+            {referredByOptions.map((org) => (
+              <SelectItem key={org} value={org}>
+                {org}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {formData.referredBy === "Other" && (
+          <Input
+            value={formData.referredByOther}
+            onChange={(event) => setFormData({ ...formData, referredByOther: event.target.value })}
+            placeholder="Name of the organization or person who referred you"
+          />
+        )}
+        <FieldHint>
+          Lets the LIFT Center credit the partner organization that sent you —
+          a trackable program metric.
+        </FieldHint>
+      </div>
+
       <AttachmentsUpload formData={formData} setFormData={setFormData} />
 
       <div className="space-y-3 border-t pt-4">
@@ -1957,6 +1997,8 @@ export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; s
             <dd>{formData.serviceArea.length > 0 ? formData.serviceArea.join(", ") : "Not provided"}</dd>
             <dt className="text-muted-foreground">Heard about us</dt>
             <dd>{formData.referralSource || "Not provided"}</dd>
+            <dt className="text-muted-foreground">Referred by</dt>
+            <dd>{formData.referredBy ? (formData.referredBy === "Other" && formData.referredByOther ? `${formData.referredBy} — ${formData.referredByOther}` : formData.referredBy) : "Not provided"}</dd>
             <dt className="text-muted-foreground">Documents</dt>
             <dd>{formData.attachmentFiles.length > 0 ? formData.attachmentFiles.map((f) => f.fileName).join(", ") : "None"}</dd>
           </dl>
@@ -2093,6 +2135,8 @@ export const initialSMEFormData: SMEFormData = {
   preferredServices: [],
   serviceArea: [],
   referralSource: "",
+  referredBy: "",
+  referredByOther: "",
   acquisitionMethod: "",
   openToTeaming: "",
   outOfState: "",

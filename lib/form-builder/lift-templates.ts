@@ -32,6 +32,8 @@ const REFERRAL_SOURCES = [
   "Southern University", "Small Business Development Center (SBDC)", "Partner organization", "Event or workshop",
   "Social media", "Radio", "Referral from another business", "Web search", "Other",
 ];
+/** Partner organizations credited with referring a client — a trackable program metric. */
+const REFERRED_BY_ORGS = ["KDM and Associates", "PMO", "AM Laboratory", "SBDC", "Other"];
 const OWNER_ETHNICITY = [
   "Black or African American", "Hispanic or Latino", "Asian", "Native American or Alaska Native",
   "Native Hawaiian or Pacific Islander", "Multi-ethnic", "White", "Other",
@@ -154,6 +156,8 @@ const intake: FormDefinitionInput = {
       helpText: "Shapes your advisor assignment and the workshops and tools we surface first.",
     }),
     field("needs", "referralSource", "How did you hear about the LIFT Center?", "dropdown", { required: true, options: REFERRAL_SOURCES, helpText: "Helps LIFT measure outreach — doesn't affect your matches or service plan.", ...prefill("referral.source"), mappings: to("liftClients", "referralSource") }),
+    field("needs", "referredBy", "Which organization referred you to the LIFT program?", "dropdown", { required: true, options: REFERRED_BY_ORGS, helpText: "Credits the partner organization that sent you — reported to MBDA as a referral metric.", mappings: to("liftClients", "referredByOrg") }),
+    field("needs", "referredByOther", "Name of the referring organization (if other)", "short_text", { showIf: { fieldKey: "referredBy", operator: "equals", value: "Other" }, helpText: "Type the organization or person's name.", mappings: to("liftClients", "referredByOther") }),
     field("needs", "attachments", "Upload any documents that help us understand your business (optional)", "file_upload", {
       helpText: "For example, a capability statement, financial statement, or business plan. Do not upload Social Security numbers or controlled (CUI) documents. An AI assistant reads each file and summarizes it for your advisor.",
       maxFiles: 5,
