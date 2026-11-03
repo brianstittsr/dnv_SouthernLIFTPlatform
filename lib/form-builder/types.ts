@@ -122,6 +122,7 @@ export type CrosswalkKey =
   | "certifications.current"
   | "capabilities.summary"
   | "needs.top"
+  | "needs.topNeeds"
   | "needs.helpWanted"
   | "business.acquisitionMethod"
   | "teaming.open"
@@ -162,6 +163,8 @@ export interface FormField {
   /** Allowed file MIME types for `file_upload`. */
   accept?: string[];
   maxFiles?: number;
+  /** For `multi_select`/`option_picker`/`text_list`: maximum selections allowed. */
+  maxItems?: number;
   /** For `long_text` fields: shows an "Enhance with AI" button that turns bullet points into prose. */
   aiEnhance?: boolean;
   reportingCategory?: "dimension" | "metric" | "identifier" | "open_text" | "compliance_artifact";

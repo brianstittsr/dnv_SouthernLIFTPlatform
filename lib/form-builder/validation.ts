@@ -55,7 +55,7 @@ function schemaForField(field: FormField): z.ZodType<FieldValue> {
     case "platform_lookup":
       return z.string().trim().max(500).refine(optionCheck, "Choose one of the listed options");
     case "multi_select":
-      return z.array(z.string().max(500)).max(100).refine((list) => list.every(optionCheck), "Choose from the listed options");
+      return z.array(z.string().max(500)).max(field.maxItems ?? 100, `Select no more than ${field.maxItems ?? 100}`).refine((list) => list.every(optionCheck), "Choose from the listed options");
     case "option_picker":
       return z.array(z.string().max(500)).min(1, "Add at least one item").max(50).refine((list) => list.every(optionCheck), "Choose from the listed options");
     case "text_list":

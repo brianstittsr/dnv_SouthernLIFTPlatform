@@ -79,6 +79,7 @@ export function fromUserProfile(doc: Source): Prefill {
     "ids.cage": text(doc.cageCode),
     "certifications.current": list(doc.certifications),
     "capabilities.summary": text(doc.coreCapabilities),
+    "needs.topNeeds": list(doc.topNeeds),
   });
 }
 

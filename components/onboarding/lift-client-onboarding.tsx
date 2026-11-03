@@ -43,7 +43,7 @@ const SME_FIELD_STEP: Record<string, number> = {
   interestedInGovcon: 2, samRegistered: 2, dunsUei: 2, cageCode: 2,
   soldToGovernment: 2, certifications: 2, certificationsPlanned: 2,
   seekingCapital: 3, capitalPurpose: 3, capitalAmount: 3, topNeed: 3,
-  barriers: 3, goals12Months: 3, preferredServices: 3,
+  barriers: 3, goals12Months: 3, preferredServices: 3, topNeeds: 3,
   acquisitionMethod: 4, openToTeaming: 4, outOfState: 4, inHouseBD: 4,
   resourcesToInvest: 4,
   contactName: 5, contactTitle: 5, contactEmail: 5, contactPhone: 5,
@@ -133,6 +133,7 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
     barriers: d.barriers,
     goals12Months: d.goals12Months,
     preferredServices: d.preferredServices,
+    topNeeds: d.topNeeds,
     referralSource: d.referralSource,
     referredBy: d.referredBy,
     referredByOther: d.referredBy === "Other" ? d.referredByOther : "",
@@ -478,6 +479,7 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             barriers: smeFormData.barriers,
             goals12Months: smeFormData.goals12Months,
             preferredServices: smeFormData.preferredServices,
+            topNeeds: smeFormData.topNeeds,
             serviceArea: smeFormData.serviceArea,
             referralSource: smeFormData.referralSource,
             referredBy: smeFormData.referredBy,
@@ -654,6 +656,14 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         }
         if (smeFormData.preferredServices.length === 0) {
           toast.error("Please select at least one kind of help you're interested in");
+          return false;
+        }
+        if (smeFormData.topNeeds.length === 0) {
+          toast.error("Please pick the business needs most important to your company (up to 5)");
+          return false;
+        }
+        if (smeFormData.topNeeds.length > 5) {
+          toast.error("Please pick no more than 5 business needs");
           return false;
         }
         return true;

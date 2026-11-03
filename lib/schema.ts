@@ -90,6 +90,8 @@ export interface UserDoc extends Omit<User, "createdAt" | "lastActive" | "capabi
   barriers?: string;
   goals12Months?: string;
   preferredServices?: string[];
+  /** Client's top business needs from lib/lift-business-needs.ts (max 5). */
+  topNeeds?: string[];
   serviceArea?: string[];
   referralSource?: string;
   // B2 operational fields — collected once in onboarding, prefilled into the

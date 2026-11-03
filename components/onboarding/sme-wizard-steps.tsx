@@ -43,6 +43,7 @@ import { PscListInput } from "@/components/onboarding/psc-list-input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { LIFT_SERVICE_AREAS } from "@/lib/form-builder/controls";
+import { BUSINESS_NEEDS, MAX_BUSINESS_NEED_SELECTIONS } from "@/lib/lift-business-needs";
 import type { UploadRef } from "@/lib/form-builder/types";
 
 const certificationTypes = [
@@ -232,6 +233,7 @@ interface SMEFormData {
   barriers: string;
   goals12Months: string;
   preferredServices: string[];
+  topNeeds: string[];
   serviceArea: string[];
   referralSource: string;
   referredBy: string;
@@ -1656,6 +1658,81 @@ export function NeedsGoalsStep({ formData, setFormData }: StepProps) {
           ))}
         </div>
       </div>
+
+      <div>
+        <div className="flex items-baseline justify-between gap-4">
+          <Label className="text-base">
+            Which business needs are most important to your company?
+          </Label>
+          <span className={cn(
+            "text-xs font-medium",
+            formData.topNeeds.length >= MAX_BUSINESS_NEED_SELECTIONS ? "text-primary" : "text-muted-foreground"
+          )}>
+            {formData.topNeeds.length} of {MAX_BUSINESS_NEED_SELECTIONS} selected
+          </span>
+        </div>
+        <FieldHint className="mb-4">
+          The priority list for Louisiana companies — pick your top {MAX_BUSINESS_NEED_SELECTIONS}.
+          This drives which advisors, trainings, and resources we prioritize for you.
+        </FieldHint>
+        <div className="grid md:grid-cols-2 gap-3">
+          {BUSINESS_NEEDS.map((need) => {
+            const selected = formData.topNeeds.includes(need.label);
+            const atCap = formData.topNeeds.length >= MAX_BUSINESS_NEED_SELECTIONS;
+            return (
+              <div
+                key={need.rank}
+                className={`flex items-start space-x-3 p-3 border rounded-lg transition-colors ${
+                  selected
+                    ? "border-primary bg-primary/5"
+                    : atCap
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer hover:bg-muted"
+                }`}
+                onClick={() => {
+                  if (!selected && atCap) return;
+                  setFormData({
+                    ...formData,
+                    topNeeds: selected
+                      ? formData.topNeeds.filter((item) => item !== need.label)
+                      : [...formData.topNeeds, need.label],
+                  });
+                }}
+              >
+                <Checkbox
+                  checked={selected}
+                  disabled={!selected && atCap}
+                  onCheckedChange={() => {
+                    if (!selected && atCap) return;
+                    setFormData({
+                      ...formData,
+                      topNeeds: selected
+                        ? formData.topNeeds.filter((item) => item !== need.label)
+                        : [...formData.topNeeds, need.label],
+                    });
+                  }}
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Label className={selected || !atCap ? "cursor-pointer" : "cursor-not-allowed"}>
+                      {need.label}
+                    </Label>
+                    <Badge
+                      variant={need.priority === "Critical" ? "default" : "secondary"}
+                      className="text-[10px] px-1.5 py-0 shrink-0"
+                    >
+                      {need.priority}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                    {need.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1987,6 +2064,8 @@ export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; s
             <dd>{formData.topNeed || "Not provided"}</dd>
             <dt className="text-muted-foreground">Help wanted</dt>
             <dd>{formData.preferredServices.length > 0 ? formData.preferredServices.join(", ") : "Not provided"}</dd>
+            <dt className="text-muted-foreground">Top needs</dt>
+            <dd>{formData.topNeeds.length > 0 ? formData.topNeeds.join(", ") : "Not provided"}</dd>
           </dl>
         </div>
 
@@ -2133,6 +2212,7 @@ export const initialSMEFormData: SMEFormData = {
   barriers: "",
   goals12Months: "",
   preferredServices: [],
+  topNeeds: [],
   serviceArea: [],
   referralSource: "",
   referredBy: "",

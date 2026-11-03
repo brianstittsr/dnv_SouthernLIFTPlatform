@@ -119,11 +119,29 @@ export function FieldControl({ field, value, values, error, slug, onChange, emph
       return choiceGroup(["Yes", "No"], (option) => value === option.toLowerCase(), (option) => onChange(option.toLowerCase()), false);
     case "multi_select": {
       const current = Array.isArray(value) ? (value as string[]) : [];
-      return choiceGroup(
-        field.options ?? [],
-        (option) => current.includes(option),
-        (option) => onChange(current.includes(option) ? current.filter((item) => item !== option) : [...current, option]),
-        true
+      const cap = field.maxItems;
+      const atCap = typeof cap === "number" && current.length >= cap;
+      return (
+        <div className="space-y-1">
+          {choiceGroup(
+            field.options ?? [],
+            (option) => current.includes(option),
+            (option) =>
+              onChange(
+                current.includes(option)
+                  ? current.filter((item) => item !== option)
+                  : atCap
+                    ? current
+                    : [...current, option]
+              ),
+            true
+          )}
+          {typeof cap === "number" && (
+            <p className={cn("text-xs", atCap ? "text-primary font-medium" : "text-muted-foreground")}>
+              {current.length} of {cap} selected
+            </p>
+          )}
+        </div>
       );
     }
     case "checkbox":

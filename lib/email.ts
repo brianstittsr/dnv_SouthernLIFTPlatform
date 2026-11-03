@@ -559,18 +559,9 @@ export const emailTemplates = {
       </div>` : ''}
       <div style="margin: 24px 0; text-align: center;">
         <a href="${params.signInUrl}" style="background: #0066cc; color: white; padding: 12px 28px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-          Sign In to the Platform
+          Log into the LIFT Platform
         </a>
       </div>
-      <h3>Platform Benefits:</h3>
-      <ul>
-        <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
-        <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
-        <li><strong>CMMC Course Training:</strong> Access CMMC certification programs</li>
-        <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
-        <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
-        <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
-      </ul>
       <p>If you have any questions, please contact our support team at support@kdm-assoc.com.</p>
       <p>Best regards,<br>The KDM & Associates Team</p>
     `,

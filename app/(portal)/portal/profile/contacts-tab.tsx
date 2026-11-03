@@ -82,15 +82,6 @@ const INVITATION_TEMPLATE = {
   body: (inviterName: string, inviterCompany: string) => `
     <h2>You've been invited to join the KDM & Associates SVP Platform!</h2>
     <p><strong>${inviterName}</strong> from <strong>${inviterCompany}</strong> has invited you to join the KDM Consortium Platform.</p>
-    <h3>Platform Benefits:</h3>
-    <ul>
-      <li><strong>Proof Packs:</strong> Showcase your compliance and certifications to government buyers</li>
-      <li><strong>Buyer Connections:</strong> Get introduced to government and prime contractor buyers</li>
-      <li><strong>CMMC Course Training:</strong> Access CMMC certification programs</li>
-      <li><strong>Lead Generation:</strong> Receive qualified leads matched to your capabilities</li>
-      <li><strong>SVP Tools:</strong> Access AI-powered tools for proposal creation, lead gen, and more</li>
-      <li><strong>Network:</strong> Connect with other suppliers and partners in the ecosystem</li>
-    </ul>
     <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.kdm-assoc.com'}/sign-up" style="background: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 16px 0;">Join the Platform</a></p>
     <p>If you have any questions, please contact our support team at support@kdm-assoc.com.</p>
     <p>Best regards,<br>The KDM & Associates Team</p>

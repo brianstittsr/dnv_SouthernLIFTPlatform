@@ -4,6 +4,7 @@
  * Seeded through POST /api/lift/forms/seed (admin). Forms stay editable in the Form Studio.
  */
 import { LIFT_SERVICE_AREAS, NAICS_OPTIONS } from "./controls";
+import { BUSINESS_NEED_OPTIONS, MAX_BUSINESS_NEED_SELECTIONS } from "../lift-business-needs";
 import type { FormDefinitionInput } from "./form-schema";
 import type { CrosswalkKey, FieldMapping, FormField, FormFieldType, LiftTarget, MappingTransform } from "./types";
 
@@ -154,6 +155,13 @@ const intake: FormDefinitionInput = {
       required: true,
       options: ["One-on-one counseling", "Workshops and training", "Capital readiness", "Government contracting", "Advanced Manufacturing program", "Digital and AI adoption"],
       helpText: "Shapes your advisor assignment and the workshops and tools we surface first.",
+    }),
+    field("needs", "topNeeds", `Which business needs are most important to your company? (select your top ${MAX_BUSINESS_NEED_SELECTIONS})`, "multi_select", {
+      options: BUSINESS_NEED_OPTIONS,
+      maxItems: MAX_BUSINESS_NEED_SELECTIONS,
+      helpText: "The priority list for Louisiana companies — pick your top five. This drives which advisors, trainings, and resources we prioritize for you.",
+      ...prefill("needs.topNeeds"),
+      mappings: to("liftClients", "needs.topNeeds"),
     }),
     field("needs", "referralSource", "How did you hear about the LIFT Center?", "dropdown", { required: true, options: REFERRAL_SOURCES, helpText: "Helps LIFT measure outreach — doesn't affect your matches or service plan.", ...prefill("referral.source"), mappings: to("liftClients", "referralSource") }),
     field("needs", "referredBy", "Which organization referred you to the LIFT program?", "dropdown", { required: true, options: REFERRED_BY_ORGS, helpText: "Credits the partner organization that sent you — reported to MBDA as a referral metric.", mappings: to("liftClients", "referredByOrg") }),

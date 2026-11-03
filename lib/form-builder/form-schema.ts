@@ -20,7 +20,7 @@ const crosswalkKeys = [
   "business.state", "business.zip", "business.parish", "business.website", "business.naics",
   "business.revenueBand", "business.annualRevenue", "business.employeesFullTime", "business.employeesPartTime",
   "business.applyingAs", "business.minorityCertification", "contact.email", "contact.phone", "contact.mobile", "ids.uei", "ids.cage",
-  "certifications.current", "capabilities.summary", "needs.top", "needs.helpWanted", "business.acquisitionMethod",
+  "certifications.current", "capabilities.summary", "needs.top", "needs.topNeeds", "needs.helpWanted", "business.acquisitionMethod",
   "teaming.open", "resources.toInvest", "operations.outOfState", "operations.inHouseBD", "agencies.target",
   "referral.source", "referral.by", "serviceArea.primary", "social.linkedin",
 ] as const;
@@ -74,6 +74,7 @@ export const formFieldSchema = z.object({
     .optional(),
   accept: z.array(z.string().max(160)).max(20).optional(),
   maxFiles: z.number().int().min(1).max(10).optional(),
+  maxItems: z.number().int().min(1).max(100).optional(),
   aiEnhance: z.boolean().optional(),
   reportingCategory: z.enum(["dimension", "metric", "identifier", "open_text", "compliance_artifact"]).optional(),
   recommendedChartType: z.enum(["bar", "pie", "line", "kpi", "none"]).optional(),
