@@ -6,6 +6,7 @@ import { evaluateSession } from "@/lib/interview/server/engine";
 import { resolveInterviewKey } from "@/lib/interview/server/invites";
 import { incrementInterviewCounter, updateInvite, updateSession } from "@/lib/interview/server/repo";
 import { requireInterviewSession } from "@/lib/interview/server/session-guard";
+import { archiveInterviewTranscript } from "@/lib/interview/server/transcript-pdf";
 
 const completeSchema = z.object({ sessionId: z.string().min(1).max(200) });
 
@@ -55,6 +56,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
     await incrementInterviewCounter(interview.id, "sessionsCompleted");
     await writeAudit("interview.sessionCompleted", session.id, null, { interviewId: interview.id, endedEarly: true });
+
+    // Archive the transcript + evaluation in portal Documents — staff see it;
+    // platform-member respondents see it under their own Documents. Best-effort.
+    try {
+      await archiveInterviewTranscript(interview, { ...session, messages, evaluation }, invite);
+    } catch (archiveError) {
+      console.error("Interview transcript archive failed:", archiveError);
+    }
 
     return NextResponse.json({ data: { finished: true, reply: closing } });
   } catch (error) {

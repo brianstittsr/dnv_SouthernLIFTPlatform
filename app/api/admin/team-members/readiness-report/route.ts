@@ -4,6 +4,8 @@ import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { sendEmail } from "@/lib/email";
 import { buildReadinessReport } from "@/lib/readiness-report";
+import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
+import { ADMIN_ONLY_ROLES, archiveGeneratedDocument } from "@/lib/documents/archive";
 
 /**
  * POST /api/admin/team-members/readiness-report
@@ -44,6 +46,25 @@ export async function POST(req: NextRequest) {
     }
 
     const report = buildReadinessReport(members);
+
+    // Archive the report in portal Documents (dedupes per day). Best-effort.
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const pdf = await renderHtmlToPdf(report.html);
+      await archiveGeneratedDocument({
+        buffer: pdf,
+        fileName: `KDM-Readiness-Report-${today}.pdf`,
+        contentType: "application/pdf",
+        category: "readiness-reports",
+        folder: "Readiness Reports",
+        tags: ["Readiness Report", "GovCon"],
+        allowedRoles: ADMIN_ONLY_ROLES,
+        uploadedBy: "KDM Platform",
+        source: { type: "readiness-report", id: today },
+      });
+    } catch (archiveError) {
+      console.error("Readiness report archive failed:", archiveError);
+    }
 
     const result = await sendEmail({
       to,

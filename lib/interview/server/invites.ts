@@ -79,7 +79,7 @@ export async function sendInvites(
         estimatedMinutes: interview.estimatedMinutes,
         senderName: requester.name,
         interviewUrl: link,
-      });
+      }, { archive: false }); // batch summary archived by the invites route instead
       emailSent = res.success;
       if (!res.success) error = res.error || "Email send failed";
     } catch (e) {

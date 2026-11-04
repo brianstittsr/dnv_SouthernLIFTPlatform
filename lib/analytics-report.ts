@@ -1,5 +1,6 @@
 import { sendEmail } from "@/lib/email";
 import { generatePdfFromHtml } from "@/lib/pdf-utils";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 
 export interface VercelAnalyticsData {
   totalVisitors: number;
@@ -283,6 +284,22 @@ export async function sendAnalyticsReport(
         content: pdfBuffer,
         contentType: "application/pdf",
       });
+
+      // File the report PDF in portal Documents — dedupes by report window.
+      try {
+        await archiveGeneratedDocument({
+          buffer: pdfBuffer,
+          fileName: `kdm-analytics-report-${report.from}-to-${report.to}.pdf`,
+          contentType: "application/pdf",
+          category: "analytics-reports",
+          folder: "Analytics Reports",
+          tags: ["Analytics", `${report.from} → ${report.to}`],
+          uploadedBy: "KDM Platform Analytics",
+          source: { type: "analytics-report", id: `${report.from}_${report.to}` },
+        });
+      } catch (archiveError) {
+        console.error("Analytics report archive failed:", archiveError);
+      }
     } catch (pdfError) {
       console.error("PDF generation failed:", pdfError);
     }

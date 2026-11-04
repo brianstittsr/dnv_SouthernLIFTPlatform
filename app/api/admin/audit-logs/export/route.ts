@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, db } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import { ADMIN_ONLY_ROLES, archiveGeneratedDocument } from "@/lib/documents/archive";
 
 /**
  * GET /api/admin/audit-logs/export
@@ -109,6 +110,23 @@ export async function GET(req: NextRequest) {
     ];
 
     const csvContent = csvRows.join("\n");
+
+    // File the export in portal Documents (admin-only). Best-effort.
+    try {
+      await archiveGeneratedDocument({
+        buffer: Buffer.from(csvContent, "utf8"),
+        fileName: `audit-logs-${new Date().toISOString().split("T")[0]}.csv`,
+        contentType: "text/csv",
+        category: "audit-exports",
+        folder: "Audit Exports",
+        tags: ["Audit Log", `${logs.length} rows`],
+        allowedRoles: ADMIN_ONLY_ROLES,
+        uploadedBy: decodedToken.email ?? "Platform admin",
+        uploaderUid: decodedToken.uid,
+      });
+    } catch (archiveError) {
+      console.error("Audit export archive failed:", archiveError);
+    }
 
     // Return CSV file
     return new NextResponse(csvContent, {

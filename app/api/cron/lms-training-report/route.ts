@@ -13,6 +13,7 @@ import { generateNarrative, headlineMetrics, reportTitle, resolvePeriod } from "
 import { buildReportHtml } from "@/lib/reports/report-html";
 import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
 import { sendEmail } from "@/lib/email";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 import type { SerializedLiftReport } from "@/lib/reports/types";
 
 export const runtime = "nodejs";
@@ -83,6 +84,24 @@ async function runReport(request: NextRequest): Promise<NextResponse> {
   const result: Record<string, unknown> = { reportId: ref.id, title: stored.title, recipients: 0 };
   if (recipients.length > 0) {
     const pdf = await renderHtmlToPdf(buildReportHtml(serialized));
+
+    // File the report PDF in portal Documents for quick reference. Best-effort.
+    try {
+      const archived = await archiveGeneratedDocument({
+        buffer: pdf,
+        fileName: `lms-training-report-${period.label.replace(/\s+/g, "_")}.pdf`,
+        contentType: "application/pdf",
+        category: "lift-reports",
+        folder: "LIFT Reports",
+        tags: ["LIFT", "lms_training", period.label],
+        uploadedBy: "Scheduled LMS training report",
+        source: { type: "lift-report", id: ref.id, label: stored.title.slice(0, 80) },
+      });
+      await ref.update({ documentId: archived.documentId });
+    } catch (archiveError) {
+      console.error("[cron] lms-training-report archive failed:", archiveError);
+    }
+
     const lms = (pack.lms ?? {}) as Record<string, unknown>;
     const summaryLines = [
       `Courses: ${lms.coursesTotal ?? 0} (${lms.coursesPublished ?? 0} published)`,

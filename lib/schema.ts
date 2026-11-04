@@ -291,6 +291,14 @@ export interface DocumentDoc extends Omit<AppDocument, "createdAt" | "uploadedBy
   createdAt: Timestamp;
   uploadedById: string; // Reference to user
   fileId: string; // fileBlobs document id (file bytes stored as base64 chunks)
+  /** Individual Firebase uids that can read the record (generated outputs). */
+  visibleToUids?: string[];
+  /** Generator kind for platform-archived outputs (sent-email, certificate, ...). */
+  sourceType?: string;
+  /** Source record id — dedupe key for archived outputs. */
+  sourceId?: string;
+  /** Human-readable source label shown as a badge. */
+  sourceLabel?: string;
 }
 
 /** Service document in Firestore */

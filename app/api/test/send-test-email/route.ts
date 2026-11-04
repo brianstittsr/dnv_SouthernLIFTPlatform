@@ -96,6 +96,7 @@ If you have any questions about your membership or need support, please contact 
       subject: "Payment Confirmation - KDM Consortium Membership (TEST)",
       html: testEmail,
       text: textContent,
+      archive: false, // test sends don't belong in the Documents archive
     });
 
     if (!emailResult.success) {

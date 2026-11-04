@@ -610,7 +610,8 @@ service cloud.firestore {
     match /documents/{documentId} {
       allow read: if isAdmin() || isStaff() ||
         (isAuthenticated() &&
-          resource.data.get('allowedRoles', ['all']).hasAny(viewerRoles()));
+          (resource.data.get('allowedRoles', ['all']).hasAny(viewerRoles()) ||
+           request.auth.uid in resource.data.get('visibleToUids', [])));
       allow create, update: if isAdmin();
       allow delete: if isAdmin() ||
         (isAuthenticated() && resource.data.uploaderUid == request.auth.uid);

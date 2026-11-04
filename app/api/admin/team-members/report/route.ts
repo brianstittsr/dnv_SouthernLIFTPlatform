@@ -4,6 +4,8 @@ import { db } from "@/lib/firebase-admin";
 import { COLLECTIONS, type TeamMemberDoc } from "@/lib/schema";
 import { sendEmail } from "@/lib/email";
 import { buildTeamMemberReport } from "@/lib/team-member-report";
+import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
+import { ADMIN_ONLY_ROLES, archiveGeneratedDocument } from "@/lib/documents/archive";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,6 +46,25 @@ export async function POST(req: NextRequest) {
     });
 
     const report = buildTeamMemberReport(members);
+
+    // Archive the report in portal Documents (dedupes per day). Best-effort.
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const pdf = await renderHtmlToPdf(report.html);
+      await archiveGeneratedDocument({
+        buffer: pdf,
+        fileName: `KDM-Team-Member-Report-${today}.pdf`,
+        contentType: "application/pdf",
+        category: "team-reports",
+        folder: "Team Reports",
+        tags: ["Team Report"],
+        allowedRoles: ADMIN_ONLY_ROLES,
+        uploadedBy: "KDM Platform",
+        source: { type: "team-report", id: today },
+      });
+    } catch (archiveError) {
+      console.error("Team report archive failed:", archiveError);
+    }
 
     const result = await sendEmail({
       to,

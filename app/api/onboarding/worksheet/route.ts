@@ -5,6 +5,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 import { buildWorksheetDocx } from "@/lib/onboarding/worksheet-docx";
 import { parseWorksheetText } from "@/lib/onboarding/worksheet";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,24 @@ const FILE_NAME = "LIFT-Client-Onboarding-Worksheet.docx";
  */
 export async function GET() {
   const buffer = await buildWorksheetDocx();
+
+  // File the blank worksheet in portal Documents once (deduped) so staff can
+  // grab the current template without re-rendering. Best-effort.
+  try {
+    await archiveGeneratedDocument({
+      buffer,
+      fileName: FILE_NAME,
+      contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      category: "worksheets",
+      folder: "Templates",
+      tags: ["LIFT", "Worksheet", "Template"],
+      uploadedBy: "LIFT Platform",
+      source: { type: "worksheet-template", id: "lift-onboarding-worksheet", label: "Client onboarding worksheet" },
+    });
+  } catch (archiveError) {
+    console.error("Worksheet template archive failed:", archiveError);
+  }
+
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -145,6 +164,31 @@ export async function POST(req: NextRequest) {
         { error: "No answers could be read from that file. Download the worksheet and fill in the fields after each colon." },
         { status: 422 },
       );
+    }
+
+    // Archive the member's completed worksheet in Documents — staff see it and
+    // the member sees their own upload via visibleToUids. Best-effort.
+    try {
+      const userSnap = await userRef.get();
+      const displayName =
+        (userSnap.data()?.displayName as string | undefined) ??
+        (userSnap.data()?.name as string | undefined) ??
+        decodedToken.email ??
+        "Member";
+      await archiveGeneratedDocument({
+        buffer: Buffer.from(bytes),
+        fileName: file.name || "LIFT-Client-Onboarding-Worksheet.docx",
+        contentType: file.type || "application/octet-stream",
+        category: "worksheets",
+        folder: "Onboarding Worksheets",
+        tags: ["LIFT", "Completed Worksheet", displayName],
+        visibleToUids: [uid],
+        uploadedBy: displayName,
+        uploaderUid: uid,
+        companyId: (userSnap.data()?.companyId as string | undefined) ?? null,
+      });
+    } catch (archiveError) {
+      console.error("Completed worksheet archive failed:", archiveError);
     }
 
     return NextResponse.json({ data: { answers, fieldsFilled: filled.length } });

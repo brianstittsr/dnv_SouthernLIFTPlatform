@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRequester } from "@/lib/form-builder/server/context";
 import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 import { buildCertificateHtml, getCertificateById } from "@/lib/lms/certificates-server";
 
 interface RouteContext {
@@ -33,6 +34,25 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const pdf = await renderHtmlToPdf(buildCertificateHtml(cert, verifyUrl));
 
     const fileName = `certificate-${cert.certificateNumber || id}.pdf`;
+
+    // Archive a copy in portal Documents on first render — the certificate
+    // holder sees it under their own Documents via visibleToUids. Best-effort.
+    try {
+      await archiveGeneratedDocument({
+        buffer: pdf,
+        fileName,
+        contentType: "application/pdf",
+        category: "certificates",
+        folder: "Certificates",
+        tags: ["LIFT", "Certificate", cert.courseTitle ?? "", cert.certificateNumber ?? ""],
+        visibleToUids: [cert.userId],
+        uploadedBy: cert.userName ?? "Course participant",
+        uploaderUid: cert.userId,
+        source: { type: "certificate", id: cert.id, label: cert.courseTitle?.slice(0, 80) },
+      });
+    } catch (archiveError) {
+      console.error("[lms] certificate archive failed:", archiveError);
+    }
     return new NextResponse(new Uint8Array(pdf), {
       status: 200,
       headers: {

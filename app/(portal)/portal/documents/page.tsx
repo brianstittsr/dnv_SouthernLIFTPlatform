@@ -114,6 +114,9 @@ interface Document {
   downloadUrl?: string;
   companyId?: string | null;
   allowedRoles: string[];
+  visibleToUids?: string[];
+  sourceType?: string;
+  sourceLabel?: string;
   tags: string[];
 }
 
@@ -223,15 +226,29 @@ export default function DocumentsPage() {
 
       try {
         const docsRef = collection(db, "documents");
-        const q = staffViewer
-          ? query(docsRef, orderBy("uploadedAt", "desc"))
-          : query(
-              docsRef,
-              where("allowedRoles", "array-contains-any", viewerRoleKeys)
-            );
-        const snapshot = await getDocs(q);
 
-        const docs: Document[] = snapshot.docs.map((doc) => {
+        // Members can see docs shared with their roles AND docs addressed to
+        // them individually via visibleToUids (generated outputs like their
+        // own submission PDFs and certificates) — two queries, merged by id.
+        let snapshotDocs;
+        if (staffViewer) {
+          const snapshot = await getDocs(query(docsRef, orderBy("uploadedAt", "desc")));
+          snapshotDocs = snapshot.docs;
+        } else {
+          const [byRole, byUid] = await Promise.all([
+            getDocs(query(docsRef, where("allowedRoles", "array-contains-any", viewerRoleKeys))),
+            // Archives store the Firebase Auth uid — authUid, not the
+            // teamMembers doc id that profile.id may hold.
+            profile.authUid
+              ? getDocs(query(docsRef, where("visibleToUids", "array-contains", profile.authUid)))
+              : Promise.resolve(null),
+          ]);
+          const merged = new Map<string, (typeof byRole.docs)[number]>();
+          for (const d of [...byRole.docs, ...(byUid?.docs ?? [])]) merged.set(d.id, d);
+          snapshotDocs = [...merged.values()];
+        }
+
+        const docs: Document[] = snapshotDocs.map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -251,6 +268,13 @@ export default function DocumentsPage() {
                   (value: unknown): value is string => typeof value === "string"
                 )
               : ["all"],
+            visibleToUids: Array.isArray(data.visibleToUids)
+              ? data.visibleToUids.filter(
+                  (value: unknown): value is string => typeof value === "string"
+                )
+              : undefined,
+            sourceType: typeof data.sourceType === "string" ? data.sourceType : undefined,
+            sourceLabel: typeof data.sourceLabel === "string" ? data.sourceLabel : undefined,
             tags: Array.isArray(data.tags)
               ? data.tags.filter(
                   (value: unknown): value is string => typeof value === "string"
@@ -313,7 +337,7 @@ export default function DocumentsPage() {
     fetchDocuments();
     fetchDocumentTypes();
     fetchCompanyNames();
-  }, [profileLoading, profile.role, profile.svpRole, profile.svpRoles]);
+  }, [profileLoading, profile.role, profile.svpRole, profile.svpRoles, profile.authUid]);
 
   // Filter and sort documents
   const filteredDocuments = documents
@@ -562,6 +586,11 @@ export default function DocumentsPage() {
       <TableCell>
         <div className="flex items-center gap-1 flex-wrap">
           <Badge variant="secondary">{doc.folder}</Badge>
+          {doc.sourceLabel && (
+            <Badge variant="outline" className="text-xs" title={doc.sourceType}>
+              {doc.sourceLabel}
+            </Badge>
+          )}
           {!doc.allowedRoles.includes("all") && (
             <Badge
               variant="outline"

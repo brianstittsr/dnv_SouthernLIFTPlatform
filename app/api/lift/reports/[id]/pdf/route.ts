@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { COLLECTIONS, type LiftReportDoc } from "@/lib/schema";
 import { jsonError, requireDb, serializeFirestore, writeAudit } from "@/lib/form-builder/server/context";
 import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 import { handleRouteError, requireAdminRequester } from "@/lib/form-builder/server/route-helpers";
 import { buildReportHtml } from "@/lib/reports/report-html";
 import type { SerializedLiftReport } from "@/lib/reports/types";
@@ -21,6 +22,25 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const pdf = await renderHtmlToPdf(buildReportHtml(report));
     await writeAudit("report.pdf_exported", id, requester);
     const filename = report.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "lift-report";
+
+    // Archive a copy in portal Documents on first export. Best-effort.
+    try {
+      const archived = await archiveGeneratedDocument({
+        buffer: pdf,
+        fileName: `${filename}.pdf`,
+        contentType: "application/pdf",
+        category: "lift-reports",
+        folder: "LIFT Reports",
+        tags: ["LIFT", report.type, report.periodLabel ?? ""],
+        uploadedBy: report.createdByName,
+        source: { type: "lift-report", id: report.id, label: report.title.slice(0, 80) },
+      });
+      if (!archived.alreadyArchived) {
+        await requireDb().collection(COLLECTIONS.LIFT_REPORTS).doc(report.id).update({ documentId: archived.documentId });
+      }
+    } catch (archiveError) {
+      console.error("LIFT report archive failed:", archiveError);
+    }
     return new NextResponse(new Uint8Array(pdf), {
       headers: {
         "Content-Type": "application/pdf",

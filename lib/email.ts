@@ -10,7 +10,7 @@ import type { Transporter } from 'nodemailer';
 
 type EmailProvider = 'sendgrid' | 'resend' | 'azure_smtp' | 'ms_graph';
 
-interface EmailParams {
+export interface EmailParams {
   to: string | string[];
   subject: string;
   html: string;
@@ -27,9 +27,15 @@ interface EmailParams {
     content: string | Buffer;
     contentType?: string;
   }[];
+  /**
+   * Archive a PDF copy of this email in portal Documents (default true).
+   * Pass false for credential-bearing sends (passwords, reset links) and
+   * bulk paths that archive their own batch record instead.
+   */
+  archive?: boolean;
 }
 
-interface EmailResponse {
+export interface EmailResponse {
   success: boolean;
   messageId?: string;
   error?: string;
@@ -474,16 +480,34 @@ async function sendWithSendGrid(params: EmailParams): Promise<EmailResponse> {
  */
 export async function sendEmail(params: EmailParams): Promise<EmailResponse> {
   const provider = getEmailProvider();
-  
-  if (provider === 'ms_graph') {
-    return sendWithMicrosoftGraph(params);
-  } else if (provider === 'azure_smtp') {
-    return sendWithAzureSMTP(params);
-  } else if (provider === 'sendgrid') {
-    return sendWithSendGrid(params);
-  } else {
-    return sendWithResend(params);
+
+  const result =
+    provider === 'ms_graph'
+      ? await sendWithMicrosoftGraph(params)
+      : provider === 'azure_smtp'
+        ? await sendWithAzureSMTP(params)
+        : provider === 'sendgrid'
+          ? await sendWithSendGrid(params)
+          : await sendWithResend(params);
+
+  // Archive a PDF copy of every sent email in portal Documents — best-effort;
+  // an archive failure must never fail the send. Credential-bearing sends and
+  // bulk paths opt out via params.archive; EMAIL_ARCHIVE_ENABLED=false
+  // disables the archive globally.
+  if (
+    result.success &&
+    params.archive !== false &&
+    process.env.EMAIL_ARCHIVE_ENABLED !== "false"
+  ) {
+    try {
+      const { archiveSentEmail } = await import("@/lib/email-archive");
+      await archiveSentEmail(params, { provider, messageId: result.messageId });
+    } catch (archiveError) {
+      console.error("Sent-email archive failed:", archiveError);
+    }
   }
+
+  return result;
 }
 
 /**
@@ -1295,19 +1319,27 @@ export const emailTemplates = {
 };
 
 /**
+ * Templates whose bodies carry credentials (temporary passwords, reset
+ * links). Copies are never archived to Documents.
+ */
+const CREDENTIAL_TEMPLATES = new Set<keyof typeof emailTemplates>(["userInvitation"]);
+
+/**
  * Send a templated email
  */
 export async function sendTemplatedEmail<T extends keyof typeof emailTemplates>(
   template: T,
   to: string | string[],
-  params: Parameters<typeof emailTemplates[T]>[0]
+  params: Parameters<typeof emailTemplates[T]>[0],
+  options?: { archive?: boolean }
 ): Promise<EmailResponse> {
   const { subject, html, text } = emailTemplates[template](params as any);
-  
+
   return sendEmail({
     to,
     subject,
     html,
     text,
+    archive: options?.archive ?? !CREDENTIAL_TEMPLATES.has(template),
   });
 }

@@ -6,12 +6,14 @@ import { COLLECTIONS } from "@/lib/schema";
 
 /**
  * Portal Documents files are private; visibility lives on the documents
- * record's allowedRoles ('all' or USER_ROLES keys). Staff/admins and the
- * uploader are handled by the caller — this covers role-based sharing.
+ * record's allowedRoles ('all' or USER_ROLES keys) and visibleToUids
+ * (individual member access for generated outputs). Staff/admins and the
+ * uploader are handled by the caller — this covers sharing.
  */
 async function canReadLinkedDocument(
   fileId: string,
-  roles: string[]
+  roles: string[],
+  uid: string
 ): Promise<boolean> {
   if (!db) return false;
   const snapshot = await db
@@ -20,7 +22,12 @@ async function canReadLinkedDocument(
     .limit(1)
     .get();
   if (snapshot.empty) return false;
-  const allowed = snapshot.docs[0].data().allowedRoles;
+  const data = snapshot.docs[0].data();
+  const namedUsers: string[] = Array.isArray(data.visibleToUids)
+    ? data.visibleToUids.filter((value): value is string => typeof value === "string")
+    : [];
+  if (namedUsers.includes(uid)) return true;
+  const allowed = data.allowedRoles;
   const allowedRoles: string[] = Array.isArray(allowed)
     ? allowed.filter((value): value is string => typeof value === "string")
     : ["all"];
@@ -56,7 +63,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
         (requester.isStaff ||
           requester.isAdmin ||
           requester.uid === meta.ownerUid ||
-          (await canReadLinkedDocument(id, requester.roles)));
+          (await canReadLinkedDocument(id, requester.roles, requester.uid)));
       if (!allowed) {
         return NextResponse.json({ error: "Forbidden" }, { status: requester ? 403 : 401 });
       }

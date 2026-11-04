@@ -8,6 +8,7 @@ import type {
   FormValues,
   IntakeAiSummary,
   LiftFormDoc,
+  LiftFormSubmissionDoc,
   LiftTarget,
   SignatureValue,
   StoredFile,
@@ -16,8 +17,10 @@ import type {
 } from "../types";
 import { requireDb, stripUndefined, type Requester } from "./context";
 import { resolveClient } from "./identity";
+import { renderSubmissionPdf } from "./pdf";
 import { runPostProcess } from "./postprocess";
 import { resolveUploads, storeSignatureImage } from "./uploads";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 
 /** Raised for problems the respondent can fix; mapped to HTTP 400. */
 export class SubmissionError extends Error {
@@ -209,6 +212,48 @@ export async function processSubmission(options: {
   });
 
   const { aiSummary } = await runPostProcess({ form, submissionId, liftClientId: client.liftClientId, values, files });
+
+  // Archive a PDF copy in portal Documents — staff-visible, and shared to the
+  // respondent via visibleToUids when signed in. Deduped by source so the
+  // on-demand export endpoint won't create a second record. Best-effort.
+  try {
+    const submissionDoc: LiftFormSubmissionDoc = {
+      id: submissionId,
+      formId: form.id,
+      formSlug: form.slug,
+      formTitle: form.title,
+      formVersion: form.version,
+      liftClientId: client.liftClientId,
+      submittedByUid: requester?.uid,
+      submittedByName: signedByName,
+      submittedByEmail: requester?.email ?? (typeof values.email === "string" ? values.email : undefined),
+      values: storedValues,
+      files,
+      signatures,
+      contentHash,
+      consentTextHash,
+      source: isStaff ? "staff" : requester ? "portal" : "public_link",
+      status: "submitted",
+      mappingStatus: Object.keys(writes).length ? "applied" : "skipped",
+      completionSeconds: options.completionSeconds,
+      createdAt: now.toDate().toISOString(),
+    };
+    const pdf = await renderSubmissionPdf(form, submissionDoc, form.audience === "staff");
+    await archiveGeneratedDocument({
+      buffer: pdf,
+      fileName: `${form.slug}-${submissionId}.pdf`,
+      contentType: "application/pdf",
+      category: "form-submissions",
+      folder: "Form Submissions",
+      tags: ["LIFT", form.title, signedByName],
+      visibleToUids: requester?.uid ? [requester.uid] : undefined,
+      uploadedBy: signedByName,
+      uploaderUid: requester?.uid ?? null,
+      source: { type: "form-submission", id: submissionId, label: form.title },
+    });
+  } catch (archiveError) {
+    console.error("Submission PDF archive failed:", archiveError);
+  }
 
   return {
     submissionId,
