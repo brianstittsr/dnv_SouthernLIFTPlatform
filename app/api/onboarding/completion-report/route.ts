@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/firebase-admin";
+import { auth, db } from "@/lib/firebase-admin";
+import { COLLECTIONS } from "@/lib/schema";
 import { sendEmail } from "@/lib/email";
 import { renderHtmlToPdf } from "@/lib/form-builder/server/pdf";
 import {
@@ -9,6 +10,7 @@ import {
   buildReportHtml,
   recommendAdditionalServices,
 } from "@/lib/onboarding/completion-report";
+import { archiveOnboardingReportPdf } from "@/lib/onboarding/report-archive";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -54,6 +56,27 @@ export async function POST(req: NextRequest) {
     const company = typeof sme.companyName === "string" && sme.companyName.trim()
       ? sme.companyName.trim()
       : "New client";
+    const fileName = `LIFT-Onboarding-Report-${company.replace(/[^a-z0-9]+/gi, "-")}.pdf`;
+
+    // Archive the PDF in portal Documents for quick reference — best-effort;
+    // a failure here must never block the staff email or onboarding.
+    let documentId: string | undefined;
+    try {
+      const userSnap = db ? await db.collection(COLLECTIONS.USERS).doc(decodedToken.uid).get() : null;
+      const contactName = typeof sme.contactName === "string" ? sme.contactName.trim() : "";
+      const archived = await archiveOnboardingReportPdf({
+        pdf,
+        fileName,
+        ownerName: contactName || company,
+        ownerUid: decodedToken.uid,
+        companyId: (userSnap?.data()?.companyId as string | undefined) ?? null,
+        companyName: company,
+      });
+      documentId = archived.documentId;
+    } catch (archiveError) {
+      console.error("Archiving onboarding report to documents failed:", archiveError);
+    }
+
     const result = await sendEmail({
       to: RECIPIENTS,
       subject: `LIFT onboarding complete: ${company}`,
@@ -61,7 +84,7 @@ export async function POST(req: NextRequest) {
       text: `${company} completed LIFT onboarding. Identified services: ${gaps.map((g) => g.service).join(", ") || "none"}. See attached PDF.`,
       attachments: [
         {
-          filename: `LIFT-Onboarding-Report-${company.replace(/[^a-z0-9]+/gi, "-")}.pdf`,
+          filename: fileName,
           content: pdf,
           contentType: "application/pdf",
         },
@@ -71,7 +94,9 @@ export async function POST(req: NextRequest) {
     if (!result.success) {
       return NextResponse.json({ error: result.error ?? "Email failed" }, { status: 502 });
     }
-    return NextResponse.json({ data: { sent: true, gaps: gaps.length, recommendations: aiRecs.length } });
+    return NextResponse.json({
+      data: { sent: true, gaps: gaps.length, recommendations: aiRecs.length, documentId },
+    });
   } catch (error) {
     console.error("Error sending LIFT onboarding completion report:", error);
     return NextResponse.json({ error: "Failed to send report" }, { status: 500 });
