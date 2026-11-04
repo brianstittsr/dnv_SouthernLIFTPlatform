@@ -124,6 +124,11 @@ const myLiftItems = [
     icon: ClipboardCheck,
   },
   {
+    title: "My LIFT Forms",
+    href: "/portal/lift/forms",
+    icon: ClipboardList,
+  },
+  {
     title: "Documents",
     href: "/portal/documents",
     icon: FileText,

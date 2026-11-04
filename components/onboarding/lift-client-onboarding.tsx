@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { db, auth } from "@/lib/firebase";
@@ -25,8 +26,10 @@ import {
   BuyerReviewStep,
   initialBuyerFormData,
 } from "@/components/onboarding";
-import { Loader2 } from "lucide-react";
+import { CheckCircle2, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { getProgramBranding } from "@/lib/branding";
 import { liftApi } from "@/components/forms/lift-api";
 import type { FormValues } from "@/lib/form-builder/types";
@@ -150,6 +153,110 @@ function buildIntakeValues(d: typeof initialSMEFormData): FormValues {
   return values;
 }
 
+const yesNo = (v: unknown): string => (v === true ? "yes" : v === false ? "no" : "");
+const strOf = (v: unknown): string => (typeof v === "string" ? v : "");
+const arrOf = (v: unknown): string[] => (Array.isArray(v) ? v.map(String) : []);
+const numStr = (v: unknown): string => (typeof v === "number" && Number.isFinite(v) ? String(v) : "");
+
+/**
+ * Maps the users doc (written by a completed onboarding) back onto the SME
+ * wizard's form shape so the Review step can display the submitted answers.
+ */
+function userDocToSmeData(d: Record<string, unknown>): typeof initialSMEFormData {
+  return {
+    ...initialSMEFormData,
+    businessNotRegistered: d.businessNotRegistered === true,
+    companyName: d.businessNotRegistered === true ? "" : strOf(d.company),
+    dba: strOf(d.dba),
+    applyingAs: strOf(d.applyingAs),
+    address: strOf(d.address),
+    city: strOf(d.city),
+    state: strOf(d.state),
+    zip: strOf(d.zip),
+    website: strOf(d.website),
+    yearEstablished: strOf(d.yearEstablished),
+    employeeCount: strOf(d.employeeCount),
+    stage: strOf(d.stage),
+    revenueLast12: numStr(d.revenueLast12) || strOf(d.revenueLast12),
+    primaryNaics: arrOf(d.primaryNaics),
+    productsServices: arrOf(d.productsServices),
+    coreCapabilities: strOf(d.coreCapabilities),
+    pastPerformance: strOf(d.pastPerformance),
+    keyDifferentiators: strOf(d.keyDifferentiators),
+    digitalTools: arrOf(d.digitalTools),
+    capabilityStatementFileName: strOf(d.capabilityStatementFileName),
+    wantsCapabilityStatementHelp: d.wantsCapabilityStatementHelp === true,
+    interestedInGovcon: yesNo(d.interestedInGovcon),
+    samRegistered: strOf(d.samRegistered),
+    dunsUei: strOf(d.dunsUei),
+    cageCode: strOf(d.cageCode),
+    soldToGovernment: yesNo(d.soldToGovernment),
+    certifications: arrOf(d.certifications),
+    certificationsPlanned: arrOf(d.certificationsPlanned),
+    seekingCapital: yesNo(d.seekingCapital),
+    capitalPurpose: strOf(d.capitalPurpose),
+    capitalAmount: numStr(d.capitalAmount) || strOf(d.capitalAmount),
+    topNeed: strOf(d.topNeed),
+    barriers: strOf(d.barriers),
+    goals12Months: strOf(d.goals12Months),
+    preferredServices: arrOf(d.preferredServices),
+    topNeeds: arrOf(d.topNeeds),
+    acquisitionMethod: strOf(d.acquisitionMethod),
+    openToTeaming: yesNo(d.openToTeaming),
+    outOfState: yesNo(d.outOfState),
+    inHouseBD: yesNo(d.inHouseBD),
+    resourcesToInvest: yesNo(d.resourcesToInvest),
+    contactName: [strOf(d.firstName), strOf(d.lastName)].filter(Boolean).join(" ").trim(),
+    contactTitle: strOf(d.jobTitle),
+    contactEmail: strOf(d.email),
+    contactPhone: strOf(d.phone),
+    mobilePhone: strOf(d.mobilePhone),
+    preferredContactMethod: strOf(d.preferredContactMethod),
+    noLinkedin: d.noLinkedin === true,
+    linkedin: strOf(d.linkedin),
+    ownerEthnicity: strOf(d.ownerEthnicity),
+    secondaryContacts: Array.isArray(d.secondaryContacts)
+      ? d.secondaryContacts.map((c) => ({
+          name: strOf((c as Record<string, unknown>)?.name),
+          email: strOf((c as Record<string, unknown>)?.email),
+        }))
+      : [],
+    serviceArea: arrOf(d.serviceArea),
+    referralSource: strOf(d.referralSource),
+    referredBy: strOf(d.referredBy),
+    referredByOther: strOf(d.referredByOther),
+    aiDisclosure: d.aiDisclosureAcknowledged === true,
+    privacyAck: d.privacyAcknowledged === true,
+    emailOptIn: d.emailOptIn === true,
+    signatureName: strOf(d.signatureName),
+    attestationConfirmed: d.attestationConfirmed === true,
+  };
+}
+
+/** Maps the users doc back onto the buyer wizard's form shape. */
+function userDocToBuyerData(d: Record<string, unknown>): typeof initialBuyerFormData {
+  return {
+    ...initialBuyerFormData,
+    agencyName: strOf(d.company),
+    agencyType: strOf(d.agencyType),
+    officeDivision: strOf(d.officeDivision),
+    address: strOf(d.address),
+    city: strOf(d.city),
+    state: strOf(d.state),
+    zip: strOf(d.zip),
+    jobTitle: strOf(d.jobTitle),
+    roleType: strOf(d.roleType),
+    procurementAuthority: strOf(d.procurementAuthority),
+    annualBudget: strOf(d.annualBudget),
+    certificationPreferences: arrOf(d.certificationPreferences),
+    contractTypes: arrOf(d.contractTypes),
+    geographicPreferences: strOf(d.geographicPreferences),
+    preferredContactMethod: strOf(d.preferredContactMethod),
+    availabilityForIntros: strOf(d.availabilityForIntros),
+    meetingPreferences: strOf(d.meetingPreferences),
+  };
+}
+
 /** In-progress wizard answers, saved so a refresh or navigation doesn't lose work. */
 interface OnboardingDraft {
   userType?: "sme" | "buyer";
@@ -177,15 +284,20 @@ interface LiftClientOnboardingProps {
 export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnboardingProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { profile } = useUserProfile();
+  const { profile, updateProfile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState<"sme" | "buyer">("sme");
   const [smeFormData, setSmeFormData] = useState(initialSMEFormData);
   const [buyerFormData, setBuyerFormData] = useState(initialBuyerFormData);
   const [initialStep, setInitialStep] = useState(0);
   const [draftStep, setDraftStep] = useState(0);
+  const [submittedView, setSubmittedView] = useState(false);
+  const [submittedAt, setSubmittedAt] = useState<string | null>(null);
+  const [intakeSubmissionId, setIntakeSubmissionId] = useState<string | null>(null);
   const uidRef = useRef("");
   const draftKeyRef = useRef("");
+  const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const draftRef = useRef<OnboardingDraft>({});
 
   useEffect(() => {
     if (!profile.id) return;
@@ -201,10 +313,32 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       uidRef.current = uid;
       draftKeyRef.current = `lift-onboarding-draft:${uid}:${type}`;
 
-      // Check if onboarding is complete using optional chaining
+      // When onboarding is already complete, load the saved profile and show
+      // the submitted answers read-only instead of bouncing the client out —
+      // they should be able to re-open onboarding and see what they sent.
       const profileData = profile as { isOnboardingComplete?: boolean };
       if (profileData.isOnboardingComplete) {
-        onCompleted ? onCompleted() : router.push("/portal");
+        try {
+          if (db && uid) {
+            const snap = await getDoc(doc(db, "users", uid));
+            const saved = snap.data() as Record<string, unknown> | undefined;
+            if (saved && !cancelled) {
+              if (type === "sme") setSmeFormData(userDocToSmeData(saved));
+              else setBuyerFormData(userDocToBuyerData(saved));
+              const completed = saved.onboardingCompletedAt;
+              setSubmittedAt(
+                (completed as { toDate?: () => Date })?.toDate?.()?.toLocaleDateString("en-US") ??
+                  (typeof completed === "string" ? completed : null),
+              );
+              setIntakeSubmissionId(typeof saved.liftIntakeSubmissionId === "string" ? saved.liftIntakeSubmissionId : null);
+            }
+          }
+        } catch (error) {
+          console.error("Could not load submitted onboarding answers:", error);
+        }
+        if (cancelled) return;
+        setSubmittedView(true);
+        setLoading(false);
         return;
       }
 
@@ -285,27 +419,57 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
     };
   }, [profile, searchParams, router, onCompleted]);
 
+  // Always-current draft snapshot so blur/page-hide handlers save fresh state.
+  draftRef.current = { userType, step: draftStep, sme: smeFormData, buyer: buyerFormData };
+
+  const flushDraft = useCallback(() => {
+    if (!db || !uidRef.current || !draftKeyRef.current || submittedView) return;
+    setDoc(
+      doc(db, "users", uidRef.current),
+      { onboardingDraft: { ...draftRef.current, updatedAt: Timestamp.now() } },
+      { merge: true },
+    ).catch((error) => console.error("Could not save onboarding draft:", error));
+  }, [submittedView]);
+
+  // Save as soon as any field loses focus — leaving an input is the client's
+  // signal that an answer is finished, so persist immediately rather than
+  // waiting for the periodic debounce.
+  const handleFieldBlur = useCallback(() => {
+    if (loading || submittedView || !draftKeyRef.current) return;
+    localStorage.setItem(draftKeyRef.current, JSON.stringify(draftRef.current));
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = null;
+    flushDraft();
+  }, [loading, submittedView, flushDraft]);
+
+  // Flush on page hide / unload so the last field typed is never stranded.
+  useEffect(() => {
+    const flush = () => {
+      if (submittedView) return;
+      if (draftKeyRef.current) {
+        localStorage.setItem(draftKeyRef.current, JSON.stringify(draftRef.current));
+      }
+      flushDraft();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", flush);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", flush);
+    };
+  }, [flushDraft, submittedView]);
+
   // Persist the draft on every change — localStorage immediately, and the
   // users doc debounced so it survives a different device or cleared storage.
   useEffect(() => {
-    if (loading || !draftKeyRef.current) return;
-    const draft: OnboardingDraft = {
-      userType,
-      step: draftStep,
-      sme: smeFormData,
-      buyer: buyerFormData,
+    if (loading || submittedView || !draftKeyRef.current) return;
+    localStorage.setItem(draftKeyRef.current, JSON.stringify(draftRef.current));
+    draftTimerRef.current = setTimeout(flushDraft, 2000);
+    return () => {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+      draftTimerRef.current = null;
     };
-    localStorage.setItem(draftKeyRef.current, JSON.stringify(draft));
-    const timeout = setTimeout(() => {
-      if (!db || !uidRef.current) return;
-      setDoc(
-        doc(db, "users", uidRef.current),
-        { onboardingDraft: { ...draft, updatedAt: Timestamp.now() } },
-        { merge: true },
-      ).catch((error) => console.error("Could not save onboarding draft:", error));
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, [smeFormData, buyerFormData, draftStep, userType, loading]);
+  }, [smeFormData, buyerFormData, draftStep, userType, loading, submittedView, flushDraft]);
 
   const clearDraft = () => {
     if (draftKeyRef.current) localStorage.removeItem(draftKeyRef.current);
@@ -359,11 +523,23 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       // summary, infers the parish, and analyzes attachments. The wizard only
       // completes when both records are written.
       let intakeResult: { submissionId: string; liftClientId?: string } | null = null;
+      let companyId: string | null = null;
+
+      const firebaseUid = auth?.currentUser?.uid;
+      const userId = firebaseUid || profile.authUid || profile.id;
+      const userRef = db ? doc(db, "users", userId) : null;
+
       if (userType === "sme") {
         try {
           intakeResult = await liftApi.submit("lift-intake", { values: buildIntakeValues(smeFormData) });
         } catch (error) {
           console.error("LIFT intake submission failed:", error);
+          // Persist the answers anyway — a failed registry submission must not
+          // lose what the client typed, and the draft stays for a retry.
+          if (userRef) {
+            await setDoc(userRef, buildUpdateData(false), { merge: true })
+              .catch((saveError) => console.error("Partial onboarding save failed:", saveError));
+          }
           toast.error(error instanceof Error ? error.message : "Could not record your intake. Please try again.");
           return false;
         }
@@ -372,7 +548,6 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
       // Link the user (and their LIFT client record) to a shared `companies`
       // doc — matched by UEI or normalized name so colleagues land on one
       // company record. Failure doesn't block onboarding.
-      let companyId: string | null = null;
       if (userType === "sme" && smeFormData.companyName.trim()) {
         try {
           const idToken = await auth?.currentUser?.getIdToken();
@@ -435,7 +610,8 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
         }
       }
 
-      const updateData = userType === "sme"
+      function buildUpdateData(complete: boolean) {
+        return userType === "sme"
         ? {
             email: profile.email,
             firstName: smeFormData.contactName?.split(" ")[0] || "",
@@ -508,8 +684,8 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             signatureName: smeFormData.signatureName.trim(),
             attestationConfirmed: true,
             attestationSignedAt: Timestamp.now(),
-            isOnboardingComplete: true,
-            onboardingCompletedAt: Timestamp.now(),
+            liftIntakePending: complete ? false : true,
+            ...(complete ? { isOnboardingComplete: true, onboardingCompletedAt: Timestamp.now() } : {}),
             updatedAt: Timestamp.now(),
           }
         : {
@@ -533,18 +709,16 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
             preferredContactMethod: buyerFormData.preferredContactMethod,
             availabilityForIntros: buyerFormData.availabilityForIntros,
             meetingPreferences: buyerFormData.meetingPreferences,
-            isOnboardingComplete: true,
-            onboardingCompletedAt: Timestamp.now(),
+            ...(complete ? { isOnboardingComplete: true, onboardingCompletedAt: Timestamp.now() } : {}),
             updatedAt: Timestamp.now(),
           };
+      }
 
-      // Use Firebase Auth UID for user document
-      const firebaseUid = auth?.currentUser?.uid;
-      const userId = firebaseUid || profile.id;
-      const userRef = doc(db, "users", userId);
+      if (!userRef) throw new Error("Profile store unavailable");
 
       // Use setDoc with merge: true to create or update the document
-      await setDoc(userRef, updateData, { merge: true });
+      await setDoc(userRef, buildUpdateData(true), { merge: true });
+      updateProfile({ isOnboardingComplete: true, onboardingCompletedAt: new Date().toISOString() });
       clearDraft();
 
       // Emails a PDF profile + service-gap report to LIFT staff.
@@ -588,6 +762,59 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // Completed onboarding — show the submitted answers read-only so the client
+  // can always come back and review what they sent.
+  if (submittedView) {
+    return (
+      <div className="max-w-3xl mx-auto space-y-6 py-4">
+        <Card className="border-green-200">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="h-8 w-8 text-green-600 shrink-0" />
+              <div>
+                <h2 className="text-xl font-semibold">Your onboarding is complete</h2>
+                <p className="text-sm text-muted-foreground">
+                  Submitted{submittedAt ? ` on ${submittedAt}` : ""}. Your answers are saved — review them below.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {intakeSubmissionId && (
+                <Button variant="outline" size="sm" asChild>
+                  <a href={`/api/lift/submissions/${intakeSubmissionId}/pdf`} target="_blank" rel="noreferrer">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Download intake PDF
+                  </a>
+                </Button>
+              )}
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/portal/onboarding-progress">View onboarding progress</Link>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/portal/documents">View documents</Link>
+              </Button>
+              {onCompleted ? (
+                <Button size="sm" onClick={onCompleted}>
+                  Continue
+                </Button>
+              ) : (
+                <Button size="sm" asChild>
+                  <Link href="/portal">Back to portal</Link>
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {userType === "sme" ? (
+          <ReviewStep formData={smeFormData} setFormData={() => undefined} readOnly />
+        ) : (
+          <BuyerReviewStep formData={buyerFormData} />
+        )}
       </div>
     );
   }
@@ -820,14 +1047,16 @@ export function LiftClientOnboarding({ onCompleted, onDismissed }: LiftClientOnb
   ];
 
   return (
-    <OnboardingWizard
-      steps={userType === "sme" ? smeSteps : buyerSteps}
-      userType={userType}
-      onComplete={handleComplete}
-      onDismiss={handleDismiss}
-      initialStep={initialStep}
-      step={draftStep}
-      onStepChange={setDraftStep}
-    />
+    <div onBlurCapture={handleFieldBlur}>
+      <OnboardingWizard
+        steps={userType === "sme" ? smeSteps : buyerSteps}
+        userType={userType}
+        onComplete={handleComplete}
+        onDismiss={handleDismiss}
+        initialStep={initialStep}
+        step={draftStep}
+        onStepChange={setDraftStep}
+      />
+    </div>
   );
 }

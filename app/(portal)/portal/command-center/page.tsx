@@ -5,8 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -28,7 +27,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, limit, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
-import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActionItemDoc, type ActivityDoc, type TeamMemberDoc, type PlatformSettingsDoc } from "@/lib/schema";
+import { COLLECTIONS, type OpportunityDoc, type ProjectDoc, type ActivityDoc, type PlatformSettingsDoc } from "@/lib/schema";
 import type { CalendarEventDoc } from "@/lib/schema";
 
 // Types for dashboard data
@@ -42,11 +41,6 @@ interface DashboardStats {
     count: number;
     atRisk: number;
   };
-  rocks: {
-    progress: number;
-    daysRemaining: number;
-  };
-  teamOnline: number;
 }
 
 interface OpportunityDisplay {
@@ -127,33 +121,16 @@ function getDaysAgo(date: Date): number {
   return Math.floor(diffMs / 86400000);
 }
 
-function getCurrentQuarter(): string {
-  const now = new Date();
-  const quarter = Math.floor(now.getMonth() / 3) + 1;
-  return `Q${quarter} ${now.getFullYear()}`;
-}
-
-function getDaysRemainingInQuarter(): number {
-  const now = new Date();
-  const quarter = Math.floor(now.getMonth() / 3);
-  const quarterEnd = new Date(now.getFullYear(), (quarter + 1) * 3, 0);
-  const diffMs = quarterEnd.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diffMs / 86400000));
-}
-
 export default function CommandCenterPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
     pipeline: { value: 0, change: 0, trend: "up" },
     activeProjects: { count: 0, atRisk: 0 },
-    rocks: { progress: 0, daysRemaining: getDaysRemainingInQuarter() },
-    teamOnline: 0,
   });
   const [opportunities, setOpportunities] = useState<OpportunityDisplay[]>([]);
   const [meetings, setMeetings] = useState<MeetingDisplay[]>([]);
   const [actionItems, setActionItems] = useState<ActionItemDisplay[]>([]);
   const [recentActivity, setRecentActivity] = useState<ActivityDisplay[]>([]);
-  const [teammembers, setTeammembers] = useState<{ initials: string; name: string }[]>([]);
   const [showAskAI, setShowAskAI] = useState(false);
 
   useEffect(() => {
@@ -289,44 +266,6 @@ export default function CommandCenterPage() {
           setRecentActivity([]);
         }
 
-        // Fetch team members
-        const teamRef = collection(db, COLLECTIONS.TEAM_MEMBERS);
-        const teamQuery = query(teamRef, where("status", "==", "active"), limit(10));
-        
-        try {
-          const teamSnapshot = await getDocs(teamQuery);
-          const teamData: { initials: string; name: string }[] = [];
-          teamSnapshot.forEach((doc) => {
-            const data = doc.data() as TeamMemberDoc;
-            const initials = `${(data.firstName || "")[0] || ""}${(data.lastName || "")[0] || ""}`.toUpperCase() || "??";
-            teamData.push({
-              initials,
-              name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "Team member",
-            });
-          });
-          setTeammembers(teamData);
-        } catch {
-          setTeammembers([]);
-        }
-
-        // Fetch rocks progress
-        const rocksRef = collection(db, COLLECTIONS.TRACTION_ROCKS);
-        const currentQuarter = getCurrentQuarter();
-        const rocksQuery = query(rocksRef, where("quarter", "==", currentQuarter));
-        
-        let totalProgress = 0;
-        let rockCount = 0;
-        try {
-          const rocksSnapshot = await getDocs(rocksQuery);
-          rocksSnapshot.forEach((doc) => {
-            const data = doc.data();
-            totalProgress += data.progress || 0;
-            rockCount++;
-          });
-        } catch {
-          // Rocks collection may not exist
-        }
-
         // Update stats
         setStats({
           pipeline: {
@@ -338,11 +277,6 @@ export default function CommandCenterPage() {
             count: activeCount,
             atRisk: atRiskCount,
           },
-          rocks: {
-            progress: rockCount > 0 ? Math.round(totalProgress / rockCount) : 0,
-            daysRemaining: getDaysRemainingInQuarter(),
-          },
-          teamOnline: teammembers.length,
         });
 
       } catch (error) {
@@ -383,8 +317,8 @@ export default function CommandCenterPage() {
             <p className="text-muted-foreground">Loading your dashboard...</p>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
+        <div className="grid gap-4 md:grid-cols-2">
+          {[1, 2].map((i) => (
             <Card key={i}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-24" />
@@ -407,7 +341,7 @@ export default function CommandCenterPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Command Center</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here's what's happening today.
+            Welcome back! Here&apos;s what&apos;s happening today.
           </p>
         </div>
         <div className="flex gap-2">
@@ -427,7 +361,7 @@ export default function CommandCenterPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Pipeline */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -476,51 +410,6 @@ export default function CommandCenterPage() {
           </CardContent>
         </Card>
 
-        {/* Rocks Progress */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">{getCurrentQuarter()} Rocks</CardTitle>
-            <CheckSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.rocks.progress}%</div>
-            <Progress value={stats.rocks.progress} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              {stats.rocks.daysRemaining} days remaining
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Team Online */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Team Online</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{teammembers.length}</div>
-            <div className="flex -space-x-2 mt-2">
-              {teammembers.length > 0 ? (
-                teammembers.slice(0, 5).map((member, i) => (
-                  <Avatar key={i} className="h-8 w-8 border-2 border-background">
-                    <AvatarFallback className="bg-primary/20 text-primary text-xs">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                ))
-              ) : (
-                <p className="text-xs text-muted-foreground">No team members</p>
-              )}
-              {teammembers.length > 5 && (
-                <Avatar className="h-8 w-8 border-2 border-background">
-                  <AvatarFallback className="bg-muted text-muted-foreground text-xs">
-                    +{teammembers.length - 5}
-                  </AvatarFallback>
-                </Avatar>
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Main Content Grid */}
@@ -589,7 +478,7 @@ export default function CommandCenterPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Today's Meetings</CardTitle>
+              <CardTitle>Today&apos;s Meetings</CardTitle>
               <CardDescription>Your schedule for today</CardDescription>
             </div>
             <Button variant="ghost" size="sm" asChild>

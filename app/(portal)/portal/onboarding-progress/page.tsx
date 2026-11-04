@@ -42,8 +42,25 @@ export default function OnboardingProgressPage() {
       .catch((loadError: Error) => setError(loadError.message));
   }, []);
 
-  const clientForms = forms?.filter((form) => form.audience !== "staff") ?? [];
+  const allClientForms = forms?.filter((form) => form.audience !== "staff") ?? [];
+
+  // Enrollment forms live in the checklist; everything else stays in the
+  // form-status list below.
+  const CHECKLIST_SLUGS = ["lift-intake", "mbda-intake-loe", "rural-eligibility", "baseline-survey", "capital-readiness"];
+  const clientForms = allClientForms.filter((form) => !CHECKLIST_SLUGS.includes(form.slug));
   const submittedCount = clientForms.filter((form) => form.submissions.length > 0).length;
+
+  const formItem = (slug: string, label: string, pendingDescription: string): ChecklistItem => {
+    const form = allClientForms.find((candidate) => candidate.slug === slug);
+    const latest = form?.submissions[0];
+    return {
+      label,
+      description: latest ? `Submitted ${new Date(latest.createdAt).toLocaleDateString()}` : pendingDescription,
+      done: Boolean(latest),
+      href: `/portal/lift/forms/${slug}`,
+      action: "Open form",
+    };
+  };
 
   const checklist: ChecklistItem[] = [
     {
@@ -56,28 +73,22 @@ export default function OnboardingProgressPage() {
     {
       label: "Finish LIFT Client Onboarding",
       description: "Program expectations and business profile wizard",
-      done: profile.isOnboardingComplete === true || profile.affiliateOnboardingComplete,
+      // The wizard sets isOnboardingComplete on the users doc; the lift-intake
+      // submission it files on completion is a fallback for older accounts.
+      done:
+        profile.isOnboardingComplete === true ||
+        profile.affiliateOnboardingComplete ||
+        allClientForms.some((form) => form.slug === "lift-intake" && form.submissions.length > 0),
       action: "Open onboarding",
       onClick: () => setWorksheetOpen(true),
     },
-    {
-      label: "Submit the MBDA Client Intake & Letter of Engagement",
-      description: "Required before advising services begin",
-      done: clientForms.some(
-        (form) => form.submissions.length > 0 && form.slug.includes("intake")
-      ),
-      href: "/portal/lift/forms",
-      action: "Open forms",
-    },
-    {
-      label: "Complete the baseline survey",
-      description: "Helps your advisor set goals and measure progress",
-      done: clientForms.some(
-        (form) => form.submissions.length > 0 && form.slug.includes("baseline")
-      ),
-      href: "/portal/lift/forms",
-      action: "Open forms",
-    },
+    formItem("lift-intake", "LIFT Center Intake", "Filed automatically when onboarding completes"),
+    // Exact slug — lift-intake is auto-filed by the onboarding wizard and
+    // must not mark the Letter of Engagement complete.
+    formItem("mbda-intake-loe", "Submit the MBDA Client Intake & Letter of Engagement", "Required before advising services begin"),
+    formItem("rural-eligibility", "Rural Eligibility Attestation", "Confirms your business qualifies for the rural program"),
+    formItem("baseline-survey", "Baseline Assessment Survey", "Helps your advisor set goals and measure progress"),
+    formItem("capital-readiness", "Capital Readiness Checklist", "Prepares your business for financing conversations"),
   ];
 
   const doneCount = checklist.filter((item) => item.done).length + submittedCount;

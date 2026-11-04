@@ -31,8 +31,11 @@ interface Step {
 }
 
 /** Groups visible fields into steps: one section per step (standard) or one question per step (conversational). */
-function buildSteps(form: PublicFormSchema, values: FormValues): Step[] {
-  const visible = getVisibleFields(form.fields as FormField[], values, true);
+function buildSteps(form: PublicFormSchema, values: FormValues, isStaff: boolean): Step[] {
+  // Defense in depth: the API strips staff-only sections for non-staff, but a
+  // stale seeded form could arrive without flags — never render them here.
+  const staffSectionIds = new Set(form.sections.filter((section) => section.staffOnly).map((section) => section.id));
+  const visible = getVisibleFields(form.fields as FormField[], values, isStaff, staffSectionIds);
   const firstSection = form.sections[0]?.id;
   const sectionOf = (field: FormField) => field.section ?? firstSection;
   if (form.presentationMode === "conversational") {
@@ -97,7 +100,8 @@ export function FormRunner({ slug, context, previewForm }: FormRunnerProps) {
   }, [slug, previewForm]);
 
   const form = payload?.form;
-  const steps = useMemo(() => (form ? buildSteps(form, values) : []), [form, values]);
+  const viewerIsStaff = payload?.viewer.isStaff === true;
+  const steps = useMemo(() => (form ? buildSteps(form, values, viewerIsStaff) : []), [form, values, viewerIsStaff]);
   const safeIndex = Math.min(stepIndex, Math.max(steps.length - 1, 0));
   const step = steps[safeIndex];
   const isLast = safeIndex >= steps.length - 1;
@@ -120,7 +124,7 @@ export function FormRunner({ slug, context, previewForm }: FormRunnerProps) {
   /** Validates answers (optionally only some keys); returns the error map, empty when valid. */
   const validate = (keys?: string[]): Record<string, string> => {
     if (!form) return {};
-    const outcome = validateFormValues(form.fields as FormField[], form.sections, values, { isStaff: true, onlyFieldKeys: keys });
+    const outcome = validateFormValues(form.fields as FormField[], form.sections, values, { isStaff: viewerIsStaff, onlyFieldKeys: keys });
     setErrors(outcome.errors);
     return outcome.errors;
   };

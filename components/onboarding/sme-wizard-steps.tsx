@@ -1981,18 +1981,18 @@ export function ProgramStep({ formData, setFormData }: StepProps) {
   );
 }
 
-export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; setFormData: React.Dispatch<React.SetStateAction<SMEFormData>> }) {
+export function ReviewStep({ formData, setFormData, readOnly = false }: { formData: SMEFormData; setFormData: React.Dispatch<React.SetStateAction<SMEFormData>>; readOnly?: boolean }) {
   return (
     <div className="space-y-6">
       <div className="p-4 bg-green-50 rounded-lg">
         <div className="flex items-center gap-2 text-green-800">
           <CheckCircle2 className="h-5 w-5" />
-          <span className="font-medium">Almost Done!</span>
+          <span className="font-medium">{readOnly ? "Onboarding submitted" : "Almost Done!"}</span>
         </div>
         <p className="text-sm text-green-700 mt-1">
-          Review your information below and click Complete to finish setup.
-          This profile powers your AI opportunity matching — the more
-          complete it is, the better your matches.
+          {readOnly
+            ? "This is the information you submitted. Contact your LIFT advisor if anything needs to be updated."
+            : "Review your information below and click Complete to finish setup. This profile powers your AI opportunity matching — the more complete it is, the better your matches."}
         </p>
       </div>
 
@@ -2124,6 +2124,15 @@ export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; s
         </div>
       </div>
 
+      {readOnly ? (
+        <div className="border rounded-lg p-4 space-y-2 bg-muted/30">
+          <h4 className="font-medium">Signature &amp; attestation</h4>
+          <p className="text-sm">
+            Signed electronically by <span className="italic font-medium">{formData.signatureName || "the submitter"}</span>
+            {formData.attestationConfirmed ? " — information certified as accurate and complete." : "."}
+          </p>
+        </div>
+      ) : (
       <div className="border rounded-lg p-4 space-y-4 bg-muted/30">
         <div>
           <h4 className="font-medium">Signature &amp; attestation <span className="text-red-500">*</span></h4>
@@ -2164,6 +2173,7 @@ export function ReviewStep({ formData, setFormData }: { formData: SMEFormData; s
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
