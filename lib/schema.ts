@@ -2884,6 +2884,11 @@ export const COLLECTIONS = {
   LIFT_IMPACT_STORIES: "liftImpactStories",
   // Admin-only AI reporting module (data packs + generated narrative reports)
   LIFT_REPORTS: "liftReports",
+  // AI Interview Tool (Form Studio module — prompt-driven interviews with
+  // tracked invites and public links; server-only access)
+  LIFT_INTERVIEWS: "liftInterviews",
+  LIFT_INTERVIEW_INVITES: "liftInterviewInvites",
+  LIFT_INTERVIEW_SESSIONS: "liftInterviewSessions",
 } as const;
 
 // ... existing code ...

@@ -1267,6 +1267,31 @@ export const emailTemplates = {
     `,
     text: `Hi ${params.name}, you've been invited to complete your KDM client profile (about 10–15 minutes, no login required): ${params.onboardingUrl}`,
   }),
+
+  /**
+   * AI interview invite — emails a tracked link to the interview tool.
+   * Works for platform users and external recipients alike.
+   */
+  interviewInvite: (params: {
+    name: string;
+    interviewTitle: string;
+    description: string;
+    estimatedMinutes: number;
+    senderName: string;
+    interviewUrl: string;
+  }) => ({
+    subject: `You're invited: ${params.interviewTitle}`,
+    html: `
+      <h1>Hi ${params.name},</h1>
+      <p>${params.senderName} has invited you to complete <strong>${params.interviewTitle}</strong>.</p>
+      ${params.description ? `<p>${params.description}</p>` : ""}
+      <p>This is a guided AI interview — you'll answer questions one at a time, conversationally. It takes about <strong>${params.estimatedMinutes} minutes</strong> and requires no login.</p>
+      <p><a href="${params.interviewUrl}" style="background-color: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Start the Interview</a></p>
+      <p style="color: #666; font-size: 13px;">This link is unique to you — please don't share it. If the button doesn't work, copy this URL: ${params.interviewUrl}</p>
+      <p>Best regards,<br>The Team</p>
+    `,
+    text: `Hi ${params.name}, ${params.senderName} invited you to complete "${params.interviewTitle}" — a guided AI interview that takes about ${params.estimatedMinutes} minutes (no login required). Start here: ${params.interviewUrl}`,
+  }),
 };
 
 /**

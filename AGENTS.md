@@ -33,6 +33,14 @@ Built from `docs/svp-kdm-features/formbuilder/Adams form builder.md`, hardened f
 - APIs: `app/api/lift/reports/**` — all behind `requireAdminRequester()` (staff cannot access). Reports are saved to `liftReports` with their data pack for reproducibility; `report.*` events go to `liftAudit`.
 - Smoke test without writes: `npx tsx --env-file=.env.local scripts/test-reports.ts`.
 
+## LIFT AI Interviews (Form Studio module)
+
+- `/portal/admin/lift/interviews` — build prompt-driven AI interviews (Setup | Prompt | Deploy | Results tabs) and deploy via tracked email invites (`inv_<token>` links) and/or a public link (`pub_<slug>`). Based on `docs/svp-kdm-features/Interviewtool/inverviewtool.md`, scoped to prompt customization + multi-recipient delivery.
+- `lib/interview/` — `types.ts` (config zod schema + doc types), `recommendations.ts` (curated prompts across business advising, hiring, customer research, program readiness), `prompts.ts` (system prompt assembly + JSON turn contract), `server/` (`repo.ts`, `engine.ts` OpenAI + deterministic fallback, `invites.ts`, `session-guard.ts`).
+- APIs: admin `app/api/lift/interviews/**` (admin for mutations, staff for results reads); public `app/api/public/interview/[key]/**` resolves `inv_`/`pub_` keys, rate-limits, sets an httpOnly session cookie checked on every message turn.
+- Collections `liftInterviews`, `liftInterviewInvites`, `liftInterviewSessions` are server-only (client SDK denied in `firestore.rules`); editing a published interview returns it to draft; sessions record `interviewVersion`.
+- Engine: without `OPENAI_API_KEY` a deterministic fallback still runs interviews and produces transcripts/evaluations (`source: "fallback"`). Offline check: `OPENAI_API_KEY= npx tsx scripts/verify-interview-engine.ts`.
+
 ## Branding mode
 
 - `NEXT_PUBLIC_BRANDING_MODE=lift` switches the shared onboarding flows to LIFT wording (`lib/branding.ts`), replaces the KDM 5 Pillars with LIFT service areas, skips the paid-membership redirect, and hides the affiliate wizard. The default (unset or `kdm`) keeps the KDM site unchanged.

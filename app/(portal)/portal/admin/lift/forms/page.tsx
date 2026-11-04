@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ExternalLink, FilePlus2, Inbox, Loader2, Sprout } from "lucide-react";
+import { Bot, ExternalLink, FilePlus2, Inbox, Loader2, Sprout } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -77,6 +77,12 @@ export default function LiftFormStudioPage() {
           <p className="text-muted-foreground">Build, version, and publish the LIFT client lifecycle forms.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/portal/admin/lift/interviews">
+              <Bot className="mr-2 h-4 w-4" />
+              AI Interviews
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link href="/portal/admin/lift/submissions">
               <Inbox className="mr-2 h-4 w-4" />
