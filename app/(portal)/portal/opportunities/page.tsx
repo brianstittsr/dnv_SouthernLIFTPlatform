@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +49,9 @@ import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc } from "f
 import { COLLECTIONS, type OpportunityDoc } from "@/lib/schema";
 import { logActivity } from "@/lib/activity-logger";
 import { useUserProfile } from "@/contexts/user-profile-context";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SamgovOpportunitiesView } from "@/components/portal/samgov-opportunities-view";
+import { OpportunitySearch } from "@/components/opportunities/opportunity-search";
 
 interface OpportunityDisplay {
   id: string;
@@ -94,7 +98,7 @@ function formatDate(date: Date) {
   });
 }
 
-export default function OpportunitiesPage() {
+function PipelineView() {
   const { profile } = useUserProfile();
   const [opportunities, setOpportunities] = useState<OpportunityDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -490,5 +494,45 @@ export default function OpportunitiesPage() {
         ))
       )}
     </div>
+  );
+}
+
+/** Maps ?tab= links (from redirects and nav) onto the hub's tab values. */
+function resolveTab(tab: string | null): { tab: string; samInitial: "opportunities" | "teaming" } {
+  if (tab === "search") return { tab: "search", samInitial: "opportunities" };
+  if (tab === "sam-teaming") return { tab: "sam", samInitial: "teaming" };
+  if (tab === "sam") return { tab: "sam", samInitial: "opportunities" };
+  return { tab: "pipeline", samInitial: "opportunities" };
+}
+
+function OpportunitiesHub() {
+  const searchParams = useSearchParams();
+  const { tab, samInitial } = resolveTab(searchParams.get("tab"));
+
+  return (
+    <Tabs defaultValue={tab} className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
+        <TabsTrigger value="sam">SAM.gov Matches</TabsTrigger>
+        <TabsTrigger value="search">Search SAM.gov</TabsTrigger>
+      </TabsList>
+      <TabsContent value="pipeline">
+        <PipelineView />
+      </TabsContent>
+      <TabsContent value="sam">
+        <SamgovOpportunitiesView initialTab={samInitial} />
+      </TabsContent>
+      <TabsContent value="search">
+        <OpportunitySearch />
+      </TabsContent>
+    </Tabs>
+  );
+}
+
+export default function OpportunitiesPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6"><Skeleton className="h-10 w-64" /><Skeleton className="h-64 w-full" /></div>}>
+      <OpportunitiesHub />
+    </Suspense>
   );
 }

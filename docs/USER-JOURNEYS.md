@@ -173,7 +173,7 @@ This document describes the end-to-end user journeys for both Consortium Members
 
 **Opportunity Search:**
 - **AI-Powered SAM.gov Search:**
-  - Navigate to `/portal/opportunities/sam-search`
+  - Navigate to `/portal/opportunities` → **Search SAM.gov** tab
   - System automatically matches opportunities based on:
     - NAICS codes from onboarding
     - Certifications from profile

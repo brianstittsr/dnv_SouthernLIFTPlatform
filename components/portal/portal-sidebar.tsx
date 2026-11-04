@@ -177,7 +177,7 @@ const companyItems: { title: string; href: string; icon: typeof Building2 }[] = 
 const workItems = [
   {
     title: "SAM.gov Opportunities",
-    href: "/portal/samgov-opportunities",
+    href: "/portal/opportunities?tab=sam",
     icon: Globe,
     badge: "AI",
   },
@@ -592,6 +592,12 @@ const svpAdminItems = [
     badge: "LIFT",
   },
   {
+    title: "LIFT AI Interviews",
+    href: "/portal/admin/lift/interviews",
+    icon: Bot,
+    badge: "LIFT",
+  },
+  {
     title: "LIFT Form Submissions",
     href: "/portal/admin/lift/submissions",
     icon: Inbox,
@@ -720,7 +726,7 @@ const consortiumMemberItems = [
   },
   {
     title: "Opportunities",
-    href: "/portal/opportunities/sam-gov",
+    href: "/portal/opportunities",
     icon: Target,
   },
   {

@@ -3,6 +3,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import { COLLECTIONS } from "@/lib/schema";
 import { isSamGovConfigured, searchSamGovOpportunities, type SamGovOpportunity } from "@/lib/samgov-service";
 import { scoreOpportunitiesForMember, recommendTeamingPartner, type MemberProfileSummary, type TeamingCandidate } from "@/lib/samgov-ai";
+import { createOpenAIClient } from "@/lib/openai-config";
 import { createUserNotification } from "@/lib/notifications-store";
 import { sendTemplatedEmail } from "@/lib/email";
 
@@ -29,6 +30,7 @@ export interface SamGovSyncResults {
   triggeredBy: string;
   samgovConfigured: boolean;
   eligibleMembers: number;
+  eligibleSources?: { companyIntelligenceComplete: number; onboardingComplete: number };
   opportunitiesFetched: number;
   newMatchesDelivered: number;
   membersNotified: number;
@@ -46,7 +48,7 @@ interface EligibleMember {
   companyDescription?: string;
   naicsCodes?: string[];
   certifications?: string[];
-  skills?: string[];
+  expertise?: string;
   matchingPreferences?: MemberProfileSummary["matchingPreferences"];
 }
 
@@ -58,7 +60,7 @@ function toProfileSummary(member: EligibleMember): MemberProfileSummary {
     companyDescription: member.companyDescription,
     naicsCodes: member.naicsCodes,
     certifications: member.certifications,
-    expertise: member.skills?.join(", "),
+    expertise: member.expertise,
     matchingPreferences: member.matchingPreferences,
   };
 }
@@ -131,27 +133,53 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
     }
 
     // ─── 2. Load eligible members (complete profile + push enabled) ──────
-    // Any member with a completed profile is eligible. Members can opt out
-    // via the "SAM.gov opportunity matching" toggle on their opportunities
-    // page (samgovOpportunitiesEnabled === false).
-    const usersSnap = await db
-      .collection(COLLECTIONS.USERS)
-      .where("companyIntelligenceComplete", "==", true)
-      .get();
+    // Eligible = company intelligence complete (KDM flow) OR onboarding
+    // complete (LIFT flow) — the flags come from different wizards, so union
+    // both queries and dedupe. Members can opt out via the "SAM.gov
+    // opportunity matching" toggle on their opportunities page
+    // (samgovOpportunitiesEnabled === false).
+    const [intelligenceSnap, onboardedSnap] = await Promise.all([
+      db.collection(COLLECTIONS.USERS).where("companyIntelligenceComplete", "==", true).get(),
+      db.collection(COLLECTIONS.USERS).where("isOnboardingComplete", "==", true).get(),
+    ]);
+    results.eligibleSources = {
+      companyIntelligenceComplete: intelligenceSnap.size,
+      onboardingComplete: onboardedSnap.size,
+    };
+    const memberDocs = new Map(
+      [...intelligenceSnap.docs, ...onboardedSnap.docs].map((d) => [d.id, d]),
+    );
 
-    const eligibleMembers: EligibleMember[] = usersSnap.docs
+    const strArr = (v: unknown): string[] =>
+      Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : [];
+
+    const eligibleMembers: EligibleMember[] = [...memberDocs.values()]
       .filter((docSnap) => docSnap.data().samgovOpportunitiesEnabled !== false)
       .map((docSnap) => {
       const data = docSnap.data();
+      // LIFT onboarding writes primaryNaics/productsServices/coreCapabilities;
+      // the KDM wizard writes naicsCodes/skills/companyDescription. Feed the
+      // scorer whichever profile data exists.
+      const expertise = [
+        ...strArr(data.skills),
+        ...strArr(data.productsServices),
+        data.coreCapabilities,
+      ]
+        .map((v) => String(v ?? "").trim())
+        .filter(Boolean)
+        .join(", ") || undefined;
+      const naics = strArr(data.naicsCodes).length ? strArr(data.naicsCodes) : strArr(data.primaryNaics);
       return {
         userId: docSnap.id,
         email: data.email || undefined,
         name: [data.firstName, data.lastName].filter(Boolean).join(" ") || data.companyName || "Member",
         companyName: data.companyName || data.company || data.legalCompanyName || undefined,
-        companyDescription: data.companyDescription || undefined,
-        naicsCodes: Array.isArray(data.naicsCodes) ? data.naicsCodes : undefined,
+        companyDescription:
+          data.companyDescription || data.coreCapabilities ||
+          strArr(data.productsServices).join(", ") || undefined,
+        naicsCodes: naics.length ? naics : undefined,
         certifications: Array.isArray(data.certifications) ? data.certifications : undefined,
-        skills: Array.isArray(data.skills) ? data.skills : undefined,
+        expertise,
         matchingPreferences: data.matchingPreferences || undefined,
       };
     });
@@ -184,6 +212,13 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
 
     if (opportunities.length === 0) {
       results.message = "No opportunities returned by SAM.gov search.";
+      return results;
+    }
+
+    // AI scoring needs an OpenAI key; without it every member silently gets
+    // zero matches — record it on the run instead of looking like a clean run.
+    if (!(await createOpenAIClient())) {
+      results.errors.push("OpenAI API key is not configured — match scoring skipped");
       return results;
     }
 
@@ -243,7 +278,7 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
               memberDigests[member.userId] = {
                 name: member.name,
                 email: member.email,
-                portalUrl: `${APP_URL}/portal/samgov-opportunities`,
+                portalUrl: `${APP_URL}/portal/opportunities`,
                 opps: [],
               };
             }
@@ -275,7 +310,7 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
           type: "samgov_opportunity",
           title: `${digest.opps.length} New SAM.gov Opportunit${digest.opps.length === 1 ? "y" : "ies"}`,
           message: `Our AI matched ${digest.opps.length} federal opportunit${digest.opps.length === 1 ? "y" : "ies"} to your profile.`,
-          link: "/portal/samgov-opportunities",
+          link: "/portal/opportunities",
         });
 
         if (digest.email) {
@@ -388,20 +423,20 @@ export async function runSamGovSync(triggeredBy: "cron" | "admin"): Promise<SamG
         });
 
         // Notify both members
-        const portalUrl = `${APP_URL}/portal/samgov-opportunities/teaming`;
+        const portalUrl = `${APP_URL}/portal/opportunities`;
         await createUserNotification({
           userId: requesterId,
           type: "samgov_teaming",
           title: "AI Teaming Recommendation",
           message: `We recommend partnering with ${recommendation.companyName} on "${top.opportunity.title}".`,
-          link: "/portal/samgov-opportunities/teaming",
+          link: "/portal/opportunities",
         });
         await createUserNotification({
           userId: recommendation.memberId,
           type: "samgov_teaming",
           title: "AI Teaming Recommendation",
           message: `${requester.companyName || requester.name} may be a great teaming partner on "${top.opportunity.title}".`,
-          link: "/portal/samgov-opportunities/teaming",
+          link: "/portal/opportunities",
         });
 
         if (requester.email) {

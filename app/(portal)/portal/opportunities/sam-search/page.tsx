@@ -1,11 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { OpportunitySearch } from "@/components/opportunities/opportunity-search";
-
-export default function SamOpportunitiesPage() {
-  return (
-    <div className="container mx-auto py-6">
-      <OpportunitySearch />
-    </div>
-  );
+export default function SamSearchRedirect() {
+  redirect("/portal/opportunities?tab=search");
 }

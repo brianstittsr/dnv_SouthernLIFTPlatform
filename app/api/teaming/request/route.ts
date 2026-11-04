@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     const now = Timestamp.now();
     const noticeId = body.opportunity.noticeId || "";
     const opp = body.opportunity;
-    const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://www.kdm-assoc.com"}/portal/samgov-opportunities/teaming`;
+    const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://www.kdm-assoc.com"}/portal/opportunities?tab=sam-teaming`;
 
     // Persist the alert (admin Teaming Alerts section) and the request record
     const alertRef = adminDb.collection(COLLECTIONS.TEAMING_ALERTS).doc();
@@ -204,14 +204,14 @@ export async function POST(req: NextRequest) {
       type: "samgov_teaming",
       title: "Teaming Request",
       message: `${requester.companyName || requester.name} invited you to team on "${opp.title}".`,
-      link: "/portal/samgov-opportunities/teaming",
+      link: "/portal/opportunities?tab=sam-teaming",
     });
     await createUserNotification({
       userId: requesterId,
       type: "samgov_teaming",
       title: "Teaming Request Sent",
       message: `Your teaming request for "${opp.title}" was sent to ${recipient.companyName || recipient.name}.`,
-      link: "/portal/samgov-opportunities/teaming",
+      link: "/portal/opportunities?tab=sam-teaming",
     });
 
     return NextResponse.json({

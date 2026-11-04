@@ -117,8 +117,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const name = [member.firstName, member.lastName].filter(Boolean).join(" ") || "there";
     const email = member.emailPrimary;
     const portalUrl = `${APP_URL}/portal`;
-    const opportunitiesUrl = `${APP_URL}/portal/samgov-opportunities`;
-    const teamingUrl = `${APP_URL}/portal/samgov-opportunities/teaming`;
+    const opportunitiesUrl = `${APP_URL}/portal/opportunities?tab=sam`;
+    const teamingUrl = `${APP_URL}/portal/opportunities?tab=sam-teaming`;
 
     if (email) {
       await sendTemplatedEmail("onboardingApproved", email, {
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         type: "system",
         title: "Onboarding Approved!",
         message: "Your profile is approved. Explore KDM Opportunities, AI Recommendations, and AI Teaming Matches now.",
-        link: "/portal/samgov-opportunities",
+        link: "/portal/opportunities?tab=sam",
       });
     }
 
