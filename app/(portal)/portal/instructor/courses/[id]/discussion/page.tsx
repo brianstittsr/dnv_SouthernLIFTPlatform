@@ -121,7 +121,7 @@ export default function DiscussionPage({ params }: { params: Promise<{ id: strin
     try {
       await createDiscussion({
         courseId,
-        userId: profile.id,
+        userId: profile.authUid,
         userName: (profile as any).name || (profile as any).displayName || "Instructor",
         title: newDiscussionForm.title,
         content: newDiscussionForm.content,
@@ -190,7 +190,7 @@ export default function DiscussionPage({ params }: { params: Promise<{ id: strin
     try {
       await createDiscussionReply({
         discussionId: selectedDiscussion.id,
-        userId: profile.id,
+        userId: profile.authUid,
         userName: (profile as any).name || (profile as any).displayName || "Instructor",
         content: replyContent,
       });

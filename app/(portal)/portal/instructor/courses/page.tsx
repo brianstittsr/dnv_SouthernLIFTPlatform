@@ -1,104 +1,85 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { collection, query, getDocs, where, orderBy, Timestamp } from "firebase/firestore";
+import { collection, query, getDocs, where, Timestamp } from "firebase/firestore";
 import { useUserProfile } from "@/contexts/user-profile-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Loader2, 
-  Plus, 
-  Users, 
-  Calendar, 
-  Clock, 
-  CheckCircle2, 
+import {
+  Loader2,
+  Plus,
+  Users,
+  Calendar,
+  Clock,
+  CheckCircle2,
   AlertCircle,
   BookOpen,
   Award,
-  TrendingUp,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
-import { DataToggle } from "@/components/ui/data-toggle";
-import { mockCMMCCourses } from "@/lib/mock-data/course-mock-data";
 
 interface Course {
   id: string;
   title: string;
-  description: string;
-  instructorId: string;
-  startDate: Timestamp;
-  endDate: Timestamp;
-  duration: number;
-  maxParticipants: number;
-  currentEnrollment: number;
+  description?: string;
+  facilitatorId?: string;
+  instructorId?: string;
+  courseStartDate?: Timestamp;
+  courseEndDate?: Timestamp;
+  estimatedDurationWeeks?: number;
+  maxParticipants?: number;
+  currentParticipants?: number;
   status: "draft" | "published" | "active" | "completed" | "archived";
-  price: number;
-  curriculum: {
-    weeknumber: number;
-    title: string;
-    topics: string[];
-  }[];
-  completionRate?: number;
-  averageScore?: number;
+  priceInCents?: number;
+  isFree?: boolean;
 }
 
 interface CourseStats {
   totalCourses: number;
   activeCourses: number;
   totalParticipants: number;
-  averageCompletion: number;
   upcomingCourses: number;
 }
 
 export default function InstructorCoursesPage() {
-  const router = useRouter();
   const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [useMockData, setUseMockData] = useState(false);
   const [stats, setStats] = useState<CourseStats>({
     totalCourses: 0,
     activeCourses: 0,
     totalParticipants: 0,
-    averageCompletion: 0,
     upcomingCourses: 0,
   });
   const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
-    if (useMockData) {
-      setCourses(mockCMMCCourses as Course[]);
-      calculateStats(mockCMMCCourses as Course[]);
-      setLoading(false);
-    } else {
-      loadCourses();
-    }
-  }, [profile.id, useMockData]);
+    if (profile.authUid) loadCourses();
+  }, [profile.authUid]);
 
   const loadCourses = async () => {
-    if (!db || !profile.id) return;
-    
+    if (!db || !profile.authUid) return;
+
     try {
-      // Query courses where user is the instructor
-      const q = query(
-        collection(db, "cmmcCourses"),
-        where("instructorId", "==", profile.id),
-        orderBy("startDate", "desc")
+      // Canonical courses where this user is the facilitator (legacy instructorId kept for older docs)
+      const [byFacilitator, byInstructor] = await Promise.all([
+        getDocs(query(collection(db, "courses"), where("facilitatorId", "==", profile.authUid))),
+        getDocs(query(collection(db, "courses"), where("instructorId", "==", profile.authUid))),
+      ]);
+
+      const byId = new Map<string, Course>();
+      [...byFacilitator.docs, ...byInstructor.docs].forEach((courseDoc) => {
+        byId.set(courseDoc.id, { id: courseDoc.id, ...courseDoc.data() } as Course);
+      });
+      const coursesData = [...byId.values()].sort(
+        (a, b) => (b.courseStartDate?.toMillis() ?? 0) - (a.courseStartDate?.toMillis() ?? 0)
       );
-      
-      const snapshot = await getDocs(q);
-      const coursesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Course[];
-      
+
       setCourses(coursesData);
       calculateStats(coursesData);
     } catch (error) {
@@ -110,22 +91,14 @@ export default function InstructorCoursesPage() {
   };
 
   const calculateStats = (coursesData: Course[]) => {
-    const now = new Date();
-    const active = coursesData.filter(c => c.status === "active").length;
-    const upcoming = coursesData.filter(c => 
-      c.status === "published" && c.startDate.toDate() > now
-    ).length;
-    const totalParticipants = coursesData.reduce((sum, c) => sum + (c.currentEnrollment || 0), 0);
-    const avgCompletion = coursesData.length > 0
-      ? coursesData.reduce((sum, c) => sum + (c.completionRate || 0), 0) / coursesData.length
-      : 0;
-
+    const now = Date.now();
     setStats({
       totalCourses: coursesData.length,
-      activeCourses: active,
-      totalParticipants,
-      averageCompletion: Math.round(avgCompletion),
-      upcomingCourses: upcoming,
+      activeCourses: coursesData.filter((c) => c.status === "active").length,
+      totalParticipants: coursesData.reduce((sum, c) => sum + (c.currentParticipants || 0), 0),
+      upcomingCourses: coursesData.filter(
+        (c) => c.status === "published" && (c.courseStartDate?.toMillis() ?? 0) > now
+      ).length,
     });
   };
 
@@ -151,8 +124,11 @@ export default function InstructorCoursesPage() {
 
   const filterCourses = (status: string) => {
     if (status === "all") return courses;
-    return courses.filter(c => c.status === status);
+    return courses.filter((c) => c.status === status);
   };
+
+  const formatPrice = (course: Course) =>
+    course.isFree ? "Free" : `$${((course.priceInCents ?? 0) / 100).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
   if (loading) {
     return (
@@ -164,25 +140,20 @@ export default function InstructorCoursesPage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">CMMC Course Management</h1>
-          <p className="text-muted-foreground">Manage your 12-week CMMC certification courses</p>
+          <h1 className="text-3xl font-bold">Course Management</h1>
+          <p className="text-muted-foreground">Manage your training courses</p>
         </div>
-        <div className="flex items-center gap-3">
-          <DataToggle onToggle={setUseMockData} defaultValue={false} />
-          <Link href="/portal/instructor/courses/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Create New Course
-            </Button>
-          </Link>
-        </div>
+        <Link href="/portal/instructor/courses/new">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Course
+          </Button>
+        </Link>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Total Courses</CardDescription>
@@ -221,18 +192,6 @@ export default function InstructorCoursesPage() {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardDescription>Avg Completion</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-purple-600" />
-              <span className="text-2xl font-bold">{stats.averageCompletion}%</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
             <CardDescription>Upcoming</CardDescription>
           </CardHeader>
           <CardContent>
@@ -244,7 +203,6 @@ export default function InstructorCoursesPage() {
         </Card>
       </div>
 
-      {/* Courses List */}
       <Card>
         <CardHeader>
           <CardTitle>Your Courses</CardTitle>
@@ -257,16 +215,16 @@ export default function InstructorCoursesPage() {
             <TabsList className="mb-4">
               <TabsTrigger value="all">All ({courses.length})</TabsTrigger>
               <TabsTrigger value="active">
-                Active ({courses.filter(c => c.status === "active").length})
+                Active ({courses.filter((c) => c.status === "active").length})
               </TabsTrigger>
               <TabsTrigger value="published">
-                Published ({courses.filter(c => c.status === "published").length})
+                Published ({courses.filter((c) => c.status === "published").length})
               </TabsTrigger>
               <TabsTrigger value="completed">
-                Completed ({courses.filter(c => c.status === "completed").length})
+                Completed ({courses.filter((c) => c.status === "completed").length})
               </TabsTrigger>
               <TabsTrigger value="draft">
-                Drafts ({courses.filter(c => c.status === "draft").length})
+                Drafts ({courses.filter((c) => c.status === "draft").length})
               </TabsTrigger>
             </TabsList>
 
@@ -276,8 +234,8 @@ export default function InstructorCoursesPage() {
                   <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No courses found</h3>
                   <p className="text-muted-foreground mb-4">
-                    {activeTab === "all" 
-                      ? "Create your first CMMC course to get started"
+                    {activeTab === "all"
+                      ? "Create your first course to get started"
                       : `No ${activeTab} courses at the moment`}
                   </p>
                   <Link href="/portal/instructor/courses/new">
@@ -299,41 +257,36 @@ export default function InstructorCoursesPage() {
                               {getStatusIcon(course.status)}
                               {course.status}
                             </Badge>
+                            {course.isFree && <Badge variant="outline">Free</Badge>}
                           </div>
-                          <p className="text-muted-foreground mb-4">{course.description}</p>
-                          
+                          <p className="text-muted-foreground mb-4 line-clamp-2">{course.description}</p>
+
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                             <div>
                               <div className="text-sm text-muted-foreground">Start Date</div>
                               <div className="font-medium">
-                                {course.startDate?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                {course.courseStartDate
+                                  ? course.courseStartDate.toDate().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+                                  : "TBD"}
                               </div>
                             </div>
                             <div>
                               <div className="text-sm text-muted-foreground">Duration</div>
-                              <div className="font-medium">{course.duration} weeks</div>
+                              <div className="font-medium">
+                                {course.estimatedDurationWeeks ? `${course.estimatedDurationWeeks} weeks` : "Self-paced"}
+                              </div>
                             </div>
                             <div>
                               <div className="text-sm text-muted-foreground">Enrollment</div>
                               <div className="font-medium">
-                                {course.currentEnrollment || 0} / {course.maxParticipants}
+                                {course.currentParticipants || 0} / {course.maxParticipants ?? "—"}
                               </div>
                             </div>
                             <div>
                               <div className="text-sm text-muted-foreground">Price</div>
-                              <div className="font-medium">${course.price?.toLocaleString()}</div>
+                              <div className="font-medium">{formatPrice(course)}</div>
                             </div>
                           </div>
-
-                          {course.status === "active" && course.completionRate !== undefined && (
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">Completion Rate</span>
-                                <span className="font-medium">{course.completionRate}%</span>
-                              </div>
-                              <Progress value={course.completionRate} className="h-2" />
-                            </div>
-                          )}
                         </div>
 
                         <div className="flex flex-col gap-2 ml-4">

@@ -2,158 +2,52 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { doc, getDoc, Timestamp } from "firebase/firestore";
-import { useUserProfile } from "@/contexts/user-profile-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Loader2, 
-  BookOpen, 
+import {
+  Loader2,
+  BookOpen,
   Calendar,
   Clock,
   Users,
-  DollarSign,
   CheckCircle2,
   ArrowLeft,
   Award,
-  Video,
-  FileText,
-  MessageSquare
 } from "lucide-react";
-import { toast } from "sonner";
 import Link from "next/link";
 
-interface Course {
+interface CourseDetail {
   id: string;
   title: string;
+  slug: string | null;
   description: string;
-  instructorId: string;
-  instructorName?: string;
-  instructorBio?: string;
-  instructorAvatar?: string;
-  startDate: Timestamp;
-  endDate: Timestamp;
-  duration: number;
-  maxParticipants: number;
-  currentEnrollment: number;
-  status: "draft" | "published" | "active" | "completed" | "archived";
-  price: number;
-  level: "beginner" | "intermediate" | "advanced";
-  syllabus?: string[];
-  learningObjectives?: string[];
-  prerequisites?: string[];
-  schedule?: string;
-  materials?: string[];
+  facilitatorName: string | null;
+  courseStartDate: string | null;
+  courseEndDate: string | null;
+  maxParticipants: number | null;
+  currentParticipants: number;
+  estimatedDurationWeeks: number | null;
+  status: string;
+  difficultyLevel: string | null;
+  priceInCents: number;
+  compareAtPriceInCents: number | null;
+  isFree: boolean;
+  thumbnailUrl: string | null;
+  tags: string[];
+  learningOutcomes: string[];
+  prerequisites: string[];
+  outline: { id: string; title: string; description?: string; sessions: { id: string; title: string; type?: string }[] }[];
 }
-
-const MOCK_COURSES: Record<string, Course> = {
-  "mock-1": {
-    id: "mock-1",
-    title: "CMMC Level 1 Certification - Spring 2026",
-    description: "Comprehensive 12-week program covering all CMMC Level 1 requirements including access control, incident response, and system protection. This intensive course will prepare your organization for CMMC Level 1 certification with hands-on training, real-world scenarios, and expert guidance.",
-    instructorId: "instructor-1",
-    instructorName: "James Thompson",
-    instructorBio: "Former DoD cybersecurity specialist with 15+ years of experience in CMMC compliance and implementation. Certified CMMC Assessor (CCA) and has helped over 100 organizations achieve certification.",
-    instructorAvatar: "/avatars/instructor-1.jpg",
-    startDate: Timestamp.fromDate(new Date("2026-03-15")),
-    endDate: Timestamp.fromDate(new Date("2026-06-07")),
-    duration: 12,
-    maxParticipants: 20,
-    currentEnrollment: 14,
-    status: "published",
-    price: 3500,
-    level: "beginner",
-    syllabus: [
-      "Week 1-2: Introduction to CMMC and Access Control",
-      "Week 3-4: Identification and Authentication",
-      "Week 5-6: Media Protection and Physical Protection",
-      "Week 7-8: System and Communications Protection",
-      "Week 9-10: System and Information Integrity",
-      "Week 11: Incident Response Planning",
-      "Week 12: Final Assessment and Certification Prep"
-    ],
-    learningObjectives: [
-      "Understand CMMC Level 1 requirements and framework",
-      "Implement basic cybersecurity hygiene practices",
-      "Develop compliant access control policies",
-      "Create incident response procedures",
-      "Prepare documentation for certification audit",
-      "Pass CMMC Level 1 assessment"
-    ],
-    prerequisites: [
-      "Basic understanding of cybersecurity concepts",
-      "Access to organizational IT systems",
-      "Commitment to attend weekly sessions",
-      "Willingness to implement changes in your organization"
-    ],
-    schedule: "Live sessions every Tuesday and Thursday, 2:00 PM - 4:00 PM EST. Recorded sessions available for review.",
-    materials: [
-      "CMMC Level 1 Compliance Guide (PDF)",
-      "Access Control Policy Templates",
-      "Incident Response Plan Template",
-      "System Security Plan (SSP) Template",
-      "Weekly Assessment Quizzes",
-      "Final Certification Exam"
-    ]
-  },
-  "mock-2": {
-    id: "mock-2",
-    title: "CMMC Level 2 Advanced Training",
-    description: "Advanced 12-week course for organizations pursuing CMMC Level 2 certification. Covers advanced security controls and compliance requirements.",
-    instructorId: "instructor-2",
-    instructorName: "Sarah Chen",
-    instructorBio: "Cybersecurity consultant specializing in CMMC Level 2 and 3 implementations. Former NIST researcher with expertise in advanced security controls.",
-    startDate: Timestamp.fromDate(new Date("2026-04-01")),
-    endDate: Timestamp.fromDate(new Date("2026-06-24")),
-    duration: 12,
-    maxParticipants: 15,
-    currentEnrollment: 8,
-    status: "published",
-    price: 4500,
-    level: "advanced",
-    syllabus: [
-      "Week 1-2: CMMC Level 2 Overview and Advanced Access Control",
-      "Week 3-4: Audit and Accountability",
-      "Week 5-6: Configuration Management",
-      "Week 7-8: Risk Assessment and Security Assessment",
-      "Week 9-10: System and Information Integrity",
-      "Week 11: Continuous Monitoring",
-      "Week 12: Final Assessment and Advanced Certification Prep"
-    ],
-    learningObjectives: [
-      "Master CMMC Level 2 requirements",
-      "Implement advanced security controls",
-      "Develop comprehensive security policies",
-      "Conduct risk assessments",
-      "Establish continuous monitoring programs"
-    ],
-    prerequisites: [
-      "CMMC Level 1 certification or equivalent knowledge",
-      "Experience with cybersecurity frameworks",
-      "IT management or security role in organization"
-    ],
-    schedule: "Live sessions every Monday and Wednesday, 1:00 PM - 3:30 PM EST",
-    materials: [
-      "CMMC Level 2 Implementation Guide",
-      "Advanced Security Control Templates",
-      "Risk Assessment Framework",
-      "Continuous Monitoring Tools"
-    ]
-  }
-};
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
-  const [course, setCourse] = useState<Course | null>(null);
-  const [enrolling, setEnrolling] = useState(false);
+  const [course, setCourse] = useState<CourseDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -164,29 +58,10 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
     try {
       setLoading(true);
       setError(null);
-
-      // Try mock data first
-      if (MOCK_COURSES[id]) {
-        setCourse(MOCK_COURSES[id]);
-        setLoading(false);
-        return;
-      }
-
-      // Load from Firestore
-      if (!db) {
-        setError("Database not initialized");
-        setLoading(false);
-        return;
-      }
-
-      const courseDoc = await getDoc(doc(db, "cmmcCourses", id));
-      if (!courseDoc.exists()) {
-        setError("Course not found");
-        setLoading(false);
-        return;
-      }
-
-      setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
+      const response = await fetch(`/api/lms/courses/${id}`);
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Course not found");
+      setCourse(payload.data);
     } catch (err: any) {
       console.error("Error loading course:", err);
       setError(err.message || "Failed to load course");
@@ -195,54 +70,15 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
     }
   };
 
-  const handleEnroll = () => {
-    router.push(`/portal/sme/courses/enroll/${id}`);
-  };
+  const formatDate = (iso: string | null) =>
+    iso ? new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "TBD";
 
-  const formatDate = (timestamp: any) => {
-    if (!timestamp) return "N/A";
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  };
+  const formatPrice = () =>
+    !course ? "" : course.isFree ? "Free" : `$${(course.priceInCents / 100).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const getLevelBadge = (level: string) => {
-    const variants: Record<string, any> = {
-      beginner: "secondary",
-      intermediate: "default",
-      advanced: "destructive",
-    };
-    return variants[level] || "secondary";
-  };
-
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, any> = {
-      draft: "outline",
-      published: "default",
-      active: "default",
-      completed: "secondary",
-      archived: "outline",
-    };
-    return variants[status] || "outline";
-  };
-
-  const getSpotsRemaining = () => {
-    if (!course) return 0;
-    return course.maxParticipants - course.currentEnrollment;
-  };
-
-  const getEnrollmentPercentage = () => {
-    if (!course) return 0;
-    return Math.round((course.currentEnrollment / course.maxParticipants) * 100);
-  };
+  const spotsRemaining = () => (course?.maxParticipants ? course.maxParticipants - course.currentParticipants : null);
+  const enrollmentPercentage = () =>
+    course?.maxParticipants ? Math.round((course.currentParticipants / course.maxParticipants) * 100) : 0;
 
   if (loading) {
     return (
@@ -271,6 +107,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
     );
   }
 
+  const spots = spotsRemaining();
+
   return (
     <div className="container mx-auto p-6">
       <div className="mb-6">
@@ -280,44 +118,38 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
             Back to Browse
           </Link>
         </Button>
-        
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold">{course.title}</h1>
-              <Badge variant={getStatusBadge(course.status)}>
-                {course.status.charAt(0).toUpperCase() + course.status.slice(1)}
-              </Badge>
-              <Badge variant={getLevelBadge(course.level)}>
-                {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
-              </Badge>
-            </div>
-            <p className="text-xl text-muted-foreground mb-4">{course.description}</p>
-          </div>
+
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl font-bold">{course.title}</h1>
+          {course.difficultyLevel && (
+            <Badge variant={course.difficultyLevel === "advanced" ? "destructive" : "secondary"}>
+              {course.difficultyLevel}
+            </Badge>
+          )}
+          {course.isFree && <Badge variant="outline">Free</Badge>}
         </div>
+        <p className="text-xl text-muted-foreground mb-4">{course.description}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Content */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="syllabus">Syllabus</TabsTrigger>
               <TabsTrigger value="instructor">Instructor</TabsTrigger>
-              <TabsTrigger value="materials">Materials</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Learning Objectives</CardTitle>
-                  <CardDescription>What you'll achieve in this course</CardDescription>
+                  <CardTitle>Learning Outcomes</CardTitle>
+                  <CardDescription>What you&apos;ll achieve in this course</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {course.learningObjectives && course.learningObjectives.length > 0 ? (
+                  {course.learningOutcomes.length > 0 ? (
                     <ul className="space-y-2">
-                      {course.learningObjectives.map((objective, idx) => (
+                      {course.learningOutcomes.map((objective, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                           <span>{objective}</span>
@@ -325,18 +157,17 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-muted-foreground">No learning objectives specified.</p>
+                    <p className="text-muted-foreground">Details will be provided upon enrollment.</p>
                   )}
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Prerequisites</CardTitle>
-                  <CardDescription>What you need before enrolling</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {course.prerequisites && course.prerequisites.length > 0 ? (
+              {course.prerequisites.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Prerequisites</CardTitle>
+                  </CardHeader>
+                  <CardContent>
                     <ul className="space-y-2">
                       {course.prerequisites.map((prereq, idx) => (
                         <li key={idx} className="flex items-start gap-2">
@@ -345,41 +176,40 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <p className="text-muted-foreground">No prerequisites required.</p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Schedule</CardTitle>
-                  <CardDescription>Class timing and format</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>{course.schedule || "Schedule details will be provided upon enrollment."}</p>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             <TabsContent value="syllabus" className="space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Course Syllabus</CardTitle>
-                  <CardDescription>{course.duration} weeks of comprehensive training</CardDescription>
+                  <CardDescription>
+                    {course.estimatedDurationWeeks ? `${course.estimatedDurationWeeks}-week program` : "Self-paced program"} — enroll to access content
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {course.syllabus && course.syllabus.length > 0 ? (
+                  {course.outline.length > 0 ? (
                     <div className="space-y-4">
-                      {course.syllabus.map((week, idx) => (
-                        <div key={idx} className="flex gap-4 p-4 border rounded-lg">
+                      {course.outline.map((module, idx) => (
+                        <div key={module.id} className="flex gap-4 p-4 border rounded-lg">
                           <div className="flex-shrink-0">
                             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                               <BookOpen className="h-5 w-5 text-primary" />
                             </div>
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium">{week}</p>
+                            <p className="font-medium">
+                              {idx + 1}. {module.title}
+                            </p>
+                            {module.sessions.length > 0 && (
+                              <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+                                {module.sessions.map((session) => (
+                                  <li key={session.id}>• {session.title}</li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -398,50 +228,21 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Award className="h-10 w-10 text-primary" />
-                      </div>
+                    <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Award className="h-10 w-10 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-2">{course.instructorName}</h3>
-                      <p className="text-muted-foreground">
-                        {course.instructorBio || "Experienced CMMC instructor and cybersecurity professional."}
-                      </p>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">{course.facilitatorName || "LIFT Instructor"}</h3>
+                      <p className="text-muted-foreground">Southern University LIFT Rural Business Center</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="materials" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Course Materials</CardTitle>
-                  <CardDescription>Resources included with enrollment</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {course.materials && course.materials.length > 0 ? (
-                    <div className="space-y-2">
-                      {course.materials.map((material, idx) => (
-                        <div key={idx} className="flex items-center gap-3 p-3 border rounded-lg">
-                          <FileText className="h-5 w-5 text-muted-foreground" />
-                          <span>{material}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground">Course materials will be provided upon enrollment.</p>
-                  )}
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Enrollment Card */}
           <Card>
             <CardHeader>
               <CardTitle>Enrollment</CardTitle>
@@ -449,49 +250,39 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
             <CardContent className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-3xl font-bold">{formatCurrency(course.price)}</span>
+                  <span className="text-3xl font-bold">{formatPrice()}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">One-time payment</p>
+                {!course.isFree && <p className="text-sm text-muted-foreground">One-time payment</p>}
               </div>
 
               <Separator />
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Enrollment</span>
-                  <span className="text-sm font-semibold">
-                    {course.currentEnrollment}/{course.maxParticipants}
-                  </span>
+              {course.maxParticipants && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-muted-foreground">Enrollment</span>
+                    <span className="text-sm font-semibold">
+                      {course.currentParticipants}/{course.maxParticipants}
+                    </span>
+                  </div>
+                  <Progress value={enrollmentPercentage()} className="h-2" />
+                  <p className="text-xs text-muted-foreground mt-1">{spots} spots remaining</p>
                 </div>
-                <Progress value={getEnrollmentPercentage()} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {getSpotsRemaining()} spots remaining
-                </p>
-              </div>
+              )}
 
               <Separator />
 
-              <Button 
-                className="w-full" 
+              <Button
+                className="w-full"
                 size="lg"
-                onClick={handleEnroll}
-                disabled={enrolling || getSpotsRemaining() === 0}
+                onClick={() => router.push(`/portal/sme/courses/enroll/${course.id}`)}
+                disabled={spots === 0}
               >
-                {enrolling ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : getSpotsRemaining() === 0 ? (
-                  "Course Full"
-                ) : (
-                  "Enroll Now"
-                )}
+                {spots === 0 ? "Course Full" : course.isFree ? "Enroll Free" : "Enroll Now"}
               </Button>
             </CardContent>
           </Card>
 
-          {/* Course Details */}
           <Card>
             <CardHeader>
               <CardTitle>Course Details</CardTitle>
@@ -501,7 +292,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Start Date</p>
-                  <p className="text-sm text-muted-foreground">{formatDate(course.startDate)}</p>
+                  <p className="text-sm text-muted-foreground">{formatDate(course.courseStartDate)}</p>
                 </div>
               </div>
               <Separator />
@@ -509,7 +300,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">End Date</p>
-                  <p className="text-sm text-muted-foreground">{formatDate(course.endDate)}</p>
+                  <p className="text-sm text-muted-foreground">{formatDate(course.courseEndDate)}</p>
                 </div>
               </div>
               <Separator />
@@ -517,41 +308,19 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                 <Clock className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Duration</p>
-                  <p className="text-sm text-muted-foreground">{course.duration} weeks</p>
+                  <p className="text-sm text-muted-foreground">
+                    {course.estimatedDurationWeeks ? `${course.estimatedDurationWeeks} weeks` : "Self-paced"}
+                  </p>
                 </div>
               </div>
               <Separator />
               <div className="flex items-center gap-3">
                 <Users className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Class Size</p>
-                  <p className="text-sm text-muted-foreground">Max {course.maxParticipants} participants</p>
+                  <p className="text-sm font-medium">Enrolled</p>
+                  <p className="text-sm text-muted-foreground">{course.currentParticipants} participants</p>
                 </div>
               </div>
-              <Separator />
-              <div className="flex items-center gap-3">
-                <Award className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium">Level</p>
-                  <p className="text-sm text-muted-foreground capitalize">{course.level}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Support */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Need Help?</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Have questions about this course? Contact our support team.
-              </p>
-              <Button variant="outline" className="w-full">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Contact Support
-              </Button>
             </CardContent>
           </Card>
         </div>

@@ -430,7 +430,23 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   if (!db) return;
 
   const metadata = session.metadata || {};
-  
+
+  // Course purchases: create LMS memberships (admin SDK — works even though
+  // the rest of this handler's client-SDK writes are rules-denied).
+  if (metadata.type === 'course_purchase' && metadata.userId && metadata.courseIds) {
+    try {
+      const { fulfillCoursePurchase } = await import('@/lib/lms/server/journey');
+      const result = await fulfillCoursePurchase(
+        metadata.userId,
+        metadata.courseIds.split(',').filter(Boolean),
+        session.id
+      );
+      console.log(`Course purchase fulfilled: ${result.enrolled} membership(s) for session ${session.id}`);
+    } catch (error) {
+      console.error('Course purchase fulfillment failed:', error);
+    }
+  }
+
   // 1. Record the transaction
   const transaction = await recordTransaction(session, metadata);
 

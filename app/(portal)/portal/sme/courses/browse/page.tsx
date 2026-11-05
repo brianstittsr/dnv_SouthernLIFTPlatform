@@ -1,201 +1,79 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { db } from "@/lib/firebase";
-import { collection, query, getDocs, where, orderBy, Timestamp } from "firebase/firestore";
-import { useUserProfile } from "@/contexts/user-profile-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Loader2, 
-  Search,
-  BookOpen, 
-  Calendar,
-  Clock,
-  Users,
-  DollarSign,
-  Filter
-} from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, Search, BookOpen, Calendar, Clock, Users, DollarSign } from "lucide-react";
 import Link from "next/link";
 
-interface Course {
+interface CatalogCourse {
   id: string;
   title: string;
+  slug: string | null;
   description: string;
-  instructorId: string;
-  instructorName?: string;
-  startDate: Timestamp;
-  endDate: Timestamp;
-  duration: number;
-  maxParticipants: number;
-  currentEnrollment: number;
-  status: "draft" | "published" | "active" | "completed" | "archived";
-  price: number;
-  level: "beginner" | "intermediate" | "advanced";
+  facilitatorName: string | null;
+  courseStartDate: string | null;
+  courseEndDate: string | null;
+  maxParticipants: number | null;
+  currentParticipants: number;
+  estimatedDurationWeeks: number | null;
+  status: string;
+  difficultyLevel: string | null;
+  priceInCents: number;
+  compareAtPriceInCents: number | null;
+  isFree: boolean;
+  thumbnailUrl: string | null;
+  tags: string[];
 }
 
-const MOCK_COURSES: Course[] = [
-  {
-    id: "mock-1",
-    title: "CMMC Level 1 Certification - Spring 2026",
-    description: "Comprehensive 12-week program covering all CMMC Level 1 requirements including access control, incident response, and system protection.",
-    instructorId: "instructor-1",
-    instructorName: "James Thompson",
-    startDate: Timestamp.fromDate(new Date("2026-03-15")),
-    endDate: Timestamp.fromDate(new Date("2026-06-07")),
-    duration: 12,
-    maxParticipants: 20,
-    currentEnrollment: 14,
-    status: "published",
-    price: 3500,
-    level: "beginner"
-  },
-  {
-    id: "mock-2",
-    title: "CMMC Level 2 Advanced Training",
-    description: "Advanced 12-week course for organizations pursuing CMMC Level 2 certification. Covers advanced security controls and compliance requirements.",
-    instructorId: "instructor-2",
-    instructorName: "Sarah Chen",
-    startDate: Timestamp.fromDate(new Date("2026-04-01")),
-    endDate: Timestamp.fromDate(new Date("2026-06-24")),
-    duration: 12,
-    maxParticipants: 15,
-    currentEnrollment: 8,
-    status: "published",
-    price: 4500,
-    level: "advanced"
-  },
-  {
-    id: "mock-3",
-    title: "CMMC Fundamentals - Fast Track",
-    description: "Accelerated 8-week program for small businesses new to CMMC compliance. Perfect for getting started quickly.",
-    instructorId: "instructor-1",
-    instructorName: "James Thompson",
-    startDate: Timestamp.fromDate(new Date("2026-02-15")),
-    endDate: Timestamp.fromDate(new Date("2026-04-10")),
-    duration: 8,
-    maxParticipants: 25,
-    currentEnrollment: 22,
-    status: "active",
-    price: 2500,
-    level: "beginner"
-  },
-  {
-    id: "mock-4",
-    title: "CMMC Policy Development Workshop",
-    description: "Specialized 12-week course focused on developing compliant security policies and procedures for CMMC certification.",
-    instructorId: "instructor-3",
-    instructorName: "Michael Rodriguez",
-    startDate: Timestamp.fromDate(new Date("2026-05-01")),
-    endDate: Timestamp.fromDate(new Date("2026-07-24")),
-    duration: 12,
-    maxParticipants: 20,
-    currentEnrollment: 5,
-    status: "published",
-    price: 3800,
-    level: "intermediate"
-  }
-];
-
 export default function BrowseCoursesPage() {
-  const router = useRouter();
-  const { profile } = useUserProfile();
   const [loading, setLoading] = useState(true);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [courses, setCourses] = useState<CatalogCourse[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("published");
-  const [useMockData, setUseMockData] = useState(true);
 
   useEffect(() => {
     loadCourses();
-  }, [useMockData]);
-
-  useEffect(() => {
-    filterCourses();
-  }, [courses, searchQuery, levelFilter, statusFilter]);
+  }, []);
 
   const loadCourses = async () => {
-    setLoading(true);
-    
-    if (useMockData) {
-      // Use mock data
-      setCourses(MOCK_COURSES);
-      setLoading(false);
-      return;
-    }
-
-    // Load from Firebase
-    if (!db) {
-      setLoading(false);
-      return;
-    }
-    
     try {
-      const q = query(
-        collection(db, "cmmcCourses"),
-        where("status", "in", ["published", "active"]),
-        orderBy("startDate", "desc")
-      );
-      
-      const snapshot = await getDocs(q);
-      const coursesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Course[];
-      
-      setCourses(coursesData);
-    } catch (error) {
-      console.error("Error loading courses:", error);
-      toast.error("Failed to load courses");
+      setLoading(true);
+      setError(null);
+      const response = await fetch("/api/lms/catalog");
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Failed to load courses");
+      setCourses(payload.data ?? []);
+    } catch (err: any) {
+      console.error("Error loading courses:", err);
+      setError(err.message || "Failed to load courses");
     } finally {
       setLoading(false);
     }
   };
 
-  const filterCourses = () => {
-    let filtered = [...courses];
+  const filtered = courses.filter((course) => {
+    const matchesSearch =
+      !searchQuery ||
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.facilitatorName?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLevel = levelFilter === "all" || course.difficultyLevel === levelFilter;
+    return matchesSearch && matchesLevel;
+  });
 
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(c => 
-        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.instructorName?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  const spotsRemaining = (course: CatalogCourse) =>
+    course.maxParticipants ? course.maxParticipants - course.currentParticipants : null;
 
-    // Level filter
-    if (levelFilter !== "all") {
-      filtered = filtered.filter(c => c.level === levelFilter);
-    }
+  const formatPrice = (course: CatalogCourse) =>
+    course.isFree ? "Free" : `$${(course.priceInCents / 100).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
-    // Status filter
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(c => c.status === statusFilter);
-    }
-
-    setFilteredCourses(filtered);
-  };
-
-  const getAvailableSpots = (course: Course) => {
-    return course.maxParticipants - course.currentEnrollment;
-  };
-
-  const getLevelBadgeColor = (level: string) => {
-    switch (level) {
-      case "beginner": return "secondary";
-      case "intermediate": return "default";
-      case "advanced": return "destructive";
-      default: return "outline";
-    }
-  };
+  const formatDate = (iso: string | null) =>
+    iso ? new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "TBD";
 
   if (loading) {
     return (
@@ -207,28 +85,15 @@ export default function BrowseCoursesPage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Browse CMMC Courses</h1>
-          <p className="text-muted-foreground">Find and enroll in CMMC certification training programs</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={useMockData ? "default" : "outline"}
-            size="sm"
-            onClick={() => setUseMockData(!useMockData)}
-          >
-            {useMockData ? "Mock Data" : "Live Data"}
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold">Browse Courses</h1>
+        <p className="text-muted-foreground">Find and enroll in LIFT training programs</p>
       </div>
 
-      {/* Filters */}
       <Card>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-2">
+            <div className="md:col-span-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -250,118 +115,107 @@ export default function BrowseCoursesPage() {
                 <SelectItem value="advanced">Advanced</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Open for Enrollment</SelectItem>
-                <SelectItem value="active">In Progress</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Results */}
       <div className="space-y-4">
-        {filteredCourses.length === 0 ? (
+        {error ? (
           <Card>
-            <CardContent className="py-12">
-              <div className="text-center">
-                <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Courses Found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your filters or search criteria
-                </p>
-              </div>
+            <CardContent className="py-12 text-center">
+              <p className="text-muted-foreground mb-4">{error}</p>
+              <Button variant="outline" onClick={loadCourses}>Try again</Button>
+            </CardContent>
+          </Card>
+        ) : filtered.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Courses Found</h3>
+              <p className="text-muted-foreground">
+                {courses.length === 0 ? "No courses are open for enrollment yet — check back soon." : "Try adjusting your filters or search criteria."}
+              </p>
             </CardContent>
           </Card>
         ) : (
-          filteredCourses.map((course) => (
-            <Card key={course.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-semibold">{course.title}</h3>
-                      <Badge variant={getLevelBadgeColor(course.level)}>
-                        {course.level}
-                      </Badge>
-                      {course.status === "active" && (
-                        <Badge variant="default">In Progress</Badge>
+          filtered.map((course) => {
+            const spots = spotsRemaining(course);
+            return (
+              <Card key={course.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-semibold">{course.title}</h3>
+                        {course.difficultyLevel && (
+                          <Badge variant={course.difficultyLevel === "advanced" ? "destructive" : course.difficultyLevel === "intermediate" ? "default" : "secondary"}>
+                            {course.difficultyLevel}
+                          </Badge>
+                        )}
+                        {course.isFree && <Badge variant="outline">Free</Badge>}
+                      </div>
+
+                      <p className="text-muted-foreground mb-4 line-clamp-2">{course.description}</p>
+
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-2">
+                        <div>
+                          <div className="text-sm text-muted-foreground">Instructor</div>
+                          <div className="font-medium">{course.facilitatorName || "TBD"}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Start Date</div>
+                          <div className="font-medium flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {formatDate(course.courseStartDate)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Duration</div>
+                          <div className="font-medium flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            {course.estimatedDurationWeeks ? `${course.estimatedDurationWeeks} weeks` : "Self-paced"}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Available Spots</div>
+                          <div className="font-medium flex items-center gap-1">
+                            <Users className="h-4 w-4" />
+                            {spots !== null ? `${spots} / ${course.maxParticipants}` : "Open"}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-muted-foreground">Price</div>
+                          <div className="font-medium flex items-center gap-1">
+                            <DollarSign className="h-4 w-4" />
+                            {formatPrice(course)}
+                          </div>
+                        </div>
+                      </div>
+
+                      {spots !== null && spots <= 3 && spots > 0 && (
+                        <div className="text-sm text-orange-600 font-medium">Only {spots} spots remaining</div>
                       )}
-                    </div>
-                    
-                    <p className="text-muted-foreground mb-4">{course.description}</p>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
-                      <div>
-                        <div className="text-sm text-muted-foreground">Instructor</div>
-                        <div className="font-medium">{course.instructorName || "TBD"}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Start Date</div>
-                        <div className="font-medium flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {course.startDate.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Duration</div>
-                        <div className="font-medium flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {course.duration} weeks
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Available Spots</div>
-                        <div className="font-medium flex items-center gap-1">
-                          <Users className="h-4 w-4" />
-                          {getAvailableSpots(course)} / {course.maxParticipants}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Price</div>
-                        <div className="font-medium flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />
-                          ${course.price.toLocaleString()}
-                        </div>
-                      </div>
+                      {spots === 0 && <div className="text-sm text-red-600 font-medium">This course is full</div>}
                     </div>
 
-                    {getAvailableSpots(course) <= 3 && getAvailableSpots(course) > 0 && (
-                      <div className="text-sm text-orange-600 font-medium">
-                        ⚠️ Only {getAvailableSpots(course)} spots remaining!
-                      </div>
-                    )}
-                    {getAvailableSpots(course) === 0 && (
-                      <div className="text-sm text-red-600 font-medium">
-                        ❌ This course is full
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-2 ml-4">
-                    <Link href={`/portal/sme/courses/browse/${course.id}`}>
-                      <Button variant="outline" size="sm" className="w-full">
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        View Details
-                      </Button>
-                    </Link>
-                    {course.status === "published" && getAvailableSpots(course) > 0 && (
-                      <Link href={`/portal/sme/courses/enroll/${course.id}`}>
-                        <Button variant="default" size="sm" className="w-full">
-                          Enroll Now
+                    <div className="flex flex-col gap-2 ml-4">
+                      <Link href={`/portal/sme/courses/browse/${course.id}`}>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <BookOpen className="mr-2 h-4 w-4" />
+                          View Details
                         </Button>
                       </Link>
-                    )}
+                      {(spots === null || spots > 0) && (
+                        <Link href={`/portal/sme/courses/enroll/${course.id}`}>
+                          <Button variant="default" size="sm" className="w-full">Enroll Now</Button>
+                        </Link>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
     </div>

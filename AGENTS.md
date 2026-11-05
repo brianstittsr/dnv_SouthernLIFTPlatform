@@ -41,6 +41,18 @@ Built from `docs/svp-kdm-features/formbuilder/Adams form builder.md`, hardened f
 - Collections `liftInterviews`, `liftInterviewInvites`, `liftInterviewSessions` are server-only (client SDK denied in `firestore.rules`); editing a published interview returns it to draft; sessions record `interviewVersion`.
 - Engine: without `OPENAI_API_KEY` a deterministic fallback still runs interviews and produces transcripts/evaluations (`source: "fallback"`). Offline check: `OPENAI_API_KEY= npx tsx scripts/verify-interview-engine.ts`.
 
+## LMS (courses)
+
+Canonical data model is the `course_*` collections (`courses`, `course_modules`, `course_sessions`, `course_memberships`, `course_session_progress`, `course_certificates`, `course_purchases`, `course_discussions`). Legacy collections (`cmmcCourses`, `courseEnrollments`, `cmmc_training_*`, `modules`, `sessions`) are deprecated — rules deny client access to them.
+
+- Server journey: `lib/lms/server/journey.ts` — enrollment (dedupe + capacity + paid gating), `fulfillCoursePurchase` (Stripe webhook → membership), `recordSessionProgress` (session complete → membership totals → at 100% certificate + Documents archive + email; membership commits BEFORE cert work), read models.
+- APIs: `app/api/lms/**` — `catalog`, `courses/[id]` (public detail + titles-only outline), `courses/[id]/enroll`, `courses/[id]/curriculum` (membership-gated, returns content URLs), `my-courses`, `sessions/[id]/progress`, `certificates/[id]/pdf`, `certificates/verify/[number]`.
+- Member pages: `/portal/sme/courses` (my courses), `/browse` (+`/[id]`, +`/enroll/[id]`), player at `/portal/sme/courses/[id]` using `components/courses/embedded-training-viewer.tsx`. Public catalog `/courses` + `/courses/[slug]` (titles-only outline — session content is never exposed pre-enrollment).
+- Rules: published courses are publicly readable; `course_modules`/`course_sessions` are staff/instructor-only client-side (members get content via the API); membership updates by members are limited to `lastAccessedAt`; `course_session_progress` is server-write only.
+- Sessions may store `type` (server/new) or `contentType` (instructor UI) — read both. Sorting: use single-field `where` + in-memory sort by `sortOrder` (no composite indexes exist).
+- Seed: `npx tsx --env-file=.env.local scripts/seed-demo-courses.ts` (free `lift-business-fundamentals` course, idempotent) and `scripts/seed-cmmc-courses.ts` (3 paid CMMC courses). E2E check: `npx tsx --env-file=.env.local scripts/verify-lms-journey.ts`.
+- Paid enrollment: `/api/stripe/course-checkout` creates a Checkout Session (metadata `type: 'course_purchase'`); `app/api/stripe/webhooks/route.ts` calls `fulfillCoursePurchase` on `checkout.session.completed`. Success URL returns to `/portal/sme/courses?enrolled=1`.
+
 ## Branding mode
 
 - `NEXT_PUBLIC_BRANDING_MODE=lift` switches the shared onboarding flows to LIFT wording (`lib/branding.ts`), replaces the KDM 5 Pillars with LIFT service areas, skips the paid-membership redirect, and hides the affiliate wizard. The default (unset or `kdm`) keeps the KDM site unchanged.

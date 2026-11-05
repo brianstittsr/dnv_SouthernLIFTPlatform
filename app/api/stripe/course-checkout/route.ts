@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/portal/instructor/courses?success=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/portal/sme/courses?enrolled=1`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses?canceled=true`,
       customer_email: decodedToken.email,
       client_reference_id: userId,

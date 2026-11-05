@@ -496,29 +496,33 @@ export async function createDiscussion(data: {
   
   const discussionData = {
     ...data,
+    authorId: data.userId, // rules key on authorId
     isPinned: data.isPinned || false,
     replyCount: 0,
     lastActivityAt: Timestamp.now(),
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   };
-  
+
   const docRef = await addDoc(collection(db, COURSE_COLLECTIONS.DISCUSSIONS), discussionData);
   return docRef.id;
 }
 
 export async function getDiscussions(courseId: string) {
   if (!db) throw new Error("Firebase not initialized");
-  
+
+  // Single-field where + client-side sort — avoids a composite index requirement.
   const q = query(
     collection(db, COURSE_COLLECTIONS.DISCUSSIONS),
-    where("courseId", "==", courseId),
-    orderBy("isPinned", "desc"),
-    orderBy("lastActivityAt", "desc")
+    where("courseId", "==", courseId)
   );
-  
+
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const rows = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return rows.sort((a: any, b: any) => {
+    if ((a.isPinned === true) !== (b.isPinned === true)) return a.isPinned ? -1 : 1;
+    return (b.lastActivityAt?.toMillis?.() ?? 0) - (a.lastActivityAt?.toMillis?.() ?? 0);
+  });
 }
 
 export async function createDiscussionReply(data: {
@@ -528,9 +532,10 @@ export async function createDiscussionReply(data: {
   content: string;
 }) {
   if (!db) throw new Error("Firebase not initialized");
-  
+
   const replyData = {
     ...data,
+    authorId: data.userId, // rules key on authorId
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   };

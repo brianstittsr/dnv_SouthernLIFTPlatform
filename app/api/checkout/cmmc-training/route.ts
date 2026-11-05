@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, doc, updateDoc, Timestamp, query, where, getDocs } from 'firebase/firestore';
-import { sendTemplatedEmail } from '@/lib/email';
+import { db } from '@/lib/firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,14 +51,14 @@ export async function POST(req: NextRequest) {
 
     // Check if this member has already paid for this training level
     if (db && memberId) {
-      const trainingQuery = query(
-        collection(db, 'cmmc_training_payments'),
-        where('memberId', '==', memberId),
-        where('trainingLevel', '==', trainingLevel),
-        where('status', '==', 'completed')
-      );
-      const existingPayments = await getDocs(trainingQuery);
-      
+      const existingPayments = await db
+        .collection('cmmc_training_payments')
+        .where('memberId', '==', memberId)
+        .where('trainingLevel', '==', trainingLevel)
+        .where('status', '==', 'completed')
+        .limit(1)
+        .get();
+
       if (!existingPayments.empty) {
         return NextResponse.json(
           { error: 'Member has already paid for this CMMC training level' },
@@ -86,8 +85,8 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000'}/training/cmmc/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_PLATFORM_URL || 'http://localhost:3000'}/training/cmmc`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout-success?session_id={CHECKOUT_SESSION_ID}&product=cmmc-training`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/cmmc-course`,
       customer_email: customerEmail,
       metadata: {
         type: 'cmmc_training',
@@ -101,7 +100,7 @@ export async function POST(req: NextRequest) {
 
     // Record the training payment attempt in Firestore
     if (db) {
-      await addDoc(collection(db, 'cmmc_training_payments'), {
+      await db.collection('cmmc_training_payments').add({
         sessionId: session.id,
         customerEmail,
         customerName,

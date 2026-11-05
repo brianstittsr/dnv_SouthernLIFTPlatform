@@ -108,13 +108,13 @@ export async function POST(
       const moduleTitle = item.title?.[0] || `Module ${i + 1}`;
       const moduleDescription = item.description?.[0] || "";
       
-      // Create module
-      const moduleRef = await db.collection("modules").add({
+      // Create module — canonical course_modules collection
+      const moduleRef = await db.collection("course_modules").add({
         courseId,
         scormPackageId: scormPackageRef.id,
         title: moduleTitle,
         description: moduleDescription,
-        orderIndex: i,
+        sortOrder: i,
         isPublished: true,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
@@ -142,16 +142,17 @@ export async function POST(
           }
         }
 
-        // Create session
-        const sessionRef = await db.collection("sessions").add({
+        // Create session — canonical course_sessions collection
+        const sessionRef = await db.collection("course_sessions").add({
           moduleId: moduleRef.id,
           courseId,
           scormPackageId: scormPackageRef.id,
           title: sessionTitle,
           description: "",
-          contentHtml,
+          type: "lesson",
+          textContent: contentHtml,
           resourceHref,
-          orderIndex: j,
+          sortOrder: j,
           durationMinutes: 30, // Default duration
           isPublished: true,
           createdAt: Timestamp.now(),

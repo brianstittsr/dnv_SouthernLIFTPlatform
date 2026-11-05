@@ -22,7 +22,37 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { toast } from "sonner";
+
+interface RosterEntry {
+  membershipId: string;
+  userId: string;
+  name: string;
+  email: string;
+  status: string;
+  progressPercentage: number;
+  completedSessions: number;
+  totalSessions: number;
+  enrolledAt: any;
+  completedAt: any;
+}
+
+interface CertificateEntry {
+  id: string;
+  userName: string;
+  certificateNumber: string;
+  completionDate: any;
+  status: string;
+}
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -31,6 +61,8 @@ export default function CourseDetailPage() {
 
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [roster, setRoster] = useState<RosterEntry[]>([]);
+  const [certificates, setCertificates] = useState<CertificateEntry[]>([]);
   const [stats, setStats] = useState({
     totalStudents: 0,
     activeStudents: 0,
@@ -92,6 +124,54 @@ export default function CourseDetailPage() {
         completionRate,
         averageProgress: avgProgress,
       });
+
+      // Build the roster — resolve each member's name/email from their user doc
+      const rosterRows = await Promise.all(
+        enrollmentsSnap.docs.map(async (membershipDoc): Promise<RosterEntry> => {
+          const m = membershipDoc.data();
+          let name = "Unknown student";
+          let email = "";
+          try {
+            const userSnap = await getDoc(doc(db!, "users", m.userId));
+            if (userSnap.exists()) {
+              const u = userSnap.data();
+              name =
+                u.displayName ||
+                [u.firstName, u.lastName].filter(Boolean).join(" ") ||
+                u.email ||
+                name;
+              email = u.email || "";
+            }
+          } catch {
+            // leave defaults
+          }
+          return {
+            membershipId: membershipDoc.id,
+            userId: m.userId,
+            name,
+            email,
+            status: m.status || "active",
+            progressPercentage: m.progressPercentage || 0,
+            completedSessions: m.completedSessions || 0,
+            totalSessions: m.totalSessions || 0,
+            enrolledAt: m.enrolledAt,
+            completedAt: m.completedAt,
+          };
+        })
+      );
+      setRoster(
+        rosterRows.sort((a, b) => (b.enrolledAt?.toMillis?.() ?? 0) - (a.enrolledAt?.toMillis?.() ?? 0))
+      );
+
+      // Issued certificates for this course
+      const certsSnap = await getDocs(
+        query(collection(db, "course_certificates"), where("courseId", "==", courseId))
+      );
+      setCertificates(
+        certsSnap.docs
+          .map((d) => ({ id: d.id, ...d.data() } as CertificateEntry))
+          .sort((a, b) => (b.completionDate?.toMillis?.() ?? 0) - (a.completionDate?.toMillis?.() ?? 0))
+      );
     } catch (error) {
       console.error("Error loading course:", error);
       toast.error("Failed to load course data");
@@ -151,7 +231,7 @@ export default function CourseDetailPage() {
       <div className="text-center py-12">
         <GraduationCap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-2">Course Not Found</h2>
-        <p className="text-muted-foreground mb-4">The course you're looking for doesn't exist.</p>
+        <p className="text-muted-foreground mb-4">The course you&apos;re looking for doesn&apos;t exist.</p>
         <Button onClick={() => router.push("/portal/admin/courses")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Courses
@@ -311,25 +391,67 @@ export default function CourseDetailPage() {
           <Card>
             <CardHeader>
               <CardTitle>Enrolled Students</CardTitle>
-              <CardDescription>Manage student enrollments and progress</CardDescription>
+              <CardDescription>
+                {roster.length} enrolled — progress tracked per session
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Student Management</h3>
-                <p className="text-muted-foreground mb-4">
-                  Manage student enrollments, track progress, and communicate with course participants.
-                </p>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Features include:</p>
-                  <ul className="space-y-1">
-                    <li>• Student enrollment and status management</li>
-                    <li>• Progress tracking and performance metrics</li>
-                    <li>• Communication tools and announcements</li>
-                    <li>• Certificate issuance and record keeping</li>
-                  </ul>
+              {roster.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No students enrolled yet</h3>
+                  <p className="text-muted-foreground">
+                    Students will appear here once they enroll through the course catalog.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Sessions</TableHead>
+                      <TableHead className="w-[200px]">Progress</TableHead>
+                      <TableHead>Enrolled</TableHead>
+                      <TableHead>Completed</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {roster.map((entry) => (
+                      <TableRow key={entry.membershipId}>
+                        <TableCell>
+                          <div className="font-medium">{entry.name}</div>
+                          {entry.email && (
+                            <div className="text-xs text-muted-foreground">{entry.email}</div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={entry.status === "completed" ? "outline" : "default"}>
+                            {entry.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {entry.completedSessions} / {entry.totalSessions || "—"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Progress value={entry.progressPercentage} className="h-2 flex-1" />
+                            <span className="text-sm text-muted-foreground w-10">
+                              {entry.progressPercentage}%
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {formatDate(entry.enrolledAt)}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {entry.completedAt ? formatDate(entry.completedAt) : "—"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -362,17 +484,12 @@ export default function CourseDetailPage() {
                 <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Discussion Board</h3>
                 <p className="text-muted-foreground mb-4">
-                  Facilitate engaging discussions and Q&A sessions among course participants.
+                  Course discussions and Q&A are managed from the instructor workspace.
                 </p>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Features include:</p>
-                  <ul className="space-y-1">
-                    <li>• Threaded discussions and topic organization</li>
-                    <li>• Instructor-led Q&A sessions</li>
-                    <li>• Peer-to-peer learning and collaboration</li>
-                    <li>• Resource sharing and document exchange</li>
-                  </ul>
-                </div>
+                <Button onClick={() => router.push(`/portal/instructor/courses/${courseId}/discussion`)}>
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Open Discussion Board
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -382,25 +499,53 @@ export default function CourseDetailPage() {
           <Card>
             <CardHeader>
               <CardTitle>Certificates</CardTitle>
-              <CardDescription>Issued completion certificates</CardDescription>
+              <CardDescription>
+                {certificates.length} issued — certificates are generated automatically at 100% completion
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <Award className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Certificate Management</h3>
-                <p className="text-muted-foreground mb-4">
-                  Issue and manage completion certificates for successful course participants.
-                </p>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Features include:</p>
-                  <ul className="space-y-1">
-                    <li>• Automated certificate generation</li>
-                    <li>• Customizable certificate templates</li>
-                    <li>• Digital verification and sharing</li>
-                    <li>• Bulk issuance and tracking</li>
-                  </ul>
+              {certificates.length === 0 ? (
+                <div className="text-center py-12">
+                  <Award className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No certificates issued yet</h3>
+                  <p className="text-muted-foreground">
+                    Certificates are issued automatically when a student completes the full curriculum.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student</TableHead>
+                      <TableHead>Certificate #</TableHead>
+                      <TableHead>Issued</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">PDF</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {certificates.map((cert) => (
+                      <TableRow key={cert.id}>
+                        <TableCell className="font-medium">{cert.userName}</TableCell>
+                        <TableCell className="font-mono text-xs">{cert.certificateNumber}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {formatDate(cert.completionDate)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{cert.status || "active"}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="outline" size="sm" asChild>
+                            <a href={`/api/lms/certificates/${cert.id}/pdf`} target="_blank" rel="noopener noreferrer">
+                              View
+                            </a>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

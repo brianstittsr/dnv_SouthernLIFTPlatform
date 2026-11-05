@@ -66,102 +66,129 @@ service cloud.firestore {
     
     // ==================== COURSES ====================
     match /courses/{courseId} {
-      // Anyone authenticated can read published courses; staff can read all
-      allow read: if isAuthenticated() && 
-        (resource.data.status == "published" || resource.data.isPublished == true || isAdmin() || isInstructor() || isStaff());
-      
+      // Public read for published courses (public catalog); staff read all
+      allow read: if resource.data.isPublished == true || resource.data.status == "published" ||
+        (isAuthenticated() && (isAdmin() || isInstructor() || isStaff()));
+
       // Only admins and instructors can create courses
       allow create: if isInstructor();
-      
+
       // Only admins and the course's instructor can update
-      allow update: if isAdmin() || 
+      allow update: if isAdmin() ||
         (isInstructor() && (resource.data.instructorId == request.auth.uid || resource.data.facilitatorId == request.auth.uid));
-      
+
       // Only admins can delete courses
       allow delete: if isAdmin();
     }
-    
+
     // ==================== COURSE MODULES ====================
     match /course_modules/{moduleId} {
-      allow read: if isAuthenticated();
+      // Curriculum content is paid — members get it via the server API only
+      allow read: if isInstructor() || isStaff();
       allow create, update: if isInstructor();
       allow delete: if isAdmin();
     }
-    
+
     // ==================== COURSE SESSIONS ====================
     match /course_sessions/{sessionId} {
-      allow read: if isAuthenticated();
+      // Session content (video/content/zoom URLs) is paid — members get it via the server API only
+      allow read: if isInstructor() || isStaff();
       allow create, update: if isInstructor();
       allow delete: if isAdmin();
     }
-    
+
     // ==================== COURSE MEMBERSHIPS ====================
     match /course_memberships/{membershipId} {
       // Users can read their own memberships; staff/admins/instructors read all
-      allow read: if isAuthenticated() && 
+      allow read: if isAuthenticated() &&
         (resource.data.userId == request.auth.uid || isInstructor() || isStaff());
-      
-      // Memberships created via enrollment API (server-side)
-      allow create: if isAuthenticated();
-      
-      // Only admins can update memberships (status changes, etc.)
-      allow update: if isAdmin() || 
-        (isAuthenticated() && resource.data.userId == request.auth.uid);
-      
+
+      // Enrollment happens through the server API (Admin SDK bypasses rules).
+      // Client-side creates allowed only for staff tools (e.g. instructor adds a member).
+      allow create: if isStaff();
+
+      // Members may only refresh lastAccessedAt — status/progress/completion are server-owned
+      allow update: if isAdmin() || isStaff() ||
+        (isAuthenticated() && resource.data.userId == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastAccessedAt']));
+
       allow delete: if isAdmin();
     }
-    
+
     // ==================== SESSION PROGRESS ====================
     match /course_session_progress/{progressId} {
-      // Users can read/write their own progress; staff read all
-      allow read: if isAuthenticated() && 
+      // Users can read their own progress; staff read all
+      allow read: if isAuthenticated() &&
         (resource.data.userId == request.auth.uid || isInstructor() || isStaff());
-      
-      allow create: if isAuthenticated() && 
-        request.resource.data.userId == request.auth.uid;
-      
-      allow update: if isAuthenticated() && 
-        resource.data.userId == request.auth.uid;
-      
-      allow delete: if isAdmin();
+
+      // Progress is written only by the server progress API — client writes
+      // here could self-mark sessions complete and trigger a bogus certificate.
+      allow create, update, delete: if isAdmin();
     }
-    
+
     // ==================== CERTIFICATES ====================
     match /course_certificates/{certificateId} {
-      // Users can read their own certificates, public verification allowed
-      allow read: if isAuthenticated();
-      
+      // Owner or staff only — public verification goes through the server route
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isInstructor() || isStaff());
+
       // Only system/admin can create certificates
       allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
-    
+
     // ==================== DISCUSSIONS ====================
     match /course_discussions/{discussionId} {
       allow read: if isAuthenticated();
-      
-      // Enrolled users can create discussions
-      allow create: if isAuthenticated();
-      
+
+      // Enrolled users can create discussions — authorId must match the caller
+      allow create: if isAuthenticated() &&
+        request.resource.data.authorId == request.auth.uid;
+
       // Authors can update their own discussions
-      allow update: if isAuthenticated() && 
+      allow update: if isAuthenticated() &&
         (resource.data.authorId == request.auth.uid || isInstructor());
-      
-      allow delete: if isAdmin() || 
+
+      allow delete: if isAdmin() ||
         (isAuthenticated() && resource.data.authorId == request.auth.uid);
     }
-    
+
     // ==================== DISCUSSION REPLIES ====================
     match /course_discussion_replies/{replyId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      
-      allow update: if isAuthenticated() && 
+      allow create: if isAuthenticated() &&
+        request.resource.data.authorId == request.auth.uid;
+
+      allow update: if isAuthenticated() &&
         resource.data.authorId == request.auth.uid;
-      
-      allow delete: if isAdmin() || 
+
+      allow delete: if isAdmin() ||
         (isAuthenticated() && resource.data.authorId == request.auth.uid);
+    }
+
+    // ==================== LEGACY LMS (deprecated — server/API only) ====================
+    match /cmmcCourses/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /courseEnrollments/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /cmmc_training_payments/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /cmmc_training_participants/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /course_purchases/{docId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isStaff());
+      allow write: if isAdmin();
+    }
+    match /modules/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /sessions/{docId} {
+      allow read, write: if isAdmin();
     }
     
     // ==================== LIVE TRAININGS ====================

@@ -60,7 +60,7 @@ export default function CourseCatalogPage() {
       })) as Course[];
 
       // Filter by status in code
-      coursesData = coursesData.filter(c => c.status === "published");
+      coursesData = coursesData.filter(c => c.status === "published" || c.status === "active");
       
       // Sort by start date in code
       coursesData.sort((a, b) => {
