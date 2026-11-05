@@ -469,14 +469,24 @@ const workshopFeedback: FormDefinitionInput = {
   ],
 };
 
-const checklistItem = (key: string, label: string): FormField =>
-  field("documents", key, label, "file_upload", { maxFiles: 3, mappings: to("liftCapitalPackages", `documents.${key}`) });
+export const LOAN_PACKAGE_DOCUMENTS = [
+  "Business plan",
+  "Business tax returns (2-3 years)",
+  "Personal tax returns",
+  "Year-to-date profit and loss",
+  "Balance sheet",
+  "Cash-flow projection",
+  "Debt schedule",
+  "Owner personal financial statement",
+  "Business licenses and registration",
+  "Collateral documentation",
+];
 
 /** B7 - Capital readiness checklist. */
 const capitalReadiness: FormDefinitionInput = {
   slug: "capital-readiness",
   title: "Capital Readiness Checklist",
-  description: "Build a lender- or investor-ready package. Upload each document you have; mark the rest as not applicable.",
+  description: "Build a lender- or investor-ready package. Download the document checklist to bring to your loan officer meeting.",
   category: "Capital",
   lifecycleRef: "B7",
   presentationMode: "standard",
@@ -486,7 +496,6 @@ const capitalReadiness: FormDefinitionInput = {
   sections: [
     { id: "request", title: "Capital request" },
     { id: "documents", title: "Document checklist" },
-    { id: "lenders", title: "Lender submissions (staff)", staffOnly: true },
   ],
   fields: [
     field("request", "capitalGuardrail", "The LIFT Center helps you prepare for third-party financing. Center and award funds are never used for loans, grants, or equity to businesses.", "statement"),
@@ -494,26 +503,13 @@ const capitalReadiness: FormDefinitionInput = {
     field("request", "amountSought", "Amount sought", "currency", { required: true, mappings: to("liftCapitalPackages", "amountSoughtCents", "currency_to_cents") }),
     field("request", "capitalType", "Capital type", "dropdown", { required: true, options: ["Loan", "Line of credit", "Equity", "External grant", "Microloan", "Other"], mappings: to("liftCapitalPackages", "capitalType") }),
     field("request", "targetLenders", "Target lenders or investors", "long_text", { mappings: to("liftCapitalPackages", "targetLenders") }),
-    checklistItem("businessPlan", "Business plan"),
-    checklistItem("businessTaxReturns", "Business tax returns (2-3 years)"),
-    checklistItem("personalTaxReturns", "Personal tax returns"),
-    checklistItem("profitAndLoss", "Year-to-date profit and loss"),
-    checklistItem("balanceSheet", "Balance sheet"),
-    checklistItem("cashFlowProjection", "Cash-flow projection"),
-    checklistItem("debtSchedule", "Debt schedule"),
-    checklistItem("personalFinancialStatement", "Owner personal financial statement"),
-    checklistItem("licensesRegistration", "Business licenses and registration"),
-    checklistItem("collateral", "Collateral documentation"),
-    field("documents", "notApplicable", "List any checklist items that do not apply", "long_text", { mappings: to("liftCapitalPackages", "notApplicable") }),
-    field("lenders", "lenderSubmissions", "Lender submission log", "repeating_table", {
-      staffOnly: true,
-      tableColumns: [
-        { key: "lender", label: "Lender", type: "text", required: true },
-        { key: "dateSubmitted", label: "Date submitted", type: "date" },
-        { key: "status", label: "Status", type: "dropdown", options: ["Submitted", "In review", "Approved", "Declined", "Withdrawn"] },
-      ],
-      mappings: to("liftCapitalPackages", "lenderSubmissions"),
+    field("documents", "checklistIntro", "Gather the documents below and bring them to your loan officer meeting. Download the LIFT checklist to track what you still need.", "statement"),
+    field("documents", "loanPackageChecklist", "Download the LIFT document checklist (PDF)", "download", { downloadUrl: "/api/lift/checklists/capital-readiness" }),
+    field("documents", "documentsReady", "Which documents do you already have?", "multi_select", {
+      options: LOAN_PACKAGE_DOCUMENTS,
+      mappings: to("liftCapitalPackages", "documentsReady"),
     }),
+    field("documents", "notApplicable", "List any checklist items that do not apply", "long_text", { mappings: to("liftCapitalPackages", "notApplicable") }),
   ],
 };
 

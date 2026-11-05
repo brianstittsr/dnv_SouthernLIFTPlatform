@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, ChevronsUpDown, Loader2, Plus, Sparkles, Star, X } from "lucide-react";
+import { CheckCircle2, ChevronsUpDown, Download, Loader2, Plus, Sparkles, Star, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -44,6 +44,19 @@ export function FieldControl({ field, value, values, error, slug, onChange, emph
       <div className="whitespace-pre-line rounded-md border bg-muted/40 p-4 text-sm leading-relaxed" role="note">
         {field.label}
       </div>
+    );
+  }
+  if (field.type === "download") {
+    if (!field.downloadUrl) return null;
+    return (
+      <a
+        href={field.downloadUrl}
+        download
+        className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Download className="h-4 w-4" aria-hidden="true" />
+        {field.label}
+      </a>
     );
   }
 

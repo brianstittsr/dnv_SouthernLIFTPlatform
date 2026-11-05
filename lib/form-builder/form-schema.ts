@@ -6,7 +6,7 @@ const key = z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/, "Keys use letters, 
 const fieldTypes = [
   "short_text", "long_text", "email", "phone", "url", "number", "currency", "date", "datetime",
   "dropdown", "platform_lookup", "multi_select", "option_picker", "text_list", "radio", "yes_no", "checkbox", "likert_scale", "nps",
-  "rating_stars", "file_upload", "signature", "repeating_table", "calculated", "section_header", "statement",
+  "rating_stars", "file_upload", "signature", "repeating_table", "calculated", "section_header", "statement", "download",
 ] as const;
 
 const targets = [
@@ -72,6 +72,7 @@ export const formFieldSchema = z.object({
     )
     .max(5)
     .optional(),
+  downloadUrl: z.string().max(500).optional(),
   accept: z.array(z.string().max(160)).max(20).optional(),
   maxFiles: z.number().int().min(1).max(10).optional(),
   maxItems: z.number().int().min(1).max(100).optional(),

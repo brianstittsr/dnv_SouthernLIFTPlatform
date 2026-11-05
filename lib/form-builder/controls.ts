@@ -37,6 +37,7 @@ export const CONTROL_CATALOG: readonly ControlDefinition[] = [
   { type: "calculated", label: "Calculated", group: "Documents & Legal", description: "Formula from other answers", hasValue: true },
   { type: "section_header", label: "Section header", group: "Layout", description: "Heading inside a section", hasValue: false },
   { type: "statement", label: "Statement / disclosure", group: "Layout", description: "Read-only text block", hasValue: false },
+  { type: "download", label: "Download link", group: "Layout", description: "Button that downloads a file", hasValue: false },
 ] as const;
 
 /** Returns true when a field type stores an answer. */

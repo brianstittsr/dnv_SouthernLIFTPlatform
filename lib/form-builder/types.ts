@@ -33,7 +33,8 @@ export type FormFieldType =
   | "repeating_table"
   | "calculated"
   | "section_header"
-  | "statement";
+  | "statement"
+  | "download";
 
 /** Live lookup sources for `platform_lookup` fields. */
 export type LookupSource =
@@ -160,6 +161,8 @@ export interface FormField {
   staffOnly?: boolean;
   prefillKey?: CrosswalkKey;
   mappings?: FieldMapping[];
+  /** For `download` fields: URL the download button points to. */
+  downloadUrl?: string;
   /** Allowed file MIME types for `file_upload`. */
   accept?: string[];
   maxFiles?: number;

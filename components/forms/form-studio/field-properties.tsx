@@ -114,6 +114,17 @@ export function FieldProperties({ field, fields, sections, onChange, onDelete }:
         <Input id="prop-placeholder" value={field.placeholder ?? ""} onChange={(event) => update({ placeholder: event.target.value || undefined })} />
       </div>
 
+      {field.type === "download" && (
+        <div className="space-y-1">
+          <Label htmlFor="prop-download-url">Download URL</Label>
+          <Input
+            id="prop-download-url"
+            value={field.downloadUrl ?? ""}
+            placeholder="/api/lift/checklists/capital-readiness"
+            onChange={(event) => update({ downloadUrl: event.target.value || undefined })}
+          />
+        </div>
+      )}
       {hasOptions && (
         <div className="space-y-1">
           <Label htmlFor="prop-options">Options (one per line)</Label>

@@ -10,7 +10,9 @@ import { writeAudit, type Requester } from "../lib/form-builder/server/context";
 
 async function main() {
   const requester: Requester = { uid: "reseed-script", email: null, name: "reseed-script", isStaff: true, isAdmin: true };
+  const only = process.argv[2]; // optional: reseed a single slug
   for (const template of LIFT_FORM_TEMPLATES) {
+    if (only && template.slug !== only) continue;
     const definition = formDefinitionSchema.parse(template);
     const existing = await getFormBySlug(definition.slug, true);
     const saved = await saveFormDefinition(definition, requester, existing?.id);
