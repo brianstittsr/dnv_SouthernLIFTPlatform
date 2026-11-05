@@ -37,6 +37,7 @@ export default function LiftSubmissionsPage() {
   const [forms, setForms] = useState<LiftFormDoc[]>([]);
   const [formSlug, setFormSlug] = useState("");
   const [rows, setRows] = useState<SubmissionSummary[] | null>(null);
+  const [showAccepted, setShowAccepted] = useState(false);
   const [detail, setDetail] = useState<SubmissionDetail | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [reviewing, setReviewing] = useState(false);
@@ -75,7 +76,7 @@ export default function LiftSubmissionsPage() {
     setReviewing(true);
     try {
       await liftFetch(`/api/lift/submissions/${openId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(update) });
-      toast.success("Review saved");
+      toast.success(update.status === "accepted" ? "Accepted — PDF filed in Documents" : "Review saved");
       await open(openId);
       await load();
     } catch (error) {
@@ -86,6 +87,11 @@ export default function LiftSubmissionsPage() {
   };
 
   const submission = detail?.submission;
+
+  // Accepted submissions are filed in Documents and hidden from the queue;
+  // the toggle brings them back.
+  const hiddenCount = (rows ?? []).filter((row) => row.status === "accepted").length;
+  const visibleRows = rows?.filter((row) => showAccepted || row.status !== "accepted") ?? null;
 
   return (
     <div className="space-y-6">
@@ -100,30 +106,44 @@ export default function LiftSubmissionsPage() {
           <h1 className="text-3xl font-bold">LIFT Form Submissions</h1>
           <p className="text-muted-foreground">Review submissions, confirm intake summaries, and download signed PDFs.</p>
         </div>
-        <div className="w-72 space-y-1">
-          <label htmlFor="filter-form" className="text-sm font-medium">
-            Form
+        <div className="flex items-end gap-4">
+          <label className="flex items-center gap-2 pb-2 text-sm text-muted-foreground" htmlFor="show-accepted">
+            <input
+              id="show-accepted"
+              type="checkbox"
+              className="h-4 w-4 rounded border accent-primary"
+              checked={showAccepted}
+              onChange={(event) => setShowAccepted(event.target.checked)}
+            />
+            Show accepted{hiddenCount > 0 ? ` (${hiddenCount})` : ""}
           </label>
-          <select id="filter-form" className="h-10 w-full rounded-md border bg-background px-3 text-sm" value={formSlug} onChange={(event) => setFormSlug(event.target.value)}>
-            <option value="">All forms</option>
-            {forms.map((form) => (
-              <option key={form.id} value={form.slug}>
-                {form.lifecycleRef ? `${form.lifecycleRef} · ` : ""}
-                {form.title}
-              </option>
-            ))}
-          </select>
+          <div className="w-72 space-y-1">
+            <label htmlFor="filter-form" className="text-sm font-medium">
+              Form
+            </label>
+            <select id="filter-form" className="h-10 w-full rounded-md border bg-background px-3 text-sm" value={formSlug} onChange={(event) => setFormSlug(event.target.value)}>
+              <option value="">All forms</option>
+              {forms.map((form) => (
+                <option key={form.id} value={form.slug}>
+                  {form.lifecycleRef ? `${form.lifecycleRef} · ` : ""}
+                  {form.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       <Card>
         <CardContent className="pt-6">
-          {!rows ? (
+          {!visibleRows ? (
             <div className="flex items-center gap-2 text-muted-foreground" role="status">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading...
             </div>
-          ) : rows.length === 0 ? (
-            <p className="text-muted-foreground">No submissions yet.</p>
+          ) : visibleRows.length === 0 ? (
+            <p className="text-muted-foreground">
+              {hiddenCount > 0 ? `All submissions are accepted and filed in Documents (${hiddenCount} hidden).` : "No submissions yet."}
+            </p>
           ) : (
             <Table>
               <TableHeader>
@@ -137,7 +157,7 @@ export default function LiftSubmissionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rows.map((row) => (
+                {visibleRows.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell className="whitespace-nowrap">{new Date(row.createdAt).toLocaleString()}</TableCell>
                     <TableCell>

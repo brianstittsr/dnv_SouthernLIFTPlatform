@@ -4,6 +4,8 @@ import { z } from "zod";
 import { COLLECTIONS } from "@/lib/schema";
 import { getRequester, jsonError, requireDb, serializeFirestore, writeAudit } from "@/lib/form-builder/server/context";
 import { getFormVersion } from "@/lib/form-builder/server/forms-repo";
+import { renderSubmissionPdf } from "@/lib/form-builder/server/pdf";
+import { archiveGeneratedDocument } from "@/lib/documents/archive";
 import { handleRouteError, requireStaffRequester } from "@/lib/form-builder/server/route-helpers";
 import type { LiftFormSubmissionDoc } from "@/lib/form-builder/types";
 
@@ -58,6 +60,33 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     if (parsed.data.reviewNote !== undefined) update.reviewNote = parsed.data.reviewNote;
     if (parsed.data.aiSummaryStatus && snapshot.data()?.aiSummary) update["aiSummary.status"] = parsed.data.aiSummaryStatus;
     await ref.update(update);
+
+    // Accepted submissions are filed in portal Documents as a signed PDF —
+    // dedupe makes this a no-op when submit-time archiving already ran.
+    if (parsed.data.status === "accepted") {
+      try {
+        const submission = serializeFirestore(snapshot.data() as LiftFormSubmissionDoc);
+        const form = await getFormVersion(submission.formId, submission.formVersion);
+        if (form) {
+          const pdf = await renderSubmissionPdf(form, submission, form.audience === "staff");
+          await archiveGeneratedDocument({
+            buffer: pdf,
+            fileName: `${form.slug}-${id}.pdf`,
+            contentType: "application/pdf",
+            category: "form-submissions",
+            folder: "Form Submissions",
+            tags: ["LIFT", form.title, submission.submittedByName],
+            visibleToUids: submission.submittedByUid ? [submission.submittedByUid] : undefined,
+            uploadedBy: submission.submittedByName,
+            uploaderUid: submission.submittedByUid ?? null,
+            source: { type: "form-submission", id, label: form.title },
+          });
+        }
+      } catch (archiveError) {
+        console.error("Accepted submission archive failed:", archiveError);
+      }
+    }
+
     await writeAudit("submission.reviewed", id, requester, parsed.data);
     return NextResponse.json({ data: { updated: true } });
   } catch (error) {
